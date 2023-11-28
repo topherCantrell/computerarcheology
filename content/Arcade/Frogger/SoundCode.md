@@ -69,7 +69,7 @@ Interrupt:
 ;
 ; There is some bit shuffling that goes on here for bytes with bits in the upper nibble but
 ; all zeros in the lower nibble. Perhaps this means something on other hardware where this
-; is a fragment on common software?
+; is a fragment on common software? Possibly related to the capacitor filters on the outputs.
 ;
 ; I need to investigate this shuffling.
 ;
@@ -81,19 +81,26 @@ Interrupt:
 0040: CD C1 02        CALL    $02C1               ; {code.ReadAY} ... AY IO port A
 0043: B7              OR      A                   ; Reset everything?
 0044: 28 2B           JR      Z,$71               ; {code.ClearCommands} Yes ... go reset all command info and out
+;
+; TOPHER patch to always play the same sound -- for recording the sound effects.
+;
+; 0046: 3E xx           LD      A,$xx   SWAPPED: 3D yy
+; 0048: 57              LD      D,A     SWAPPED: 57
+; 0049: 00 00 00        NOP             SWAPPED: 00 00 00
+;
 0046: 57              LD      D,A                 ; Copy command to D
 0047: FE FF           CP      $FF                 ; Is it a RESET command?
 0049: 20 01           JR      NZ,$4C              ; {} No ... keep going
 004B: C7              RST     $00                 ; Software reset (won't come back)
 
 004C: E6 0F           AND     $0F                 ; Lower 4 bits of command ...
-004E: 4F              LD      C,A                 ; ... to C (C is lower 4 bits, D is full)
+004E: 4F              LD      C,A                 ; ... to C
 004F: 7A              LD      A,D                 ; Original command back to A
-0050: A9              XOR     C                   ; Any of the upper 4 bits set?
-0051: 28 07           JR      Z,$5A               ; {} No ... maybe shuffle
+0050: A9              XOR     C                   ; Any of the upper 4 bits set (the lowers get cleared here)
+0051: 28 07           JR      Z,$5A               ; {} No ... maybe ???
 0053: 79              LD      A,C                 ; Are the lower 4 bits ...
 0054: B7              OR      A                   ; ... all 0?
-0055: 28 03           JR      Z,$5A               ; {} Yes ... shuffle
+0055: 28 03           JR      Z,$5A               ; {} Yes ... ???
 0057: 7A              LD      A,D                 ; Original command
 0058: 18 3D           JR      $97                 ; {code.CmdRequest} Process original command as-is
 ;
@@ -101,7 +108,7 @@ Interrupt:
 005B: E6 0F           AND     $0F                 ; Just the lower bits
 005D: 20 38           JR      NZ,$97              ; {code.CmdRequest} Lower 4 is not 0 ... processes lower 4 as command
 005F: 7A              LD      A,D                 ; Original command
-0060: C6 12           ADD     A,$12               ; shuffle ...
+0060: C6 12           ADD     A,$12               ; ??? ...
 0062: 07              RLCA                        ; ... the ...
 0063: 07              RLCA                        ; ... bits ...
 0064: 07              RLCA                        ; ... around
@@ -149,7 +156,7 @@ FindDat:
 
 CmdRequest: 
 ; Process a command request. Request is in A. The lowest priority voice is 
-; preempted with the request if the request is higher priority. Otherwise th
+; preempted with the request if the request is higher priority. Otherwise the
 ; request is ignored.
 0097: 32 46 40        LD      ($4046),A           ; {ram.cmdRequest} Hold requested command
 009A: CD E6 00        CALL    $00E6               ; {code.ReinitCommand} Reinit command if running
@@ -378,8 +385,8 @@ CommandInit:
 01C1: C4 0A ; I0D Music voice B
 01C3: 8C 0B ; I0E Music voice B        
 01C5: 15 10 ; I0F Main song after intro
-01C7: EB 06 ; I10 Frogger landing safe
-01C9: 3B 0B ; I11 Level complete song          
+01C7: EB 06 ; I10 effect Frogger landing safe
+01C9: 3B 0B ; I11 complete song          
 01CB: 53 0B ; I12 Music voice B              
 01CD: 5D 0B ; I13 Music voice C               
 01CF: 00 00 ; I14 Reset program
@@ -415,14 +422,14 @@ CommandCont:
 ; These functions are called to continue a voice command each pass. They return 0 to continue or
 ; not-zero to terminate the continuation.
 01F3: 33 00 ; C00 Set A to FF, but never used because of check at 1E9
-01F5: 33 03 ; C01 Coin inserted                      
-01F7: D2 03 ; C02 Die in water
-01F9: 75 04 ; C03 Die in road                        
-01FB: 8C 14 ; C04 Frog hopping                        
-01FD: 72 14 ; C05 Time running out                         
-01FF: A7 0B ; C06 Next life begins                        
-0201: AA 04 ; C07 Extra frog                        
-0203: 8F 0B ; C08 Song interlude after getting frog home (changes each frog)                      
+01F5: 33 03 ; C01 effect Coin inserted                      
+01F7: D2 03 ; C02 effect Die in water
+01F9: 75 04 ; C03 effect Die in road                        
+01FB: 8C 14 ; C04 effect Frog hopping                        
+01FD: 72 14 ; C05 effect Time running out                         
+01FF: A7 0B ; C06 song Next life begins                        
+0201: AA 04 ; C07 effect Extra frog                        
+0203: 8F 0B ; C08 song Interlude after getting frog home (20 tunes, changes each frog)                      
 0205: 91 07 ; C09 Main song intro (1st 16 beats)                           
 0207: 97 07 ; C0A Music voice B
 0209: 9D 07 ; C0B Music voice C                            
@@ -430,15 +437,15 @@ CommandCont:
 020D: C7 0A ; C0D Music voice B                  
 020F: 96 0B ; C0E Music voice B                     
 0211: 26 10 ; C0F Main song after intro                 
-0213: 0E 07 ; C10 Frogger landing safe                 
-0215: 4C 0B ; C11 Level complete song                        
+0213: 0E 07 ; C10 effect Frogger landing safe                 
+0215: 4C 0B ; C11 song Level complete
 0217: 56 0B ; C12 Music voice B                    
 0219: 60 0B ; C13 Music voice C                       
 021B: 00 00 ; C14 Reset program                                   
-021D: 1C 05 ; C15 Snake on ground                         
+021D: 1C 05 ; C15 effect Snake on ground                         
 021F: 2D 10 ; C16 Music voice B
-0221: E5 05 ; C17 Race car                         
-0223: 61 06 ; C18 Pick up mate
+0221: E5 05 ; C17 effect Race car                         
+0223: 61 06 ; C18 effect Pick up mate
 
 ; All continuation functions RET here
 0225: B7              OR      A                   ; Return "continue"?
@@ -619,7 +626,13 @@ WriteAYAL:
 030B: 7D              LD      A,L                 ; Write ...
 030C: D3 40           OUT     ($40),A             ; {hard.AY_DATA} ... value
 030E: C9              RET                         ; Out
+```
 
+## Insert Coin Sound
+
+[insertCoin.mp3](sounds/insertCoin.mp3)
+
+```code
 ;I01 Coin inserted
 030F: E7              RST     $20                 
 0310: 3E 20           LD      A,$20               
@@ -645,9 +658,8 @@ WriteAYAL:
 032F: 06 09           LD      B,$09               
 0331: DF              RST     $18                 
 0332: C9              RET                         
-
+;
 ;C01 Coin inserted
-
 0333: 3A 64 40        LD      A,($4064)           ; {ram.m4064}
 0336: A7              AND     A                   
 0337: 28 0D           JR      Z,$346              ; {}
@@ -719,7 +731,15 @@ WriteAYAL:
 03BA: 35              DEC     (HL)                
 03BB: AF              XOR     A                   
 03BC: C9              RET                         
+```
 
+## Die in the Water Sound
+
+[dieWater.mp3](sounds/dieWater.mp3)
+
+(Don't frogs swim?)
+
+```code
 ;I02 Die in water
 03BD: 3E 80           LD      A,$80               
 03BF: 32 5D 40        LD      ($405D),A           ; {ram.m405D}
@@ -730,7 +750,7 @@ WriteAYAL:
 03CD: F7              RST     $30                 
 03CE: CD 04 03        CALL    $0304               ; {code.Filter10} Set filtering 0.047uF
 03D1: C9              RET                         
-
+;
 ;C02 Die in water
 03D2: 3A 5D 40        LD      A,($405D)           ; {ram.m405D}
 03D5: 3D              DEC     A                   
@@ -804,7 +824,13 @@ WriteAYAL:
 0457: C3 19 04        JP      $0419               ; {}
 045A: 3E FF           LD      A,$FF               
 045C: C9              RET                         
+```
 
+## Die in the Road Sound
+
+[dieRoad.mp3](sounds/dieRoad.mp3)
+
+```code
 ;I03 Die in road
 045D: CD C7 02        CALL    $02C7               ; {code.Filter00}
 0460: CD 60 02        CALL    $0260               ; {code.EnableTone}
@@ -815,7 +841,7 @@ WriteAYAL:
 046E: 21 90 02        LD      HL,$0290            
 0471: 22 30 41        LD      ($4130),HL          ; {ram.m4130}
 0474: C9              RET                         
-
+;
 ;C03 Die in road
 0475: 2A 30 41        LD      HL,($4130)          ; {ram.m4130}
 0478: 2B              DEC     HL                  
@@ -830,7 +856,13 @@ WriteAYAL:
 0488: CD 3C 02        CALL    $023C               ; {code.WriteTune}
 048B: AF              XOR     A                   
 048C: C9              RET                         
+```
 
+## Free Life Sound
+
+[freeLife.mp3](sounds/freeLife.mp3)
+
+```code
 ;I07 Extra frog
 048D: E7              RST     $20                 
 048E: 3E 08           LD      A,$08               
@@ -847,7 +879,7 @@ WriteAYAL:
 04A6: 06 00           LD      B,$00               
 04A8: DF              RST     $18                 
 04A9: C9              RET                         
-
+;
 ;C07 Extra frog
 04AA: 3A 73 41        LD      A,($4173)           ; {ram.m4173}
 04AD: A7              AND     A                   
@@ -902,7 +934,13 @@ WriteAYAL:
 0500: 21 73 41        LD      HL,$4173            
 0503: 34              INC     (HL)                
 0504: C9              RET                         
+```
 
+## Snake on Ground Sound
+
+[snakeOnGround.mp3](sounds/snakeOnGround.mp3)
+
+```code
 ;I15 Snake on ground
 0505: CD 04 03        CALL    $0304               ; {code.Filter10}
 0508: 21 00 01        LD      HL,$0100            
@@ -915,7 +953,7 @@ WriteAYAL:
 0517: AF              XOR     A                   
 0518: 32 78 41        LD      ($4178),A           ; {ram.m4178}
 051B: C9              RET                         
-
+;
 ;C15 Snake on ground
 051C: 3A 78 41        LD      A,($4178)           ; {ram.m4178}
 051F: FE 01           CP      $01                 
@@ -1002,7 +1040,13 @@ WriteAYAL:
 05BC: FE 80           CP      $80                 
 05BE: 38 8A           JR      C,$54A              ; {}
 05C0: C3 05 05        JP      $0505               ; {}
+```
 
+## Race Car Sound
+
+[raceCar.mp3](sounds/raceCar.mp3)
+
+```code
 ;I17 Race car
 05C3: AF              XOR     A                   
 05C4: 21 10 41        LD      HL,$4110            
@@ -1023,7 +1067,7 @@ WriteAYAL:
 05DE: CD 7C 02        CALL    $027C               ; {code.SetAmplitude}
 05E1: CD C7 02        CALL    $02C7               ; {code.Filter00}
 05E4: C9              RET                         
-
+;
 ;C17 Race car
 05E5: CD 1C 06        CALL    $061C               ; {}
 05E8: CD ED 05        CALL    $05ED               ; {}
@@ -1073,7 +1117,13 @@ WriteAYAL:
 063A: E1              POP     HL                  
 063B: 3D              DEC     A                   
 063C: C9              RET                         
+```
 
+## Pick up Friend Sound
+
+[pickUpMate.mp3](sounds/pickUpMate.mp3)
+
+```code
 ;I18 Pick up mate
 063D: E7              RST     $20                 
 063E: 3E 20           LD      A,$20               
@@ -1098,7 +1148,7 @@ WriteAYAL:
 065D: 06 09           LD      B,$09               
 065F: DF              RST     $18                 
 0660: C9              RET                         
-
+;
 ;C18 Pick up mate
 0661: 3A E4 41        LD      A,($41E4)           ; {ram.m41E4}
 0664: A7              AND     A                   
@@ -1175,7 +1225,13 @@ WriteAYAL:
 06E8: 35              DEC     (HL)                
 06E9: AF              XOR     A                   
 06EA: C9              RET                         
+```
 
+## Frog Landing Safe Sound
+
+[landingSafe.mp3](sounds/landingSafe.mp3)
+
+```code
 ;I10 Frog landing safe
 06EB: 21 50 00        LD      HL,$0050            
 06EE: 22 80 41        LD      ($4180),HL          ; {ram.m4180}
@@ -1190,8 +1246,8 @@ WriteAYAL:
 0707: CD 60 02        CALL    $0260               ; {code.EnableTone}
 070A: CD C7 02        CALL    $02C7               ; {code.Filter00}
 070D: C9              RET                         
-
-;C10 Frig landing safe
+;
+;C10 Frog landing safe
 070E: 2A 80 41        LD      HL,($4180)          ; {ram.m4180}
 0711: 2B              DEC     HL                  
 0712: 22 80 41        LD      ($4180),HL          ; {ram.m4180}
@@ -1451,7 +1507,14 @@ MusicNOTE:
 0888: C1              POP     BC                  ; Restore original command
 0889: 78              LD      A,B                 ; Get ...
 088A: E6 1F           AND     $1F                 ; ... note value
+;
+; TOPHER PATCH make this a NOP to keep the music in the key of D
+; The music was entered into the tables below in the friendly key of D. I believe
+; this decrement was a mistake -- it plays everything one half step lower, which is
+; NOT friendly on the piano!
+; 088C: 00              NOP
 088C: 3D              DEC     A                   ; 0 is a rest, 1 is first note (base 0 now)
+;
 088D: 07              RLCA                        ; Two bytes per entry
 088E: 4F              LD      C,A                 ; LSB of BC is offset
 088F: 06 00           LD      B,$00               ; MSB of BC is 0
@@ -1613,40 +1676,45 @@ DelayTable:
 SongTable: 
 ; Music pointers for all 3 voices for each song. There are 25 songs. Frogger has
 ; a very rich music base.
-
-09AB: 47 0A    6A 0A    8D 0A   ; Main song intro
 ;
-09B1: CE 0A    E7 0A    3A 0B   ; Game over
-09B7: FB 0A    19 0B    3A 0B   ; Level complete
-09BD: 15 0C    3A 0B    3A 0B   ; New life begins
+09AB: 47 0A    6A 0A    8D 0A   ; Main song intro [songIntroAndMain.mp3](./sounds/songIntroAndMain.mp3)
 ;
+; Fixed main song and intro [songIntroAndMain_fix.mp3](./sounds/songIntroAndMain_fix.mp3) [.txt](./sounds/songIntroAndMain_G.txt) [.mid](./sounds/songIntroAndMain_G.mid)
+;
+09B1: CE 0A    E7 0A    3A 0B   ; Game over [songGameOver.mp3](./sounds/songGameOver.mp3) [.txt](./sounds/songGameOver_G.txt) [.mid](./sounds/songGameOver_G.mid)
+09B7: FB 0A    19 0B    3A 0B   ; Level complete [songLevelComplete.mp3](./sounds/songLevelComplete.mp3) [.txt](./sounds/songLevelComplete_G.txt) [.mid](./sounds/songLevelComplete_G.mid)
+09BD: 15 0C    3A 0B    3A 0B   ; New life begins [songRespawn.mp3](./sounds/songRespawn.mp3) [.txt](./sounds/songRespawn_G.txt) [.mid](./sounds/songRespawn_G.mid)
+;
+; Unused
 09C3: 00 00    00 00    00 00
 ;
-09C9: B5 0B    E6 0B    3A 0B   ; 20 Frog-home songs
-09CF: 2A 0C    55 0C    3A 0B   
-09D5: 7E 0C    BA 0C    3A 0B
-09DB: EE 0C    1A 0D    3A 0B
-09E1: 43 0D    7B 0D    3A 0B
+; 20 Frog-home songs [songzHomeXX_G.txt](./sounds/songzHomeXX_G.txt) [.mid](./sounds/songzHomeXX_G.mid)
+09C9: B5 0B    E6 0B    3A 0B   ; Home-1 [songHome01.mp3](./sounds/songzHome01.mp3) 
+09CF: 2A 0C    55 0C    3A 0B   ; Home-2 [songHome02.mp3](./sounds/songzHome02.mp3)
+09D5: 7E 0C    BA 0C    3A 0B   ; Home-3 [songHome03.mp3](./sounds/songzHome03.mp3) 
+09DB: EE 0C    1A 0D    3A 0B   ; Home-4 [songHome04.mp3](./sounds/songzHome04.mp3)
 ;
-09E7: 9F 0D    D2 0D    3A 0B
-09ED: 03 0E    5C 0E    3A 0B
-09F3: 81 0E    B0 0E    3A 0B
-09F9: DD 0E    13 0F    3A 0B
-09FF: 47 0F    78 0F    3A 0B
+09E1: 43 0D    7B 0D    3A 0B   ; Home-5 [songHome05.mp3](./sounds/songzHome05.mp3)
+09E7: 9F 0D    D2 0D    3A 0B   ; Home-6 [songHome06.mp3](./sounds/songzHome06.mp3)
+09ED: 03 0E    5C 0E    3A 0B   ; Home-7 [songHome07.mp3](./sounds/songzHome07.mp3)
+09F3: 81 0E    B0 0E    3A 0B   ; Home-8 [songHome08.mp3](./sounds/songzHome08.mp3) 
 ;
-0A05: A7 0F    E2 0F    3A 0B
-0A0B: 74 11    C7 11    3A 0B
-0A11: F1 11    17 12    3A 0B
-0A17: 18 12    40 12    3A 0B
-0A1D: 66 12    92 12    3A 0B
+09F9: DD 0E    13 0F    3A 0B   ; Home-9 [songHome09.mp3](./sounds/songzHome09.mp3) 
+09FF: 47 0F    78 0F    3A 0B   ; Home-10 [songHome10.mp3](./sounds/songzHome10.mp3)
+0A05: A7 0F    E2 0F    3A 0B   ; Home-11 [songHome11.mp3](./sounds/songzHome11.mp3)
+0A0B: 74 11    C7 11    3A 0B   ; Home-12 [songHome12.mp3](./sounds/songzHome12.mp3) 
 ;
-0A23: BE 12    DD 12    3A 0B
-0A29: F6 12    19 13    3A 0B
-0A2F: 3A 13    7A 13    3A 0B
-0A35: B8 13    EC 13    3A 0B
-0A3B: 1E 14    48 14    3A 0B
+0A11: F1 11    17 12    3A 0B   ; Home-13 [songHome13.mp3](./sounds/songzHome13.mp3)
+0A17: 18 12    40 12    3A 0B   ; Home-14 [songHome14.mp3](./sounds/songzHome14.mp3)
+0A1D: 66 12    92 12    3A 0B   ; Home-15 [songHome15.mp3](./sounds/songzHome15.mp3) 
+0A23: BE 12    DD 12    3A 0B   ; Home-16 [songHome16.mp3](./sounds/songzHome16.mp3) 
 ;
-0A41: 34 10    CA 10    3A 0B   ; Main song
+0A29: F6 12    19 13    3A 0B   ; Home-17 [songHome17.mp3](./sounds/songzHome17.mp3)
+0A2F: 3A 13    7A 13    3A 0B   ; Home-18 [songHome18.mp3](./sounds/songzHome18.mp3)
+0A35: B8 13    EC 13    3A 0B   ; Home-19 [songHome19.mp3](./sounds/songzHome19.mp3)
+0A3B: 1E 14    48 14    3A 0B   ; Home-20 [songHome20.mp3](./sounds/songzHome20.mp3)
+;
+0A41: 34 10    CA 10    3A 0B   ; Main song [songIntroAndMain.mp3](./sounds/songIntroAndMain.mp3) [.txt](./sounds/songIntroAndMain_G.txt) [.mid](./sounds/songIntroAndMain_G.mid)
 
 ;S0A Main song intro
 ; Song=0 Voice=A
@@ -1655,7 +1723,16 @@ SongTable:
 0A4B: 5F       ; SC02:Set volume to 2^2
 0A4C: 07       ; NOTE 4C# for 2^0
 
-0A4D: 91       ; NOTE 4B for 2^4
+;  value is 100_10001 -- note 17 (decremented to 16)
+0A4D: 91       ; NOTE 4B for 2^4 
+
+; Base note set = 11, which points to 8FF (3F#)
+; $3FF + 16*2 = $91F = 4A#
+
+; I think they wrote the music to the pre-decremented value (17) which would land on 4G.
+; That makes the score much friendlier on the piano. Thus the notes below are shown
+; raised 1/2 step. For the real frequency, subtract 1/2 step.
+
 0A4E: 8D       ; NOTE 4G for 2^4
 0A4F: 8D       ; NOTE 4G for 2^4
 0A50: 8D       ; NOTE 4G for 2^4
@@ -1893,32 +1970,6 @@ SongTable:
 0B37: 86       ; NOTE 4C for 2^4
 0B38: 88       ; NOTE 4D for 2^4
 0B39: C5       ; NOTE 3B for 2^6
-
-; Song=1 Voice=C
-; Song=2 Voice=C
-; Song=3 Voice=B
-; Song=3 Voice=C
-; Song=5 Voice=C
-; Song=6 Voice=C
-; Song=7 Voice=C
-; Song=8 Voice=C
-; Song=9 Voice=C
-; Song=10 Voice=C
-; Song=11 Voice=C
-; Song=12 Voice=C
-; Song=13 Voice=C
-; Song=14 Voice=C
-; Song=15 Voice=C
-; Song=16 Voice=C
-; Song=17 Voice=C
-; Song=18 Voice=C
-; Song=19 Voice=C
-; Song=20 Voice=C
-; Song=21 Voice=C
-; Song=22 Voice=C
-; Song=23 Voice=C
-; Song=24 Voice=C
-; Song=25 Voice=C
 0B3A: FF       ; END OF VOICE
 
 ;I11 Level complete song
@@ -3228,7 +3279,12 @@ SongTable:
 1062: 91       ; NOTE 4B for 2^4
 1063: 92       ; NOTE 5C for 2^4
 1064: 94       ; NOTE 5D for 2^4
+;
+; TOPHER PATCH the length here should be 2^5 here.
+; The song as coded is missing an 8th beat and stays out of sync after.
+; 1065: B6       ; NOTE 5E for 2^5
 1065: 96       ; NOTE 5E for 2^4
+;
 1066: 98       ; NOTE 5F# for 2^4
 1067: D6       ; NOTE 5E for 2^6
 1068: C0       ; REST for 2^6
@@ -3438,12 +3494,15 @@ SongTable:
 1132: D1       ; NOTE 3B for 2^6
 1133: C0       ; REST for 2^6
 ;
-; There is more music after this reset. Why turn it off? Is this a mistake?
-; Or was SC06 supposed to be something else?
-;
-; 110_1  1001
+; TOPHER PATCH This note's duration is correct, but the
+; note frequency is 1F, which stops the music. I listened to the original
+; song -- this should be an 3A for 2^6. One bit is flipped:
+; Original: 110_11111
+; Needed:   110_01111
+;               ^
+;               |
+;  1134: CF      ; NOTE 3A for 2^6
 1134: DF       ; SC06:Volume off and end song
-;1134: C2       ; Noticable sour note  (Change to this so that voice continues)
 ;
 1135: C0       ; REST for 2^6
 1136: D2       ; NOTE 4C for 2^6
@@ -4289,7 +4348,13 @@ SongTable:
 1462: AC       ; NOTE 3F# for 2^5
 1463: B1       ; NOTE 3B for 2^5
 1464: FF       ; END OF VOICE
+```
 
+## Time Running Out Sound
+
+[runningOutOfTime.mp3](sounds/runningOutOfTime.mp3)
+
+```code
 ;I05 Time running out
 1465: E7              RST     $20                 
 1466: 3E 01           LD      A,$01               
@@ -4297,7 +4362,7 @@ SongTable:
 146B: 32 C3 42        LD      ($42C3),A           ; {ram.m42C3}
 146E: F7              RST     $30                 
 146F: C3 70 16        JP      $1670               ; {}
-
+;
 ;C05 Time running out
 1472: DD 21 B0 42     LD      IX,$42B0            
 1476: DD 7E 00        LD      A,(IX+$00)          
@@ -4306,14 +4371,20 @@ SongTable:
 147D: CD A9 14        CALL    $14A9               ; {}
 1480: AF              XOR     A                   
 1481: C9              RET                         
+```
 
+## Frog Hopping Sound
+
+[hop.mp3](sounds/hop.mp3)
+
+```code
 ;I04 Frog hopping
 1482: E7              RST     $20                 
 1483: 3E 00           LD      A,$00               
 1485: 32 C3 42        LD      ($42C3),A           ; {ram.m42C3}
 1488: F7              RST     $30                 
 1489: C3 6B 16        JP      $166B               ; {}
-
+;
 ;C04 Frog hopping
 148C: 3A C8 42        LD      A,($42C8)           ; {ram.m42C8}
 148F: A7              AND     A                   
@@ -4385,6 +4456,7 @@ SongTable:
 1511: 2A B2 42        LD      HL,($42B2)          ; {ram.m42B2}
 1514: D5              PUSH    DE                  
 1515: C9              RET                         
+;
 1516: 26 15           LD      H,$15               
 1518: 39              ADD     HL,SP               
 1519: 15              DEC     D                   
@@ -4634,6 +4706,7 @@ SongTable:
 1691: 23              INC     HL                  
 1692: 13              INC     DE                  
 1693: C9              RET                         
+
 1694: 01 01 00        LD      BC,$0001            
 1697: 00              NOP                         
 1698: 00              NOP                         
@@ -4686,6 +4759,16 @@ SongTable:
 # Unused Area
 
 ```code                
+
+; 16D0: 3E 0A     LD A, $0A
+; 16D2: 32 40 40  LD ($4040),A
+; 16D5: 3E 0B     LD A, $0B
+; 16D7: 32 41 40  LD ($4041),A
+; 16DA: 3E 00     LD A, 0
+; 16DC: 32 42 40  LD ($4042),A
+; 16DF: 32 43 40  LD ($4043),A
+; 16D2: C3 61 09  JP      $0961
+
 16CC: FF FF FF FF
 16D0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 16E0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF    

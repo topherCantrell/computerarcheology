@@ -3,6 +3,7 @@
 # Frogger
 
 >>> deploy:<br>
+>>>   +sounds<br>
 >>>   +Frogger.jpg<br>
 >>>   +Frogger.js<br>
 >>>   SoundHardware.md<br>
@@ -38,7 +39,54 @@ since the game's release in 1981. Until now.
 >>> tourGuide {
 
 # Tour Guide 
-Listen to the hidden music: [Hidden Music](#hidden-music)
+
+TODO: Link to bug in the main song music -- missing 1/8th beat
+
+TODO: Link to bug in the main song music -- flipped bit (voice B stops)
+
+TODO: Link to bug in music player -- everything played down 1/2 step
+
+TODO: Links to code for each effect and song
+
+Sound Effects:
+  * Insert Coin: [insertCoin.mp3](sounds/insertCoin.mp3) 
+  * Die in Water: [dieWater.mp3](sounds/dieWater.mp3)
+  * Die in Road: [dieRoad.mp3](sounds/dieRoad.mp3)
+  * Free Frog: [freeLife.mp3](sounds/freeLife.mp3)
+  * Snake on Ground: [snakeOnGround.mp3](sounds/snakeOnGround.mp3)
+  * Race Car: [raceCar.mp3](sounds/raceCar.mp3)
+  * Pick up Friend: [pickUpMate.mp3](sounds/pickUpMate.mp3)
+  * Landing Safe: [landingSafe.mp3](sounds/landingSafe.mp3)
+  * Running Out of Time: [runningOutOfTime.mp3](sounds/runningOutOfTime.mp3)
+  * Hopping: [hop.mp3](sounds/hop.mp3)
+
+Music:
+  * Main Song (original/broken): [songIntroAndMain.mp3](./sounds/songIntroAndMain.mp3)
+  * Main Song Fixed: [songIntroAndMain_fix.mp3](./sounds/songIntroAndMain_fix.mp3) [.txt](./sounds/songIntroAndMain_G.txt) [.mid](./sounds/songIntroAndMain_G.mid)
+  * Game Over: [songGameOver.mp3](./sounds/songGameOver.mp3) [.txt](./sounds/songGameOver_G.txt) [.mid](./sounds/songGameOver_G.mid)
+  * Level Complete: [songLevelComplete.mp3](./sounds/songLevelComplete.mp3) [.txt](./sounds/songLevelComplete_G.txt) [.mid](./sounds/songLevelComplete_G.mid)
+  * Respawn: [songRespawn.mp3](./sounds/songRespawn.mp3) [.txt](./sounds/songRespawn_G.txt) [.mid](./sounds/songRespawn_G.mid)
+  * Combined (20) "frog home" songs: [songzHomeXX_G.txt](./sounds/songzHomeXX_G.txt) [.mid](./sounds/songzHomeXX_G.mid)
+  * Frog home 1: [songHome01.mp3](./sounds/songzHome01.mp3)
+  * Frog home 2: [songHome02.mp3](./sounds/songzHome02.mp3)
+  * Frog home 3: [songHome03.mp3](./sounds/songzHome03.mp3)
+  * Frog home 4: [songHome04.mp3](./sounds/songzHome04.mp3)
+  * Frog home 5: [songHome05.mp3](./sounds/songzHome05.mp3)
+  * Frog home 6: [songHome06.mp3](./sounds/songzHome06.mp3)
+  * Frog home 7: [songHome07.mp3](./sounds/songzHome07.mp3)
+  * Frog home 8: [songHome08.mp3](./sounds/songzHome08.mp3)
+  * Frog home 9: [songHome09.mp3](./sounds/songzHome09.mp3)
+  * Frog home 10: [songHome10.mp3](./sounds/songzHome10.mp3)
+  * Frog home 11: [songHome11.mp3](./sounds/songzHome11.mp3)
+  * Frog home 12: [songHome12.mp3](./sounds/songzHome12.mp3)
+  * Frog home 13: [songHome13.mp3](./sounds/songzHome13.mp3)
+  * Frog home 14: [songHome14.mp3](./sounds/songzHome14.mp3)
+  * Frog home 15: [songHome15.mp3](./sounds/songzHome15.mp3)
+  * Frog home 16: [songHome16.mp3](./sounds/songzHome16.mp3)
+  * Frog home 17: [songHome17.mp3](./sounds/songzHome17.mp3)
+  * Frog home 18: [songHome18.mp3](./sounds/songzHome18.mp3)
+  * Frog home 19: [songHome19.mp3](./sounds/songzHome19.mp3)
+  * Frog home 20: [songHome20.mp3](./sounds/songzHome20.mp3)
 
 >>> }
 

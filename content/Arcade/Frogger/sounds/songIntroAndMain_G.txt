@@ -1,0 +1,137 @@
+; The intro (16 beats) is Inu no omawari-san: https://www.youtube.com/watch?v=QIRpYwVpP4E
+; The main song is Araiguma Rascal (1977): https://www.youtube.com/watch?v=2YMH5ntJEZ0
+
+; In the arcade code, the intro uses all 3 voices. The main song during game play only uses 2 voices,
+; leaving the 3rd voice for sound effects.
+
+; In the arcade code, the intro and the main song are two different songs. I have combined them here
+; for continuity.
+
+; Note that the arcade hardware plays these notes one half step lower. The notes were entered in this
+; friendly piano key, but the code decrements the defined note in a "off by one" bug that takes off
+; one half step.
+
+Track 0:
+:Tempo 4=130
+
+; Intro (3 voices)
+8B4 8G4 8G4 8G4 8B4 8G4 8G4 8G4 
+8C5 8C5 8B4 8B4 4A4 4R 
+8C5 8C5 8B4 8B4 8A4 8A4 8E5 8E5 
+8D5 8C5 8B4 8A4 4G4 4R
+
+:Tempo 4=130
+
+; Main song (2 voices)
+4D5 8B4 8G4 4G5 8F#5 8E5         ; 8 (Counting 8th notes in these comments)
+4D5 8G5 8B4 8A4 4D5 8R           ; 8  
+8R 8D5 8D5 8D5 8D5 8B4 8A4 8G4   ; 8 
+8R 8G5 8G5 8G5 8A5 8G5 8F#5 8E5  ; 8  
+8D5 8B4 8R 8B4 4G5 4B4           ; 8 
+8D5 2A4 8R 4R                    ; 8 
+;
+; In the video link above (time 30s), these two phrases start on beat one with an
+; 8th rest. In the frogger code, the second phrase starts on beat one without the 8th
+; rest. In the arcade, the song remains one 8th beat out of sync to the end.
+; If you listen to the original song at this point, there is some syncopation
+; tempos that would have been hard to do with this music player.
+;
+; I corrected the missing 8th note and attempted to match the song as well as I could using the
+; limits of the Frogger music system.
+;
+; 8R 8B4 8B4 8C5 8D5 8E5 8F#5    ; Only seven 8th notes here originally
+8R 8B4 8B4 8C5 8D5 4E5 8F#5      ; 8 My correction
+;
+2E5 2R                           ; 8 
+8R 8C5 8C5 8D5 4E5 8F#5 8G5      ; 8 
+2F#5 4R 4D5                      ; 8 
+2G5 8G5 8F#5 8E5 8D5             ; 8 
+2F#5 4E5 4E5                     ; 8 
+4D5 4A5 4G5 4F#5                 ; 8 
+2G5 2R                           ; 8
+8G5 8G5 8G5 8G5 8G5 8G5 8F#5 8E5 ; 8 
+2G5 4D5 8B4 8B4                  ; 8 
+4A4 8A4 8A4 8G5 8G5 8F#5 8E5     ; 8 
+2E5 2D5                          ; 8
+8D5 8B4 8B4 8B4 4B4 8A4 8G4      ; 8
+8C5 8B4 8C5 8D5 4E5 4R           ; 8
+8D5 8C5 8A4 8A4 4A4 8G4 8F#4     ; 8
+8G4 8F#4 8G4 8A4 2B4             ; 8
+8D5 8B4 8B4 8B4 4B4 8A4 8G4      ; 8
+8C5 8B4 8C5 8D5 4E5 8F#5 8E5     ; 8
+4D5 8D5 8E5 8D5 8C5 8B4 8A4      ; 8
+2E4 4F#4 4A4                     ; 8
+2G4 2R                           ; 8
+;
+;                                ; Total of 108 quarter notes (27 measures)
+
+; -------------------------------------------------------------------------------------------------------------------------------
+; -------------------------------------------------------------------------------------------------------------------------------
+; -------------------------------------------------------------------------------------------------------------------------------
+
+Track 1:
+:Tempo 4=130
+
+; Intro (3 voices)
+8G3 8B3 8D3 8B3 8G3 8B3 8D3 8B3 
+8A3 8C4 8D3 8C4 8A3 8C4 8D3 8C4 
+8A3 8C4 8D3 8C4 8A3 8C4 8D3 8C4 
+8A3 8C4 8D3 8C4 4B3 4R
+
+:Tempo 4=130
+
+; Main song (2 voices)
+2G4 2E4                          ; 8
+2G4 2F#4                         ; 8
+8G3 8B3 8D3 8B3 8G3 8B3 8D3 8B3  ; 8
+8G3 8C4 8E3 8C4 8G3 8C4 8E3 8C4  ; 8
+8G3 8B3 8D3 8B3 8G3 8B3 8D3 8B3  ; 8
+8A3 8D4 8D3 8D4 8E3 8D4 8F#3 8D4 ; 8
+8G3 8B3 8D3 8B3 8G3 8B3 8D3 8B3  ; 8
+8G3 8C4 8E3 8C4 8G3 8C4 8E3 8C4  ; 8
+8G3 8C4 8E3 8C4 8G3 8C4 8E3 8C4  ; 8
+8A3 8D4 8D3 8D4 8A3 8D4 8D3 8D4  ; 8
+8G3 8B3 8D3 8B3 8G3 8B3 8D3 8B3  ; 8
+8G3 8B3 8D#3 8B3 8E3 8C4 8A3 8C4 ; 8
+8A3 8D4 8D3 8D4 8A3 8D4 8D3 8D4  ; 8
+8G3 8B3 8D3 8B3 4G3 4R           ; 8 
+;
+2C4 2R                           ; 8 
+2B3 2R                           ; 8
+;
+; In the arcade code, this half note has an invalid note name, which
+; causes the music player to stop this voice. None of the remaining
+; music would be heard. I listened to the original song and filled
+; in the missing note. Now you can hear this hidden music!
+;
+; 2?? 2R
+2A3 2R                           ; 8
+;
+2C4 2C4                          ; 8
+8G3 8B3 8D3 8B3 8G3 8B3 8D3 8B3  ; 8
+8G3 8C4 8E3 8C4 8G3 8C4 8E3 8C4  ; 8
+8A3 8D4 8D3 8D4 8A3 8D4 8D3 8D4  ; 8
+8G3 8B3 8D3 8B3 8G3 8B3 8D3 8B3  ; 8
+8G3 8B3 8D3 8B3 8G3 8B3 8D3 8B3  ; 8
+8G3 8C4 8E3 8C4 8G3 8C4 8E3 8C4  ; 8 
+8A3 8D4 8D3 8D4 8A3 8D4 8D3 8D4  ; 8
+2C4 2D4                          ; 8
+;
+; The arcade vode ended with an 8th note. I think it sounds better with a quarter
+; note to match the 1st voice and a rest at the end to keep the voices the same length.
+; 8G3                            ; 
+2G3 2R                           ; 8
+;
+;                                ; Total of 108 quarter notes (27 measures)
+
+; -------------------------------------------------------------------------------------------------------------------------------
+; -------------------------------------------------------------------------------------------------------------------------------
+; -------------------------------------------------------------------------------------------------------------------------------
+
+Track 2:
+:Tempo 4=130
+
+8R 8G3 8R 8G3 8R 8G3 8R 8G3 
+8R 8A3 8R 8A3 8R 8A3 8R 8A3 
+8R 8A3 8R 8A3 8R 8A3 8R 8A3 
+8R 8A3 8R 8A3 4G3 4R

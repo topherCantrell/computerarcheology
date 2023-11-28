@@ -15,6 +15,14 @@
 [RAM Usage](RAMUse.md)
 
 ```code
+
+; Patches for listening to sounds
+;
+;0000: 3E 18           LD      A,$18               ; Sound command (1-18)       
+;0002: 32 02 D0        LD      ($D002),A           ; Trigger the sound
+;0005: 3A 00 88        LD      A,($8800)           ; {hard.watchdog} Feed the watchdog
+;0008: C3 05 00        JP      $0005               ; Loop forever
+
 0000: 3A 00 40        LD      A,($4000)           ; Is there ...
 0003: FE 55           CP      $55                 ; ... an expansion ROM ?
 0005: CA 01 40        JP      Z,$4001             ; Yes ... jump to it
@@ -179,6 +187,7 @@ InterruptService:
 00F9: 7E              LD      A,(HL)              
 00FA: 81              ADD     A,C                 
 00FB: 12              LD      (DE),A              
+;
 00FC: 3A FE 83        LD      A,($83FE)           
 00FF: B7              OR      A                   
 0100: CA 22 01        JP      Z,$0122             ; {}
@@ -195,6 +204,7 @@ InterruptService:
 0119: CD B7 14        CALL    $14B7               ; {}
 011C: CD 02 18        CALL    $1802               ; {}
 011F: C3 45 02        JP      $0245               ; {}
+;
 0122: 3A D6 83        LD      A,($83D6)           
 0125: FE 02           CP      $02                 
 0127: D2 58 01        JP      NC,$0158            ; {}
@@ -1080,12 +1090,12 @@ Initialize:
 0899: B7              OR      A                   
 089A: CA 5B 08        JP      Z,$085B             ; {}
 089D: 3D              DEC     A                   
-089E: 77              LD      (HL),A              
+089E: 77              LD      (HL),A              ; PATCH NOP out to stop timer
 089F: 2C              INC     L                   
 08A0: 7E              LD      A,(HL)              
 08A1: 3D              DEC     A                   
 08A2: 27              DAA                         
-08A3: 77              LD      (HL),A              
+08A3: 77              LD      (HL),A              ; PATCH NOP out to stop timer
 08A4: 2D              DEC     L                   
 08A5: FE 10           CP      $10                 
 08A7: 20 07           JR      NZ,$8B0             ; {}

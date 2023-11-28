@@ -2,6 +2,23 @@
 
 # Hardware
 
+https://github.com/mamedev/historic-mame/blob/master/src/mame/video/phoenix.c
+
+```
+Each memory bank:
+
+0000 - 033F  - 32x26 foreground tiles
+0340 - 07FF
+0800 - 0B3F  - 32x26 background tiles
+0B40 - 0FFF
+
+The lower bit of video register 50xx selects the memory bank and the screen flipping for cocktail mode
+(if cocktail mode is available via dipswitch). When the 2nd bank is selected (and switch) then the screen
+is flipped.
+
+The next-to-lowest bit control the color palette for both foreground and background.
+```
+
 From phoenix.cpp:
 
 ```
@@ -13,6 +30,22 @@ From phoenix.cpp:
 	map(0x6800, 0x6bff).w("cust", FUNC(phoenix_sound_device::control_b_w));
 	map(0x7000, 0x73ff).portr("IN0");                            /* IN0 or IN1 */
 	map(0x7800, 0x7bff).portr("DSW0");                           /* DSW */
+```
+
+Upper bit of DSW (0x78xx) is a screen-blanking flag. 0=in_VBLANK 1=not_in_VBLANK
+
+```
+0x7000
+LSB goes from 1 to 0 when a coin is inserted
+```
+
+Music:
+
+```
+Tune1 -- Alarm sound
+Tune2 -- Fuer Elise, Beethoven
+Tune3 -- ESTUDIO (Phoenix theme song)
+Tune4 --  single notes
 ```
 
 # Switch Settings

@@ -15,7 +15,7 @@
 [RAM Usage](RAMUse.md)
 
 ```code
-0000: 00              NOP                         ; All interrupts
+0000: 00              NOP                         ; Start/restart and interrupts end up at 0008
 0001: 00              NOP                         
 0002: 00              NOP                         
 0003: 00              NOP                         
@@ -31,16 +31,11 @@
 000F: CD 50 00        CALL    $0050               ; {code.InitSoundScreen} Turn sound off and clear both screen areas
 ;
 
-;0010: 21 F8 4B       LD      HL, $4000
-;0013: 36 01          LD      (HL),$00
-;0015: C3 15 00       JP      $0015
-
-0012: 21 00 18        LD      HL,$1800            
+0012: 21 00 18        LD      HL,$1800            ; Screen draw info
 0015: 0E 03           LD      C,$03               ; 3 columns (rotated to 3 rows)
-0017: CD D0 01        CALL    $01D0               ; {}
-;
-001A: CD 80 00        CALL    $0080               ; {}
-001D: 3A A2 43        LD      A,($43A2)           
+0017: CD D0 01        CALL    $01D0               ; {} Draw the first 3 rows of the background (scores and coins);
+001A: CD 80 00        CALL    $0080               ; {code.WaitVBlankCoin} Wait for VBlank and count any coins
+001D: 3A A2 43        LD      A,($43A2)           ; {ram.M43A2}
 0020: A7              AND     A                   
 0021: CA 2D 00        JP      Z,$002D             ; {}
 0024: CD 00 04        CALL    $0400               ; {}
@@ -59,6 +54,7 @@
 003D: CA 46 00        JP      Z,$0046             ; {}
 0040: CD 88 02        CALL    $0288               ; {}
 0043: C3 1A 00        JP      $001A               ; {}
+;
 0046: CD E3 00        CALL    $00E3               ; {}
 0049: C3 1A 00        JP      $001A               ; {}
 
@@ -86,7 +82,7 @@ InitSoundScreen:
 ;
 ClearScreenPlane:
 006B: 21 F8 4B        LD      HL,$4BF8            ; Highest point
-006E: 3E 3F           LD      A,$3F               ; Stop when H reaches this
+006E: 3E 3F           LD      A,$3F               ; Stop when H reaches 3F
 0070: 36 00           LD      (HL),$00            ; Clear the memory
 0072: 2B              DEC     HL                  ; Point to next
 0073: BC              CP      H                   ; All done?
@@ -98,55 +94,69 @@ ClearScreenPlane:
 
 007E: FF FF
 
-0080: 26 78           LD      H,$78               ; 78xx DSW0
-0082: 7E              LD      A,(HL)              
-0083: E6 80           AND     $80                 ; Upright/Cocktail
-0085: CA 80 00        JP      Z,$0080             ; {}
-0088: 7E              LD      A,(HL)              
-0089: E6 80           AND     $80                 
-008B: C2 88 00        JP      NZ,$0088            ; {}
-008E: 26 70           LD      H,$70               ; 70xx IN0
-0090: 7E              LD      A,(HL)              
-0091: 21 A0 43        LD      HL,$43A0            
-0094: 46              LD      B,(HL)              
-0095: 77              LD      (HL),A              
-0096: 2C              INC     L                   
-0097: 70              LD      (HL),B              
-0098: 2E 9B           LD      L,$9B               
-009A: CD 00 02        CALL    $0200               ; {}
-009D: 2E 8F           LD      L,$8F               
-009F: 7E              LD      A,(HL)              
-00A0: FE 09           CP      $09                 
-00A2: C8              RET     Z                   
-00A3: D2 00 00        JP      NC,$0000            ; {}
-00A6: 06 01           LD      B,$01               
-00A8: CD BB 00        CALL    $00BB               ; {}
-00AB: C8              RET     Z                   
-00AC: 2E 8F           LD      L,$8F               
-00AE: 34              INC     (HL)                
-00AF: 7E              LD      A,(HL)              
-00B0: C6 20           ADD     $20                 
-00B2: 32 42 41        LD      ($4142),A           
-00B5: C9              RET                         
+; Wait for the vertical blanking and then handle coin counting
+;
+WaitVBlankCoin:
+0080: 26 78           LD      H,$78               ; 78xx DSW0 Check ...
+0082: 7E              LD      A,(HL)              ; ... screen blanking flag
+0083: E6 80           AND     $80                 ; Wait for it ...
+0085: CA 80 00        JP      Z,$0080             ; {code.WaitVBlankCoin} ... to set
+0088: 7E              LD      A,(HL)              ; Check screen blanking flag
+0089: E6 80           AND     $80                 ; Wait for it ...
+008B: C2 88 00        JP      NZ,$0088            ; {} ... to clear (0=in blanking)
+;
+008E: 26 70           LD      H,$70               ; 70xx IN0 Current value ...
+0090: 7E              LD      A,(HL)              ; ... of IN0 inputs
+0091: 21 A0 43        LD      HL,$43A0            ; Value from ...
+0094: 46              LD      B,(HL)              ; ... last read
+0095: 77              LD      (HL),A              ; Store new value
+0096: 2C              INC     L                   ; To 43A1
+0097: 70              LD      (HL),B              ; Store old value
+0098: 2E 9B           LD      L,$9B               ; Bump the ...
+009A: CD 00 02        CALL    $0200               ; {code.AddOneToMem} ... ?? counter
+009D: 2E 8F           LD      L,$8F               ; Get number ...
+009F: 7E              LD      A,(HL)              ; ... of coins
+;
+; !! There are two digits for "coins" on the screen, but only the one's digit is
+; !! changed. Once you get to 9, the code stops counting. It takes the coin
+; !! from you, but it doesn't give you credit.
+;
+00A0: FE 09           CP      $09                 ; Already 9?
+00A2: C8              RET     Z                   ; Yes ... nothing more to check
+00A3: D2 00 00        JP      NC,$0000            ; {} More than 9? OOPS -- soft reset
+00A6: 06 01           LD      B,$01               ; Coin bit of the input register
+00A8: CD BB 00        CALL    $00BB               ; {code.CheckInputBits} Has the coin input gone from 1 to 0?
+00AB: C8              RET     Z                   ; No ... no coins inserted ... done
+00AC: 2E 8F           LD      L,$8F               ; Add one ...
+00AE: 34              INC     (HL)                ; ... to coin count
+00AF: 7E              LD      A,(HL)              ; Current value ...
+00B0: C6 20           ADD     $20                 ; ... to number tile
+00B2: 32 42 41        LD      ($4142),A           ; Change number of coins on screen
+00B5: C9              RET                         ; Done
 
+; Never called
 00B6: 00              NOP                         
 00B7: C9              RET                         
-00B8: FF              RST     0X38                
-00B9: FF              RST     0X38                
-00BA: FF              RST     0X38                
 
-00BB: 21 A0 43        LD      HL,$43A0            
-00BE: 7E              LD      A,(HL)              
-00BF: 2F              CPL                         
-00C0: A0              AND     B                   
-00C1: 2C              INC     L                   
-00C2: A6              AND     (HL)                
-00C3: C9              RET                         
+00B8: FF FF FF             
+
+; Check to see if a particular bit(s) in the input register has changed
+; from 1 to 0 since last we checked. Return NZ if transitioned from 1 to 0.
+;
+CheckInputBits:
+00BB: 21 A0 43        LD      HL,$43A0            ; Get current ...
+00BE: 7E              LD      A,(HL)              ; ... input value
+00BF: 2F              CPL                         ; Flip the current bits
+00C0: A0              AND     B                   ; Mask off all but the ones we are checking
+00C1: 2C              INC     L                   ; Point to last input value
+00C2: A6              AND     (HL)                ; Zero unles new bit is 0 and old is 1
+00C3: C9              RET                         ; Return state
+
 00C4: 7E              LD      A,(HL)              
 00C5: E6 0F           AND     $0F                 
 00C7: F6 20           OR      $20                 
 00C9: 12              LD      (DE),A              
-00CA: CD 10 02        CALL    $0210               ; {}
+00CA: CD 10 02        CALL    $0210               ; {code.AddOneRow}
 00CD: 05              DEC     B                   
 00CE: C8              RET     Z                   
 00CF: 7E              LD      A,(HL)              
@@ -157,51 +167,50 @@ ClearScreenPlane:
 00D4: E6 0F           AND     $0F                 
 00D6: F6 20           OR      $20                 
 00D8: 12              LD      (DE),A              
-00D9: CD 10 02        CALL    $0210               ; {}
+00D9: CD 10 02        CALL    $0210               ; {code.AddOneRow}
 00DC: 2B              DEC     HL                  
 00DD: 05              DEC     B                   
 00DE: C2 C4 00        JP      NZ,$00C4            ; {}
 00E1: C9              RET                         
-00E2: FF              RST     0X38                
+
+00E2: FF             
+
 00E3: 21 99 43        LD      HL,$4399            
-00E6: CD 00 02        CALL    $0200               ; {}
+00E6: CD 00 02        CALL    $0200               ; {code.AddOneToMem}
 00E9: 01 01 00        LD      BC,$0001            
-00EC: CD 58 02        CALL    $0258               ; {}
+00EC: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
 00EF: CA E1 01        JP      Z,$01E1             ; {}
 00F2: 01 02 00        LD      BC,$0002            
 00F5: 11 1F 01        LD      DE,$011F            
-00F8: CD 60 02        CALL    $0260               ; {}
+00F8: CD 60 02        CALL    $0260               ; {code.SubtractIfEnough}
 00FB: D2 96 01        JP      NC,$0196            ; {}
 00FE: 01 20 01        LD      BC,$0120            
-0101: CD 58 02        CALL    $0258               ; {}
+0101: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
 0104: CA CA 0B        JP      Z,$0BCA             ; {}
 0107: 0E B0           LD      C,$B0               
-0109: CD 58 02        CALL    $0258               ; {}
+0109: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
 010C: CA E1 01        JP      Z,$01E1             ; {}
 010F: 0E B8           LD      C,$B8               
-0111: CD 58 02        CALL    $0258               ; {}
+0111: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
 0114: CA 80 05        JP      Z,$0580             ; {}
 0117: 0E C0           LD      C,$C0               
 0119: 11 DF 02        LD      DE,$02DF            
-011C: CD 60 02        CALL    $0260               ; {}
+011C: CD 60 02        CALL    $0260               ; {code.SubtractIfEnough}
 011F: D2 78 00        JP      NC,$0078            ; {}
 0122: 01 00 03        LD      BC,$0300            
 0125: 11 AF 03        LD      DE,$03AF            
-0128: CD 60 02        CALL    $0260               ; {}
+0128: CD 60 02        CALL    $0260               ; {code.SubtractIfEnough}
 012B: D2 DC 21        JP      NC,$21DC            ; {}
 012E: 01 E6 03        LD      BC,$03E6            
 0131: 11 FF FF        LD      DE,$FFFF            
-0134: CD 60 02        CALL    $0260               ; {}
+0134: CD 60 02        CALL    $0260               ; {code.SubtractIfEnough}
 0137: D2 B0 03        JP      NC,$03B0            ; {}
 013A: C9              RET                         
-013B: FF              RST     0X38                
-013C: FF              RST     0X38                
-013D: FF              RST     0X38                
-013E: FF              RST     0X38                
-013F: FF              RST     0X38                
+
+013B: FF FF FF FF FF    
 
 0140: CD A0 03        CALL    $03A0               ; {}
-0143: CD 80 00        CALL    $0080               ; {}
+0143: CD 80 00        CALL    $0080               ; {code.WaitVBlankCoin}
 0146: CD 80 03        CALL    $0380               ; {}
 0149: 21 A3 43        LD      HL,$43A3            
 014C: 36 02           LD      (HL),$02            
@@ -224,7 +233,7 @@ ClearScreenPlane:
 016A: 77              LD      (HL),A              
 016B: 26 58           LD      H,$58               ; 58xx scroll register
 016D: 36 00           LD      (HL),$00            
-016F: CD 80 00        CALL    $0080               ; {}
+016F: CD 80 00        CALL    $0080               ; {code.WaitVBlankCoin}
 0172: C9              RET                         
 0173: 7E              LD      A,(HL)              
 0174: E6 7F           AND     $7F                 
@@ -264,7 +273,7 @@ ClearScreenPlane:
 01A6: 2C              INC     L                   
 01A7: 71              LD      (HL),C              
 01A8: 01 60 18        LD      BC,$1860            
-01AB: CD 06 02        CALL    $0206               ; {}
+01AB: CD 06 02        CALL    $0206               ; {code.AddBCtoMem}
 01AE: 7E              LD      A,(HL)              
 01AF: 2D              DEC     L                   
 01B0: 66              LD      H,(HL)              
@@ -323,29 +332,42 @@ DrawColumn:
 ; Pad to 0200
 01F8: FF FF FF FF FF FF FF FF               
 
-0200: 34              INC     (HL)                
-0201: C0              RET     NZ                  
-0202: 2D              DEC     L                   
-0203: 34              INC     (HL)                
-0204: 2C              INC     L                   
-0205: C9              RET                         
-0206: 7E              LD      A,(HL)              
-0207: 81              ADD     A,C                 
-0208: 77              LD      (HL),A              
-0209: 2D              DEC     L                   
-020A: 7E              LD      A,(HL)              
-020B: 88              ADC     A,B                 
-020C: 77              LD      (HL),A              
-020D: 2C              INC     L                   
-020E: C9              RET                         
-020F: FF              RST     0X38                
-0210: 7B              LD      A,E                 
-0211: C6 20           ADD     $20                 
-0213: 5F              LD      E,A                 
-0214: D0              RET     NC                  
-0215: 14              INC     D                   
-0216: C9              RET                         
+; Two-byte +1 to (HL-1) : (HL).
+;
+AddOneToMem:
+0200: 34              INC     (HL)                ; Add one to LSB
+0201: C0              RET     NZ                  ; We didn't overflow ... done
+0202: 2D              DEC     L                   ; Back up to MSB
+0203: 34              INC     (HL)                ; Carry into the MSB
+0204: 2C              INC     L                   ; Restore point to LSB
+0205: C9              RET                         ; Done
 
+; Two-byte addition. BC is added to (HL-1) : (HL).
+;
+AddBCtoMem:
+0206: 7E              LD      A,(HL)              ; Get the lower byte
+0207: 81              ADD     A,C                 ; Add C to the lower
+0208: 77              LD      (HL),A              ; Store the new lower
+0209: 2D              DEC     L                   ; Back up to upper byte
+020A: 7E              LD      A,(HL)              ; Add B and carry ...
+020B: 88              ADC     A,B                 ; ... to upper byte
+020C: 77              LD      (HL),A              ; Store the new upper byte
+020D: 2C              INC     L                   ; Restore pointer to LSB
+020E: C9              RET                         ; Done
+
+020F: FF
+
+; Add 32 (one row) to DE (two bytes)
+;
+AddOneRow:
+0210: 7B              LD      A,E                 ; Add ...
+0211: C6 20           ADD     $20                 ; ... 32 to ...
+0213: 5F              LD      E,A                 ; ... E
+0214: D0              RET     NC                  ; No carry ... we are done
+0215: 14              INC     D                   ; Carry into D
+0216: C9              RET                         ; Done
+
+; Subtract 32 (one rom) from DE (two bytes)
 SubtractOneRow:
 0217: 7B              LD      A,E                 ; Subtract ...
 0218: D6 20           SUB     $20                 ; ... 32 from ...
@@ -354,105 +376,121 @@ SubtractOneRow:
 021C: 15              DEC     D                   ; Borrow from D
 021D: C9              RET                         ; Done
 
-021E: FF              RST     0X38                
-021F: FF              RST     0X38                
-0220: AF              XOR     A                   
-0221: 7E              LD      A,(HL)              
-0222: 81              ADD     A,C                 
-0223: 27              DAA                         
-0224: 77              LD      (HL),A              
-0225: 2D              DEC     L                   
-0226: 7E              LD      A,(HL)              
-0227: 88              ADC     A,B                 
-0228: 27              DAA                         
-0229: 77              LD      (HL),A              
-022A: 2D              DEC     L                   
-022B: 7E              LD      A,(HL)              
-022C: CE 00           ADC     $00                 
-022E: 27              DAA                         
-022F: 77              LD      (HL),A              
-0230: 2C              INC     L                   
-0231: 2C              INC     L                   
-0232: C9              RET                         
-0233: FF              RST     0X38                
-0234: FF              RST     0X38                
-0235: FF              RST     0X38                
-0236: 37              SCF                         
-0237: 3E 99           LD      A,$99               
-0239: CE 00           ADC     $00                 
-023B: 91              SUB     C                   
-023C: 86              ADD     A,(HL)              
-023D: 27              DAA                         
-023E: 77              LD      (HL),A              
-023F: 2D              DEC     L                   
-0240: 3E 99           LD      A,$99               
-0242: CE 00           ADC     $00                 
-0244: 90              SUB     B                   
-0245: 86              ADD     A,(HL)              
-0246: 27              DAA                         
-0247: 77              LD      (HL),A              
-0248: 2D              DEC     L                   
-0249: 3E 99           LD      A,$99               
-024B: CE 00           ADC     $00                 
-024D: 86              ADD     A,(HL)              
-024E: 27              DAA                         
-024F: 77              LD      (HL),A              
-0250: 2C              INC     L                   
-0251: 2C              INC     L                   
-0252: C9              RET                         
+021E: FF FF
 
-0253: FF              RST     0X38                
-0254: FF              RST     0X38                
-0255: FF              RST     0X38                
-0256: FF              RST     0X38                
-0257: FF              RST     0X38                
+; 3-byte (6 digit) BCD addition. Add BC*10 to (HL-2):(HL-1):(HL). 
+; The games keeps the lowest digit of the scores to 0.
+;
+AddToScore:
+0220: AF              XOR     A                   ; !! Pointless. We are about to change A and the flags
+0221: 7E              LD      A,(HL)              ; Lowest 2 digits
+0222: 81              ADD     A,C                 ; Add C to score
+0223: 27              DAA                         ; Adjust for binary coded decimal
+0224: 77              LD      (HL),A              ; Update lowest 2 digits
+0225: 2D              DEC     L                   ; Point to middle 2 digits
+0226: 7E              LD      A,(HL)              ; Add B to ...
+0227: 88              ADC     A,B                 ; ... score
+0228: 27              DAA                         ; Adjust for BCD
+0229: 77              LD      (HL),A              ; Store the middle 2 digits
+022A: 2D              DEC     L                   ; Point to the upper 2 digits
+022B: 7E              LD      A,(HL)              ; Add in ...
+022C: CE 00           ADC     $00                 ; ... any carry
+022E: 27              DAA                         ; Adjust for binary coded decimal
+022F: 77              LD      (HL),A              ; Store the upper 2 digits
+0230: 2C              INC     L                   ; Restore ...
+0231: 2C              INC     L                   ; ... pointer
+0232: C9              RET                         ; Done
 
-0258: 7E              LD      A,(HL)              
-0259: B9              CP      C                   
-025A: C0              RET     NZ                  
-025B: 2D              DEC     L                   
-025C: 7E              LD      A,(HL)              
-025D: 2C              INC     L                   
-025E: B8              CP      B                   
-025F: C9              RET                         
-0260: CD 70 02        CALL    $0270               ; {}
-0263: D8              RET     C                   
-0264: CD 77 02        CALL    $0277               ; {}
-0267: C9              RET                         
+0233: FF FF FF          
 
-0268: FF              RST     0X38                
-0269: FF              RST     0X38                
-026A: FF              RST     0X38                
-026B: FF              RST     0X38                
-026C: FF              RST     0X38                
-026D: FF              RST     0X38                
-026E: FF              RST     0X38                
-026F: FF              RST     0X38                
+; 3-byte (6 digit) BCD subtraction. This is never called.
+;
+; !! We have score ADDER above. I like the symmetry of a score SUBTRACTER, but
+; !! this is never called. Scores never decrease
+;
+0236: 37              SCF                         ; Take ...
+0237: 3E 99           LD      A,$99               ; ... the BCD ...
+0239: CE 00           ADC     $00                 ; ... add-complement ...
+023B: 91              SUB     C                   ; ... of C
+023C: 86              ADD     A,(HL)              ; Lower two digits
+023D: 27              DAA                         ; Adjust for BCD
+023E: 77              LD      (HL),A              ; Update lower two digits
+023F: 2D              DEC     L                   ; Point to middle digits
+0240: 3E 99           LD      A,$99               ; Take the BCD ...
+0242: CE 00           ADC     $00                 ; ... add-complement ...
+0244: 90              SUB     B                   ; ... of C
+0245: 86              ADD     A,(HL)              ; Middle two digits
+0246: 27              DAA                         ; Adjust for BCD
+0247: 77              LD      (HL),A              ; Update middle two digits
+0248: 2D              DEC     L                   ; Point to upper digits
+0249: 3E 99           LD      A,$99               ; Take the BCD add-complement ...
+024B: CE 00           ADC     $00                 ; ... of any carry
+024D: 86              ADD     A,(HL)              ; Upper two digits
+024E: 27              DAA                         ; Adjust for BCD
+024F: 77              LD      (HL),A              ; Update upper two digits
+0250: 2C              INC     L                   ; Restore ...
+0251: 2C              INC     L                   ; ... pointer
+0252: C9              RET                         ; Done
 
-0270: 7E              LD      A,(HL)              
-0271: 91              SUB     C                   
-0272: 2D              DEC     L                   
-0273: 7E              LD      A,(HL)              
-0274: 98              SBC     B                   
-0275: 2C              INC     L                   
-0276: C9              RET                         
-0277: 7B              LD      A,E                 
-0278: 96              SUB     (HL)                
-0279: 2D              DEC     L                   
-027A: 7A              LD      A,D                 
-027B: 9E              SBC     (HL)                
-027C: 2C              INC     L                   
-027D: C9              RET                         
-027E: FF              RST     0X38                
-027F: FF              RST     0X38                
-0280: 7D              LD      A,L                 
-0281: B9              CP      C                   
-0282: C0              RET     NZ                  
-0283: 7C              LD      A,H                 
-0284: B8              CP      B                   
-0285: C9              RET                         
-0286: FF              RST     0X38                
-0287: FF              RST     0X38                
+0253: FF FF FF FF FF         
+
+; Two byte compare of BC to memory at (HL-1):(HL)
+;
+CompareBCtoMem:
+0258: 7E              LD      A,(HL)              ; Value from memory
+0259: B9              CP      C                   ; Are the lower values the same?
+025A: C0              RET     NZ                  ; No ... return not-zero
+025B: 2D              DEC     L                   ; Point to MSB
+025C: 7E              LD      A,(HL)              ; Get the MSB value
+025D: 2C              INC     L                   ; Restore the pointer
+025E: B8              CP      B                   ; Compare the MSBs
+025F: C9              RET                         ; Return the flags
+
+; Subtract DE from memory if memory is greater/equal to BC.
+;
+SubtractIfEnough:
+0260: CD 70 02        CALL    $0270               ; {code.SubtractFromMemory} Try subtraction. Is memory larger (or equal) to BC?
+0263: D8              RET     C                   ; No ... ignore request
+0264: CD 77 02        CALL    $0277               ; {code.SubtractToMemory} Yes ... subtract DE from memory
+0267: C9              RET                         ; Done
+
+0268: FF FF FF FF FF FF FF FF          
+
+; Two byte subtraction of memory from BC. BC = BC -  (HL-1):(HL)
+;
+SubtractFromMemory:
+0270: 7E              LD      A,(HL)              ; Get the low byte
+0271: 91              SUB     C                   ; Subtract from C
+0272: 2D              DEC     L                   ; Point to upper byte
+0273: 7E              LD      A,(HL)              ; Get the upper byte
+0274: 98              SBC     B                   ; Subtract from B (with borrow)
+0275: 2C              INC     L                   ; Restore pointer
+0276: C9              RET                         ; Done
+
+; Two byte subtraction of DE from memory. (HL-1):(HL) = (HL-1):(HL) - DE
+SubtractToMemory:
+0277: 7B              LD      A,E                 ; Lower byte
+0278: 96              SUB     (HL)                ; Subtract it from memory
+0279: 2D              DEC     L                   ; Point to upper byte
+027A: 7A              LD      A,D                 ; Value to A
+027B: 9E              SBC     (HL)                ; Subtract upper byte from memory (with borrow)
+027C: 2C              INC     L                   ; Restore pointer
+027D: C9              RET                         ; Done
+
+027E: FF FF
+
+; Two byte compare of HL to BC
+;
+CompareHLtoBC:
+0280: 7D              LD      A,L                 ; Compare lower ...
+0281: B9              CP      C                   ; ... bytes
+0282: C0              RET     NZ                  ; Not the same ... return NZ
+0283: 7C              LD      A,H                 ; Compare upper ...
+0284: B8              CP      B                   ; ... bytes
+0285: C9              RET                         ; Return the check
+
+0286: FF FF
+
 0288: CD 40 01        CALL    $0140               ; {}
 028B: 21 C0 19        LD      HL,$19C0            
 028E: 0E 02           LD      C,$02               
@@ -583,13 +621,15 @@ SubtractOneRow:
 0371: F6 20           OR      $20                 
 0373: 32 62 40        LD      ($4062),A           
 0376: C9              RET                         
+
 0377: 21 8C 43        LD      HL,$438C            
 037A: 77              LD      (HL),A              
 037B: 2C              INC     L                   
 037C: 77              LD      (HL),A              
 037D: C9              RET                         
-037E: FF              RST     0X38                
-037F: FF              RST     0X38                
+
+037E: FF FF
+
 0380: 21 3F 43        LD      HL,$433F            
 0383: 11 1F 00        LD      DE,$001F            
 0386: 01 3F 03        LD      BC,$033F            
@@ -623,14 +663,14 @@ SubtractOneRow:
 03AC: C2 A6 03        JP      NZ,$03A6            ; {}
 03AF: C9              RET                         
 03B0: 01 A0 07        LD      BC,$07A0            
-03B3: CD 70 02        CALL    $0270               ; {}
+03B3: CD 70 02        CALL    $0270               ; {code.SubtractFromMemory}
 03B6: DA CE 03        JP      C,$03CE             ; {}
-03B9: CD 58 02        CALL    $0258               ; {}
+03B9: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
 03BC: CA EB 03        JP      Z,$03EB             ; {}
 03BF: 01 60 0B        LD      BC,$0B60            
-03C2: CD 70 02        CALL    $0270               ; {}
+03C2: CD 70 02        CALL    $0270               ; {code.SubtractFromMemory}
 03C5: DA CE 03        JP      C,$03CE             ; {}
-03C8: CD 58 02        CALL    $0258               ; {}
+03C8: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
 03CB: CA E2 03        JP      Z,$03E2             ; {}
 03CE: CD 73 01        CALL    $0173               ; {}
 03D1: 21 A0 43        LD      HL,$43A0            
@@ -640,9 +680,9 @@ SubtractOneRow:
 03D8: 77              LD      (HL),A              
 03D9: C3 00 04        JP      $0400               ; {}
 03DC: C3 00 04        JP      $0400               ; {}
-03DF: FF              RST     0X38                
-03E0: FF              RST     0X38                
-03E1: FF              RST     0X38                
+
+03DF: FF FF FF
+
 03E2: 01 08 01        LD      BC,$0108            
 03E5: 11 00 10        LD      DE,$1000            
 03E8: C3 F1 03        JP      $03F1               ; {}
@@ -657,12 +697,12 @@ SubtractOneRow:
 03FB: 2C              INC     L                   
 03FC: 73              LD      (HL),E              
 03FD: C9              RET                         
-03FE: FF              RST     0X38                
-03FF: FF              RST     0X38                
 
-; Jump to ?? function by number
+03FE: FF FF          
+
+; Jump to ?? function by number in 43A4
 0400: 21 0E 04        LD      HL,$040E            ; Jump table
-0403: 3A A4 43        LD      A,($43A4)           ; ??
+0403: 3A A4 43        LD      A,($43A4)           ; {ram.M43A4} ??
 0406: 07              RLCA                        ; *2
 0407: 85              ADD     A,L                 ; Offset ...
 0408: 6F              LD      L,A                 ; ... into the table
@@ -672,6 +712,7 @@ SubtractOneRow:
 040C: 67              LD      H,A                 ; Now point to function
 040D: E9              JP      (HL)                ; Jump to function
 
+; Notice these addresses are MSB:LSB (backwards from the processors endianness)
 040E: 04 30 
 0410: 04 AC                  
 0412: 05 15                  
@@ -692,8 +733,8 @@ SubtractOneRow:
 042E: 18 05           JR      $435                ; {}
 
 ; ?? Function 0
-0430: 21 A4 43        LD      HL,$43A4            
-0433: 36 01           LD      (HL),$01            
+0430: 21 A4 43        LD      HL,$43A4            ; Next function to run ...
+0433: 36 01           LD      (HL),$01            ; ... is 1 ??
 0435: 2C              INC     L                   
 0436: 36 80           LD      (HL),$80            
 0438: 2E A3           LD      L,$A3               
@@ -719,11 +760,15 @@ SubtractOneRow:
 0455: 01 00 01        LD      BC,$0100            
 0458: CD 60 04        CALL    $0460               ; {}
 045B: C9              RET                         
+
 045C: FF              RST     0X38                
 045D: FF              RST     0X38                
 045E: FF              RST     0X38                
 045F: FF              RST     0X38                
 
+; Copy memory bank to bank
+; B=from bank number, C=to bank number
+; Starts at 4320
 0460: 21 00 50        LD      HL,$5000            ; 50xx video register
 0463: 11 20 43        LD      DE,$4320            
 0466: 70              LD      (HL),B              
@@ -734,6 +779,7 @@ SubtractOneRow:
 046B: 7B              LD      A,E                 
 046C: E6 03           AND     $03                 
 046E: C2 66 04        JP      NZ,$0466            ; {}
+;
 0471: 7B              LD      A,E                 
 0472: E6 F0           AND     $F0                 
 0474: D6 20           SUB     $20                 
@@ -752,6 +798,7 @@ SubtractOneRow:
 0489: 7B              LD      A,E                 
 048A: FE B8           CP      $B8                 
 048C: C2 84 04        JP      NZ,$0484            ; {}
+;
 048F: 11 C0 4B        LD      DE,$4BC0            
 0492: 70              LD      (HL),B              
 0493: 1A              LD      A,(DE)              
@@ -762,14 +809,16 @@ SubtractOneRow:
 0498: FE 00           CP      $00                 
 049A: C2 92 04        JP      NZ,$0492            ; {}
 049D: C9              RET                         
-049E: FF              RST     0X38                
-049F: FF              RST     0X38                
+
+049E: FF FF
+
 04A0: 2E A3           LD      L,$A3               
 04A2: 36 01           LD      (HL),$01            
 04A4: 01 01 00        LD      BC,$0001            
 04A7: CD 60 04        CALL    $0460               ; {}
 04AA: C9              RET                         
-04AB: FF              RST     0X38                
+
+04AB: FF
 
 ; ?? Function 1
 04AC: 21 A5 43        LD      HL,$43A5            
@@ -814,7 +863,7 @@ SubtractOneRow:
 04FA: FF              RST     0X38                
 04FB: 3E 00           LD      A,$00               
 04FD: 12              LD      (DE),A              
-04FE: CD 10 02        CALL    $0210               ; {}
+04FE: CD 10 02        CALL    $0210               ; {code.AddOneRow}
 0501: 05              DEC     B                   
 0502: C2 FB 04        JP      NZ,$04FB            ; {}
 0505: C9              RET                         
@@ -836,6 +885,7 @@ SubtractOneRow:
 0529: CD 6C 0A        CALL    $0A6C               ; {}
 052C: CD 06 05        CALL    $0506               ; {}
 052F: C3 B0 32        JP      $32B0               ; {}
+;
 0532: 21 50 4B        LD      HL,$4B50            
 0535: 06 A0           LD      B,$A0               
 0537: CD D8 05        CALL    $05D8               ; {}
@@ -843,9 +893,9 @@ SubtractOneRow:
 053D: CD 50 06        CALL    $0650               ; {}
 0540: CD 10 06        CALL    $0610               ; {}
 0543: C9              RET                         
-0544: FF              RST     0X38                
-0545: FF              RST     0X38                
-0546: FF              RST     0X38                
+
+0544: FF FF FF
+
 0547: 21 60 05        LD      HL,$0560            
 054A: 11 C0 43        LD      DE,$43C0            
 054D: 06 20           LD      B,$20               
@@ -854,11 +904,9 @@ SubtractOneRow:
 0555: 06 20           LD      B,$20               
 0557: CD D8 05        CALL    $05D8               ; {}
 055A: C9              RET                         
-055B: FF              RST     0X38                
-055C: FF              RST     0X38                
-055D: FF              RST     0X38                
-055E: FF              RST     0X38                
-055F: FF              RST     0X38                
+
+055B: FF FF FF FF FF 
+
 0560: 0C              INC     C                   
 0561: 10 64           DJNZ    $5C7                ; {}
 0563: D8              RET     C                   
@@ -898,7 +946,6 @@ SubtractOneRow:
 0590: 06 0C           LD      B,$0C               
 0592: CD E0 05        CALL    $05E0               ; {}
 0595: C9              RET                         
-
 0596: FF              RST     0X38                
 0597: FF              RST     0X38                
 0598: A8              XOR     B                   
@@ -1509,7 +1556,7 @@ SubtractOneRow:
 08D0: A7              AND     A                   
 08D1: C2 EA 08        JP      NZ,$08EA            ; {}
 08D4: 06 80           LD      B,$80               
-08D6: CD BB 00        CALL    $00BB               ; {}
+08D6: CD BB 00        CALL    $00BB               ; {code.CheckInputBits}
 08D9: CA EB 08        JP      Z,$08EB             ; {}
 08DC: 2E 62           LD      L,$62               
 08DE: 36 40           LD      (HL),$40            
@@ -1534,7 +1581,7 @@ SubtractOneRow:
 08FD: FF              RST     0X38                
 08FE: FF              RST     0X38                
 08FF: FF              RST     0X38                
-0900: 3A A0 43        LD      A,($43A0)           
+0900: 3A A0 43        LD      A,($43A0)           ; {ram.IN0Current}
 0903: 2F              CPL                         
 0904: E6 60           AND     $60                 
 0906: C8              RET     Z                   
@@ -1572,7 +1619,7 @@ SubtractOneRow:
 0933: C2 64 09        JP      NZ,$0964            ; {}
 0936: EB              EX      DE,HL               
 0937: 06 10           LD      B,$10               
-0939: CD BB 00        CALL    $00BB               ; {}
+0939: CD BB 00        CALL    $00BB               ; {code.CheckInputBits}
 093C: C8              RET     Z                   
 093D: 7E              LD      A,(HL)              
 093E: E6 EF           AND     $EF                 
@@ -1862,7 +1909,7 @@ SubtractOneRow:
 0AA2: 56              LD      D,(HL)              
 0AA3: 23              INC     HL                  
 0AA4: 5E              LD      E,(HL)              
-0AA5: CD 10 02        CALL    $0210               ; {}
+0AA5: CD 10 02        CALL    $0210               ; {code.AddOneRow}
 0AA8: 1B              DEC     DE                  
 0AA9: 01 04 04        LD      BC,$0404            
 0AAC: 2E A6           LD      L,$A6               
@@ -1921,7 +1968,7 @@ SubtractOneRow:
 0AF6: 56              LD      D,(HL)              
 0AF7: 2C              INC     L                   
 0AF8: 5E              LD      E,(HL)              
-0AF9: CD 10 02        CALL    $0210               ; {}
+0AF9: CD 10 02        CALL    $0210               ; {code.AddOneRow}
 0AFC: 1B              DEC     DE                  
 0AFD: 00              NOP                         
 0AFE: 2E A5           LD      L,$A5               
@@ -2219,9 +2266,9 @@ SubtractOneRow:
 0CC2: BE              CP      (HL)                
 0CC3: D0              RET     NC                  
 0CC4: 3E 04           LD      A,$04               
-0CC6: 32 A4 43        LD      ($43A4),A           
+0CC6: 32 A4 43        LD      ($43A4),A           ; {ram.M43A4}
 0CC9: 3E 60           LD      A,$60               
-0CCB: 32 A5 43        LD      ($43A5),A           
+0CCB: 32 A5 43        LD      ($43A5),A           ; {ram.M43A5}
 0CCE: 3E 10           LD      A,$10               
 0CD0: 32 63 43        LD      ($4363),A           
 0CD3: C9              RET                         
@@ -2784,7 +2831,7 @@ SubtractOneRow:
 0FE0: 2C              INC     L                   
 0FE1: 5E              LD      E,(HL)              
 0FE2: 00              NOP                         
-0FE3: CD 10 02        CALL    $0210               ; {}
+0FE3: CD 10 02        CALL    $0210               ; {code.AddOneRow}
 0FE6: 78              LD      A,B                 
 0FE7: E6 0E           AND     $0E                 
 0FE9: 0F              RRCA                        
@@ -4440,7 +4487,7 @@ SubtractOneRow:
 17DF: FF              RST     0X38                
 17E0: 3A 00 78        LD      A,($7800)           ; 78xx DSW0
 17E3: E6 10           AND     $10                 ; Coinage
-17E5: 3A 8F 43        LD      A,($438F)           
+17E5: 3A 8F 43        LD      A,($438F)           ; {ram.CoinCount}
 17E8: C8              RET     Z                   
 17E9: 0F              RRCA                        
 17EA: E6 0F           AND     $0F                 
@@ -4465,644 +4512,137 @@ SubtractOneRow:
 17FE: 00              NOP                         
 17FF: 00              NOP                         
 
-1800: 43 20 
-1802: FF FF FF FF                          
-;
+
+1800: 43 20
+1802: FF FF FF FF
 ; " SCORE1  HI-SCORE  SCORE2 "
-1806: 00 13 03 0F 12 05 21 00 00 08 09 2B 13 03 0F 12 05 00 00 13 03 0F 12 05 22 00 
-;
-1820: 43 21 
+1806: 00 13 03 0F 12 05 21 00 00 08 09 2B 13 03 0F 12 05 00 00 13 03 0F 12 05 22 00
+
+1820: 43 21
 1822: FF FF FF FF
-; " 000000   000000   000000 "    
+; " 000000   000000   000000 "
 1826: 00 20 20 20 20 20 20 00 00 00 20 20 20 20 20 20 00 00 00 20 20 20 20 20 20 00
-;
-1840: 43 22 
+
+1840: 43 22
 1842: FF FF FF FF
 ; "   %0     COIN00     %0   "
-1846: 00 00 00 7F 20 00 00 00 00 00 03 0F 09 0E 20 20 00 00 00 00 00 7F 20 00 00 00                      
+1846: 00 00 00 7F 20 00 00 00 00 00 03 0F 09 0E 20 20 00 00 00 00 00 7F 20 00 00 00
 
 1860: 43 25
 1862: FF FF FF FF
 ; "       INSERT  COIN       "
 1866: 00 00 00 00 00 00 00 09 0E 13 05 12 14 00 00 03 0F 09 0E 00 00 00 00 00 00 00
-;                
+
 1880: 43 27
 1882: FF FF FF FF
-;  
-1886: 00              NOP                         
-1887: 00              NOP                         
-1888: 00              NOP                         
-1889: 1F              RRA                         
-188A: 00              NOP                         
-188B: 21 10 0C        LD      HL,$0C10            
-188E: 01 19 05        LD      BC,$0519            
-1891: 12              LD      (DE),A              
-1892: 00              NOP                         
-1893: 00              NOP                         
-1894: 00              NOP                         
-1895: 21 03 0F        LD      HL,$0F03            
-1898: 09              ADD     HL,BC               
-1899: 0E 00           LD      C,$00               
-189B: 00              NOP                         
-189C: 1F              RRA                         
-189D: 00              NOP                         
-189E: 00              NOP                         
-189F: 00              NOP                         
-18A0: 43              LD      B,E                 
-18A1: 29              ADD     HL,HL               
-18A2: FF              RST     0X38                
-18A3: FF              RST     0X38                
-18A4: FF              RST     0X38                
-18A5: FF              RST     0X38                
-18A6: 00              NOP                         
-18A7: 00              NOP                         
-18A8: 00              NOP                         
-18A9: 1F              RRA                         
-18AA: 00              NOP                         
-18AB: 22 10 0C        LD      ($0C10),HL          ; {}
-18AE: 01 19 05        LD      BC,$0519            
-18B1: 12              LD      (DE),A              
-18B2: 13              INC     DE                  
-18B3: 00              NOP                         
-18B4: 00              NOP                         
-18B5: 22 03 0F        LD      ($0F03),HL          ; {}
-18B8: 09              ADD     HL,BC               
-18B9: 0E 13           LD      C,$13               
-18BB: 00              NOP                         
-18BC: 1F              RRA                         
-18BD: 00              NOP                         
-18BE: 00              NOP                         
-18BF: 00              NOP                         
-18C0: 43              LD      B,E                 
-18C1: 2E FF           LD      L,$FF               
-18C3: FF              RST     0X38                
-18C4: FF              RST     0X38                
-18C5: FF              RST     0X38                
-18C6: 00              NOP                         
-18C7: 00              NOP                         
-18C8: 00              NOP                         
-18C9: 13              INC     DE                  
-18CA: 03              INC     BC                  
-18CB: 0F              RRCA                        
-18CC: 12              LD      (DE),A              
-18CD: 05              DEC     B                   
-18CE: 00              NOP                         
-18CF: 01 16 05        LD      BC,$0516            
-18D2: 12              LD      (DE),A              
-18D3: 01 07 05        LD      BC,$0507            
-18D6: 00              NOP                         
-18D7: 14              INC     D                   
-18D8: 01 02 0C        LD      BC,$0C02            
-18DB: 05              DEC     B                   
-18DC: 00              NOP                         
-18DD: 00              NOP                         
-18DE: 00              NOP                         
-18DF: 00              NOP                         
-18E0: 43              LD      B,E                 
-18E1: 30 FF           JR      NC,$18E2            ; {}
-18E3: FF              RST     0X38                
-18E4: FF              RST     0X38                
-18E5: FF              RST     0X38                
-18E6: 00              NOP                         
-18E7: 00              NOP                         
-18E8: 00              NOP                         
-18E9: 00              NOP                         
-18EA: 00              NOP                         
-18EB: 00              NOP                         
-18EC: 00              NOP                         
-18ED: 00              NOP                         
-18EE: 22 20 00        LD      ($0020),HL          ; {}
-18F1: 24              INC     H                   
-18F2: 20 00           JR      NZ,$18F4            ; {}
-18F4: 28 20           JR      Z,$1916             ; {}
-18F6: 00              NOP                         
-18F7: 00              NOP                         
-18F8: 00              NOP                         
-18F9: 00              NOP                         
-18FA: 00              NOP                         
-18FB: 00              NOP                         
-18FC: 00              NOP                         
-18FD: 00              NOP                         
-18FE: 00              NOP                         
-18FF: 00              NOP                         
-1900: 43              LD      B,E                 
-1901: 33              INC     SP                  
-1902: FF              RST     0X38                
-1903: FF              RST     0X38                
-1904: FF              RST     0X38                
-1905: FF              RST     0X38                
-1906: 00              NOP                         
-1907: 00              NOP                         
-1908: 00              NOP                         
-1909: 00              NOP                         
-190A: 00              NOP                         
-190B: 00              NOP                         
-190C: 00              NOP                         
-190D: 00              NOP                         
-190E: 22 20 20        LD      ($2020),HL          ; {}
-1911: 00              NOP                         
-1912: 00              NOP                         
-1913: 00              NOP                         
-1914: 00              NOP                         
-1915: 00              NOP                         
-1916: 00              NOP                         
-1917: 00              NOP                         
-1918: 00              NOP                         
-1919: 00              NOP                         
-191A: 00              NOP                         
-191B: 00              NOP                         
-191C: 00              NOP                         
-191D: 00              NOP                         
-191E: 00              NOP                         
-191F: 00              NOP                         
-1920: 43              LD      B,E                 
-1921: 36 FF           LD      (HL),$FF            
-1923: FF              RST     0X38                
-1924: FF              RST     0X38                
-1925: FF              RST     0X38                
-1926: 00              NOP                         
-1927: 00              NOP                         
-1928: 00              NOP                         
-1929: 00              NOP                         
-192A: 00              NOP                         
-192B: 00              NOP                         
-192C: 00              NOP                         
-192D: 00              NOP                         
-192E: 25              DEC     H                   
-192F: 20 00           JR      NZ,$1931            ; {}
-1931: 21 20 20        LD      HL,$2020            
-1934: 00              NOP                         
-1935: 2F              CPL                         
-1936: 1B              DEC     DE                  
-1937: 21 20 20        LD      HL,$2020            
-193A: 2B              DEC     HL                  
-193B: 28 20           JR      Z,$195D             ; {}
-193D: 20 1C           JR      NZ,$195B            ; {}
-193F: 00              NOP                         
-1940: 43              LD      B,E                 
-1941: 39              ADD     HL,SP               
-1942: FF              RST     0X38                
-1943: FF              RST     0X38                
-1944: FF              RST     0X38                
-1945: FF              RST     0X38                
-1946: 00              NOP                         
-1947: 00              NOP                         
-1948: 00              NOP                         
-1949: 00              NOP                         
-194A: 00              NOP                         
-194B: 00              NOP                         
-194C: 00              NOP                         
-194D: 00              NOP                         
-194E: 21 20 20        LD      HL,$2020            
-1951: 20 2B           JR      NZ,$197E            ; {}
-1953: 29              ADD     HL,HL               
-1954: 20 20           JR      NZ,$1976            ; {}
-1956: 20 00           JR      NZ,$1958            ; {}
-1958: 00              NOP                         
-1959: 00              NOP                         
-195A: 00              NOP                         
-195B: 00              NOP                         
-195C: 00              NOP                         
-195D: 00              NOP                         
-195E: 00              NOP                         
-195F: 00              NOP                         
-1960: 43              LD      B,E                 
-1961: 3C              INC     A                   
-1962: 00              NOP                         
-1963: 00              NOP                         
-1964: 32 21 10        LD      ($1021),A           ; {}
-1967: 08              EX      AF,AF'              
-1968: 0F              RRCA                        
-1969: 05              DEC     B                   
-196A: 0E 09           LD      C,$09               
-196C: 18 7E           JR      $19EC               ; {}
-196E: 00              NOP                         
-196F: 03              INC     BC                  
-1970: 0F              RRCA                        
-1971: 10 19           DJNZ    $198C               ; {}
-1973: 12              LD      (DE),A              
-1974: 09              ADD     HL,BC               
-1975: 07              RLCA                        
-1976: 08              EX      AF,AF'              
-1977: 14              INC     D                   
-1978: 00              NOP                         
-1979: 21 29 28        LD      HL,$2829            
-197C: 20 00           JR      NZ,$197E            ; {}
-197E: 00              NOP                         
-197F: 00              NOP                         
-1980: 43              LD      B,E                 
-1981: 3D              DEC     A                   
-1982: 02              LD      (BC),A              
-1983: 05              DEC     B                   
-1984: 21 28 00        LD      HL,$0028            
-1987: 01 0D 13        LD      BC,$130D            
-198A: 14              INC     D                   
-198B: 01 12 00        LD      BC,$0012            
-198E: 05              DEC     B                   
-198F: 0C              INC     C                   
-1990: 05              DEC     B                   
-1991: 03              INC     BC                  
-1992: 14              INC     D                   
-1993: 12              LD      (DE),A              
-1994: 0F              RRCA                        
-1995: 0E 09           LD      C,$09               
-1997: 03              INC     BC                  
-1998: 13              INC     DE                  
-1999: 00              NOP                         
-199A: 03              INC     BC                  
-199B: 0F              RRCA                        
-199C: 12              LD      (DE),A              
-199D: 10 2A           DJNZ    $19C9               ; {}
-199F: 00              NOP                         
-19A0: 43              LD      B,E                 
-19A1: 3E FF           LD      A,$FF               
-19A3: FF              RST     0X38                
-19A4: FF              RST     0X38                
-19A5: FF              RST     0X38                
-19A6: 00              NOP                         
-19A7: 00              NOP                         
-19A8: 10 08           DJNZ    $19B2               ; {}
-19AA: 0F              RRCA                        
-19AB: 05              DEC     B                   
-19AC: 0E 09           LD      C,$09               
-19AE: 18 00           JR      $19B0               ; {}
-19B0: 01 1A 2A        LD      BC,$2A1A            
-19B3: 00              NOP                         
-19B4: 15              DEC     D                   
-19B5: 2A 13 2A        LD      HL,($2A13)          ; {}
-19B8: 01 2A 00        LD      BC,$002A            
-19BB: 00              NOP                         
-19BC: 00              NOP                         
-19BD: 00              NOP                         
-19BE: 00              NOP                         
-19BF: 00              NOP                         
-19C0: 43              LD      B,E                 
-19C1: 28 FF           JR      Z,$19C2             ; {}
-19C3: FF              RST     0X38                
-19C4: FF              RST     0X38                
-19C5: FF              RST     0X38                
-19C6: 00              NOP                         
-19C7: 00              NOP                         
-19C8: 00              NOP                         
-19C9: 00              NOP                         
-19CA: 00              NOP                         
-19CB: 00              NOP                         
-19CC: 00              NOP                         
-19CD: 00              NOP                         
-19CE: 00              NOP                         
-19CF: 00              NOP                         
-19D0: 00              NOP                         
-19D1: 10 15           DJNZ    $19E8               ; {}
-19D3: 13              INC     DE                  
-19D4: 08              EX      AF,AF'              
-19D5: 00              NOP                         
-19D6: 00              NOP                         
-19D7: 00              NOP                         
-19D8: 00              NOP                         
-19D9: 00              NOP                         
-19DA: 00              NOP                         
-19DB: 00              NOP                         
-19DC: 00              NOP                         
-19DD: 00              NOP                         
-19DE: 00              NOP                         
-19DF: 00              NOP                         
-19E0: 43              LD      B,E                 
-19E1: 2C              INC     L                   
-19E2: FF              RST     0X38                
-19E3: FF              RST     0X38                
-19E4: FF              RST     0X38                
-19E5: FF              RST     0X38                
-19E6: 00              NOP                         
-19E7: 00              NOP                         
-19E8: 00              NOP                         
-19E9: 00              NOP                         
-19EA: 0F              RRCA                        
-19EB: 0E 0C           LD      C,$0C               
-19ED: 19              ADD     HL,DE               
-19EE: 00              NOP                         
-19EF: 21 10 0C        LD      HL,$0C10            
-19F2: 01 19 05        LD      BC,$0519            
-19F5: 12              LD      (DE),A              
-19F6: 00              NOP                         
-19F7: 02              LD      (BC),A              
-19F8: 15              DEC     D                   
-19F9: 14              INC     D                   
-19FA: 14              INC     D                   
-19FB: 0F              RRCA                        
-19FC: 0E 00           LD      C,$00               
-19FE: 00              NOP                         
-19FF: 00              NOP                         
-1A00: 43              LD      B,E                 
-1A01: 28 FF           JR      Z,$1A02             ; {}
-1A03: FF              RST     0X38                
-1A04: FF              RST     0X38                
-1A05: FF              RST     0X38                
-1A06: 00              NOP                         
-1A07: 00              NOP                         
-1A08: 00              NOP                         
-1A09: 00              NOP                         
-1A0A: 00              NOP                         
-1A0B: 00              NOP                         
-1A0C: 00              NOP                         
-1A0D: 00              NOP                         
-1A0E: 07              RLCA                        
-1A0F: 01 0D 05        LD      BC,$050D            
-1A12: 00              NOP                         
-1A13: 00              NOP                         
-1A14: 0F              RRCA                        
-1A15: 16 05           LD      D,$05               
-1A17: 12              LD      (DE),A              
-1A18: 00              NOP                         
-1A19: 00              NOP                         
-1A1A: 00              NOP                         
-1A1B: 00              NOP                         
-1A1C: 00              NOP                         
-1A1D: 00              NOP                         
-1A1E: 00              NOP                         
-1A1F: 00              NOP                         
-1A20: 43              LD      B,E                 
-1A21: 28 00           JR      Z,$1A23             ; {}
-1A23: FF              RST     0X38                
-1A24: FF              RST     0X38                
-1A25: FF              RST     0X38                
-1A26: 64              LD      H,H                 
-1A27: 65              LD      H,L                 
-1A28: 64              LD      H,H                 
-1A29: 65              LD      H,L                 
-1A2A: 64              LD      H,H                 
-1A2B: 65              LD      H,L                 
-1A2C: 60              LD      H,B                 
-1A2D: 61              LD      H,C                 
-1A2E: 00              NOP                         
-1A2F: 00              NOP                         
-1A30: 00              NOP                         
-1A31: 00              NOP                         
-1A32: 00              NOP                         
-1A33: 00              NOP                         
-1A34: 00              NOP                         
-1A35: 00              NOP                         
-1A36: 00              NOP                         
-1A37: 00              NOP                         
-1A38: 00              NOP                         
-1A39: 00              NOP                         
-1A3A: 00              NOP                         
-1A3B: 00              NOP                         
-1A3C: 00              NOP                         
-1A3D: 00              NOP                         
-1A3E: 78              LD      A,B                 
-1A3F: 79              LD      A,C                 
-1A40: 43              LD      B,E                 
-1A41: 29              ADD     HL,HL               
-1A42: FF              RST     0X38                
-1A43: FF              RST     0X38                
-1A44: FF              RST     0X38                
-1A45: FF              RST     0X38                
-1A46: 64              LD      H,H                 
-1A47: 65              LD      H,L                 
-1A48: 00              NOP                         
-1A49: 00              NOP                         
-1A4A: 00              NOP                         
-1A4B: 00              NOP                         
-1A4C: 64              LD      H,H                 
-1A4D: 65              LD      H,L                 
-1A4E: 00              NOP                         
-1A4F: 00              NOP                         
-1A50: 00              NOP                         
-1A51: 00              NOP                         
-1A52: 00              NOP                         
-1A53: 00              NOP                         
-1A54: 00              NOP                         
-1A55: 00              NOP                         
-1A56: 00              NOP                         
-1A57: 00              NOP                         
-1A58: 00              NOP                         
-1A59: 00              NOP                         
-1A5A: 00              NOP                         
-1A5B: 00              NOP                         
-1A5C: 00              NOP                         
-1A5D: 00              NOP                         
-1A5E: 7C              LD      A,H                 
-1A5F: 7D              LD      A,L                 
-1A60: 43              LD      B,E                 
-1A61: 2A FF FF        LD      HL,($FFFF)          
-1A64: FF              RST     0X38                
-1A65: FF              RST     0X38                
-1A66: 64              LD      H,H                 
-1A67: 65              LD      H,L                 
-1A68: 64              LD      H,H                 
-1A69: 65              LD      H,L                 
-1A6A: 64              LD      H,H                 
-1A6B: 65              LD      H,L                 
-1A6C: 60              LD      H,B                 
-1A6D: 61              LD      H,C                 
-1A6E: 00              NOP                         
-1A6F: 00              NOP                         
-1A70: 00              NOP                         
-1A71: 00              NOP                         
-1A72: 00              NOP                         
-1A73: 00              NOP                         
-1A74: 00              NOP                         
-1A75: 00              NOP                         
-1A76: 00              NOP                         
-1A77: 00              NOP                         
-1A78: 00              NOP                         
-1A79: 00              NOP                         
-1A7A: 00              NOP                         
-1A7B: 00              NOP                         
-1A7C: 00              NOP                         
-1A7D: 00              NOP                         
-1A7E: 00              NOP                         
-1A7F: 00              NOP                         
-1A80: 43              LD      B,E                 
-1A81: 2B              DEC     HL                  
-1A82: FF              RST     0X38                
-1A83: FF              RST     0X38                
-1A84: FF              RST     0X38                
-1A85: FF              RST     0X38                
-1A86: 64              LD      H,H                 
-1A87: 65              LD      H,L                 
-1A88: 00              NOP                         
-1A89: 00              NOP                         
-1A8A: 00              NOP                         
-1A8B: 00              NOP                         
-1A8C: 00              NOP                         
-1A8D: 00              NOP                         
-1A8E: 00              NOP                         
-1A8F: 00              NOP                         
-1A90: 00              NOP                         
-1A91: 00              NOP                         
-1A92: 00              NOP                         
-1A93: 00              NOP                         
-1A94: 00              NOP                         
-1A95: 00              NOP                         
-1A96: 00              NOP                         
-1A97: 00              NOP                         
-1A98: 00              NOP                         
-1A99: 00              NOP                         
-1A9A: 00              NOP                         
-1A9B: 00              NOP                         
-1A9C: 00              NOP                         
-1A9D: 00              NOP                         
-1A9E: 00              NOP                         
-1A9F: 00              NOP                         
-1AA0: 43              LD      B,E                 
-1AA1: 2C              INC     L                   
-1AA2: FF              RST     0X38                
-1AA3: FF              RST     0X38                
-1AA4: FF              RST     0X38                
-1AA5: FF              RST     0X38                
-1AA6: 64              LD      H,H                 
-1AA7: 65              LD      H,L                 
-1AA8: 00              NOP                         
-1AA9: 68              LD      L,B                 
-1AAA: 00              NOP                         
-1AAB: 68              LD      L,B                 
-1AAC: 00              NOP                         
-1AAD: 68              LD      L,B                 
-1AAE: 68              LD      L,B                 
-1AAF: 68              LD      L,B                 
-1AB0: 00              NOP                         
-1AB1: 68              LD      L,B                 
-1AB2: 64              LD      H,H                 
-1AB3: 65              LD      H,L                 
-1AB4: 00              NOP                         
-1AB5: 62              LD      H,D                 
-1AB6: 63              LD      H,E                 
-1AB7: 00              NOP                         
-1AB8: 68              LD      L,B                 
-1AB9: 00              NOP                         
-1ABA: 68              LD      L,B                 
-1ABB: 00              NOP                         
-1ABC: 68              LD      L,B                 
-1ABD: 00              NOP                         
-1ABE: 00              NOP                         
-1ABF: 68              LD      L,B                 
-1AC0: 43              LD      B,E                 
-1AC1: 2D              DEC     L                   
-1AC2: FF              RST     0X38                
-1AC3: FF              RST     0X38                
-1AC4: FF              RST     0X38                
-1AC5: FF              RST     0X38                
-1AC6: 64              LD      H,H                 
-1AC7: 65              LD      H,L                 
-1AC8: 00              NOP                         
-1AC9: 68              LD      L,B                 
-1ACA: 00              NOP                         
-1ACB: 68              LD      L,B                 
-1ACC: 00              NOP                         
-1ACD: 68              LD      L,B                 
-1ACE: 00              NOP                         
-1ACF: 68              LD      L,B                 
-1AD0: 00              NOP                         
-1AD1: 68              LD      L,B                 
-1AD2: 00              NOP                         
-1AD3: 00              NOP                         
-1AD4: 00              NOP                         
-1AD5: 68              LD      L,B                 
-1AD6: 9D              SBC     L                   
-1AD7: 00              NOP                         
-1AD8: 68              LD      L,B                 
-1AD9: 00              NOP                         
-1ADA: 68              LD      L,B                 
-1ADB: 00              NOP                         
-1ADC: 76              HALT                        
-1ADD: 77              LD      (HL),A              
-1ADE: 70              LD      (HL),B              
-1ADF: 71              LD      (HL),C              
-1AE0: 43              LD      B,E                 
-1AE1: 2E FF           LD      L,$FF               
-1AE3: FF              RST     0X38                
-1AE4: FF              RST     0X38                
-1AE5: FF              RST     0X38                
-1AE6: 64              LD      H,H                 
-1AE7: 65              LD      H,L                 
-1AE8: 00              NOP                         
-1AE9: 68              LD      L,B                 
-1AEA: 68              LD      L,B                 
-1AEB: 68              LD      L,B                 
-1AEC: 00              NOP                         
-1AED: 68              LD      L,B                 
-1AEE: 00              NOP                         
-1AEF: 68              LD      L,B                 
-1AF0: 00              NOP                         
-1AF1: 68              LD      L,B                 
-1AF2: 62              LD      H,D                 
-1AF3: 63              LD      H,E                 
-1AF4: 00              NOP                         
-1AF5: 68              LD      L,B                 
-1AF6: 76              HALT                        
-1AF7: 77              LD      (HL),A              
-1AF8: 68              LD      L,B                 
-1AF9: 00              NOP                         
-1AFA: 68              LD      L,B                 
-1AFB: 00              NOP                         
-1AFC: 00              NOP                         
-1AFD: 64              LD      H,H                 
-1AFE: 65              LD      H,L                 
-1AFF: 00              NOP                         
-1B00: 43              LD      B,E                 
-1B01: 2F              CPL                         
-1B02: 00              NOP                         
-1B03: 00              NOP                         
-1B04: 00              NOP                         
-1B05: 00              NOP                         
-1B06: 64              LD      H,H                 
-1B07: 65              LD      H,L                 
-1B08: 00              NOP                         
-1B09: 68              LD      L,B                 
-1B0A: 00              NOP                         
-1B0B: 68              LD      L,B                 
-1B0C: 00              NOP                         
-1B0D: 68              LD      L,B                 
-1B0E: 00              NOP                         
-1B0F: 68              LD      L,B                 
-1B10: 00              NOP                         
-1B11: 68              LD      L,B                 
-1B12: 00              NOP                         
-1B13: 00              NOP                         
-1B14: 00              NOP                         
-1B15: 68              LD      L,B                 
-1B16: 00              NOP                         
-1B17: 9D              SBC     L                   
-1B18: 68              LD      L,B                 
-1B19: 00              NOP                         
-1B1A: 68              LD      L,B                 
-1B1B: 00              NOP                         
-1B1C: 74              LD      (HL),H              
-1B1D: 75              LD      (HL),L              
-1B1E: 72              LD      (HL),D              
-1B1F: 73              LD      (HL),E              
-1B20: 43              LD      B,E                 
-1B21: 30 FF           JR      NC,$1B22            ; {}
-1B23: FF              RST     0X38                
-1B24: FF              RST     0X38                
-1B25: FF              RST     0X38                
-1B26: 64              LD      H,H                 
-1B27: 65              LD      H,L                 
-1B28: 00              NOP                         
-1B29: 68              LD      L,B                 
-1B2A: 00              NOP                         
-1B2B: 68              LD      L,B                 
-1B2C: 00              NOP                         
-1B2D: 68              LD      L,B                 
-1B2E: 68              LD      L,B                 
-1B2F: 68              LD      L,B                 
-1B30: 00              NOP                         
-1B31: 68              LD      L,B                 
-1B32: 64              LD      H,H                 
-1B33: 65              LD      H,L                 
-1B34: 00              NOP                         
-1B35: 68              LD      L,B                 
-1B36: 00              NOP                         
-1B37: 66              LD      H,(HL)              
-1B38: 67              LD      H,A                 
-1B39: 00              NOP                         
-1B3A: 68              LD      L,B                 
-1B3B: 00              NOP                         
-1B3C: 68              LD      L,B                 
-1B3D: 00              NOP                         
-1B3E: 00              NOP                         
-1B3F: 68              LD      L,B                 
+; "   * 1PLAYER   1COIN  *   "
+1886: 00 00 00 1F 00 21 10 0C 01 19 05 12 00 00 00 21 03 0F 09 0E 00 00 1F 00 00 00
+
+18A0: 43 29
+18A2: FF FF FF FF
+; "   * 2PLAYERS  2COINS *   "
+18A6: 00 00 00 1F 00 22 10 0C 01 19 05 12 13 00 00 22 03 0F 09 0E 13 00 1F 00 00 00
+
+18C0: 43 2E
+18C2: FF FF FF FF
+; "   SCORE AVERAGE TABLE    "
+18C6: 00 00 00 13 03 0F 12 05 00 01 16 05 12 01 07 05 00 14 01 02 0C 05 00 00 00 00
+
+18E0: 43 30
+18E2: FF FF FF FF
+; "        20 40 80          "
+18E6: 00 00 00 00 00 00 00 00 22 20 00 24 20 00 28 20 00 00 00 00 00 00 00 00 00 00
+
+1900: 43 33
+1902: FF FF FF FF
+; "        200               "
+1906: 00 00 00 00 00 00 00 00 22 20 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+1920: 43 36
+1922: FF FF FF FF
+; "        50 100 ?[100-800] "
+1926: 00 00 00 00 00 00 00 00 25 20 00 21 20 20 00 2F 1B 21 20 20 2B 28 20 20 1C 00
+
+1940: 43 39
+1942: FF FF FF FF
+; "        1000-9000         "
+1946: 00 00 00 00 00 00 00 00 21 20 20 20 2B 29 20 20 20 00 00 00 00 00 00 00 00 00
+
+1960: 43 3C
+1962: 00 00 32 21
+; "PHOENIX% COPYRIGHT 1980   "
+1966: 10 08 0F 05 0E 09 18 7E 00 03 0F 10 19 12 09 07 08 14 00 21 29 28 20 00 00 00
+
+1980: 43 3D
+1982: 02 05 21 28
+; " AMSTAR ELECTRONICS CORP. "
+1986: 00 01 0D 13 14 01 12 00 05 0C 05 03 14 12 0F 0E 09 03 13 00 03 0F 12 10 2A 00
+
+19A0: 43 3E
+19A2: FF FF FF FF
+; "  PHOENIX AZ. U.S.A.      "
+19A6: 00 00 10 08 0F 05 0E 09 18 00 01 1A 2A 00 15 2A 13 2A 01 2A 00 00 00 00 00 00
+
+19C0: 43 28
+19C2: FF FF FF FF
+; "           PUSH           "
+19C6: 00 00 00 00 00 00 00 00 00 00 00 10 15 13 08 00 00 00 00 00 00 00 00 00 00 00
+
+19E0: 43 2C
+19E2: FF FF FF FF
+; "    ONLY 1PLAYER BUTTON   "
+19E6: 00 00 00 00 0F 0E 0C 19 00 21 10 0C 01 19 05 12 00 02 15 14 14 0F 0E 00 00 00
+
+1A00: 43 28
+1A02: FF FF FF FF
+; "        GAME  OVER        "
+1A06: 00 00 00 00 00 00 00 00 07 01 0D 05 00 00 0F 16 05 12 00 00 00 00 00 00 00 00
+
+1A20: 43 28
+1A22: 00 FF FF FF
+; "%%%%%%%%                %%"
+1A26: 64 65 64 65 64 65 60 61 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 78 79
+
+1A40: 43 29
+1A42: FF FF FF FF
+; "%%    %%                %%"
+1A46: 64 65 00 00 00 00 64 65 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 7C 7D
+
+1A60: 43 2A
+1A62: FF FF FF FF
+; "%%%%%%%%                  "
+1A66: 64 65 64 65 64 65 60 61 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+1A80: 43 2B
+1A82: FF FF FF FF
+; "%%                        "
+1A86: 64 65 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+1AA0: 43 2C
+1AA2: FF FF FF FF
+; "%% % % %%% %%% %% % % %  %"
+1AA6: 64 65 00 68 00 68 00 68 68 68 00 68 64 65 00 62 63 00 68 00 68 00 68 00 00 68
+
+1AC0: 43 2D
+1AC2: FF FF FF FF
+; "%% % % % % %   %% % % %%%%"
+1AC6: 64 65 00 68 00 68 00 68 00 68 00 68 00 00 00 68 9D 00 68 00 68 00 76 77 70 71
+
+1AE0: 43 2E
+1AE2: FF FF FF FF
+; "%% %%% % % %%% %%%% %  %% "
+1AE6: 64 65 00 68 68 68 00 68 00 68 00 68 62 63 00 68 76 77 68 00 68 00 00 64 65 00
+
+1B00: 43 2F
+1B02: 00 00 00 00
+; "%% % % % % %   % %% % %%%%"
+1B06: 64 65 00 68 00 68 00 68 00 68 00 68 00 00 00 68 00 9D 68 00 68 00 74 75 72 73
+
+1B20: 43 30
+1B22: FF FF FF FF
+; "%% % % %%% %%% % %% % %  %"
+1B26: 64 65 00 68 00 68 00 68 68 68 00 68 64 65 00 68 00 66 67 00 68 00 68 00 00 68
+           
 1B40: 6C              LD      L,H                 
 1B41: 6D              LD      L,L                 
 1B42: 6E              LD      L,(HL)              
@@ -5706,7 +5246,7 @@ SubtractOneRow:
 1DF0: 3A 1D 43        LD      A,($431D)           
 1DF3: D6 01           SUB     $01                 
 1DF5: C8              RET     Z                   
-1DF6: 32 8F 43        LD      ($438F),A           
+1DF6: 32 8F 43        LD      ($438F),A           ; {ram.CoinCount}
 1DF9: 00              NOP                         
 1DFA: 00              NOP                         
 1DFB: 00              NOP                         
@@ -6895,7 +6435,7 @@ SubtractOneRow:
 24A8: 11 C4 43        LD      DE,$43C4            
 24AB: 21 E6 43        LD      HL,$43E6            
 24AE: CD 51 23        CALL    $2351               ; {}
-24B1: 3A 9B 43        LD      A,($439B)           
+24B1: 3A 9B 43        LD      A,($439B)           ; {ram.Counter+1}
 24B4: E6 03           AND     $03                 
 24B6: FE 03           CP      $03                 
 24B8: C0              RET     NZ                  
@@ -7125,7 +6665,7 @@ SubtractOneRow:
 261D: 57              LD      D,A                 
 261E: E6 03           AND     $03                 
 2620: 5F              LD      E,A                 
-2621: 3A 9B 43        LD      A,($439B)           
+2621: 3A 9B 43        LD      A,($439B)           ; {ram.Counter+1}
 2624: 07              RLCA                        
 2625: 07              RLCA                        
 2626: E6 0C           AND     $0C                 
@@ -7143,7 +6683,7 @@ SubtractOneRow:
 2638: 92              SUB     D                   
 2639: 32 B9 43        LD      ($43B9),A           
 263C: 32 00 58        LD      ($5800),A           ; 58xx scroll register
-263F: 3A 9B 43        LD      A,($439B)           
+263F: 3A 9B 43        LD      A,($439B)           ; {ram.Counter+1}
 2642: 0F              RRCA                        
 2643: D2 D0 26        JP      NC,$26D0            ; {}
 2646: CD 68 26        CALL    $2668               ; {}
@@ -7166,7 +6706,7 @@ SubtractOneRow:
 2668: 3A 6E 43        LD      A,($436E)           
 266B: 00              NOP                         
 266C: 47              LD      B,A                 
-266D: 3A 9A 43        LD      A,($439A)           
+266D: 3A 9A 43        LD      A,($439A)           ; {ram.Counter}
 2670: FE 18           CP      $18                 
 2672: DA 76 26        JP      C,$2676             ; {}
 2675: 04              INC     B                   
@@ -7252,6 +6792,8 @@ SubtractOneRow:
 26FD: C9              RET                         
 26FE: FF              RST     0X38                
 26FF: FF              RST     0X38                
+
+
 2700: 21 A2 43        LD      HL,$43A2            
 2703: 7E              LD      A,(HL)              
 2704: A7              AND     A                   
@@ -7274,13 +6816,13 @@ SubtractOneRow:
 271E: FE 80           CP      $80                 
 2720: C2 17 27        JP      NZ,$2717            ; {}
 2723: 1E 9D           LD      E,$9D               
-2725: 3A A4 43        LD      A,($43A4)           
+2725: 3A A4 43        LD      A,($43A4)           ; {ram.M43A4}
 2728: FE 06           CP      $06                 
 272A: C2 39 27        JP      NZ,$2739            ; {}
 272D: 1A              LD      A,(DE)              
 272E: 47              LD      B,A                 
 272F: 0E 00           LD      C,$00               
-2731: CD 20 02        CALL    $0220               ; {}
+2731: CD 20 02        CALL    $0220               ; {code.AddToScore}
 2734: AF              XOR     A                   
 2735: 12              LD      (DE),A              
 2736: 32 97 43        LD      ($4397),A           
@@ -7308,7 +6850,7 @@ SubtractOneRow:
 2758: 78              LD      A,B                 
 2759: E6 0F           AND     $0F                 
 275B: 47              LD      B,A                 
-275C: CD 20 02        CALL    $0220               ; {}
+275C: CD 20 02        CALL    $0220               ; {code.AddToScore}
 275F: AF              XOR     A                   
 2760: 12              LD      (DE),A              
 2761: 32 97 43        LD      ($4397),A           
@@ -9832,13 +9374,13 @@ SubtractOneRow:
 3421: CD 60 35        CALL    $3560               ; {}
 3424: CD 98 34        CALL    $3498               ; {}
 3427: CD AA 34        CALL    $34AA               ; {}
-342A: 3A 9B 43        LD      A,($439B)           
+342A: 3A 9B 43        LD      A,($439B)           ; {ram.Counter+1}
 342D: 0F              RRCA                        
 342E: DA C0 0F        JP      C,$0FC0             ; {}
 3431: CD 30 39        CALL    $3930               ; {}
 3434: C3 40 0C        JP      $0C40               ; {}
 3437: FF              RST     0X38                
-3438: 3A 9B 43        LD      A,($439B)           
+3438: 3A 9B 43        LD      A,($439B)           ; {ram.Counter+1}
 343B: 0F              RRCA                        
 343C: DA 52 34        JP      C,$3452             ; {}
 343F: CD 74 34        CALL    $3474               ; {}
@@ -9858,7 +9400,7 @@ SubtractOneRow:
 345F: FF              RST     0X38                
 3460: FF              RST     0X38                
 3461: FF              RST     0X38                
-3462: 3A 9B 43        LD      A,($439B)           
+3462: 3A 9B 43        LD      A,($439B)           ; {ram.Counter+1}
 3465: 0F              RRCA                        
 3466: D8              RET     C                   
 3467: CD 40 0C        CALL    $0C40               ; {}
@@ -10067,7 +9609,7 @@ SubtractOneRow:
 3586: 07              RLCA                        
 3587: B0              OR      B                   
 3588: 47              LD      B,A                 
-3589: 3A 9A 43        LD      A,($439A)           
+3589: 3A 9A 43        LD      A,($439A)           ; {ram.Counter}
 358C: 07              RLCA                        
 358D: 07              RLCA                        
 358E: E6 20           AND     $20                 
@@ -10501,7 +10043,7 @@ SubtractOneRow:
 37BB: CD 17 02        CALL    $0217               ; {code.SubtractOneRow}
 37BE: 3E 20           LD      A,$20               
 37C0: 12              LD      (DE),A              
-37C1: CD 10 02        CALL    $0210               ; {}
+37C1: CD 10 02        CALL    $0210               ; {code.AddOneRow}
 37C4: 06 02           LD      B,$02               
 37C6: C3 C4 00        JP      $00C4               ; {}
 37C9: FF              RST     0X38                
@@ -10813,7 +10355,7 @@ SubtractOneRow:
 39A5: 2E C4           LD      L,$C4               
 39A7: 36 08           LD      (HL),$08            
 39A9: 11 9E 43        LD      DE,$439E            
-39AC: 3A 9B 43        LD      A,($439B)           
+39AC: 3A 9B 43        LD      A,($439B)           ; {ram.Counter+1}
 39AF: 0F              RRCA                        
 39B0: DA BF 39        JP      C,$39BF             ; {}
 39B3: 1C              INC     E                   
@@ -10862,7 +10404,7 @@ SubtractOneRow:
 3A05: 2F              CPL                         
 3A06: 3C              INC     A                   
 3A07: 57              LD      D,A                 
-3A08: 3A 9B 43        LD      A,($439B)           
+3A08: 3A 9B 43        LD      A,($439B)           ; {ram.Counter+1}
 3A0B: 0F              RRCA                        
 3A0C: 0F              RRCA                        
 3A0D: D8              RET     C                   

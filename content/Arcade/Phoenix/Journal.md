@@ -4,6 +4,31 @@
 
 # Questions to answer in the dig
   - Why the padding before certain routines to land them on nice addresses?
+  - How does the call-stack work when RAM banks are changed
+
+## 6/3/2023 
+
+
+
+## 6/2/2023 
+
+I did a little decoding of the first part of the ROM. It contains general purpose functions like 2-bit adds/subtracts
+and 6-digit BCD math for the scores. There is a 6-digit BCD subtract, but it is never called. A score never
+goes down.
+
+I commented the "wait for VBLANK and handle coins" code. Too funny: the code only counts up to 9 coins. Any coins
+that are put in after that are not counted. There are two digits on the screen for coins, but the code doesn't
+handle two digits.
+
+## 6/1/2023
+
+I got the web site graphics working. You can switch between the two color pallettes with the click of a button.
+
+I looked at the Mame video driver. The cocktail screen flip is tied to the RAM bank selected. If the coctail switch
+is set, then switching to the second back automatically flips the screen. That's a sure tell that the banks are for
+different players. But now I wonder how the stack works with bank flips.
+
+Two byte values are referenced by pointers to the second (LSB). The code subtracts one to get to the MSB.
 
 ## 5/27/2023
 

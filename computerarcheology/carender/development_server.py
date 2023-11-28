@@ -15,3 +15,5 @@ handlers = [
 app = tornado.web.Application(handlers)
 app.listen(8080)
 tornado.ioloop.IOLoop.current().start()
+
+# py -m computerarcheology.carender.development_server

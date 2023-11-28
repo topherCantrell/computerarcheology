@@ -1,0 +1,8 @@
+; This single-voice song plays when the player earns a free life
+
+
+Track 0:
+:Tempo 4=120
+
+8A4 16R 16A4 8C#5 8E5 4A5 4R 8F#5 16R 16F#5 8A5 8F#5 4E5 4R  
+

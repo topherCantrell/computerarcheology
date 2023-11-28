@@ -1,4 +1,4 @@
-import tools.format as FORM
+import computerarcheology.tools.format as FORM
 
 
 def line_to_data(line):
