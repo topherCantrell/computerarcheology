@@ -36,57 +36,65 @@ the end.
 In this dig I'll show you how to fix the song data and unearth music buried deep in the Frogger ROM -- music never before heard 
 since the game's release in 1981. Until now.
 
+The intro 16 beats for the main song are from a Japanese song called Inu No Omawarisan (The Dog Policeman). 
+[Listen to it on YouTube](https://www.youtube.com/watch?v=QIRpYwVpP4E).
+
+The main song is from a Japanese anime called Araiguma Rascal. 
+[Listen to the opening music](https://www.youtube.com/watch?v=2YMH5ntJEZ0).
+
 >>> tourGuide {
 
 # Tour Guide 
 
-TODO: Link to bug in the main song music -- missing 1/8th beat
+There are two bugs in the music definition of the main song. First, there is a
+missing eigth note beat around the thirty seconds mark. See the details
+here: [Missing 1/8th beat](SoundCode.md#bug-missing-eighth-note)
 
-TODO: Link to bug in the main song music -- flipped bit (voice B stops)
+A few seconds later, the second voice drops out completely because of a mangled
+note. See the details here: [Voice stops prematurely](SoundCode.md#bug-garbage-note-stops-the-voice)
 
-TODO: Link to bug in music player -- everything played down 1/2 step
-
-TODO: Links to code for each effect and song
+There is a bug in the code that plays every note down a half step. This matters if you
+are trying to play along on the piano! See the details here: [1/8th beat](SoundCode.md#bug-pitch-is-off-by-one)
 
 Sound Effects:
-  * Insert Coin: [insertCoin.mp3](sounds/insertCoin.mp3) 
-  * Die in Water: [dieWater.mp3](sounds/dieWater.mp3)
-  * Die in Road: [dieRoad.mp3](sounds/dieRoad.mp3)
-  * Free Frog: [freeLife.mp3](sounds/freeLife.mp3)
-  * Snake on Ground: [snakeOnGround.mp3](sounds/snakeOnGround.mp3)
-  * Race Car: [raceCar.mp3](sounds/raceCar.mp3)
-  * Pick up Friend: [pickUpMate.mp3](sounds/pickUpMate.mp3)
-  * Landing Safe: [landingSafe.mp3](sounds/landingSafe.mp3)
-  * Running Out of Time: [runningOutOfTime.mp3](sounds/runningOutOfTime.mp3)
-  * Hopping: [hop.mp3](sounds/hop.mp3)
+  * Insert Coin: [insertCoin.mp3](sounds/insertCoin.mp3) | [CODE](SoundCode.md#insert-coin-sound)
+  * Die in Water: [dieWater.mp3](sounds/dieWater.mp3) | [CODE](SoundCode.md#die-in-the-water-sound)
+  * Die in Road: [dieRoad.mp3](sounds/dieRoad.mp3) | [CODE](SoundCode.md#die-in-the-road-sound)
+  * Free Frog: [freeLife.mp3](sounds/freeLife.mp3) | [CODE](SoundCode.md#free-life-sound)
+  * Snake on Ground: [snakeOnGround.mp3](sounds/snakeOnGround.mp3) | [CODE](SoundCode.md#snake-on-ground-sound)
+  * Race Car: [raceCar.mp3](sounds/raceCar.mp3) | [CODE](SoundCode.md#race-car-sound)
+  * Pick up Friend: [pickUpMate.mp3](sounds/pickUpMate.mp3) | [CODE](SoundCode.md#pick-up-friend-sound)
+  * Landing Safe: [landingSafe.mp3](sounds/landingSafe.mp3) | [CODE](SoundCode.md#frog-landing-safe-sound)
+  * Running Out of Time: [runningOutOfTime.mp3](sounds/runningOutOfTime.mp3) | [CODE](SoundCode.md#time-running-out-sound)
+  * Hopping: [hop.mp3](sounds/hop.mp3) | [CODE](SoundCode.md#frog-hopping-sound)
 
 Music:
-  * Main Song (original/broken): [songIntroAndMain.mp3](./sounds/songIntroAndMain.mp3)
-  * Main Song Fixed: [songIntroAndMain_fix.mp3](./sounds/songIntroAndMain_fix.mp3) [.txt](./sounds/songIntroAndMain_G.txt) [.mid](./sounds/songIntroAndMain_G.mid)
-  * Game Over: [songGameOver.mp3](./sounds/songGameOver.mp3) [.txt](./sounds/songGameOver_G.txt) [.mid](./sounds/songGameOver_G.mid)
-  * Level Complete: [songLevelComplete.mp3](./sounds/songLevelComplete.mp3) [.txt](./sounds/songLevelComplete_G.txt) [.mid](./sounds/songLevelComplete_G.mid)
-  * Respawn: [songRespawn.mp3](./sounds/songRespawn.mp3) [.txt](./sounds/songRespawn_G.txt) [.mid](./sounds/songRespawn_G.mid)
-  * Combined (20) "frog home" songs: [songzHomeXX_G.txt](./sounds/songzHomeXX_G.txt) [.mid](./sounds/songzHomeXX_G.mid)
-  * Frog home 1: [songHome01.mp3](./sounds/songzHome01.mp3)
-  * Frog home 2: [songHome02.mp3](./sounds/songzHome02.mp3)
-  * Frog home 3: [songHome03.mp3](./sounds/songzHome03.mp3)
-  * Frog home 4: [songHome04.mp3](./sounds/songzHome04.mp3)
-  * Frog home 5: [songHome05.mp3](./sounds/songzHome05.mp3)
-  * Frog home 6: [songHome06.mp3](./sounds/songzHome06.mp3)
-  * Frog home 7: [songHome07.mp3](./sounds/songzHome07.mp3)
-  * Frog home 8: [songHome08.mp3](./sounds/songzHome08.mp3)
-  * Frog home 9: [songHome09.mp3](./sounds/songzHome09.mp3)
-  * Frog home 10: [songHome10.mp3](./sounds/songzHome10.mp3)
-  * Frog home 11: [songHome11.mp3](./sounds/songzHome11.mp3)
-  * Frog home 12: [songHome12.mp3](./sounds/songzHome12.mp3)
-  * Frog home 13: [songHome13.mp3](./sounds/songzHome13.mp3)
-  * Frog home 14: [songHome14.mp3](./sounds/songzHome14.mp3)
-  * Frog home 15: [songHome15.mp3](./sounds/songzHome15.mp3)
-  * Frog home 16: [songHome16.mp3](./sounds/songzHome16.mp3)
-  * Frog home 17: [songHome17.mp3](./sounds/songzHome17.mp3)
-  * Frog home 18: [songHome18.mp3](./sounds/songzHome18.mp3)
-  * Frog home 19: [songHome19.mp3](./sounds/songzHome19.mp3)
-  * Frog home 20: [songHome20.mp3](./sounds/songzHome20.mp3)
+  * Main Song (original/broken): [songIntroAndMain.mp3](./sounds/songIntroAndMain.mp3) | [Intro song CODE](SoundCode.md#song-main-intro) | [Main song CODE](SoundCode.md#song-main-song)
+  * Main Song Fixed: [songIntroAndMain_fix.mp3](./sounds/songIntroAndMain_fix.mp3) | [.txt](./sounds/songIntroAndMain_G.txt) | [.mid](./sounds/songIntroAndMain_G.mid)
+  * Game Over: [songGameOver.mp3](./sounds/songGameOver.mp3) | [.txt](./sounds/songGameOver_G.txt) | [.mid](./sounds/songGameOver_G.mid) | [CODE](SoundCode.md#song-game-over)
+  * Level Complete: [songLevelComplete.mp3](./sounds/songLevelComplete.mp3) | [.txt](./sounds/songLevelComplete_G.txt) | [.mid](./sounds/songLevelComplete_G.mid) | [CODE](SoundCode.md#song-level-complete)
+  * Respawn: [songRespawn.mp3](./sounds/songRespawn.mp3) | [.txt](./sounds/songRespawn_G.txt) | [.mid](./sounds/songRespawn_G.mid) | [CODE](SoundCode.md#song-respawn)
+  * Combined (20) "frog home" songs: [songzHomeXX_G.txt](./sounds/songzHomeXX_G.txt) | [.mid](./sounds/songzHomeXX_G.mid) 
+  * Frog home 1: [songHome01.mp3](./sounds/songzHome01.mp3) | [CODE](SoundCode.md#song-frog-home-1)
+  * Frog home 2: [songHome02.mp3](./sounds/songzHome02.mp3) | [CODE](SoundCode.md#song-frog-home-2)
+  * Frog home 3: [songHome03.mp3](./sounds/songzHome03.mp3) | [CODE](SoundCode.md#song-frog-home-3)
+  * Frog home 4: [songHome04.mp3](./sounds/songzHome04.mp3) | [CODE](SoundCode.md#song-frog-home-4)
+  * Frog home 5: [songHome05.mp3](./sounds/songzHome05.mp3) | [CODE](SoundCode.md#song-frog-home-5)
+  * Frog home 6: [songHome06.mp3](./sounds/songzHome06.mp3) | [CODE](SoundCode.md#song-frog-home-6)
+  * Frog home 7: [songHome07.mp3](./sounds/songzHome07.mp3) | [CODE](SoundCode.md#song-frog-home-7)
+  * Frog home 8: [songHome08.mp3](./sounds/songzHome08.mp3) | [CODE](SoundCode.md#song-frog-home-8)
+  * Frog home 9: [songHome09.mp3](./sounds/songzHome09.mp3) | [CODE](SoundCode.md#song-frog-home-9)
+  * Frog home 10: [songHome10.mp3](./sounds/songzHome10.mp3) | [CODE](SoundCode.md#song-frog-home-10)
+  * Frog home 11: [songHome11.mp3](./sounds/songzHome11.mp3) | [CODE](SoundCode.md#song-frog-home-11)
+  * Frog home 12: [songHome12.mp3](./sounds/songzHome12.mp3) | [CODE](SoundCode.md#song-frog-home-12)
+  * Frog home 13: [songHome13.mp3](./sounds/songzHome13.mp3) | [CODE](SoundCode.md#song-frog-home-13)
+  * Frog home 14: [songHome14.mp3](./sounds/songzHome14.mp3) | [CODE](SoundCode.md#song-frog-home-14)
+  * Frog home 15: [songHome15.mp3](./sounds/songzHome15.mp3) | [CODE](SoundCode.md#song-frog-home-15)
+  * Frog home 16: [songHome16.mp3](./sounds/songzHome16.mp3) | [CODE](SoundCode.md#song-frog-home-16)
+  * Frog home 17: [songHome17.mp3](./sounds/songzHome17.mp3) | [CODE](SoundCode.md#song-frog-home-17)
+  * Frog home 18: [songHome18.mp3](./sounds/songzHome18.mp3) | [CODE](SoundCode.md#song-frog-home-18)
+  * Frog home 19: [songHome19.mp3](./sounds/songzHome19.mp3) | [CODE](SoundCode.md#song-frog-home-19)
+  * Frog home 20: [songHome20.mp3](./sounds/songzHome20.mp3) | [CODE](SoundCode.md#song-frog-home-20)
 
 >>> }
 
@@ -425,22 +433,16 @@ the timer off (main board ROM) and fix the bug in the music.
 ;1134: DF       ; SC06:Volume off and end song
 ```
 
-TODO I am rethinking this. Later in the game this might be played.
+The main song has two bugs in it. About 30 seconds, there is a missing 1/8th note beat. Then a little
+later, the 2nd voice cuts out because of a flipped bit (a bad note definition).
 
-The background voice of the main song has a "stop" command near the end, but there is music beyond the stop. This music has 
-never been heard by anyone except the original game 
-designers. In order to hear the music you have to replace the "stop" with a valid note. I tried to make the fixed note as 
-obviously sour as possible so you can spot it in the 
-song. Here is the recording of the main song played to completion.
+The bugs are described in detail here:
 
-[FroggerFix.mp3](FroggerFix.mp3 )
+  * [Missing 1/8th beat](SoundCode.md#bug-missing-eighth-note)
+  * [Voice stops prematurely](SoundCode.md#bug-garbage-note-stops-the-voice)
 
-You can hear the sour note almost exactly at the 00:25 second mark in the song. That's where the lower background voice would 
-have dropped out if you could have heard it. 
-Interestingly the timer expires just about the same point. Near the end of the song the voices seem almost out of sync.
+Here is the original song and the song after the fix:
 
-The intro 16 beats are from a Japanese song called Inu No Omawarisan (The Dog Policeman). 
-[Listen to it on YouTube](https://www.youtube.com/watch?v=QIRpYwVpP4E).
+  * Main Song (original/broken): [songIntroAndMain.mp3](./sounds/songIntroAndMain.mp3)
+  * Main Song Fixed: [songIntroAndMain_fix.mp3](./sounds/songIntroAndMain_fix.mp3)
 
-The main song is from a Japanese anime called Araiguma Rascal. 
-[Listen to the opening music](https://www.youtube.com/watch?v=2YMH5ntJEZ0).

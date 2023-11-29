@@ -628,7 +628,7 @@ WriteAYAL:
 030E: C9              RET                         ; Out
 ```
 
-## Insert Coin Sound
+## Insert Coin Sound `visual`
 
 [insertCoin.mp3](sounds/insertCoin.mp3)
 
@@ -733,7 +733,7 @@ WriteAYAL:
 03BC: C9              RET                         
 ```
 
-## Die in the Water Sound
+## Die in the Water Sound `visual`
 
 [dieWater.mp3](sounds/dieWater.mp3)
 
@@ -826,7 +826,7 @@ WriteAYAL:
 045C: C9              RET                         
 ```
 
-## Die in the Road Sound
+## Die in the Road Sound `visual`
 
 [dieRoad.mp3](sounds/dieRoad.mp3)
 
@@ -858,7 +858,7 @@ WriteAYAL:
 048C: C9              RET                         
 ```
 
-## Free Life Sound
+## Free Life Sound `visual`
 
 [freeLife.mp3](sounds/freeLife.mp3)
 
@@ -936,7 +936,7 @@ WriteAYAL:
 0504: C9              RET                         
 ```
 
-## Snake on Ground Sound
+## Snake on Ground Sound `visual`
 
 [snakeOnGround.mp3](sounds/snakeOnGround.mp3)
 
@@ -1042,7 +1042,7 @@ WriteAYAL:
 05C0: C3 05 05        JP      $0505               ; {}
 ```
 
-## Race Car Sound
+## Race Car Sound `visual`
 
 [raceCar.mp3](sounds/raceCar.mp3)
 
@@ -1119,7 +1119,7 @@ WriteAYAL:
 063C: C9              RET                         
 ```
 
-## Pick up Friend Sound
+## Pick up Friend Sound `visual`
 
 [pickUpMate.mp3](sounds/pickUpMate.mp3)
 
@@ -1227,7 +1227,7 @@ WriteAYAL:
 06EA: C9              RET                         
 ```
 
-## Frog Landing Safe Sound
+## Frog Landing Safe Sound `visual`
 
 [landingSafe.mp3](sounds/landingSafe.mp3)
 
@@ -1507,12 +1507,32 @@ MusicNOTE:
 0888: C1              POP     BC                  ; Restore original command
 0889: 78              LD      A,B                 ; Get ...
 088A: E6 1F           AND     $1F                 ; ... note value
-;
-; TOPHER PATCH make this a NOP to keep the music in the key of D
-; The music was entered into the tables below in the friendly key of D. I believe
-; this decrement was a mistake -- it plays everything one half step lower, which is
-; NOT friendly on the piano!
-; 088C: 00              NOP
+```
+
+# Bug: Pitch is off by one
+
+There are 60 notes defined in the frequency table. The music is defined with 5-bit
+note pitches providing a range of 32 notes for the song. Two of the values are special:
+0 means rest and 31 means "special command". Each song defines a base offset that is 
+added to the pitch value allowing the range of 30 notes to be defined anywhere in the 
+note table.
+
+The DEC below seems to make sense at first: a pitch value of 0 is a rest -- we should 
+decrement each note so that pitch value 1 is the first note (starting at 0) in the range. 
+But the ranges can be (and seem to be) defined with the "ignore 0" built-in. The DEC wastes 
+CPU cycles, which isn't really a big deal. 
+
+But it is a big deal if you want to play along on the piano! The music offsets in the data 
+below seem to be defined without the want of the DEC. If you look at the main song intro 
+notes without the decrement, they land on the big friendly white keys of the piano. With the 
+decrement, they are 1/2 step down landing them on the black "accidentals".
+
+I believe this decrement was unintentional -- a bug in the code. I believe the notes were 
+defined on the piano a half step higher than they are played by the code. You can NOP the DEC 
+out to play the tune more easily on the piano.
+
+```code
+; 088C: 00              NOP                         ; Path the rom with a NOP to raise all notes up 1/2 step
 088C: 3D              DEC     A                   ; 0 is a rest, 1 is first note (base 0 now)
 ;
 088D: 07              RLCA                        ; Two bytes per entry
@@ -1670,7 +1690,7 @@ DelayTable:
 09A3: 01 01 00 00 00 00 00 00                                       
 ```
 
-# Song Table
+# Song Table `visual`
 
 ```code
 SongTable: 
@@ -1715,7 +1735,11 @@ SongTable:
 0A3B: 1E 14    48 14    3A 0B   ; Home-20 [songHome20.mp3](./sounds/songzHome20.mp3)
 ;
 0A41: 34 10    CA 10    3A 0B   ; Main song [songIntroAndMain.mp3](./sounds/songIntroAndMain.mp3) [.txt](./sounds/songIntroAndMain_G.txt) [.mid](./sounds/songIntroAndMain_G.mid)
+```
 
+# Song: Main Intro
+
+```code
 ;S0A Main song intro
 ; Song=0 Voice=A
 0A47: 1F 0B    ; SC00:Use note set index 11
@@ -1761,7 +1785,7 @@ SongTable:
 0A67: AD       ; NOTE 4G for 2^5
 0A68: A0       ; REST for 2^5
 0A69: FF       ; END OF VOICE
-
+;
 ;S0B Main song intro
 ; Song=0 Voice=B
 0A6A: 1F 05    ; SC00:Use note set index 5
@@ -1798,7 +1822,7 @@ SongTable:
 0A8A: B1       ; NOTE 3B for 2^5
 0A8B: A0       ; REST for 2^5
 0A8C: FF       ; END OF VOICE
-
+;
 ;S0C Main song intro
 ; Song=0 Voice=C
 0A8D: 1F 05    ; SC00:Use note set index 5
@@ -1856,7 +1880,11 @@ SongTable:
 ;C0D Music voice B
 0AC7: DD 21 88 42     LD      IX,$4288            
 0ACB: C3 A1 07        JP      $07A1               ; {}
+```
 
+# Song: Game Over
+
+```code
 ;S1A Game over
 ; Song=1 Voice=A
 0ACE: 1F 0C    ; SC00:Use note set index 12
@@ -1882,7 +1910,7 @@ SongTable:
 0AE4: AD       ; NOTE 4A for 2^5
 0AE5: C6       ; NOTE 4D for 2^6
 0AE6: FF       ; END OF VOICE
-
+;
 ;S1B Game over
 ; Song=1 Voice=B
 0AE7: 1F 06    ; SC00:Use note set index 6
@@ -1904,7 +1932,11 @@ SongTable:
 0AF8: AD       ; NOTE 3A for 2^5
 0AF9: CA       ; NOTE 3F# for 2^6
 0AFA: FF       ; END OF VOICE
+```
 
+# Song: Level Complete
+
+```code
 ;S2A Level complete
 ; Song=2 Voice=A
 0AFB: 1F 0B    ; SC00:Use note set index 11
@@ -1935,7 +1967,7 @@ SongTable:
 0B16: 8F       ; NOTE 4A for 2^4
 0B17: CD       ; NOTE 4G for 2^6
 0B18: FF       ; END OF VOICE
-
+;
 ;S2B Level complete
 ; Song=2 Voice=B
 0B19: 1F 0B    ; SC00:Use note set index 11
@@ -2053,7 +2085,11 @@ SongTable:
 0BAB: C2 B4 07        JP      NZ,$07B4            ; {} No ...
 0BAE: DD 21 80 42     LD      IX,$4280            
 0BB2: C3 A1 07        JP      $07A1               ; {}
+```
 
+# Song: Frog Home 1
+
+```code
 ;S5A Frog-home 1
 ; Song=5 Voice=A
 0BB5: 1F 0B    ; SC00:Use note set index 11
@@ -2103,7 +2139,7 @@ SongTable:
 0BE3: B4       ; NOTE 5D for 2^5
 0BE4: A0       ; REST for 2^5
 0BE5: FF       ; END OF VOICE
-
+;
 ;S5B Frog-home 1 
 ; Song=5 Voice=B
 0BE6: 1F 0B    ; SC00:Use note set index 11
@@ -2152,7 +2188,11 @@ SongTable:
 0C12: AC       ; NOTE 4F# for 2^5
 0C13: A0       ; REST for 2^5
 0C14: FF       ; END OF VOICE
+```
 
+# Song: Respawn
+
+```code
 ;S3A New life begins
 ; Song=3 Voice=A
 0C15: 1F 0B    ; SC00:Use note set index 11
@@ -2174,7 +2214,11 @@ SongTable:
 0C27: B6       ; NOTE 5E for 2^5
 0C28: A0       ; REST for 2^5
 0C29: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 2
+
+```code
 ;S6A Frog-home 2
 ; Song=6 Voice=A
 0C2A: 1F 0B    ; SC00:Use note set index 11
@@ -2218,7 +2262,7 @@ SongTable:
 0C52: D2       ; NOTE 5C for 2^6
 0C53: A0       ; REST for 2^5
 0C54: FF       ; END OF VOICE
-
+;
 ;S6B Frog-home 2
 ; Song=6 Voice=B
 0C55: 1F 0B    ; SC00:Use note set index 11
@@ -2261,7 +2305,11 @@ SongTable:
 0C7B: D2       ; NOTE 5C for 2^6
 0C7C: A0       ; REST for 2^5
 0C7D: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 3
+
+```code
 ;S7A Frog-home 3
 ; Song=7 Voice=A
 0C7E: 1F 0B    ; SC00:Use note set index 11
@@ -2322,7 +2370,7 @@ SongTable:
 0CB7: D9       ; NOTE 5G for 2^6
 0CB8: C0       ; REST for 2^6
 0CB9: FF       ; END OF VOICE
-
+;
 ;S7B Frog-home 3
 ; Song=7 Voice=B
 0CBA: 1F 05    ; SC00:Use note set index 5
@@ -2376,7 +2424,11 @@ SongTable:
 0CEB: 94       ; NOTE 4D for 2^4
 0CEC: E0       ; REST for 2^7
 0CED: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 4
+
+```code
 ;S8A Frog-home 4
 ; Song=8 Voice=A
 0CEE: 1F 0B    ; SC00:Use note set index 11
@@ -2421,7 +2473,7 @@ SongTable:
 0D17: D4       ; NOTE 5D for 2^6
 0D18: A0       ; REST for 2^5
 0D19: FF       ; END OF VOICE
-
+;
 ;S8B Frog-home 4
 ; Song=8 Voice=B
 0D1A: 1F 05    ; SC00:Use note set index 5
@@ -2464,7 +2516,11 @@ SongTable:
 0D40: 88       ; NOTE 3D for 2^4
 0D41: 80       ; REST for 2^4
 0D42: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 5
+
+```code
 ;S9A Frog-home 5
 ; Song=9 Voice=A
 0D43: 1F 0B    ; SC00:Use note set index 11
@@ -2521,7 +2577,7 @@ SongTable:
 0D78: D4       ; NOTE 5D for 2^6
 0D79: A0       ; REST for 2^5
 0D7A: FF       ; END OF VOICE
-
+;
 ;S9B Frog-home 5
 ; Song=9 Voice=B
 0D7B: 1F 05    ; SC00:Use note set index 5
@@ -2559,7 +2615,11 @@ SongTable:
 0D9C: A8       ; NOTE 3D for 2^5
 0D9D: C0       ; REST for 2^6
 0D9E: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 6
+
+```code
 ;S10A Frog-home 6
 ; Song=10 Voice=A
 0D9F: 1F 0B    ; SC00:Use note set index 11
@@ -2611,7 +2671,7 @@ SongTable:
 0DCF: 98       ; NOTE 5F# for 2^4
 0DD0: D9       ; NOTE 5G for 2^6
 0DD1: FF       ; END OF VOICE
-
+;
 ;S10B Frog-home 6
 ; Song=10 Voice=B
 0DD2: 1F 0B    ; SC00:Use note set index 11
@@ -2662,7 +2722,11 @@ SongTable:
 0E00: 92       ; NOTE 5C for 2^4
 0E01: D1       ; NOTE 4B for 2^6
 0E02: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 7
+
+```code
 ;S11A Frog-home 7
 ; Song=11 Voice=A
 0E03: 1F 0B    ; SC00:Use note set index 11
@@ -2752,7 +2816,7 @@ SongTable:
 0E59: 60       ; REST for 2^3
 0E5A: D9       ; NOTE 5G for 2^6
 0E5B: FF       ; END OF VOICE
-
+;
 ;S11B Frog-home 7
 ; Song=11 Voice=B
 0E5C: 1F 0B    ; SC00:Use note set index 11
@@ -2791,7 +2855,11 @@ SongTable:
 0E7E: A6       ; NOTE 4C for 2^5
 0E7F: C5       ; NOTE 3B for 2^6
 0E80: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 8
+
+```code
 ;S12A Frog-home 8
 ; Song=12 Voice=A
 0E81: 1F 0B    ; SC00:Use note set index 11
@@ -2839,7 +2907,7 @@ SongTable:
 0EAD: 98       ; NOTE 5F# for 2^4
 0EAE: B9       ; NOTE 5G for 2^5
 0EAF: FF       ; END OF VOICE
-
+;
 ;S12B Frog-home 8
 ; Song=12 Voice=B
 0EB0: 1F 0B    ; SC00:Use note set index 11
@@ -2886,7 +2954,11 @@ SongTable:
 0EDA: 92       ; NOTE 5C for 2^4
 0EDB: B1       ; NOTE 4B for 2^5
 0EDC: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 9
+
+```code
 ;S13A Frog-home 9
 ; Song=13 Voice=A
 0EDD: 1F 0B    ; SC00:Use note set index 11
@@ -2941,7 +3013,7 @@ SongTable:
 0F10: 8E       ; NOTE 4G# for 2^4
 0F11: CF       ; NOTE 4A for 2^6
 0F12: FF       ; END OF VOICE
-
+;
 ;S13B Frog-home 9
 ; Song=13 Voice=B
 0F13: 1F 0B    ; SC00:Use note set index 11
@@ -2995,7 +3067,11 @@ SongTable:
 0F44: 88       ; NOTE 4D for 2^4
 0F45: C7       ; NOTE 4C# for 2^6
 0F46: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 10
+
+```code
 ;S14A Frog-home 10
 ; Song=14 Voice=A
 0F47: 1F 0B    ; SC00:Use note set index 11
@@ -3045,7 +3121,7 @@ SongTable:
 0F75: 8E       ; NOTE 4G# for 2^4
 0F76: CF       ; NOTE 4A for 2^6
 0F77: FF       ; END OF VOICE
-
+;
 ;S14B Frog-home 10
 ; Song=14 Voice=B
 0F78: 1F 0B    ; SC00:Use note set index 11
@@ -3094,7 +3170,11 @@ SongTable:
 0FA4: 88       ; NOTE 4D for 2^4
 0FA5: C7       ; NOTE 4C# for 2^6
 0FA6: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 11
+
+```code
 ;S15A Frog-home 11
 ; Song=15 Voice=A
 0FA7: 1F 0B    ; SC00:Use note set index 11
@@ -3154,7 +3234,7 @@ SongTable:
 0FDF: 94       ; NOTE 5D for 2^4
 0FE0: CF       ; NOTE 4A for 2^6
 0FE1: FF       ; END OF VOICE
-
+;
 ;S15B Frog-home 11
 ; Song=15 Voice=B
 0FE2: 1F 05    ; SC00:Use note set index 5
@@ -3229,7 +3309,11 @@ SongTable:
 ;C16 Music voice B
 102D: DD 21 88 42     LD      IX,$4288            
 1031: C3 A1 07        JP      $07A1               ; {}
+```
 
+# Song: Main song
+
+```code
 ;S25A Main song
 ; Song=25 Voice=A
 1034: 1F 0B    ; SC00:Use note set index 11
@@ -3279,10 +3363,25 @@ SongTable:
 1062: 91       ; NOTE 4B for 2^4
 1063: 92       ; NOTE 5C for 2^4
 1064: 94       ; NOTE 5D for 2^4
+```
+
+# Bug: Missing eighth note
+
+If you listen to the [original song](https://www.youtube.com/watch?v=2YMH5ntJEZ0)
+you'll hear a few "stretched out" notes in the rhythem around the 30 seconds marks. 
+The stretching appears in two adjacent phrases of the music at this point. But the 
+music defined below has straight eighth notes. The second voice of the music (farther 
+below) has a half note starting at beat one of the measure. The music just below is 
+missing an eighth note duration, and the half note starts an eighth note later than it 
+should. The second voice lags behind the first by an eighth note from that point on (but 
+drops out because of the bug below).
+
+I fixed this by extending one of the eighth notes to a quarter note, which matches
+the timing of the very next phrase.
+
+```code
 ;
-; TOPHER PATCH the length here should be 2^5 here.
-; The song as coded is missing an 8th beat and stays out of sync after.
-; 1065: B6       ; NOTE 5E for 2^5
+; 1065: B6       ; NOTE 5E for 2^5 ; Change this to extend the quarter note to a half
 1065: 96       ; NOTE 5E for 2^4
 ;
 1066: 98       ; NOTE 5F# for 2^4
@@ -3385,7 +3484,7 @@ SongTable:
 10C7: CD       ; NOTE 4G for 2^6
 10C8: C0       ; REST for 2^6
 10C9: FF       ; END OF VOICE
-
+;
 ;S25B Main song
 ; Song=25 Voice=B
 10CA: 1F 05    ; SC00:Use note set index 5
@@ -3493,15 +3592,32 @@ SongTable:
 1131: C0       ; REST for 2^6
 1132: D1       ; NOTE 3B for 2^6
 1133: C0       ; REST for 2^6
-;
-; TOPHER PATCH This note's duration is correct, but the
-; note frequency is 1F, which stops the music. I listened to the original
-; song -- this should be an 3A for 2^6. One bit is flipped:
+```
+
+# Bug: Garbage note stops the voice
+
+This is about midway through the second voice of the main song. There are plenty of
+notes left, but the next note is mangled a bit. The note's duration is correct, but 
+the note number is all 1s, which stops the voice from playing. I listened to the song 
+on youtube and found the missing note should be an A. It seems a singe bit got flipped 
+in the definition:
+
+Original: 110_11111
+
+Needed: 110_01111
+
+I corrected this flipped bit, and you can hear the remainder of the second voice as
+intended. Note in game play, the timer expires before you get to this point in the
+music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
+
+```code
+; This note's duration is correct, but the note frequency is 1F, which stops the music. 
+; I listened to the original song -- this should be an 3A for 2^6. One bit is flipped:
 ; Original: 110_11111
 ; Needed:   110_01111
 ;               ^
 ;               |
-;  1134: CF      ; NOTE 3A for 2^6
+; 1134: CF      ; NOTE 3A for 2^6  ; This is the correct value
 1134: DF       ; SC06:Volume off and end song
 ;
 1135: C0       ; REST for 2^6
@@ -3567,7 +3683,11 @@ SongTable:
 1171: D4       ; NOTE 4D for 2^6
 1172: 8D       ; NOTE 3G for 2^4
 1173: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 12
+
+```code
 ;S16A Frog-home 12
 ; Song=16 Voice=A
 1174: 1F 0B    ; SC00:Use note set index 11
@@ -3651,7 +3771,7 @@ SongTable:
 11C4: 60       ; REST for 2^3
 11C5: CD       ; NOTE 4G for 2^6
 11C6: FF       ; END OF VOICE
-
+;
 ;S16B Frog-home 12
 ; Song=16 Voice=B
 11C7: 1F 05    ; SC00:Use note set index 5
@@ -3695,7 +3815,11 @@ SongTable:
 11EE: B6       ; NOTE 4E for 2^5
 11EF: B4       ; NOTE 4D for 2^5
 11F0: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 13
+
+```code
 ;S17A Frog-home 13
 ; Song=17 Voice=A
 11F1: 1F 0B    ; SC00:Use note set index 11
@@ -3734,11 +3858,15 @@ SongTable:
 1214: 97       ; NOTE 5F for 2^4
 1215: 80       ; REST for 2^4
 1216: FF       ; END OF VOICE
-
+;
 ;S17B Frog-home 13
 ; Song=17 Voice=B
 1217: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 14
+
+```code
 ;S18A Frog-home 14
 ; Song=18 Voice=A
 1218: 1F 0B    ; SC00:Use note set index 11
@@ -3779,7 +3907,7 @@ SongTable:
 123D: 97       ; NOTE 5F for 2^4
 123E: 80       ; REST for 2^4
 123F: FF       ; END OF VOICE
-
+;
 ;S18B Frog-home 14
 ; Song=18 Voice=B
 1240: 1F 0B    ; SC00:Use note set index 11
@@ -3819,7 +3947,11 @@ SongTable:
 1263: 8F       ; NOTE 4A for 2^4
 1264: 80       ; REST for 2^4
 1265: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 15
+
+```code
 ;S19A Frog-home 15
 ; Song=19 Voice=A
 1266: 1F 0B    ; SC00:Use note set index 11
@@ -3864,7 +3996,7 @@ SongTable:
 128F: B2       ; NOTE 5C for 2^5
 1290: 80       ; REST for 2^4
 1291: FF       ; END OF VOICE
-
+;
 ;S19B Frog-home 15
 ; Song=19 Voice=B
 1292: 1F 0B    ; SC00:Use note set index 11
@@ -3910,7 +4042,11 @@ SongTable:
 12BB: AA       ; NOTE 4E for 2^5
 12BC: 80       ; REST for 2^4
 12BD: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 16
+
+```code
 ;S20A Frog-home 16
 ; Song=20 Voice=A
 12BE: 1F 0B    ; SC00:Use note set index 11
@@ -3942,7 +4078,7 @@ SongTable:
 12DA: AA       ; NOTE 4E for 2^5
 12DB: 80       ; REST for 2^4
 12DC: FF       ; END OF VOICE
-
+;
 ;S20B Frog-home 16
 ; Song=20 Voice=B
 12DD: 1F 0B    ; SC00:Use note set index 11
@@ -3969,7 +4105,11 @@ SongTable:
 12F3: A1       ; NOTE 3G for 2^5
 12F4: 80       ; REST for 2^4
 12F5: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 17
+
+```code
 ;S21A Frog-home 17
 ; Song=21 Voice=A
 12F6: 1F 0B    ; SC00:Use note set index 11
@@ -4005,7 +4145,7 @@ SongTable:
 1316: AF       ; NOTE 4A for 2^5
 1317: 80       ; REST for 2^4
 1318: FF       ; END OF VOICE
-
+;
 ;S21B Frog-home 17
 ; Song=21 Voice=B
 1319: 1F 0B    ; SC00:Use note set index 11
@@ -4040,7 +4180,11 @@ SongTable:
 1337: A7       ; NOTE 4C# for 2^5
 1338: 80       ; REST for 2^4
 1339: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 18
+
+```code
 ;S22A Frog-home 18
 ; Song=22 Voice=A
 133A: 1F 0B    ; SC00:Use note set index 11
@@ -4105,7 +4249,7 @@ SongTable:
 1377: 80       ; REST for 2^4
 1378: A0       ; REST for 2^5
 1379: FF       ; END OF VOICE
-
+;
 ;S22B Frog-home 18
 ; Song=22 Voice=B
 137A: 1F 0B    ; SC00:Use note set index 11
@@ -4169,7 +4313,11 @@ SongTable:
 13B5: 80       ; REST for 2^4
 13B6: A0       ; REST for 2^5
 13B7: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 19
+
+```code
 ;S23A Frog-home 19
 ; Song=23 Voice=A
 13B8: 1F 0B    ; SC00:Use note set index 11
@@ -4222,7 +4370,7 @@ SongTable:
 13E9: 97       ; NOTE 5F for 2^4
 13EA: D6       ; NOTE 5E for 2^6
 13EB: FF       ; END OF VOICE
-
+;
 ;S23B Frog-home 19
 ; Song=23 Voice=B
 13EC: 1F 0B    ; SC00:Use note set index 11
@@ -4274,7 +4422,11 @@ SongTable:
 141B: 94       ; NOTE 5D for 2^4
 141C: D2       ; NOTE 5C for 2^6
 141D: FF       ; END OF VOICE
+```
 
+# Song: Frog Home 20
+
+```code
 ;S24A Frog-home 20
 ; Song=24 Voice=A
 141E: 1F 0B    ; SC00:Use note set index 11
@@ -4317,7 +4469,7 @@ SongTable:
 1445: B0       ; NOTE 4A# for 2^5
 1446: D1       ; NOTE 4B for 2^6
 1447: FF       ; END OF VOICE
-
+;
 ;S24B Frog-home 20
 ; Song=24 Voice=B
 1448: 1F 05    ; SC00:Use note set index 5
@@ -4350,7 +4502,7 @@ SongTable:
 1464: FF       ; END OF VOICE
 ```
 
-## Time Running Out Sound
+## Time Running Out Sound `visual`
 
 [runningOutOfTime.mp3](sounds/runningOutOfTime.mp3)
 
@@ -4361,7 +4513,7 @@ SongTable:
 1468: 32 C8 42        LD      ($42C8),A           ; {ram.m42C8}
 146B: 32 C3 42        LD      ($42C3),A           ; {ram.m42C3}
 146E: F7              RST     $30                 
-146F: C3 70 16        JP      $1670               ; {}
+146F: C3 70 16        JP      $1670               ; {} Continue
 ;
 ;C05 Time running out
 1472: DD 21 B0 42     LD      IX,$42B0            
@@ -4373,7 +4525,7 @@ SongTable:
 1481: C9              RET                         
 ```
 
-## Frog Hopping Sound
+## Frog Hopping Sound `visual`
 
 [hop.mp3](sounds/hop.mp3)
 
@@ -4573,7 +4725,6 @@ SongTable:
 15DF: DD 74 03        LD      (IX+$03),H          
 15E2: C9              RET                         
 
-
 15E3: 6B              LD      L,E                 
 15E4: 08              EX      AF,AF'              
 15E5: F2 07 80        JP      P,$8007             ; 
@@ -4685,18 +4836,20 @@ SongTable:
 166D: 42              LD      B,D                 
 166E: A7              AND     A                   
 166F: C0              RET     NZ                  
+
+; Continue time-running-out initialization
 1670: 21 94 16        LD      HL,$1694            
 1673: 11 B0 42        LD      DE,$42B0            
 1676: 01 0A 00        LD      BC,$000A            
 1679: ED B0           LDIR                        
 167B: 3A C3 42        LD      A,($42C3)           ; {ram.m42C3}
-167E: 87              ADD     A,A                 
-167F: 4F              LD      C,A                 
-1680: 87              ADD     A,A                 
-1681: 81              ADD     A,C                 
+167E: 87              ADD     A,A                 ; times 2
+167F: 4F              LD      C,A                 ; times ...
+1680: 87              ADD     A,A                 ; ... four
+1681: 81              ADD     A,C                 ; times 5
 1682: 4F              LD      C,A                 
 1683: 21 9E 16        LD      HL,$169E            
-1686: 09              ADD     HL,BC               
+1686: 09              ADD     HL,BC               ; B is zero from before
 1687: 11 B2 42        LD      DE,$42B2            
 168A: 7E              LD      A,(HL)              
 168B: 12              LD      (DE),A              
@@ -4707,16 +4860,10 @@ SongTable:
 1692: 13              INC     DE                  
 1693: C9              RET                         
 
-1694: 01 01 00        LD      BC,$0001            
-1697: 00              NOP                         
-1698: 00              NOP                         
-1699: 00              NOP                         
-169A: 00              NOP                         
-169B: 00              NOP                         
-169C: 00              NOP                         
-169D: 00              NOP                         
-169E: AA              XOR     D                   
-169F: 16 CD           LD      D,$CD               
+1694: 01 01 00 00 00 00 00 00 00 00                        
+
+169E: AA                                
+169F: 16 CD                          
 16A1: 16 CD           LD      D,$CD               
 16A3: 16 B8           LD      D,$B8               
 16A5: 16 CD           LD      D,$CD               
@@ -4759,16 +4906,6 @@ SongTable:
 # Unused Area
 
 ```code                
-
-; 16D0: 3E 0A     LD A, $0A
-; 16D2: 32 40 40  LD ($4040),A
-; 16D5: 3E 0B     LD A, $0B
-; 16D7: 32 41 40  LD ($4041),A
-; 16DA: 3E 00     LD A, 0
-; 16DC: 32 42 40  LD ($4042),A
-; 16DF: 32 43 40  LD ($4043),A
-; 16D2: C3 61 09  JP      $0961
-
 16CC: FF FF FF FF
 16D0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 16E0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF    
