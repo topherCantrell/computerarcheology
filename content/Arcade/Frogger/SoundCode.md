@@ -628,7 +628,7 @@ WriteAYAL:
 030E: C9              RET                         ; Out
 ```
 
-## Insert Coin Sound `visual`
+## Insert Coin Sound
 
 [insertCoin.mp3](sounds/insertCoin.mp3)
 
@@ -733,7 +733,7 @@ WriteAYAL:
 03BC: C9              RET                         
 ```
 
-## Die in the Water Sound `visual`
+## Die in the Water Sound
 
 [dieWater.mp3](sounds/dieWater.mp3)
 
@@ -826,7 +826,7 @@ WriteAYAL:
 045C: C9              RET                         
 ```
 
-## Die in the Road Sound `visual`
+## Die in the Road Sound
 
 [dieRoad.mp3](sounds/dieRoad.mp3)
 
@@ -858,7 +858,7 @@ WriteAYAL:
 048C: C9              RET                         
 ```
 
-## Free Life Sound `visual`
+## Free Life Sound
 
 [freeLife.mp3](sounds/freeLife.mp3)
 
@@ -936,7 +936,7 @@ WriteAYAL:
 0504: C9              RET                         
 ```
 
-## Snake on Ground Sound `visual`
+## Snake on Ground Sound
 
 [snakeOnGround.mp3](sounds/snakeOnGround.mp3)
 
@@ -1042,7 +1042,7 @@ WriteAYAL:
 05C0: C3 05 05        JP      $0505               ; {}
 ```
 
-## Race Car Sound `visual`
+## Race Car Sound
 
 [raceCar.mp3](sounds/raceCar.mp3)
 
@@ -1119,7 +1119,7 @@ WriteAYAL:
 063C: C9              RET                         
 ```
 
-## Pick up Friend Sound `visual`
+## Pick up Friend Sound
 
 [pickUpMate.mp3](sounds/pickUpMate.mp3)
 
@@ -1227,7 +1227,7 @@ WriteAYAL:
 06EA: C9              RET                         
 ```
 
-## Frog Landing Safe Sound `visual`
+## Frog Landing Safe Sound
 
 [landingSafe.mp3](sounds/landingSafe.mp3)
 
@@ -1690,7 +1690,7 @@ DelayTable:
 09A3: 01 01 00 00 00 00 00 00                                       
 ```
 
-# Song Table `visual`
+# Song Table
 
 ```code
 SongTable: 
@@ -4502,7 +4502,7 @@ music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
 1464: FF       ; END OF VOICE
 ```
 
-## Time Running Out Sound `visual`
+## Time Running Out Sound
 
 [runningOutOfTime.mp3](sounds/runningOutOfTime.mp3)
 
@@ -4525,7 +4525,7 @@ music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
 1481: C9              RET                         
 ```
 
-## Frog Hopping Sound `visual`
+## Frog Hopping Sound
 
 [hop.mp3](sounds/hop.mp3)
 
