@@ -1,4 +1,11 @@
+# Phoenix
+
+Peter Martinides (Sorbas2020 user at github)
+
 # Moon Patrol 
+
+Jean-Francois Fabre
+jotd666@gmail.com
 
 Trevor Senn
 switchoff49@gmail.com
@@ -10,7 +17,7 @@ Guy Shavit <gushavi@gmail.com>
 
 # Defender
 
-Lord Sméagol <lordsmeagol4u@gmail.com>
+Lord Smeagol <lordsmeagol4u@gmail.com>
 
 # Time Pilot
 

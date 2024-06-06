@@ -11,7 +11,7 @@
 >>>    Galaga:Galaga 5%<br>
 >>>    MoonPatrol:Moon Patrol 75%<br>
 >>>    OmegaRace:Omega Race 10%<br>
->>>    Phoenix:Phoenix 1%<br>
+>>>    Phoenix:Phoenix 10%<br>
 >>>    SpaceInvaders:Space Invaders<br>
 >>>    TimePilot:Time Pilot (Sound)<br>
 >>>    SeaWolf:Sea Wolf 1%<br>

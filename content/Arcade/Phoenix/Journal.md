@@ -6,9 +6,9 @@
   - Why the padding before certain routines to land them on nice addresses?
   - How does the call-stack work when RAM banks are changed
 
-## 6/3/2023 
+## 6/5/2024
 
-
+I got an awesome merge request from Peter (Sorbas2020 on github). He added lots of comments and data disassembly.
 
 ## 6/2/2023 
 

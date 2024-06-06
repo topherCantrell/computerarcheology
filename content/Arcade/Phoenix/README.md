@@ -12,9 +12,11 @@
 >>>   ----<br>
 >>>   Journal.md<br>
 
-# Phoenix
+# Attribution
 
-TODO
+This is a joint effort made possible by Peter's hard work (https://github.com/Sorbas2020).
+
+# Phoenix
 
 # Code Links
 

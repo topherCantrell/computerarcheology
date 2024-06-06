@@ -121,13 +121,13 @@ StartupCont:
 ;Startup continues here
 ;
 0068: FB              EI                          ; Enable interrupts * J0016,J0120,J01D7
-0069: CD 8A 0B        CALL    $0B8A               ; {}
+0069: CD 8A 0B        CALL    $0B8A               ; {code.display_stgatus_bar}
 006C: 3E 01           LD      A,$01               ; 
 006E: 32 4D E0        LD      ($E04D),A           ; {ram.mE04D}
 0071: 32 0F E5        LD      ($E50F),A           ; {ram.??E50F??}
 0074: 3C              INC     A                   ; 
 0075: 32 08 E5        LD      ($E508),A           ; {ram.mE508}
-0078: C3 B7 0B        JP      $0BB7               ; {}
+0078: C3 B7 0B        JP      $0BB7               ; {code.jf_start_new_section}
 
 007B: 06 00           LD      B,$00               ; * J0504
 007D: AF              XOR     A                   ; * J0091
@@ -136,8 +136,8 @@ StartupCont:
 0084: 70              LD      (HL),B              ; 
 0085: FB              EI                          ; 
 0086: CD 45 07        CALL    $0745               ; {}
-0089: CD 8A 0B        CALL    $0B8A               ; {}
-008C: C3 B7 0B        JP      $0BB7               ; {}
+0089: CD 8A 0B        CALL    $0B8A               ; {code.display_stgatus_bar}
+008C: C3 B7 0B        JP      $0BB7               ; {code.jf_start_new_section}
 008F: 06 04           LD      B,$04               ; * J00EF
 0091: 18 EA           JR      $7D                 ; {}
 
@@ -205,10 +205,10 @@ StartupCont:
 0106: 31 00 E8        LD      SP,$E800            ; 
 0109: FB              EI                          ; 
 010A: CD 29 0D        CALL    $0D29               ; {}
-010D: CD 33 05        CALL    $0533               ; {} * J0110
+010D: CD 33 05        CALL    $0533               ; {code.jf_show_push_button_screen_text} * J0110
 0110: 28 FB           JR      Z,$10D              ; {}
 0112: CD 38 0B        CALL    $0B38               ; {}
-0115: C3 B7 0B        JP      $0BB7               ; {}
+0115: C3 B7 0B        JP      $0BB7               ; {code.jf_start_new_section}
 0118: 31 00 E8        LD      SP,$E800            ; * J13F8
 011B: 21 46 E0        LD      HL,$E046            ; 
 011E: 35              DEC     (HL)                ; 
@@ -220,16 +220,16 @@ StartupCont:
 012A: 21 15 E5        LD      HL,$E515            ; 
 012D: 35              DEC     (HL)                ; 
 012E: 28 1B           JR      Z,$14B              ; {}
-0130: CD D5 06        CALL    $06D5               ; {}
+0130: CD D5 06        CALL    $06D5               ; {code.jf_display_nb_lives}
 0133: 21 46 E0        LD      HL,$E046            ; 
 0136: CB 66           BIT     4,(HL)              ; 
-0138: CA B7 0B        JP      Z,$0BB7             ; {}
+0138: CA B7 0B        JP      Z,$0BB7             ; {code.jf_start_new_section}
 013B: CD 03 06        CALL    $0603               ; {code.SwapPlayers}
 013E: 3A 15 E5        LD      A,($E515)           ; {ram.mE515}
 0141: A7              AND     A                   ; 
-0142: C2 B7 0B        JP      NZ,$0BB7            ; {}
+0142: C2 B7 0B        JP      NZ,$0BB7            ; {code.jf_start_new_section}
 0145: CD 03 06        CALL    $0603               ; {code.SwapPlayers}
-0148: C3 B7 0B        JP      $0BB7               ; {}
+0148: C3 B7 0B        JP      $0BB7               ; {code.jf_start_new_section}
 
 014B: 3E 1B           LD      A,$1B               ; Play ... * J012E
 014D: CD 75 0D        CALL    $0D75               ; {code.AddSound} ... ending music
@@ -237,7 +237,7 @@ StartupCont:
 0153: CB 66           BIT     4,(HL)              ; 
 0155: 28 1F           JR      Z,$176              ; {}
 0157: 21 ED 2A        LD      HL,$2AED            ; "GAME OVER PLAYER " script
-015A: CD 4E 03        CALL    $034E               ; {code.SlowScript}
+015A: CD 4E 03        CALL    $034E               ; {code.write_text_to_screen_at_xy_with_delay}
 015D: 3A 46 E0        LD      A,($E046)           ; {ram.mE046}
 0160: 1F              RRA                         ; 
 0161: 1F              RRA                         ; 
@@ -249,9 +249,9 @@ StartupCont:
 016C: CD E4 05        CALL    $05E4               ; {code.Delay1Sec}
 016F: 3A 15 E5        LD      A,($E515)           ; {ram.mE515}
 0172: A7              AND     A                   ; 
-0173: C2 B7 0B        JP      NZ,$0BB7            ; {}
+0173: C2 B7 0B        JP      NZ,$0BB7            ; {code.jf_start_new_section}
 0176: 21 02 2B        LD      HL,$2B02            ; "GAME OVER" script * J0155
-0179: CD 4E 03        CALL    $034E               ; {code.SlowScript}
+0179: CD 4E 03        CALL    $034E               ; {code.write_text_to_screen_at_xy_with_delay}
 017C: CD 1C 06        CALL    $061C               ; {code.WhichPlayer}
 017F: 28 03           JR      Z,$184              ; {}
 0181: CD 03 06        CALL    $0603               ; {code.SwapPlayers}
@@ -281,12 +281,12 @@ StartupCont:
 01B9: CD 74 03        CALL    $0374               ; {code.FlashScript}
 01BC: CD 27 05        CALL    $0527               ; {code.PrintCreds}
 01BF: 18 E6           JR      $1A7                ; {}
-01C1: CD 33 05        CALL    $0533               ; {} * J01B4
+01C1: CD 33 05        CALL    $0533               ; {code.jf_show_push_button_screen_text} * J01B4
 01C4: 28 E1           JR      Z,$1A7              ; {}
 01C6: CD DA 01        CALL    $01DA               ; {}
 01C9: CD DA 01        CALL    $01DA               ; {}
 01CC: CD BF 0C        CALL    $0CBF               ; {}
-01CF: C3 B7 0B        JP      $0BB7               ; {}
+01CF: C3 B7 0B        JP      $0BB7               ; {code.jf_start_new_section}
 01D2: F3              DI                          ; * J0193
 01D3: AF              XOR     A                   ; 
 01D4: 32 46 E0        LD      ($E046),A           ; {ram.mE046}
@@ -341,7 +341,7 @@ ObjectCommands:
 0216: C2 13    ; 06  13C2 ISROBJRun_06 Init buggy crash
 0218: EB 13    ; 07  13EB ISROBJRun_07 Handle buggy crash
 021A: 21 14    ; 08  1421 ISROBJRun_08 Hold buggy in air durring splash
-021C: 09 18    ; 09  1809 ISROBJRun_09
+021C: 09 18    ; 09  1809 ISROBJRun_09 Jean Update Scrolling Layers
 021E: E0 15    ; 0A  15E0 ISROBJRun_0A Init player forward shot
 0220: FA 15    ; 0B  15FA ISROBJRun_0B
 0222: 2D 16    ; 0C  162D ISROBJRun_0C
@@ -385,13 +385,14 @@ ObjectCommands:
       
 ; Main loop
 ;
-026E: CD DC 0D        CALL    $0DDC               ; {} ?? Change terrain
+MainLoop:
+026E: CD DC 0D        CALL    $0DDC               ; {code.jf_handle_path_advance} ?? Change terrain
 0271: CD 0D 21        CALL    $0D21               ; {} Draw "point letter" in upper center status window
 0274: CD 3A 1B        CALL    $1B3A               ; {} ?? Start UFO shot
 0277: CD C7 1B        CALL    $1BC7               ; {} ?? Init aliens
 027A: CD A7 12        CALL    $12A7               ; {} ?? Alien sounds
 027D: CD E7 12        CALL    $12E7               ; {} ??
-0280: CD DC 0D        CALL    $0DDC               ; {} ?? Change terrain
+0280: CD DC 0D        CALL    $0DDC               ; {code.jf_handle_path_advance} ?? Change terrain
 ```
 
 # Run Text Commands
@@ -404,7 +405,7 @@ RunTxtCmds:
 ;
 0286: 21 D0 E1        LD      HL,$E1D0            ; Next available text command pointer * J02AB
 0289: BE              CP      (HL)                ; Have we reached the end of the list?
-028A: 28 E2           JR      Z,$26E              ; {} Yes ... back to the top
+028A: 28 E2           JR      Z,$26E              ; {code.MainLoop} Yes ... back to the top
 ;
 028C: 5F              LD      E,A                 ; IX ...
 028D: 16 E6           LD      D,$E6               ; ... becomes ...
@@ -517,7 +518,7 @@ RunTextScript:
 ; $26   ... 0.3 second delay (NEVER USED)
 ; $27   ... 0.8 second delay (NEVER USED)
 ; 
-0300: CD DB 03        CALL    $03DB               ; {} Get screen pointer and color from script * C018D,J0379,C052A,C0548,C074B,C0B47,C0C31,C0C89,C0CEA,C0D06,J1258,C1285,C27EA,C27F3
+0300: CD DB 03        CALL    $03DB               ; {code.jf_compute_screen_address_and_attribute} Get screen pointer and color from script * C018D,J0379,C052A,C0548,C074B,C0B47,C0C31,C0C89,C0CEA,C0D06,J1258,C1285,C27EA,C27F3
 0303: 7E              LD      A,(HL)              ; Get command * J031B,J0320
 0304: 06 12           LD      B,$12               ; 18 ISR delay (0.3 seconds)
 0306: FE 26           CP      $26                 ; 26 ...
@@ -579,7 +580,8 @@ SlowScript:
 ; Run a text script, but pause between characters. This is used
 ; in the "between rounds" to show the time and bonus points.
 ;
-034E: CD DB 03        CALL    $03DB               ; {} Get screen cursor and color
+write_text_to_screen_at_xy_with_delay:
+034E: CD DB 03        CALL    $03DB               ; {code.jf_compute_screen_address_and_attribute} Get screen cursor and color
 0351: CD C9 03        CALL    $03C9               ; {code.RunTextScript2} Process one script command (abort takes us back to caller) * J035F
 0354: 3E 03           LD      A,$03               ; Set ...
 0356: 32 50 E0        LD      ($E050),A           ; {ram.isrCount3} ... ISR delay
@@ -623,7 +625,7 @@ EraseScript:
 ; The set-color command is ignored.
 ; The repeat-character is ignored.
 ;
-037B: CD DB 03        CALL    $03DB               ; {} Load cursor and color from script * J0335,J0389,C126D,C1327
+037B: CD DB 03        CALL    $03DB               ; {code.jf_compute_screen_address_and_attribute} Load cursor and color from script * J0335,J0389,C126D,C1327
 037E: 7E              LD      A,(HL)              ; Get next character/command * J038E,J0391
 037F: 23              INC     HL                  ; Next in script
 0380: FE 21           CP      $21                 ; Abort script ...
@@ -652,6 +654,7 @@ Print3BCD:
 0395: E6 0F           AND     $0F                 ; If the lower digit is 0 then ...
 0397: 28 04           JR      Z,$39D              ; {} ... skip printing it
 0399: 1B              DEC     DE                  ; We will be printing this digit after all
+jf_write_2_digits_to_screen:
 039A: CD A6 03        CALL    $03A6               ; {} Print lower BCD digit * C2924,C293A,J296E
 039D: 2B              DEC     HL                  ; Next less-significant BCD value * J0397
 039E: 7E              LD      A,(HL)              ; Get BCD number
@@ -688,6 +691,7 @@ PrintDigit:
 03BF: C6 30           ADD     $30                 ; Convert to number (ASCII)
 ;
 ; Store character A to screen at DE and color C to screen at IY
+jf_write_to_screen_and_move_cursor:
 03C1: 12              LD      (DE),A              ; Store character (tile number) to screen * J03D9,C0408
 03C2: FD 71 00        LD      (IY+$00),C          ; Store background to color memory
 03C5: 13              INC     DE                  ; Next on screen
@@ -713,11 +717,12 @@ RunTextScript2:
 03CF: FE 23           CP      $23                 ; Command 23 ...
 03D1: 28 12           JR      Z,$3E5              ; {} ... set color value
 03D3: FE 25           CP      $25                 ; Command 25 ...
-03D5: 28 2D           JR      Z,$404              ; {} ... write repeated character
+03D5: 28 2D           JR      Z,$404              ; {code.jf_write_text_using_rle} ... write repeated character
 03D7: FE 22           CP      $22                 ; Command 22 ... set cursor and load color
-03D9: 20 E6           JR      NZ,$3C1             ; {} Normal character (not a command) ... store it to screen
+03D9: 20 E6           JR      NZ,$3C1             ; {code.jf_write_to_screen_and_move_cursor} Normal character (not a command) ... store it to screen
 ;
 ; value 22 ... set screen cursor (tile and color) and load color
+jf_compute_screen_address_and_attribute:
 03DB: 5E              LD      E,(HL)              ; Load ... * C0300,C034E,C037B
 03DC: 23              INC     HL                  ; ... the ...
 03DD: 56              LD      D,(HL)              ; ... tile memory ...
@@ -770,11 +775,12 @@ TransColor:
 0403: C9              RET                         ; Return out of script (abort)
 ;
 ; value 25 ... write a repeated character to screen
+jf_write_text_using_rle:
 0404: 46              LD      B,(HL)              ; Get the count * J03D5
 0405: 23              INC     HL                  ; Skip count byte
 0406: 7E              LD      A,(HL)              ; Get the character value
 0407: 23              INC     HL                  ; Skip to next
-0408: CD C1 03        CALL    $03C1               ; {} Write the character/color * J040B
+0408: CD C1 03        CALL    $03C1               ; {code.jf_write_to_screen_and_move_cursor} Write the character/color * J040B
 040B: 10 FB           DJNZ    $408                ; {} Do all loops
 040D: C9              RET                         ; Done
 ```
@@ -879,7 +885,7 @@ GetInputs:
 ;
 047A: 3A 46 E0        LD      A,($E046)           ; {ram.mE046} ??Demo mode flag * C00F6
 047D: 07              RLCA                        ; ??Are we in demo mode?
-047E: 30 5B           JR      NC,$4DB             ; {} ??Yes ... go get demo inputs
+047E: 30 5B           JR      NC,$4DB             ; {code.jf_get_current_input2} ??Yes ... go get demo inputs
 ;
 0480: 11 01 D0        LD      DE,$D001            ; Player 1 inputs
 0483: CB 67           BIT     4,A                 ; 
@@ -901,6 +907,7 @@ GetInputs:
 049B: 77              LD      (HL),A              ; Store the start buttons
 049C: C9              RET                         ; Done
 
+jf_get_current_input:
 049D: 3A 0B E5        LD      A,($E50B)           ; {ram.mE50B} * J04E4
 04A0: 2A F7 E0        LD      HL,($E0F7)          ; {ram.mE0F7}
 04A3: BE              CP      (HL)                ; 
@@ -941,14 +948,15 @@ GetInputs:
 04DA: C9              RET                         ; 
 
 ; Automated inputs
+jf_get_current_input2:
 04DB: 21 4D E0        LD      HL,$E04D            ; * J047E
 04DE: 3A 4E E0        LD      A,($E04E)           ; {ram.isrCNT_1} ISR incrementing counter
 04E1: 47              LD      B,A                 ; 
 04E2: 7E              LD      A,(HL)              ; 
 04E3: A7              AND     A                   ; 
-04E4: 28 B7           JR      Z,$49D              ; {}
+04E4: 28 B7           JR      Z,$49D              ; {code.jf_get_current_input}
 04E6: FE 50           CP      $50                 ; 
-04E8: 28 1D           JR      Z,$507              ; {}
+04E8: 28 1D           JR      Z,$507              ; {code.jf_jeep_jumps_and_title_shows}
 04EA: CB 18           RR      B                   ; 
 04EC: 38 05           JR      C,$4F3              ; {}
 04EE: CB 18           RR      B                   ; 
@@ -967,6 +975,7 @@ GetInputs:
 0503: D8              RET     C                   ; 
 0504: C3 7B 00        JP      $007B               ; {}
 ;
+jf_jeep_jumps_and_title_shows:
 0507: 21 00 E3        LD      HL,$E300            ; MoonBuggy object * J04E8
 050A: 7E              LD      A,(HL)              ; Get the current command
 050B: FE 04           CP      $04                 ; Is the buggy in the air?
@@ -998,6 +1007,7 @@ PrintCreds:
 052D: 3A 48 E0        LD      A,($E048)           ; {ram.Credits} Number of credits
 0530: C3 AE 03        JP      $03AE               ; {code.PrintBCD} Print it and out
 
+jf_show_push_button_screen_text:
 0533: 21 D1 2A        LD      HL,$2AD1            ; " PUSH BUTTON " script * C010D,C01C1
 0536: CD 74 03        CALL    $0374               ; {code.FlashScript} Print the flashing script
 0539: CD 27 05        CALL    $0527               ; {code.PrintCreds} Print number of credits
@@ -1131,11 +1141,12 @@ NextSound:
 Delay1Sec:
 ; Set countdown timer to 1 second and wait for it
 05E4: 3E 40           LD      A,$40               ; About 1 second * C016C
-05E6: 18 02           JR      $5EA                ; {} Wait for it and return
+05E6: 18 02           JR      $5EA                ; {code.WaitSync} Wait for it and return
 
 Delay3Sec:
 ; Set countdown timer to 3 seconds and wait for it.
 05E8: 3E C0           LD      A,$C0               ; About 3 seconds * C0184,J0794,C27E4,C2889,C288E,C28BA
+WaitSync:
 05EA: 32 50 E0        LD      ($E050),A           ; {ram.isrCount3} Set countdown timer * J05E6,C2859,C286E
 05ED: 3A 50 E0        LD      A,($E050)           ; {ram.isrCount3} Wait for ... * J05F1
 05F0: A7              AND     A                   ; ... count to ...
@@ -1147,12 +1158,13 @@ ClearRAM:
 ;
 05F4: 21 00 E0        LD      HL,$E000            ; Point to start of RAM * C000D
 05F7: 01 00 07        LD      BC,$0700            ; Number of bytes to clear
+jf_clear_area:
 05FA: 36 00           LD      (HL),$00            ; Clear location * J0600,C0BBD,C0C9E,C0D2F,C0D38,C294E,J2957,C2960
 05FC: 23              INC     HL                  ; Next in RAM
 05FD: 0B              DEC     BC                  ; Decrement counter
 05FE: 78              LD      A,B                 ; Is counter ...
 05FF: B1              OR      C                   ; ... all 0's?
-0600: 20 F8           JR      NZ,$5FA             ; {} No ... keep clearing
+0600: 20 F8           JR      NZ,$5FA             ; {code.jf_clear_area} No ... keep clearing
 0602: C9              RET                         ; Done
 
 SwapPlayers:
@@ -1225,7 +1237,7 @@ TxtCmd_01:
 064D: 23              INC     HL                  ; Next in high
 064E: 13              INC     DE                  ; Next in current
 064F: 10 FA           DJNZ    $64B                ; {} Compare all digits
-0651: 38 15           JR      C,$668              ; {} Current score is lower ... don't update high score
+0651: 38 15           JR      C,$668              ; {code.jf_display_score} Current score is lower ... don't update high score
 ;
 0653: 2A 00 E5        LD      HL,($E500)          ; {ram.curScore} Copy ...
 0656: 22 08 E0        LD      ($E008),HL          ; {ram.highScore} ... current score ...
@@ -1236,6 +1248,7 @@ TxtCmd_01:
 0662: 32 0B E0        LD      ($E00B),A           ; {ram.highPoint} Copy to high passed-point
 0665: CD 85 06        CALL    $0685               ; {code.PrintHigh} Print high-score and high-passed-point
 ;
+jf_display_score:
 0668: 11 84 80        LD      DE,$8084            ; Player 1's score on screen * J0651,C0CED,C0CFD
 066B: CD 1C 06        CALL    $061C               ; {code.WhichPlayer} Player 1 or 2?
 066E: 28 03           JR      Z,$673              ; {} This is player 1 ... we have the right screen location
@@ -1307,17 +1320,19 @@ CheckExtPlay:
 06D0: 34              INC     (HL)                ; 
 06D1: 21 15 E5        LD      HL,$E515            ; 
 06D4: 34              INC     (HL)                ; 
+jf_display_nb_lives:
 06D5: 3A 15 E5        LD      A,($E515)           ; {ram.mE515} * C0130,C0D09
 06D8: 3D              DEC     A                   ; 
 06D9: 28 03           JR      Z,$6DE              ; {}
 06DB: 4F              LD      C,A                 ; 
 06DC: 3E 01           LD      A,$01               ; 
 06DE: 21 7C 80        LD      HL,$807C            ; * J06D9
-06E1: CD EC 06        CALL    $06EC               ; {}
-06E4: CD EC 06        CALL    $06EC               ; {}
-06E7: 28 03           JR      Z,$6EC              ; {}
+06E1: CD EC 06        CALL    $06EC               ; {code.jf_write_to_screen_and_inc_x_and_char}
+06E4: CD EC 06        CALL    $06EC               ; {code.jf_write_to_screen_and_inc_x_and_char}
+06E7: 28 03           JR      Z,$6EC              ; {code.jf_write_to_screen_and_inc_x_and_char}
 06E9: 79              LD      A,C                 ; 
 06EA: C6 30           ADD     $30                 ; 
+jf_write_to_screen_and_inc_x_and_char:
 06EC: 77              LD      (HL),A              ; * C06E1,C06E4,J06E7
 06ED: 23              INC     HL                  ; 
 06EE: A7              AND     A                   ; 
@@ -1450,7 +1465,7 @@ ReadSettings:
 074B: CD 00 03        CALL    $0300               ; {code.RunTextScript}
 074E: CD 27 05        CALL    $0527               ; {code.PrintCreds}
 0751: 21 57 2C        LD      HL,$2C57            ; "INSERT COIN" script
-0754: CD 4E 03        CALL    $034E               ; {code.SlowScript}
+0754: CD 4E 03        CALL    $034E               ; {code.write_text_to_screen_at_xy_with_delay}
 0757: 11 54 E0        LD      DE,$E054            ; 
 075A: 01 20 00        LD      BC,$0020            ; 
 075D: 3A 44 E0        LD      A,($E044)           ; {ram.slotMode}
@@ -1476,7 +1491,7 @@ ReadSettings:
 0785: 3E 31           LD      A,$31               ; 
 0787: 77              LD      (HL),A              ; * J077F
 0788: 21 54 E0        LD      HL,$E054            ; * J079D
-078B: CD 4E 03        CALL    $034E               ; {code.SlowScript}
+078B: CD 4E 03        CALL    $034E               ; {code.write_text_to_screen_at_xy_with_delay}
 078E: 3A 47 E0        LD      A,($E047)           ; {ram.cntTillCred} * J076C,J0792
 0791: A7              AND     A                   ; 
 0792: 20 FA           JR      NZ,$78E             ; {}
@@ -1522,7 +1537,7 @@ ReadSettings:
 07E3: 3A 42 E0        LD      A,($E042)           ; {ram.slotModeB}
 07E6: 18 C2           JR      $7AA                ; {}
 07E8: 21 54 E0        LD      HL,$E054            ; * C0766,C07DD
-07EB: CD 4E 03        CALL    $034E               ; {code.SlowScript}
+07EB: CD 4E 03        CALL    $034E               ; {code.write_text_to_screen_at_xy_with_delay}
 07EE: 2A 54 E0        LD      HL,($E054)          ; {ram.mE054}
 07F1: 11 40 00        LD      DE,$0040            ; 
 07F4: 19              ADD     HL,DE               ; 
@@ -1573,9 +1588,11 @@ XYToTextPtr:
 082F: 6F              LD      L,A                 ; Back to L
 0830: C9              RET                         ; Return pointer in HL
 
+jf_update_surface_object:
 0831: 3A 00 E3        LD      A,($E300)           ; {ram.buggyHandler} * C162D,C18E0,C1957,C195E,C1A2F,C1E25
 0834: FE 06           CP      $06                 ; 
 0836: 30 7A           JR      NC,$8B2             ; {}
+jf_update_surface_object2:
 0838: 3A E2 E1        LD      A,($E1E2)           ; {ram.mE1E2} * C1950,C1A22,C1A73
 083B: DD 96 0F        SUB     (IX+$0F)            ; 
 083E: ED 44           NEG                         ; 
@@ -1679,10 +1696,11 @@ DrawObject:
 08E1: 69              LD      L,C                 ; Now in HL
 08E2: DD 4E 03        LD      C,(IX+$03)          ; X coordinate to C
 08E5: DD 7E 07        LD      A,(IX+$07)          ; Y coordinate to A
-08E8: CD ED 08        CALL    $08ED               ; {} ?? adjusted Y coordinate to B
+08E8: CD ED 08        CALL    $08ED               ; {code.jf_compute_jeep_horizon_object_y} ?? adjusted Y coordinate to B
 08EB: AF              XOR     A                   ; Clear A ... many handlers need a zero
 08EC: E9              JP      (HL)                ; Jump to the draw routine
 
+jf_compute_jeep_horizon_object_y:
 ; B = (E03C) - A - 1
 ;
 08ED: 2F              CPL                         ; * C08E8,C159D,C15CA
@@ -2102,6 +2120,8 @@ ObjDraw_0D: ; Alien ships and shots
 0B82: 22 2E E5        LD      ($E52E),HL          ; {ram.mE52E}
 0B85: CD 12 0D        CALL    $0D12               ; {}
 0B88: 18 C0           JR      $B4A                ; {}
+
+display_stgatus_bar: ; JOTD
 0B8A: CD B1 0C        CALL    $0CB1               ; {} * C0069,C0089
 0B8D: 21 94 26        LD      HL,$2694            ; 
 0B90: 22 16 E5        LD      ($E516),HL          ; {ram.mE516}
@@ -2128,10 +2148,10 @@ ObjDraw_0D: ; Alien ships and shots
 0BB3: 22 16 E5        LD      ($E516),HL          ; {ram.mE516}
 0BB6: C9              RET                         ; 
 
-
+jf_start_new_section:
 0BB7: 21 00 E1        LD      HL,$E100            ; Clear sprite mirror ... * J0078,J008C,J0115,J0138,J0142,J0148,J0173,J01CF,J28A7,J28B7
 0BBA: 01 00 04        LD      BC,$0400            ; ... and game objects ...
-0BBD: CD FA 05        CALL    $05FA               ; {} ... up to high-score
+0BBD: CD FA 05        CALL    $05FA               ; {code.jf_clear_area} ... up to high-score
 ;
 0BC0: DD 21 00 E3     LD      IX,$E300            ; Moon buggy ISRObject 00
 0BC4: DD 36 00 01     LD      (IX+$00),$01        ; Moon buggy's start-game handler
@@ -2161,7 +2181,7 @@ ObjDraw_0D: ; Alien ships and shots
 0BFD: 22 06 E3        LD      ($E306),HL          ; {ram.mE306}
 0C00: 3E 02           LD      A,$02               ; 
 0C02: 32 08 E5        LD      ($E508),A           ; {ram.mE508}
-0C05: CD 8D 0D        CALL    $0D8D               ; {}
+0C05: CD 8D 0D        CALL    $0D8D               ; {code.jf_draw_ground}
 0C08: 3A 13 E5        LD      A,($E513)           ; {ram.mE513}
 0C0B: 3D              DEC     A                   ; 
 0C0C: FE 05           CP      $05                 ; 
@@ -2174,10 +2194,10 @@ ObjDraw_0D: ; Alien ships and shots
 0C17: 32 C5 E1        LD      ($E1C5),A           ; {ram.mE1C5}
 0C1A: CD 81 29        CALL    $2981               ; {}
 0C1D: A7              AND     A                   ; 
-0C1E: 20 5F           JR      NZ,$C7F             ; {}
+0C1E: 20 5F           JR      NZ,$C7F             ; {code.jf_skip_moonbase_display}
 0C20: 21 0F E5        LD      HL,$E50F            ; 
 0C23: CB 46           BIT     0,(HL)              ; 
-0C25: 20 58           JR      NZ,$C7F             ; {}
+0C25: 20 58           JR      NZ,$C7F             ; {code.jf_skip_moonbase_display}
 0C27: 34              INC     (HL)                ; 
 ;
 0C28: 3A 10 E5        LD      A,($E510)           ; {ram.courseNum} Get the course number
@@ -2192,8 +2212,9 @@ ObjDraw_0D: ; Alien ships and shots
 0C3D: C6 30           ADD     $30                 ; Convert to number * J0C39
 0C3F: 32 56 81        LD      ($8156),A           ; Change the "1" in the message just printed to the right number
 ;
+jf_display_moon_base:
 0C42: 3E 1C           LD      A,$1C               ; Play intro ... * J0C8C
-0C44: CD 6F 0D        CALL    $0D6F               ; {} ... song
+0C44: CD 6F 0D        CALL    $0D6F               ; {code.jf_queue_sound_effect} ... song
 0C47: 3E 40           LD      A,$40               ; Set timer for ...
 0C49: 32 0A E3        LD      ($E30A),A           ; {ram.mE30A} ... intro song to end
 0C4C: 0E 68           LD      C,$68               ; 
@@ -2223,20 +2244,21 @@ ObjDraw_0D: ; Alien ships and shots
 0C6F: 11 10 E2        LD      DE,$E210            ; 
 0C72: 46              LD      B,(HL)              ; * J0C7D
 0C73: CB 78           BIT     7,B                 ; 
-0C75: 20 08           JR      NZ,$C7F             ; {}
+0C75: 20 08           JR      NZ,$C7F             ; {code.jf_skip_moonbase_display}
 0C77: 12              LD      (DE),A              ; * J0C79
 0C78: 13              INC     DE                  ; 
 0C79: 10 FC           DJNZ    $C77                ; {}
 0C7B: 3C              INC     A                   ; 
 0C7C: 23              INC     HL                  ; 
 0C7D: 18 F3           JR      $C72                ; {}
+jf_skip_moonbase_display:
 0C7F: 21 46 E0        LD      HL,$E046            ; * J0C1E,J0C25,J0C75
 0C82: 34              INC     (HL)                ; 
-0C83: C3 6E 02        JP      $026E               ; {} ?? Main text loop for game
+0C83: C3 6E 02        JP      $026E               ; {code.MainLoop} ?? Main text loop for game
 
 0C86: 21 47 2A        LD      HL,$2A47            ; "BEGINNER COURSE GO" script * J0C2C
 0C89: CD 00 03        CALL    $0300               ; {code.RunTextScript} Print the banner
-0C8C: 18 B4           JR      $C42                ; {} Back to start-course sequence
+0C8C: 18 B4           JR      $C42                ; {code.jf_display_moon_base} Back to start-course sequence
 
 0C8E: AF              XOR     A                   ; * C0B38
 0C8F: 32 4D E0        LD      ($E04D),A           ; {ram.mE04D}
@@ -2244,7 +2266,7 @@ ObjDraw_0D: ; Alien ships and shots
 0C95: CD 03 06        CALL    $0603               ; {code.SwapPlayers} * C0C92
 0C98: 21 00 E5        LD      HL,$E500            ; 
 0C9B: 01 16 00        LD      BC,$0016            ; 
-0C9E: CD FA 05        CALL    $05FA               ; {} * J0CBD
+0C9E: CD FA 05        CALL    $05FA               ; {code.jf_clear_area} * J0CBD
 0CA1: 32 0F E5        LD      ($E50F),A           ; {ram.??E50F??}
 0CA4: 3A 40 E0        LD      A,($E040)           ; {ram.PerCredit}
 0CA7: 32 15 E5        LD      ($E515),A           ; {ram.mE515}
@@ -2281,17 +2303,17 @@ ObjDraw_0D: ; Alien ships and shots
 0CE5: 20 F5           JR      NZ,$CDC             ; {}
 0CE7: 21 0F 2B        LD      HL,$2B0F            ; Status box script
 0CEA: CD 00 03        CALL    $0300               ; {code.RunTextScript}
-0CED: CD 68 06        CALL    $0668               ; {}
+0CED: CD 68 06        CALL    $0668               ; {code.jf_display_score}
 0CF0: CD 85 06        CALL    $0685               ; {code.PrintHigh}
 0CF3: 3A 46 E0        LD      A,($E046)           ; {ram.mE046}
 0CF6: CB 67           BIT     4,A                 ; 
 0CF8: 28 0F           JR      Z,$D09              ; {}
 0CFA: CD 03 06        CALL    $0603               ; {code.SwapPlayers}
-0CFD: CD 68 06        CALL    $0668               ; {}
+0CFD: CD 68 06        CALL    $0668               ; {code.jf_display_score}
 0D00: CD 03 06        CALL    $0603               ; {code.SwapPlayers}
 0D03: 21 72 2B        LD      HL,$2B72            ; "P2 " status box script
 0D06: CD 00 03        CALL    $0300               ; {code.RunTextScript}
-0D09: CD D5 06        CALL    $06D5               ; {} * J0CF8
+0D09: CD D5 06        CALL    $06D5               ; {code.jf_display_nb_lives} * J0CF8
 0D0C: CD 2C 21        CALL    $212C               ; {}
 0D0F: CD 8A 29        CALL    $298A               ; {}
 0D12: 3A 0E E5        LD      A,($E50E)           ; {ram.curPoint} * C0B85,J152B,C2866
@@ -2310,10 +2332,10 @@ ObjDraw_0D: ; Alien ships and shots
 
 0D29: 21 00 80        LD      HL,$8000            ; * C0013,C010A,C0187,C0745,C0CBF
 0D2C: 01 00 08        LD      BC,$0800            ; 
-0D2F: CD FA 05        CALL    $05FA               ; {}
+0D2F: CD FA 05        CALL    $05FA               ; {code.jf_clear_area} clear screen
 0D32: 21 00 E1        LD      HL,$E100            ; 
 0D35: 01 C6 00        LD      BC,$00C6            ; 
-0D38: CD FA 05        CALL    $05FA               ; {}
+0D38: CD FA 05        CALL    $05FA               ; {code.jf_clear_area}
 0D3B: 3A 43 E0        LD      A,($E043)           ; {ram.cabMode} Cabinet mode * J0DA3
 0D3E: 3D              DEC     A                   ; 
 0D3F: 28 09           JR      Z,$D4A              ; {}
@@ -2345,6 +2367,7 @@ ObjDraw_0D: ; Alien ships and shots
 0D6D: FB              EI                          ; 
 0D6E: C9              RET                         ; 
 
+jf_queue_sound_effect:
 0D6F: F3              DI                          ; * C0C44,J12D1
 0D70: CD 75 0D        CALL    $0D75               ; {code.AddSound}
 0D73: FB              EI                          ; 
@@ -2375,6 +2398,7 @@ AddSound2:
 0D8B: E1              POP     HL                  ; Restore HL
 0D8C: C9              RET                         ; Done
 
+jf_draw_ground:
 0D8D: CD 48 29        CALL    $2948               ; {} * C0C05
 0D90: CD C2 0C        CALL    $0CC2               ; {}
 0D93: 06 20           LD      B,$20               ; 
@@ -2424,6 +2448,8 @@ TxtCmd_09:
 0DD7: D6 20           SUB     $20                 ; 
 0DD9: 6F              LD      L,A                 ; 
 0DDA: 18 E2           JR      $DBE                ; {}
+
+jf_handle_path_advance:
 0DDC: CD 5B 12        CALL    $125B               ; {} * C026E,C0280
 0DDF: 3A E2 E1        LD      A,($E1E2)           ; {ram.mE1E2}
 0DE2: 21 09 E5        LD      HL,$E509            ; 
@@ -2465,11 +2491,11 @@ TxtCmd_09:
 0E20: FE 18           CP      $18                 ; 
 0E22: D2 45 0F        JP      NC,$0F45            ; {}
 0E25: FE 17           CP      $17                 ; 
-0E27: 28 26           JR      Z,$E4F              ; {}
+0E27: 28 26           JR      Z,$E4F              ; {code.fj_enter_rear_missile}
 0E29: D6 06           SUB     $06                 ; 
-0E2B: FA 8A 0E        JP      M,$0E8A             ; {}
+0E2B: FA 8A 0E        JP      M,$0E8A             ; {code.jf_change_slope_type}
 0E2E: D6 07           SUB     $07                 ; 
-0E30: FA F0 0E        JP      M,$0EF0             ; {}
+0E30: FA F0 0E        JP      M,$0EF0             ; {code.jf_draw_hole_on_right}
 0E33: 87              ADD     A,A                 ; 
 0E34: 87              ADD     A,A                 ; 
 0E35: 87              ADD     A,A                 ; 
@@ -2484,9 +2510,13 @@ TxtCmd_09:
 0E48: CD FD 07        CALL    $07FD               ; {}
 0E4B: DD 71 00        LD      (IX+$00),C          ; * J0E46
 0E4E: C9              RET                         ; 
+
+fj_enter_rear_missile:
 0E4F: 3E 19           LD      A,$19               ; * J0E27
 0E51: 32 70 E3        LD      ($E370),A           ; {ram.??object7??}
 0E54: C9              RET                         ; 
+
+jf_write_checkpoint_scrolling_letter:
 0E55: 3E 01           LD      A,$01               ; * J0E8B
 0E57: 32 DC E1        LD      ($E1DC),A           ; {ram.mE1DC}
 0E5A: 2A E4 E0        LD      HL,($E0E4)          ; {ram.mE0E4}
@@ -2516,8 +2546,10 @@ TxtCmd_09:
 0E86: C6 05           ADD     $05                 ; 
 0E88: 77              LD      (HL),A              ; 
 0E89: C9              RET                         ; 
+
+jf_change_slope_type:
 0E8A: 3C              INC     A                   ; * J0E2B
-0E8B: 28 C8           JR      Z,$E55              ; {}
+0E8B: 28 C8           JR      Z,$E55              ; {code.jf_write_checkpoint_scrolling_letter}
 0E8D: C6 05           ADD     $05                 ; 
 0E8F: 32 08 E5        LD      ($E508),A           ; {ram.mE508}
 0E92: C9              RET                         ; 
@@ -2556,6 +2588,8 @@ TxtCmd_09:
 0EE8: DD 36 0E 00     LD      (IX+$0E),$00        ; 
 0EEC: FD 4E 02        LD      C,(IY+$02)          ; 
 0EEF: C9              RET                         ; 
+
+jf_draw_hole_on_right:
 0EF0: 3C              INC     A                   ; * J0E30
 0EF1: CA 40 0F        JP      Z,$0F40             ; {}
 0EF4: F5              PUSH    AF                  ; 
@@ -3127,7 +3161,7 @@ PrintCaution:
 12CB: 79              LD      A,C                 ; * J12E4
 12CC: 32 DF E1        LD      ($E1DF),A           ; {ram.mE1DF} * J12DD
 12CF: C6 15           ADD     $15                 ; 
-12D1: C3 6F 0D        JP      $0D6F               ; {} Make flying ship sound and out
+12D1: C3 6F 0D        JP      $0D6F               ; {code.jf_queue_sound_effect} Make flying ship sound and out
 
 12D4: 19              ADD     HL,DE               ; * J12B7,J12BF,J12C3
 12D5: 10 D9           DJNZ    $12B0               ; {}
@@ -3532,7 +3566,7 @@ PlayerShot:
 1599: 6F              LD      L,A                 ; 
 159A: 7E              LD      A,(HL)              ; 
 159B: D6 09           SUB     $09                 ; 
-159D: CD ED 08        CALL    $08ED               ; {}
+159D: CD ED 08        CALL    $08ED               ; {code.jf_compute_jeep_horizon_object_y}
 15A0: 47              LD      B,A                 ; 
 15A1: FD 23           INC     IY                  ; * J15C7
 15A3: FD 23           INC     IY                  ; 
@@ -3556,7 +3590,7 @@ PlayerShot:
 15C6: 4F              LD      C,A                 ; 
 15C7: 18 D8           JR      $15A1               ; {}
 15C9: 0C              INC     C                   ; * C1581,C15B5
-15CA: CD ED 08        CALL    $08ED               ; {}
+15CA: CD ED 08        CALL    $08ED               ; {code.jf_compute_jeep_horizon_object_y}
 15CD: 47              LD      B,A                 ; 
 15CE: 11 00 05        LD      DE,$0500            ; 
 15D1: 3A E2 E1        LD      A,($E1E2)           ; {ram.mE1E2}
@@ -3607,7 +3641,7 @@ ISROBJRun_0B: ; Run player forward shot
 ISROBJRun_0C: ; Run player forward shot exploding (miss)
 ISROBJRun_0D: ; Run exploding boulder (hit)
 ;
-162D: CD 31 08        CALL    $0831               ; {} ?? changing X based on speed
+162D: CD 31 08        CALL    $0831               ; {code.jf_update_surface_object} ?? changing X based on speed
 1630: DD 35 0A        DEC     (IX+$0A)            ; Count down delay between image changes
 1633: F0              RET     P                   ; Return ... not time to change image
 1634: DD 7E 0D        LD      A,(IX+$0D)          ; Get image number
@@ -3810,7 +3844,7 @@ ISROBJRun_10: ; Stop player air shot
 177B: E1              POP     HL                  ; 
 177C: C3 52 08        JP      $0852               ; {}
 177F: 20 13           JR      NZ,$1794            ; {} * J1776
-1781: CD F0 17        CALL    $17F0               ; {}
+1781: CD F0 17        CALL    $17F0               ; {code.Rand1to3}
 1784: C6 05           ADD     $05                 ; 
 1786: DD 77 08        LD      (IX+$08),A          ; 
 1789: CD C2 02        CALL    $02C2               ; {code.NewTxtCmd}
@@ -3818,7 +3852,7 @@ ISROBJRun_10: ; Stop player air shot
 178F: DD 36 0A 00     LD      (IX+$0A),$00        ; 
 1793: C9              RET                         ; 
 1794: CD 56 08        CALL    $0856               ; {} * J177F
-1797: CD F0 17        CALL    $17F0               ; {}
+1797: CD F0 17        CALL    $17F0               ; {code.Rand1to3}
 179A: 21 10 FB        LD      HL,$FB10            ; 
 179D: C6 06           ADD     $06                 ; * J1DF0
 179F: DD 77 08        LD      (IX+$08),A          ; 
@@ -3863,11 +3897,19 @@ ISROBJRun_10: ; Stop player air shot
 17EB: FE FC           CP      $FC                 ; 
 17ED: 30 E9           JR      NC,$17D8            ; {}
 17EF: C9              RET                         ; 
-17F0: ED 5F           LD      A,R                 ; * C1781,C1797
-17F2: E6 03           AND     $03                 ; 
-17F4: C0              RET     NZ                  ; 
-17F5: 3E 02           LD      A,$02               ; 
-17F7: C9              RET                         ; 
+
+Rand1to3:
+; Return random [2, 1, 2, 3]
+; Distribution:
+; - 1 25%
+; - 2 50%
+; - 3 25%
+17F0: ED 5F           LD      A,R                 ; DRAM refresh counter
+17F2: E6 03           AND     $03                 ; Keep bottom two bits
+17F4: C0              RET     NZ                  ; Return 1, 2, or 3
+17F5: 3E 02           LD      A,$02               ; But if 0, return 2
+17F7: C9              RET                         ; Done
+
 17F8: 23              INC     HL                  ; * C1732,C1736
 17F9: FD 5E 00        LD      E,(IY+$00)          ; 
 17FC: 73              LD      (HL),E              ; 
@@ -3993,7 +4035,7 @@ ISROBJRun_09:
 
 ISROBJRun_1D:
 ;
-18E0: CD 31 08        CALL    $0831               ; {}
+18E0: CD 31 08        CALL    $0831               ; {code.jf_update_surface_object}
 18E3: CD 99 16        CALL    $1699               ; {}
 18E6: DD 35 0A        DEC     (IX+$0A)            ; 
 18E9: F0              RET     P                   ; 
@@ -4042,19 +4084,19 @@ ISROBJRun_11:
 1948: DD 77 04        LD      (IX+$04),A          ; 
 194B: 30 03           JR      NC,$1950            ; {}
 194D: DD 35 0F        DEC     (IX+$0F)            ; 
-1950: CD 38 08        CALL    $0838               ; {} * J194B
+1950: CD 38 08        CALL    $0838               ; {code.jf_update_surface_object2} * J194B
 1953: CD 99 16        CALL    $1699               ; {}
 1956: C9              RET                         ; 
 
 ISROBJRun_12:
 ;
-1957: CD 31 08        CALL    $0831               ; {}
+1957: CD 31 08        CALL    $0831               ; {code.jf_update_surface_object}
 195A: CD 99 16        CALL    $1699               ; {}
 195D: C9              RET                         ; 
 
 ISROBJRun_13:
 ;
-195E: CD 31 08        CALL    $0831               ; {}
+195E: CD 31 08        CALL    $0831               ; {code.jf_update_surface_object}
 1961: DD 7E 0C        LD      A,(IX+$0C)          ; 
 1964: A7              AND     A                   ; 
 1965: C0              RET     NZ                  ; 
@@ -4159,7 +4201,7 @@ ISROBJRun_14:
 1A1B: C6 10           ADD     $10                 ; 
 1A1D: FE 30           CP      $30                 ; 
 1A1F: DA FD 16        JP      C,$16FD             ; {}
-1A22: CD 38 08        CALL    $0838               ; {} * J1A12
+1A22: CD 38 08        CALL    $0838               ; {code.jf_update_surface_object2} * J1A12
 1A25: DD 7E 0C        LD      A,(IX+$0C)          ; 
 1A28: FE 06           CP      $06                 ; 
 1A2A: C8              RET     Z                   ; 
@@ -4168,7 +4210,7 @@ ISROBJRun_14:
 
 ISROBJRun_15:
 ;
-1A2F: CD 31 08        CALL    $0831               ; {}
+1A2F: CD 31 08        CALL    $0831               ; {code.jf_update_surface_object}
 1A32: DD 35 0A        DEC     (IX+$0A)            ; 
 1A35: F0              RET     P                   ; 
 1A36: DD 7E 0D        LD      A,(IX+$0D)          ; 
@@ -4199,7 +4241,7 @@ ISROBJRun_16:
 1A6B: DD 77 04        LD      (IX+$04),A          ; 
 1A6E: 30 03           JR      NC,$1A73            ; {}
 1A70: DD 35 0F        DEC     (IX+$0F)            ; * J1A91
-1A73: CD 38 08        CALL    $0838               ; {} * J1A6E
+1A73: CD 38 08        CALL    $0838               ; {code.jf_update_surface_object2} * J1A6E
 1A76: DD 7E 0C        LD      A,(IX+$0C)          ; 
 1A79: D6 04           SUB     $04                 ; 
 1A7B: CB 27           SLA     A                   ; 
@@ -4449,13 +4491,15 @@ ISROBJRun_1B:
 1C53: C9              RET                         ; 
 1C54: CD 0A 08        CALL    $080A               ; {} * J1C0F
 1C57: 18 C5           JR      $1C1E               ; {}
-1C59: 2B              DEC     HL                  ; 
-1C5A: 26 2A           LD      H,$2A               ; 
-1C5C: 26 2B           LD      H,$2B               ; 
-1C5E: 22 2A 22        LD      ($222A),HL          ; {}
-1C61: 31 1E DD        LD      SP,$DD1E            ; 
-1C64: 7E              LD      A,(HL)              ; 
-1C65: 0D              DEC     C                   ; 
+
+1C59: 2B 
+1C5A: 26 2A  
+1C5C: 26 2B  
+1C5E: 22 2A 22 
+1C61: 31 1E
+
+animate_ufo_frame:
+1C63: DD 7E 0D        LD      A,(IX+$0D)          ; 
 1C66: FE 2B           CP      $2B                 ; 
 1C68: D8              RET     C                   ; 
 1C69: DD CB 0E 7E     BIT     7,(IX+$0E)          ; 
@@ -4668,7 +4712,7 @@ ISROBJRun_30:
 1E1D: 34              INC     (HL)                ; * J1E08
 1E1E: DD 34 00        INC     (IX+$00)            ; 
 1E21: DD 36 0A 04     LD      (IX+$0A),$04        ; 
-1E25: CD 31 08        CALL    $0831               ; {} * J1E3E,J1E4F,J1E5B,J1E81
+1E25: CD 31 08        CALL    $0831               ; {code.jf_update_surface_object} * J1E3E,J1E4F,J1E5B,J1E81
 1E28: C9              RET                         ; 
 
 ISROBJRun_31:
@@ -4803,7 +4847,7 @@ ISROBJRun_1F:
 ISROBJRun_23:
 ISROBJRun_27:
 ;
-1F28: CD 63 1C        CALL    $1C63               ; {} * C2009
+1F28: CD 63 1C        CALL    $1C63               ; {code.animate_ufo_frame} * C2009
 1F2B: CD DB 20        CALL    $20DB               ; {}
 1F2E: DD 7E 0C        LD      A,(IX+$0C)          ; 
 1F31: CB 27           SLA     A                   ; 
@@ -4921,7 +4965,7 @@ ISROBJRun_24:
 
 ISROBJRun_25:
 ;
-201A: CD 63 1C        CALL    $1C63               ; {}
+201A: CD 63 1C        CALL    $1C63               ; {code.animate_ufo_frame}
 201D: CD DB 20        CALL    $20DB               ; {}
 2020: 22 D6 E0        LD      ($E0D6),HL          ; {ram.mE0D6}
 2023: 7C              LD      A,H                 ; 
@@ -4992,7 +5036,7 @@ ISROBJRun_28:
 
 ISROBJRun_29:
 ;
-209C: CD 63 1C        CALL    $1C63               ; {}
+209C: CD 63 1C        CALL    $1C63               ; {code.animate_ufo_frame}
 209F: CD FB 20        CALL    $20FB               ; {}
 20A2: 22 D6 E0        LD      ($E0D6),HL          ; {ram.mE0D6}
 20A5: 7C              LD      A,H                 ; 
@@ -5187,7 +5231,7 @@ ISROBJRun_21:
 27CB: CA D2 27        JP      Z,$27D2             ; {}
 27CE: A7              AND     A                   ; 
 27CF: C2 5E 28        JP      NZ,$285E            ; {}
-27D2: CD FA 29        CALL    $29FA               ; {} * J27CB
+27D2: CD FA 29        CALL    $29FA               ; {code.jf_fill_done_secion_in_map} * J27CB
 27D5: 3E 1E           LD      A,$1E               ; Play ...
 27D7: CD 75 0D        CALL    $0D75               ; {code.AddSound} ... congratulations music
 27DA: 21 0F E5        LD      HL,$E50F            ; 
@@ -5228,7 +5272,7 @@ ISROBJRun_21:
 281F: 2B              DEC     HL                  ; 
 2820: 73              LD      (HL),E              ; 
 2821: 21 39 2C        LD      HL,$2C39            ; "YOU HAVE BROKEN A RECORD" script
-2824: CD 4E 03        CALL    $034E               ; {code.SlowScript}
+2824: CD 4E 03        CALL    $034E               ; {code.write_text_to_screen_at_xy_with_delay}
 2827: 2A 94 E0        LD      HL,($E094)          ; {ram.mE094} * J2817,J285C
 282A: ED 5B 11 E5     LD      DE,($E511)          ; {ram.mE511}
 282E: 7D              LD      A,L                 ; 
@@ -5254,7 +5298,7 @@ ISROBJRun_21:
 2852: 3E 10           LD      A,$10               ; Play ...
 2854: CD 75 0D        CALL    $0D75               ; {code.AddSound} ... passing point
 2857: 3E 0C           LD      A,$0C               ; 
-2859: CD EA 05        CALL    $05EA               ; {}
+2859: CD EA 05        CALL    $05EA               ; {code.WaitSync}
 285C: 18 C9           JR      $2827               ; {}
 285E: 3E 1D           LD      A,$1D               ; Play ... * J27CF
 2860: CD 75 0D        CALL    $0D75               ; {code.AddSound} ... reached goal
@@ -5262,16 +5306,16 @@ ISROBJRun_21:
 2866: CD 12 0D        CALL    $0D12               ; {}
 2869: CD 48 29        CALL    $2948               ; {}
 286C: 3E 30           LD      A,$30               ; 
-286E: CD EA 05        CALL    $05EA               ; {}
+286E: CD EA 05        CALL    $05EA               ; {code.WaitSync}
 2871: CD BA 28        CALL    $28BA               ; {}
 2874: 38 0D           JR      C,$2883             ; {}
 2876: 21 E4 2B        LD      HL,$2BE4            ; "GOOD BONUS POINTS" script
-2879: CD 4E 03        CALL    $034E               ; {code.SlowScript}
+2879: CD 4E 03        CALL    $034E               ; {code.write_text_to_screen_at_xy_with_delay}
 287C: 3A F9 E0        LD      A,($E0F9)           ; {ram.champColors}
 287F: 3C              INC     A                   ; 
 2880: C3 F9 27        JP      $27F9               ; {}
 2883: 21 F9 2B        LD      HL,$2BF9            ; "SORRY NO BONUS" script * J2874
-2886: CD 4E 03        CALL    $034E               ; {code.SlowScript}
+2886: CD 4E 03        CALL    $034E               ; {code.write_text_to_screen_at_xy_with_delay}
 2889: CD E8 05        CALL    $05E8               ; {code.Delay3Sec}
 288C: 18 0E           JR      $289C               ; {}
 288E: CD E8 05        CALL    $05E8               ; {code.Delay3Sec} * J283C
@@ -5284,13 +5328,13 @@ ISROBJRun_21:
 28A2: 21 13 E5        LD      HL,$E513            ; 
 28A5: 7E              LD      A,(HL)              ; 
 28A6: A7              AND     A                   ; 
-28A7: C2 B7 0B        JP      NZ,$0BB7            ; {}
+28A7: C2 B7 0B        JP      NZ,$0BB7            ; {code.jf_start_new_section}
 28AA: 36 05           LD      (HL),$05            ; 
 28AC: 21 A2 23        LD      HL,$23A2            ; 
 28AF: 22 16 E5        LD      ($E516),HL          ; {ram.mE516}
 28B2: 3E 1A           LD      A,$1A               ; 
 28B4: 32 0E E5        LD      ($E50E),A           ; {ram.curPoint}
-28B7: C3 B7 0B        JP      $0BB7               ; {}
+28B7: C3 B7 0B        JP      $0BB7               ; {code.jf_start_new_section}
 28BA: CD E8 05        CALL    $05E8               ; {code.Delay3Sec} * C27ED,C2871
 28BD: CD 5A 29        CALL    $295A               ; {}
 28C0: 3A 10 E5        LD      A,($E510)           ; {ram.courseNum} Course number
@@ -5301,8 +5345,8 @@ ISROBJRun_21:
 28CC: 3E 05           LD      A,$05               ; 
 28CE: 5F              LD      E,A                 ; * J28C5,J28C9
 28CF: 3A 13 E5        LD      A,($E513)           ; {ram.mE513}
-28D2: 01 80 00        LD      BC,$0080            ; 
-28D5: FE 08           CP      $08                 ; 
+28D2: 01 80 00        LD      BC,$0080            ; default record time: 80, 100 or 120
+28D5: FE 08           CP      $08                 ; seconds depending on level
 28D7: 30 09           JR      NC,$28E2            ; {}
 28D9: 01 00 01        LD      BC,$0100            ; 
 28DC: FE 03           CP      $03                 ; 
@@ -5330,7 +5374,7 @@ ISROBJRun_21:
 2905: 2B              DEC     HL                  ; 
 2906: 71              LD      (HL),C              ; 
 2907: 21 79 2B        LD      HL,$2B79            ; "TIME TO REACH POINT " script * J2902
-290A: CD 4E 03        CALL    $034E               ; {code.SlowScript}
+290A: CD 4E 03        CALL    $034E               ; {code.write_text_to_screen_at_xy_with_delay}
 290D: CD 81 29        CALL    $2981               ; {}
 2910: A7              AND     A                   ; 
 2911: 20 02           JR      NZ,$2915            ; {}
@@ -5340,18 +5384,18 @@ ISROBJRun_21:
 2918: 1B              DEC     DE                  ; 
 2919: 12              LD      (DE),A              ; 
 291A: 21 94 2B        LD      HL,$2B94            ; 
-291D: CD 4E 03        CALL    $034E               ; {code.SlowScript}
+291D: CD 4E 03        CALL    $034E               ; {code.write_text_to_screen_at_xy_with_delay}
 2920: 21 12 E5        LD      HL,$E512            ; 
 2923: 13              INC     DE                  ; 
-2924: CD 9A 03        CALL    $039A               ; {}
+2924: CD 9A 03        CALL    $039A               ; {code.jf_write_2_digits_to_screen}
 2927: 21 B0 2B        LD      HL,$2BB0            ; "THE AVERAGE TIME " script
-292A: CD 4E 03        CALL    $034E               ; {code.SlowScript}
+292A: CD 4E 03        CALL    $034E               ; {code.write_text_to_screen_at_xy_with_delay}
 292D: CD 68 29        CALL    $2968               ; {}
 2930: 21 CC 2B        LD      HL,$2BCC            ; "TOP RECORD " script
-2933: CD 4E 03        CALL    $034E               ; {code.SlowScript}
+2933: CD 4E 03        CALL    $034E               ; {code.write_text_to_screen_at_xy_with_delay}
 2936: 2A 96 E0        LD      HL,($E096)          ; {ram.mE096}
 2939: 13              INC     DE                  ; 
-293A: CD 9A 03        CALL    $039A               ; {}
+293A: CD 9A 03        CALL    $039A               ; {code.jf_write_2_digits_to_screen}
 293D: 2A 94 E0        LD      HL,($E094)          ; {ram.mE094}
 2940: ED 5B 11 E5     LD      DE,($E511)          ; {ram.mE511}
 2944: A7              AND     A                   ; 
@@ -5359,18 +5403,18 @@ ISROBJRun_21:
 2947: C9              RET                         ; 
 2948: 21 00 E1        LD      HL,$E100            ; * C0D8D,C27E1,C2869
 294B: 01 A4 00        LD      BC,$00A4            ; 
-294E: CD FA 05        CALL    $05FA               ; {}
+294E: CD FA 05        CALL    $05FA               ; {code.jf_clear_area}
 2951: 01 20 02        LD      BC,$0220            ; 
 2954: 21 E0 80        LD      HL,$80E0            ; * J2966
-2957: C3 FA 05        JP      $05FA               ; {}
+2957: C3 FA 05        JP      $05FA               ; {code.jf_clear_area}
 295A: 21 00 E1        LD      HL,$E100            ; * C28BD
 295D: 01 C6 00        LD      BC,$00C6            ; 
-2960: CD FA 05        CALL    $05FA               ; {}
+2960: CD FA 05        CALL    $05FA               ; {code.jf_clear_area}
 2963: 01 20 03        LD      BC,$0320            ; 
 2966: 18 EC           JR      $2954               ; {}
 2968: 11 D9 81        LD      DE,$81D9            ; * C283E,C292D
 296B: 21 95 E0        LD      HL,$E095            ; 
-296E: C3 9A 03        JP      $039A               ; {}
+296E: C3 9A 03        JP      $039A               ; {code.jf_write_2_digits_to_screen}
 2971: 21 99 E0        LD      HL,$E099            ; * C2808,C284F
 2974: 11 97 82        LD      DE,$8297            ; 
 2977: CD 93 03        CALL    $0393               ; {code.Print3BCD}
@@ -5447,6 +5491,8 @@ ISROBJRun_21:
 29F3: 32 F6 E0        LD      ($E0F6),A           ; {ram.mE0F6} * J29EF
 29F6: 22 F4 E0        LD      ($E0F4),HL          ; {ram.mE0F4}
 29F9: C9              RET                         ; 
+
+jf_fill_done_secion_in_map:
 29FA: 21 CC 80        LD      HL,$80CC            ; * C27D2
 29FD: 06 0F           LD      B,$0F               ; 
 29FF: 36 29           LD      (HL),$29            ; * J2A02
