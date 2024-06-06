@@ -39,7 +39,7 @@ Memory Map:
 
     10 I    DIP SW C4 (game ship settings)
 
-        6 5  4 3  2 1
+            6 5  4 3  2 1
                           1st bonus ship at
             | |  | |  0 0  40,000
             | |  | |  0 1  50,000
@@ -56,7 +56,8 @@ Memory Map:
             1 0           1 credit = 3 ships / 2 credits = 6 ships
             1 1           1 credit = 3 ships / 2 credits = 7 ships
 
-    11 I    7 = Test
+    11 I
+        7 = Test
         6 = P1 Fire
         5 = P1 Thrust
         4 = Tilt
@@ -64,22 +65,24 @@ Memory Map:
         1 = Coin 2
         0 = Coin 1
 
-    12 I    7 = 1P1CR
-        6 = 1P2CR
+    12 I
+        7 = 1P2CR
+        6 = 1P1CR
 
-        3 = 2P2CR -+
-        2 = 2P1CR  |
-        1 = P2Fire |
-        0 = P2Thr -+ cocktail only
+        3 = 2P2CR
+        2 = 2P1CR
+        1 = P2Fire -+
+        0 = P2Thr  -+ cocktail only
 
-    13 O   7 =
-            6 = screen reverse
-            5 = 2 player 2 credit start LED
-            4 = 2 player 1 credit start LED
-            3 = 1 player 1 credit start LED
-            2 = 1 player 1 credit start LED
-            1 = coin meter 2
-            0 = coin meter 1
+    13 O
+        7 =
+        6 = screen reverse
+        5 = 2 player 2 credit start LED
+        4 = 2 player 1 credit start LED
+        3 = 1 player 2 credit start LED
+        2 = 1 player 1 credit start LED
+        1 = coin meter 2
+        0 = coin meter 1
 
     14 O    sound command (interrupts sound Z80)
 
