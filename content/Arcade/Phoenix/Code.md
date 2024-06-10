@@ -39,10 +39,11 @@
 001D: 3A A2 43        LD      A,($43A2)           ; {ram.M43A2}
 0020: A7              AND     A                   
 0021: CA 2D 00        JP      Z,$002D             ; {}
+; game mode
 0024: CD 00 04        CALL    $0400               ; {}
 0027: CD 00 27        CALL    $2700               ; {}
 002A: C3 1A 00        JP      $001A               ; {}
-
+; attract mode
 002D: 3E 0F           LD      A,$0F               
 002F: 26 60           LD      H,$60               ; 60xx sound A
 0031: 77              LD      (HL),A              
@@ -50,7 +51,7 @@
 0034: 77              LD      (HL),A              
 0035: CD 77 03        CALL    $0377               ; {}
 0038: 00              NOP                         
-0039: CD E0 17        CALL    $17E0               ; {}
+0039: CD E0 17        CALL    $17E0               ; {code.CoinChecking}
 003C: A7              AND     A                   
 003D: CA 46 00        JP      Z,$0046             ; {}
 0040: CD 88 02        CALL    $0288               ; {}
@@ -914,7 +915,7 @@ CompareHLtoBC:
 055A: C9              RET                         
 ;
 055B: FF FF FF FF FF 
-;
+; data copied to $43C0-$43DF
 0560: 0C 10 64 D8 
 0564: 00 50 00 D0 
 0568: 00 50 00 D0 
@@ -933,66 +934,44 @@ CompareHLtoBC:
 058B: 26 05           LD      H,$05               
 058D: 11 AB 43        LD      DE,$43AB            
 0590: 06 0C           LD      B,$0C               
-0592: CD E0 05        CALL    $05E0               ; {}
+0592: CD E0 05        CALL    $05E0               ; {code.CopyData}
 0595: C9              RET                         
 ;
 0596: FF FF
 ;
-0598: A8 A8 
-059A: C0 C0 
-059C: A8 A8 
-059E: A8 A8 
-05A0: B4 CC 
-05A2: B4 B4 
-05A4: A8 A8 
-05A6: A8 A8 
-05A8: 80 7F 
-05AA: 00 00 
-05AC: 40 3F 
-05AE: 00 1C 
-05B0: 00 FF 
-05B2: FF FF 
+0598: A8 A8     ;pointer to $05A8, $05A8 
+059A: C0 C0     ;pointer to $05C0, $05C0 
+059C: A8 A8     ;pointer to $05A8, $05A8 
+059E: A8 A8     ;pointer to $05A8, $05A8 
+05A0: B4 CC     ;pointer to $05B4, $05CC 
+05A2: B4 B4     ;pointer to $05B4, $05B4 
+05A4: A8 A8     ;pointer to $05A8, $05A8 
+05A6: A8 A8     ;pointer to $05A8, $05A8 
 ;
-05B4: 60              LD      H,B                 
-05B5: 5F              LD      E,A                 
-05B6: 01 02 30        LD      BC,$3002            
-05B9: 2F              CPL                         
-05BA: 00              NOP                         
-05BB: 1C              INC     E                   
-05BC: 00              NOP                         
-05BD: C0              RET     NZ                  
+;data copied to $43AB-$43B6
+05A8: 80 7F 00 00 40 3F 00 1C
+05B0: 00 FF FF FF 
 ;
-05BE: FF FF
+05B4: 60 5F 01 02 30 2F 00 1C
+05BC: 00 C0
 ;
-05C0: 80              ADD     A,B                 
-05C1: 7F              LD      A,A                 
-05C2: 03              INC     BC                  
-05C3: 04              INC     B                   
-05C4: 40              LD      B,B                 
-05C5: 3F              CCF                         
-05C6: 00              NOP                         
-05C7: 1F              RRA                         
-05C8: 00              NOP                         
-05C9: A0              AND     B                   
-05CA: FF              
-05CB: FF              
-05CC: 60              LD      H,B                 
-05CD: 60              LD      H,B                 
-05CE: 05              DEC     B                   
-05CF: 06 50           LD      B,$50               
-05D1: 30 00           JR      NC,$5D3             ; {}
-05D3: 1D              DEC     E                   
-05D4: 00              NOP                         
-05D5: 48              LD      C,B                 
+;data copied to $43AB-$43B6
+05C0: 80 7F 03 04 40 3F 00 1F
+05C8: 00 A0 FF FF
+;
+05CC: 60 60 05 06 50 30 00 1D
+05D4: 00 48 
 05D6: FF              
 05D7: FF              
+;
 05D8: AF              XOR     A                   
 05D9: 77              LD      (HL),A              
 05DA: 23              INC     HL                  
 05DB: 05              DEC     B                   
 05DC: C2 D9 05        JP      NZ,$05D9            ; {}
 05DF: C9              RET                         
-; Copy data
+;
+CopyData:
 05E0: 7E              LD      A,(HL)              
 05E1: 12              LD      (DE),A              
 05E2: 23              INC     HL                  
@@ -1725,9 +1704,8 @@ CompareHLtoBC:
 09FD: FF              
 09FE: FF              
 09FF: FF              
-;******************************************************************
-; Screen ram adresses for shapes position at intro
-;******************************************************************
+; Screen ram addresses for the top row (left to right)
+; Notice these addresses are MSB:LSB (backwards from the processors endianness)
 0A00: 43 20 
 0A02: 43 00 
 0A04: 42 e0 
@@ -3580,6 +3558,7 @@ CompareHLtoBC:
 17D0: C4 D4 C5 D5 C3 C3 C3 C3 C6 D6 C7 D7 FF FF FF FF
 
 ;
+CoinChecking:
 17E0: 3A 00 78        LD      A,($7800)           ; 78xx DSW0
 17E3: E6 10           AND     $10                 ; Coinage
 17E5: 3A 8F 43        LD      A,($438F)           ; {ram.CoinCount}
