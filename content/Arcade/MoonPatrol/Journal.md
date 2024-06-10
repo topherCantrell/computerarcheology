@@ -16,3 +16,6 @@ I will make an "asset" directory with an index file and all the pngs.
 
 I updated the content to the latest markdown format.
 
+## 4/14/2024
+
+Jean-Francois Fabre sent me his disassembly of Moon Patrol. I am merging in the comments.
