@@ -33,7 +33,7 @@
 
 0012: 21 00 18        LD      HL,$1800            ; Screen draw info
 0015: 0E 03           LD      C,$03               ; 3 columns (rotated to 3 rows)
-0017: CD D0 01        CALL    $01D0               ; {} Draw the first 3 rows of the background (scores and coins);
+0017: CD D0 01        CALL    $01D0               ; {} Draw the first 3 rows of the background (scores and coins)
 ; Main loop begin
 001A: CD 80 00        CALL    $0080               ; {code.WaitVBlankCoin} Wait for VBlank and count any coins
 001D: 3A A2 43        LD      A,($43A2)           ; {ram.M43A2}
@@ -60,6 +60,7 @@
 0046: CD E3 00        CALL    $00E3               ; {}
 0049: C3 1A 00        JP      $001A               ; {}
 ; Main loop end
+
 004C: FF FF FF FF  
 
 ; Initialize the sound (off) and screen (clear)
@@ -154,26 +155,29 @@ CheckInputBits:
 00C2: A6              AND     (HL)                ; Zero unles new bit is 0 and old is 1
 00C3: C9              RET                         ; Return state
 
-00C4: 7E              LD      A,(HL)              
-00C5: E6 0F           AND     $0F                 
-00C7: F6 20           OR      $20                 
-00C9: 12              LD      (DE),A              
-00CA: CD 10 02        CALL    $0210               ; {code.AddOneRow}
-00CD: 05              DEC     B                   
-00CE: C8              RET     Z                   
-00CF: 7E              LD      A,(HL)              
-00D0: 0F              RRCA                        
-00D1: 0F              RRCA                        
-00D2: 0F              RRCA                        
-00D3: 0F              RRCA                        
-00D4: E6 0F           AND     $0F                 
-00D6: F6 20           OR      $20                 
-00D8: 12              LD      (DE),A              
-00D9: CD 10 02        CALL    $0210               ; {code.AddOneRow}
-00DC: 2B              DEC     HL                  
-00DD: 05              DEC     B                   
-00DE: C2 C4 00        JP      NZ,$00C4            ; {}
-00E1: C9              RET                         
+PrintNumber:
+; Prints the number pointed to by HL (points to the end of the number) to the screen pointed
+; to by DE (points to the end of the screen area). B is the number of digits to print.
+00C4: 7E              LD      A,(HL)              ; Get the two digits
+00C5: E6 0F           AND     $0F                 ; Keep the LSB
+00C7: F6 20           OR      $20                 ; Offset to number tile
+00C9: 12              LD      (DE),A              ; Store the number tile to screen memory
+00CA: CD 10 02        CALL    $0210               ; {code.AddOneRow} next screen position
+00CD: 05              DEC     B                   ; All done?
+00CE: C8              RET     Z                   ; Yes ... out
+00CF: 7E              LD      A,(HL)              ; Keep the ...
+00D0: 0F              RRCA                        ; ...
+00D1: 0F              RRCA                        ; ...
+00D2: 0F              RRCA                        ; ...
+00D3: 0F              RRCA                        ; ...
+00D4: E6 0F           AND     $0F                 ; ... LSB
+00D6: F6 20           OR      $20                 ; Offset to number tile
+00D8: 12              LD      (DE),A              ; Store the number tile to screen memory
+00D9: CD 10 02        CALL    $0210               ; {code.AddOneRow} next screen position
+00DC: 2B              DEC     HL                  ; Next data position
+00DD: 05              DEC     B                   ; All digits done?
+00DE: C2 C4 00        JP      NZ,$00C4            ; {} No ... keep going
+00E1: C9              RET                         ; Yes ... out
 
 00E2: FF             
 
@@ -260,9 +264,9 @@ CheckInputBits:
 0191: C0              RET     NZ                  
 0192: 06 7E           LD      B,$7E               
 0194: C9              RET                         
-;
+
 0195: FF               
-;
+
 0196: 7E              LD      A,(HL)              
 0197: E6 1F           AND     $1F                 
 0199: FE 06           CP      $06                 
@@ -302,7 +306,10 @@ CheckInputBits:
 01C9: 12              LD      (DE),A              
 01CA: C3 E0 14        JP      $14E0               ; {}
 01CD: C2 C0 01        JP      NZ,$01C0            ; {}
-; Print the top 3 lines
+
+; Print the top 3 lines (scores, lives, coins)
+
+PrintTextLines:
 01D0: 56              LD      D,(HL)              ; Get ...
 01D1: 2C              INC     L                   ; ... the ...
 01D2: 5E              LD      E,(HL)              ; ... screen coord
@@ -310,22 +317,22 @@ CheckInputBits:
 01D4: C6 05           ADD     $05                 ; ... go get ...
 01D6: 6F              LD      L,A                 ; ... data
 01D7: 06 1A           LD      B,$1A               ; 26 columns
-01D9: CD ED 01        CALL    $01ED               ; {code.DrawColumn} Draw next column
-01DC: 0D              DEC     C                   ; All columns done?
-01DD: C2 D0 01        JP      NZ,$01D0            ; {} No ... draw all columns
+01D9: CD ED 01        CALL    $01ED               ; {code.DrawColumn} Draw next row
+01DC: 0D              DEC     C                   ; All lines done?
+01DD: C2 D0 01        JP      NZ,$01D0            ; {} No ... draw all rows
 01E0: C9              RET                         ; Done
-; Print the bottom 3 lines
+
+; Print the copyright lines (bottom 3 lines)
 01E1: CD 40 01        CALL    $0140               ; {}
-01E4: 21 60 19        LD      HL,$1960            
-01E7: 0E 03           LD      C,$03               
-01E9: C3 D0 01        JP      $01D0               ; {}
+01E4: 21 60 19        LD      HL,$1960            ; "PHOENIX ... U.S.A"
+01E7: 0E 03           LD      C,$03               ; 3 lines at the bottom
+01E9: C3 D0 01        JP      $01D0               ; {} Print the copyright
 ;
 01EC: FF               
 
+DrawRow:
 ; Remember the screen is rotated. 
-; The draws a column in screen memory (row on the screen)
-;
-DrawColumn:
+; This draws a column in screen memory (row on the screen)
 01ED: 7E              LD      A,(HL)              ; Copy the data ...
 01EE: 12              LD      (DE),A              ; .. to the screen
 01EF: 23              INC     HL                  ; Next in data
@@ -334,7 +341,6 @@ DrawColumn:
 01F4: C2 ED 01        JP      NZ,$01ED            ; {code.DrawColumn} Draw them all
 01F7: C9              RET                         ; Done
 
-; Pad to 0200
 01F8: FF FF FF FF FF FF FF FF               
 
 ; Two-byte +1 to (HL-1) : (HL).
@@ -411,7 +417,7 @@ AddToScore:
 ; 3-byte (6 digit) BCD subtraction. This is never called.
 ;
 ; !! We have score ADDER above. I like the symmetry of a score SUBTRACTER, but
-; !! this is never called. Scores never decrease
+; !! this is never called. Scores never decrease.
 ;
 0236: 37              SCF                         ; Take ...
 0237: 3E 99           LD      A,$99               ; ... the BCD ...
@@ -514,7 +520,7 @@ CompareHLtoBC:
 02AC: C8              RET     Z                   
 02AD: CD CB 02        CALL    $02CB               ; {}
 02B0: CD F0 02        CALL    $02F0               ; {}
-02B3: CD 2E 03        CALL    $032E               ; {}
+02B3: CD 2E 03        CALL    $032E               ; {} ?? Clear and print scores ??
 02B6: CD 50 03        CALL    $0350               ; {}
 02B9: CD 40 01        CALL    $0140               ; {}
 02BC: 26 50           LD      H,$50               ; 50xx video register
@@ -523,9 +529,9 @@ CompareHLtoBC:
 02C3: 26 50           LD      H,$50               ; 50xx video register
 02C5: 36 00           LD      (HL),$00            
 02C7: C9              RET                         
-02C8: FF              
-02C9: FF              
-02CA: FF              
+
+02C8: FF FF FF
+
 02CB: 0E 01           LD      C,$01               
 02CD: FE 02           CP      $02                 
 02CF: CA D4 02        JP      Z,$02D4             ; {}
@@ -545,10 +551,11 @@ CompareHLtoBC:
 02E8: C6 20           ADD     $20                 
 02EA: 32 42 41        LD      ($4142),A           
 02ED: C9              RET                         
-02EE: FF              
-02EF: FF              
-02F0: 11 83 43        LD      DE,$4383            
-02F3: 21 8B 43        LD      HL,$438B            
+
+02EE: FF FF              
+
+02F0: 11 83 43        LD      DE,$4383            ; ?? screen coordinate for score
+02F3: 21 8B 43        LD      HL,$438B            ; ?? score of some kind
 02F6: CD 14 03        CALL    $0314               ; {}
 02F9: D4 20 03        CALL    NC,$0320            ; {}
 02FC: 1E 87           LD      E,$87               
@@ -556,10 +563,10 @@ CompareHLtoBC:
 0300: CD 14 03        CALL    $0314               ; {}
 0303: D4 20 03        CALL    NC,$0320            ; {}
 0306: 2E 8B           LD      L,$8B               
-0308: 11 41 41        LD      DE,$4141            
-030B: 06 06           LD      B,$06               
-030D: CD C4 00        CALL    $00C4               ; {}
-0310: C9              RET                         
+0308: 11 41 41        LD      DE,$4141            ; Screen coordinates
+030B: 06 06           LD      B,$06               ; 6 digits
+030D: CD C4 00        CALL    $00C4               ; {} Print the 6-digit number
+0310: C9              RET                         ; Done
 ;
 0311: FF FF FF       
 ;
@@ -574,9 +581,9 @@ CompareHLtoBC:
 031C: 1A              LD      A,(DE)              
 031D: 9E              SBC     (HL)                
 031E: C9              RET                         
-;
+
 031F: FF              
-;
+
 0320: 1A              LD      A,(DE)              
 0321: 77              LD      (HL),A              
 0322: 13              INC     DE                  
@@ -588,27 +595,29 @@ CompareHLtoBC:
 0328: 1A              LD      A,(DE)              
 0329: 77              LD      (HL),A              
 032A: C9              RET                         
-;
+
 032B: FF FF FF               
-;
-032E: 21 80 43        LD      HL,$4380            
+
+032E: 21 80 43        LD      HL,$4380            ; ?? Clear scores ??
 0331: 36 00           LD      (HL),$00            
 0333: 23              INC     HL                  
 0334: 7D              LD      A,L                 
 0335: FE 88           CP      $88                 
 0337: C2 31 03        JP      NZ,$0331            ; {}
-033A: 2E 83           LD      L,$83               
+;
+033A: 2E 83           LD      L,$83               ; Print ?? player 1 score ??
 033C: 11 61 42        LD      DE,$4261            
 033F: 06 06           LD      B,$06               
 0341: CD C4 00        CALL    $00C4               ; {}
-0344: 2E 87           LD      L,$87               
+;
+0344: 2E 87           LD      L,$87               ; Print ?? player 2 score ??
 0346: 11 21 40        LD      DE,$4021            
 0349: 06 06           LD      B,$06               
 034B: CD C4 00        CALL    $00C4               ; {}
 034E: C9              RET                         
-;
+
 034F: FF               
-;
+
 0350: 3A 00 78        LD      A,($7800)           ; 78xx DSW0
 0353: E6 03           AND     $03                 ; Lives
 0355: C6 03           ADD     $03                 
@@ -636,9 +645,9 @@ CompareHLtoBC:
 037B: 2C              INC     L                   
 037C: 77              LD      (HL),A              
 037D: C9              RET                         
-;
+
 037E: FF FF
-;
+
 0380: 21 3F 43        LD      HL,$433F            
 0383: 11 1F 00        LD      DE,$001F            
 0386: 01 3F 03        LD      BC,$033F            
@@ -659,9 +668,9 @@ CompareHLtoBC:
 0399: B9              CP      C                   
 039A: C2 89 03        JP      NZ,$0389            ; {}
 039D: C9              RET                         
-;
+
 039E: FF FF                
-;
+
 03A0: 21 3F 4B        LD      HL,$4B3F            
 03A3: 11 47 00        LD      DE,$0047            
 03A6: 72              LD      (HL),D              
@@ -672,7 +681,7 @@ CompareHLtoBC:
 03AB: BB              CP      E                   
 03AC: C2 A6 03        JP      NZ,$03A6            ; {}
 03AF: C9              RET                         
-;
+
 03B0: 01 A0 07        LD      BC,$07A0            
 03B3: CD 70 02        CALL    $0270               ; {code.SubtractFromMemory}
 03B6: DA CE 03        JP      C,$03CE             ; {}
@@ -723,7 +732,7 @@ CompareHLtoBC:
 040C: 67              LD      H,A                 ; Now point to function
 040D: E9              JP      (HL)                ; Jump to function
 
-; Notice these addresses are MSB:LSB (backwards from the processors endianness)
+; Notice these addresses are MSB:LSB (backwards from the processor's endianness)
 040E: 04 30       ; 
 0410: 04 AC       ; called for each frame during flashing of score1 or 2                  
 0412: 05 15       ;           
@@ -772,7 +781,7 @@ CompareHLtoBC:
 0455: 01 00 01        LD      BC,$0100            
 0458: CD 60 04        CALL    $0460               ; {}
 045B: C9              RET                         
-;
+
 045C: FF FF FF FF
 
 ; Copy memory bank to bank
@@ -859,7 +868,9 @@ CompareHLtoBC:
 04DF: 06 06           LD      B,$06               
 04E1: CD C4 00        CALL    $00C4               ; {}
 04E4: C9              RET                         
+
 04E5: FF              
+
 04E6: 21 A3 43        LD      HL,$43A3            
 04E9: 7E              LD      A,(HL)              
 04EA: A7              AND     A                   
@@ -869,7 +880,9 @@ CompareHLtoBC:
 04F4: 06 06           LD      B,$06               
 04F6: CD FB 04        CALL    $04FB               ; {}
 04F9: C9              RET                         
+
 04FA: FF              
+
 04FB: 3E 00           LD      A,$00               
 04FD: 12              LD      (DE),A              
 04FE: CD 10 02        CALL    $0210               ; {code.AddOneRow}
@@ -913,8 +926,9 @@ CompareHLtoBC:
 0555: 06 20           LD      B,$20               
 0557: CD D8 05        CALL    $05D8               ; {}
 055A: C9              RET                         
-;
+
 055B: FF FF FF FF FF 
+
 ; data copied to $43C0-$43DF
 0560: 0C 10 64 D8 
 0564: 00 50 00 D0 
@@ -936,7 +950,7 @@ CompareHLtoBC:
 0590: 06 0C           LD      B,$0C               
 0592: CD E0 05        CALL    $05E0               ; {code.CopyData}
 0595: C9              RET                         
-;
+
 0596: FF FF
 ;
 0598: A8 A8     ;pointer to $05A8, $05A8 
@@ -1637,6 +1651,7 @@ CopyData:
 09B7: FF              
 09B8: FF              
 09B9: FF              
+
 09BA: 21 00 0A        LD      HL,$0A00            
 09BD: 0A              LD      A,(BC)              
 09BE: E6 F8           AND     $F8                 
@@ -4600,6 +4615,7 @@ CoinChecking:
 2449: 35              DEC     (HL)                
 244A: 7E              LD      A,(HL)              
 244B: C9              RET                         
+
 244C: 21 A5 43        LD      HL,$43A5            
 244F: 35              DEC     (HL)                
 2450: 7E              LD      A,(HL)              
@@ -4617,7 +4633,9 @@ CoinChecking:
 2462: 2E BA           LD      L,$BA               
 2464: 36 10           LD      (HL),$10            
 2466: C3 80 03        JP      $0380               ; {}
+
 2469: FF              
+
 246A: 01 14 09        LD      BC,$0914            
 246D: 11 C6 4A        LD      DE,$4AC6            
 2470: 21 00 1C        LD      HL,$1C00            
