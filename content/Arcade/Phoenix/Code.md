@@ -33,7 +33,7 @@
 
 0012: 21 00 18        LD      HL,$1800            ; Screen draw info
 0015: 0E 03           LD      C,$03               ; 3 columns (rotated to 3 rows)
-0017: CD D0 01        CALL    $01D0               ; {} Draw the first 3 rows of the background (scores and coins)
+0017: CD D0 01        CALL    $01D0               ; {code.PrintTextLines} Draw the first 3 rows of the background (scores and coins)
 ; Main loop begin
 001A: CD 80 00        CALL    $0080               ; {code.WaitVBlankCoin} Wait for VBlank and count any coins
 001D: 3A A2 43        LD      A,($43A2)           ; {ram.M43A2}
@@ -110,7 +110,7 @@ WaitVBlankCoin:
 ;
 008E: 26 70           LD      H,$70               ; 70xx IN0 Current value ...
 0090: 7E              LD      A,(HL)              ; ... of IN0 inputs
-0091: 21 A0 43        LD      HL,$43A0            ; Value from ...
+0091: 21 A0 43        LD      HL,$43A0            ; {+ram.IN0Current} Value from ...
 0094: 46              LD      B,(HL)              ; ... last read
 0095: 77              LD      (HL),A              ; Store new value
 0096: 2C              INC     L                   ; To 43A1
@@ -147,7 +147,7 @@ WaitVBlankCoin:
 ; from 1 to 0 since last we checked. Return NZ if transitioned from 1 to 0.
 ;
 CheckInputBits:
-00BB: 21 A0 43        LD      HL,$43A0            ; Get current ...
+00BB: 21 A0 43        LD      HL,$43A0            ; {+ram.IN0Current} Get current ...
 00BE: 7E              LD      A,(HL)              ; ... input value
 00BF: 2F              CPL                         ; Flip the current bits
 00C0: A0              AND     B                   ; Mask off all but the ones we are checking
@@ -176,12 +176,12 @@ PrintNumber:
 00D9: CD 10 02        CALL    $0210               ; {code.AddOneRow} next screen position
 00DC: 2B              DEC     HL                  ; Next data position
 00DD: 05              DEC     B                   ; All digits done?
-00DE: C2 C4 00        JP      NZ,$00C4            ; {} No ... keep going
+00DE: C2 C4 00        JP      NZ,$00C4            ; {code.PrintNumber} No ... keep going
 00E1: C9              RET                         ; Yes ... out
 
 00E2: FF             
 
-00E3: 21 99 43        LD      HL,$4399            
+00E3: 21 99 43        LD      HL,$4399            ; {+}
 00E6: CD 00 02        CALL    $0200               ; {code.AddOneToMem}
 00E9: 01 01 00        LD      BC,$0001            
 00EC: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
@@ -218,7 +218,7 @@ PrintNumber:
 0140: CD A0 03        CALL    $03A0               ; {}
 0143: CD 80 00        CALL    $0080               ; {code.WaitVBlankCoin}
 0146: CD 80 03        CALL    $0380               ; {}
-0149: 21 A3 43        LD      HL,$43A3            
+0149: 21 A3 43        LD      HL,$43A3            ; {+}
 014C: 36 02           LD      (HL),$02            
 014E: 2C              INC     L                   
 014F: 36 00           LD      (HL),$00            
@@ -317,16 +317,16 @@ PrintTextLines:
 01D4: C6 05           ADD     $05                 ; ... go get ...
 01D6: 6F              LD      L,A                 ; ... data
 01D7: 06 1A           LD      B,$1A               ; 26 columns
-01D9: CD ED 01        CALL    $01ED               ; {code.DrawColumn} Draw next row
+01D9: CD ED 01        CALL    $01ED               ; {code.DrawRow} Draw next row
 01DC: 0D              DEC     C                   ; All lines done?
-01DD: C2 D0 01        JP      NZ,$01D0            ; {} No ... draw all rows
+01DD: C2 D0 01        JP      NZ,$01D0            ; {code.PrintTextLines} No ... draw all rows
 01E0: C9              RET                         ; Done
 
 ; Print the copyright lines (bottom 3 lines)
 01E1: CD 40 01        CALL    $0140               ; {}
 01E4: 21 60 19        LD      HL,$1960            ; "PHOENIX ... U.S.A"
 01E7: 0E 03           LD      C,$03               ; 3 lines at the bottom
-01E9: C3 D0 01        JP      $01D0               ; {} Print the copyright
+01E9: C3 D0 01        JP      $01D0               ; {code.PrintTextLines} Print the copyright
 ;
 01EC: FF               
 
@@ -338,7 +338,7 @@ DrawRow:
 01EF: 23              INC     HL                  ; Next in data
 01F0: CD 17 02        CALL    $0217               ; {code.SubtractOneRow} Move DE to next row
 01F3: 05              DEC     B                   ; All drawn?
-01F4: C2 ED 01        JP      NZ,$01ED            ; {code.DrawColumn} Draw them all
+01F4: C2 ED 01        JP      NZ,$01ED            ; {code.DrawRow} Draw them all
 01F7: C9              RET                         ; Done
 
 01F8: FF FF FF FF FF FF FF FF               
@@ -505,14 +505,14 @@ CompareHLtoBC:
 0288: CD 40 01        CALL    $0140               ; {}
 028B: 21 C0 19        LD      HL,$19C0            
 028E: 0E 02           LD      C,$02               ; print two lines: 'PUSH ONLY...1PLAYER BUTTON'
-0290: CD D0 01        CALL    $01D0               ; {}
+0290: CD D0 01        CALL    $01D0               ; {code.PrintTextLines}
 0293: 0E 02           LD      C,$02               
-0295: CD E0 17        CALL    $17E0               ; {}
+0295: CD E0 17        CALL    $17E0               ; {code.CoinChecking}
 0298: FE 02           CP      $02                 
 029A: DA A7 02        JP      C,$02A7             ; {}
 029D: 21 A0 1B        LD      HL,$1BA0            
 02A0: 0E 01           LD      C,$01               ; print one line: '1 OR 2PLAYERS BUTTON'
-02A2: CD D0 01        CALL    $01D0               ; {}
+02A2: CD D0 01        CALL    $01D0               ; {code.PrintTextLines}
 02A5: 0E 06           LD      C,$06               
 02A7: 3A 00 70        LD      A,($7000)           ; 70xx IN0
 02AA: 2F              CPL                         
@@ -536,7 +536,7 @@ CompareHLtoBC:
 02CD: FE 02           CP      $02                 
 02CF: CA D4 02        JP      Z,$02D4             ; {}
 02D2: 0E 02           LD      C,$02               
-02D4: 21 A2 43        LD      HL,$43A2            
+02D4: 21 A2 43        LD      HL,$43A2            ; {+ram.M43A2}
 02D7: 71              LD      (HL),C              
 02D8: 3A 00 78        LD      A,($7800)           ; 78xx DSW0
 02DB: E6 10           AND     $10                 ; Coinage
@@ -554,8 +554,8 @@ CompareHLtoBC:
 
 02EE: FF FF              
 
-02F0: 11 83 43        LD      DE,$4383            ; ?? screen coordinate for score
-02F3: 21 8B 43        LD      HL,$438B            ; ?? score of some kind
+02F0: 11 83 43        LD      DE,$4383            ; {+ram.Score1low} screen coordinate for score
+02F3: 21 8B 43        LD      HL,$438B            ; {+ram.HiScorelow} score of some kind
 02F6: CD 14 03        CALL    $0314               ; {}
 02F9: D4 20 03        CALL    NC,$0320            ; {}
 02FC: 1E 87           LD      E,$87               
@@ -565,7 +565,7 @@ CompareHLtoBC:
 0306: 2E 8B           LD      L,$8B               
 0308: 11 41 41        LD      DE,$4141            ; Screen coordinates
 030B: 06 06           LD      B,$06               ; 6 digits
-030D: CD C4 00        CALL    $00C4               ; {} Print the 6-digit number
+030D: CD C4 00        CALL    $00C4               ; {code.PrintNumber} Print the 6-digit number
 0310: C9              RET                         ; Done
 ;
 0311: FF FF FF       
@@ -598,7 +598,7 @@ CompareHLtoBC:
 
 032B: FF FF FF               
 
-032E: 21 80 43        LD      HL,$4380            ; ?? Clear scores ??
+032E: 21 80 43        LD      HL,$4380            ; {+} ?? Clear scores ??
 0331: 36 00           LD      (HL),$00            
 0333: 23              INC     HL                  
 0334: 7D              LD      A,L                 
@@ -608,12 +608,12 @@ CompareHLtoBC:
 033A: 2E 83           LD      L,$83               ; Print ?? player 1 score ??
 033C: 11 61 42        LD      DE,$4261            
 033F: 06 06           LD      B,$06               
-0341: CD C4 00        CALL    $00C4               ; {}
+0341: CD C4 00        CALL    $00C4               ; {code.PrintNumber}
 ;
 0344: 2E 87           LD      L,$87               ; Print ?? player 2 score ??
 0346: 11 21 40        LD      DE,$4021            
 0349: 06 06           LD      B,$06               
-034B: CD C4 00        CALL    $00C4               ; {}
+034B: CD C4 00        CALL    $00C4               ; {code.PrintNumber}
 034E: C9              RET                         
 
 034F: FF               
@@ -622,7 +622,7 @@ CompareHLtoBC:
 0353: E6 03           AND     $03                 ; Lives
 0355: C6 03           ADD     $03                 
 0357: 47              LD      B,A                 
-0358: 21 90 43        LD      HL,$4390            
+0358: 21 90 43        LD      HL,$4390            ; {+ram.Player1Lives}
 035B: 70              LD      (HL),B              
 035C: 2E A2           LD      L,$A2               
 035E: 7E              LD      A,(HL)              
@@ -640,7 +640,7 @@ CompareHLtoBC:
 0373: 32 62 40        LD      ($4062),A           ; number of lives, for player 2 at screen ram
 0376: C9              RET                         
 ;
-0377: 21 8C 43        LD      HL,$438C            
+0377: 21 8C 43        LD      HL,$438C            ; {+}
 037A: 77              LD      (HL),A              
 037B: 2C              INC     L                   
 037C: 77              LD      (HL),A              
@@ -648,7 +648,7 @@ CompareHLtoBC:
 
 037E: FF FF
 
-0380: 21 3F 43        LD      HL,$433F            
+0380: 21 3F 43        LD      HL,$433F            ; {+}
 0383: 11 1F 00        LD      DE,$001F            
 0386: 01 3F 03        LD      BC,$033F            
 0389: 72              LD      (HL),D              
@@ -693,7 +693,7 @@ CompareHLtoBC:
 03C8: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
 03CB: CA E2 03        JP      Z,$03E2             ; {}
 03CE: CD 73 01        CALL    $0173               ; {}
-03D1: 21 A0 43        LD      HL,$43A0            
+03D1: 21 A0 43        LD      HL,$43A0            ; {+ram.IN0Current}
 03D4: 7E              LD      A,(HL)              
 03D5: E6 01           AND     $01                 
 03D7: B0              OR      B                   
@@ -708,7 +708,7 @@ CompareHLtoBC:
 03E8: C3 F1 03        JP      $03F1               ; {}
 03EB: 01 04 01        LD      BC,$0104            
 03EE: 11 08 00        LD      DE,$0008            
-03F1: 21 A4 43        LD      HL,$43A4            
+03F1: 21 A4 43        LD      HL,$43A4            ; {+ram.M43A4}
 03F4: 70              LD      (HL),B              
 03F5: 2E B8           LD      L,$B8               
 03F7: 71              LD      (HL),C              
@@ -754,7 +754,7 @@ CompareHLtoBC:
 042E: 18 05           JR      $435                ; {} not used
 
 ; ?? Function 0
-0430: 21 A4 43        LD      HL,$43A4            ; Next function to run ...
+0430: 21 A4 43        LD      HL,$43A4            ; {+ram.M43A4} Next function to run ...
 0433: 36 01           LD      (HL),$01            ; ... is 1 ??
 0435: 2C              INC     L                   
 0436: 36 80           LD      (HL),$80            
@@ -788,7 +788,7 @@ CompareHLtoBC:
 ; B=from bank number, C=to bank number
 ; Starts at 4320
 0460: 21 00 50        LD      HL,$5000            ; 50xx video register
-0463: 11 20 43        LD      DE,$4320            
+0463: 11 20 43        LD      DE,$4320            ; {+}
 0466: 70              LD      (HL),B              
 0467: 1A              LD      A,(DE)              
 0468: 71              LD      (HL),C              
@@ -807,7 +807,7 @@ CompareHLtoBC:
 047B: 7A              LD      A,D                 
 047C: FE 3F           CP      $3F                 
 047E: C2 66 04        JP      NZ,$0466            ; {}
-0481: 11 80 43        LD      DE,$4380            
+0481: 11 80 43        LD      DE,$4380            ; {+}
 0484: 70              LD      (HL),B              
 0485: 1A              LD      A,(DE)              
 0486: 71              LD      (HL),C              
@@ -839,7 +839,7 @@ CompareHLtoBC:
 04AB: FF
 
 ; ?? Function 1
-04AC: 21 A5 43        LD      HL,$43A5            
+04AC: 21 A5 43        LD      HL,$43A5            ; {+ram.M43A5}
 04AF: 35              DEC     (HL)                
 04B0: 7E              LD      A,(HL)              
 04B1: 2D              DEC     L                   
@@ -857,7 +857,7 @@ CompareHLtoBC:
 04C6: C2 E6 04        JP      NZ,$04E6            ; {}
 04C9: CD E8 06        CALL    $06E8               ; {}
 04CC: 00              NOP                         
-04CD: 21 A3 43        LD      HL,$43A3            
+04CD: 21 A3 43        LD      HL,$43A3            ; {+}
 04D0: 7E              LD      A,(HL)              
 04D1: A7              AND     A                   
 04D2: 2E 83           LD      L,$83               
@@ -866,12 +866,12 @@ CompareHLtoBC:
 04DA: 2E 87           LD      L,$87               
 04DC: 11 21 40        LD      DE,$4021            
 04DF: 06 06           LD      B,$06               
-04E1: CD C4 00        CALL    $00C4               ; {}
+04E1: CD C4 00        CALL    $00C4               ; {code.PrintNumber}
 04E4: C9              RET                         
 
 04E5: FF              
 
-04E6: 21 A3 43        LD      HL,$43A3            
+04E6: 21 A3 43        LD      HL,$43A3            ; {+}
 04E9: 7E              LD      A,(HL)              
 04EA: A7              AND     A                   
 04EB: 11 61 42        LD      DE,$4261            
@@ -889,7 +889,7 @@ CompareHLtoBC:
 0501: 05              DEC     B                   
 0502: C2 FB 04        JP      NZ,$04FB            ; {}
 0505: C9              RET                         
-0506: 21 92 43        LD      HL,$4392            
+0506: 21 92 43        LD      HL,$4392            ; {+}
 0509: 06 06           LD      B,$06               
 050B: CD D8 05        CALL    $05D8               ; {}
 050E: 3A 50 4B        LD      A,($4B50)           
@@ -898,7 +898,7 @@ CompareHLtoBC:
 
 ; ?? Function 2
 0515: CD 1E 04        CALL    $041E               ; {}
-0518: 21 A4 43        LD      HL,$43A4            
+0518: 21 A4 43        LD      HL,$43A4            ; {+ram.M43A4}
 051B: 36 03           LD      (HL),$03            
 051D: CD 80 05        CALL    $0580               ; {}
 0520: CD 47 05        CALL    $0547               ; {}
@@ -919,10 +919,10 @@ CompareHLtoBC:
 0544: FF FF FF
 ; Copy 32 byte from $0560 to $43c0 and clear 32 bytes from $43e0
 0547: 21 60 05        LD      HL,$0560            
-054A: 11 C0 43        LD      DE,$43C0            
+054A: 11 C0 43        LD      DE,$43C0            ; {+}
 054D: 06 20           LD      B,$20               
-054F: CD E0 05        CALL    $05E0               ; {}
-0552: 21 E0 43        LD      HL,$43E0            
+054F: CD E0 05        CALL    $05E0               ; {code.CopyData}
+0552: 21 E0 43        LD      HL,$43E0            ; {+}
 0555: 06 20           LD      B,$20               
 0557: CD D8 05        CALL    $05D8               ; {}
 055A: C9              RET                         
@@ -946,8 +946,8 @@ CompareHLtoBC:
 0589: 6F              LD      L,A                 
 058A: 6E              LD      L,(HL)              
 058B: 26 05           LD      H,$05               
-058D: 11 AB 43        LD      DE,$43AB            
-0590: 06 0C           LD      B,$0C               
+058D: 11 AB 43        LD      DE,$43AB            ; {+}
+0590: 06 0C           LD      B,$0C               ; {+}
 0592: CD E0 05        CALL    $05E0               ; {code.CopyData}
 0595: C9              RET                         
 
@@ -968,6 +968,7 @@ CompareHLtoBC:
 ;
 05B4: 60 5F 01 02 30 2F 00 1C
 05BC: 00 C0
+05BE: FF FF
 ;
 ;data copied to $43AB-$43B6
 05C0: 80 7F 03 04 40 3F 00 1F
@@ -991,7 +992,7 @@ CopyData:
 05E2: 23              INC     HL                  
 05E3: 13              INC     DE                  
 05E4: 05              DEC     B                   
-05E5: C2 E0 05        JP      NZ,$05E0            ; {}
+05E5: C2 E0 05        JP      NZ,$05E0            ; {code.CopyData}
 05E8: C9              RET                         
 ;
 05E9: FF FF FF
@@ -1080,7 +1081,7 @@ CopyData:
 066C: C2 67 06        JP      NZ,$0667            ; {}
 066F: C9              RET                         
 ;
-0670: 21 B1 43        LD      HL,$43B1            
+0670: 21 B1 43        LD      HL,$43B1            ; {+}
 0673: 46              LD      B,(HL)              
 0674: 2E B9           LD      L,$B9               
 0676: 4E              LD      C,(HL)              
@@ -1088,7 +1089,7 @@ CopyData:
 0678: 90              SUB     B                   
 0679: 77              LD      (HL),A              
 ;
-067A: 21 B9 43        LD      HL,$43B9            
+067A: 21 B9 43        LD      HL,$43B9            ; {+}
 067D: 7E              LD      A,(HL)              
 067E: 35              DEC     (HL)                
 067F: 32 00 58        LD      ($5800),A           ; 58xx scroll register
@@ -1127,7 +1128,7 @@ CopyData:
 06AE: FF              
 06AF: FF              
 ; Called every 2nd frame
-06B0: 21 AB 43        LD      HL,$43AB            
+06B0: 21 AB 43        LD      HL,$43AB            ; {+}
 06B3: 3A B9 43        LD      A,($43B9)           
 06B6: 4F              LD      C,A                 
 06B7: BE              CP      (HL)                
@@ -1172,7 +1173,7 @@ CopyData:
 ;
 06E8: 21 00 18        LD      HL,$1800            
 06EB: 0E 01           LD      C,$01               
-06ED: C3 D0 01        JP      $01D0               ; {}
+06ED: C3 D0 01        JP      $01D0               ; {code.PrintTextLines}
 ;
 06F0: CD 7A 06        CALL    $067A               ; {}
 06F3: CD 40 20        CALL    $2040               ; {}
@@ -1180,8 +1181,8 @@ CopyData:
 ;
 06F9: FF FF FF FF FF FF FF 
 ;
-0700: 01 C0 43        LD      BC,$43C0            
-0703: 11 E0 43        LD      DE,$43E0            
+0700: 01 C0 43        LD      BC,$43C0            ; {+}
+0703: 11 E0 43        LD      DE,$43E0            ; {+}
 0706: CD 18 07        CALL    $0718               ; {}
 0709: 79              LD      A,C                 
 070A: C6 04           ADD     $04                 
@@ -1425,7 +1426,7 @@ CopyData:
 0832: 22 4C       ;called once at first start of birds level
 ;
 0834: CD F0 06        CALL    $06F0               ; {}
-0837: 21 B4 43        LD      HL,$43B4            
+0837: 21 B4 43        LD      HL,$43B4            ; {+}
 083A: 35              DEC     (HL)                
 083B: 7E              LD      A,(HL)              
 083C: FE 15           CP      $15                 
@@ -1433,7 +1434,7 @@ CopyData:
 083F: CD 5A 08        CALL    $085A               ; {}
 0842: CD FA 05        CALL    $05FA               ; {}
 0845: CD 50 0A        CALL    $0A50               ; {}
-0848: 21 B4 43        LD      HL,$43B4            
+0848: 21 B4 43        LD      HL,$43B4            ; {+}
 084B: 7E              LD      A,(HL)              
 084C: A7              AND     A                   
 084D: C0              RET     NZ                  
@@ -1469,7 +1470,7 @@ CopyData:
 0882: CD 7A 09        CALL    $097A               ; {}
 0885: C9              RET                         
 ;
-0886: 21 EB 43        LD      HL,$43EB            
+0886: 21 EB 43        LD      HL,$43EB            ; {+}
 0889: 06 03           LD      B,$03               
 ;
 088B: 56              LD      D,(HL)              
@@ -1487,20 +1488,20 @@ CopyData:
 0898: FF FF FF FF FF FF FF FF
 ;
 08A0: CD C4 08        CALL    $08C4               ; {}
-08A3: 21 C4 43        LD      HL,$43C4            
+08A3: 21 C4 43        LD      HL,$43C4            ; {+}
 08A6: CD 30 09        CALL    $0930               ; {}
 08A9: 3A B8 43        LD      A,($43B8)           
 08AC: E6 0F           AND     $0F                 
 08AE: FE 03           CP      $03                 
 08B0: C0              RET     NZ                  
-08B1: 21 C8 43        LD      HL,$43C8            
+08B1: 21 C8 43        LD      HL,$43C8            ; {+}
 08B4: CD 30 09        CALL    $0930               ; {}
 08B7: C9              RET                         
 ;
 08B8: FF FF FF FF FF FF FF FF
 08C0: FF FF FF FF                
 ;
-08C4: 21 C0 43        LD      HL,$43C0            
+08C4: 21 C0 43        LD      HL,$43C0            ; {+}
 08C7: 7E              LD      A,(HL)              
 08C8: E6 08           AND     $08                 
 08CA: CA A0 0A        JP      Z,$0AA0             ; {}
@@ -1634,8 +1635,8 @@ CopyData:
 099D: FF              
 099E: FF              
 099F: FF              
-09A0: 01 C2 43        LD      BC,$43C2            
-09A3: 11 E2 43        LD      DE,$43E2            
+09A0: 01 C2 43        LD      BC,$43C2            ; {+}
+09A3: 11 E2 43        LD      DE,$43E2            ; {+}
 09A6: CD BA 09        CALL    $09BA               ; {}
 09A9: 03              INC     BC                  
 09AA: 03              INC     BC                  
@@ -1870,7 +1871,7 @@ CopyData:
 0AE9: C9              RET                         
 
 ; ?? Function 4
-0AEA: 21 B9 43        LD      HL,$43B9            
+0AEA: 21 B9 43        LD      HL,$43B9            ; {+}
 0AED: 7E              LD      A,(HL)              
 0AEE: E6 F8           AND     $F8                 
 0AF0: 77              LD      (HL),A              
@@ -1935,7 +1936,7 @@ CopyData:
 0B44: 01 09 00        LD      BC,$0009            
 0B47: 08              EX      AF,AF'              
 0B48: CD D6 0A        CALL    $0AD6               ; {}
-0B4B: 21 C0 43        LD      HL,$43C0            
+0B4B: 21 C0 43        LD      HL,$43C0            ; {+}
 0B4E: 36 0C           LD      (HL),$0C            
 0B50: 2C              INC     L                   
 0B51: 36 0C           LD      (HL),$0C            
@@ -1950,7 +1951,7 @@ CopyData:
 0B5D: FF              
 0B5E: FF              
 0B5F: FF              
-0B60: 21 A5 43        LD      HL,$43A5            
+0B60: 21 A5 43        LD      HL,$43A5            ; {+ram.M43A5}
 0B63: 34              INC     (HL)                
 0B64: 7E              LD      A,(HL)              
 0B65: FE 40           CP      $40                 
@@ -1959,7 +1960,7 @@ CopyData:
 0B6D: 0E 01           LD      C,$01               
 0B6F: FE 80           CP      $80                 
 0B71: C2 95 0B        JP      NZ,$0B95            ; {}
-0B74: 21 A4 43        LD      HL,$43A4            
+0B74: 21 A4 43        LD      HL,$43A4            ; {+ram.M43A4}
 0B77: 36 00           LD      (HL),$00            
 0B79: 2E 90           LD      L,$90               
 0B7B: 7E              LD      A,(HL)              
@@ -1981,12 +1982,12 @@ CopyData:
 0B8E: 01 00 01        LD      BC,$0100            
 0B91: CD 60 04        CALL    $0460               ; {}
 0B94: C9              RET                         
-0B95: CD D0 01        CALL    $01D0               ; {}
+0B95: CD D0 01        CALL    $01D0               ; {code.PrintTextLines}
 0B98: CD E4 01        CALL    $01E4               ; {}
 0B9B: C3 F0 1D        JP      $1DF0               ; {}
 0B9E: FF              
 0B9F: FF              
-0BA0: 21 B8 43        LD      HL,$43B8            
+0BA0: 21 B8 43        LD      HL,$43B8            ; {+}
 0BA3: 7E              LD      A,(HL)              
 0BA4: E6 0F           AND     $0F                 
 0BA6: FE 04           CP      $04                 
@@ -2090,7 +2091,7 @@ CopyData:
 0C3D: FF              
 0C3E: FF              
 0C3F: FF              
-0C40: 21 FF 43        LD      HL,$43FF            
+0C40: 21 FF 43        LD      HL,$43FF            ; {+}
 0C43: 06 05           LD      B,$05               
 0C45: CD 8B 08        CALL    $088B               ; {}
 0C48: CD 56 0C        CALL    $0C56               ; {}
@@ -2101,7 +2102,7 @@ CopyData:
 0C53: FF              
 0C54: FF              
 0C55: FF              
-0C56: 21 CC 43        LD      HL,$43CC            
+0C56: 21 CC 43        LD      HL,$43CC            ; {+}
 0C59: E5              PUSH    HL                  
 0C5A: CD 84 0C        CALL    $0C84               ; {}
 0C5D: E1              POP     HL                  
@@ -2114,8 +2115,8 @@ CopyData:
 0C68: FF              
 0C69: FF              
 0C6A: FF              
-0C6B: 01 CE 43        LD      BC,$43CE            
-0C6E: 11 EE 43        LD      DE,$43EE            
+0C6B: 01 CE 43        LD      BC,$43CE            ; {+}
+0C6E: 11 EE 43        LD      DE,$43EE            ; {+}
 0C71: CD BA 09        CALL    $09BA               ; {}
 0C74: 03              INC     BC                  
 0C75: 03              INC     BC                  
@@ -2187,8 +2188,8 @@ CopyData:
 0CD5: FF              
 0CD6: FF              
 0CD7: FF              
-0CD8: 01 CC 43        LD      BC,$43CC            
-0CDB: 11 EC 43        LD      DE,$43EC            
+0CD8: 01 CC 43        LD      BC,$43CC            ; {+}
+0CDB: 11 EC 43        LD      DE,$43EC            ; {+}
 0CDE: C5              PUSH    BC                  
 0CDF: CD 18 07        CALL    $0718               ; {}
 0CE2: C1              POP     BC                  
@@ -2225,7 +2226,7 @@ CopyData:
 0D05: FF              
 0D06: FF              
 0D07: FF              
-0D08: 21 93 43        LD      HL,$4393            
+0D08: 21 93 43        LD      HL,$4393            ; {+}
 0D0B: 34              INC     (HL)                
 0D0C: 7E              LD      A,(HL)              
 0D0D: E6 07           AND     $07                 
@@ -2402,14 +2403,14 @@ CopyData:
 0DED: C9              RET                         
 0DEE: FF              
 0DEF: FF              
-0DF0: 01 C4 43        LD      BC,$43C4            
-0DF3: 21 E6 43        LD      HL,$43E6            
+0DF0: 01 C4 43        LD      BC,$43C4            ; {+}
+0DF3: 21 E6 43        LD      HL,$43E6            ; {+}
 0DF6: CD 10 0E        CALL    $0E10               ; {}
-0DF9: 01 C8 43        LD      BC,$43C8            
-0DFC: 21 EA 43        LD      HL,$43EA            
+0DF9: 01 C8 43        LD      BC,$43C8            ; {+}
+0DFC: 21 EA 43        LD      HL,$43EA            ; {+}
 0DFF: C3 10 0E        JP      $0E10               ; {}
-0E02: 01 CC 43        LD      BC,$43CC            
-0E05: 21 EE 43        LD      HL,$43EE            
+0E02: 01 CC 43        LD      BC,$43CC            ; {+}
+0E05: 21 EE 43        LD      HL,$43EE            ; {+}
 0E08: CD 10 0E        CALL    $0E10               ; {}
 0E0B: C9              RET                         
 0E0C: FF              
@@ -2540,7 +2541,7 @@ CopyData:
 0EB5: 46              LD      B,(HL)              
 0EB6: 23              INC     HL                  
 0EB7: 4E              LD      C,(HL)              
-0EB8: 21 78 43        LD      HL,$4378            
+0EB8: 21 78 43        LD      HL,$4378            ; {+}
 0EBB: 7A              LD      A,D                 
 0EBC: FE 10           CP      $10                 
 0EBE: CA C3 0E        JP      Z,$0EC3             ; {}
@@ -2599,7 +2600,7 @@ CopyData:
 0EFD: FF              
 0EFE: FF              
 0EFF: FF              
-0F00: 21 A6 43        LD      HL,$43A6            
+0F00: 21 A6 43        LD      HL,$43A6            ; {+}
 0F03: 7E              LD      A,(HL)              
 0F04: FE C0           CP      $C0                 
 0F06: D2 74 0F        JP      NC,$0F74            ; {}
@@ -2612,7 +2613,7 @@ CopyData:
 0F14: C8              RET     Z                   
 0F15: 00              NOP                         
 0F16: 00              NOP                         
-0F17: 21 9E 43        LD      HL,$439E            
+0F17: 21 9E 43        LD      HL,$439E            ; {+}
 0F1A: 7E              LD      A,(HL)              
 0F1B: D6 06           SUB     $06                 
 0F1D: 47              LD      B,A                 
@@ -2723,13 +2724,13 @@ CopyData:
 0FBC: AD              XOR     L                   
 0FBD: 0E FF           LD      C,$FF               
 0FBF: FF              
-0FC0: 21 70 43        LD      HL,$4370            
+0FC0: 21 70 43        LD      HL,$4370            ; {+}
 0FC3: CD D8 0F        CALL    $0FD8               ; {}
-0FC6: 21 74 43        LD      HL,$4374            
+0FC6: 21 74 43        LD      HL,$4374            ; {+}
 0FC9: CD D8 0F        CALL    $0FD8               ; {}
-0FCC: 21 78 43        LD      HL,$4378            
+0FCC: 21 78 43        LD      HL,$4378            ; {+}
 0FCF: CD 58 37        CALL    $3758               ; {}
-0FD2: 21 7C 43        LD      HL,$437C            
+0FD2: 21 7C 43        LD      HL,$437C            ; {+}
 0FD5: C3 58 37        JP      $3758               ; {}
 0FD8: 7E              LD      A,(HL)              
 0FD9: A7              AND     A                   
@@ -3892,7 +3893,7 @@ CoinChecking:
 1ED8: E0 40 60 C0 
 1EDC: 20 40 20 80 
 ;
-1EE0: 11 3D 43        LD      DE,$433D            
+1EE0: 11 3D 43        LD      DE,$433D            ; {+}
 1EE3: 01 1A 00        LD      BC,$001A            
 1EE6: 1A              LD      A,(DE)              
 1EE7: 80              ADD     A,B                 
@@ -3903,7 +3904,7 @@ CoinChecking:
 1EF0: 1A              LD      A,(DE)              
 1EF1: 80              ADD     A,B                 
 1EF2: C6 27           ADD     $27                 
-1EF4: 21 89 43        LD      HL,$4389            
+1EF4: 21 89 43        LD      HL,$4389            ; {+ram.HiScorehigh}
 1EF7: 86              ADD     A,(HL)              
 1EF8: 77              LD      (HL),A              
 1EF9: 00              NOP                         
@@ -3932,7 +3933,7 @@ CoinChecking:
 2000: CD 76 08        CALL    $0876               ; {}
 2003: CD F0 0D        CALL    $0DF0               ; {}
 2006: CD A0 24        CALL    $24A0               ; {}
-2009: 21 5F 43        LD      HL,$435F            
+2009: 21 5F 43        LD      HL,$435F            ; {+}
 200C: 7E              LD      A,(HL)              
 200D: E6 03           AND     $03                 
 200F: 47              LD      B,A                 
@@ -3964,7 +3965,7 @@ CoinChecking:
 203D: FF              
 203E: FF              
 203F: FF              
-2040: 21 AF 43        LD      HL,$43AF            
+2040: 21 AF 43        LD      HL,$43AF            ; {+}
 2043: 3A B9 43        LD      A,($43B9)           
 2046: 4F              LD      C,A                 
 2047: BE              CP      (HL)                
@@ -4124,7 +4125,7 @@ CoinChecking:
 2119: FF              
 211A: FF              
 211B: FF              
-211C: 21 B9 43        LD      HL,$43B9            
+211C: 21 B9 43        LD      HL,$43B9            ; {+}
 211F: 7E              LD      A,(HL)              
 2120: FE 10           CP      $10                 
 2122: D8              RET     C                   
@@ -4258,7 +4259,7 @@ CoinChecking:
 2201: FF              
 2202: FF              
 2203: FF              
-2204: 21 B6 43        LD      HL,$43B6            
+2204: 21 B6 43        LD      HL,$43B6            ; {+}
 2207: 35              DEC     (HL)                
 2208: 7E              LD      A,(HL)              
 2209: FE A0           CP      $A0                 
@@ -4286,7 +4287,7 @@ CoinChecking:
 222B: C3 80 03        JP      $0380               ; {}
 222E: FF              
 222F: FF              
-2230: 21 9C 43        LD      HL,$439C            
+2230: 21 9C 43        LD      HL,$439C            ; {+}
 2233: 7E              LD      A,(HL)              
 2234: 34              INC     (HL)                
 2235: 00              NOP                         
@@ -4300,7 +4301,7 @@ CoinChecking:
 2245: D6 0E           SUB     $0E                 
 2247: FE 0D           CP      $0D                 
 2249: C2 60 22        JP      NZ,$2260            ; {}
-224C: 21 B8 43        LD      HL,$43B8            
+224C: 21 B8 43        LD      HL,$43B8            ; {+}
 224F: 34              INC     (HL)                
 2250: 2E A4           LD      L,$A4               
 2252: 36 02           LD      (HL),$02            
@@ -4354,7 +4355,7 @@ CoinChecking:
 228D: 1D              DEC     E                   
 228E: C2 7A 22        JP      NZ,$227A            ; {}
 2291: C9              RET                         
-2292: 21 B8 43        LD      HL,$43B8            
+2292: 21 B8 43        LD      HL,$43B8            ; {+}
 2295: 7E              LD      A,(HL)              
 2296: E6 08           AND     $08                 
 2298: CA F0 22        JP      Z,$22F0             ; {}
@@ -4375,7 +4376,7 @@ CoinChecking:
 22B0: C3 E0 22        JP      $22E0               ; {}
 22B3: FF              
 22B4: CD 7A 06        CALL    $067A               ; {}
-22B7: 21 B4 43        LD      HL,$43B4            
+22B7: 21 B4 43        LD      HL,$43B4            ; {+}
 22BA: 35              DEC     (HL)                
 22BB: 7E              LD      A,(HL)              
 22BC: FE 28           CP      $28                 
@@ -4387,7 +4388,7 @@ CoinChecking:
 22C7: FF              
 22C8: FF              
 22C9: FF              
-22CA: 21 B4 43        LD      HL,$43B4            
+22CA: 21 B4 43        LD      HL,$43B4            ; {+}
 22CD: 7E              LD      A,(HL)              
 22CE: FE C0           CP      $C0                 
 22D0: C2 34 08        JP      NZ,$0834            ; {}
@@ -4443,7 +4444,7 @@ CoinChecking:
 231F: C9              RET                         
 2320: FF              
 2321: FF              
-2322: 21 A7 43        LD      HL,$43A7            
+2322: 21 A7 43        LD      HL,$43A7            ; {+}
 2325: 34              INC     (HL)                
 2326: 7E              LD      A,(HL)              
 2327: E6 07           AND     $07                 
@@ -4541,7 +4542,7 @@ CoinChecking:
 23C2: E6 F0           AND     $F0                 
 23C4: FE 70           CP      $70                 
 23C6: C0              RET     NZ                  
-23C7: 21 A4 43        LD      HL,$43A4            
+23C7: 21 A4 43        LD      HL,$43A4            ; {+ram.M43A4}
 23CA: 36 06           LD      (HL),$06            
 23CC: 2C              INC     L                   
 23CD: 36 60           LD      (HL),$60            
@@ -4550,7 +4551,7 @@ CoinChecking:
 23D3: C9              RET                         
 23D4: FF              
 23D5: FF              
-23D6: 21 B8 43        LD      HL,$43B8            
+23D6: 21 B8 43        LD      HL,$43B8            ; {+}
 23D9: 7E              LD      A,(HL)              
 23DA: E6 0F           AND     $0F                 
 23DC: FE 01           CP      $01                 
@@ -4593,7 +4594,7 @@ CoinChecking:
 2429: FF              
 242A: FF              
 242B: FF              
-242C: 21 B9 43        LD      HL,$43B9            
+242C: 21 B9 43        LD      HL,$43B9            ; {+}
 242F: 7E              LD      A,(HL)              
 2430: E6 F8           AND     $F8                 
 2432: 77              LD      (HL),A              
@@ -4616,7 +4617,7 @@ CoinChecking:
 244A: 7E              LD      A,(HL)              
 244B: C9              RET                         
 
-244C: 21 A5 43        LD      HL,$43A5            
+244C: 21 A5 43        LD      HL,$43A5            ; {+ram.M43A5}
 244F: 35              DEC     (HL)                
 2450: 7E              LD      A,(HL)              
 2451: 0F              RRCA                        
@@ -4645,7 +4646,7 @@ CoinChecking:
 2478: CD 95 24        CALL    $2495               ; {}
 247B: 2E D3           LD      L,$D3               
 247D: 77              LD      (HL),A              
-247E: 21 BB 43        LD      HL,$43BB            
+247E: 21 BB 43        LD      HL,$43BB            ; {+}
 2481: 3E 08           LD      A,$08               
 2483: 96              SUB     (HL)                
 2484: 07              RLCA                        
@@ -4675,8 +4676,8 @@ CoinChecking:
 24A3: E6 0F           AND     $0F                 
 24A5: FE 08           CP      $08                 
 24A7: D8              RET     C                   
-24A8: 11 C4 43        LD      DE,$43C4            
-24AB: 21 E6 43        LD      HL,$43E6            
+24A8: 11 C4 43        LD      DE,$43C4            ; {+}
+24AB: 21 E6 43        LD      HL,$43E6            ; {+}
 24AE: CD 51 23        CALL    $2351               ; {}
 24B1: 3A 9B 43        LD      A,($439B)           ; {ram.Counter+1}
 24B4: E6 03           AND     $03                 
@@ -4694,7 +4695,7 @@ CoinChecking:
 24C9: FE 08           CP      $08                 
 24CB: DA F0 06        JP      C,$06F0             ; {}
 24CE: CD E0 24        CALL    $24E0               ; {}
-24D1: 21 AA 43        LD      HL,$43AA            
+24D1: 21 AA 43        LD      HL,$43AA            ; {+}
 24D4: 34              INC     (HL)                
 24D5: 7E              LD      A,(HL)              
 24D6: E6 03           AND     $03                 
@@ -4714,7 +4715,7 @@ CoinChecking:
 24F5: C6 60           ADD     $60                 
 24F7: 00              NOP                         
 24F8: 47              LD      B,A                 
-24F9: 21 9B 43        LD      HL,$439B            
+24F9: 21 9B 43        LD      HL,$439B            ; {+ram.Counter+1}
 24FC: E6 0E           AND     $0E                 
 24FE: A6              AND     (HL)                
 24FF: C0              RET     NZ                  
@@ -4757,7 +4758,7 @@ CoinChecking:
 253D: AF              XOR     A                   
 253E: 78              LD      A,B                 
 253F: 27              DAA                         
-2540: 21 9D 43        LD      HL,$439D            
+2540: 21 9D 43        LD      HL,$439D            ; {+}
 2543: 77              LD      (HL),A              
 2544: 2C              INC     L                   
 2545: 36 00           LD      (HL),$00            
@@ -4765,7 +4766,7 @@ CoinChecking:
 2548: D6 5E           SUB     $5E                 
 254A: 5F              LD      E,A                 
 254B: 06 04           LD      B,$04               
-254D: C3 C4 00        JP      $00C4               ; {}
+254D: C3 C4 00        JP      $00C4               ; {code.PrintNumber}
 2550: 32 80 2E        LD      ($2E80),A           ; {}
 2553: A4              AND     H                   
 2554: 36 07           LD      (HL),$07            
@@ -4776,7 +4777,7 @@ CoinChecking:
 255D: C9              RET                         
 255E: FF              
 255F: FF              
-2560: 21 93 43        LD      HL,$4393            
+2560: 21 93 43        LD      HL,$4393            ; {+}
 2563: 7E              LD      A,(HL)              
 2564: E6 01           AND     $01                 
 2566: 07              RLCA                        
@@ -4847,7 +4848,7 @@ CoinChecking:
 25C3: FE 20           CP      $20                 
 25C5: DA CA 25        JP      C,$25CA             ; {}
 25C8: 16 05           LD      D,$05               
-25CA: 21 CC 43        LD      HL,$43CC            
+25CA: 21 CC 43        LD      HL,$43CC            ; {+}
 25CD: 7E              LD      A,(HL)              
 25CE: E6 08           AND     $08                 
 25D0: CA E0 25        JP      Z,$25E0             ; {}
@@ -5036,7 +5037,7 @@ CoinChecking:
 26FE: FF              
 26FF: FF              
 
-2700: 21 A2 43        LD      HL,$43A2            
+2700: 21 A2 43        LD      HL,$43A2            ; {+ram.M43A2}
 2703: 7E              LD      A,(HL)              
 2704: A7              AND     A                   
 2705: C8              RET     Z                   
@@ -5049,7 +5050,7 @@ CoinChecking:
 270E: 6F              LD      L,A                 
 270F: 3E FF           LD      A,$FF               
 2711: 32 97 43        LD      ($4397),A           
-2714: 11 70 43        LD      DE,$4370            
+2714: 11 70 43        LD      DE,$4370            ; {+}
 2717: CD 48 27        CALL    $2748               ; {}
 271A: 1C              INC     E                   
 271B: 1C              INC     E                   
@@ -5107,9 +5108,9 @@ CoinChecking:
 2771: A7              AND     A                   
 2772: CA 78 27        JP      Z,$2778             ; {}
 2775: 11 21 40        LD      DE,$4021            
-2778: CD C4 00        CALL    $00C4               ; {}
+2778: CD C4 00        CALL    $00C4               ; {code.PrintNumber}
 277B: E1              POP     HL                  
-277C: 11 BD 43        LD      DE,$43BD            
+277C: 11 BD 43        LD      DE,$43BD            ; {+}
 277F: EB              EX      DE,HL               
 2780: 7E              LD      A,(HL)              
 2781: 2C              INC     L                   
@@ -5139,7 +5140,7 @@ CoinChecking:
 27A5: FF              
 27A6: FF              
 27A7: FF              
-27A8: 21 8C 43        LD      HL,$438C            
+27A8: 21 8C 43        LD      HL,$438C            ; {+}
 27AB: 7E              LD      A,(HL)              
 27AC: 32 00 60        LD      ($6000),A           ; 60xx sound A
 27AF: 2C              INC     L                   
@@ -5152,7 +5153,7 @@ CoinChecking:
 27BA: C9              RET                         
 27BB: FF              
 27BC: FF              
-27BD: 21 63 43        LD      HL,$4363            
+27BD: 21 63 43        LD      HL,$4363            ; {+}
 27C0: 7E              LD      A,(HL)              
 27C1: A7              AND     A                   
 27C2: C2 E2 27        JP      NZ,$27E2            ; {}
@@ -5335,7 +5336,7 @@ CoinChecking:
 2FE0: 03 19 06 06 1A 11 12 13 02 02 02 05 05 02 02 02
 2FF0: 05 05 02 02 02 05 1C 08 08 07 07 08 08 08 00 FF
 ;
-3000: 21 93 43        LD      HL,$4393            
+3000: 21 93 43        LD      HL,$4393            ; {+}
 3003: 7E              LD      A,(HL)              
 3004: 34              INC     (HL)                
 3005: E6 07           AND     $07                 
@@ -5362,7 +5363,7 @@ CoinChecking:
 3022: 31 B4 32        LD      SP,$32B4            
 3025: 2C              INC     L                   
 3026: 30 12           JR      NC,$303A            ; {}
-3028: 21 57 43        LD      HL,$4357            
+3028: 21 57 43        LD      HL,$4357            ; {+}
 302B: 7E              LD      A,(HL)              
 302C: FE 03           CP      $03                 
 302E: D0              RET     NC                  
@@ -5396,7 +5397,7 @@ CoinChecking:
 305A: FF              
 305B: FF              
 305C: CD 74 30        CALL    $3074               ; {}
-305F: 21 57 43        LD      HL,$4357            
+305F: 21 57 43        LD      HL,$4357            ; {+}
 3062: 7E              LD      A,(HL)              
 3063: 07              RLCA                        
 3064: 07              RLCA                        
@@ -5413,7 +5414,7 @@ CoinChecking:
 3071: FF              
 3072: FF              
 3073: FF              
-3074: 21 B8 43        LD      HL,$43B8            
+3074: 21 B8 43        LD      HL,$43B8            ; {+}
 3077: 7E              LD      A,(HL)              
 3078: 0F              RRCA                        
 3079: 00              NOP                         
@@ -5448,7 +5449,7 @@ CoinChecking:
 30A7: 4F              LD      C,A                 
 30A8: C9              RET                         
 30A9: FF              
-30AA: 21 9B 43        LD      HL,$439B            
+30AA: 21 9B 43        LD      HL,$439B            ; {+ram.Counter+1}
 30AD: 7E              LD      A,(HL)              
 30AE: 07              RLCA                        
 30AF: 07              RLCA                        
@@ -5459,7 +5460,7 @@ CoinChecking:
 30B6: E6 0F           AND     $0F                 
 30B8: C9              RET                         
 30B9: C0              RET     NZ                  
-30BA: 21 58 43        LD      HL,$4358            
+30BA: 21 58 43        LD      HL,$4358            ; {+}
 30BD: CD DA 30        CALL    $30DA               ; {}
 30C0: CD DA 30        CALL    $30DA               ; {}
 30C3: CD DA 30        CALL    $30DA               ; {}
@@ -5486,7 +5487,7 @@ CoinChecking:
 30E1: FE 01           CP      $01                 
 30E3: D0              RET     NC                  
 30E4: CD 74 30        CALL    $3074               ; {}
-30E7: 21 9A 43        LD      HL,$439A            
+30E7: 21 9A 43        LD      HL,$439A            ; {+ram.Counter}
 30EA: 7E              LD      A,(HL)              
 30EB: FE 10           CP      $10                 
 30ED: DA F2 30        JP      C,$30F2             ; {}
@@ -5525,7 +5526,7 @@ CoinChecking:
 3121: C9              RET                         
 3122: 86              ADD     A,(HL)              
 3123: 47              LD      B,A                 
-3124: 21 50 43        LD      HL,$4350            
+3124: 21 50 43        LD      HL,$4350            ; {+}
 3127: 7E              LD      A,(HL)              
 3128: FE 01           CP      $01                 
 312A: C0              RET     NZ                  
@@ -5559,7 +5560,7 @@ CoinChecking:
 3156: 0E 0F           LD      C,$0F               
 3158: FF              
 3159: FF              
-315A: 21 50 43        LD      HL,$4350            
+315A: 21 50 43        LD      HL,$4350            ; {+}
 315D: 7E              LD      A,(HL)              
 315E: FE 02           CP      $02                 
 3160: C0              RET     NZ                  
@@ -5674,7 +5675,7 @@ CoinChecking:
 3201: 7E              LD      A,(HL)              
 3202: 2C              INC     L                   
 3203: 46              LD      B,(HL)              
-3204: 21 50 43        LD      HL,$4350            
+3204: 21 50 43        LD      HL,$4350            ; {+}
 3207: 36 05           LD      (HL),$05            
 3209: 2C              INC     L                   
 320A: 77              LD      (HL),A              
@@ -5783,7 +5784,7 @@ CoinChecking:
 32AB: 0D              DEC     C                   
 32AC: C2 8F 32        JP      NZ,$328F            ; {}
 32AF: C9              RET                         
-32B0: 21 50 43        LD      HL,$4350            
+32B0: 21 50 43        LD      HL,$4350            ; {+}
 32B3: 06 30           LD      B,$30               
 32B5: CD D8 05        CALL    $05D8               ; {}
 32B8: 2E 9A           LD      L,$9A               
@@ -5811,12 +5812,12 @@ CoinChecking:
 32DE: 3A B8 43        LD      A,($43B8)           
 32E1: 0F              RRCA                        
 32E2: 0F              RRCA                        
-32E3: D2 E0 05        JP      NC,$05E0            ; {}
+32E3: D2 E0 05        JP      NC,$05E0            ; {code.CopyData}
 32E6: 7D              LD      A,L                 
 32E7: C6 40           ADD     $40                 
 32E9: 6F              LD      L,A                 
-32EA: C3 E0 05        JP      $05E0               ; {}
-32ED: CD E0 05        CALL    $05E0               ; {}
+32EA: C3 E0 05        JP      $05E0               ; {code.CopyData}
+32ED: CD E0 05        CALL    $05E0               ; {code.CopyData}
 32F0: C3 A0 03        JP      $03A0               ; {}
 32F3: FF              
 32F4: FF              
@@ -6549,7 +6550,7 @@ CoinChecking:
 37C0: 12              LD      (DE),A              
 37C1: CD 10 02        CALL    $0210               ; {code.AddOneRow}
 37C4: 06 02           LD      B,$02               
-37C6: C3 C4 00        JP      $00C4               ; {}
+37C6: C3 C4 00        JP      $00C4               ; {code.PrintNumber}
 37C9: FF              
 37CA: FF              
 37CB: FF              
@@ -6652,14 +6653,14 @@ CoinChecking:
 3856: 2C              INC     L                   
 3857: 56              LD      D,(HL)              
 3858: E1              POP     HL                  
-3859: 21 BB 43        LD      HL,$43BB            
+3859: 21 BB 43        LD      HL,$43BB            ; {+}
 385C: 35              DEC     (HL)                
 385D: FE 0B           CP      $0B                 
 385F: DA 94 38        JP      C,$3894             ; {}
 3862: 5F              LD      E,A                 
 3863: 3E FF           LD      A,$FF               
 3865: 32 69 43        LD      ($4369),A           
-3868: 21 78 43        LD      HL,$4378            
+3868: 21 78 43        LD      HL,$4378            ; {+}
 386B: 01 10 10        LD      BC,$1010            
 386E: 7B              LD      A,E                 
 386F: FE 0F           CP      $0F                 
@@ -6749,7 +6750,7 @@ CoinChecking:
 38F5: FF              
 38F6: FF              
 38F7: FF              
-38F8: 21 70 43        LD      HL,$4370            
+38F8: 21 70 43        LD      HL,$4370            ; {+}
 38FB: AF              XOR     A                   
 38FC: BE              CP      (HL)                
 38FD: CA 06 39        JP      Z,$3906             ; {}
@@ -6845,20 +6846,20 @@ CoinChecking:
 3985: D8              RET     C                   
 3986: FE 10           CP      $10                 
 3988: D0              RET     NC                  
-3989: 21 C4 43        LD      HL,$43C4            
-398C: 11 C0 4B        LD      DE,$4BC0            
+3989: 21 C4 43        LD      HL,$43C4            ; {+}
+398C: 11 C0 4B        LD      DE,$4BC0            ; {+}
 398F: 06 04           LD      B,$04               
-3991: CD E0 05        CALL    $05E0               ; {}
+3991: CD E0 05        CALL    $05E0               ; {code.CopyData}
 3994: 2E E6           LD      L,$E6               
 3996: 06 02           LD      B,$02               
-3998: CD E0 05        CALL    $05E0               ; {}
+3998: CD E0 05        CALL    $05E0               ; {code.CopyData}
 399B: 2E E2           LD      L,$E2               
-399D: 11 E6 43        LD      DE,$43E6            
+399D: 11 E6 43        LD      DE,$43E6            ; {+}
 39A0: 06 02           LD      B,$02               
-39A2: CD E0 05        CALL    $05E0               ; {}
+39A2: CD E0 05        CALL    $05E0               ; {code.CopyData}
 39A5: 2E C4           LD      L,$C4               
 39A7: 36 08           LD      (HL),$08            
-39A9: 11 9E 43        LD      DE,$439E            
+39A9: 11 9E 43        LD      DE,$439E            ; {+}
 39AC: 3A 9B 43        LD      A,($439B)           ; {ram.Counter+1}
 39AF: 0F              RRCA                        
 39B0: DA BF 39        JP      C,$39BF             ; {}
@@ -6874,23 +6875,23 @@ CoinChecking:
 39BF: 1A              LD      A,(DE)              
 39C0: 32 C6 43        LD      ($43C6),A           
 39C3: CD 00 38        CALL    $3800               ; {}
-39C6: 21 C4 43        LD      HL,$43C4            
+39C6: 21 C4 43        LD      HL,$43C4            ; {+}
 39C9: 7E              LD      A,(HL)              
 39CA: E6 08           AND     $08                 
 39CC: CA F0 39        JP      Z,$39F0             ; {}
-39CF: 21 E7 43        LD      HL,$43E7            
+39CF: 21 E7 43        LD      HL,$43E7            ; {+}
 39D2: 34              INC     (HL)                
 39D3: 7E              LD      A,(HL)              
 39D4: E6 1F           AND     $1F                 
 39D6: FE 1D           CP      $1D                 
 39D8: DA C3 39        JP      C,$39C3             ; {}
 39DB: 21 C0 4B        LD      HL,$4BC0            
-39DE: 11 C4 43        LD      DE,$43C4            
+39DE: 11 C4 43        LD      DE,$43C4            ; {+}
 39E1: 06 04           LD      B,$04               
-39E3: CD E0 05        CALL    $05E0               ; {}
+39E3: CD E0 05        CALL    $05E0               ; {code.CopyData}
 39E6: 1E E6           LD      E,$E6               
 39E8: 06 02           LD      B,$02               
-39EA: C3 E0 05        JP      $05E0               ; {}
+39EA: C3 E0 05        JP      $05E0               ; {code.CopyData}
 39ED: FF              
 39EE: FF              
 39EF: FF              
@@ -6914,14 +6915,14 @@ CoinChecking:
 3A0D: D8              RET     C                   
 3A0E: E1              POP     HL                  
 3A0F: C9              RET                         
-3A10: 21 B8 43        LD      HL,$43B8            
+3A10: 21 B8 43        LD      HL,$43B8            ; {+}
 3A13: 7E              LD      A,(HL)              
 3A14: A7              AND     A                   
 3A15: C2 43 3B        JP      NZ,$3B43            ; {}
 3A18: 2E 8D           LD      L,$8D               
 3A1A: 36 CF           LD      (HL),$CF            
 3A1C: C9              RET                         
-3A1D: 21 69 43        LD      HL,$4369            
+3A1D: 21 69 43        LD      HL,$4369            ; {+}
 3A20: 7E              LD      A,(HL)              
 3A21: A7              AND     A                   
 3A22: CA 40 3A        JP      Z,$3A40             ; {}
@@ -6982,7 +6983,7 @@ CoinChecking:
 3A7E: F6 04           OR      $04                 
 3A80: 77              LD      (HL),A              
 3A81: C9              RET                         
-3A82: 21 9A 43        LD      HL,$439A            
+3A82: 21 9A 43        LD      HL,$439A            ; {+ram.Counter}
 3A85: 7E              LD      A,(HL)              
 3A86: FE 03           CP      $03                 
 3A88: D8              RET     C                   
@@ -6991,7 +6992,7 @@ CoinChecking:
 3A8C: E6 3F           AND     $3F                 
 3A8E: 77              LD      (HL),A              
 3A8F: C9              RET                         
-3A90: 21 6B 43        LD      HL,$436B            
+3A90: 21 6B 43        LD      HL,$436B            ; {+}
 3A93: 7E              LD      A,(HL)              
 3A94: A7              AND     A                   
 3A95: C3 23 39        JP      $3923               ; {}
@@ -7019,7 +7020,7 @@ CoinChecking:
 3ABD: 3E 08           LD      A,$08               
 3ABF: C6 25           ADD     $25                 
 3AC1: 4F              LD      C,A                 
-3AC2: 21 8C 43        LD      HL,$438C            
+3AC2: 21 8C 43        LD      HL,$438C            ; {+}
 3AC5: 7E              LD      A,(HL)              
 3AC6: E6 C0           AND     $C0                 
 3AC8: B1              OR      C                   
@@ -7031,7 +7032,7 @@ CoinChecking:
 3ACD: FF              
 3ACE: FF              
 3ACF: FF              
-3AD0: 21 8E 43        LD      HL,$438E            
+3AD0: 21 8E 43        LD      HL,$438E            ; {+}
 3AD3: 7E              LD      A,(HL)              
 3AD4: E6 01           AND     $01                 
 3AD6: 07              RLCA                        
@@ -7066,7 +7067,7 @@ CoinChecking:
 3AFF: 77              LD      (HL),A              
 3B00: C9              RET                         
 3B01: 8E              ADC     A,(HL)              
-3B02: 21 9A 43        LD      HL,$439A            
+3B02: 21 9A 43        LD      HL,$439A            ; {+ram.Counter}
 3B05: 7E              LD      A,(HL)              
 3B06: FE 02           CP      $02                 
 3B08: D0              RET     NC                  
@@ -7083,7 +7084,7 @@ CoinChecking:
 3B18: 77              LD      (HL),A              
 3B19: C9              RET                         
 3B1A: 78              LD      A,B                 
-3B1B: 21 62 43        LD      HL,$4362            
+3B1B: 21 62 43        LD      HL,$4362            ; {+}
 3B1E: 7E              LD      A,(HL)              
 3B1F: A7              AND     A                   
 3B20: C8              RET     Z                   
@@ -7099,7 +7100,7 @@ CoinChecking:
 3B30: 77              LD      (HL),A              
 3B31: C9              RET                         
 3B32: FF              
-3B33: 21 6A 43        LD      HL,$436A            
+3B33: 21 6A 43        LD      HL,$436A            ; {+}
 3B36: 7E              LD      A,(HL)              
 3B37: A7              AND     A                   
 3B38: C8              RET     Z                   
@@ -7110,7 +7111,7 @@ CoinChecking:
 3B40: 77              LD      (HL),A              
 3B41: C9              RET                         
 3B42: 8D              ADC     A,L                 
-3B43: 21 A4 43        LD      HL,$43A4            
+3B43: 21 A4 43        LD      HL,$43A4            ; {+ram.M43A4}
 3B46: 7E              LD      A,(HL)              
 3B47: FE 03           CP      $03                 
 3B49: CC D6 23        CALL    Z,$23D6             ; {}
