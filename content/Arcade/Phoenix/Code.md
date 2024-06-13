@@ -36,7 +36,7 @@
 0017: CD D0 01        CALL    $01D0               ; {code.PrintTextLines} Draw the first 3 rows of the background (scores and coins)
 ; Main loop begin
 001A: CD 80 00        CALL    $0080               ; {code.WaitVBlankCoin} Wait for VBlank and count any coins
-001D: 3A A2 43        LD      A,($43A2)           ; 
+001D: 3A A2 43        LD      A,($43A2)           ; {ram.GameOrAttract}
 0020: A7              AND     A                   
 0021: CA 2D 00        JP      Z,$002D             ; {}
 ; game mode
@@ -71,20 +71,23 @@ InitSoundScreen:
 0056: 36 00           LD      (HL),$00            ; Sound off
 0058: 26 58           LD      H,$58               ; 58xx scroll register
 005A: 36 00           LD      (HL),$00            ; First memory bank
-005C: CD 6B 00        CALL    $006B               ; {code.ClearScreenPlane} Clear the plane
+005C: CD 6B 00        CALL    $006B               ; {code.ClearRAMBank} Clear the bank (includes screen)
 005F: 26 50           LD      H,$50               ; 50xx video register
 0061: 36 01           LD      (HL),$01            ; Second memory bank
-0063: CD 6B 00        CALL    $006B               ; {code.ClearScreenPlane} Clear the plane
+0063: CD 6B 00        CALL    $006B               ; {code.ClearRAMBank} Clear the bank (includes screen)
 0066: 26 50           LD      H,$50               ; 50xx video register
 0068: 36 00           LD      (HL),$00            ; Back to first memory bank
 006A: C9              RET                         ; Done
 
-; Clear a screen plane (foreground or background)
-; Set the lower bit of the video register to pick fore/back.
-; 4000 - 4BF8 (inclusive)
+; Clear a RAM Bank (bank 0 or 1)
+; Set the lower bit of the video register to pick the bank before calling.
+; 4000 - 4BF8
+; We call this function, which means we don't want to clear the return on the stack.
+; That's why we start clearing at 4BF8 instead of 4BFF.
+; Since screen memory is part of this bank, we are clearing the screen too.
 ;
-ClearScreenPlane:
-006B: 21 F8 4B        LD      HL,$4BF8            ; Highest point
+ClearRAMBank:
+006B: 21 F8 4B        LD      HL,$4BF8            ; Highest point ... skip the top of the stack
 006E: 3E 3F           LD      A,$3F               ; Stop when H reaches 3F
 0070: 36 00           LD      (HL),$00            ; Clear the memory
 0072: 2B              DEC     HL                  ; Point to next
@@ -110,7 +113,7 @@ WaitVBlankCoin:
 ;
 008E: 26 70           LD      H,$70               ; 70xx IN0 Current value ...
 0090: 7E              LD      A,(HL)              ; ... of IN0 inputs
-0091: 21 A0 43        LD      HL,$43A0            ; {+} Value from ...
+0091: 21 A0 43        LD      HL,$43A0            ; {+ram.IN0Current} Value from ...
 0094: 46              LD      B,(HL)              ; ... last read
 0095: 77              LD      (HL),A              ; Store new value
 0096: 2C              INC     L                   ; To 43A1
@@ -134,7 +137,7 @@ WaitVBlankCoin:
 00AE: 34              INC     (HL)                ; ... to coin count
 00AF: 7E              LD      A,(HL)              ; Current value ...
 00B0: C6 20           ADD     $20                 ; ... to number tile
-00B2: 32 42 41        LD      ($4142),A           ; Change number of coins on screen
+00B2: 32 42 41        LD      ($4142),A           ; {-} Change number of coins on screen
 00B5: C9              RET                         ; Done
 
 ; Never called
@@ -147,7 +150,7 @@ WaitVBlankCoin:
 ; from 1 to 0 since last we checked. Return NZ if transitioned from 1 to 0.
 ;
 CheckInputBits:
-00BB: 21 A0 43        LD      HL,$43A0            ; {+} Get current ...
+00BB: 21 A0 43        LD      HL,$43A0            ; {+ram.IN0Current} Get current ...
 00BE: 7E              LD      A,(HL)              ; ... input value
 00BF: 2F              CPL                         ; Flip the current bits
 00C0: A0              AND     B                   ; Mask off all but the ones we are checking
@@ -231,7 +234,7 @@ PrintNumber:
 015B: 2E BA           LD      L,$BA               
 015D: 36 10           LD      (HL),$10            
 015F: 2E BE           LD      L,$BE               
-0161: 3A 00 78        LD      A,($7800)           ; 78xx DSW0
+0161: 3A 00 78        LD      A,($7800)           ; {hard.DSW0} 78xx DSW0
 0164: E6 0C           AND     $0C                 ; Bonus lives
 0166: 07              RLCA                        
 0167: 07              RLCA                        
@@ -514,7 +517,7 @@ CompareHLtoBC:
 02A0: 0E 01           LD      C,$01               ; print one line: '1 OR 2PLAYERS BUTTON'
 02A2: CD D0 01        CALL    $01D0               ; {code.PrintTextLines}
 02A5: 0E 06           LD      C,$06               
-02A7: 3A 00 70        LD      A,($7000)           ; 70xx IN0
+02A7: 3A 00 70        LD      A,($7000)           ; {hard.IN0} 70xx IN0
 02AA: 2F              CPL                         
 02AB: A1              AND     C                   
 02AC: C8              RET     Z                   
@@ -536,9 +539,9 @@ CompareHLtoBC:
 02CD: FE 02           CP      $02                 
 02CF: CA D4 02        JP      Z,$02D4             ; {}
 02D2: 0E 02           LD      C,$02               
-02D4: 21 A2 43        LD      HL,$43A2            ; {+}
+02D4: 21 A2 43        LD      HL,$43A2            ; {+ram.GameOrAttract}
 02D7: 71              LD      (HL),C              
-02D8: 3A 00 78        LD      A,($7800)           ; 78xx DSW0
+02D8: 3A 00 78        LD      A,($7800)           ; {hard.DSW0} 78xx DSW0
 02DB: E6 10           AND     $10                 ; Coinage
 02DD: CA E3 02        JP      Z,$02E3             ; {}
 02E0: 79              LD      A,C                 
@@ -549,13 +552,13 @@ CompareHLtoBC:
 02E6: 91              SUB     C                   
 02E7: 77              LD      (HL),A              
 02E8: C6 20           ADD     $20                 
-02EA: 32 42 41        LD      ($4142),A           
+02EA: 32 42 41        LD      ($4142),A           ; {ram.ForegroundScreen+142}
 02ED: C9              RET                         
 
 02EE: FF FF              
 
-02F0: 11 83 43        LD      DE,$4383            ; {+} score
-02F3: 21 8B 43        LD      HL,$438B            ; {+} score of some kind
+02F0: 11 83 43        LD      DE,$4383            ; {+ram.Score1low} score
+02F3: 21 8B 43        LD      HL,$438B            ; {+ram.HiScorelow} score of some kind
 02F6: CD 14 03        CALL    $0314               ; {}
 02F9: D4 20 03        CALL    NC,$0320            ; {}
 02FC: 1E 87           LD      E,$87               
@@ -598,7 +601,7 @@ CompareHLtoBC:
 
 032B: FF FF FF               
 
-032E: 21 80 43        LD      HL,$4380            ; {+} ?? Clear scores ??
+032E: 21 80 43        LD      HL,$4380            ; {+ram.M4380} ?? Clear scores ??
 0331: 36 00           LD      (HL),$00            
 0333: 23              INC     HL                  
 0334: 7D              LD      A,L                 
@@ -618,11 +621,11 @@ CompareHLtoBC:
 
 034F: FF               
 
-0350: 3A 00 78        LD      A,($7800)           ; 78xx DSW0
+0350: 3A 00 78        LD      A,($7800)           ; {hard.DSW0} 78xx DSW0
 0353: E6 03           AND     $03                 ; Lives
 0355: C6 03           ADD     $03                 
 0357: 47              LD      B,A                 
-0358: 21 90 43        LD      HL,$4390            ; {+}
+0358: 21 90 43        LD      HL,$4390            ; {+ram.Player1Lives}
 035B: 70              LD      (HL),B              
 035C: 2E A2           LD      L,$A2               
 035E: 7E              LD      A,(HL)              
@@ -633,11 +636,11 @@ CompareHLtoBC:
 0367: 2E 90           LD      L,$90               
 0369: 7E              LD      A,(HL)              
 036A: F6 20           OR      $20                 
-036C: 32 A2 42        LD      ($42A2),A           ; number of lives, for player 1 at screen ram
+036C: 32 A2 42        LD      ($42A2),A           ; {ram.ForegroundScreen+2A2} number of lives, for player 1 at screen ram
 036F: 2C              INC     L                   
 0370: 7E              LD      A,(HL)              
 0371: F6 20           OR      $20                 
-0373: 32 62 40        LD      ($4062),A           ; number of lives, for player 2 at screen ram
+0373: 32 62 40        LD      ($4062),A           ; {ram.ForegroundScreen+62} number of lives, for player 2 at screen ram
 0376: C9              RET                         
 ;
 0377: 21 8C 43        LD      HL,$438C            ; {+}
@@ -648,7 +651,7 @@ CompareHLtoBC:
 
 037E: FF FF
 
-0380: 21 3F 43        LD      HL,$433F            ; {+}
+0380: 21 3F 43        LD      HL,$433F            ; {+ram.ForegroundScreen+33F}
 0383: 11 1F 00        LD      DE,$001F            
 0386: 01 3F 03        LD      BC,$033F            
 0389: 72              LD      (HL),D              
@@ -693,7 +696,7 @@ CompareHLtoBC:
 03C8: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
 03CB: CA E2 03        JP      Z,$03E2             ; {}
 03CE: CD 73 01        CALL    $0173               ; {}
-03D1: 21 A0 43        LD      HL,$43A0            ; {+}
+03D1: 21 A0 43        LD      HL,$43A0            ; {+ram.IN0Current}
 03D4: 7E              LD      A,(HL)              
 03D5: E6 01           AND     $01                 
 03D7: B0              OR      B                   
@@ -708,7 +711,7 @@ CompareHLtoBC:
 03E8: C3 F1 03        JP      $03F1               ; {}
 03EB: 01 04 01        LD      BC,$0104            
 03EE: 11 08 00        LD      DE,$0008            
-03F1: 21 A4 43        LD      HL,$43A4            ; {+}
+03F1: 21 A4 43        LD      HL,$43A4            ; {+ram.GameState}
 03F4: 70              LD      (HL),B              
 03F5: 2E B8           LD      L,$B8               
 03F7: 71              LD      (HL),C              
@@ -722,7 +725,7 @@ CompareHLtoBC:
 
 ; Jump to ?? function by number in 43A4
 0400: 21 0E 04        LD      HL,$040E            ; Jump table
-0403: 3A A4 43        LD      A,($43A4)           ; ??
+0403: 3A A4 43        LD      A,($43A4)           ; {ram.GameState} ??
 0406: 07              RLCA                        ; *2
 0407: 85              ADD     A,L                 ; Offset ...
 0408: 6F              LD      L,A                 ; ... into the table
@@ -748,13 +751,13 @@ CompareHLtoBC:
 0424: 3A B8 43        LD      A,($43B8)           
 0427: E6 02           AND     $02                 
 0429: B0              OR      B                   
-042A: 32 00 50        LD      ($5000),A           ; 50xx video register
+042A: 32 00 50        LD      ($5000),A           ; {hard.videoRegister} 50xx video register
 042D: C9              RET                         
 ;
 042E: 18 05           JR      $435                ; {} not used
 
 ; ?? Function 0
-0430: 21 A4 43        LD      HL,$43A4            ; {+} Next function to run ...
+0430: 21 A4 43        LD      HL,$43A4            ; {+ram.GameState} Next function to run ...
 0433: 36 01           LD      (HL),$01            ; ... is 1 ??
 0435: 2C              INC     L                   
 0436: 36 80           LD      (HL),$80            
@@ -788,7 +791,7 @@ CompareHLtoBC:
 ; B=from bank number, C=to bank number
 ; Starts at 4320
 0460: 21 00 50        LD      HL,$5000            ; 50xx video register
-0463: 11 20 43        LD      DE,$4320            ; {+}
+0463: 11 20 43        LD      DE,$4320            ; {+ram.ForegroundScreen+320}
 0466: 70              LD      (HL),B              
 0467: 1A              LD      A,(DE)              
 0468: 71              LD      (HL),C              
@@ -807,7 +810,7 @@ CompareHLtoBC:
 047B: 7A              LD      A,D                 
 047C: FE 3F           CP      $3F                 
 047E: C2 66 04        JP      NZ,$0466            ; {}
-0481: 11 80 43        LD      DE,$4380            ; {+}
+0481: 11 80 43        LD      DE,$4380            ; {+ram.M4380}
 0484: 70              LD      (HL),B              
 0485: 1A              LD      A,(DE)              
 0486: 71              LD      (HL),C              
@@ -839,7 +842,7 @@ CompareHLtoBC:
 04AB: FF
 
 ; ?? Function 1
-04AC: 21 A5 43        LD      HL,$43A5            ; {+}
+04AC: 21 A5 43        LD      HL,$43A5            ; {+ram.Counter8}
 04AF: 35              DEC     (HL)                
 04B0: 7E              LD      A,(HL)              
 04B1: 2D              DEC     L                   
@@ -892,13 +895,13 @@ CompareHLtoBC:
 0506: 21 92 43        LD      HL,$4392            ; {+}
 0509: 06 06           LD      B,$06               
 050B: CD D8 05        CALL    $05D8               ; {}
-050E: 3A 50 4B        LD      A,($4B50)           
+050E: 3A 50 4B        LD      A,($4B50)           ; {ram.Stack+10}
 0511: 32 94 43        LD      ($4394),A           
 0514: C9              RET                         
 
 ; ?? Function 2
 0515: CD 1E 04        CALL    $041E               ; {}
-0518: 21 A4 43        LD      HL,$43A4            ; {+}
+0518: 21 A4 43        LD      HL,$43A4            ; {+ram.GameState}
 051B: 36 03           LD      (HL),$03            
 051D: CD 80 05        CALL    $0580               ; {}
 0520: CD 47 05        CALL    $0547               ; {}
@@ -1092,7 +1095,7 @@ CopyData:
 067A: 21 B9 43        LD      HL,$43B9            ; {+}
 067D: 7E              LD      A,(HL)              
 067E: 35              DEC     (HL)                
-067F: 32 00 58        LD      ($5800),A           ; 58xx scroll register
+067F: 32 00 58        LD      ($5800),A           ; {hard.scrollRegister} 58xx scroll register
 0682: E6 07           AND     $07                 
 0684: C0              RET     NZ                  
 ;
@@ -1388,7 +1391,7 @@ CopyData:
 07EF: FF
 ;
 07F0: 3A B9 43        LD      A,($43B9)           
-07F3: 32 00 58        LD      ($5800),A           ; 58xx scroll register
+07F3: 32 00 58        LD      ($5800),A           ; {hard.scrollRegister} 58xx scroll register
 07F6: CD 80 03        CALL    $0380               ; {}
 07F9: C3 1E 04        JP      $041E               ; {}
 ;
@@ -1529,7 +1532,7 @@ CopyData:
 ;
 08F6: FF FF FF FF FF FF FF FF FF FF          
 ;
-0900: 3A A0 43        LD      A,($43A0)           ; 
+0900: 3A A0 43        LD      A,($43A0)           ; {ram.IN0Current}
 0903: 2F              CPL                         
 0904: E6 60           AND     $60                 
 0906: C8              RET     Z                   
@@ -1875,7 +1878,7 @@ CopyData:
 0AED: 7E              LD      A,(HL)              
 0AEE: E6 F8           AND     $F8                 
 0AF0: 77              LD      (HL),A              
-0AF1: 32 00 58        LD      ($5800),A           ; 58xx scroll register
+0AF1: 32 00 58        LD      ($5800),A           ; {hard.scrollRegister} 58xx scroll register
 0AF4: 2E E2           LD      L,$E2               
 0AF6: 56              LD      D,(HL)              
 0AF7: 2C              INC     L                   
@@ -1951,7 +1954,7 @@ CopyData:
 0B5D: FF              
 0B5E: FF              
 0B5F: FF              
-0B60: 21 A5 43        LD      HL,$43A5            ; {+}
+0B60: 21 A5 43        LD      HL,$43A5            ; {+ram.Counter8}
 0B63: 34              INC     (HL)                
 0B64: 7E              LD      A,(HL)              
 0B65: FE 40           CP      $40                 
@@ -1960,7 +1963,7 @@ CopyData:
 0B6D: 0E 01           LD      C,$01               
 0B6F: FE 80           CP      $80                 
 0B71: C2 95 0B        JP      NZ,$0B95            ; {}
-0B74: 21 A4 43        LD      HL,$43A4            ; {+}
+0B74: 21 A4 43        LD      HL,$43A4            ; {+ram.GameState}
 0B77: 36 00           LD      (HL),$00            
 0B79: 2E 90           LD      L,$90               
 0B7B: 7E              LD      A,(HL)              
@@ -1997,7 +2000,7 @@ CopyData:
 0BAC: 2C              INC     L                   
 0BAD: AF              XOR     A                   
 0BAE: 77              LD      (HL),A              
-0BAF: 32 00 58        LD      ($5800),A           ; 58xx scroll register
+0BAF: 32 00 58        LD      ($5800),A           ; {hard.scrollRegister} 58xx scroll register
 0BB2: C3 A0 03        JP      $03A0               ; {}
 0BB5: FF              
 0BB6: FF              
@@ -2178,9 +2181,9 @@ CopyData:
 0CC2: BE              CP      (HL)                
 0CC3: D0              RET     NC                  
 0CC4: 3E 04           LD      A,$04               
-0CC6: 32 A4 43        LD      ($43A4),A           ; 
+0CC6: 32 A4 43        LD      ($43A4),A           ; {ram.GameState}
 0CC9: 3E 60           LD      A,$60               
-0CCB: 32 A5 43        LD      ($43A5),A           ; 
+0CCB: 32 A5 43        LD      ($43A5),A           ; {ram.Counter8}
 0CCE: 3E 10           LD      A,$10               
 0CD0: 32 63 43        LD      ($4363),A           
 0CD3: C9              RET                         
@@ -3347,7 +3350,7 @@ CopyData:
 
 ;
 14E0: 47              LD      B,A                 
-14E1: 3A 00 78        LD      A,($7800)           ; 78xx DSW0
+14E1: 3A 00 78        LD      A,($7800)           ; {hard.DSW0} 78xx DSW0
 14E4: E6 10           AND     $10                 ; Coinage
 14E6: C8              RET     Z                   
 14E7: EB              EX      DE,HL               
@@ -3575,9 +3578,9 @@ CopyData:
 
 ;
 CoinChecking:
-17E0: 3A 00 78        LD      A,($7800)           ; 78xx DSW0
+17E0: 3A 00 78        LD      A,($7800)           ; {hard.DSW0} 78xx DSW0
 17E3: E6 10           AND     $10                 ; Coinage
-17E5: 3A 8F 43        LD      A,($438F)           ; 
+17E5: 3A 8F 43        LD      A,($438F)           ; {ram.CoinCount}
 17E8: C8              RET     Z                   
 17E9: 0F              RRCA                        
 17EA: E6 0F           AND     $0F                 
@@ -3816,11 +3819,11 @@ CoinChecking:
 
 1DEA: FF FF FF FF FF FF 
 ;
-1DF0: 3A 1D 43        LD      A,($431D)           
+1DF0: 3A 1D 43        LD      A,($431D)           ; {ram.ForegroundScreen+31D}
 1DF3: D6 01           SUB     $01                 
 1DF5: C8              RET     Z                   
 ; never called ?
-1DF6: 32 8F 43        LD      ($438F),A           ; 
+1DF6: 32 8F 43        LD      ($438F),A           ; {ram.CoinCount}
 1DF9: 00              NOP                         
 1DFA: 00              NOP                         
 1DFB: 00              NOP                         
@@ -3893,7 +3896,7 @@ CoinChecking:
 1ED8: E0 40 60 C0 
 1EDC: 20 40 20 80 
 ;
-1EE0: 11 3D 43        LD      DE,$433D            ; {+}
+1EE0: 11 3D 43        LD      DE,$433D            ; {+ram.ForegroundScreen+33D}
 1EE3: 01 1A 00        LD      BC,$001A            
 1EE6: 1A              LD      A,(DE)              
 1EE7: 80              ADD     A,B                 
@@ -3904,7 +3907,7 @@ CoinChecking:
 1EF0: 1A              LD      A,(DE)              
 1EF1: 80              ADD     A,B                 
 1EF2: C6 27           ADD     $27                 
-1EF4: 21 89 43        LD      HL,$4389            ; {+}
+1EF4: 21 89 43        LD      HL,$4389            ; {+ram.HiScorehigh}
 1EF7: 86              ADD     A,(HL)              
 1EF8: 77              LD      (HL),A              
 1EF9: 00              NOP                         
@@ -4133,7 +4136,7 @@ CoinChecking:
 2125: D0              RET     NC                  
 2126: 3E 10           LD      A,$10               
 2128: 77              LD      (HL),A              
-2129: 32 00 58        LD      ($5800),A           ; 58xx scroll register
+2129: 32 00 58        LD      ($5800),A           ; {hard.scrollRegister} 58xx scroll register
 212C: C9              RET                         
 212D: FF              
 212E: FF              
@@ -4402,7 +4405,7 @@ CoinChecking:
 22DF: FF              
 22E0: 3E 71           LD      A,$71               
 22E2: 32 B9 43        LD      ($43B9),A           
-22E5: 32 00 58        LD      ($5800),A           ; 58xx scroll register
+22E5: 32 00 58        LD      ($5800),A           ; {hard.scrollRegister} 58xx scroll register
 22E8: C9              RET                         
 22E9: FF              
 22EA: FF              
@@ -4419,7 +4422,7 @@ CoinChecking:
 22F9: FF              
 22FA: 21 AA 4A        LD      HL,$4AAA            
 22FD: 06 12           LD      B,$12               
-22FF: 3A 8A 48        LD      A,($488A)           
+22FF: 3A 8A 48        LD      A,($488A)           ; {ram.BackgroundScreen+8A}
 2302: 4F              LD      C,A                 
 2303: 79              LD      A,C                 
 2304: E6 03           AND     $03                 
@@ -4542,7 +4545,7 @@ CoinChecking:
 23C2: E6 F0           AND     $F0                 
 23C4: FE 70           CP      $70                 
 23C6: C0              RET     NZ                  
-23C7: 21 A4 43        LD      HL,$43A4            ; {+}
+23C7: 21 A4 43        LD      HL,$43A4            ; {+ram.GameState}
 23CA: 36 06           LD      (HL),$06            
 23CC: 2C              INC     L                   
 23CD: 36 60           LD      (HL),$60            
@@ -4598,7 +4601,7 @@ CoinChecking:
 242F: 7E              LD      A,(HL)              
 2430: E6 F8           AND     $F8                 
 2432: 77              LD      (HL),A              
-2433: 32 00 58        LD      ($5800),A           ; 58xx scroll register
+2433: 32 00 58        LD      ($5800),A           ; {hard.scrollRegister} 58xx scroll register
 2436: 11 C6 41        LD      DE,$41C6            
 2439: 0F              RRCA                        
 243A: 0F              RRCA                        
@@ -4617,7 +4620,7 @@ CoinChecking:
 244A: 7E              LD      A,(HL)              
 244B: C9              RET                         
 
-244C: 21 A5 43        LD      HL,$43A5            ; {+}
+244C: 21 A5 43        LD      HL,$43A5            ; {+ram.Counter8}
 244F: 35              DEC     (HL)                
 2450: 7E              LD      A,(HL)              
 2451: 0F              RRCA                        
@@ -4658,7 +4661,7 @@ CoinChecking:
 248C: 7E              LD      A,(HL)              
 248D: E6 1E           AND     $1E                 
 248F: 80              ADD     A,B                 
-2490: 32 D1 4B        LD      ($4BD1),A           
+2490: 32 D1 4B        LD      ($4BD1),A           ; {ram.Stack+91}
 2493: C9              RET                         
 2494: 1F              RRA                         
 2495: 80              ADD     A,B                 
@@ -4679,7 +4682,7 @@ CoinChecking:
 24A8: 11 C4 43        LD      DE,$43C4            ; {+}
 24AB: 21 E6 43        LD      HL,$43E6            ; {+}
 24AE: CD 51 23        CALL    $2351               ; {}
-24B1: 3A 9B 43        LD      A,($439B)           ; 
+24B1: 3A 9B 43        LD      A,($439B)           ; {ram.Counter16+1}
 24B4: E6 03           AND     $03                 
 24B6: FE 03           CP      $03                 
 24B8: C0              RET     NZ                  
@@ -4715,7 +4718,7 @@ CoinChecking:
 24F5: C6 60           ADD     $60                 
 24F7: 00              NOP                         
 24F8: 47              LD      B,A                 
-24F9: 21 9B 43        LD      HL,$439B            ; {+}
+24F9: 21 9B 43        LD      HL,$439B            ; {+ram.Counter16+1}
 24FC: E6 0E           AND     $0E                 
 24FE: A6              AND     (HL)                
 24FF: C0              RET     NZ                  
@@ -4902,14 +4905,14 @@ CoinChecking:
 260E: 21 D2 4B        LD      HL,$4BD2            
 2611: 77              LD      (HL),A              
 2612: 2C              INC     L                   
-2613: 3A D1 4B        LD      A,($4BD1)           
+2613: 3A D1 4B        LD      A,($4BD1)           ; {ram.Stack+91}
 2616: BE              CP      (HL)                
 2617: DA 50 26        JP      C,$2650             ; {}
-261A: 3A D5 4B        LD      A,($4BD5)           
+261A: 3A D5 4B        LD      A,($4BD5)           ; {ram.Stack+95}
 261D: 57              LD      D,A                 
 261E: E6 03           AND     $03                 
 2620: 5F              LD      E,A                 
-2621: 3A 9B 43        LD      A,($439B)           ; 
+2621: 3A 9B 43        LD      A,($439B)           ; {ram.Counter16+1}
 2624: 07              RLCA                        
 2625: 07              RLCA                        
 2626: E6 0C           AND     $0C                 
@@ -4926,8 +4929,8 @@ CoinChecking:
 2635: 3A B9 43        LD      A,($43B9)           
 2638: 92              SUB     D                   
 2639: 32 B9 43        LD      ($43B9),A           
-263C: 32 00 58        LD      ($5800),A           ; 58xx scroll register
-263F: 3A 9B 43        LD      A,($439B)           ; 
+263C: 32 00 58        LD      ($5800),A           ; {hard.scrollRegister} 58xx scroll register
+263F: 3A 9B 43        LD      A,($439B)           ; {ram.Counter16+1}
 2642: 0F              RRCA                        
 2643: D2 D0 26        JP      NC,$26D0            ; {}
 2646: CD 68 26        CALL    $2668               ; {}
@@ -4950,7 +4953,7 @@ CoinChecking:
 2668: 3A 6E 43        LD      A,($436E)           
 266B: 00              NOP                         
 266C: 47              LD      B,A                 
-266D: 3A 9A 43        LD      A,($439A)           ; 
+266D: 3A 9A 43        LD      A,($439A)           ; {ram.Counter16}
 2670: FE 18           CP      $18                 
 2672: DA 76 26        JP      C,$2676             ; {}
 2675: 04              INC     B                   
@@ -4961,7 +4964,7 @@ CoinChecking:
 267F: FE 03           CP      $03                 
 2681: D2 85 26        JP      NC,$2685            ; {}
 2684: 04              INC     B                   
-2685: 3A D6 4B        LD      A,($4BD6)           
+2685: 3A D6 4B        LD      A,($4BD6)           ; {ram.Stack+96}
 2688: C6 E0           ADD     $E0                 
 268A: 6F              LD      L,A                 
 268B: 26 3E           LD      H,$3E               
@@ -4978,7 +4981,7 @@ CoinChecking:
 269F: D2 A3 26        JP      NC,$26A3            ; {}
 26A2: 14              INC     D                   
 26A3: 7A              LD      A,D                 
-26A4: 32 D5 4B        LD      ($4BD5),A           
+26A4: 32 D5 4B        LD      ($4BD5),A           ; {ram.Stack+95}
 26A7: C9              RET                         
 26A8: 00              NOP                         
 26A9: 58              LD      E,B                 
@@ -5025,19 +5028,19 @@ CoinChecking:
 26E8: 6F              LD      L,A                 
 26E9: FE 68           CP      $68                 
 26EB: C2 D9 26        JP      NZ,$26D9            ; {}
-26EE: 3A D2 4B        LD      A,($4BD2)           
+26EE: 3A D2 4B        LD      A,($4BD2)           ; {ram.Stack+92}
 26F1: 82              ADD     A,D                 
 26F2: 83              ADD     A,E                 
 26F3: E6 1F           AND     $1F                 
-26F5: 32 D6 4B        LD      ($4BD6),A           
+26F5: 32 D6 4B        LD      ($4BD6),A           ; {ram.Stack+96}
 26F8: 7B              LD      A,E                 
 26F9: 92              SUB     D                   
-26FA: 32 D7 4B        LD      ($4BD7),A           
+26FA: 32 D7 4B        LD      ($4BD7),A           ; {ram.Stack+97}
 26FD: C9              RET                         
 26FE: FF              
 26FF: FF              
 
-2700: 21 A2 43        LD      HL,$43A2            ; {+}
+2700: 21 A2 43        LD      HL,$43A2            ; {+ram.GameOrAttract}
 2703: 7E              LD      A,(HL)              
 2704: A7              AND     A                   
 2705: C8              RET     Z                   
@@ -5059,7 +5062,7 @@ CoinChecking:
 271E: FE 80           CP      $80                 
 2720: C2 17 27        JP      NZ,$2717            ; {}
 2723: 1E 9D           LD      E,$9D               
-2725: 3A A4 43        LD      A,($43A4)           ; 
+2725: 3A A4 43        LD      A,($43A4)           ; {ram.GameState}
 2728: FE 06           CP      $06                 
 272A: C2 39 27        JP      NZ,$2739            ; {}
 272D: 1A              LD      A,(DE)              
@@ -5142,10 +5145,10 @@ CoinChecking:
 27A7: FF              
 27A8: 21 8C 43        LD      HL,$438C            ; {+}
 27AB: 7E              LD      A,(HL)              
-27AC: 32 00 60        LD      ($6000),A           ; 60xx sound A
+27AC: 32 00 60        LD      ($6000),A           ; {hard.soundControlA} 60xx sound A
 27AF: 2C              INC     L                   
 27B0: 7E              LD      A,(HL)              
-27B1: 32 00 68        LD      ($6800),A           ; 68xx sound B
+27B1: 32 00 68        LD      ($6800),A           ; {hard.soundControlB} 68xx sound B
 27B4: F6 0F           OR      $0F                 
 27B6: 77              LD      (HL),A              
 27B7: 2D              DEC     L                   
@@ -5449,7 +5452,7 @@ CoinChecking:
 30A7: 4F              LD      C,A                 
 30A8: C9              RET                         
 30A9: FF              
-30AA: 21 9B 43        LD      HL,$439B            ; {+}
+30AA: 21 9B 43        LD      HL,$439B            ; {+ram.Counter16+1}
 30AD: 7E              LD      A,(HL)              
 30AE: 07              RLCA                        
 30AF: 07              RLCA                        
@@ -5487,7 +5490,7 @@ CoinChecking:
 30E1: FE 01           CP      $01                 
 30E3: D0              RET     NC                  
 30E4: CD 74 30        CALL    $3074               ; {}
-30E7: 21 9A 43        LD      HL,$439A            ; {+}
+30E7: 21 9A 43        LD      HL,$439A            ; {+ram.Counter16}
 30EA: 7E              LD      A,(HL)              
 30EB: FE 10           CP      $10                 
 30ED: DA F2 30        JP      C,$30F2             ; {}
@@ -5871,13 +5874,13 @@ CoinChecking:
 3421: CD 60 35        CALL    $3560               ; {}
 3424: CD 98 34        CALL    $3498               ; {}
 3427: CD AA 34        CALL    $34AA               ; {}
-342A: 3A 9B 43        LD      A,($439B)           ; 
+342A: 3A 9B 43        LD      A,($439B)           ; {ram.Counter16+1}
 342D: 0F              RRCA                        
 342E: DA C0 0F        JP      C,$0FC0             ; {}
 3431: CD 30 39        CALL    $3930               ; {}
 3434: C3 40 0C        JP      $0C40               ; {}
 3437: FF              
-3438: 3A 9B 43        LD      A,($439B)           ; 
+3438: 3A 9B 43        LD      A,($439B)           ; {ram.Counter16+1}
 343B: 0F              RRCA                        
 343C: DA 52 34        JP      C,$3452             ; {}
 343F: CD 74 34        CALL    $3474               ; {}
@@ -5897,7 +5900,7 @@ CoinChecking:
 345F: FF              
 3460: FF              
 3461: FF              
-3462: 3A 9B 43        LD      A,($439B)           ; 
+3462: 3A 9B 43        LD      A,($439B)           ; {ram.Counter16+1}
 3465: 0F              RRCA                        
 3466: D8              RET     C                   
 3467: CD 40 0C        CALL    $0C40               ; {}
@@ -6114,7 +6117,7 @@ CoinChecking:
 3586: 07              RLCA                        
 3587: B0              OR      B                   
 3588: 47              LD      B,A                 
-3589: 3A 9A 43        LD      A,($439A)           ; 
+3589: 3A 9A 43        LD      A,($439A)           ; {ram.Counter16}
 358C: 07              RLCA                        
 358D: 07              RLCA                        
 358E: E6 20           AND     $20                 
@@ -6603,7 +6606,7 @@ CoinChecking:
 3806: 3A E6 43        LD      A,($43E6)           
 3809: C6 08           ADD     $08                 
 380B: 57              LD      D,A                 
-380C: 3A D2 4B        LD      A,($4BD2)           
+380C: 3A D2 4B        LD      A,($4BD2)           ; {ram.Stack+92}
 380F: 5F              LD      E,A                 
 3810: 3A E7 43        LD      A,($43E7)           
 3813: E6 E0           AND     $E0                 
@@ -6787,7 +6790,7 @@ CoinChecking:
 392D: C9              RET                         
 392E: C9              RET                         
 392F: FF              
-3930: 3A D2 4B        LD      A,($4BD2)           
+3930: 3A D2 4B        LD      A,($4BD2)           ; {ram.Stack+92}
 3933: E6 1E           AND     $1E                 
 3935: C6 C0           ADD     $C0                 
 3937: 6F              LD      L,A                 
@@ -6830,7 +6833,7 @@ CoinChecking:
 396C: 2D              DEC     L                   
 396D: 2D              DEC     L                   
 396E: 2D              DEC     L                   
-396F: 3A D2 4B        LD      A,($4BD2)           
+396F: 3A D2 4B        LD      A,($4BD2)           ; {ram.Stack+92}
 3972: 86              ADD     A,(HL)              
 3973: E6 1F           AND     $1F                 
 3975: 07              RLCA                        
@@ -6841,13 +6844,13 @@ CoinChecking:
 397B: C3 B7 25        JP      $25B7               ; {}
 397E: FF              
 397F: FF              
-3980: 3A D2 4B        LD      A,($4BD2)           
+3980: 3A D2 4B        LD      A,($4BD2)           ; {ram.Stack+92}
 3983: D6 0C           SUB     $0C                 
 3985: D8              RET     C                   
 3986: FE 10           CP      $10                 
 3988: D0              RET     NC                  
 3989: 21 C4 43        LD      HL,$43C4            ; {+}
-398C: 11 C0 4B        LD      DE,$4BC0            ; {+}
+398C: 11 C0 4B        LD      DE,$4BC0            ; {+ram.Stack+80}
 398F: 06 04           LD      B,$04               
 3991: CD E0 05        CALL    $05E0               ; {code.CopyData}
 3994: 2E E6           LD      L,$E6               
@@ -6860,7 +6863,7 @@ CoinChecking:
 39A5: 2E C4           LD      L,$C4               
 39A7: 36 08           LD      (HL),$08            
 39A9: 11 9E 43        LD      DE,$439E            ; {+}
-39AC: 3A 9B 43        LD      A,($439B)           ; 
+39AC: 3A 9B 43        LD      A,($439B)           ; {ram.Counter16+1}
 39AF: 0F              RRCA                        
 39B0: DA BF 39        JP      C,$39BF             ; {}
 39B3: 1C              INC     E                   
@@ -6909,7 +6912,7 @@ CoinChecking:
 3A05: 2F              CPL                         
 3A06: 3C              INC     A                   
 3A07: 57              LD      D,A                 
-3A08: 3A 9B 43        LD      A,($439B)           ; 
+3A08: 3A 9B 43        LD      A,($439B)           ; {ram.Counter16+1}
 3A0B: 0F              RRCA                        
 3A0C: 0F              RRCA                        
 3A0D: D8              RET     C                   
@@ -6983,7 +6986,7 @@ CoinChecking:
 3A7E: F6 04           OR      $04                 
 3A80: 77              LD      (HL),A              
 3A81: C9              RET                         
-3A82: 21 9A 43        LD      HL,$439A            ; {+}
+3A82: 21 9A 43        LD      HL,$439A            ; {+ram.Counter16}
 3A85: 7E              LD      A,(HL)              
 3A86: FE 03           CP      $03                 
 3A88: D8              RET     C                   
@@ -7049,7 +7052,7 @@ CoinChecking:
 3AE4: 34              INC     (HL)                
 3AE5: A7              AND     A                   
 3AE6: CA F8 3A        JP      Z,$3AF8             ; {}
-3AE9: 3A D6 4B        LD      A,($4BD6)           
+3AE9: 3A D6 4B        LD      A,($4BD6)           ; {ram.Stack+96}
 3AEC: C6 E0           ADD     $E0                 
 3AEE: 5F              LD      E,A                 
 3AEF: 16 3D           LD      D,$3D               
@@ -7067,7 +7070,7 @@ CoinChecking:
 3AFF: 77              LD      (HL),A              
 3B00: C9              RET                         
 3B01: 8E              ADC     A,(HL)              
-3B02: 21 9A 43        LD      HL,$439A            ; {+}
+3B02: 21 9A 43        LD      HL,$439A            ; {+ram.Counter16}
 3B05: 7E              LD      A,(HL)              
 3B06: FE 02           CP      $02                 
 3B08: D0              RET     NC                  
@@ -7111,7 +7114,7 @@ CoinChecking:
 3B40: 77              LD      (HL),A              
 3B41: C9              RET                         
 3B42: 8D              ADC     A,L                 
-3B43: 21 A4 43        LD      HL,$43A4            ; {+}
+3B43: 21 A4 43        LD      HL,$43A4            ; {+ram.GameState}
 3B46: 7E              LD      A,(HL)              
 3B47: FE 03           CP      $03                 
 3B49: CC D6 23        CALL    Z,$23D6             ; {}

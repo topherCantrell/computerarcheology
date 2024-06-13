@@ -248,7 +248,7 @@ def _render_code_line(line, code_anchors, tables):
             rep_html = f'<a class="addr_code" href="#{rep_org}">{rep}</a>'
             first_part = first_part[0:i] + rep_html + first_part[j:]
         else:
-            if rep[1] != '-':
+            if rep[0] != '-':
                 x = rep.find('.')
                 if x < 0:
                     raise Exception('No table name')

@@ -2,9 +2,6 @@
 
 # RAM Use
 
->>> memory
-
-
 There are two banks of memory that map to 4000 - 4FFF (4K each). The lower bit of $5000 controls which bank is active.
 Write a 0 for the 1st bank and a 1 for the 2nd bank. The Phoenix game only uses 3K from each bank (4000 - 4BFF). I'm
 guessing this allows the cabinet to leave out a 1K RAM chip for each bank to save money.
@@ -25,10 +22,11 @@ are two screens: foreground and background. Each screen is 32 columns by 26 colu
 
 The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Maybe it is just a copy in cocktail?
 
+>>> memory
+
 | | | |
 | --- | --- | --- |
 | 4000:433F | ForegroundScreen     | 32*26 bytes for the foreground screen |
-| | | |
 | 4380      | M4380                | ?? part of scoring ?? |
 | 4381      | Score1high           | Player 1 score BCD (high) |
 | 4382      | Score1mid            | Player 1 score BCD (mid) |
@@ -42,13 +40,11 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 438F      | CoinCount            | Number of coins inserted (max counted is 9) |
 | 4390      | Player1Lives         | Player 1 number of lives |
 | 4391      | Player2Lives         | Player 2 number of lives |
-| 439A:439B | Counter              | 16 bit counter (MSB:LSB) |
+| 439A:439B | Counter16            | 16 bit counter (MSB:LSB) |
 | 43A0      | IN0Current           | Current value of IN0     |
 | 43A1      | IN0Previous          | Previous value of IN0    |
-| 43A2      | M43A2                | Attract mode:0 Game mode:1 |
-| 43A4      | M43A4                | Game state:0 - 7 |
-| 43A5      | M43A5                | 8 bit counter (score flash time) |
-| | | |
+| 43A2      | GameOrAttract        | Attract mode:0 Game mode:1 |
+| 43A4      | GameState            | Game state:0 - 7 |
+| 43A5      | Counter8             | 8 bit counter (score flash time) |
 | 4800:4B3F | BackgroundScreen     | 32*26 bytes for the background screen |
-| | | |
 | 4B40:4BFF | Stack                | Stack space |

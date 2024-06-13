@@ -11,7 +11,7 @@ fancy HTML linking.
 
 ```
 py -m computerarcheology.carender.app
-py -m counpterarcheology.carender.development_server
+py -m computerarcheology.carender.development_server
 ```
 
 
