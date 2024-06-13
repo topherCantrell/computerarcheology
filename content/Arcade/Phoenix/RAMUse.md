@@ -4,8 +4,32 @@
 
 >>> memory
 
+
+There are two banks of memory that map to 4000 - 4FFF (4K each). The lower bit of $5000 controls which bank is active.
+Write a 0 for the 1st bank and a 1 for the 2nd bank. The Phoenix game only uses 3K from each bank (4000 - 4BFF). I'm
+guessing this allows the cabinet to leave out a 1K RAM chip for each bank to save money.
+
+These banks include the video memory with a twist -- literally. When bank 1 is selected, the screen is rotated to face 
+player 2 in cocktail mode. When bank 0 is selected, the screen faces player 1 (and both players in a non-cocktail cabinet). 
+
+The idea for these banks is that the first bank holds all the player 1 info and the second holds all the player 2
+info. This could make switching players easy. But there is no "common" memory for global info and the stack. The code 
+must carefully manage the bank switching -- especially in regards to the stack pointer.
+
+The screen is rotated physically, but the screen memory layout is standard upper-left corner to lower right corner. There 
+are two screens: foreground and background. Each screen is 32 columns by 26 columns (before rotation).
+  - 4000 - 433F Foreground
+  - 4340 - 47FF General storage (see the table below)
+  - 4800 - 4B3F Background 
+  - 4B40 - 4BFF Stack space
+
+The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Maybe it is just a copy in cocktail?
+
 | | | |
 | --- | --- | --- |
+| 4000:433F | ForegroundScreen     | 32*26 bytes for the foreground screen |
+| | | |
+| 4380      | M4380                | ?? part of scoring ?? |
 | 4381      | Score1high           | Player 1 score BCD (high) |
 | 4382      | Score1mid            | Player 1 score BCD (mid) |
 | 4383      | Score1low            | Player 1 score BCD (low) |
@@ -24,3 +48,7 @@
 | 43A2      | M43A2                | Attract mode:0 Game mode:1 |
 | 43A4      | M43A4                | Game state:0 - 7 |
 | 43A5      | M43A5                | 8 bit counter (score flash time) |
+| | | |
+| 4800:4B3F | BackgroundScreen     | 32*26 bytes for the background screen |
+| | | |
+| 4B40:4BFF | Stack                | Stack space |
