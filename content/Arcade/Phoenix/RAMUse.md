@@ -46,5 +46,6 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 43A2      | GameOrAttract        | Attract mode:0 Game mode:1 |
 | 43A4      | GameState            | Game state:0 - 7 |
 | 43A5      | Counter8             | 8 bit counter (score flash time) |
+| 43B8      | M43B8                | bit0 - 3: game level, bit4 - 7: game round |
 | 4800:4B3F | BackgroundScreen     | 32*26 bytes for the background screen |
 | 4B40:4BFF | Stack                | Stack space |
