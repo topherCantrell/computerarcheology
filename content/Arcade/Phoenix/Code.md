@@ -955,37 +955,37 @@ CompareHLtoBC:
 0595: C9              RET                         
 
 0596: FF FF
-;
-0598: A8 A8     ;pointer to $05A8, $05A8 
-059A: C0 C0     ;pointer to $05C0, $05C0 
-059C: A8 A8     ;pointer to $05A8, $05A8 
-059E: A8 A8     ;pointer to $05A8, $05A8 
-05A0: B4 CC     ;pointer to $05B4, $05CC 
-05A2: B4 B4     ;pointer to $05B4, $05B4 
-05A4: A8 A8     ;pointer to $05A8, $05A8 
-05A6: A8 A8     ;pointer to $05A8, $05A8 
+; bit0 - bit3 of $43b8 is the table index for:
+0598: A8 A8     ;init values for 1st alien wave (pointer to $05A8, $05A8) 
+059A: C0 C0     ;init values for 2st alien wave (pointer to $05C0, $05C0) 
+059C: A8 A8     ;init values for blue birds wave (pointer to $05A8, $05A8) 
+059E: A8 A8     ;init values for pink birds wave (pointer to $05A8, $05A8) 
+05A0: B4 CC     ;init values for mothership wave (pointer to $05B4, $05CC) 
+05A2: B4 B4     ;init values for mothership wave (pointer to $05B4, $05B4) 
+05A4: A8 A8     ;? pointer to $05A8, $05A8 
+05A6: A8 A8     ;? pointer to $05A8, $05A8 
 ;
 ;data copied to $43AB-$43B6
 05A8: 80 7F 00 00 40 3F 00 1C
 05B0: 00 FF FF FF 
 ;
+;data copied to $43AB-$43B6
 05B4: 60 5F 01 02 30 2F 00 1C
-05BC: 00 C0
-05BE: FF FF
+05BC: 00 C0 FF FF
 ;
 ;data copied to $43AB-$43B6
 05C0: 80 7F 03 04 40 3F 00 1F
 05C8: 00 A0 FF FF
 ;
+;data copied to $43AB-$43B6
 05CC: 60 60 05 06 50 30 00 1D
-05D4: 00 48 
-05D6: FF              
-05D7: FF              
+05D4: 00 48 FF FF
 ;
-05D8: AF              XOR     A                   
-05D9: 77              LD      (HL),A              
-05DA: 23              INC     HL                  
-05DB: 05              DEC     B                   
+;clears B memories starting at HL
+05D8: AF              XOR     A                   ; A=0
+05D9: 77              LD      (HL),A              ; store
+05DA: 23              INC     HL                  ; next
+05DB: 05              DEC     B                   ; decrease counter.
 05DC: C2 D9 05        JP      NZ,$05D9            ; {}
 05DF: C9              RET                         
 ;
@@ -1009,6 +1009,7 @@ CopyData:
 05F7: 56              LD      D,(HL)              
 05F8: 23              INC     HL                  
 05F9: 5E              LD      E,(HL)              
+;
 05FA: 21 70 4B        LD      HL,$4B70            
 05FD: 3A BA 43        LD      A,($43BA)           
 0600: 47              LD      B,A                 
@@ -1442,7 +1443,7 @@ CopyData:
 084C: A7              AND     A                   
 084D: C0              RET     NZ                  
 084E: 2E B8           LD      L,$B8               
-0850: 34              INC     (HL)                
+0850: 34              INC     (HL)                ; increment game level $43b8
 0851: 2E A4           LD      L,$A4               
 0853: 36 02           LD      (HL),$02            
 0855: C9              RET                         
@@ -4272,7 +4273,7 @@ CoinChecking:
 2210: 2E A6           LD      L,$A6               
 2212: 36 00           LD      (HL),$00            
 2214: 2E B8           LD      L,$B8               
-2216: 34              INC     (HL)                
+2216: 34              INC     (HL)                ; increment game level $43b8
 2217: 7E              LD      A,(HL)              
 2218: E6 0E           AND     $0E                 
 221A: 0F              RRCA                        
@@ -4633,7 +4634,7 @@ CoinChecking:
 245C: 7E              LD      A,(HL)              
 245D: E6 F0           AND     $F0                 
 245F: C6 10           ADD     $10                 
-2461: 77              LD      (HL),A              
+2461: 77              LD      (HL),A              ; game level $43b8
 2462: 2E BA           LD      L,$BA               
 2464: 36 10           LD      (HL),$10            
 2466: C3 80 03        JP      $0380               ; {}
@@ -7436,8 +7437,9 @@ CoinChecking:
 3F7C: 37 0A   ;address
 3F7E: 35 E0   ;address
 
-;**************************************************
-;init values for big birds level
+;
+;init values for 8 blue birds
+;data will be copied to $4B70-$4BAF
 3F80: 01 48 EE 00 10 B0 10 20 
 3F88: 01 49 2C 00 10 A0 00 B0 
 3F90: 01 49 6A 00 10 90 00 B8 
@@ -7446,6 +7448,8 @@ CoinChecking:
 3FA8: 01 4A 24 00 10 60 00 C8 
 3FB0: 01 4A 62 00 10 50 00 C8 
 3FB8: 01 4A A0 00 10 40 00 C8 
+;init values for 8 pink birds
+;data will be copied to $4B70-$4BAF
 3FC0: 01 4A CE 00 10 38 00 B0 
 3FC8: 01 48 CC 00 10 B8 10 20 
 3FD0: 01 4A CA 00 10 38 00 B8 
