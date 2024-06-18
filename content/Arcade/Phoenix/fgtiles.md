@@ -9,7 +9,7 @@
 <button id="btm1" class="btn btn-light" onclick="setMap(1)">Color Set 1</button>
 <br>
 <br>
-<canvas width="1200" height="2084"  
+<canvas width="1060" height="1060" 
     data-canvasFunction="TileEngine.handleTileCanvas"
     data-getTileDataFunction="Phoenix.getBackground8x8Data"
     data-pixWidth="8"
