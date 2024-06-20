@@ -748,7 +748,7 @@ CompareHLtoBC:
 041E: 3A A3 43        LD      A,($43A3)           
 0421: E6 01           AND     $01                 
 0423: 47              LD      B,A                 
-0424: 3A B8 43        LD      A,($43B8)           
+0424: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 0427: E6 02           AND     $02                 
 0429: B0              OR      B                   
 042A: 32 00 50        LD      ($5000),A           ; {hard.videoRegister} 50xx video register
@@ -943,7 +943,7 @@ CompareHLtoBC:
 057C: 00 58 00 20
 ;
 0580: 21 98 05        LD      HL,$0598            
-0583: 3A B8 43        LD      A,($43B8)           
+0583: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 0586: E6 0F           AND     $0F                 
 0588: 85              ADD     A,L                 
 0589: 6F              LD      L,A                 
@@ -1001,7 +1001,7 @@ CopyData:
 05E9: FF FF FF
 ;
 05EC: 21 00 15        LD      HL,$1500            
-05EF: 3A B8 43        LD      A,($43B8)           
+05EF: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 05F2: E6 0F           AND     $0F                 
 05F4: 07              RLCA                        
 05F5: 85              ADD     A,L                 
@@ -1028,7 +1028,7 @@ CopyData:
 060E: FF FF
 ;
 0610: 21 3A 06        LD      HL,$063A            
-0613: 3A B8 43        LD      A,($43B8)           
+0613: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 0616: 0F              RRCA                        
 0617: E6 0F           AND     $0F                 
 0619: 85              ADD     A,L                 
@@ -1064,7 +1064,7 @@ CopyData:
 064A: FF FF FF FF FF FF 
 ;
 0650: 21 20 15        LD      HL,$1520            
-0653: 3A B8 43        LD      A,($43B8)           
+0653: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 0656: E6 0F           AND     $0F                 
 0658: 07              RLCA                        
 0659: 85              ADD     A,L                 
@@ -1399,7 +1399,7 @@ CopyData:
 07FC: FF FF FF FF
 ;
 0800: 21 14 08        LD      HL,$0814            
-0803: 3A B8 43        LD      A,($43B8)           
+0803: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 0806: 07              RLCA                        
 0807: E6 1E           AND     $1E                 
 0809: 85              ADD     A,L                 
@@ -1494,7 +1494,7 @@ CopyData:
 08A0: CD C4 08        CALL    $08C4               ; {}
 08A3: 21 C4 43        LD      HL,$43C4            ; {+}
 08A6: CD 30 09        CALL    $0930               ; {}
-08A9: 3A B8 43        LD      A,($43B8)           
+08A9: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 08AC: E6 0F           AND     $0F                 
 08AE: FE 03           CP      $03                 
 08B0: C0              RET     NZ                  
@@ -1779,10 +1779,9 @@ CopyData:
 0A63: A7              AND     A                   
 0A64: C2 56 0A        JP      NZ,$0A56            ; {}
 0A67: C9              RET                         
-0A68: FF              
-0A69: FF              
-0A6A: FF              
-0A6B: FF              
+
+0A68: FF FF FF FF              
+
 0A6C: 01 70 4B        LD      BC,$4B70            
 0A6F: 11 B3 4B        LD      DE,$4BB3            
 0A72: C5              PUSH    BC                  
@@ -1950,11 +1949,9 @@ CopyData:
 0B57: F6 03           OR      $03                 
 0B59: 77              LD      (HL),A              
 0B5A: C9              RET                         
-0B5B: FF              
-0B5C: FF              
-0B5D: FF              
-0B5E: FF              
-0B5F: FF              
+
+0B5B: FF FF FF FF FF              
+
 0B60: 21 A5 43        LD      HL,$43A5            ; {+ram.Counter8}
 0B63: 34              INC     (HL)                
 0B64: 7E              LD      A,(HL)              
@@ -1989,9 +1986,10 @@ CopyData:
 0B95: CD D0 01        CALL    $01D0               ; {code.PrintTextLines}
 0B98: CD E4 01        CALL    $01E4               ; {}
 0B9B: C3 F0 1D        JP      $1DF0               ; {}
-0B9E: FF              
-0B9F: FF              
-0BA0: 21 B8 43        LD      HL,$43B8            ; {+}
+
+0B9E: FF FF              
+
+0BA0: 21 B8 43        LD      HL,$43B8            ; {+ram.M43B8}
 0BA3: 7E              LD      A,(HL)              
 0BA4: E6 0F           AND     $0F                 
 0BA6: FE 04           CP      $04                 
@@ -2003,11 +2001,9 @@ CopyData:
 0BAE: 77              LD      (HL),A              
 0BAF: 32 00 58        LD      ($5800),A           ; {hard.scrollRegister} 58xx scroll register
 0BB2: C3 A0 03        JP      $03A0               ; {}
-0BB5: FF              
-0BB6: FF              
-0BB7: FF              
-0BB8: FF              
-0BB9: FF              
+
+0BB5: FF FF FF FF FF              
+
 0BBA: 47              LD      B,A                 
 0BBB: 0F              RRCA                        
 0BBC: D2 C0 0F        JP      NC,$0FC0            ; {}
@@ -2015,39 +2011,28 @@ CopyData:
 0BC0: 78              LD      A,B                 
 0BC1: DA 70 20        JP      C,$2070             ; {}
 0BC4: C3 E8 20        JP      $20E8               ; {}
-0BC7: FF              
-0BC8: FF              
-0BC9: FF              
+
+0BC7: FF FF FF              
+
 0BCA: 21 D0 42        LD      HL,$42D0            
-0BCD: 01 DF FF        LD      BC,$FFDF            
+0BCD: 01 DF FF        LD      BC,$FFDF            ; Screen offset constant -33 right one column (-1), up one row (-32)
 0BD0: 36 64           LD      (HL),$64            
 0BD2: 09              ADD     HL,BC               
 0BD3: 23              INC     HL                  
 0BD4: 36 65           LD      (HL),$65            
 0BD6: 21 F2 42        LD      HL,$42F2            
 0BD9: 11 40 0A        LD      DE,$0A40            
-0BDC: CD 38 35        CALL    $3538               ; {}
+0BDC: CD 38 35        CALL    $3538               ; {code.Draw4x2}
 0BDF: 21 15 4B        LD      HL,$4B15            
 0BE2: 11 00 3C        LD      DE,$3C00            
-0BE5: CD 28 35        CALL    $3528               ; {}
+0BE5: CD 28 35        CALL    $3528               ; {code.Draw6x2}
 0BE8: 21 D8 4A        LD      HL,$4AD8            
 0BEB: 11 48 0A        LD      DE,$0A48            
-0BEE: CD 48 35        CALL    $3548               ; {}
+0BEE: CD 48 35        CALL    $3548               ; {code.Draw2x2}
 0BF1: C9              RET                         
-0BF2: FF              
-0BF3: FF              
-0BF4: FF              
-0BF5: FF              
-0BF6: FF              
-0BF7: FF              
-0BF8: FF              
-0BF9: FF              
-0BFA: FF              
-0BFB: FF              
-0BFC: FF              
-0BFD: FF              
-0BFE: FF              
-0BFF: FF              
+
+0BF2: FF FF FF FF FF FF FF FF FF FF FF FF FF FF              
+
 0C00: E5              PUSH    HL                  
 0C01: 7D              LD      A,L                 
 0C02: D6 72           SUB     $72                 
@@ -2132,9 +2117,9 @@ CopyData:
 0C7B: FE E2           CP      $E2                 
 0C7D: C2 71 0C        JP      NZ,$0C71            ; {}
 0C80: C9              RET                         
-0C81: FF              
-0C82: FF              
-0C83: FF              
+
+0C81: FF FF FF              
+
 0C84: 7E              LD      A,(HL)              
 0C85: E6 08           AND     $08                 
 0C87: C8              RET     Z                   
@@ -2167,10 +2152,9 @@ CopyData:
 0CAA: FE E8           CP      $E8                 
 0CAC: D2 6E 09        JP      NC,$096E            ; {}
 0CAF: C9              RET                         
-0CB0: FF              
-0CB1: FF              
-0CB2: FF              
-0CB3: FF              
+
+0CB0: FF FF FF FF              
+
 0CB4: FE DC           CP      $DC                 
 0CB6: D8              RET     C                   
 0CB7: FE E9           CP      $E9                 
@@ -2206,30 +2190,16 @@ CopyData:
 0CEB: A7              AND     A                   
 0CEC: C2 DE 0C        JP      NZ,$0CDE            ; {}
 0CEF: C9              RET                         
-0CF0: FF              
-0CF1: FF              
-0CF2: FF              
-0CF3: FF              
+
+0CF0: FF FF FF FF              
+
 0CF4: D1              POP     DE                  
 0CF5: C1              POP     BC                  
 0CF6: C9              RET                         
-0CF7: FF              
-0CF8: FF              
-0CF9: FF              
-0CFA: FF              
-0CFB: FF              
-0CFC: FF              
-0CFD: FF              
-0CFE: FF              
-0CFF: FF              
-0D00: FF              
-0D01: FF              
-0D02: FF              
-0D03: FF              
-0D04: FF              
-0D05: FF              
-0D06: FF              
-0D07: FF              
+
+0CF7: FF FF FF FF FF FF FF FF 
+0CFF: FF FF FF FF FF FF FF FF FF              
+
 0D08: 21 93 43        LD      HL,$4393            ; {+}
 0D0B: 34              INC     (HL)                
 0D0C: 7E              LD      A,(HL)              
@@ -2242,10 +2212,9 @@ CopyData:
 0D14: E6 0F           AND     $0F                 
 0D16: 77              LD      (HL),A              
 0D17: C9              RET                         
-0D18: FF              
-0D19: FF              
-0D1A: FF              
-0D1B: FF              
+
+0D18: FF FF FF FF              
+
 0D1C: 01 70 4B        LD      BC,$4B70            
 0D1F: 21 50 4B        LD      HL,$4B50            
 0D22: CD 30 0D        CALL    $0D30               ; {}
@@ -2256,7 +2225,9 @@ CopyData:
 0D2A: B9              CP      C                   
 0D2B: C2 22 0D        JP      NZ,$0D22            ; {}
 0D2E: C9              RET                         
+
 0D2F: FF              
+
 0D30: 56              LD      D,(HL)              
 0D31: 23              INC     HL                  
 0D32: 0A              LD      A,(BC)              
@@ -2757,7 +2728,7 @@ CopyData:
 0FEF: 6E              LD      L,(HL)              
 0FF0: EB              EX      DE,HL               
 0FF1: 01 DF FF        LD      BC,$FFDF            
-0FF4: C3 40 35        JP      $3540               ; {}
+0FF4: C3 40 35        JP      $3540               ; {code.Draw3x2}
 0FF7: 68              LD      L,B                 
 0FF8: 3E 05           LD      A,$05               
 0FFA: 32 96 43        LD      ($4396),A           
@@ -4226,7 +4197,7 @@ CoinChecking:
 21BF: CD 40 0C        CALL    $0C40               ; {}
 21C2: CD C0 0F        CALL    $0FC0               ; {}
 21C5: CD C4 24        CALL    $24C4               ; {}
-21C8: 3A B8 43        LD      A,($43B8)           
+21C8: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 21CB: E6 0F           AND     $0F                 
 21CD: FE 0B           CP      $0B                 
 21CF: DA 04 22        JP      C,$2204             ; {}
@@ -4305,7 +4276,7 @@ CoinChecking:
 2245: D6 0E           SUB     $0E                 
 2247: FE 0D           CP      $0D                 
 2249: C2 60 22        JP      NZ,$2260            ; {}
-224C: 21 B8 43        LD      HL,$43B8            ; {+}
+224C: 21 B8 43        LD      HL,$43B8            ; {+ram.M43B8}
 224F: 34              INC     (HL)                
 2250: 2E A4           LD      L,$A4               
 2252: 36 02           LD      (HL),$02            
@@ -4359,7 +4330,7 @@ CoinChecking:
 228D: 1D              DEC     E                   
 228E: C2 7A 22        JP      NZ,$227A            ; {}
 2291: C9              RET                         
-2292: 21 B8 43        LD      HL,$43B8            ; {+}
+2292: 21 B8 43        LD      HL,$43B8            ; {+ram.M43B8}
 2295: 7E              LD      A,(HL)              
 2296: E6 08           AND     $08                 
 2298: CA F0 22        JP      Z,$22F0             ; {}
@@ -4555,7 +4526,7 @@ CoinChecking:
 23D3: C9              RET                         
 23D4: FF              
 23D5: FF              
-23D6: 21 B8 43        LD      HL,$43B8            ; {+}
+23D6: 21 B8 43        LD      HL,$43B8            ; {+ram.M43B8}
 23D9: 7E              LD      A,(HL)              
 23DA: E6 0F           AND     $0F                 
 23DC: FE 01           CP      $01                 
@@ -4676,7 +4647,7 @@ CoinChecking:
 249D: C8              RET     Z                   
 249E: 87              ADD     A,A                 
 249F: C9              RET                         
-24A0: 3A B8 43        LD      A,($43B8)           
+24A0: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 24A3: E6 0F           AND     $0F                 
 24A5: FE 08           CP      $08                 
 24A7: D8              RET     C                   
@@ -4694,7 +4665,7 @@ CoinChecking:
 24C1: FF              
 24C2: FF              
 24C3: FF              
-24C4: 3A B8 43        LD      A,($43B8)           
+24C4: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 24C7: E6 0F           AND     $0F                 
 24C9: FE 08           CP      $08                 
 24CB: DA F0 06        JP      C,$06F0             ; {}
@@ -4751,7 +4722,7 @@ CoinChecking:
 2528: C6 60           ADD     $60                 
 252A: 0F              RRCA                        
 252B: 47              LD      B,A                 
-252C: 3A B8 43        LD      A,($43B8)           
+252C: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 252F: E6 F0           AND     $F0                 
 2531: 80              ADD     A,B                 
 2532: 06 90           LD      B,$90               
@@ -4844,7 +4815,7 @@ CoinChecking:
 25B4: 4F              LD      C,A                 
 25B5: 2D              DEC     L                   
 25B6: 46              LD      B,(HL)              
-25B7: 3A B8 43        LD      A,($43B8)           
+25B7: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 25BA: 16 03           LD      D,$03               
 25BC: FE 10           CP      $10                 
 25BE: DA CA 25        JP      C,$25CA             ; {}
@@ -5418,7 +5389,7 @@ CoinChecking:
 3071: FF              
 3072: FF              
 3073: FF              
-3074: 21 B8 43        LD      HL,$43B8            ; {+}
+3074: 21 B8 43        LD      HL,$43B8            ; {+ram.M43B8}
 3077: 7E              LD      A,(HL)              
 3078: 0F              RRCA                        
 3079: 00              NOP                         
@@ -5813,7 +5784,7 @@ CoinChecking:
 32DA: C6 10           ADD     $10                 
 32DC: 6F              LD      L,A                 
 32DD: 41              LD      B,C                 
-32DE: 3A B8 43        LD      A,($43B8)           
+32DE: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 32E1: 0F              RRCA                        
 32E2: 0F              RRCA                        
 32E3: D2 E0 05        JP      NC,$05E0            ; {code.CopyData}
@@ -6018,13 +5989,12 @@ CoinChecking:
 3516: 36 00           LD      (HL),$00            
 3518: 09              ADD     HL,BC               
 3519: C9              RET                         
-351A: FF              
-351B: FF              
-351C: FF              
-351D: FF              
-351E: FF              
-351F: FF              
+
+351A: FF FF FF FF FF FF              
+
 ;draw shape (entry dep. on size of shape: 2x2,3x2,4x2,5x2,6x2,7x2)
+
+Draw7x2:
 ;*7x2**********************************************
 3520: 1A              LD      A,(DE)              
 3521: 77              LD      (HL),A              
@@ -6034,6 +6004,7 @@ CoinChecking:
 3525: 77              LD      (HL),A              
 3526: 13              INC     DE                  
 3527: 09              ADD     HL,BC               
+Draw6x2:
 ;*6x2**********************************************
 3528: 1A              LD      A,(DE)              
 3529: 77              LD      (HL),A              
@@ -6043,6 +6014,7 @@ CoinChecking:
 352D: 77              LD      (HL),A              
 352E: 13              INC     DE                  
 352F: 09              ADD     HL,BC               
+Draw5x2:
 ;*5x2**********************************************
 3530: 1A              LD      A,(DE)              
 3531: 77              LD      (HL),A              
@@ -6052,6 +6024,7 @@ CoinChecking:
 3535: 77              LD      (HL),A              
 3536: 13              INC     DE                  
 3537: 09              ADD     HL,BC               
+Draw4x2:
 ;*4x2**********************************************
 3538: 1A              LD      A,(DE)              
 3539: 77              LD      (HL),A              
@@ -6061,6 +6034,7 @@ CoinChecking:
 353D: 77              LD      (HL),A              
 353E: 13              INC     DE                  
 353F: 09              ADD     HL,BC               
+Draw3x2:      
 ;*3x2**********************************************
 3540: 1A              LD      A,(DE)              
 3541: 77              LD      (HL),A              
@@ -6070,6 +6044,7 @@ CoinChecking:
 3545: 77              LD      (HL),A              
 3546: 13              INC     DE                  
 3547: 09              ADD     HL,BC               
+Draw2x2:         
 ;*2x2**********************************************
 3548: 1A              LD      A,(DE)              
 3549: 77              LD      (HL),A              
@@ -6079,6 +6054,8 @@ CoinChecking:
 354D: 77              LD      (HL),A              
 354E: 13              INC     DE                  
 354F: 09              ADD     HL,BC               
+Draw1x2:            
+;*1x2**********************************************
 3550: 1A              LD      A,(DE)              
 3551: 77              LD      (HL),A              
 3552: 13              INC     DE                  
@@ -6087,6 +6064,7 @@ CoinChecking:
 3555: 77              LD      (HL),A              
 3556: 13              INC     DE                  
 3557: 09              ADD     HL,BC               
+;          
 3558: 36 00           LD      (HL),$00            
 355A: 23              INC     HL                  
 355B: 36 00           LD      (HL),$00            
@@ -6103,7 +6081,7 @@ CoinChecking:
 3568: 07              RLCA                        
 3569: B0              OR      B                   
 356A: 32 6F 43        LD      ($436F),A           
-356D: 3A B8 43        LD      A,($43B8)           
+356D: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 3570: FE 40           CP      $40                 
 3572: DA 77 35        JP      C,$3577             ; {}
 3575: 3E 30           LD      A,$30               
@@ -6520,7 +6498,7 @@ CoinChecking:
 378E: 23              INC     HL                  
 378F: 36 00           LD      (HL),$00            
 3791: 09              ADD     HL,BC               
-3792: C3 40 35        JP      $3540               ; {}
+3792: C3 40 35        JP      $3540               ; {code.Draw3x2}
 3795: FF              
 3796: C6 60           ADD     $60                 
 3798: 6F              LD      L,A                 
@@ -6534,7 +6512,7 @@ CoinChecking:
 37A5: D8              RET     C                   
 37A6: EB              EX      DE,HL               
 37A7: 11 D0 17        LD      DE,$17D0            
-37AA: C3 40 35        JP      $3540               ; {}
+37AA: C3 40 35        JP      $3540               ; {code.Draw3x2}
 37AD: FF              
 37AE: FF              
 37AF: FF              
@@ -6919,7 +6897,7 @@ CoinChecking:
 3A0D: D8              RET     C                   
 3A0E: E1              POP     HL                  
 3A0F: C9              RET                         
-3A10: 21 B8 43        LD      HL,$43B8            ; {+}
+3A10: 21 B8 43        LD      HL,$43B8            ; {+ram.M43B8}
 3A13: 7E              LD      A,(HL)              
 3A14: A7              AND     A                   
 3A15: C2 43 3B        JP      NZ,$3B43            ; {}
@@ -6976,7 +6954,7 @@ CoinChecking:
 3A67: FE 10           CP      $10                 
 3A69: DA 78 3A        JP      C,$3A78             ; {}
 3A6C: 36 10           LD      (HL),$10            
-3A6E: 3A B8 43        LD      A,($43B8)           
+3A6E: 3A B8 43        LD      A,($43B8)           ; {ram.M43B8}
 3A71: E6 08           AND     $08                 
 3A73: CA 78 3A        JP      Z,$3A78             ; {}
 3A76: 36 05           LD      (HL),$05            
@@ -7146,54 +7124,54 @@ CoinChecking:
 
 ;**************************************************
 ;bird character block shapes table (using character set B)
-3C00: E8 00 E9 00 C4 C6 C5 C7 EA 00 EB 00 00 00       ;bird shape #24
-3C0E: EC 00 E9 00 C8 CA C9 CB EA 00 ED 00 00 00       ;#28
-3C1C: EE 00 EF 00 CC CF CD D0 CE D1 F0 00 F1 00       ;#29
-3C2A: F2 00 EF 00 D2 00 D3 D5 D4 D6 F0 00 F3 00       ;#30
-3C38: E8 00 E9 00 C4 C6 C5 C7 00 00                   ;#24 without right wing
-3C42: EC 00 E9 00 C8 CA C9 CB 00 00                   ;#28 without right wing
-3C4C: EE 00 EF 00 CC CF CD D0 DD D1                   ;#29 without right wing and regrowing ($DD)
-3C56: F2 00 EF 00 D2 00 D3 D5 DD D6                   ;#30 without right wing and regrowing ($DD)
-3C60: 00 00 00 00 C4 C6 C5 C7 EA 00 EB 00 00 00       ;#24 without left wing
-3C6E: 00 00 00 00 DB CA C9 CB EA 00 ED 00 00 00       ;#28 without left wing and regrowing ($DB)
-3C7C: 00 00 00 00 DC CF CD D0 CE D1 F0 00 F1 00       ;#29 without left wing and regrowing ($DC)
-3C8A: 00 00 00 00 00 00 D3 D5 D4 D6 F0 00 F3 00       ;#30 without left wing
-3C98: 00 00 00 00 C4 C6 C5 C7 00 00                   ;#24 without left and right wing
-3CA2: 00 00 00 00 DB CA C9 CB 00 00                   ;#28 without left and right wing and regrowing ($DB)
-3CAC: 00 00 00 00 DC CF CD D0 DD D1                   ;#29 without left and right wing and regrowing ($DC,$DD)
-3CB6: 00 00 00 00 00 00 D3 D5 DD D6                   ;#30 without left and right wing and regrowing ($DD)
-3CC0: 00 00 DE E2 AB B2 AC B3 DF E3 00 00             ;#21
-3CCC: 00 00 00 E5 B4 B6 B5 B7 E4 E6 00 00             ;#25
-3CD8: 00 00 00 00 B8 BB B9 BC BA BD 00 00             ;#26
-3CE4: 00 00 00 00 BE C1 BF C2 C0 C3 00 E7             ;#27
+3C00: E8 00 E9 00 C4 C6 C5 C7 EA 00 EB 00 00 00       ;bird shape #24 [Object 3C00](bgtiles.html#object-3c00)
+3C0E: EC 00 E9 00 C8 CA C9 CB EA 00 ED 00 00 00       ;#28 [Object 3C0E](bgtiles.html#object-3c0E)
+3C1C: EE 00 EF 00 CC CF CD D0 CE D1 F0 00 F1 00       ;#29 [Object 3C1C](bgtiles.html#object-3c1c)
+3C2A: F2 00 EF 00 D2 00 D3 D5 D4 D6 F0 00 F3 00       ;#30 [Object 3C2A](bgtiles.html#object-3c2a)
+3C38: E8 00 E9 00 C4 C6 C5 C7 00 00                   ;#24 without right wing [Object 3C38](bgtiles.html#object-3c38)
+3C42: EC 00 E9 00 C8 CA C9 CB 00 00                   ;#28 without right wing [Object 3C42](bgtiles.html#object-3c42)
+3C4C: EE 00 EF 00 CC CF CD D0 DD D1                   ;#29 without right wing and regrowing ($DD) [Object 3C4C](bgtiles.html#object-3c4c)
+3C56: F2 00 EF 00 D2 00 D3 D5 DD D6                   ;#30 without right wing and regrowing ($DD) [Object 3C56](bgtiles.html#object-3c56)
+3C60: 00 00 00 00 C4 C6 C5 C7 EA 00 EB 00 00 00       ;#24 without left wing [Object 3C60](bgtiles.html#object-3c60)
+3C6E: 00 00 00 00 DB CA C9 CB EA 00 ED 00 00 00       ;#28 without left wing and regrowing ($DB) [Object 3C6E](bgtiles.html#object-3c6e)
+3C7C: 00 00 00 00 DC CF CD D0 CE D1 F0 00 F1 00       ;#29 without left wing and regrowing ($DC) [Object 3C7C](bgtiles.html#object-3c7c)
+3C8A: 00 00 00 00 00 00 D3 D5 D4 D6 F0 00 F3 00       ;#30 without left wing [Object 3C8A](bgtiles.html#object-3c8a)
+3C98: 00 00 00 00 C4 C6 C5 C7 00 00                   ;#24 without left and right wing [Object 3C98](bgtiles.html#object-3c98)
+3CA2: 00 00 00 00 DB CA C9 CB 00 00                   ;#28 without left and right wing and regrowing ($DB) [Object 3CA2](bgtiles.html#object-3ca2)
+3CAC: 00 00 00 00 DC CF CD D0 DD D1                   ;#29 without left and right wing and regrowing ($DC,$DD) [Object 3CAC](bgtiles.html#object-3cac)
+3CB6: 00 00 00 00 00 00 D3 D5 DD D6                   ;#30 without left and right wing and regrowing ($DD) [Object 3CB6](bgtiles.html#object-3cb6)
+3CC0: 00 00 DE E2 AB B2 AC B3 DF E3 00 00             ;#21 [Object 3CC0](bgtiles.html#object-3cc0)
+3CCC: 00 00 00 E5 B4 B6 B5 B7 E4 E6 00 00             ;#25 [Object 3CCC](bgtiles.html#object-3ccc)
+3CD8: 00 00 00 00 B8 BB B9 BC BA BD 00 00             ;#26 [Object 3CD8](bgtiles.html#object-3cd8)
+3CE4: 00 00 00 00 BE C1 BF C2 C0 C3 00 E7             ;#27 [Object 3CE4](bgtiles.html#object-3ce4)
 3CF0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF ;not used
-3D00: 00 00 FA FC D7 D9 D8 DA FB FD 00 00             ;#22
-3D0C: F4 F6 F5 00 C4 C6 C5 C7 F7 00 F8 F9             ;#23
-3D18: 00 00 00 00 A7 A9 A8 AA 00 00                   ;#17
-3D22: 00 00 00 00 AB AD AC AE 00 00                   ;#18
-3D2C: 00 00 DE 00 AB B0 AC B1 DF 00                   ;#19
-3D36: 00 00 DE E0 AB B2 AC B3 DF E1                   ;#20
-3D40: 00 00 9D 00 9E 00 00 00                         ;#12
-3D48: 00 00 9F 00 A0 00 00 00                         ;#13
-3D50: 00 00 00 00 9C 00 00 00                         ;#11
-3D58: 00 00 00 00 A3 A5 A4 A6                         ;#16
-3D60: 00 00 9C 00 00 00                               ;#11 one pos moved to the left
-3D66: 00 00 9D 00 9E 00                               ;#12 (but 3x2)
-3D6C: 00 00 9F 00 A0 00                               ;#13
-3D72: 00 00 A1 00 A2 00                               ;#14
-3D78: 00 00 96 00 00 00                               ;#7
-3D7E: 00 00 97 00 93 00                               ;#8
-3D84: 00 00 98 00 99 00                               ;#9
-3D8A: 00 00 9A 00 9B 00                               ;#10
-3D90: 00 00 90 00 00 00                               ;#3
-3D96: 00 00 91 00 00 00                               ;#4
-3D9C: 00 00 92 00 93 00                               ;#5
-3DA2: 00 00 94 00 95 00                               ;#6
-3DA8: 00 00 01 00                                     ;like small star
-3DAC: 00 00 08 00                                     ;like medium star
-3DB0: 00 00 0A 00                                     ;like big star
-3DB4: 00 00 0B 00 0C 0C 0E FF                         ;group of stars
-3DBC: 0D 0E 0D FF                                     ;group of stars
+3D00: 00 00 FA FC D7 D9 D8 DA FB FD 00 00             ;#22 [Object 3D00](bgtiles.html#object-3d00)
+3D0C: F4 F6 F5 00 C4 C6 C5 C7 F7 00 F8 F9             ;#23 [Object 3D0C](bgtiles.html#object-3d0c)
+3D18: 00 00 00 00 A7 A9 A8 AA 00 00                   ;#17 [Object 3D18](bgtiles.html#object-3d18)
+3D22: 00 00 00 00 AB AD AC AE 00 00                   ;#18 [Object 3D22](bgtiles.html#object-3d22)
+3D2C: 00 00 DE 00 AB B0 AC B1 DF 00                   ;#19 [Object 3D2C](bgtiles.html#object-3d2c)
+3D36: 00 00 DE E0 AB B2 AC B3 DF E1                   ;#20 [Object 3D36](bgtiles.html#object-3d36)
+3D40: 00 00 9D 00 9E 00 00 00                         ;#12 [Object 3D40](bgtiles.html#object-3d40)
+3D48: 00 00 9F 00 A0 00 00 00                         ;#13 [Object 3D48](bgtiles.html#object-3d48)
+3D50: 00 00 00 00 9C 00 00 00                         ;#11 [Object 3D50](bgtiles.html#object-3d50)
+3D58: 00 00 00 00 A3 A5 A4 A6                         ;#16 [Object 3D58](bgtiles.html#object-3d58)
+3D60: 00 00 9C 00 00 00                               ;#11 one pos moved to the left [Object 3D60](bgtiles.html#object-3d60)
+3D66: 00 00 9D 00 9E 00                               ;#12 (but 3x2) [Object 3D66](bgtiles.html#object-3d66)
+3D6C: 00 00 9F 00 A0 00                               ;#13 [Object 3D6C](bgtiles.html#object-3d6c)
+3D72: 00 00 A1 00 A2 00                               ;#14 [Object 3D72](bgtiles.html#object-3d72)
+3D78: 00 00 96 00 00 00                               ;#7 [Object 3D78](bgtiles.html#object-3d78)
+3D7E: 00 00 97 00 93 00                               ;#8 [Object 3D7E](bgtiles.html#object-3d7e)
+3D84: 00 00 98 00 99 00                               ;#9 [Object 3D84](bgtiles.html#object-3d84)
+3D8A: 00 00 9A 00 9B 00                               ;#10 [Object 3D8A](bgtiles.html#object-3d8a)
+3D90: 00 00 90 00 00 00                               ;#3 [Object 3D90](bgtiles.html#object-3d90)
+3D96: 00 00 91 00 00 00                               ;#4 [Object 3D96](bgtiles.html#object-3d96)
+3D9C: 00 00 92 00 93 00                               ;#5 [Object 3D9C](bgtiles.html#object-3d9c)
+3DA2: 00 00 94 00 95 00                               ;#6 [Object 3DA2](bgtiles.html#object-3da2)
+3DA8: 00 00 01 00                                     ;like small star [Object 3DA8](bgtiles.html#object-3da8)
+3DAC: 00 00 08 00                                     ;like medium star [Object 3DAC](bgtiles.html#object-3cac)
+3DB0: 00 00 0A 00                                     ;like big star [Object 3DB0](bgtiles.html#object-3db0)
+3DB4: 00 00 0B 00 0C 0C 0E FF                         ;group of stars [Object 3DB4](bgtiles.html#object-3db4)
+3DBC: 0D 0E 0D FF                                     ;group of stars [Object 3DBC](bgtiles.html#object-3dbc)
 
 ;**************************************************
 ;command buffer table ?
