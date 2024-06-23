@@ -37,6 +37,40 @@
 </canvas>
 ```
 
+# Game Objects
+
+##Object 1770
+
+```html
+<canvas width="270" height="270" data-colors="CM7"
+        data-command="hideCS,:4x4:EC,ED,EE,EF,FC,#CM1,30,31,#CM7,FF,FD,#CM1,40,41,#CM7,FE,F4,F5,F6,F7">
+</canvas>
+```
+
+##Object 1780
+
+```html
+<canvas width="270" height="270" data-colors="CM7"
+        data-command="hideCS,:4x4:E8,E9,EA,EB,F8,#CM1,30,31,#CM7,FB,F9,#CM1,40,41,#CM7,FA,F0,F1,F2,F3">
+</canvas>
+```
+
+##Object 1790
+
+```html
+<canvas width="270" height="270" data-colors="CM7"
+        data-command="hideCS,:4x4:E8,E9,EA,EB,F8,E4,E5,FB,F9,E6,E7,FA,F0,F1,F2,F3">
+</canvas>
+```
+
+##Object 17A0
+
+```html
+<canvas width="270" height="270" data-colors="CM7"
+        data-command="hideCS,:4x4:00,00,00,00,00,E4,E5,00,00,E6,E7,00,00,00,00,00">
+</canvas>
+```
+
 ```code
 ; First bit
 
