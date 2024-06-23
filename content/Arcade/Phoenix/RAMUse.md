@@ -27,7 +27,7 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | | | |
 | --- | --- | --- |
 | 4000:433F | ForegroundScreen     | 32*26 bytes for the foreground screen |
-| 4380      | M4380                | ?? part of scoring ?? |
+| 4380      | M4380??              | ?? part of scoring ?? |
 | 4381      | Score1high           | Player 1 score BCD (high) |
 | 4382      | Score1mid            | Player 1 score BCD (mid) |
 | 4383      | Score1low            | Player 1 score BCD (low) |
@@ -46,6 +46,10 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 43A2      | GameOrAttract        | Attract mode:0 Game mode:1 |
 | 43A4      | GameState            | Game state:0 - 7 |
 | 43A5      | Counter8             | 8 bit counter (score flash time) |
-| 43B8      | M43B8                | bit0 - 3: game level, bit4 - 7: game round |
+| 43A6      | ShieldCount??        | Counts shield time and controls shield picture. Shields end at C0. |
+| 43B8      | LevelAndRound        | bit0 - 3: game level, bit4 - 7: game round |
+| 43C0      | M43C0??              | ?? shields |        
+| 43E2      | PlayerCoordMSB       | The X,Y in screen memory (doesn't include bit offset) |
+| 43E3      | PlayerCoordLSB       | The X,Y in screen memory (doesn't include bit offset) |
 | 4800:4B3F | BackgroundScreen     | 32*26 bytes for the background screen |
 | 4B40:4BFF | Stack                | Stack space |
