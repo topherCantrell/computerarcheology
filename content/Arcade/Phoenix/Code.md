@@ -1023,6 +1023,7 @@ CopyBbytesHLtoDE:
 0600: 47              LD      B,A                 
 0601: A7              AND     A                   
 0602: C8              RET     Z                   
+;
 0603: 72              LD      (HL),D              
 0604: 2C              INC     L                   
 0605: 73              LD      (HL),E              
@@ -1051,6 +1052,7 @@ CopyBbytesHLtoDE:
 0627: 47              LD      B,A                 
 0628: A7              AND     A                   
 0629: C8              RET     Z                   
+;
 062A: 7E              LD      A,(HL)              
 062B: 12              LD      (DE),A              
 062C: 23              INC     HL                  
@@ -1066,11 +1068,13 @@ CopyBbytesHLtoDE:
 0638: C9              RET                         
 
 0639: FF
-
-063A: 60 40 E0 E0 E0 E0 FF FF
-0642: C0 A0 80 80 80 80 FF FF
-064A: FF FF FF FF FF FF
-
+;init data for 1st game round
+063A: 60 40 E0 E0 E0 E0 FF FF 
+;init data for 2nd game round
+0642: C0 A0 80 80 80 80 FF FF 
+;
+064A: FF FF FF FF FF FF 
+;
 0650: 21 20 15        LD      HL,$1520            
 0653: 3A B8 43        LD      A,($43B8)           ; {ram.LevelAndRound}
 0656: E6 0F           AND     $0F                 
@@ -3256,20 +3260,21 @@ ShieldsExpired:
 14FE: FF FF
 
 ; Data from $1500 - $17DF
-1500: 08 6C 09 60
-1504: 08 6C 09 60
-1508: 08 6C 09 60
-150C: 08 6C 09 60
-1510: 08 6C 09 60
-1514: 08 6C 09 60
-1518: 08 6C 09 60
-151C: 09 60 09 60
-
-1520: 10 00
-1522: 10 00
-1524: 10 00
-1526: 10 00
-1528: 10 00
+; will be copied inside $4b70-$4baf
+1500: 08 6C 09 60 
+1504: 08 6C 09 60 
+1508: 08 6C 09 60 
+150C: 08 6C 09 60 
+1510: 08 6C 09 60 
+1514: 08 6C 09 60 
+1518: 08 6C 09 60 
+151C: 09 60 09 60 
+;
+1520: 10 00 
+1522: 10 00 
+1524: 10 00 
+1526: 10 00 
+1528: 10 00 
 152A: 10 00
 152C: 10 00
 152E: 10 00
@@ -3356,8 +3361,9 @@ ShieldsExpired:
 157C: 38 20     ; E
 157E: 88 20     ; F
 
+;level 10 initial screen coordinates for the aliens.
 ;      0 0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 A A B B C C
-;      0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 C C
+;      0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8
 ;      | | | | | | | | | | | | | | | | | | | | | | | | | |
 ; 20 - . . . . . . . . . . 1 . 0 . 2 . . . . . . . . . . .
 ; 28 - . . . . . . . . 3 . . . . . . . 4 . . . . . . . . .
@@ -3385,8 +3391,9 @@ ShieldsExpired:
 159C: 30 58     ; E
 159E: 90 58     ; F
 
+;level 7 initial screen coordinates for the aliens.
 ;      0 0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 A A B B C C
-;      0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 C C
+;      0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8
 ;      | | | | | | | | | | | | | | | | | | | | | | | | | |
 ; 20 - . . . . . . . . . . . . 0 . . . . . . . . . . . . .
 ; 28 - . . . . . . . . . . 1 . . . 2 . . . . . . . . . . .
@@ -3414,8 +3421,9 @@ ShieldsExpired:
 15BC: 30 48     ; E
 15BE: 90 48     ; F
 
+;level 6 initial screen coordinates for the aliens.
 ;      0 0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 A A B B C C
-;      0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 C C
+;      0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8
 ;      | | | | | | | | | | | | | | | | | | | | | | | | | |
 ; 20 - . . E . . . . . . . . . . . . . . . . . . . F . . .
 ; 28 - . . . . C . . . . . . . . . . . . . . . D . . . . .
@@ -3443,8 +3451,9 @@ ShieldsExpired:
 15DC: 10 20     ; E
 15DE: B0 20     ; F
 
+;level 5 initial screen coordinates for the aliens.
 ;      0 0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 A A B B C C
-;      0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 C C
+;      0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8
 ;      | | | | | | | | | | | | | | | | | | | | | | | | | |
 ; 20 - . . . . . . . . . . . . 0 . . . . . . . . . . . . .
 ; 28 - . . . . . . . . . . 1 . . . 2 . . . . . . . . . . .
@@ -3452,7 +3461,8 @@ ShieldsExpired:
 ; 38 - . . . . . . 5 . . . . . . . . . . . 6 . . . . . . .
 ; 40 - . . . . 7 . . . . . . . . . . . . . . . 8 . . . . .
 ; 48 - . . . . . . . . . . . . . . . . . . . . . . . . . .
-;
+; 50 - . . . . . . . . . . . . . . . . . . . . . . . . . .
+; 58 - . . . . . . . . . . . . . . . . . . . . . . . . . .
 15E0: 60 20     ; 0
 15E2: 50 28     ; 1
 15E4: 70 28     ; 2
@@ -3462,13 +3472,14 @@ ShieldsExpired:
 15EC: 90 38     ; 6
 15EE: 20 40     ; 7
 15F0: A0 40     ; 8
-15F2: 60 20     ; 9 (same as 0)
-15F4: 50 28     ; A (same as 1)
-15F6: 70 28     ; B (same as 2)
-15F8: 40 30     ; C (same as 3)
-15FA: 80 30     ; D (same as 4)
-15FC: 30 38     ; E (same as 5)
-15FE: 90 38     ; F (same as 6)
+15F2: 60 20     ; 9 (two aliens at same position)
+15F4: 50 28     ; A (two aliens at same position)
+15F6: 70 28     ; B (two aliens at same position)
+15F8: 40 30     ; C (two aliens at same position)
+15FA: 80 30     ; D (two aliens at same position)
+15FC: 30 38     ; E (two aliens at same position)
+15FE: 90 38     ; F (two aliens at same position)
+;
 
 1600: 10 14 18 1C 00 04 08 0C 20 22 24 26 28 2A 2C 2E
 1610: 30 32 34 36 38 3A 3C 3E 40 42 44 46 5C 5C 5E 5E
@@ -5839,6 +5850,7 @@ EraseMothership:
 3482: C2 77 34        JP      NZ,$3477            ; {}
 3485: C9              RET                         
 3486: 21 90 4B        LD      HL,$4B90            
+;
 3489: E5              PUSH    HL                  
 348A: CD C0 34        CALL    $34C0               ; {}
 348D: E1              POP     HL                  
@@ -5893,7 +5905,7 @@ EraseMothership:
 34D5: E6 7E           AND     $7E                 
 34D7: 6F              LD      L,A                 
 34D8: 26 3E           LD      H,$3E               
-34DA: 7E              LD      A,(HL)              
+34DA: 7E              LD      A,(HL)              ; data at table $3e7c
 34DB: 2C              INC     L                   
 34DC: 6E              LD      L,(HL)              
 34DD: 67              LD      H,A                 
@@ -6049,10 +6061,10 @@ Draw1x2:
 3591: C6 80           ADD     $80                 
 3593: 6F              LD      L,A                 
 3594: 26 3E           LD      H,$3E               
-3596: 7E              LD      A,(HL)              
+3596: 7E              LD      A,(HL)              ; data from table $3E80
 3597: 32 6E 43        LD      ($436E),A           
 359A: 2C              INC     L                   
-359B: 7E              LD      A,(HL)              
+359B: 7E              LD      A,(HL)              ; data from table $3E80
 359C: 81              ADD     A,C                 
 359D: E6 F8           AND     $F8                 
 359F: 32 6D 43        LD      ($436D),A           
@@ -7204,54 +7216,47 @@ Draw1x2:
 3E7E: 3C E4 ;#27                              6x2
 
 ;**************************************************
-;screen positions for 16 objects?
-3E80: 05 40
-3E82: 05 20
-
-3E84: 04 30
-3E86: 04 10
-
-3E88: 06 48
-3E8A: 06 28
-
-3E8C: 05 38
-3E8E: 05 18
-
-3E90: 07 50
-3E92: 07 30
-
-3E94: 06 40
-3E96: 06 20
-
-3E98: 08 58
-3E9A: 08 38
-
-3E9C: 07 48
-3E9E: 07 28
-
-3EA0: 06 10
-3EA2: 05 20
-
-3EA4: 05 30
-3EA6: 05 40
-
-3EA8: 08 18
-3EAA: 07 28
-
-3EAC: 07 38
-3EAE: 06 48
-
-3EB0: 08 20
-3EB2: 07 30
-
-3EB4: 07 40
-3EB6: 07 50
-
-3EB8: 08 30
-3EBA: 08 40
-
-3EBC: 08 50
-3EBE: 08 60
+;for birds
+;copy to $436E,(+10) $436D
+3E80: 05 40 
+3E82: 05 20 
+3E84: 04 30 
+3E86: 04 10 
+;not used?
+3E88: 06 48 
+3E8A: 06 28 
+3E8C: 05 38 
+3E8E: 05 18 
+;not used?
+3E90: 07 50 
+3E92: 07 30 
+3E94: 06 40 
+3E96: 06 20 
+;not used?
+3E98: 08 58 
+3E9A: 08 38 
+3E9C: 07 48 
+3E9E: 07 28 
+;copy to $436E,(+10) $436D
+3EA0: 06 10 
+3EA2: 05 20 
+3EA4: 05 30 
+3EA6: 05 40 
+;not used?
+3EA8: 08 18 
+3EAA: 07 28 
+3EAC: 07 38 
+3EAE: 06 48 
+;not used?
+3EB0: 08 20 
+3EB2: 07 30 
+3EB4: 07 40 
+3EB6: 07 50 
+;not used?
+3EB8: 08 30 
+3EBA: 08 40 
+3EBC: 08 50 
+3EBE: 08 60 
 
 ;**************************************************
 ; ?
@@ -7335,25 +7340,25 @@ Draw1x2:
 3F7E: 35 E0   ;address
 
 ;
-;init values for 8 blue birds
+;level 3 and 8 initial data for the 8 birds.
 ;data will be copied to $4B70-$4BAF
-3F80: 01 48 EE 00 10 B0 10 20
-3F88: 01 49 2C 00 10 A0 00 B0
-3F90: 01 49 6A 00 10 90 00 B8
-3F98: 01 49 A8 00 10 80 00 C0
-3FA0: 01 49 E6 00 10 70 00 C8
-3FA8: 01 4A 24 00 10 60 00 C8
-3FB0: 01 4A 62 00 10 50 00 C8
-3FB8: 01 4A A0 00 10 40 00 C8
-;init values for 8 pink birds
+3F80: 01 48 EE 00 10 B0 10 20       ; 0
+3F88: 01 49 2C 00 10 A0 00 B0       ; 1
+3F90: 01 49 6A 00 10 90 00 B8       ; 2
+3F98: 01 49 A8 00 10 80 00 C0       ; 3
+3FA0: 01 49 E6 00 10 70 00 C8       ; 4
+3FA8: 01 4A 24 00 10 60 00 C8       ; 5
+3FB0: 01 4A 62 00 10 50 00 C8       ; 6
+3FB8: 01 4A A0 00 10 40 00 C8       ; 7
+;level 4 and 9 initial data for the 8 birds.
 ;data will be copied to $4B70-$4BAF
-3FC0: 01 4A CE 00 10 38 00 B0
-3FC8: 01 48 CC 00 10 B8 10 20
-3FD0: 01 4A CA 00 10 38 00 B8
-3FD8: 01 48 C8 00 10 B8 10 18
-3FE0: 01 4A C6 00 10 38 00 C0
-3FE8: 01 48 C4 00 10 B8 10 10
-3FF0: 01 4A C2 00 10 38 00 C8
-3FF8: 01 48 C0 00 10 B8 10 08
+3FC0: 01 4A CE 00 10 38 00 B0       ; 0
+3FC8: 01 48 CC 00 10 B8 10 20       ; 1
+3FD0: 01 4A CA 00 10 38 00 B8       ; 2
+3FD8: 01 48 C8 00 10 B8 10 18       ; 3
+3FE0: 01 4A C6 00 10 38 00 C0       ; 4
+3FE8: 01 48 C4 00 10 B8 10 10       ; 5
+3FF0: 01 4A C2 00 10 38 00 C8       ; 6
+3FF8: 01 48 C0 00 10 B8 10 08       ; 7
 ```
 
