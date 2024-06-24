@@ -13,12 +13,23 @@ The idea for these banks is that the first bank holds all the player 1 info and 
 info. This could make switching players easy. But there is no "common" memory for global info and the stack. The code 
 must carefully manage the bank switching -- especially in regards to the stack pointer.
 
-The screen is rotated physically, but the screen memory layout is standard upper-left corner to lower right corner. There 
-are two screens: foreground and background. Each screen is 32 columns by 26 columns (before rotation).
   - 4000 - 433F Foreground
   - 4340 - 47FF General storage (see the table below)
   - 4800 - 4B3F Background 
   - 4B40 - 4BFF Stack space
+
+# Screen memory
+
+The screen is rotated physically clockwise, but the screen memory layout is standard upper-left corner to lower right corner. There are two screens: foreground and background. Each screen is 26 columns by 32 rows (after rotation).
+
+The first (upper left) byte of screen memory maps to the upper right corner of the rotated screen. Adding one to a
+screen memory pointer moves 1 row down the screen. Subtracting one moves the pointer 1 row up on the screen. Adding
+32 to a screen memory pointer moves 1 column left. Subtracting 32 moves the pointer 1 column right. I spell these
+out because I get confused easily!
+
+Each graphics tile is 8x8 pixels. This gives a rotated screen dimension of 26*8 x 32*8 = 208x256 pixels. 
+
+# Variables
 
 The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Maybe it is just a copy in cocktail?
 
