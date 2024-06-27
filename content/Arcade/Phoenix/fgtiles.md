@@ -39,7 +39,7 @@
 
 # Game Objects
 
-##Object 1770
+## Object 1770
 
 ```html
 <canvas width="270" height="270" data-colors="CM7"
@@ -47,7 +47,7 @@
 </canvas>
 ```
 
-##Object 1780
+## Object 1780
 
 ```html
 <canvas width="270" height="270" data-colors="CM7"
@@ -55,7 +55,7 @@
 </canvas>
 ```
 
-##Object 1790
+## Object 1790
 
 ```html
 <canvas width="270" height="270" data-colors="CM7"
@@ -63,7 +63,7 @@
 </canvas>
 ```
 
-##Object 17A0
+## Object 17A0
 
 ```html
 <canvas width="270" height="270" data-colors="CM7"
