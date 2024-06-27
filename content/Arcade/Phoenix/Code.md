@@ -740,14 +740,14 @@ ClearBackground:
 040D: E9              JP      (HL)                ; Jump to function
 
 ; Notice these addresses are MSB:LSB (backwards from the processor's endianness)
-040E: 04 30       ;
-0410: 04 AC       ; called for each frame during flashing of score1 or 2
-0412: 05 15       ;
-0414: 08 00       ; called for each frame
-0416: 0A EA       ; called for each frame of player ship (partikel) explosion
-0418: 0B 60       ; called for each frame during 'GAME OVER' text
-041A: 24 00       ; called for each frame during mother ship (partikel) explosion
-041C: 24 4C       ; not used ?
+040E: 04 30       ;0:
+0410: 04 AC       ;1: called for each frame during flashing of score1 or 2
+0412: 05 15       ;2:
+0414: 08 00       ;3: called for each frame
+0416: 0A EA       ;4: called for each frame of player ship (partikel) explosion
+0418: 0B 60       ;5: called for each frame during 'GAME OVER' text
+041A: 24 00       ;6: called for each frame during mother ship (partikel) explosion
+041C: 24 4C       ;7: called for each frame during mother ship score
 ;
 041E: 3A A3 43        LD      A,($43A3)           
 0421: E6 01           AND     $01                 
@@ -846,6 +846,7 @@ ClearBackground:
 04AB: FF
 
 ; ?? Function 1
+; called for each frame during flashing of score1 or 2
 04AC: 21 A5 43        LD      HL,$43A5            ; {+ram.Counter8}
 04AF: 35              DEC     (HL)                
 04B0: 7E              LD      A,(HL)              
@@ -1233,7 +1234,7 @@ CopyBbytesHLtoDE:
 0731: 26 07           LD      H,$07               
 0733: 6E              LD      L,(HL)              
 0734: E9              JP      (HL)                
-;
+;?
 0735: 6C FF 8A 63 79 FF 9E BE
 073D: FF FF FF
 ;
@@ -1257,7 +1258,7 @@ CopyBbytesHLtoDE:
 0755: 26 07           LD      H,$07               
 0757: 6E              LD      L,(HL)              
 0758: E9              JP      (HL)                
-;
+;?
 0759: 5E 0A 6D 88 FF AA D2 FF
 0761: FF FF
 ;
@@ -1410,6 +1411,7 @@ CopyBbytesHLtoDE:
 ;
 07FC: FF FF FF FF
 ;
+; ?? Function 3
 0800: 21 14 08        LD      HL,$0814            
 0803: 3A B8 43        LD      A,($43B8)           ; {ram.LevelAndRound}
 0806: 07              RLCA                        
@@ -1832,6 +1834,7 @@ DrawImageCbyB:
 0AE9: C9              RET                         ; Done
 
 ; ?? Function 4
+; called for each frame of player ship (partikel) explosion
 0AEA: 21 B9 43        LD      HL,$43B9            ; {+}
 0AED: 7E              LD      A,(HL)              
 0AEE: E6 F8           AND     $F8                 
@@ -1912,12 +1915,14 @@ ShieldsExpired:
 
 0B5B: FF FF FF FF FF
 
+; ?? Function 5
+; called for each frame during 'GAME OVER' text
 0B60: 21 A5 43        LD      HL,$43A5            ; {+ram.Counter8}
 0B63: 34              INC     (HL)                
 0B64: 7E              LD      A,(HL)              
 0B65: FE 40           CP      $40                 
 0B67: CA A0 03        JP      Z,$03A0             ; {code.ClearBackground}
-0B6A: 21 00 1A        LD      HL,$1A00            
+0B6A: 21 00 1A        LD      HL,$1A00            ; "        GAME  OVER        "            
 0B6D: 0E 01           LD      C,$01               
 0B6F: FE 80           CP      $80                 
 0B71: C2 95 0B        JP      NZ,$0B95            ; {}
@@ -2163,7 +2168,7 @@ ShieldsExpired:
 0D2E: C9              RET                         
 
 0D2F: FF
-
+;
 0D30: 56              LD      D,(HL)              
 0D31: 23              INC     HL                  
 0D32: 0A              LD      A,(BC)              
@@ -2173,7 +2178,7 @@ ShieldsExpired:
 0D37: C8              RET     Z                   
 0D38: 5E              LD      E,(HL)              
 0D39: EB              EX      DE,HL               
-0D3A: 7E              LD      A,(HL)              
+0D3A: 7E              LD      A,(HL)             ; Closed loops pattern table for aliens              
 0D3B: 07              RLCA                        
 0D3C: C6 00           ADD     $00                 
 0D3E: 6F              LD      L,A                 
@@ -2235,7 +2240,7 @@ ShieldsExpired:
 0D8B: E6 08           AND     $08                 
 0D8D: C8              RET     Z                   
 0D8E: EB              EX      DE,HL               
-0D8F: 7E              LD      A,(HL)              
+0D8F: 7E              LD      A,(HL)              ; Closed loops pattern table for aliens              
 0D90: A7              AND     A                   
 0D91: CC DE 0D        CALL    Z,$0DDE             ; {}
 0D94: 6F              LD      L,A                 
@@ -2655,6 +2660,8 @@ ShieldsExpired:
 1010: 00
 1011: FF FF FF FF FF FF FF FF
 1019: FF FF FF FF FF FF FF
+; Closed loops pattern table for aliens
+; Pattern 1
 1020: 10 11
 1022: 12 13
 1024: 10 1D
@@ -2689,6 +2696,7 @@ ShieldsExpired:
 105E: 12 13
 1060: 00
 1061: FF FF FF
+; Pattern 2
 1064: 0B 1E
 1066: 19 06
 1068: 06 06
@@ -2723,6 +2731,7 @@ ShieldsExpired:
 10A2: 18 1F
 10A4: 00
 10A5: FF FF FF
+; Pattern 3
 10A8: 10 04
 10AA: 04 1D
 10AC: 0D 0E
@@ -2745,6 +2754,7 @@ ShieldsExpired:
 10CE: 12 13
 10D0: 00
 10D1: FF FF FF
+; Pattern 4
 10D4: 0B 0C
 10D6: 0D 0E
 10D8: 0B 0C
@@ -2767,6 +2777,7 @@ ShieldsExpired:
 10FA: 04 1B
 10FC: 00
 10FD: FF FF FF
+; Pattern 5
 1100: 0B 0C
 1102: 0D 0E
 1104: 0B 0C
@@ -2791,6 +2802,7 @@ ShieldsExpired:
 112A: 05
 112B: 00
 112C: FF FF FF FF
+; Pattern 6
 1130: 0B 0C
 1132: 0D 0E
 1134: 0B 0C
@@ -2815,6 +2827,7 @@ ShieldsExpired:
 115A: 05
 115B: 00
 115C: FF FF FF FF
+; Pattern 7
 1160: 1C 04
 1162: 04 04
 1164: 1D 06
@@ -2849,6 +2862,7 @@ ShieldsExpired:
 119E: 1A 1B
 11A0: 00
 11A1: FF FF FF
+; Pattern 8
 11A4: 0B 0C
 11A6: 0D 0E
 11A8: 0B 0C
@@ -2871,6 +2885,7 @@ ShieldsExpired:
 11CA: 18 1F
 11CC: 00
 11CD: FF FF FF
+; Pattern 9
 11D0: 0B 0C
 11D2: 0D 0E
 11D4: 0B 0C
@@ -2896,6 +2911,7 @@ ShieldsExpired:
 11FC: 05
 11FD: 00
 11FE: FF FF
+; Pattern 10
 1200: 1C 11
 1202: 12 13
 1204: 10 04
@@ -2930,6 +2946,7 @@ ShieldsExpired:
 123E: 04 1B
 1240: 00
 1241: FF FF FF
+; Pattern 11
 1244: 18 03
 1246: 03 19
 1248: 06 06
@@ -2964,6 +2981,7 @@ ShieldsExpired:
 1282: 1E 1F
 1284: 00
 1285: FF FF FF
+; Pattern 12
 1288: 0B 0C
 128A: 1A 1D
 128C: 1E 03
@@ -2998,6 +3016,7 @@ ShieldsExpired:
 12C6: 05 05
 12C8: 00
 12C9: FF
+; Pattern 13
 12CA: 18 03
 12CC: 19 06
 12CE: 06 06
@@ -3045,6 +3064,7 @@ ShieldsExpired:
 1322: 12 13
 1324: 00
 1325: FF FF FF
+; Pattern 14
 1328: 0B 0C
 132A: 09 09
 132C: 0A 09
@@ -3066,6 +3086,7 @@ ShieldsExpired:
 134C: 07 07
 134E: 00
 134F: FF FF FF FF FF
+; Pattern 15
 1354: 1C 11
 1356: 12 13
 1358: 10 1D
@@ -3103,6 +3124,7 @@ ShieldsExpired:
 1398: 13
 1399: 00
 139A: FF FF
+; Pattern 16
 139C: 0B 0C
 139E: 0D 0E
 13A0: 0B 0C
@@ -3130,6 +3152,7 @@ ShieldsExpired:
 13CC: 07
 13CD: 00
 13CE: FF FF
+; Pattern 17
 13D0: 14 03
 13D2: 19 0D
 13D4: 0E 0B
@@ -4528,6 +4551,8 @@ FourByFourEmpty:
 
 23FE: FF FF
 
+; ?? Function 6
+; called for each frame during mother ship (partikel) explosion
 2400: CD 2C 24        CALL    $242C               ; {}
 2403: CA 52 25        JP      Z,$2552             ; {}
 2406: FE 20           CP      $20                 
@@ -4575,6 +4600,8 @@ FourByFourEmpty:
 244A: 7E              LD      A,(HL)              
 244B: C9              RET                         
 
+; ?? Function 7
+; called for each frame during mother ship score
 244C: 21 A5 43        LD      HL,$43A5            ; {+ram.Counter8}
 244F: 35              DEC     (HL)                
 2450: 7E              LD      A,(HL)              
@@ -4999,6 +5026,7 @@ EraseMothership:
 
 26FE: FF FF
 
+;
 2700: 21 A2 43        LD      HL,$43A2            ; {+ram.GameOrAttract}
 2703: 7E              LD      A,(HL)              
 2704: A7              AND     A                   
