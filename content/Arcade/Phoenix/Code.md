@@ -850,11 +850,11 @@ ClearBackground:
 04AC: 21 A5 43        LD      HL,$43A5            ; {+ram.Counter8}
 04AF: 35              DEC     (HL)                
 04B0: 7E              LD      A,(HL)              
-04B1: 2D              DEC     L                   
-04B2: 36 02           LD      (HL),$02            
+04B1: 2D              DEC     L                   ; HL=A345 game state
+04B2: 36 02           LD      (HL),$02            ; ?? set game state 2
 04B4: A7              AND     A                   
 04B5: C8              RET     Z                   
-04B6: 36 01           LD      (HL),$01            
+04B6: 36 01           LD      (HL),$01            ; ?? set game state 1
 04B8: FE 7F           CP      $7F                 
 04BA: CA F0 07        JP      Z,$07F0             ; {}
 04BD: 2E 9A           LD      L,$9A               
@@ -3810,6 +3810,8 @@ FourByFourEmpty:
 
 ; Mother ship object 26x9 tiles (upside down)
 ; [Object 1D00](bgtiles.html#object-1d00)
+; Maybe these are upside down because the mother ship scrolls down from the top
+; of the screen. The rows appear in the order given here.
 1D00: 0C 0D 0C 0F 07 07 01 00 00 4C 4D 4E 4F 4F 4E 4D 4C 00 00 1F 0E 06 0D 01 0E 05 
 1D1A: 08 0C 0E 0C 0A 00 00 4D 4F 5E 5E 5E 5E 5E 5E 5E 5E 4F 4D 00 00 06 0B 0D 08 0E 
 1D34: 03 02 00 01 00 4C 4F 5E 5E 5E 5E 5E 5E 5E 5E 5E 5E 5E 5E 4F 4C 00 09 07 0A 03 
@@ -4270,7 +4272,7 @@ FourByFourEmpty:
 2237: E6 3F           AND     $3F                 
 2239: FE 0D           CP      $0D                 
 223B: CA 92 22        JP      Z,$2292             ; {}
-223E: 06 1F           LD      B,$1F               
+223E: 06 1F           LD      B,$1F               ; The asterisk character
 2240: DA 60 22        JP      C,$2260             ; {}
 2243: 06 00           LD      B,$00               
 2245: D6 0E           SUB     $0E                 
@@ -4278,9 +4280,10 @@ FourByFourEmpty:
 2249: C2 60 22        JP      NZ,$2260            ; {}
 224C: 21 B8 43        LD      HL,$43B8            ; {+ram.LevelAndRound}
 224F: 34              INC     (HL)                
-2250: 2E A4           LD      L,$A4               
-2252: 36 02           LD      (HL),$02            
+2250: 2E A4           LD      L,$A4               ; HL=43A4 -- game state
+2252: 36 02           LD      (HL),$02            ; set game state to 
 2254: C9              RET                         
+
 2255: 58              LD      E,B                 
 2256: 2E A4           LD      L,$A4               
 2258: 36 02           LD      (HL),$02            
@@ -4310,31 +4313,29 @@ FourByFourEmpty:
 2277: 4F              LD      C,A                 
 2278: 07              RLCA                        
 2279: 5F              LD      E,A                 
-227A: 51              LD      D,C                 
-227B: 70              LD      (HL),B              ; draw the spiral fill
-227C: 23              INC     HL                  
-227D: 70              LD      (HL),B              
-227E: 23              INC     HL                  
-227F: 15              DEC     D                   
-2280: C2 7B 22        JP      NZ,$227B            ; {}
-2283: 7D              LD      A,L                 
-2284: 91              SUB     C                   
-2285: 91              SUB     C                   
-2286: D6 20           SUB     $20                 
-2288: 6F              LD      L,A                 
-2289: 7C              LD      A,H                 
-228A: DE 00           SBC     $00                 
-228C: 67              LD      H,A                 
-228D: 1D              DEC     E                   
-228E: C2 7A 22        JP      NZ,$227A            ; {}
-2291: C9              RET                         
+227A: 51              LD      D,C                 ; D is the height counter for each pass
+227B: 70              LD      (HL),B              ; draw the asterisk or space
+227C: 23              INC     HL                  ; one row down
+227D: 70              LD      (HL),B              ; another asterisk or space
+227E: 23              INC     HL                  ; one row down
+227F: 15              DEC     D                   ; all of this column done?
+2280: C2 7B 22        JP      NZ,$227B            ; {} No ... do all rows
+2283: 7D              LD      A,L                 ; LSB of screen pointer
+2284: 91              SUB     C                   ; move up ...
+2285: 91              SUB     C                   ; ... height * 2
+2286: D6 20           SUB     $20                 ; Move right one column
+2288: 6F              LD      L,A                 ; New LSB
+2289: 7C              LD      A,H                 ; Borrow into ...
+228A: DE 00           SBC     $00                 ; ... the ...
+228C: 67              LD      H,A                 ; ... MSB
+228D: 1D              DEC     E                   ; All columns done?
+228E: C2 7A 22        JP      NZ,$227A            ; {} no ... do all columns
+2291: C9              RET                         ; Done
+
 2292: 21 B8 43        LD      HL,$43B8            ; {+ram.LevelAndRound}
 2295: 7E              LD      A,(HL)              
 2296: E6 08           AND     $08                 
 2298: CA F0 22        JP      Z,$22F0             ; {}
-
-; ?? erase parts of the mothership that have been hit
-
 229B: 21 00 1C        LD      HL,$1C00            ; Background stars to erase mother ship
 229E: 11 3F 4B        LD      DE,$4B3F            ; 
 22A1: 06 47           LD      B,$47               
