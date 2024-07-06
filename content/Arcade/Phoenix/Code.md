@@ -1922,7 +1922,7 @@ ShieldsExpired:
 0B64: 7E              LD      A,(HL)              
 0B65: FE 40           CP      $40                 
 0B67: CA A0 03        JP      Z,$03A0             ; {code.ClearBackground}
-0B6A: 21 00 1A        LD      HL,$1A00            ; "        GAME  OVER        "            
+0B6A: 21 00 1A        LD      HL,$1A00            ; "        GAME  OVER        "
 0B6D: 0E 01           LD      C,$01               
 0B6F: FE 80           CP      $80                 
 0B71: C2 95 0B        JP      NZ,$0B95            ; {}
@@ -2178,7 +2178,7 @@ ShieldsExpired:
 0D37: C8              RET     Z                   
 0D38: 5E              LD      E,(HL)              
 0D39: EB              EX      DE,HL               
-0D3A: 7E              LD      A,(HL)             ; Closed loops pattern table for aliens              
+0D3A: 7E              LD      A,(HL)              ; Closed loops pattern table for aliens
 0D3B: 07              RLCA                        
 0D3C: C6 00           ADD     $00                 
 0D3E: 6F              LD      L,A                 
@@ -2240,7 +2240,7 @@ ShieldsExpired:
 0D8B: E6 08           AND     $08                 
 0D8D: C8              RET     Z                   
 0D8E: EB              EX      DE,HL               
-0D8F: 7E              LD      A,(HL)              ; Closed loops pattern table for aliens              
+0D8F: 7E              LD      A,(HL)              ; Closed loops pattern table for aliens
 0D90: A7              AND     A                   
 0D91: CC DE 0D        CALL    Z,$0DDE             ; {}
 0D94: 6F              LD      L,A                 
@@ -4281,7 +4281,7 @@ FourByFourEmpty:
 224C: 21 B8 43        LD      HL,$43B8            ; {+ram.LevelAndRound}
 224F: 34              INC     (HL)                
 2250: 2E A4           LD      L,$A4               ; HL=43A4 -- game state
-2252: 36 02           LD      (HL),$02            ; set game state to 
+2252: 36 02           LD      (HL),$02            ; set game state to
 2254: C9              RET                         
 
 2255: 58              LD      E,B                 

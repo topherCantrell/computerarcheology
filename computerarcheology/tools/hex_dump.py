@@ -12,10 +12,10 @@ def print_data_run(data, addr, length):
         pos += 1
     print()
     
-with open('content/arcade/phoenix/roms/maincpu.bin','rb') as f:
+with open('content/arcade/galaga/roms/2600j.bin','rb') as f:
     data = f.read()
 
-tab = 0x1800
+tab = 0
 
 for x in range(32):
     st = tab + x*32

@@ -4,9 +4,15 @@
 >>>   +Galaga.jpg<br>
 >>>   +galaga1.jpg<br>
 >>>   +galaga2.jpg<br>
+>>>   +galaga.js<br>
 >>>   CPU1.md<br>
 >>>   CPU2.md<br>
 >>>   CPU3.md<br>
+>>>   %GFX1.md<br>
+>>>   %GFX2.md<br>
+>>>   PROMcolors.md<br>
+>>>   PROMpaletteChar.md<br>
+>>>   PROMpaletteSprite.md<br>
 >>>   ----<br>
 >>>   CPU1Fix.md<br>
 >>>   ----<br>

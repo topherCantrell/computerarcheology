@@ -39,3 +39,8 @@ You should browse the [Vector ROM](VectorROM.md) and see the game images. For in
 And many more.
 
 >>> }
+
+# Corrections
+
+Thanks to [nzeemin](https://github.com/nzeemin) and [slx7R4GDZM](https://github.com/slx7R4GDZM) for fixing the SVEC scaling
+problems in the VectorROM listing.

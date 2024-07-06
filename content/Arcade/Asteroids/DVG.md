@@ -247,11 +247,11 @@ resolution).
 Example:
         ; 1111 smYY BBBB SmXX
 FF70    ; 1111 1111 0111 0000
-        ; - Ss This is added to the global scale
+        ; - Ss (0=*2, 1=*4, 2=*8, 3=*16)
         ; - BBBB is the brightness: 0 .. 15
         ; - m is 1 for negative and 0 for positive for the X and Y
         ; - (x,y) is the coordinate change for the vector   
    
-SVEC scale=01(/256)  bri=07  x=0       y=-3     (0.00, -0.01)
+SVEC scale=01(*2)  bri=07  x=0       y=-3     (0.00, -6.00)
 
 ```    
