@@ -1,4 +1,4 @@
-![CPU3](Galaga.jpg)
+![CPU3 (Sound)](Galaga.jpg)
 
 # CPU3 Sound Processor
 

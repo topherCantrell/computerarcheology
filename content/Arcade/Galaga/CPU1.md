@@ -1,4 +1,4 @@
-![CPU1](Galaga.jpg)
+![CPU1 (Main)](Galaga.jpg)
 
 # CPU1
 

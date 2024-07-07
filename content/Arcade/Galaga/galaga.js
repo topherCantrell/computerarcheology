@@ -4,8 +4,74 @@ var Galaga = (function() {
 
 	my.data = null
 	my.origin = 0
+	
+	my.getSprite16x16Data = function(tileAddress) {
 		
-	my.getBackground8x8Data = function(tileAddress) {
+		var ret = [];
+		
+		t0 = my.getChar8x8Data(tileAddress*4+0);
+		t1 = my.getChar8x8Data(tileAddress*4+1);
+		t2 = my.getChar8x8Data(tileAddress*4+2);
+		t3 = my.getChar8x8Data(tileAddress*4+3);
+
+		if(tileAddress<0x20) {
+			for(var y=4;y<8;++y) {
+				for(var x=0;x<8;++x) {
+					ret.push(t2[y*8+x]);				
+				}		
+				for(var x=0;x<8;++x) {
+					ret.push(t0[y*8+x]);				
+				}
+			}
+			for(var y=0;y<4;++y) {
+				for(var x=0;x<8;++x) {
+					ret.push(t2[y*8+x]);				
+				}		
+				for(var x=0;x<8;++x) {
+					ret.push(t0[y*8+x]);				
+				}
+			}
+			for(var y=4;y<8;++y) {
+				for(var x=0;x<8;++x) {
+					ret.push(t3[y*8+x]);				
+				}		
+				for(var x=0;x<8;++x) {
+					ret.push(t1[y*8+x]);				
+				}
+			}
+			for(var y=0;y<4;++y) {
+				for(var x=0;x<8;++x) {
+					ret.push(t3[y*8+x]);				
+				}		
+				for(var x=0;x<8;++x) {
+					ret.push(t1[y*8+x]);				
+				}
+			}
+		} else {
+			for(var y=0;y<8;++y) {
+				for(var x=0;x<8;++x) {
+					ret.push(t2[y*8+x]);				
+				}		
+				for(var x=0;x<8;++x) {
+					ret.push(t0[y*8+x]);				
+				}
+			}			
+			for(var y=0;y<8;++y) {
+				for(var x=0;x<8;++x) {
+					ret.push(t3[y*8+x]);				
+				}		
+				for(var x=0;x<8;++x) {
+					ret.push(t1[y*8+x]);				
+				}
+			}			
+			
+		}
+		
+		return ret;
+		
+	};
+		
+	my.getChar8x8Data = function(tileAddress) {
 		
 		var ret = [];
 		
@@ -33,6 +99,7 @@ var Galaga = (function() {
 		}	
 		
 		return rotateCC(ret,8,8);		
+		//return ret
 		
 	};
 		

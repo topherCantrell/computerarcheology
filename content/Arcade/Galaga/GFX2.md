@@ -1,18 +1,111 @@
-![GFX2](Galaga.jpg)
+![GFX2 (Sprites)](Galaga.jpg)
 
 >>> binary roms/2800l.bin + roms/2700k.bin
 
-# TODO decode these ??
+# Sprite tiles
 
 | ROM       | Size | Ofs  | CRC      | SHA1                                     |
 | --------  | ---- | ---- | -------- | ---------------------------------------- |
 | 2800l.bin | 4096 |    0 | ad447c80 | e697c180178cabd1d32483c5d8889a40633f7857 |
 | 2700k.bin | 4096 |    0 | dd6f1afc | c340ed8c25e0979629a9a1730edc762bd72d0cff |
 
+Sprites are 16x16 pixels built from four 8x8 tiles. These 8x8 tiles have the same 
+bits-to-pixel layout as the background tiles. This file is 512 tiles of 8x8 pixels. 
+The hardware takes four tiles at a time to make a sprite: 512/4 = 128 sprites (00-7F).
+
+Something is not 100% correct. In my bits-to-pixels, I have a different coding
+for the first 32 sprites (128 tiles -- 2K bytes). I haven't found any code in
+mame to indicate why.
+
+The sprites are renedered here with an RGB color palette to visualize the individual
+pixels.
+
+Several of the sprites are grouped together to make larger pictures. These super groups
+are shown later on this page.
+
 ```html
-<canvas width="1060" height="1060"  
+<canvas width="1060" height="2100"  
     data-canvasFunction="TileEngine.handleTileCanvas"
-    data-getTileDataFunction="Galaga.getBackground8x8Data"
+    data-getTileDataFunction="Galaga.getSprite16x16Data"
+    data-pixWidth="8"
+    data-gridX="16"
+    data-gridY="16"
+    data-pixHeight="8"
+    data-gap="0.25"
+    data-gridPad="1"
+    data-colors='["#000000","#C00000","#00C000","#0000C0"]'
+    data-command=":8x16:00,01,02,03,04,05,06,07,08,09,0A,0B,0C,0D,0E,0F,
+                        10,11,12,13,14,15,16,17,18,19,1A,1B,1C,1D,1E,1F,
+                        20,21,22,23,24,25,26,27,28,29,2A,2B,2C,2D,2E,2F,
+                        30,31,32,33,34,35,36,37,38,39,3A,3B,3C,3D,3E,3F,
+                        40,41,42,43,44,45,46,47,48,49,4A,4B,4C,4D,4E,4F,
+                        50,51,52,53,54,55,56,57,58,59,5A,5B,5C,5D,5E,5F,
+                        60,61,62,63,64,65,66,67,68,69,6A,6B,6C,6D,6E,6F,
+                        70,71,72,73,74,75,76,77,78,79,7A,7B,7C,7D,7E,7F">
+</canvas>
+```
+
+# Player explosion groupings
+
+```html
+<canvas width="1060" height="280"  
+    data-canvasFunction="TileEngine.handleTileCanvas"
+    data-getTileDataFunction="Galaga.getSprite16x16Data"
+    data-pixWidth="8"
+    data-gridX="16"
+    data-gridY="16"
+    data-pixHeight="8"
+    data-gap="0.25"
+    data-gridPad="1"
+    data-colors='["#000000","#DEDEDE","#FF0000","#00FFDE"]'
+    data-command=":2x2:22,20,23,21,+x,:2x2:26,24,27,25,+x,:2x2:2A,28,2B,29,+x,:2x2:2E,2C,2F,2D">
+</canvas>
+```
+
+# Large score groupings
+
+```html
+<canvas width="600" height="150"  
+    data-canvasFunction="TileEngine.handleTileCanvas"
+    data-getTileDataFunction="Galaga.getSprite16x16Data"
+    data-pixWidth="8"
+    data-gridX="16"
+    data-gridY="16"
+    data-pixHeight="8"
+    data-gap="0.25"
+    data-gridPad="1"
+    data-colors='["#000000","#C00000","#00C000","#0000C0"]'
+    data-command=":2x1:3E,3C,+x,:2x1:3F,3D">
+</canvas>
+```
+
+# Alien explosion groupings
+
+```html
+<canvas width="600" height="280"  
+    data-canvasFunction="TileEngine.handleTileCanvas"
+    data-getTileDataFunction="Galaga.getSprite16x16Data"
+    data-pixWidth="8"
+    data-gridX="16"
+    data-gridY="16"
+    data-pixHeight="8"
+    data-gap="0.25"
+    data-gridPad="1"
+    data-colors='["#000000","#C00000","#00C000","#0000C0"]'
+    data-command="41,+x,42,+x,:2x2:46,44,47,45">
+</canvas>
+```
+
+# NAMCO tiles
+
+Sprite 4D is not used in the game. The four tiles it uses are shown here
+as the raw 8x8 pixel tiles. These are the same as the "namco" tiles from
+the background map (tiles 32, 33, 34, and 35).
+
+```html
+<canvas width="600" height="80"  
+    data-canvasFunction="TileEngine.handleTileCanvas"
+    data-getTileDataFunction="Galaga.getChar8x8Data"
     data-pixWidth="8"
     data-gridX="8"
     data-gridY="8"
@@ -20,32 +113,32 @@
     data-gap="0.25"
     data-gridPad="1"
     data-colors='["#000000","#C00000","#00C000","#0000C0"]'
-    data-command=":16x16:0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F,
-                         10,11,12,13,14,15,16,17,18,19,1A,1B,1C,1D,1E,1F,
-                         20,21,22,23,24,25,26,27,28,29,2A,2B,2C,2D,2E,2F,
-                         30,31,32,33,34,35,36,37,38,39,3A,3B,3C,3D,3E,3F,
-                         40,41,42,43,44,45,46,47,48,49,4A,4B,4C,4D,4E,4F,
-                         50,51,52,53,54,55,56,57,58,59,5A,5B,5C,5D,5E,5F,
-                         60,61,62,63,64,65,66,67,68,69,6A,6B,6C,6D,6E,6F,
-                         70,71,72,73,74,75,76,77,78,79,7A,7B,7C,7D,7E,7F,
-                         80,81,82,83,84,85,86,87,88,89,8A,8B,8C,8D,8E,8F, 
-                         90,91,92,93,94,95,96,97,98,99,9A,9B,9C,9D,9E,9F,
-                         A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,AA,AB,AC,AD,AE,AF,
-                         B0,B1,B2,B3,B4,B5,B6,B7,B8,B9,BA,BB,BC,BD,BE,BF,
-                         C0,C1,C2,C3,C4,C5,C6,C7,C8,C9,CA,CB,CC,CD,CE,CF,
-                         D0,D1,D2,D3,D4,D5,D6,D7,D8,D9,DA,DB,DC,DD,DE,DF,
-                         E0,E1,E2,E3,E4,E5,E6,E7,E8,E9,EA,EB,EC,ED,EE,EF,
-                         F0,F1,F2,F3,F4,F5,F6,F7,F8,F9,FA,FB,FC,FD,FE,FF">
+    data-command=":4x1:134,135,136,137">
 </canvas>
 ```
 
+# Lines
+
+Sprites 4E and 4F are not used in the game. Here are the raw 8x8 pixel tiles:
+
+```html
+<canvas width="1000" height="80"  
+    data-canvasFunction="TileEngine.handleTileCanvas"
+    data-getTileDataFunction="Galaga.getChar8x8Data"
+    data-pixWidth="8"
+    data-gridX="8"
+    data-gridY="8"
+    data-pixHeight="8"
+    data-gap="0.25"
+    data-gridPad="1"
+    data-colors='["#000000","#C00000","#00C000","#0000C0"]'
+    data-command=":8x1:138,138,13A,13B,13C,13D,13E,13F">
+</canvas>
+```
+
+# Binary data
+
 ```code
-
-; 0000: 88       CC       EE       FF       BB       99       18       19
-;       1...1... 11..11.. 111.111. 11111111 10111011 1..11..1 ...11... ...11..1
-; 0008: 11       1D       3F       BF       FF       DF       CF       E7
-;       ...1...1 ...111.1 ..111111 1.111111 11111111 11.11111 11..1111 111..111
-
 0000: 88 CC EE FF BB 99 18 19 11 1D 3F BF FF DF CF E7
 0010: 00 06 8E BF FF 7F 7E FD 22 66 EE EE AA 22 02 02
 0020: 11 01 01 00 00 00 00 00 77 33 33 33 33 11 11 11
@@ -174,6 +267,7 @@
 07D0: 00 00 00 70 F0 80 2F 2F 00 00 00 80 80 00 00 08
 07E0: 00 00 00 10 00 00 00 00 3F BE 50 80 00 00 00 00
 07F0: 2F 80 F0 70 00 00 00 00 00 00 80 80 00 00 00 00
+
 0800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 33 46
 0810: 00 00 00 00 01 66 22 88 00 33 44 8A 11 76 80 00
 0820: 00 11 11 02 11 00 00 00 8A 10 08 08 CC 88 44 88
@@ -562,7 +656,7 @@
 ```
 
 ```html
-<script src="Galaga.js"></script>
+<script src="galaga.js"></script>
 <script src="/js/Binary.js"></script>
 <script src="/js/TileEngine.js"></script>
 <script src="/js/Canvas.js"></script>
