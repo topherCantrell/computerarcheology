@@ -48,6 +48,8 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 4389      | HiScorehigh          | Hi score BCD (high) |
 | 438A      | HiScoremid           | Hi score BCD (mid) |
 | 438B      | HiScorelow           | Hi score BCD (low) |
+| 438C      | SoundControlA        | RAM copy of sound device control register A (0x6000) |
+| 438D      | SoundControlB        | RAM copy of sound device control register B (0x6800) |
 | 438F      | CoinCount            | Number of coins inserted (max counted is 9) |
 | 4390      | Player1Lives         | Player 1 number of lives |
 | 4391      | Player2Lives         | Player 2 number of lives |
