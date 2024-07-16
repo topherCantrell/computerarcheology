@@ -43,8 +43,8 @@ Music:
 
 ```
 Tune1 -- Alarm sound
-Tune2 -- Fuer Elise, Beethoven
-Tune3 -- ESTUDIO (Phoenix theme song)
+Tune2 -- Fuer Elise, Beethoven          0x6800:1000_1111
+Tune3 -- ESTUDIO (Phoenix theme song)   0x6800:1100_1111
 Tune4 --  single notes
 ```
 

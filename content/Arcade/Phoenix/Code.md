@@ -40,16 +40,16 @@
 0020: A7              AND     A                   
 0021: CA 2D 00        JP      Z,$002D             ; {}
 ; game mode
-0024: CD 00 04        CALL    $0400               ; {}
-0027: CD 00 27        CALL    $2700               ; {}
+0024: CD 00 04        CALL    $0400               ; {code.IntervalGameStateMachine}
+0027: CD 00 27        CALL    $2700               ; {code.GameFlow}
 002A: C3 1A 00        JP      $001A               ; {}
-; attract mode
+; attract mode (no sound, no scoreing, no steering)
 002D: 3E 0F           LD      A,$0F               
 002F: 26 60           LD      H,$60               ; 60xx sound A
 0031: 77              LD      (HL),A              
 0032: 26 68           LD      H,$68               ; 68xx sound B
 0034: 77              LD      (HL),A              
-0035: CD 77 03        CALL    $0377               ; {}
+0035: CD 77 03        CALL    $0377               ; {code.UpdateSoundControlRAM}
 0038: 00              NOP                         
 0039: CD E0 17        CALL    $17E0               ; {code.CoinChecking}
 003C: A7              AND     A                   
@@ -57,7 +57,7 @@
 0040: CD 88 02        CALL    $0288               ; {code.PromptForStartGame}
 0043: C3 1A 00        JP      $001A               ; {} Back to top of main loop
 ;
-0046: CD E3 00        CALL    $00E3               ; {}
+0046: CD E3 00        CALL    $00E3               ; {code.SplashAndDemo}
 0049: C3 1A 00        JP      $001A               ; {} Back to top of main loop
 ; Main loop end
 
@@ -184,6 +184,8 @@ PrintNumber:
 
 00E2: FF
 
+SplashAndDemo:
+; Handles the intro splash and the game demo
 00E3: 21 99 43        LD      HL,$4399            ; {+}
 00E6: CD 00 02        CALL    $0200               ; {code.AddOneToMem}
 00E9: 01 01 00        LD      BC,$0001            
@@ -195,7 +197,7 @@ PrintNumber:
 00FB: D2 96 01        JP      NC,$0196            ; {}
 00FE: 01 20 01        LD      BC,$0120            
 0101: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
-0104: CA CA 0B        JP      Z,$0BCA             ; {}
+0104: CA CA 0B        JP      Z,$0BCA             ; {code.DrawScoreAverageTableTiles}
 0107: 0E B0           LD      C,$B0               
 0109: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
 010C: CA E1 01        JP      Z,$01E1             ; {}
@@ -209,26 +211,28 @@ PrintNumber:
 0122: 01 00 03        LD      BC,$0300            
 0125: 11 AF 03        LD      DE,$03AF            
 0128: CD 60 02        CALL    $0260               ; {code.SubtractIfEnough}
-012B: D2 DC 21        JP      NC,$21DC            ; {}
+012B: D2 DC 21        JP      NC,$21DC            ; {code.DrawIntroBirdAnimationFrame}
 012E: 01 E6 03        LD      BC,$03E6            
 0131: 11 FF FF        LD      DE,$FFFF            
 0134: CD 60 02        CALL    $0260               ; {code.SubtractIfEnough}
-0137: D2 B0 03        JP      NC,$03B0            ; {}
+0137: D2 B0 03        JP      NC,$03B0            ; {code.GameDemo}
 013A: C9              RET                         
 
 013B: FF FF FF FF FF
 
+ClearForeAndBackground:
+;
 0140: CD A0 03        CALL    $03A0               ; {code.ClearBackground} Clear the background
 0143: CD 80 00        CALL    $0080               ; {code.WaitVBlankCoin} Wait for VBlank
 0146: CD 80 03        CALL    $0380               ; {code.ClearForeground} Clear the foreground (leave the 3 score rows)
 0149: 21 A3 43        LD      HL,$43A3            ; {+}
 014C: 36 02           LD      (HL),$02            
 014E: 2C              INC     L                   
-014F: 36 00           LD      (HL),$00            
+014F: 36 00           LD      (HL),$00            ; {ram.GameState} to 0
 0151: 00              NOP                         
 0152: 00              NOP                         
 0153: 00              NOP                         
-0154: 2E B8           LD      L,$B8               
+0154: 2E B8           LD      L,$B8               ; {+ram.LevelAndRound} to 0
 0156: 06 08           LD      B,$08               
 0158: CD D8 05        CALL    $05D8               ; {code.ClearBbytesAtHL}
 015B: 2E BA           LD      L,$BA               
@@ -308,6 +312,7 @@ PrintNumber:
 01C8: 7E              LD      A,(HL)              
 01C9: 12              LD      (DE),A              
 01CA: C3 E0 14        JP      $14E0               ; {}
+; Never called
 01CD: C2 C0 01        JP      NZ,$01C0            ; {}
 
 ; Print the top 3 lines (scores, lives, coins)
@@ -326,7 +331,7 @@ PrintTextLines:
 01E0: C9              RET                         ; Done
 
 ; Print the copyright lines (bottom 3 lines)
-01E1: CD 40 01        CALL    $0140               ; {}
+01E1: CD 40 01        CALL    $0140               ; {code.ClearForeAndBackground}
 01E4: 21 60 19        LD      HL,$1960            ; "PHOENIX ... U.S.A"
 01E7: 0E 03           LD      C,$03               ; 3 lines at the bottom
 01E9: C3 D0 01        JP      $01D0               ; {code.PrintTextLines} Print the copyright
@@ -506,13 +511,13 @@ CompareHLtoBC:
 0286: FF FF
 
 PromptForStartGame:
-0288: CD 40 01        CALL    $0140               ; {}
+0288: CD 40 01        CALL    $0140               ; {code.ClearForeAndBackground}
 028B: 21 C0 19        LD      HL,$19C0            
 028E: 0E 02           LD      C,$02               ; print two lines: 'PUSH ONLY...1PLAYER BUTTON'
 0290: CD D0 01        CALL    $01D0               ; {code.PrintTextLines}
 0293: 0E 02           LD      C,$02               
 0295: CD E0 17        CALL    $17E0               ; {code.CoinChecking}
-0298: FE 02           CP      $02                 
+0298: FE 02           CP      $02                 ; 2 player mode possible if credit >1
 029A: DA A7 02        JP      C,$02A7             ; {}
 029D: 21 A0 1B        LD      HL,$1BA0            
 02A0: 0E 01           LD      C,$01               ; print one line: '1 OR 2PLAYERS BUTTON'
@@ -521,21 +526,23 @@ PromptForStartGame:
 02A7: 3A 00 70        LD      A,($7000)           ; {hard.IN0} 70xx IN0
 02AA: 2F              CPL                         
 02AB: A1              AND     C                   
-02AC: C8              RET     Z                   
-02AD: CD CB 02        CALL    $02CB               ; {}
-02B0: CD F0 02        CALL    $02F0               ; {}
-02B3: CD 2E 03        CALL    $032E               ; {} ?? Clear and print scores ??
-02B6: CD 50 03        CALL    $0350               ; {}
-02B9: CD 40 01        CALL    $0140               ; {}
+02AC: C8              RET     Z                   ; ret if no start buttons pressed
+02AD: CD CB 02        CALL    $02CB               ; {code.DecrementCoins}
+02B0: CD F0 02        CALL    $02F0               ; {code.UpdateHiScore}
+02B3: CD 2E 03        CALL    $032E               ; {code.ClearAndPrintScores}
+02B6: CD 50 03        CALL    $0350               ; {code.UpdatePlayerLives}
+02B9: CD 40 01        CALL    $0140               ; {code.ClearForeAndBackground}
 02BC: 26 50           LD      H,$50               ; 50xx video register
 02BE: 36 01           LD      (HL),$01            
-02C0: CD 40 01        CALL    $0140               ; {}
+02C0: CD 40 01        CALL    $0140               ; {code.ClearForeAndBackground}
 02C3: 26 50           LD      H,$50               ; 50xx video register
 02C5: 36 00           LD      (HL),$00            
 02C7: C9              RET                         
 
 02C8: FF FF FF
 
+DecrementCoins:
+;
 02CB: 0E 01           LD      C,$01               
 02CD: FE 02           CP      $02                 
 02CF: CA D4 02        JP      Z,$02D4             ; {}
@@ -549,15 +556,17 @@ PromptForStartGame:
 02E1: 07              RLCA                        
 02E2: 4F              LD      C,A                 
 02E3: 2E 8F           LD      L,$8F               
-02E5: 7E              LD      A,(HL)              
-02E6: 91              SUB     C                   
+02E5: 7E              LD      A,(HL)              ; {ram.CoinCount}
+02E6: 91              SUB     C                   ; decrement coins
 02E7: 77              LD      (HL),A              
 02E8: C6 20           ADD     $20                 
-02EA: 32 42 41        LD      ($4142),A           ; {ram.ForegroundScreen+142}
+02EA: 32 42 41        LD      ($4142),A           ; {ram.ForegroundScreen+142} updates the number of coins on the screen
 02ED: C9              RET                         
 
 02EE: FF FF
 
+UpdateHiScore:
+; copy the score to hi score if greater
 02F0: 11 83 43        LD      DE,$4383            ; {+ram.Score1low} score
 02F3: 21 8B 43        LD      HL,$438B            ; {+ram.HiScorelow} score of some kind
 02F6: CD 14 03        CALL    $0314               ; {}
@@ -602,6 +611,8 @@ PromptForStartGame:
 
 032B: FF FF FF
 
+ClearAndPrintScores:
+;
 032E: 21 80 43        LD      HL,$4380            ; {+ram.M4380??} ?? Clear scores ??
 0331: 36 00           LD      (HL),$00            
 0333: 23              INC     HL                  
@@ -622,6 +633,8 @@ PromptForStartGame:
 
 034F: FF
 
+UpdatePlayerLives:
+;
 0350: 3A 00 78        LD      A,($7800)           ; {hard.DSW0} 78xx DSW0
 0353: E6 03           AND     $03                 ; Lives
 0355: C6 03           ADD     $03                 
@@ -643,10 +656,12 @@ PromptForStartGame:
 0371: F6 20           OR      $20                 
 0373: 32 62 40        LD      ($4062),A           ; {ram.ForegroundScreen+62} number of lives, for player 2 at screen ram
 0376: C9              RET                         
-;
-0377: 21 8C 43        LD      HL,$438C            ; {+}
+
+UpdateSoundControlRAM:
+; Update the sound control RAM registers
+0377: 21 8C 43        LD      HL,$438C            ; {ram.SoundControlA}
 037A: 77              LD      (HL),A              
-037B: 2C              INC     L                   
+037B: 2C              INC     L                   ; {ram.SoundControlB}
 037C: 77              LD      (HL),A              
 037D: C9              RET                         
 
@@ -689,6 +704,7 @@ ClearBackground:
 03AC: C2 A6 03        JP      NZ,$03A6            ; {} No ... keep clearing
 03AF: C9              RET                         ; Done
 
+GameDemo:
 03B0: 01 A0 07        LD      BC,$07A0            
 03B3: CD 70 02        CALL    $0270               ; {code.SubtractFromMemory}
 03B6: DA CE 03        JP      C,$03CE             ; {}
@@ -705,7 +721,8 @@ ClearBackground:
 03D5: E6 01           AND     $01                 
 03D7: B0              OR      B                   
 03D8: 77              LD      (HL),A              
-03D9: C3 00 04        JP      $0400               ; {}
+03D9: C3 00 04        JP      $0400               ; {code.IntervalGameStateMachine}
+; Never called
 03DC: C3 00 04        JP      $0400               ; {}
 
 03DF: FF FF FF
@@ -727,6 +744,7 @@ ClearBackground:
 
 03FE: FF FF
 
+IntervalGameStateMachine:
 ; Jump to ?? function by number in 43A4
 0400: 21 0E 04        LD      HL,$040E            ; Jump table
 0403: 3A A4 43        LD      A,($43A4)           ; {ram.GameState} ??
@@ -740,10 +758,10 @@ ClearBackground:
 040D: E9              JP      (HL)                ; Jump to function
 
 ; Notice these addresses are MSB:LSB (backwards from the processor's endianness)
-040E: 04 30       ;0:
+040E: 04 30       ;0: called for each frame during stars scrolling down
 0410: 04 AC       ;1: called for each frame during flashing of score1 or 2
 0412: 05 15       ;2:
-0414: 08 00       ;3: called for each frame
+0414: 08 00       ;3: called for each frame of normal game play
 0416: 0A EA       ;4: called for each frame of player ship (partikel) explosion
 0418: 0B 60       ;5: called for each frame during 'GAME OVER' text
 041A: 24 00       ;6: called for each frame during mother ship (partikel) explosion
@@ -1979,20 +1997,22 @@ ShieldsExpired:
 
 0BC7: FF FF FF
 
+DrawScoreAverageTableTiles:
+; Draws the character tiles for the score average table
 0BCA: 21 D0 42        LD      HL,$42D0            
 0BCD: 01 DF FF        LD      BC,$FFDF            ; Screen offset constant -33 right one column (-1), up one row (-32)
-0BD0: 36 64           LD      (HL),$64            
+0BD0: 36 64           LD      (HL),$64            ; left part of alien shape #3
 0BD2: 09              ADD     HL,BC               
 0BD3: 23              INC     HL                  
-0BD4: 36 65           LD      (HL),$65            
-0BD6: 21 F2 42        LD      HL,$42F2            
-0BD9: 11 40 0A        LD      DE,$0A40            
+0BD4: 36 65           LD      (HL),$65            ; right part of alien shape #3
+0BD6: 21 F2 42        LD      HL,$42F2            ; screen ram position for
+0BD9: 11 40 0A        LD      DE,$0A40            ; alien shape #37 and alien shape #34
 0BDC: CD 38 35        CALL    $3538               ; {code.Draw4x2}
-0BDF: 21 15 4B        LD      HL,$4B15            
-0BE2: 11 00 3C        LD      DE,$3C00            
+0BDF: 21 15 4B        LD      HL,$4B15            ; screen ram position for
+0BE2: 11 00 3C        LD      DE,$3C00            ; bird shape #24 (Object 3C00)
 0BE5: CD 28 35        CALL    $3528               ; {code.Draw6x2}
-0BE8: 21 D8 4A        LD      HL,$4AD8            
-0BEB: 11 48 0A        LD      DE,$0A48            
+0BE8: 21 D8 4A        LD      HL,$4AD8            ; screen ram position for
+0BEB: 11 48 0A        LD      DE,$0A48            ; alien pilot shape
 0BEE: CD 48 35        CALL    $3548               ; {code.Draw2x2}
 0BF1: C9              RET                         
 
@@ -3316,7 +3336,7 @@ ShieldsExpired:
 ; on the screen below.
 ;
 ;      0 0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 A A B B C C
-;      0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 C C
+;      0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8
 ;      | | | | | | | | | | | | | | | | | | | | | | | | | |
 ; 00 - . S C O R E 1 . . H I - S C O R E . . S C O R E 2 . 
 ; 08 - . 0 0 0 0 0 0 . . . 0 0 0 0 0 0 . . . 0 0 0 0 0 0 .
@@ -3352,7 +3372,7 @@ ShieldsExpired:
 ; Same structure as 1540 above.
 ;
 ;      0 0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 A A B B C C
-;      0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 C C
+;      0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8
 ;      | | | | | | | | | | | | | | | | | | | | | | | | | |
 ; 00 - . S C O R E 1 . . H I - S C O R E . . S C O R E 2 . 
 ; 08 - . 0 0 0 0 0 0 . . . 0 0 0 0 0 0 . . . 0 0 0 0 0 0 .
@@ -4209,6 +4229,8 @@ FourByFourEmpty:
 
 21DA: FF FF
 
+DrawIntroBirdAnimationFrame:
+;
 21DC: 7E              LD      A,(HL)              
 21DD: 00              NOP                         
 21DE: 47              LD      B,A                 
@@ -5021,7 +5043,8 @@ EraseMothership:
 
 26FE: FF FF
 
-;
+GameFlow:
+; Handles the game flow and the demo
 2700: 21 A2 43        LD      HL,$43A2            ; {+ram.GameOrAttract}
 2703: 7E              LD      A,(HL)              
 2704: A7              AND     A                   
@@ -5057,7 +5080,7 @@ EraseMothership:
 2739: 3A 97 43        LD      A,($4397)           
 273C: A7              AND     A                   
 273D: CC 68 27        CALL    Z,$2768             ; {}
-2740: CD A8 27        CALL    $27A8               ; {}
+2740: CD A8 27        CALL    $27A8               ; {code.UpdateSoundControlHW}
 2743: C3 10 3A        JP      $3A10               ; {}
 
 2746: FF FF
@@ -5126,10 +5149,12 @@ EraseMothership:
 
 27A5: FF FF FF
 
-27A8: 21 8C 43        LD      HL,$438C            ; {+}
+UpdateSoundControlHW:
+; Update the sound control hardware registers
+27A8: 21 8C 43        LD      HL,$438C            ; {ram.SoundControlA}
 27AB: 7E              LD      A,(HL)              
 27AC: 32 00 60        LD      ($6000),A           ; {hard.soundControlA} 60xx sound A
-27AF: 2C              INC     L                   
+27AF: 2C              INC     L                   ; {ram.SoundControlB}
 27B0: 7E              LD      A,(HL)              
 27B1: 32 00 68        LD      ($6800),A           ; {hard.soundControlB} 68xx sound B
 27B4: F6 0F           OR      $0F                 
@@ -6852,13 +6877,15 @@ Draw1x2:
 3A0D: D8              RET     C                   
 3A0E: E1              POP     HL                  
 3A0F: C9              RET                         
+;
 3A10: 21 B8 43        LD      HL,$43B8            ; {+ram.LevelAndRound}
 3A13: 7E              LD      A,(HL)              
 3A14: A7              AND     A                   
 3A15: C2 43 3B        JP      NZ,$3B43            ; {}
 3A18: 2E 8D           LD      L,$8D               
-3A1A: 36 CF           LD      (HL),$CF            
+3A1A: 36 CF           LD      (HL),$CF            ; {ram.SoundControlB}  1100_1111 triggers Tune3 -- ESTUDIO (Phoenix theme song)
 3A1C: C9              RET                         
+;
 3A1D: 21 69 43        LD      HL,$4369            ; {+}
 3A20: 7E              LD      A,(HL)              
 3A21: A7              AND     A                   
@@ -6957,7 +6984,7 @@ Draw1x2:
 3ABD: 3E 08           LD      A,$08               
 3ABF: C6 25           ADD     $25                 
 3AC1: 4F              LD      C,A                 
-3AC2: 21 8C 43        LD      HL,$438C            ; {+}
+3AC2: 21 8C 43        LD      HL,$438C            ; {ram.SoundControlA}
 3AC5: 7E              LD      A,(HL)              
 3AC6: E6 C0           AND     $C0                 
 3AC8: B1              OR      C                   
@@ -7046,7 +7073,10 @@ Draw1x2:
 3B3E: 2E 8D           LD      L,$8D               
 3B40: 77              LD      (HL),A              
 3B41: C9              RET                         
+
+; Never called
 3B42: 8D              ADC     A,L                 
+;
 3B43: 21 A4 43        LD      HL,$43A4            ; {+ram.GameState}
 3B46: 7E              LD      A,(HL)              
 3B47: FE 03           CP      $03                 
