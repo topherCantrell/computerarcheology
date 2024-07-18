@@ -38,13 +38,15 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | | | |
 | --- | --- | --- |
 | 4000:433F | ForegroundScreen     | 32*26 bytes for the foreground screen |
-| 4380      | M4380??              | ?? part of scoring ?? |
+| 4380      | M4380                | Ever set to 0 (prevents overflow) |
 | 4381      | Score1high           | Player 1 score BCD (high) |
 | 4382      | Score1mid            | Player 1 score BCD (mid) |
 | 4383      | Score1low            | Player 1 score BCD (low) |
+| 4384      | M4384                | Ever set to 0 (prevents overflow) |
 | 4385      | Score2high           | Player 2 score BCD (high) |
 | 4386      | Score2mid            | Player 2 score BCD (mid) |
 | 4387      | Score2low            | Player 2 score BCD (low) |
+| 4388      | M4388                | Ever set to 0 (prevents overflow) |
 | 4389      | HiScorehigh          | Hi score BCD (high) |
 | 438A      | HiScoremid           | Hi score BCD (mid) |
 | 438B      | HiScorelow           | Hi score BCD (low) |
@@ -57,9 +59,11 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 43A0      | IN0Current           | Current value of IN0     |
 | 43A1      | IN0Previous          | Previous value of IN0    |
 | 43A2      | GameOrAttract        | Attract mode:0 Game mode:1 |
+| 43A3      | GameAndDemoOrSplash  | Game and demo:0 Intro splash:2 |
 | 43A4      | GameState            | Game state:0 - 7 |
 | 43A5      | Counter8             | 8 bit counter (score flash time) |
 | 43A6      | ShieldCount??        | Counts shield time and controls shield picture. Shields end at C0. |
+| 43B4      | B4Counter            | 8 bit counter (stars scrolling down, aliens fade in time) |
 | 43B8      | LevelAndRound        | bit0 - 3: game level, bit4 - 7: game round |
 | 43C0      | M43C0??              | ?? shields |        
 | 43E2      | PlayerCoordMSB       | The X,Y in screen memory (doesn't include bit offset) |
