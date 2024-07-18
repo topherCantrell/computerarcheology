@@ -225,8 +225,8 @@ ClearForeAndBackground:
 0140: CD A0 03        CALL    $03A0               ; {code.ClearBackground} Clear the background
 0143: CD 80 00        CALL    $0080               ; {code.WaitVBlankCoin} Wait for VBlank
 0146: CD 80 03        CALL    $0380               ; {code.ClearForeground} Clear the foreground (leave the 3 score rows)
-0149: 21 A3 43        LD      HL,$43A3            ; {+}
-014C: 36 02           LD      (HL),$02            
+0149: 21 A3 43        LD      HL,$43A3            ; {ram.GameAndDemoOrSplash}
+014C: 36 02           LD      (HL),$02            ; set to: 'Intro splash'
 014E: 2C              INC     L                   
 014F: 36 00           LD      (HL),$00            ; {ram.GameState} to 0
 0151: 00              NOP                         
@@ -613,19 +613,19 @@ UpdateHiScore:
 
 ClearAndPrintScores:
 ;
-032E: 21 80 43        LD      HL,$4380            ; {+ram.M4380??} ?? Clear scores ??
-0331: 36 00           LD      (HL),$00            
-0333: 23              INC     HL                  
-0334: 7D              LD      A,L                 
-0335: FE 88           CP      $88                 
+032E: 21 80 43        LD      HL,$4380            ; {+ram.M4380} Clear scores..
+0331: 36 00           LD      (HL),$00            ; ..from $4380..
+0333: 23              INC     HL                  ;
+0334: 7D              LD      A,L                 ;
+0335: FE 88           CP      $88                 ; ..to $4387
 0337: C2 31 03        JP      NZ,$0331            ; {}
-;
-033A: 2E 83           LD      L,$83               ; Print ?? player 1 score ??
+; print player 1 score
+033A: 2E 83           LD      L,$83               ; {ram.Score1low}
 033C: 11 61 42        LD      DE,$4261            ; Score1 screen coordinates (LSB)
 033F: 06 06           LD      B,$06               ; 6 digits
 0341: CD C4 00        CALL    $00C4               ; {code.PrintNumber}
-;
-0344: 2E 87           LD      L,$87               ; Print ?? player 2 score ??
+; print player 2 score
+0344: 2E 87           LD      L,$87               ; {ram.Score2low}
 0346: 11 21 40        LD      DE,$4021            ; Score2 screen coordinates (LSB)
 0349: 06 06           LD      B,$06               ; 6 digits
 034B: CD C4 00        CALL    $00C4               ; {code.PrintNumber}
@@ -730,6 +730,7 @@ GameDemo:
 03E2: 01 08 01        LD      BC,$0108            
 03E5: 11 00 10        LD      DE,$1000            
 03E8: C3 F1 03        JP      $03F1               ; {}
+;
 03EB: 01 04 01        LD      BC,$0104            
 03EE: 11 08 00        LD      DE,$0008            
 03F1: 21 A4 43        LD      HL,$43A4            ; {+ram.GameState}
@@ -766,8 +767,9 @@ IntervalGameStateMachine:
 0418: 0B 60       ;5: called for each frame during 'GAME OVER' text
 041A: 24 00       ;6: called for each frame during mother ship (partikel) explosion
 041C: 24 4C       ;7: called for each frame during mother ship score
-;
-041E: 3A A3 43        LD      A,($43A3)           
+
+; Used for the game demo/intro spash toggle
+041E: 3A A3 43        LD      A,($43A3)           ; {ram.GameAndDemoOrSplash}
 0421: E6 01           AND     $01                 
 0423: 47              LD      B,A                 
 0424: 3A B8 43        LD      A,($43B8)           ; {ram.LevelAndRound}
@@ -780,12 +782,12 @@ IntervalGameStateMachine:
 
 ; ?? Function 0
 0430: 21 A4 43        LD      HL,$43A4            ; {+ram.GameState} Next function to run ...
-0433: 36 01           LD      (HL),$01            ; ... is 1 ??
+0433: 36 01           LD      (HL),$01            ; ... is 1
 0435: 2C              INC     L                   
 0436: 36 80           LD      (HL),$80            
 0438: 2E A3           LD      L,$A3               
 043A: 7E              LD      A,(HL)              
-043B: 36 00           LD      (HL),$00            ; clear $43A3
+043B: 36 00           LD      (HL),$00            ; {ram.GameAndDemoOrSplash} set to game demo / game play
 043D: FE 02           CP      $02                 
 043F: C8              RET     Z                   
 0440: 77              LD      (HL),A              
@@ -832,7 +834,7 @@ IntervalGameStateMachine:
 047B: 7A              LD      A,D                 
 047C: FE 3F           CP      $3F                 
 047E: C2 66 04        JP      NZ,$0466            ; {}
-0481: 11 80 43        LD      DE,$4380            ; {+ram.M4380??}
+0481: 11 80 43        LD      DE,$4380            ; {+ram.M4380}
 0484: 70              LD      (HL),B              
 0485: 1A              LD      A,(DE)              
 0486: 71              LD      (HL),C              
@@ -883,7 +885,7 @@ IntervalGameStateMachine:
 04C6: C2 E6 04        JP      NZ,$04E6            ; {}
 04C9: CD E8 06        CALL    $06E8               ; {}
 04CC: 00              NOP                         
-04CD: 21 A3 43        LD      HL,$43A3            ; {+}
+04CD: 21 A3 43        LD      HL,$43A3            ; {ram.GameAndDemoOrSplash}
 04D0: 7E              LD      A,(HL)              
 04D1: A7              AND     A                   
 04D2: 2E 83           LD      L,$83               
@@ -897,7 +899,7 @@ IntervalGameStateMachine:
 
 04E5: FF
 
-04E6: 21 A3 43        LD      HL,$43A3            ; {+}
+04E6: 21 A3 43        LD      HL,$43A3            ; {ram.GameAndDemoOrSplash}
 04E9: 7E              LD      A,(HL)              
 04EA: A7              AND     A                   
 04EB: 11 61 42        LD      DE,$4261            
@@ -989,7 +991,7 @@ IntervalGameStateMachine:
 05A2: B4 B4     ;init values for mothership wave (pointer to $05B4, $05B4)
 05A4: A8 A8     ;? pointer to $05A8, $05A8
 05A6: A8 A8     ;? pointer to $05A8, $05A8
-;
+;e.g.:timer values
 ;data copied to $43AB-$43B6
 05A8: 80 7F 00 00 40 3F 00 1C
 05B0: 00 FF FF FF
@@ -1462,7 +1464,7 @@ CopyBbytesHLtoDE:
 0832: 22 4C       ;called once at first start of birds level
 ;
 0834: CD F0 06        CALL    $06F0               ; {}
-0837: 21 B4 43        LD      HL,$43B4            ; {+}
+0837: 21 B4 43        LD      HL,$43B4            ; {ram.B4Counter}
 083A: 35              DEC     (HL)                
 083B: 7E              LD      A,(HL)              
 083C: FE 15           CP      $15                 
@@ -1470,7 +1472,7 @@ CopyBbytesHLtoDE:
 083F: CD 5A 08        CALL    $085A               ; {}
 0842: CD FA 05        CALL    $05FA               ; {}
 0845: CD 50 0A        CALL    $0A50               ; {}
-0848: 21 B4 43        LD      HL,$43B4            ; {+}
+0848: 21 B4 43        LD      HL,$43B4            ; {ram.B4Counter}
 084B: 7E              LD      A,(HL)              
 084C: A7              AND     A                   
 084D: C0              RET     NZ                  
@@ -4377,7 +4379,7 @@ DrawIntroBirdAnimationFrame:
 22B3: FF
 
 22B4: CD 7A 06        CALL    $067A               ; {}
-22B7: 21 B4 43        LD      HL,$43B4            ; {+}
+22B7: 21 B4 43        LD      HL,$43B4            ; {ram.B4Counter}
 22BA: 35              DEC     (HL)                
 22BB: 7E              LD      A,(HL)              
 22BC: FE 28           CP      $28                 
@@ -4388,7 +4390,7 @@ DrawIntroBirdAnimationFrame:
 
 22C6: FF FF FF FF
 
-22CA: 21 B4 43        LD      HL,$43B4            ; {+}
+22CA: 21 B4 43        LD      HL,$43B4            ; {ram.B4Counter}
 22CD: 7E              LD      A,(HL)              
 22CE: FE C0           CP      $C0                 
 22D0: C2 34 08        JP      NZ,$0834            ; {}
@@ -5113,7 +5115,7 @@ GameFlow:
 2768: E5              PUSH    HL                  
 2769: 11 61 42        LD      DE,$4261            
 276C: 06 06           LD      B,$06               
-276E: 3A A3 43        LD      A,($43A3)           
+276E: 3A A3 43        LD      A,($43A3)           ; {ram.GameAndDemoOrSplash}
 2771: A7              AND     A                   
 2772: CA 78 27        JP      Z,$2778             ; {}
 2775: 11 21 40        LD      DE,$4021            
@@ -5129,7 +5131,7 @@ GameFlow:
 2785: EB              EX      DE,HL               
 2786: CD 14 03        CALL    $0314               ; {}
 2789: D0              RET     NC                  
-278A: 3A A3 43        LD      A,($43A3)           
+278A: 3A A3 43        LD      A,($43A3)           ; {ram.GameAndDemoOrSplash}
 278D: C6 90           ADD     $90                 
 278F: 6F              LD      L,A                 
 2790: 34              INC     (HL)                
