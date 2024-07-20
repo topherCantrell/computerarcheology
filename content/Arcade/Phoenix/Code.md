@@ -225,14 +225,14 @@ ClearForeAndBackground:
 0140: CD A0 03        CALL    $03A0               ; {code.ClearBackground} Clear the background
 0143: CD 80 00        CALL    $0080               ; {code.WaitVBlankCoin} Wait for VBlank
 0146: CD 80 03        CALL    $0380               ; {code.ClearForeground} Clear the foreground (leave the 3 score rows)
-0149: 21 A3 43        LD      HL,$43A3            ; {ram.GameAndDemoOrSplash}
+0149: 21 A3 43        LD      HL,$43A3            ; 
 014C: 36 02           LD      (HL),$02            ; set to: 'Intro splash'
 014E: 2C              INC     L                   
-014F: 36 00           LD      (HL),$00            ; {ram.GameState} to 0
+014F: 36 00           LD      (HL),$00            ; to 0
 0151: 00              NOP                         
 0152: 00              NOP                         
 0153: 00              NOP                         
-0154: 2E B8           LD      L,$B8               ; {+ram.LevelAndRound} to 0
+0154: 2E B8           LD      L,$B8               ; {+} to 0
 0156: 06 08           LD      B,$08               
 0158: CD D8 05        CALL    $05D8               ; {code.ClearBbytesAtHL}
 015B: 2E BA           LD      L,$BA               
@@ -615,17 +615,17 @@ ClearAndPrintScores:
 ;
 032E: 21 80 43        LD      HL,$4380            ; {+ram.M4380} Clear scores..
 0331: 36 00           LD      (HL),$00            ; ..from $4380..
-0333: 23              INC     HL                  ;
-0334: 7D              LD      A,L                 ;
+0333: 23              INC     HL                  ; 
+0334: 7D              LD      A,L                 ; 
 0335: FE 88           CP      $88                 ; ..to $4387
 0337: C2 31 03        JP      NZ,$0331            ; {}
 ; print player 1 score
-033A: 2E 83           LD      L,$83               ; {ram.Score1low}
+033A: 2E 83           LD      L,$83               ; 
 033C: 11 61 42        LD      DE,$4261            ; Score1 screen coordinates (LSB)
 033F: 06 06           LD      B,$06               ; 6 digits
 0341: CD C4 00        CALL    $00C4               ; {code.PrintNumber}
 ; print player 2 score
-0344: 2E 87           LD      L,$87               ; {ram.Score2low}
+0344: 2E 87           LD      L,$87               ; 
 0346: 11 21 40        LD      DE,$4021            ; Score2 screen coordinates (LSB)
 0349: 06 06           LD      B,$06               ; 6 digits
 034B: CD C4 00        CALL    $00C4               ; {code.PrintNumber}
@@ -659,7 +659,7 @@ UpdatePlayerLives:
 
 UpdateSoundControlRAM:
 ; Update the sound control RAM registers
-0377: 21 8C 43        LD      HL,$438C            ; {ram.SoundControlA}
+0377: 21 8C 43        LD      HL,$438C            ; 
 037A: 77              LD      (HL),A              
 037B: 2C              INC     L                   ; {ram.SoundControlB}
 037C: 77              LD      (HL),A              
@@ -723,7 +723,7 @@ GameDemo:
 03D8: 77              LD      (HL),A              
 03D9: C3 00 04        JP      $0400               ; {code.IntervalGameStateMachine}
 ; Never called
-03DC: C3 00 04        JP      $0400               ; {}
+03DC: C3 00 04        JP      $0400               ; {code.IntervalGameStateMachine}
 
 03DF: FF FF FF
 
@@ -787,7 +787,7 @@ IntervalGameStateMachine:
 0436: 36 80           LD      (HL),$80            
 0438: 2E A3           LD      L,$A3               
 043A: 7E              LD      A,(HL)              
-043B: 36 00           LD      (HL),$00            ; {ram.GameAndDemoOrSplash} set to game demo / game play
+043B: 36 00           LD      (HL),$00            ; set to game demo / game play
 043D: FE 02           CP      $02                 
 043F: C8              RET     Z                   
 0440: 77              LD      (HL),A              
@@ -885,7 +885,7 @@ IntervalGameStateMachine:
 04C6: C2 E6 04        JP      NZ,$04E6            ; {}
 04C9: CD E8 06        CALL    $06E8               ; {}
 04CC: 00              NOP                         
-04CD: 21 A3 43        LD      HL,$43A3            ; {ram.GameAndDemoOrSplash}
+04CD: 21 A3 43        LD      HL,$43A3            ; 
 04D0: 7E              LD      A,(HL)              
 04D1: A7              AND     A                   
 04D2: 2E 83           LD      L,$83               
@@ -899,7 +899,7 @@ IntervalGameStateMachine:
 
 04E5: FF
 
-04E6: 21 A3 43        LD      HL,$43A3            ; {ram.GameAndDemoOrSplash}
+04E6: 21 A3 43        LD      HL,$43A3            ; 
 04E9: 7E              LD      A,(HL)              
 04EA: A7              AND     A                   
 04EB: 11 61 42        LD      DE,$4261            
@@ -1464,7 +1464,7 @@ CopyBbytesHLtoDE:
 0832: 22 4C       ;called once at first start of birds level
 ;
 0834: CD F0 06        CALL    $06F0               ; {}
-0837: 21 B4 43        LD      HL,$43B4            ; {ram.B4Counter}
+0837: 21 B4 43        LD      HL,$43B4            ; 
 083A: 35              DEC     (HL)                
 083B: 7E              LD      A,(HL)              
 083C: FE 15           CP      $15                 
@@ -1472,7 +1472,7 @@ CopyBbytesHLtoDE:
 083F: CD 5A 08        CALL    $085A               ; {}
 0842: CD FA 05        CALL    $05FA               ; {}
 0845: CD 50 0A        CALL    $0A50               ; {}
-0848: 21 B4 43        LD      HL,$43B4            ; {ram.B4Counter}
+0848: 21 B4 43        LD      HL,$43B4            ; 
 084B: 7E              LD      A,(HL)              
 084C: A7              AND     A                   
 084D: C0              RET     NZ                  
@@ -4379,7 +4379,7 @@ DrawIntroBirdAnimationFrame:
 22B3: FF
 
 22B4: CD 7A 06        CALL    $067A               ; {}
-22B7: 21 B4 43        LD      HL,$43B4            ; {ram.B4Counter}
+22B7: 21 B4 43        LD      HL,$43B4            ; 
 22BA: 35              DEC     (HL)                
 22BB: 7E              LD      A,(HL)              
 22BC: FE 28           CP      $28                 
@@ -4390,7 +4390,7 @@ DrawIntroBirdAnimationFrame:
 
 22C6: FF FF FF FF
 
-22CA: 21 B4 43        LD      HL,$43B4            ; {ram.B4Counter}
+22CA: 21 B4 43        LD      HL,$43B4            ; 
 22CD: 7E              LD      A,(HL)              
 22CE: FE C0           CP      $C0                 
 22D0: C2 34 08        JP      NZ,$0834            ; {}
@@ -5153,7 +5153,7 @@ GameFlow:
 
 UpdateSoundControlHW:
 ; Update the sound control hardware registers
-27A8: 21 8C 43        LD      HL,$438C            ; {ram.SoundControlA}
+27A8: 21 8C 43        LD      HL,$438C            ; 
 27AB: 7E              LD      A,(HL)              
 27AC: 32 00 60        LD      ($6000),A           ; {hard.soundControlA} 60xx sound A
 27AF: 2C              INC     L                   ; {ram.SoundControlB}
@@ -6885,7 +6885,7 @@ Draw1x2:
 3A14: A7              AND     A                   
 3A15: C2 43 3B        JP      NZ,$3B43            ; {}
 3A18: 2E 8D           LD      L,$8D               
-3A1A: 36 CF           LD      (HL),$CF            ; {ram.SoundControlB}  1100_1111 triggers Tune3 -- ESTUDIO (Phoenix theme song)
+3A1A: 36 CF           LD      (HL),$CF            ; 1100_1111 triggers Tune3 -- ESTUDIO (Phoenix theme song)
 3A1C: C9              RET                         
 ;
 3A1D: 21 69 43        LD      HL,$4369            ; {+}
@@ -6986,7 +6986,7 @@ Draw1x2:
 3ABD: 3E 08           LD      A,$08               
 3ABF: C6 25           ADD     $25                 
 3AC1: 4F              LD      C,A                 
-3AC2: 21 8C 43        LD      HL,$438C            ; {ram.SoundControlA}
+3AC2: 21 8C 43        LD      HL,$438C            ; 
 3AC5: 7E              LD      A,(HL)              
 3AC6: E6 C0           AND     $C0                 
 3AC8: B1              OR      C                   
