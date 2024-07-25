@@ -723,7 +723,7 @@ GameDemo:
 03D8: 77              LD      (HL),A              
 03D9: C3 00 04        JP      $0400               ; {code.IntervalGameStateMachine}
 ; Never called
-03DC: C3 00 04        JP      $0400               ; {}
+03DC: C3 00 04        JP      $0400               ; {code.IntervalGameStateMachine}
 
 03DF: FF FF FF
 
@@ -6885,7 +6885,7 @@ Draw1x2:
 3A14: A7              AND     A                   
 3A15: C2 43 3B        JP      NZ,$3B43            ; {}
 3A18: 2E 8D           LD      L,$8D               
-3A1A: 36 CF           LD      (HL),$CF            ; {ram.SoundControlB}  1100_1111 triggers Tune3 -- ESTUDIO (Phoenix theme song)
+3A1A: 36 CF           LD      (HL),$CF            ; 1100_1111 triggers Tune3 -- ESTUDIO (Phoenix theme song)
 3A1C: C9              RET                         
 ;
 3A1D: 21 69 43        LD      HL,$4369            ; {+}

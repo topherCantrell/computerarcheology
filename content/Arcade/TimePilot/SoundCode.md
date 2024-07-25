@@ -41,38 +41,38 @@ TO DO:
 ; Second is filter-capacitor configuration
 ;
 ; 00   Stop all sounds
-; 01 0 Coin 
-; 02 0 Plane fire
-; 03 0 1910 bomb
-; 04 1 Missile launch
-; 05 0 UFO shot
-; 06 0 Missile (continuous)
-; 07 0 User Fire
-; 08 1 Enemy Explosion Component (thud)
-; 09 1 Enemy Explosion Component (white-noise)
-; 0A 0 Tracker or Bomb Explosion
-; 0B 0 Squad Appears
-; 0C 1 1st boss (blimp)
-; 0D 1 2nd boss (jet)
-; 0E 1 3rd boss (helicopter)
-; 0F 1 4th boss (super jet)
-; 10 1 5th boss (mother ship)
-; 11 1 User explosion component
-; 12 1 User explosion component
-; 13 2 User explosion component
-; 14 2 User explosion component
-; 15 1 User explosion component
-; 16 0 Pickup parachute
-; 17 1 Free man
-; 18 0 Time jump 1
-; 19 0 Time jump 2
-; 1A 0 Initialize song 2
-; 1B 1 Initialize song 1
-; 1C 0 Initialize music D1
-; 1D 0 Initialize music D2
-; 1E 0 Initialize music D3
-; 1F 0 Initialize music D4
-; 20 0 Initialize music D5
+; 01 0 Coin                                        -
+; 02 0 Plane fire                                  -
+; 03 0 1910 bomb                                   -
+; 04 1 Missile launch                              0.047uf
+; 05 0 UFO shot                                    -
+; 06 0 Missile (continuous)                        -
+; 07 0 User Fire                                   -
+; 08 1 Enemy Explosion Component (thud)            0.047uf
+; 09 1 Enemy Explosion Component (white-noise)     0.047uf
+; 0A 0 Tracker or Bomb Explosion                   -
+; 0B 0 Squad Appears                               -
+; 0C 1 1st boss (blimp)                            0.047uf
+; 0D 1 2nd boss (jet)                              0.047uf
+; 0E 1 3rd boss (helicopter)                       0.047uf
+; 0F 1 4th boss (super jet)                        0.047uf
+; 10 1 5th boss (mother ship)                      0.047uf
+; 11 1 User explosion component                    0.047uf
+; 12 1 User explosion component                    0.047uf
+; 13 2 User explosion component                    0.22uf
+; 14 2 User explosion component                    0.22uf
+; 15 1 User explosion component                    0.047uf
+; 16 0 Pickup parachute                            -
+; 17 1 Free man                                    0.047uf
+; 18 0 Time jump 1                                 -
+; 19 0 Time jump 2                                 -
+; 1A 0 Initialize song 2                           -
+; 1B 1 Initialize song 1                           -
+; 1C 0 Initialize music D1                         -
+; 1D 0 Initialize music D2                         -
+; 1E 0 Initialize music D3                         -
+; 1F 0 Initialize music D4                         -
+; 20 0 Initialize music D5                         -
 ```
 
 # Start
