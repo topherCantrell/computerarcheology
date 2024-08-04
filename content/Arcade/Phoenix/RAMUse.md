@@ -55,7 +55,10 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 438F      | CoinCount            | Number of coins inserted (max counted is 9) |
 | 4390      | Player1Lives         | Player 1 number of lives |
 | 4391      | Player2Lives         | Player 2 number of lives |
-| 439A:439B | Counter16            | 16 bit counter (MSB:LSB) |
+| 4398      | M4398                | Zero reference for M4399 |
+| 4399      | M4399                | Actual index for slow print at intro splash |
+| 439A:439B | Counter16            | 16 bit counter (MSB:LSB) and.. |
+| 439B      | M439B                | Next index for slow print at intro splash |
 | 43A0      | IN0Current           | Current value of IN0     |
 | 43A1      | IN0Previous          | Previous value of IN0    |
 | 43A2      | GameOrAttract        | Attract mode:0 Game mode:1 |
@@ -63,8 +66,11 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 43A4      | GameState            | Game state:0 - 7 |
 | 43A5      | Counter8             | 8 bit counter (score flash time) |
 | 43A6      | ShieldCount??        | Counts shield time and controls shield picture. Shields end at C0. |
+| 43A8      | M43A8                | temporary storage (MSB of pointer to table $1860) |
+| 43A9      | M43A9                | temporary storage (LSB of pointer to table $1860) |
 | 43B4      | B4Counter            | 8 bit counter (stars scrolling down, aliens fade in time) |
 | 43B8      | LevelAndRound        | bit0 - 3: game level, bit4 - 7: game round |
+| 43B9      | M43B9                | free running 8 bit backwards counter |
 | 43C0      | M43C0??              | ?? shields |        
 | 43E2      | PlayerCoordMSB       | The X,Y in screen memory (doesn't include bit offset) |
 | 43E3      | PlayerCoordLSB       | The X,Y in screen memory (doesn't include bit offset) |
