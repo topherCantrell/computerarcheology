@@ -251,7 +251,7 @@ def update_names_in_code(directory, filename, check_binary=True,extract_binary=F
                 i = 0
                 j = comment.find('}')
                 if j < 0:
-                    raise Exception('Expected }')
+                    raise Exception('Expected } in "' + comment + '"')
                 if comment.startswith('{+'):
                     j -= 1
                     i += 2

@@ -75,4 +75,4 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 43E2      | PlayerCoordMSB       | The X,Y in screen memory (doesn't include bit offset) |
 | 43E3      | PlayerCoordLSB       | The X,Y in screen memory (doesn't include bit offset) |
 | 4800:4B3F | BackgroundScreen     | 32*26 bytes for the background screen |
-| 4B40:4BFF | Stack                | Stack space |
+| 4BD8:4BFF | Stack                | Stack space |

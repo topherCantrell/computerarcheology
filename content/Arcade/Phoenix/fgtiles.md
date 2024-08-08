@@ -71,6 +71,54 @@
 </canvas>
 ```
 
+## Object 17B8
+
+```html
+<canvas width="205" height="140" data-colors="CM6"
+        data-command="hideCS,:3x2:C8,C9,CA,D8,D9,DA">
+</canvas>
+```
+
+## Object 17BE
+
+```html
+<canvas width="205" height="140" data-colors="CM6"
+        data-command="hideCS,:3x2:CB,CC,CD,DB,DC,DC">
+</canvas>
+```
+
+## Object 17C4
+
+```html
+<canvas width="205" height="140" data-colors="CM6"
+        data-command="hideCS,:3x2:C0,C1,00,C1,C2,C0">
+</canvas>
+```
+
+## Object 17CA
+
+```html
+<canvas width="205" height="140" data-colors="CM6"
+        data-command="hideCS,:3x2:00,00,00,00,C3,00">
+</canvas>
+```
+
+## Object 17D0
+
+```html
+<canvas width="205" height="140" data-colors="CM6"
+        data-command="hideCS,:3x2:C4,C5,C3,D4,D5,C3">
+</canvas>
+```
+
+## Object 17D6
+
+```html
+<canvas width="205" height="140" data-colors="CM6"
+        data-command="hideCS,:3x2:C3,C6,C7,C3,D6,D7">
+</canvas>
+```
+
 ```code
 ; First bit
 
