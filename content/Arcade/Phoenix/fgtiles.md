@@ -83,7 +83,7 @@
 
 ```html
 <canvas width="205" height="140" data-colors="CM6"
-        data-command="hideCS,:3x2:CB,CC,CD,DB,DC,DC">
+        data-command="hideCS,:3x2:CB,CC,CD,DB,DC,DD">
 </canvas>
 ```
 
