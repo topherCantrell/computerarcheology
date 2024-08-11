@@ -426,7 +426,7 @@ CommandCont:
 01F7: D2 03 ; C02 effect Die in water
 01F9: 75 04 ; C03 effect Die in road                        
 01FB: 8C 14 ; C04 effect Frog hopping                        
-01FD: 72 14 ; C05 effect Time running out                         
+01FD: 72 14 ; C05 effect Time running out
 01FF: A7 0B ; C06 song Next life begins                        
 0201: AA 04 ; C07 effect Extra frog                        
 0203: 8F 0B ; C08 song Interlude after getting frog home (20 tunes, changes each frog)                      
