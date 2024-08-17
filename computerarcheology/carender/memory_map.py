@@ -43,10 +43,14 @@ class MemoryMap:
                             break
 
                     try:
-                        first = int(first_txt, 16)
-                        last = int(last_txt, 16)
-                        self.entries.append(MemoryMapEntry(first, last, data[1].strip(), data[2].strip(), special))
-                    except Exception:
+                        if not first_txt.startswith('--'):
+                            first = int(first_txt, 16)
+                            last = int(last_txt, 16)
+                            rep = data[1].strip()
+                            if rep=='?' or rep=='??':
+                                rep = '??_'+first_txt
+                            self.entries.append(MemoryMapEntry(first, last, rep, data[2].strip(), special))
+                    except Exception:                        
                         raise Exception('Invalid map entry:' + data[0])
 
     def find_entry_by_address(self, address, use):
