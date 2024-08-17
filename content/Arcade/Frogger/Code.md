@@ -521,13 +521,13 @@ Initialize:
 03C2: CD D9 07        CALL    $07D9               ; {}
 03C5: AF              XOR     A                   
 03C6: 32 71 80        LD      ($8071),A           
-03C9: DF              RST     $18                 
-03CA: 3E 09           LD      A,$09               
-03CC: DF              RST     $18                 
-03CD: 3E 0A           LD      A,$0A               
-03CF: DF              RST     $18                 
-03D0: 3E 0B           LD      A,$0B               
-03D2: DF              RST     $18                 
+03C9: DF              RST     $18                 ; Reset sounds
+03CA: 3E 09           LD      A,$09               ; Intro song ...
+03CC: DF              RST     $18                 ; ... voice A
+03CD: 3E 0A           LD      A,$0A               ; Intro song ...
+03CF: DF              RST     $18                 ; ... voice B
+03D0: 3E 0B           LD      A,$0B               ; Intro song ...
+03D2: DF              RST     $18                 ; ... voice C
 03D3: 21 20 00        LD      HL,$0020            
 03D6: 22 9D 82        LD      ($829D),HL          
 03D9: 21 A0 01        LD      HL,$01A0            
