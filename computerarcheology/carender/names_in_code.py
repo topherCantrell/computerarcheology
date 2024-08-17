@@ -135,13 +135,16 @@ def update_names_in_code(directory, filename, check_binary=True,extract_binary=F
     # Make sure code binary matches binary file (if requested)
 
     #check_binary = False
-    if check_binary:
+    if check_binary:        
         gaps = cainfo.read_origin_gaps(md)
         binary_file = cainfo.read_binary_file_name(md)
         info = cacode.load_binary_files(binary_file, directory)
         origin = info['origin']
         binary_org = info['data']
         origin_md, binary_md = cacode.parse_binary(lines, gaps)
+        if filename == 'SoundCode.md':
+            with open('d:/SoundCode.bin','wb') as f:
+                f.write(bytes(binary_md))
         binary_md = bytes(binary_md)
         if origin_md != origin:
             raise Exception('Binary origins are different')

@@ -289,6 +289,7 @@ MainLoop:
 013D: CD C1 02        CALL    $02C1               ; {code.ReadAY} Read IO port B
 0140: E6 08           AND     $08                 ; Watch for bit 4
 0142: 20 F7           JR      NZ,$13B             ; {} Not a 0 ... delay until it is 0
+;
 0144: 3E 0F           LD      A,$0F               ; Now wait ...
 0146: CD C1 02        CALL    $02C1               ; {code.ReadAY} ... for ...
 0149: E6 08           AND     $08                 ; ... bit to ...
@@ -426,7 +427,7 @@ CommandCont:
 01F7: D2 03 ; C02 effect Die in water
 01F9: 75 04 ; C03 effect Die in road                        
 01FB: 8C 14 ; C04 effect Frog hopping                        
-01FD: 72 14 ; C05 effect Time running out                         
+01FD: 72 14 ; C05 effect Time running out
 01FF: A7 0B ; C06 song Next life begins                        
 0201: AA 04 ; C07 effect Extra frog                        
 0203: 8F 0B ; C08 song Interlude after getting frog home (20 tunes, changes each frog)                      
@@ -1357,14 +1358,14 @@ Music:
 ;
 ; IX  ... music descriptor
 ; ss dd pp pp nn nn vr vv
-;   dd: fine delay count. Volume decrements every other tick
-;   ss: coarse delay count
+;   dd: base tempo delay count
+;   ss: note counter (volume decreases every other tick)
 ;   pp: music pointer
 ;   nn: note frequency table
 ;   vr: volume reload each note
 ;   vv: current note volume
 
-; 42A2 base note tempo
+; 42A2 base note tempo reloat
 ; 42A3 song number
 ; 42A4 ?
 ; 42A5 allow music to preempt ... 0=allow, not zero=disallow
@@ -1376,10 +1377,11 @@ Music:
 ; ccc_00000   REST     ccc is a bit number used for the coarse note length and set volume to 0
 ; ccc_nnnnn   NOTE     ccc is note length and n is note number in note table
 
-07B7: DD 35 01        DEC     (IX+$01)            ; Time till next volume dec
-07BA: C0              RET     NZ                  ; Not 0 ... keep delaying
-07BB: 3A A2 42        LD      A,($42A2)           ; {ram.m42A2} Master delay between volume decs
-07BE: DD 77 01        LD      (IX+$01),A          ; New delay value
+07B7: DD 35 01        DEC     (IX+$01)            ; Base tempo delay ...
+07BA: C0              RET     NZ                  ; ... not time
+07BB: 3A A2 42        LD      A,($42A2)           ; {ram.m42A2} Master tempo delay
+07BE: DD 77 01        LD      (IX+$01),A          ; Reset tempo counter
+;
 07C1: DD CB 00 46     BIT     0,(IX+$00)          ; Time to change volume?
 07C5: C2 D5 07        JP      NZ,$07D5            ; {} No ... skip changing
 07C8: DD 7E 07        LD      A,(IX+$07)          ; Current volume
@@ -1389,7 +1391,7 @@ Music:
 07D3: 47              LD      B,A                 ; Volume to B
 07D4: DF              RST     $18                 ; Set voice amplitude to value in B
 ;
-07D5: DD 35 00        DEC     (IX+$00)            ; Dec coarse time
+07D5: DD 35 00        DEC     (IX+$00)            ; Dec note time
 07D8: C0              RET     NZ                  ; Not done ... keep delaying
 07D9: DD 6E 02        LD      L,(IX+$02)          ; Get music ...
 07DC: DD 66 03        LD      H,(IX+$03)          ; ... pointer
@@ -1431,7 +1433,7 @@ MusicSubs:
 0813: 62 08      ; Volume off and end of song        
 
 MusicCmd0: 
-; Change note set. Next byte in music is an index into the lookup table.
+; Change start of note range. Next byte in music is an index into the lookup table.
 0815: DD 6E 02        LD      L,(IX+$02)          ; Get ...
 0818: DD 66 03        LD      H,(IX+$03)          ; ... music pointer
 081B: 4E              LD      C,(HL)              ; Get the note-set index
@@ -1460,7 +1462,8 @@ MusicCmd1:
 0843: 18 0D           JR      $852                ; {} Bump music pointer and out
 
 MusicCmd2: 
-; Change the note volume. Next byte in the music is the new volume.
+; Change the note volume. Next byte in the music is the new volume. This takes effect on the
+; next note.
 0845: DD 6E 02        LD      L,(IX+$02)          ; Get ...
 0848: DD 66 03        LD      H,(IX+$03)          ; ... music pointer
 084B: 7E              LD      A,(HL)              ; Get new note volume
@@ -1487,6 +1490,7 @@ MusicREST:
 0870: 18 33           JR      $8A5                ; {} Bump music pointer and out
 
 ; Upper three bits to power of 2 in note length
+; Delay = 2 ^ (ccc - 1)
 0872: 78              LD      A,B                 ; Full command
 0873: E6 E0           AND     $E0                 ; Keep upper 3 bits
 0875: 07              RLCA                        ; Move ...
@@ -1494,11 +1498,17 @@ MusicREST:
 0877: 07              RLCA                        ; ... to lower 3
 0878: 47              LD      B,A                 ; Into B (the counter)
 0879: 3E 01           LD      A,$01               ; Far right bit
+; We decrement first here. So the values in ccc map to delays as:
+;   - 001 -> 00000001 (1)
+;   - 010 -> 00000010 (2)
+;   - 011 -> 00000100 (4)
+;   - 100 -> 00001000 (8)
+;   - etc
 087B: 10 04           DJNZ    $881                ; {} Set ...
 087D: DD 77 00        LD      (IX+$00),A          ; ... note length ...
 0880: C9              RET                         ; ... to ...
-0881: 07              RLCA                        ; ... power ...
-0882: 18 F7           JR      $87B                ; {} ... of two
+0881: 07              RLCA                        ; ... value ...
+0882: 18 F7           JR      $87B                ; {} ... 2 ^ (ccc-1)
 
 MusicNOTE: 
 ;ccc_nnnnn NOTE command. c is bit number for length, n is offset in note table
@@ -1560,22 +1570,26 @@ out to play the tune more easily on the piano.
 
 NoteSets: 
 ; Base note sets (base offsets into master note table)
-08B3: D3 08  ; 1=1G# ... 30=4C#          
-08B5: D7 08  ; 1=1A# ... 30=4D#
-08B7: DB 08  ; 1=2C  ... 30=4F                      
-08B9: DF 08  ; 1=2D  ... 30=4G                         
-08BB: E3 08  ; 1=2E  ... 30=4A
-08BD: E7 08  ; 1=2F# ... 30=4B
-08BF: EB 08  ; 1=2G# ... 30=5C#
-08C1: EF 08  ; 1=2A# ... 30=5D#                        
-08C3: F3 08  ; 1=3C  ... 30=5F
-08C5: F7 08  ; 1=3D  ... 30=5G
-08C7: FB 08  ; 1=3E  ... 30=5A
-08C9: FF 08  ; 1=3F# ... 30=5B
-08CB: 03 09  ; 1=3G# ... 30=6C#
-08CD: 07 09  ; 1=3A# ... 30=6D#
-08CF: 0B 09  ; 1=4C  ... 30=6F
-08D1: 0F 09  ; 1=4D  ... 30=6G
+08B3: D3 08  ;  0:   1=G#1 ... 30=C#4  Never used         
+08B5: D7 08  ;  1:   1=A#1 ... 30=D#4  Never used
+08B7: DB 08  ;  2:   1=C2  ... 30=F4   Never used                  
+08B9: DF 08  ;  3:   1=D2  ... 30=G4   Never used                       
+08BB: E3 08  ;  4:   1=E2  ... 30=A4   Never used  
+08BD: E7 08  ;  5:   1=F#2 ... 30=B4   Intro-B, Main-B, Intro-C, Home-3B, Home-4B, Home-5B, Home-11B, Home-12B, Home-20B
+;
+08BF: EB 08  ;  6:   1=G#2 ... 30=C#5  GameOver-B
+08C1: EF 08  ;  7:   1=A#2 ... 30=D#5  Never used                        
+08C3: F3 08  ;  8:   1=C3  ... 30=F5   Never used  
+08C5: F7 08  ;  9:   1=D3  ... 30=G5   Never used  
+08C7: FB 08  ; 10:   1=E3  ... 30=A5   Never used  
+08C9: FF 08  ; 11:   1=F#3 ... 30=B5   Respawn, Intro-A, Main-A, LevelComplete-AB, Home-1AB, Home-2AB, Home-3A, Home-4A, 
+;                                      Home-5A, Home-6AB, Home-7AB, Home-8AB, Home-9AB, Home-10AB, Home-11A, Home-12A, 
+;                                      Home-13A, Home-14AB, Home-15AB, Home-16AB, Home-17AB, Home-18AB, Home-19AB, Home-20A
+;
+08CB: 03 09  ; 12:   1=G#3 ... 30=C#6  GameOver-A
+08CD: 07 09  ; 13:   1=A#3 ... 30=D#6  Never used  
+08CF: 0B 09  ; 14:   1=C4  ... 30=F6   Never used  
+08D1: 0F 09  ; 15:   1=D4  ... 30=G6   Never used  
 ```
 
 # Note Frequencies
@@ -1585,70 +1599,91 @@ NoteTable:
 ; Coarse/Fine master note table
 ; AY runs at 1.789750
 ; frq = 1789570Hz / (16 * val)
-08D3: 6B 08   ;   51.90 1G#
-08D5: F2 07   ;   54.98 1A
-08D7: 80 07   ;   58.25 1A#
-08D9: 14 07   ;   61.72 1B
-08DB: AE 06   ;   65.40 2C
-08DD: 4E 06   ;   69.29 2C#
-08DF: F3 05   ;   73.43 2D
-08E1: 9E 05   ;   77.78 2D#
-08E3: 4E 05   ;   82.36 2E
-08E5: 01 05   ;   87.31 2F
-08E7: B9 04   ;   92.51 2F#
-08E9: 76 04   ;   97.94 2G
-08EB: 36 04   ;  103.75 2G#
-08ED: F9 03   ;  109.97 2A
-08EF: C0 03   ;  116.50 2A#
-08F1: 8A 03   ;  123.45 2B
-08F3: 57 03   ;  130.81 3C
-08F5: 27 03   ;  138.59 3C#
-08F7: FA 02   ;  146.78 3D
-08F9: CF 02   ;  155.56 3D#
-08FB: A7 02   ;  164.72 3E
-08FD: 81 02   ;  174.49 3F
-08FF: 5D 02   ;  184.87 3F#
-0901: 3B 02   ;  195.88 3G
-0903: 1B 02   ;  207.51 3G#
-0905: FD 01   ;  219.74 3A
-0907: E0 01   ;  233.01 3A#
-0909: C5 01   ;  246.90 3B
-090B: AC 01   ;  261.32 4C
-090D: 94 01   ;  276.85 4C#
-090F: 7D 01   ;  293.56 4D
-0911: 68 01   ;  310.68 4D#
-0913: 53 01   ;  329.93 4E
-0915: 40 01   ;  349.52 4F
-0917: 2E 01   ;  370.35 4F#
-0919: 1D 01   ;  392.44 4G
-091B: 0D 01   ;  415.79 4G#
-091D: FE 00   ;  440.34 4A
-091F: F0 00   ;  466.03 4A#
-0921: E3 00   ;  492.72 4B
-0923: D6 00   ;  522.65 5C
-0925: CA 00   ;  553.70 5C#
-0927: BE 00   ;  588.67 5D
-0929: B4 00   ;  621.37 5D#
-092B: AA 00   ;  657.93 5E
-092D: A0 00   ;  699.05 5F
-092F: 97 00   ;  740.71 5F#
-0931: 8F 00   ;  782.15 5G
-0933: 87 00   ;  828.50 5G#
-0935: 7F 00   ;  880.69 5A
-0937: 78 00   ;  932.06 5A#
-0939: 71 00   ;  989.80 5B
-093B: 6B 00   ; 1045.3  6C
-093D: 65 00   ; 1107.4  6C#
-093F: 5F 00   ; 1177.3  6D
-0941: 5A 00   ; 1242.7  6D#
-0943: 55 00   ; 1315.8  6E
-0945: 50 00   ; 1398.1  6F
-0947: 4C 00   ; 1471.6  6F#
-0949: 47 00   ; 1575.3  6G
+;                 Freq  MIDI Notation
+08D3: 6B 08   ;   51.90   32 G#1
+08D5: F2 07   ;   54.98   33 A1
+08D7: 80 07   ;   58.25   34 A#1
+08D9: 14 07   ;   61.72   35 B1
+08DB: AE 06   ;   65.40   36 C2
+08DD: 4E 06   ;   69.29   37 C#2
+08DF: F3 05   ;   73.43   38 D2
+08E1: 9E 05   ;   77.78   39 D#2
+08E3: 4E 05   ;   82.36   40 E2
+08E5: 01 05   ;   87.31   41 F2
+08E7: B9 04   ;   92.51   42 F#2
+08E9: 76 04   ;   97.94   43 G2
+08EB: 36 04   ;  103.75   44 G#2
+08ED: F9 03   ;  109.97   45 A2
+08EF: C0 03   ;  116.50   46 A#2
+08F1: 8A 03   ;  123.45   47 B2
+08F3: 57 03   ;  130.81   48 C3
+08F5: 27 03   ;  138.59   49 C#3
+08F7: FA 02   ;  146.78   50 D3
+08F9: CF 02   ;  155.56   51 D#3
+08FB: A7 02   ;  164.72   52 E3
+08FD: 81 02   ;  174.49   53 F3
+08FF: 5D 02   ;  184.87   54 F#3
+0901: 3B 02   ;  195.88   55 G3
+0903: 1B 02   ;  207.51   56 G#3
+0905: FD 01   ;  219.74   57 A3
+0907: E0 01   ;  233.01   58 A#3
+0909: C5 01   ;  246.90   59 B3
+090B: AC 01   ;  261.32   60 C4
+090D: 94 01   ;  276.85   61 C#4
+090F: 7D 01   ;  293.56   62 D4
+0911: 68 01   ;  310.68   63 D#4
+0913: 53 01   ;  329.93   64 E4
+0915: 40 01   ;  349.52   65 F4
+0917: 2E 01   ;  370.35   66 F#4
+0919: 1D 01   ;  392.44   67 G4
+091B: 0D 01   ;  415.79   68 G#4
+091D: FE 00   ;  440.34   69 A4
+091F: F0 00   ;  466.03   70 A#4
+0921: E3 00   ;  492.72   71 B4
+0923: D6 00   ;  522.65   72 C5
+0925: CA 00   ;  553.70   73 C#5
+0927: BE 00   ;  588.67   74 D5
+0929: B4 00   ;  621.37   75 D#5
+092B: AA 00   ;  657.93   76 E5
+092D: A0 00   ;  699.05   77 F5
+092F: 97 00   ;  740.71   78 F#5
+0931: 8F 00   ;  782.15   79 G5
+0933: 87 00   ;  828.50   80 G#5
+0935: 7F 00   ;  880.69   81 A5
+0937: 78 00   ;  932.06   82 A#5
+0939: 71 00   ;  989.80   82 B5
+093B: 6B 00   ; 1045.3    84 C6
+093D: 65 00   ; 1107.4    85 C#6
+093F: 5F 00   ; 1177.3    86 D6
+0941: 5A 00   ; 1242.7    87 D#6
+0943: 55 00   ; 1315.8    88 E6
+0945: 50 00   ; 1398.1    89 F6
+0947: 4C 00   ; 1471.6    90 F#6
+0949: 47 00   ; 1575.3    91 G6
 
 DelayTable: 
-; Base note delay table
-094B: 04 08 34 2C 25 21 1D 1A 18 16 14 13 11 10 0F 0A
+; Base note delay table (song's overall tempo)
+; There are 700 sound ticks/sec. In our music below, we'll say that 2^4 is a
+; quarter note. In the table below, a quarter note lasts x*16 ticks. A tick
+; lasts 1/700 seconds. The length of a quarter is x*16/700.
+; This table shows tempo in quarternotes / minute
+094B: 04 ;  0: 656 Never used
+094C: 08 ;  1: 328 Never used
+094D: 34 ;  2:  50 Never used
+094E: 2C ;  3:  60 Never used
+094F: 25 ;  4:  71 Never used
+0950: 21 ;  5:  80 Never used
+0951: 1D ;  6:  91 Never used
+0952: 1A ;  7: 101 Never used
+0953: 18 ;  8: 109 Never used
+0954: 16 ;  9: 119 Never used
+0955: 14 ; 10: 131 Intro
+0956: 13 ; 11: 138 Never used
+0957: 11 ; 12: 154 Main, LevelComplete, Home-11
+0958: 10 ; 13: 164 Home-1, Home-2, Home-3, Home-4, Home-5, Home-6, Home-7, Home-8, Home-9, Home-10
+;                  Home-12, Home-13, Home-14, Home-15, Home-16, Home-17, Home-18, Home-19, Home-20
+0959: 0F ; 14: 175 Respawn
+095A: 0A ; 15: 263 GameOver
            
 095B: 21 A5 42        LD      HL,$42A5            ; Get ...
 095E: 7E              LD      A,(HL)              ; ... preempt flag
@@ -1742,122 +1777,120 @@ SongTable:
 ```code
 ;S0A Main song intro
 ; Song=0 Voice=A
-0A47: 1F 0B    ; SC00:Use note set index 11
-0A49: 3F 0A    ; SC01:Set tempo index 10
-0A4B: 5F       ; SC02:Set volume to 2^2
-0A4C: 07       ; NOTE 4C# for 2^0
+0A47: 1F 0B    ; 000_11111 0B SC00:Use note set index 11 (note 1 = F#3)
+0A49: 3F 0A    ; 001_11111 0A SC01:Set tempo index 10 (value 20 = 131 quarters/minute)
+0A4B: 5F 07    ; 010_11111 07 SC02:Set volume to 07
 
-;  value is 100_10001 -- note 17 (decremented to 16)
-0A4D: 91       ; NOTE 4B for 2^4 
+; Take the first note below for example:
+; The value is 100_10001 -- note 17 (decremented to 16) for 2^3=8 counts.
+; The base note set = 11, which points to 8FF (note 1 = F#3).
+; $3FF + 16*2 = $91F = A#4
+;
+; I think they wrote the music to the pre-decremented value (17) which would land on B4.
+; I believe the decrement in the code is a bug. The pre-decremented values makes the score 
+; much friendlier on the piano. Thus the notes below are shown raised 1/2 step. For the real 
+; frequency heard in the game, subtract 1/2 step.
 
-; Base note set = 11, which points to 8FF (3F#)
-; $3FF + 16*2 = $91F = 4A#
-
-; I think they wrote the music to the pre-decremented value (17) which would land on 4G.
-; That makes the score much friendlier on the piano. Thus the notes below are shown
-; raised 1/2 step. For the real frequency, subtract 1/2 step.
-
-0A4E: 8D       ; NOTE 4G for 2^4
-0A4F: 8D       ; NOTE 4G for 2^4
-0A50: 8D       ; NOTE 4G for 2^4
-0A51: 91       ; NOTE 4B for 2^4
-0A52: 8D       ; NOTE 4G for 2^4
-0A53: 8D       ; NOTE 4G for 2^4
-0A54: 8D       ; NOTE 4G for 2^4
-0A55: 92       ; NOTE 5C for 2^4
-0A56: 92       ; NOTE 5C for 2^4
-0A57: 91       ; NOTE 4B for 2^4
-0A58: 91       ; NOTE 4B for 2^4
-0A59: AF       ; NOTE 4A for 2^5
-0A5A: A0       ; REST for 2^5
-0A5B: 92       ; NOTE 5C for 2^4
-0A5C: 92       ; NOTE 5C for 2^4
-0A5D: 91       ; NOTE 4B for 2^4
-0A5E: 91       ; NOTE 4B for 2^4
-0A5F: 8F       ; NOTE 4A for 2^4
-0A60: 8F       ; NOTE 4A for 2^4
-0A61: 96       ; NOTE 5E for 2^4
-0A62: 96       ; NOTE 5E for 2^4
-0A63: 94       ; NOTE 5D for 2^4
-0A64: 92       ; NOTE 5C for 2^4
-0A65: 91       ; NOTE 4B for 2^4
-0A66: 8F       ; NOTE 4A for 2^4
-0A67: AD       ; NOTE 4G for 2^5
-0A68: A0       ; REST for 2^5
+0A4D: 91       ; NOTE 8B4
+0A4E: 8D       ; NOTE 8G4
+0A4F: 8D       ; NOTE 8G4
+0A50: 8D       ; NOTE 8G4
+0A51: 91       ; NOTE 8B4
+0A52: 8D       ; NOTE 8G4
+0A53: 8D       ; NOTE 8G4
+0A54: 8D       ; NOTE 8G4
+0A55: 92       ; NOTE 8C5
+0A56: 92       ; NOTE 8C5
+0A57: 91       ; NOTE 8B4
+0A58: 91       ; NOTE 8B4
+0A59: AF       ; NOTE 4A4
+0A5A: A0       ; NOTE 4R
+0A5B: 92       ; NOTE 8C5
+0A5C: 92       ; NOTE 8C5
+0A5D: 91       ; NOTE 8B4
+0A5E: 91       ; NOTE 8B4
+0A5F: 8F       ; NOTE 8A4
+0A60: 8F       ; NOTE 8A4
+0A61: 96       ; NOTE 8E5
+0A62: 96       ; NOTE 8E5
+0A63: 94       ; NOTE 8D5
+0A64: 92       ; NOTE 8C5
+0A65: 91       ; NOTE 8B4
+0A66: 8F       ; NOTE 8A4
+0A67: AD       ; NOTE 4G4
+0A68: A0       ; NOTE 4R
 0A69: FF       ; END OF VOICE
 ;
 ;S0B Main song intro
 ; Song=0 Voice=B
-0A6A: 1F 05    ; SC00:Use note set index 5
-0A6C: 5F       ; SC02:Set volume to 2^2
-0A6D: 07       ; NOTE 3C# for 2^0
-0A6E: 8D       ; NOTE 3G for 2^4
-0A6F: 91       ; NOTE 3B for 2^4
-0A70: 88       ; NOTE 3D for 2^4
-0A71: 91       ; NOTE 3B for 2^4
-0A72: 8D       ; NOTE 3G for 2^4
-0A73: 91       ; NOTE 3B for 2^4
-0A74: 88       ; NOTE 3D for 2^4
-0A75: 91       ; NOTE 3B for 2^4
-0A76: 8F       ; NOTE 3A for 2^4
-0A77: 92       ; NOTE 4C for 2^4
-0A78: 88       ; NOTE 3D for 2^4
-0A79: 92       ; NOTE 4C for 2^4
-0A7A: 8F       ; NOTE 3A for 2^4
-0A7B: 92       ; NOTE 4C for 2^4
-0A7C: 88       ; NOTE 3D for 2^4
-0A7D: 92       ; NOTE 4C for 2^4
-0A7E: 8F       ; NOTE 3A for 2^4
-0A7F: 92       ; NOTE 4C for 2^4
-0A80: 88       ; NOTE 3D for 2^4
-0A81: 92       ; NOTE 4C for 2^4
-0A82: 8F       ; NOTE 3A for 2^4
-0A83: 92       ; NOTE 4C for 2^4
-0A84: 88       ; NOTE 3D for 2^4
-0A85: 92       ; NOTE 4C for 2^4
-0A86: 8F       ; NOTE 3A for 2^4
-0A87: 92       ; NOTE 4C for 2^4
-0A88: 88       ; NOTE 3D for 2^4
-0A89: 92       ; NOTE 4C for 2^4
-0A8A: B1       ; NOTE 3B for 2^5
-0A8B: A0       ; REST for 2^5
+0A6A: 1F 05    ; SC00:Use note set index 5 (note 1 = F#2)
+0A6C: 5F 07    ; SC02:Set volume to 07
+0A6E: 8D       ; NOTE 8G3
+0A6F: 91       ; NOTE 8B3
+0A70: 88       ; NOTE 8D3
+0A71: 91       ; NOTE 8B3
+0A72: 8D       ; NOTE 8G3
+0A73: 91       ; NOTE 8B3
+0A74: 88       ; NOTE 8D3
+0A75: 91       ; NOTE 8B3
+0A76: 8F       ; NOTE 8A3
+0A77: 92       ; NOTE 8C4
+0A78: 88       ; NOTE 8D3
+0A79: 92       ; NOTE 8C4
+0A7A: 8F       ; NOTE 8A3
+0A7B: 92       ; NOTE 8C4
+0A7C: 88       ; NOTE 8D3
+0A7D: 92       ; NOTE 8C4
+0A7E: 8F       ; NOTE 8A3
+0A7F: 92       ; NOTE 8C4
+0A80: 88       ; NOTE 8D3
+0A81: 92       ; NOTE 8C4
+0A82: 8F       ; NOTE 8A3
+0A83: 92       ; NOTE 8C4
+0A84: 88       ; NOTE 8D3
+0A85: 92       ; NOTE 8C4
+0A86: 8F       ; NOTE 8A3
+0A87: 92       ; NOTE 8C4
+0A88: 88       ; NOTE 8D3
+0A89: 92       ; NOTE 8C4
+0A8A: B1       ; NOTE 4B3
+0A8B: A0       ; NOTE 4R
 0A8C: FF       ; END OF VOICE
 ;
 ;S0C Main song intro
 ; Song=0 Voice=C
-0A8D: 1F 05    ; SC00:Use note set index 5
-0A8F: 5F       ; SC02:Set volume to 2^2
-0A90: 07       ; NOTE 3C# for 2^0
-0A91: 80       ; REST for 2^4
-0A92: 8D       ; NOTE 3G for 2^4
-0A93: 80       ; REST for 2^4
-0A94: 8D       ; NOTE 3G for 2^4
-0A95: 80       ; REST for 2^4
-0A96: 8D       ; NOTE 3G for 2^4
-0A97: 80       ; REST for 2^4
-0A98: 8D       ; NOTE 3G for 2^4
-0A99: 80       ; REST for 2^4
-0A9A: 8F       ; NOTE 3A for 2^4
-0A9B: 80       ; REST for 2^4
-0A9C: 8F       ; NOTE 3A for 2^4
-0A9D: 80       ; REST for 2^4
-0A9E: 8F       ; NOTE 3A for 2^4
-0A9F: 80       ; REST for 2^4
-0AA0: 8F       ; NOTE 3A for 2^4
-0AA1: 80       ; REST for 2^4
-0AA2: 8F       ; NOTE 3A for 2^4
-0AA3: 80       ; REST for 2^4
-0AA4: 8F       ; NOTE 3A for 2^4
-0AA5: 80       ; REST for 2^4
-0AA6: 8F       ; NOTE 3A for 2^4
-0AA7: 80       ; REST for 2^4
-0AA8: 8F       ; NOTE 3A for 2^4
-0AA9: 80       ; REST for 2^4
-0AAA: 8F       ; NOTE 3A for 2^4
-0AAB: 80       ; REST for 2^4
-0AAC: 8F       ; NOTE 3A for 2^4
-0AAD: AD       ; NOTE 3G for 2^5
-0AAE: A0       ; REST for 2^5
+0A8D: 1F 05    ; SC00:Use note set index 5 (note 1 = F#2)
+0A8F: 5F 07    ; SC02:Set volume to 07
+0A91: 80       ; NOTE 8R
+0A92: 8D       ; NOTE 8G3
+0A93: 80       ; NOTE 8R
+0A94: 8D       ; NOTE 8G3
+0A95: 80       ; NOTE 8R
+0A96: 8D       ; NOTE 8G3
+0A97: 80       ; NOTE 8R
+0A98: 8D       ; NOTE 8G3
+0A99: 80       ; NOTE 8R
+0A9A: 8F       ; NOTE 8A3
+0A9B: 80       ; NOTE 8R
+0A9C: 8F       ; NOTE 8A3
+0A9D: 80       ; NOTE 8R
+0A9E: 8F       ; NOTE 8A3
+0A9F: 80       ; NOTE 8R
+0AA0: 8F       ; NOTE 8A3
+0AA1: 80       ; NOTE 8R
+0AA2: 8F       ; NOTE 8A3
+0AA3: 80       ; NOTE 8R
+0AA4: 8F       ; NOTE 8A3
+0AA5: 80       ; NOTE 8R
+0AA6: 8F       ; NOTE 8A3
+0AA7: 80       ; NOTE 8R
+0AA8: 8F       ; NOTE 8A3
+0AA9: 80       ; NOTE 8R
+0AAA: 8F       ; NOTE 8A3
+0AAB: 80       ; NOTE 8R
+0AAC: 8F       ; NOTE 8A3
+0AAD: AD       ; NOTE 4G3
+0AAE: A0       ; NOTE 4R
 0AAF: FF       ; END OF VOICE
 
 ;I0C Game over song 
@@ -1887,50 +1920,48 @@ SongTable:
 ```code
 ;S1A Game over
 ; Song=1 Voice=A
-0ACE: 1F 0C    ; SC00:Use note set index 12
-0AD0: 3F 0F    ; SC01:Set tempo index 15
-0AD2: 5F       ; SC02:Set volume to 2^2
-0AD3: 07       ; NOTE 4D# for 2^0
-0AD4: AD       ; NOTE 4A for 2^5
-0AD5: 80       ; REST for 2^4
-0AD6: 8A       ; NOTE 4F# for 2^4
-0AD7: B2       ; NOTE 5D for 2^5
-0AD8: B2       ; NOTE 5D for 2^5
-0AD9: B6       ; NOTE 5F# for 2^5
-0ADA: 74       ; NOTE 5E for 2^3
-0ADB: 72       ; NOTE 5D for 2^3
-0ADC: 71       ; NOTE 5C# for 2^3
-0ADD: 6F       ; NOTE 4B for 2^3
-0ADE: CD       ; NOTE 4A for 2^6
-0ADF: AB       ; NOTE 4G for 2^5
-0AE0: AD       ; NOTE 4A for 2^5
-0AE1: A8       ; NOTE 4E for 2^5
-0AE2: AD       ; NOTE 4A for 2^5
-0AE3: AA       ; NOTE 4F# for 2^5
-0AE4: AD       ; NOTE 4A for 2^5
-0AE5: C6       ; NOTE 4D for 2^6
+0ACE: 1F 0C    ; SC00:Use note set index 12 (note 1 = G#3)
+0AD0: 3F 0F    ; SC01:Set tempo index 15 (value 10 = 263 quarters/minute)
+0AD2: 5F 07    ; SC02:Set volume to 07
+0AD4: AD       ; NOTE 4A4
+0AD5: 80       ; NOTE 8R
+0AD6: 8A       ; NOTE 8F#4
+0AD7: B2       ; NOTE 4D5
+0AD8: B2       ; NOTE 4D5
+0AD9: B6       ; NOTE 4F#5
+0ADA: 74       ; NOTE 16E5
+0ADB: 72       ; NOTE 16D5
+0ADC: 71       ; NOTE 16C#5
+0ADD: 6F       ; NOTE 16B4
+0ADE: CD       ; NOTE 2A4
+0ADF: AB       ; NOTE 4G4
+0AE0: AD       ; NOTE 4A4
+0AE1: A8       ; NOTE 4E4
+0AE2: AD       ; NOTE 4A4
+0AE3: AA       ; NOTE 4F#4
+0AE4: AD       ; NOTE 4A4
+0AE5: C6       ; NOTE 2D4
 0AE6: FF       ; END OF VOICE
 ;
 ;S1B Game over
 ; Song=1 Voice=B
-0AE7: 1F 06    ; SC00:Use note set index 6
-0AE9: 5F       ; SC02:Set volume to 2^2
-0AEA: 07       ; NOTE 3D# for 2^0
-0AEB: AA       ; NOTE 3F# for 2^5
-0AEC: AD       ; NOTE 3A for 2^5
-0AED: AA       ; NOTE 3F# for 2^5
-0AEE: AD       ; NOTE 3A for 2^5
-0AEF: A6       ; NOTE 3D for 2^5
-0AF0: AD       ; NOTE 3A for 2^5
-0AF1: AA       ; NOTE 3F# for 2^5
-0AF2: AD       ; NOTE 3A for 2^5
-0AF3: A8       ; NOTE 3E for 2^5
-0AF4: AD       ; NOTE 3A for 2^5
-0AF5: AB       ; NOTE 3G for 2^5
-0AF6: AD       ; NOTE 3A for 2^5
-0AF7: A6       ; NOTE 3D for 2^5
-0AF8: AD       ; NOTE 3A for 2^5
-0AF9: CA       ; NOTE 3F# for 2^6
+0AE7: 1F 06    ; SC00:Use note set index 6 (note 1 = G#2)
+0AE9: 5F 07    ; SC02:Set volume to 07
+0AEB: AA       ; NOTE 4F#3
+0AEC: AD       ; NOTE 4A3
+0AED: AA       ; NOTE 4F#3
+0AEE: AD       ; NOTE 4A3
+0AEF: A6       ; NOTE 4D3
+0AF0: AD       ; NOTE 4A3
+0AF1: AA       ; NOTE 4F#3
+0AF2: AD       ; NOTE 4A3
+0AF3: A8       ; NOTE 4E3
+0AF4: AD       ; NOTE 4A3
+0AF5: AB       ; NOTE 4G3
+0AF6: AD       ; NOTE 4A3
+0AF7: A6       ; NOTE 4D3
+0AF8: AD       ; NOTE 4A3
+0AF9: CA       ; NOTE 2F#3
 0AFA: FF       ; END OF VOICE
 ```
 
@@ -1939,69 +1970,67 @@ SongTable:
 ```code
 ;S2A Level complete
 ; Song=2 Voice=A
-0AFB: 1F 0B    ; SC00:Use note set index 11
-0AFD: 3F 0C    ; SC01:Set tempo index 12
-0AFF: 5F       ; SC02:Set volume to 2^2
-0B00: 07       ; NOTE 4C# for 2^0
-0B01: 8D       ; NOTE 4G for 2^4
-0B02: 8F       ; NOTE 4A for 2^4
-0B03: 91       ; NOTE 4B for 2^4
-0B04: 92       ; NOTE 5C for 2^4
-0B05: B4       ; NOTE 5D for 2^5
-0B06: B1       ; NOTE 4B for 2^5
-0B07: 8D       ; NOTE 4G for 2^4
-0B08: 8F       ; NOTE 4A for 2^4
-0B09: 91       ; NOTE 4B for 2^4
-0B0A: 8F       ; NOTE 4A for 2^4
-0B0B: AD       ; NOTE 4G for 2^5
-0B0C: AD       ; NOTE 4G for 2^5
-0B0D: 8D       ; NOTE 4G for 2^4
-0B0E: 8F       ; NOTE 4A for 2^4
-0B0F: 91       ; NOTE 4B for 2^4
-0B10: 92       ; NOTE 5C for 2^4
-0B11: B4       ; NOTE 5D for 2^5
-0B12: B1       ; NOTE 4B for 2^5
-0B13: 94       ; NOTE 5D for 2^4
-0B14: 92       ; NOTE 5C for 2^4
-0B15: 91       ; NOTE 4B for 2^4
-0B16: 8F       ; NOTE 4A for 2^4
-0B17: CD       ; NOTE 4G for 2^6
+0AFB: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0AFD: 3F 0C    ; SC01:Set tempo index 12 (154 quarters/minute)
+0AFF: 5F 07    ; SC02:Set volume to 07
+0B01: 8D       ; NOTE 8G4
+0B02: 8F       ; NOTE 8A4
+0B03: 91       ; NOTE 8B4
+0B04: 92       ; NOTE 8C5
+0B05: B4       ; NOTE 4D5
+0B06: B1       ; NOTE 4B4
+0B07: 8D       ; NOTE 8G4
+0B08: 8F       ; NOTE 8A4
+0B09: 91       ; NOTE 8B4
+0B0A: 8F       ; NOTE 8A4
+0B0B: AD       ; NOTE 4G4
+0B0C: AD       ; NOTE 4G4
+0B0D: 8D       ; NOTE 8G4
+0B0E: 8F       ; NOTE 8A4
+0B0F: 91       ; NOTE 8B4
+0B10: 92       ; NOTE 8C5
+0B11: B4       ; NOTE 4D5
+0B12: B1       ; NOTE 4B4
+0B13: 94       ; NOTE 8D5
+0B14: 92       ; NOTE 8C5
+0B15: 91       ; NOTE 8B4
+0B16: 8F       ; NOTE 8A4
+0B17: CD       ; NOTE 2G4
 0B18: FF       ; END OF VOICE
 ;
 ;S2B Level complete
 ; Song=2 Voice=B
-0B19: 1F 0B    ; SC00:Use note set index 11
-0B1B: 5F       ; SC02:Set volume to 2^2
-0B1C: 07       ; NOTE 4C# for 2^0
-0B1D: 85       ; NOTE 3B for 2^4
-0B1E: 88       ; NOTE 4D for 2^4
-0B1F: 85       ; NOTE 3B for 2^4
-0B20: 88       ; NOTE 4D for 2^4
-0B21: 85       ; NOTE 3B for 2^4
-0B22: 88       ; NOTE 4D for 2^4
-0B23: 85       ; NOTE 3B for 2^4
-0B24: 88       ; NOTE 4D for 2^4
-0B25: 85       ; NOTE 3B for 2^4
-0B26: 88       ; NOTE 4D for 2^4
-0B27: 85       ; NOTE 3B for 2^4
-0B28: 88       ; NOTE 4D for 2^4
-0B29: 85       ; NOTE 3B for 2^4
-0B2A: 88       ; NOTE 4D for 2^4
-0B2B: 85       ; NOTE 3B for 2^4
-0B2C: 88       ; NOTE 4D for 2^4
-0B2D: 85       ; NOTE 3B for 2^4
-0B2E: 88       ; NOTE 4D for 2^4
-0B2F: 85       ; NOTE 3B for 2^4
-0B30: 88       ; NOTE 4D for 2^4
-0B31: 85       ; NOTE 3B for 2^4
-0B32: 88       ; NOTE 4D for 2^4
-0B33: 85       ; NOTE 3B for 2^4
-0B34: 88       ; NOTE 4D for 2^4
-0B35: 86       ; NOTE 4C for 2^4
-0B36: 88       ; NOTE 4D for 2^4
-0B37: 86       ; NOTE 4C for 2^4
-0B38: 88       ; NOTE 4D for 2^4
-0B39: C5       ; NOTE 3B for 2^6
+0B19: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0B1B: 5F 07    ; SC02:Set volume to 07
+0B1D: 85       ; NOTE 8B3
+0B1E: 88       ; NOTE 8D4
+0B1F: 85       ; NOTE 8B3
+0B20: 88       ; NOTE 8D4
+0B21: 85       ; NOTE 8B3
+0B22: 88       ; NOTE 8D4
+0B23: 85       ; NOTE 8B3
+0B24: 88       ; NOTE 8D4
+0B25: 85       ; NOTE 8B3
+0B26: 88       ; NOTE 8D4
+0B27: 85       ; NOTE 8B3
+0B28: 88       ; NOTE 8D4
+0B29: 85       ; NOTE 8B3
+0B2A: 88       ; NOTE 8D4
+0B2B: 85       ; NOTE 8B3
+0B2C: 88       ; NOTE 8D4
+0B2D: 85       ; NOTE 8B3
+0B2E: 88       ; NOTE 8D4
+0B2F: 85       ; NOTE 8B3
+0B30: 88       ; NOTE 8D4
+0B31: 85       ; NOTE 8B3
+0B32: 88       ; NOTE 8D4
+0B33: 85       ; NOTE 8B3
+0B34: 88       ; NOTE 8D4
+0B35: 86       ; NOTE 8C4
+0B36: 88       ; NOTE 8D4
+0B37: 86       ; NOTE 8C4
+0B38: 88       ; NOTE 8D4
+0B39: C5       ; NOTE 2B3
 0B3A: FF       ; END OF VOICE
 
 ;I11 Level complete song
@@ -2092,101 +2121,99 @@ SongTable:
 ```code
 ;S5A Frog-home 1
 ; Song=5 Voice=A
-0BB5: 1F 0B    ; SC00:Use note set index 11
-0BB7: 3F 0D    ; SC01:Set tempo index 13
-0BB9: 5F       ; SC02:Set volume to 2^2
-0BBA: 06       ; NOTE 4C for 2^0
-0BBB: 9B       ; NOTE 5A for 2^4
-0BBC: 60       ; REST for 2^3
-0BBD: 7D       ; NOTE 5B for 2^3
-0BBE: BB       ; NOTE 5A for 2^5
-0BBF: A6       ; NOTE 4C for 2^5
-0BC0: 9B       ; NOTE 5A for 2^4
-0BC1: 60       ; REST for 2^3
-0BC2: 7D       ; NOTE 5B for 2^3
-0BC3: BB       ; NOTE 5A for 2^5
-0BC4: B8       ; NOTE 5F# for 2^5
-0BC5: 9B       ; NOTE 5A for 2^4
-0BC6: 60       ; REST for 2^3
-0BC7: 7B       ; NOTE 5A for 2^3
-0BC8: BD       ; NOTE 5B for 2^5
-0BC9: 80       ; REST for 2^4
-0BCA: 9B       ; NOTE 5A for 2^4
-0BCB: 99       ; NOTE 5G for 2^4
-0BCC: 93       ; NOTE 5C# for 2^4
-0BCD: B8       ; NOTE 5F# for 2^5
-0BCE: A0       ; REST for 2^5
-0BCF: 8F       ; NOTE 4A for 2^4
-0BD0: 60       ; REST for 2^3
-0BD1: 6F       ; NOTE 4A for 2^3
-0BD2: 8F       ; NOTE 4A for 2^4
-0BD3: 93       ; NOTE 5C# for 2^4
-0BD4: B6       ; NOTE 5E for 2^5
-0BD5: 8F       ; NOTE 4A for 2^4
-0BD6: 60       ; REST for 2^3
-0BD7: 6F       ; NOTE 4A for 2^3
-0BD8: 8F       ; NOTE 4A for 2^4
-0BD9: 94       ; NOTE 5D for 2^4
-0BDA: B8       ; NOTE 5F# for 2^5
-0BDB: 9B       ; NOTE 5A for 2^4
-0BDC: 60       ; REST for 2^3
-0BDD: 7B       ; NOTE 5A for 2^3
-0BDE: BD       ; NOTE 5B for 2^5
-0BDF: 80       ; REST for 2^4
-0BE0: 9B       ; NOTE 5A for 2^4
-0BE1: 99       ; NOTE 5G for 2^4
-0BE2: 93       ; NOTE 5C# for 2^4
-0BE3: B4       ; NOTE 5D for 2^5
-0BE4: A0       ; REST for 2^5
+0BB5: 1F 0B    ; SC00:Use note set index 11  (note 1 = F#3)
+0BB7: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+0BB9: 5F 06    ; SC02:Set volume to 06
+0BBB: 9B       ; NOTE 8A5
+0BBC: 60       ; NOTE 16R
+0BBD: 7D       ; NOTE 16B5
+0BBE: BB       ; NOTE 4A5
+0BBF: A6       ; NOTE 4C4
+0BC0: 9B       ; NOTE 8A5
+0BC1: 60       ; NOTE 16R
+0BC2: 7D       ; NOTE 16B5
+0BC3: BB       ; NOTE 4A5
+0BC4: B8       ; NOTE 4F#5
+0BC5: 9B       ; NOTE 8A5
+0BC6: 60       ; NOTE 16R
+0BC7: 7B       ; NOTE 16A5
+0BC8: BD       ; NOTE 4B5
+0BC9: 80       ; NOTE 8R
+0BCA: 9B       ; NOTE 8A5
+0BCB: 99       ; NOTE 8G5
+0BCC: 93       ; NOTE 8C#5
+0BCD: B8       ; NOTE 4F#5
+0BCE: A0       ; NOTE 4R
+0BCF: 8F       ; NOTE 8A4
+0BD0: 60       ; NOTE 16R
+0BD1: 6F       ; NOTE 16A4
+0BD2: 8F       ; NOTE 8A4
+0BD3: 93       ; NOTE 8C#5
+0BD4: B6       ; NOTE 4E5
+0BD5: 8F       ; NOTE 8A4
+0BD6: 60       ; NOTE 16R
+0BD7: 6F       ; NOTE 16A4
+0BD8: 8F       ; NOTE 8A4
+0BD9: 94       ; NOTE 8D5
+0BDA: B8       ; NOTE 4F#5
+0BDB: 9B       ; NOTE 8A5
+0BDC: 60       ; NOTE 16R
+0BDD: 7B       ; NOTE 16A5
+0BDE: BD       ; NOTE 4B5
+0BDF: 80       ; NOTE 8R
+0BE0: 9B       ; NOTE 8A5
+0BE1: 99       ; NOTE 8G5
+0BE2: 93       ; NOTE 8C#5
+0BE3: B4       ; NOTE 4D5
+0BE4: A0       ; NOTE 4R
 0BE5: FF       ; END OF VOICE
 ;
 ;S5B Frog-home 1 
 ; Song=5 Voice=B
-0BE6: 1F 0B    ; SC00:Use note set index 11
-0BE8: 5F       ; SC02:Set volume to 2^2
-0BE9: 06       ; NOTE 4C for 2^0
-0BEA: 98       ; NOTE 5F# for 2^4
-0BEB: 60       ; REST for 2^3
-0BEC: 77       ; NOTE 5F for 2^3
-0BED: B8       ; NOTE 5F# for 2^5
-0BEE: B4       ; NOTE 5D for 2^5
-0BEF: 98       ; NOTE 5F# for 2^4
-0BF0: 60       ; REST for 2^3
-0BF1: 77       ; NOTE 5F for 2^3
-0BF2: B8       ; NOTE 5F# for 2^5
-0BF3: B4       ; NOTE 5D for 2^5
-0BF4: 98       ; NOTE 5F# for 2^4
-0BF5: 60       ; REST for 2^3
-0BF6: 76       ; NOTE 5E for 2^3
-0BF7: B5       ; NOTE 5D# for 2^5
-0BF8: 80       ; REST for 2^4
-0BF9: 95       ; NOTE 5D# for 2^4
-0BFA: 96       ; NOTE 5E for 2^4
-0BFB: 97       ; NOTE 5F for 2^4
-0BFC: B4       ; NOTE 5D for 2^5
-0BFD: A0       ; REST for 2^5
-0BFE: 8F       ; NOTE 4A for 2^4
-0BFF: 60       ; REST for 2^3
-0C00: 6F       ; NOTE 4A for 2^3
-0C01: 8F       ; NOTE 4A for 2^4
-0C02: 93       ; NOTE 5C# for 2^4
-0C03: B6       ; NOTE 5E for 2^5
-0C04: 8F       ; NOTE 4A for 2^4
-0C05: 60       ; REST for 2^3
-0C06: 6D       ; NOTE 4G for 2^3
-0C07: 8C       ; NOTE 4F# for 2^4
-0C08: 8F       ; NOTE 4A for 2^4
-0C09: B4       ; NOTE 5D for 2^5
-0C0A: 98       ; NOTE 5F# for 2^4
-0C0B: 60       ; REST for 2^3
-0C0C: 76       ; NOTE 5E for 2^3
-0C0D: B4       ; NOTE 5D for 2^5
-0C0E: 80       ; REST for 2^4
-0C0F: 93       ; NOTE 5C# for 2^4
-0C10: 8F       ; NOTE 4A for 2^4
-0C11: 8D       ; NOTE 4G for 2^4
-0C12: AC       ; NOTE 4F# for 2^5
-0C13: A0       ; REST for 2^5
+0BE6: 1F 0B    ; SC00:Use note set index 11  (note 1 = F#3)
+0BE8: 5F 06    ; SC02:Set volume to 06
+0BEA: 98       ; NOTE 8F#5
+0BEB: 60       ; NOTE 16R
+0BEC: 77       ; NOTE 16F5
+0BED: B8       ; NOTE 4F#5
+0BEE: B4       ; NOTE 4D5
+0BEF: 98       ; NOTE 8F#5
+0BF0: 60       ; NOTE 16R
+0BF1: 77       ; NOTE 16F5
+0BF2: B8       ; NOTE 4F#5
+0BF3: B4       ; NOTE 4D5
+0BF4: 98       ; NOTE 8F#5
+0BF5: 60       ; NOTE 16R
+0BF6: 76       ; NOTE 16E5
+0BF7: B5       ; NOTE 4D#5
+0BF8: 80       ; NOTE 8R
+0BF9: 95       ; NOTE 8D#5
+0BFA: 96       ; NOTE 8E5
+0BFB: 97       ; NOTE 8F5
+0BFC: B4       ; NOTE 4D5
+0BFD: A0       ; NOTE 4R
+0BFE: 8F       ; NOTE 8A4
+0BFF: 60       ; NOTE 16R
+0C00: 6F       ; NOTE 16A4
+0C01: 8F       ; NOTE 8A4
+0C02: 93       ; NOTE 8C#5
+0C03: B6       ; NOTE 4E5
+0C04: 8F       ; NOTE 8A4
+0C05: 60       ; NOTE 16R
+0C06: 6D       ; NOTE 16G4
+0C07: 8C       ; NOTE 8F#4
+0C08: 8F       ; NOTE 8A4
+0C09: B4       ; NOTE 4D5
+0C0A: 98       ; NOTE 8F#5
+0C0B: 60       ; NOTE 16R
+0C0C: 76       ; NOTE 16E5
+0C0D: B4       ; NOTE 4D5
+0C0E: 80       ; NOTE 8R
+0C0F: 93       ; NOTE 8C#5
+0C10: 8F       ; NOTE 8A4
+0C11: 8D       ; NOTE 8G4
+0C12: AC       ; NOTE 4F#4
+0C13: A0       ; NOTE 4R
 0C14: FF       ; END OF VOICE
 ```
 
@@ -2195,24 +2222,23 @@ SongTable:
 ```code
 ;S3A New life begins
 ; Song=3 Voice=A
-0C15: 1F 0B    ; SC00:Use note set index 11
-0C17: 3F 0E    ; SC01:Set tempo index 14
-0C19: 5F       ; SC02:Set volume to 2^2
-0C1A: 06       ; NOTE 4C for 2^0
-0C1B: 8F       ; NOTE 4A for 2^4
-0C1C: 60       ; REST for 2^3
-0C1D: 6F       ; NOTE 4A for 2^3
-0C1E: 93       ; NOTE 5C# for 2^4
-0C1F: 96       ; NOTE 5E for 2^4
-0C20: BB       ; NOTE 5A for 2^5
-0C21: A0       ; REST for 2^5
-0C22: 98       ; NOTE 5F# for 2^4
-0C23: 60       ; REST for 2^3
-0C24: 78       ; NOTE 5F# for 2^3
-0C25: 9B       ; NOTE 5A for 2^4
-0C26: 98       ; NOTE 5F# for 2^4
-0C27: B6       ; NOTE 5E for 2^5
-0C28: A0       ; REST for 2^5
+0C15: 1F 0B    ; SC00:Use note set index 11  (note 1 = F#3)
+0C17: 3F 0E    ; SC01:Set tempo index 14 (175 quarters/minute)
+0C19: 5F 06    ; SC02:Set volume to 06
+0C1B: 8F       ; NOTE 8A4
+0C1C: 60       ; NOTE 16R
+0C1D: 6F       ; NOTE 16A4
+0C1E: 93       ; NOTE 8C#5
+0C1F: 96       ; NOTE 8E5
+0C20: BB       ; NOTE 4A5
+0C21: A0       ; NOTE 4R
+0C22: 98       ; NOTE 8F#5
+0C23: 60       ; NOTE 16R
+0C24: 78       ; NOTE 16F#5
+0C25: 9B       ; NOTE 8A5
+0C26: 98       ; NOTE 8F#5
+0C27: B6       ; NOTE 4E5
+0C28: A0       ; NOTE 4R
 0C29: FF       ; END OF VOICE
 ```
 
@@ -2221,89 +2247,87 @@ SongTable:
 ```code
 ;S6A Frog-home 2
 ; Song=6 Voice=A
-0C2A: 1F 0B    ; SC00:Use note set index 11
-0C2C: 3F 0D    ; SC01:Set tempo index 13
-0C2E: 5F       ; SC02:Set volume to 2^2
-0C2F: 06       ; NOTE 4C for 2^0
-0C30: 8D       ; NOTE 4G for 2^4
-0C31: 96       ; NOTE 5E for 2^4
-0C32: B6       ; NOTE 5E for 2^5
-0C33: 80       ; REST for 2^4
-0C34: 97       ; NOTE 5F for 2^4
-0C35: B6       ; NOTE 5E for 2^5
-0C36: 94       ; NOTE 5D for 2^4
-0C37: 8D       ; NOTE 4G for 2^4
-0C38: B4       ; NOTE 5D for 2^5
-0C39: 8D       ; NOTE 4G for 2^4
-0C3A: 97       ; NOTE 5F for 2^4
-0C3B: B7       ; NOTE 5F for 2^5
-0C3C: 80       ; REST for 2^4
-0C3D: 99       ; NOTE 5G for 2^4
-0C3E: B7       ; NOTE 5F for 2^5
-0C3F: 96       ; NOTE 5E for 2^4
-0C40: 8D       ; NOTE 4G for 2^4
-0C41: B6       ; NOTE 5E for 2^5
-0C42: 96       ; NOTE 5E for 2^4
-0C43: 99       ; NOTE 5G for 2^4
-0C44: B9       ; NOTE 5G for 2^5
-0C45: 80       ; REST for 2^4
-0C46: 9B       ; NOTE 5A for 2^4
-0C47: B9       ; NOTE 5G for 2^5
-0C48: 97       ; NOTE 5F for 2^4
-0C49: 96       ; NOTE 5E for 2^4
-0C4A: 94       ; NOTE 5D for 2^4
-0C4B: 92       ; NOTE 5C for 2^4
-0C4C: 91       ; NOTE 4B for 2^4
-0C4D: 94       ; NOTE 5D for 2^4
-0C4E: 9B       ; NOTE 5A for 2^4
-0C4F: 99       ; NOTE 5G for 2^4
-0C50: 97       ; NOTE 5F for 2^4
-0C51: 91       ; NOTE 4B for 2^4
-0C52: D2       ; NOTE 5C for 2^6
-0C53: A0       ; REST for 2^5
+0C2A: 1F 0B    ; SC00:Use note set index 11  (note 1 = F#3)
+0C2C: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+0C2E: 5F 06    ; SC02:Set volume to 06
+0C30: 8D       ; NOTE 8G4
+0C31: 96       ; NOTE 8E5
+0C32: B6       ; NOTE 4E5
+0C33: 80       ; NOTE 8R
+0C34: 97       ; NOTE 8F5
+0C35: B6       ; NOTE 4E5
+0C36: 94       ; NOTE 8D5
+0C37: 8D       ; NOTE 8G4
+0C38: B4       ; NOTE 4D5
+0C39: 8D       ; NOTE 8G4
+0C3A: 97       ; NOTE 8F5
+0C3B: B7       ; NOTE 4F5
+0C3C: 80       ; NOTE 8R
+0C3D: 99       ; NOTE 8G5
+0C3E: B7       ; NOTE 4F5
+0C3F: 96       ; NOTE 8E5
+0C40: 8D       ; NOTE 8G4
+0C41: B6       ; NOTE 4E5
+0C42: 96       ; NOTE 8E5
+0C43: 99       ; NOTE 8G5
+0C44: B9       ; NOTE 4G5
+0C45: 80       ; NOTE 8R
+0C46: 9B       ; NOTE 8A5
+0C47: B9       ; NOTE 4G5
+0C48: 97       ; NOTE 8F5
+0C49: 96       ; NOTE 8E5
+0C4A: 94       ; NOTE 8D5
+0C4B: 92       ; NOTE 8C5
+0C4C: 91       ; NOTE 8B4
+0C4D: 94       ; NOTE 8D5
+0C4E: 9B       ; NOTE 8A5
+0C4F: 99       ; NOTE 8G5
+0C50: 97       ; NOTE 8F5
+0C51: 91       ; NOTE 8B4
+0C52: D2       ; NOTE 2C5
+0C53: A0       ; NOTE 4R
 0C54: FF       ; END OF VOICE
 ;
 ;S6B Frog-home 2
 ; Song=6 Voice=B
-0C55: 1F 0B    ; SC00:Use note set index 11
-0C57: 5F       ; SC02:Set volume to 2^2
-0C58: 06       ; NOTE 4C for 2^0
-0C59: 8D       ; NOTE 4G for 2^4
-0C5A: 92       ; NOTE 5C for 2^4
-0C5B: B2       ; NOTE 5C for 2^5
-0C5C: 80       ; REST for 2^4
-0C5D: 91       ; NOTE 4B for 2^4
-0C5E: B2       ; NOTE 5C for 2^5
-0C5F: 91       ; NOTE 4B for 2^4
-0C60: 8D       ; NOTE 4G for 2^4
-0C61: B1       ; NOTE 4B for 2^5
-0C62: 8D       ; NOTE 4G for 2^4
-0C63: 94       ; NOTE 5D for 2^4
-0C64: B4       ; NOTE 5D for 2^5
-0C65: 80       ; REST for 2^4
-0C66: 96       ; NOTE 5E for 2^4
-0C67: B4       ; NOTE 5D for 2^5
-0C68: 92       ; NOTE 5C for 2^4
-0C69: 8D       ; NOTE 4G for 2^4
-0C6A: B2       ; NOTE 5C for 2^5
-0C6B: 92       ; NOTE 5C for 2^4
-0C6C: 96       ; NOTE 5E for 2^4
-0C6D: B6       ; NOTE 5E for 2^5
-0C6E: 80       ; REST for 2^4
-0C6F: 97       ; NOTE 5F for 2^4
-0C70: B6       ; NOTE 5E for 2^5
-0C71: 94       ; NOTE 5D for 2^4
-0C72: 92       ; NOTE 5C for 2^4
-0C73: 91       ; NOTE 4B for 2^4
-0C74: 8F       ; NOTE 4A for 2^4
-0C75: 8D       ; NOTE 4G for 2^4
-0C76: 91       ; NOTE 4B for 2^4
-0C77: 97       ; NOTE 5F for 2^4
-0C78: 96       ; NOTE 5E for 2^4
-0C79: 94       ; NOTE 5D for 2^4
-0C7A: 8D       ; NOTE 4G for 2^4
-0C7B: D2       ; NOTE 5C for 2^6
-0C7C: A0       ; REST for 2^5
+0C55: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0C57: 5F 06    ; SC02:Set volume to 06
+0C59: 8D       ; NOTE 8G4
+0C5A: 92       ; NOTE 8C5
+0C5B: B2       ; NOTE 4C5
+0C5C: 80       ; NOTE 8R
+0C5D: 91       ; NOTE 8B4
+0C5E: B2       ; NOTE 4C5
+0C5F: 91       ; NOTE 8B4
+0C60: 8D       ; NOTE 8G4
+0C61: B1       ; NOTE 4B4
+0C62: 8D       ; NOTE 8G4
+0C63: 94       ; NOTE 8D5
+0C64: B4       ; NOTE 4D5
+0C65: 80       ; NOTE 8R
+0C66: 96       ; NOTE 8E5
+0C67: B4       ; NOTE 4D5
+0C68: 92       ; NOTE 8C5
+0C69: 8D       ; NOTE 8G4
+0C6A: B2       ; NOTE 4C5
+0C6B: 92       ; NOTE 8C5
+0C6C: 96       ; NOTE 8E5
+0C6D: B6       ; NOTE 4E5
+0C6E: 80       ; NOTE 8R
+0C6F: 97       ; NOTE 8F5
+0C70: B6       ; NOTE 4E5
+0C71: 94       ; NOTE 8D5
+0C72: 92       ; NOTE 8C5
+0C73: 91       ; NOTE 8B4
+0C74: 8F       ; NOTE 8A4
+0C75: 8D       ; NOTE 8G4
+0C76: 91       ; NOTE 8B4
+0C77: 97       ; NOTE 8F5
+0C78: 96       ; NOTE 8E5
+0C79: 94       ; NOTE 8D5
+0C7A: 8D       ; NOTE 8G4
+0C7B: D2       ; NOTE 2C5
+0C7C: A0       ; NOTE 4R
 0C7D: FF       ; END OF VOICE
 ```
 
@@ -2312,117 +2336,115 @@ SongTable:
 ```code
 ;S7A Frog-home 3
 ; Song=7 Voice=A
-0C7E: 1F 0B    ; SC00:Use note set index 11
-0C80: 3F 0D    ; SC01:Set tempo index 13
-0C82: 5F       ; SC02:Set volume to 2^2
-0C83: 06       ; NOTE 4C for 2^0
-0C84: C0       ; REST for 2^6
-0C85: A0       ; REST for 2^5
-0C86: 94       ; NOTE 5D for 2^4
-0C87: 60       ; REST for 2^3
-0C88: 75       ; NOTE 5D# for 2^3
-0C89: 96       ; NOTE 5E for 2^4
-0C8A: 9E       ; NOTE 6C for 2^4
-0C8B: 96       ; NOTE 5E for 2^4
-0C8C: 9E       ; NOTE 6C for 2^4
-0C8D: B6       ; NOTE 5E for 2^5
-0C8E: 96       ; NOTE 5E for 2^4
-0C8F: 60       ; REST for 2^3
-0C90: 75       ; NOTE 5D# for 2^3
-0C91: 94       ; NOTE 5D for 2^4
-0C92: 9D       ; NOTE 5B for 2^4
-0C93: 94       ; NOTE 5D for 2^4
-0C94: 9D       ; NOTE 5B for 2^4
-0C95: B4       ; NOTE 5D for 2^5
-0C96: 9D       ; NOTE 5B for 2^4
-0C97: 60       ; REST for 2^3
-0C98: 73       ; NOTE 5C# for 2^3
-0C99: B2       ; NOTE 5C for 2^5
-0C9A: BB       ; NOTE 5A for 2^5
-0C9B: B9       ; NOTE 5G for 2^5
-0C9C: B8       ; NOTE 5F# for 2^5
-0C9D: B9       ; NOTE 5G for 2^5
-0C9E: BB       ; NOTE 5A for 2^5
-0C9F: BD       ; NOTE 5B for 2^5
-0CA0: 94       ; NOTE 5D for 2^4
-0CA1: 60       ; REST for 2^3
-0CA2: 75       ; NOTE 5D# for 2^3
-0CA3: 96       ; NOTE 5E for 2^4
-0CA4: 92       ; NOTE 5C for 2^4
-0CA5: 96       ; NOTE 5E for 2^4
-0CA6: 92       ; NOTE 5C for 2^4
-0CA7: B6       ; NOTE 5E for 2^5
-0CA8: 96       ; NOTE 5E for 2^4
-0CA9: 60       ; REST for 2^3
-0CAA: 79       ; NOTE 5G for 2^3
-0CAB: 94       ; NOTE 5D for 2^4
-0CAC: 99       ; NOTE 5G for 2^4
-0CAD: 94       ; NOTE 5D for 2^4
-0CAE: 99       ; NOTE 5G for 2^4
-0CAF: BD       ; NOTE 5B for 2^5
-0CB0: 94       ; NOTE 5D for 2^4
-0CB1: 60       ; REST for 2^3
-0CB2: 74       ; NOTE 5D for 2^3
-0CB3: B4       ; NOTE 5D for 2^5
-0CB4: BB       ; NOTE 5A for 2^5
-0CB5: B9       ; NOTE 5G for 2^5
-0CB6: B8       ; NOTE 5F# for 2^5
-0CB7: D9       ; NOTE 5G for 2^6
-0CB8: C0       ; REST for 2^6
+0C7E: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0C80: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+0C82: 5F 06    ; SC02:Set volume to 06
+0C84: C0       ; NOTE 2R
+0C85: A0       ; NOTE 4R
+0C86: 94       ; NOTE 8D5
+0C87: 60       ; NOTE 16R
+0C88: 75       ; NOTE 16D#5
+0C89: 96       ; NOTE 8E5
+0C8A: 9E       ; NOTE 8C6
+0C8B: 96       ; NOTE 8E5
+0C8C: 9E       ; NOTE 8C6
+0C8D: B6       ; NOTE 4E5
+0C8E: 96       ; NOTE 8E5
+0C8F: 60       ; NOTE 16R
+0C90: 75       ; NOTE 16D#5
+0C91: 94       ; NOTE 8D5
+0C92: 9D       ; NOTE 8B5
+0C93: 94       ; NOTE 8D5
+0C94: 9D       ; NOTE 8B5
+0C95: B4       ; NOTE 4D5
+0C96: 9D       ; NOTE 8B5
+0C97: 60       ; NOTE 16R
+0C98: 73       ; NOTE 16C#5
+0C99: B2       ; NOTE 4C5
+0C9A: BB       ; NOTE 4A5
+0C9B: B9       ; NOTE 4G5
+0C9C: B8       ; NOTE 4F#5
+0C9D: B9       ; NOTE 4G5
+0C9E: BB       ; NOTE 4A5
+0C9F: BD       ; NOTE 4B5
+0CA0: 94       ; NOTE 8D5
+0CA1: 60       ; NOTE 16R
+0CA2: 75       ; NOTE 16D#5
+0CA3: 96       ; NOTE 8E5
+0CA4: 92       ; NOTE 8C5
+0CA5: 96       ; NOTE 8E5
+0CA6: 92       ; NOTE 8C5
+0CA7: B6       ; NOTE 4E5
+0CA8: 96       ; NOTE 8E5
+0CA9: 60       ; NOTE 16R
+0CAA: 79       ; NOTE 16G5
+0CAB: 94       ; NOTE 8D5
+0CAC: 99       ; NOTE 8G5
+0CAD: 94       ; NOTE 8D5
+0CAE: 99       ; NOTE 8G5
+0CAF: BD       ; NOTE 4B5
+0CB0: 94       ; NOTE 8D5
+0CB1: 60       ; NOTE 16R
+0CB2: 74       ; NOTE 16D5
+0CB3: B4       ; NOTE 4D5
+0CB4: BB       ; NOTE 4A5
+0CB5: B9       ; NOTE 4G5
+0CB6: B8       ; NOTE 4F#5
+0CB7: D9       ; NOTE 2G5
+0CB8: C0       ; NOTE 2R
 0CB9: FF       ; END OF VOICE
 ;
 ;S7B Frog-home 3
 ; Song=7 Voice=B
-0CBA: 1F 05    ; SC00:Use note set index 5
-0CBC: 5F       ; SC02:Set volume to 2^2
-0CBD: 06       ; NOTE 3C for 2^0
-0CBE: E0       ; REST for 2^7
-0CBF: B2       ; NOTE 4C for 2^5
-0CC0: 80       ; REST for 2^4
-0CC1: 8D       ; NOTE 3G for 2^4
-0CC2: 92       ; NOTE 4C for 2^4
-0CC3: AD       ; NOTE 3G for 2^5
-0CC4: 92       ; NOTE 4C for 2^4
-0CC5: AD       ; NOTE 3G for 2^5
-0CC6: 80       ; REST for 2^4
-0CC7: 88       ; NOTE 3D for 2^4
-0CC8: 8D       ; NOTE 3G for 2^4
-0CC9: A8       ; NOTE 3D for 2^5
-0CCA: 8D       ; NOTE 3G for 2^4
-0CCB: A8       ; NOTE 3D for 2^5
-0CCC: 80       ; REST for 2^4
-0CCD: 88       ; NOTE 3D for 2^4
-0CCE: 88       ; NOTE 3D for 2^4
-0CCF: A8       ; NOTE 3D for 2^5
-0CD0: 88       ; NOTE 3D for 2^4
-0CD1: AD       ; NOTE 3G for 2^5
-0CD2: 80       ; REST for 2^4
-0CD3: 88       ; NOTE 3D for 2^4
-0CD4: 8D       ; NOTE 3G for 2^4
-0CD5: 94       ; NOTE 4D for 2^4
-0CD6: 91       ; NOTE 3B for 2^4
-0CD7: 8D       ; NOTE 3G for 2^4
-0CD8: B2       ; NOTE 4C for 2^5
-0CD9: 80       ; REST for 2^4
-0CDA: 8D       ; NOTE 3G for 2^4
-0CDB: 92       ; NOTE 4C for 2^4
-0CDC: AD       ; NOTE 3G for 2^5
-0CDD: 92       ; NOTE 4C for 2^4
-0CDE: AD       ; NOTE 3G for 2^5
-0CDF: 80       ; REST for 2^4
-0CE0: 88       ; NOTE 3D for 2^4
-0CE1: 8D       ; NOTE 3G for 2^4
-0CE2: A8       ; NOTE 3D for 2^5
-0CE3: 8D       ; NOTE 3G for 2^4
-0CE4: 88       ; NOTE 3D for 2^4
-0CE5: 94       ; NOTE 4D for 2^4
-0CE6: 83       ; NOTE 2A for 2^4
-0CE7: 94       ; NOTE 4D for 2^4
-0CE8: 88       ; NOTE 3D for 2^4
-0CE9: 94       ; NOTE 4D for 2^4
-0CEA: 88       ; NOTE 3D for 2^4
-0CEB: 94       ; NOTE 4D for 2^4
-0CEC: E0       ; REST for 2^7
+0CBA: 1F 05    ; SC00:Use note set index 5  (note 1 = F#2)
+0CBC: 5F 06    ; SC02:Set volume to 06
+0CBE: E0       ; NOTE 1R
+0CBF: B2       ; NOTE 4C4
+0CC0: 80       ; NOTE 8R
+0CC1: 8D       ; NOTE 8G3
+0CC2: 92       ; NOTE 8C4
+0CC3: AD       ; NOTE 4G3
+0CC4: 92       ; NOTE 8C4
+0CC5: AD       ; NOTE 4G3
+0CC6: 80       ; NOTE 8R
+0CC7: 88       ; NOTE 8D3
+0CC8: 8D       ; NOTE 8G3
+0CC9: A8       ; NOTE 4D3
+0CCA: 8D       ; NOTE 8G3
+0CCB: A8       ; NOTE 4D3
+0CCC: 80       ; NOTE 8R
+0CCD: 88       ; NOTE 8D3
+0CCE: 88       ; NOTE 8D3
+0CCF: A8       ; NOTE 4D3
+0CD0: 88       ; NOTE 8D3
+0CD1: AD       ; NOTE 4G3
+0CD2: 80       ; NOTE 8R
+0CD3: 88       ; NOTE 8D3
+0CD4: 8D       ; NOTE 8G3
+0CD5: 94       ; NOTE 8D4
+0CD6: 91       ; NOTE 8B3
+0CD7: 8D       ; NOTE 8G3
+0CD8: B2       ; NOTE 4C4
+0CD9: 80       ; NOTE 8R
+0CDA: 8D       ; NOTE 8G3
+0CDB: 92       ; NOTE 8C4
+0CDC: AD       ; NOTE 4G3
+0CDD: 92       ; NOTE 8C4
+0CDE: AD       ; NOTE 4G3
+0CDF: 80       ; NOTE 8R
+0CE0: 88       ; NOTE 8D3
+0CE1: 8D       ; NOTE 8G3
+0CE2: A8       ; NOTE 4D3
+0CE3: 8D       ; NOTE 8G3
+0CE4: 88       ; NOTE 8D3
+0CE5: 94       ; NOTE 8D4
+0CE6: 83       ; NOTE 8A2
+0CE7: 94       ; NOTE 8D4
+0CE8: 88       ; NOTE 8D3
+0CE9: 94       ; NOTE 8D4
+0CEA: 88       ; NOTE 8D3
+0CEB: 94       ; NOTE 8D4
+0CEC: E0       ; NOTE 1R
 0CED: FF       ; END OF VOICE
 ```
 
@@ -2431,90 +2453,88 @@ SongTable:
 ```code
 ;S8A Frog-home 4
 ; Song=8 Voice=A
-0CEE: 1F 0B    ; SC00:Use note set index 11
-0CF0: 3F 0D    ; SC01:Set tempo index 13
-0CF2: 5F       ; SC02:Set volume to 2^2
-0CF3: 06       ; NOTE 4C for 2^0
-0CF4: B8       ; NOTE 5F# for 2^5
-0CF5: 80       ; REST for 2^4
-0CF6: 96       ; NOTE 5E for 2^4
-0CF7: 96       ; NOTE 5E for 2^4
-0CF8: 94       ; NOTE 5D for 2^4
-0CF9: B3       ; NOTE 5C# for 2^5
-0CFA: B1       ; NOTE 4B for 2^5
-0CFB: 80       ; REST for 2^4
-0CFC: AF       ; NOTE 4A for 2^5
-0CFD: 8D       ; NOTE 4G for 2^4
-0CFE: AC       ; NOTE 4F# for 2^5
-0CFF: CA       ; NOTE 4E for 2^6
-0D00: AF       ; NOTE 4A for 2^5
-0D01: B6       ; NOTE 5E for 2^5
-0D02: DB       ; NOTE 5A for 2^6
-0D03: 9B       ; NOTE 5A for 2^4
-0D04: 80       ; REST for 2^4
-0D05: 8C       ; NOTE 4F# for 2^4
-0D06: 8D       ; NOTE 4G for 2^4
-0D07: AF       ; NOTE 4A for 2^5
-0D08: B8       ; NOTE 5F# for 2^5
-0D09: 94       ; NOTE 5D for 2^4
-0D0A: 80       ; REST for 2^4
-0D0B: 8C       ; NOTE 4F# for 2^4
-0D0C: 8D       ; NOTE 4G for 2^4
-0D0D: AF       ; NOTE 4A for 2^5
-0D0E: B8       ; NOTE 5F# for 2^5
-0D0F: 94       ; NOTE 5D for 2^4
-0D10: 80       ; REST for 2^4
-0D11: 98       ; NOTE 5F# for 2^4
-0D12: 99       ; NOTE 5G for 2^4
-0D13: B8       ; NOTE 5F# for 2^5
-0D14: B6       ; NOTE 5E for 2^5
-0D15: B8       ; NOTE 5F# for 2^5
-0D16: B6       ; NOTE 5E for 2^5
-0D17: D4       ; NOTE 5D for 2^6
-0D18: A0       ; REST for 2^5
+0CEE: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0CF0: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+0CF2: 5F 06    ; SC02:Set volume to 06
+0CF4: B8       ; NOTE 4F#5
+0CF5: 80       ; NOTE 8R
+0CF6: 96       ; NOTE 8E5
+0CF7: 96       ; NOTE 8E5
+0CF8: 94       ; NOTE 8D5
+0CF9: B3       ; NOTE 4C#5
+0CFA: B1       ; NOTE 4B4
+0CFB: 80       ; NOTE 8R
+0CFC: AF       ; NOTE 4A4
+0CFD: 8D       ; NOTE 8G4
+0CFE: AC       ; NOTE 4F#4
+0CFF: CA       ; NOTE 2E4
+0D00: AF       ; NOTE 4A4
+0D01: B6       ; NOTE 4E5
+0D02: DB       ; NOTE 2A5
+0D03: 9B       ; NOTE 8A5
+0D04: 80       ; NOTE 8R
+0D05: 8C       ; NOTE 8F#4
+0D06: 8D       ; NOTE 8G4
+0D07: AF       ; NOTE 4A4
+0D08: B8       ; NOTE 4F#5
+0D09: 94       ; NOTE 8D5
+0D0A: 80       ; NOTE 8R
+0D0B: 8C       ; NOTE 8F#4
+0D0C: 8D       ; NOTE 8G4
+0D0D: AF       ; NOTE 4A4
+0D0E: B8       ; NOTE 4F#5
+0D0F: 94       ; NOTE 8D5
+0D10: 80       ; NOTE 8R
+0D11: 98       ; NOTE 8F#5
+0D12: 99       ; NOTE 8G5
+0D13: B8       ; NOTE 4F#5
+0D14: B6       ; NOTE 4E5
+0D15: B8       ; NOTE 4F#5
+0D16: B6       ; NOTE 4E5
+0D17: D4       ; NOTE 2D5
+0D18: A0       ; NOTE 4R
 0D19: FF       ; END OF VOICE
 ;
 ;S8B Frog-home 4
 ; Song=8 Voice=B
-0D1A: 1F 05    ; SC00:Use note set index 5
-0D1C: 5F       ; SC02:Set volume to 2^2
-0D1D: 06       ; NOTE 3C for 2^0
-0D1E: A3       ; NOTE 2A for 2^5
-0D1F: 80       ; REST for 2^4
-0D20: AF       ; NOTE 3A for 2^5
-0D21: 8F       ; NOTE 3A for 2^4
-0D22: AF       ; NOTE 3A for 2^5
-0D23: A3       ; NOTE 2A for 2^5
-0D24: 80       ; REST for 2^4
-0D25: AF       ; NOTE 3A for 2^5
-0D26: 8F       ; NOTE 3A for 2^4
-0D27: AF       ; NOTE 3A for 2^5
-0D28: A3       ; NOTE 2A for 2^5
-0D29: AF       ; NOTE 3A for 2^5
-0D2A: AF       ; NOTE 3A for 2^5
-0D2B: AF       ; NOTE 3A for 2^5
-0D2C: A3       ; NOTE 2A for 2^5
-0D2D: AF       ; NOTE 3A for 2^5
-0D2E: 8F       ; NOTE 3A for 2^4
-0D2F: 8F       ; NOTE 3A for 2^4
-0D30: 83       ; NOTE 2A for 2^4
-0D31: 83       ; NOTE 2A for 2^4
-0D32: A8       ; NOTE 3D for 2^5
-0D33: B4       ; NOTE 4D for 2^5
-0D34: A8       ; NOTE 3D for 2^5
-0D35: B4       ; NOTE 4D for 2^5
-0D36: A8       ; NOTE 3D for 2^5
-0D37: B4       ; NOTE 4D for 2^5
-0D38: A8       ; NOTE 3D for 2^5
-0D39: B4       ; NOTE 4D for 2^5
-0D3A: AA       ; NOTE 3E for 2^5
-0D3B: B3       ; NOTE 4C# for 2^5
-0D3C: AF       ; NOTE 3A for 2^5
-0D3D: B3       ; NOTE 4C# for 2^5
-0D3E: B4       ; NOTE 4D for 2^5
-0D3F: AF       ; NOTE 3A for 2^5
-0D40: 88       ; NOTE 3D for 2^4
-0D41: 80       ; REST for 2^4
+0D1A: 1F 05    ; SC00:Use note set index 5 (note 1 = F#2)
+0D1C: 5F 06    ; SC02:Set volume to 06
+0D1E: A3       ; NOTE 4A2
+0D1F: 80       ; NOTE 8R
+0D20: AF       ; NOTE 4A3
+0D21: 8F       ; NOTE 8A3
+0D22: AF       ; NOTE 4A3
+0D23: A3       ; NOTE 4A2
+0D24: 80       ; NOTE 8R
+0D25: AF       ; NOTE 4A3
+0D26: 8F       ; NOTE 8A3
+0D27: AF       ; NOTE 4A3
+0D28: A3       ; NOTE 4A2
+0D29: AF       ; NOTE 4A3
+0D2A: AF       ; NOTE 4A3
+0D2B: AF       ; NOTE 4A3
+0D2C: A3       ; NOTE 4A2
+0D2D: AF       ; NOTE 4A3
+0D2E: 8F       ; NOTE 8A3
+0D2F: 8F       ; NOTE 8A3
+0D30: 83       ; NOTE 8A2
+0D31: 83       ; NOTE 8A2
+0D32: A8       ; NOTE 4D3
+0D33: B4       ; NOTE 4D4
+0D34: A8       ; NOTE 4D3
+0D35: B4       ; NOTE 4D4
+0D36: A8       ; NOTE 4D3
+0D37: B4       ; NOTE 4D4
+0D38: A8       ; NOTE 4D3
+0D39: B4       ; NOTE 4D4
+0D3A: AA       ; NOTE 4E3
+0D3B: B3       ; NOTE 4C#4
+0D3C: AF       ; NOTE 4A3
+0D3D: B3       ; NOTE 4C#4
+0D3E: B4       ; NOTE 4D4
+0D3F: AF       ; NOTE 4A3
+0D40: 88       ; NOTE 8D3
+0D41: 80       ; NOTE 8R
 0D42: FF       ; END OF VOICE
 ```
 
@@ -2523,97 +2543,95 @@ SongTable:
 ```code
 ;S9A Frog-home 5
 ; Song=9 Voice=A
-0D43: 1F 0B    ; SC00:Use note set index 11
-0D45: 3F 0D    ; SC01:Set tempo index 13
-0D47: 5F       ; SC02:Set volume to 2^2
-0D48: 06       ; NOTE 4C for 2^0
-0D49: 98       ; NOTE 5F# for 2^4
-0D4A: 98       ; NOTE 5F# for 2^4
-0D4B: 98       ; NOTE 5F# for 2^4
-0D4C: 98       ; NOTE 5F# for 2^4
-0D4D: 98       ; NOTE 5F# for 2^4
-0D4E: 98       ; NOTE 5F# for 2^4
-0D4F: 96       ; NOTE 5E for 2^4
-0D50: 98       ; NOTE 5F# for 2^4
-0D51: 99       ; NOTE 5G for 2^4
-0D52: B1       ; NOTE 4B for 2^5
-0D53: 80       ; REST for 2^4
-0D54: B1       ; NOTE 4B for 2^5
-0D55: B1       ; NOTE 4B for 2^5
-0D56: 96       ; NOTE 5E for 2^4
-0D57: 96       ; NOTE 5E for 2^4
-0D58: 96       ; NOTE 5E for 2^4
-0D59: 96       ; NOTE 5E for 2^4
-0D5A: B6       ; NOTE 5E for 2^5
-0D5B: 94       ; NOTE 5D for 2^4
-0D5C: 96       ; NOTE 5E for 2^4
-0D5D: 98       ; NOTE 5F# for 2^4
-0D5E: AF       ; NOTE 4A for 2^5
-0D5F: 80       ; REST for 2^4
-0D60: AF       ; NOTE 4A for 2^5
-0D61: AF       ; NOTE 4A for 2^5
-0D62: 98       ; NOTE 5F# for 2^4
-0D63: 98       ; NOTE 5F# for 2^4
-0D64: 98       ; NOTE 5F# for 2^4
-0D65: 98       ; NOTE 5F# for 2^4
-0D66: 98       ; NOTE 5F# for 2^4
-0D67: 98       ; NOTE 5F# for 2^4
-0D68: 96       ; NOTE 5E for 2^4
-0D69: 98       ; NOTE 5F# for 2^4
-0D6A: 99       ; NOTE 5G for 2^4
-0D6B: 99       ; NOTE 5G for 2^4
-0D6C: 99       ; NOTE 5G for 2^4
-0D6D: 99       ; NOTE 5G for 2^4
-0D6E: B1       ; NOTE 4B for 2^5
-0D6F: 91       ; NOTE 4B for 2^4
-0D70: 94       ; NOTE 5D for 2^4
-0D71: 93       ; NOTE 5C# for 2^4
-0D72: B3       ; NOTE 5C# for 2^5
-0D73: 80       ; REST for 2^4
-0D74: 8F       ; NOTE 4A for 2^4
-0D75: 8F       ; NOTE 4A for 2^4
-0D76: 98       ; NOTE 5F# for 2^4
-0D77: 96       ; NOTE 5E for 2^4
-0D78: D4       ; NOTE 5D for 2^6
-0D79: A0       ; REST for 2^5
+0D43: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0D45: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+0D47: 5F 06    ; SC02:Set volume to 06
+0D49: 98       ; NOTE 8F#5
+0D4A: 98       ; NOTE 8F#5
+0D4B: 98       ; NOTE 8F#5
+0D4C: 98       ; NOTE 8F#5
+0D4D: 98       ; NOTE 8F#5
+0D4E: 98       ; NOTE 8F#5
+0D4F: 96       ; NOTE 8E5
+0D50: 98       ; NOTE 8F#5
+0D51: 99       ; NOTE 8G5
+0D52: B1       ; NOTE 4B4
+0D53: 80       ; NOTE 8R
+0D54: B1       ; NOTE 4B4
+0D55: B1       ; NOTE 4B4
+0D56: 96       ; NOTE 8E5
+0D57: 96       ; NOTE 8E5
+0D58: 96       ; NOTE 8E5
+0D59: 96       ; NOTE 8E5
+0D5A: B6       ; NOTE 4E5
+0D5B: 94       ; NOTE 8D5
+0D5C: 96       ; NOTE 8E5
+0D5D: 98       ; NOTE 8F#5
+0D5E: AF       ; NOTE 4A4
+0D5F: 80       ; NOTE 8R
+0D60: AF       ; NOTE 4A4
+0D61: AF       ; NOTE 4A4
+0D62: 98       ; NOTE 8F#5
+0D63: 98       ; NOTE 8F#5
+0D64: 98       ; NOTE 8F#5
+0D65: 98       ; NOTE 8F#5
+0D66: 98       ; NOTE 8F#5
+0D67: 98       ; NOTE 8F#5
+0D68: 96       ; NOTE 8E5
+0D69: 98       ; NOTE 8F#5
+0D6A: 99       ; NOTE 8G5
+0D6B: 99       ; NOTE 8G5
+0D6C: 99       ; NOTE 8G5
+0D6D: 99       ; NOTE 8G5
+0D6E: B1       ; NOTE 4B4
+0D6F: 91       ; NOTE 8B4
+0D70: 94       ; NOTE 8D5
+0D71: 93       ; NOTE 8C#5
+0D72: B3       ; NOTE 4C#5
+0D73: 80       ; NOTE 8R
+0D74: 8F       ; NOTE 8A4
+0D75: 8F       ; NOTE 8A4
+0D76: 98       ; NOTE 8F#5
+0D77: 96       ; NOTE 8E5
+0D78: D4       ; NOTE 2D5
+0D79: A0       ; NOTE 4R
 0D7A: FF       ; END OF VOICE
 ;
 ;S9B Frog-home 5
 ; Song=9 Voice=B
-0D7B: 1F 05    ; SC00:Use note set index 5
-0D7D: 5F       ; SC02:Set volume to 2^2
-0D7E: 06       ; NOTE 3C for 2^0
-0D7F: A8       ; NOTE 3D for 2^5
-0D80: 80       ; REST for 2^4
-0D81: 88       ; NOTE 3D for 2^4
-0D82: C8       ; NOTE 3D for 2^6
-0D83: AA       ; NOTE 3E for 2^5
-0D84: 80       ; REST for 2^4
-0D85: 8A       ; NOTE 3E for 2^4
-0D86: CA       ; NOTE 3E for 2^6
-0D87: AF       ; NOTE 3A for 2^5
-0D88: 80       ; REST for 2^4
-0D89: 8F       ; NOTE 3A for 2^4
-0D8A: CF       ; NOTE 3A for 2^6
-0D8B: B4       ; NOTE 4D for 2^5
-0D8C: 80       ; REST for 2^4
-0D8D: 8F       ; NOTE 3A for 2^4
-0D8E: AF       ; NOTE 3A for 2^5
-0D8F: AC       ; NOTE 3F# for 2^5
-0D90: A8       ; NOTE 3D for 2^5
-0D91: 80       ; REST for 2^4
-0D92: 88       ; NOTE 3D for 2^4
-0D93: C8       ; NOTE 3D for 2^6
-0D94: AA       ; NOTE 3E for 2^5
-0D95: 80       ; REST for 2^4
-0D96: 8A       ; NOTE 3E for 2^4
-0D97: CA       ; NOTE 3E for 2^6
-0D98: A3       ; NOTE 2A for 2^5
-0D99: 80       ; REST for 2^4
-0D9A: 83       ; NOTE 2A for 2^4
-0D9B: C3       ; NOTE 2A for 2^6
-0D9C: A8       ; NOTE 3D for 2^5
-0D9D: C0       ; REST for 2^6
+0D7B: 1F 05    ; SC00:Use note set index 5  (note 1 = F#2)
+0D7D: 5F 06    ; SC02:Set volume to 06
+0D7F: A8       ; NOTE 4D3
+0D80: 80       ; NOTE 8R
+0D81: 88       ; NOTE 8D3
+0D82: C8       ; NOTE 2D3
+0D83: AA       ; NOTE 4E3
+0D84: 80       ; NOTE 8R
+0D85: 8A       ; NOTE 8E3
+0D86: CA       ; NOTE 2E3
+0D87: AF       ; NOTE 4A3
+0D88: 80       ; NOTE 8R
+0D89: 8F       ; NOTE 8A3
+0D8A: CF       ; NOTE 2A3
+0D8B: B4       ; NOTE 4D4
+0D8C: 80       ; NOTE 8R
+0D8D: 8F       ; NOTE 8A3
+0D8E: AF       ; NOTE 4A3
+0D8F: AC       ; NOTE 4F#3
+0D90: A8       ; NOTE 4D3
+0D91: 80       ; NOTE 8R
+0D92: 88       ; NOTE 8D3
+0D93: C8       ; NOTE 2D3
+0D94: AA       ; NOTE 4E3
+0D95: 80       ; NOTE 8R
+0D96: 8A       ; NOTE 8E3
+0D97: CA       ; NOTE 2E3
+0D98: A3       ; NOTE 4A2
+0D99: 80       ; NOTE 8R
+0D9A: 83       ; NOTE 8A2
+0D9B: C3       ; NOTE 2A2
+0D9C: A8       ; NOTE 4D3
+0D9D: C0       ; NOTE 2R
 0D9E: FF       ; END OF VOICE
 ```
 
@@ -2622,105 +2640,103 @@ SongTable:
 ```code
 ;S10A Frog-home 6
 ; Song=10 Voice=A
-0D9F: 1F 0B    ; SC00:Use note set index 11
-0DA1: 3F 0D    ; SC01:Set tempo index 13
-0DA3: 5F       ; SC02:Set volume to 2^2
-0DA4: 06       ; NOTE 4C for 2^0
-0DA5: 94       ; NOTE 5D for 2^4
-0DA6: 60       ; REST for 2^3
-0DA7: 72       ; NOTE 5C for 2^3
-0DA8: 91       ; NOTE 4B for 2^4
-0DA9: 94       ; NOTE 5D for 2^4
-0DAA: B9       ; NOTE 5G for 2^5
-0DAB: 9B       ; NOTE 5A for 2^4
-0DAC: 99       ; NOTE 5G for 2^4
-0DAD: 96       ; NOTE 5E for 2^4
-0DAE: 99       ; NOTE 5G for 2^4
-0DAF: AF       ; NOTE 4A for 2^5
-0DB0: 9B       ; NOTE 5A for 2^4
-0DB1: 60       ; REST for 2^3
-0DB2: 79       ; NOTE 5G for 2^3
-0DB3: 98       ; NOTE 5F# for 2^4
-0DB4: 60       ; REST for 2^3
-0DB5: 76       ; NOTE 5E for 2^3
-0DB6: 94       ; NOTE 5D for 2^4
-0DB7: 94       ; NOTE 5D for 2^4
-0DB8: 96       ; NOTE 5E for 2^4
-0DB9: 94       ; NOTE 5D for 2^4
-0DBA: D4       ; NOTE 5D for 2^6
-0DBB: 94       ; NOTE 5D for 2^4
-0DBC: 60       ; REST for 2^3
-0DBD: 72       ; NOTE 5C for 2^3
-0DBE: 91       ; NOTE 4B for 2^4
-0DBF: 94       ; NOTE 5D for 2^4
-0DC0: B9       ; NOTE 5G for 2^5
-0DC1: 9B       ; NOTE 5A for 2^4
-0DC2: 99       ; NOTE 5G for 2^4
-0DC3: 96       ; NOTE 5E for 2^4
-0DC4: 99       ; NOTE 5G for 2^4
-0DC5: AF       ; NOTE 4A for 2^5
-0DC6: 9B       ; NOTE 5A for 2^4
-0DC7: 60       ; REST for 2^3
-0DC8: 79       ; NOTE 5G for 2^3
-0DC9: 98       ; NOTE 5F# for 2^4
-0DCA: 60       ; REST for 2^3
-0DCB: 76       ; NOTE 5E for 2^3
-0DCC: 94       ; NOTE 5D for 2^4
-0DCD: 94       ; NOTE 5D for 2^4
-0DCE: 96       ; NOTE 5E for 2^4
-0DCF: 98       ; NOTE 5F# for 2^4
-0DD0: D9       ; NOTE 5G for 2^6
+0D9F: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0DA1: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+0DA3: 5F 06    ; SC02:Set volume to 06
+0DA5: 94       ; NOTE 8D5
+0DA6: 60       ; NOTE 16R
+0DA7: 72       ; NOTE 16C5
+0DA8: 91       ; NOTE 8B4
+0DA9: 94       ; NOTE 8D5
+0DAA: B9       ; NOTE 4G5
+0DAB: 9B       ; NOTE 8A5
+0DAC: 99       ; NOTE 8G5
+0DAD: 96       ; NOTE 8E5
+0DAE: 99       ; NOTE 8G5
+0DAF: AF       ; NOTE 4A4
+0DB0: 9B       ; NOTE 8A5
+0DB1: 60       ; NOTE 16R
+0DB2: 79       ; NOTE 16G5
+0DB3: 98       ; NOTE 8F#5
+0DB4: 60       ; NOTE 16R
+0DB5: 76       ; NOTE 16E5
+0DB6: 94       ; NOTE 8D5
+0DB7: 94       ; NOTE 8D5
+0DB8: 96       ; NOTE 8E5
+0DB9: 94       ; NOTE 8D5
+0DBA: D4       ; NOTE 2D5
+0DBB: 94       ; NOTE 8D5
+0DBC: 60       ; NOTE 16R
+0DBD: 72       ; NOTE 16C5
+0DBE: 91       ; NOTE 8B4
+0DBF: 94       ; NOTE 8D5
+0DC0: B9       ; NOTE 4G5
+0DC1: 9B       ; NOTE 8A5
+0DC2: 99       ; NOTE 8G5
+0DC3: 96       ; NOTE 8E5
+0DC4: 99       ; NOTE 8G5
+0DC5: AF       ; NOTE 4A4
+0DC6: 9B       ; NOTE 8A5
+0DC7: 60       ; NOTE 16R
+0DC8: 79       ; NOTE 16G5
+0DC9: 98       ; NOTE 8F#5
+0DCA: 60       ; NOTE 16R
+0DCB: 76       ; NOTE 16E5
+0DCC: 94       ; NOTE 8D5
+0DCD: 94       ; NOTE 8D5
+0DCE: 96       ; NOTE 8E5
+0DCF: 98       ; NOTE 8F#5
+0DD0: D9       ; NOTE 2G5
 0DD1: FF       ; END OF VOICE
 ;
 ;S10B Frog-home 6
 ; Song=10 Voice=B
-0DD2: 1F 0B    ; SC00:Use note set index 11
-0DD4: 5F       ; SC02:Set volume to 2^2
-0DD5: 06       ; NOTE 4C for 2^0
-0DD6: 94       ; NOTE 5D for 2^4
-0DD7: 60       ; REST for 2^3
-0DD8: 72       ; NOTE 5C for 2^3
-0DD9: 91       ; NOTE 4B for 2^4
-0DDA: 94       ; NOTE 5D for 2^4
-0DDB: B9       ; NOTE 5G for 2^5
-0DDC: 98       ; NOTE 5F# for 2^4
-0DDD: 94       ; NOTE 5D for 2^4
-0DDE: 92       ; NOTE 5C for 2^4
-0DDF: 91       ; NOTE 4B for 2^4
-0DE0: B2       ; NOTE 5C for 2^5
-0DE1: 92       ; NOTE 5C for 2^4
-0DE2: 60       ; REST for 2^3
-0DE3: 76       ; NOTE 5E for 2^3
-0DE4: 94       ; NOTE 5D for 2^4
-0DE5: 60       ; REST for 2^3
-0DE6: 74       ; NOTE 5D for 2^3
-0DE7: 92       ; NOTE 5C for 2^4
-0DE8: 92       ; NOTE 5C for 2^4
-0DE9: 92       ; NOTE 5C for 2^4
-0DEA: 92       ; NOTE 5C for 2^4
-0DEB: D1       ; NOTE 4B for 2^6
-0DEC: 94       ; NOTE 5D for 2^4
-0DED: 60       ; REST for 2^3
-0DEE: 72       ; NOTE 5C for 2^3
-0DEF: 91       ; NOTE 4B for 2^4
-0DF0: 94       ; NOTE 5D for 2^4
-0DF1: B9       ; NOTE 5G for 2^5
-0DF2: 98       ; NOTE 5F# for 2^4
-0DF3: 94       ; NOTE 5D for 2^4
-0DF4: 92       ; NOTE 5C for 2^4
-0DF5: 91       ; NOTE 4B for 2^4
-0DF6: B2       ; NOTE 5C for 2^5
-0DF7: 92       ; NOTE 5C for 2^4
-0DF8: 60       ; REST for 2^3
-0DF9: 76       ; NOTE 5E for 2^3
-0DFA: 94       ; NOTE 5D for 2^4
-0DFB: 60       ; REST for 2^3
-0DFC: 74       ; NOTE 5D for 2^3
-0DFD: 92       ; NOTE 5C for 2^4
-0DFE: 92       ; NOTE 5C for 2^4
-0DFF: 92       ; NOTE 5C for 2^4
-0E00: 92       ; NOTE 5C for 2^4
-0E01: D1       ; NOTE 4B for 2^6
+0DD2: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0DD4: 5F 06    ; SC02:Set volume to 06
+0DD6: 94       ; NOTE 8D5
+0DD7: 60       ; NOTE 16R
+0DD8: 72       ; NOTE 16C5
+0DD9: 91       ; NOTE 8B4
+0DDA: 94       ; NOTE 8D5
+0DDB: B9       ; NOTE 4G5
+0DDC: 98       ; NOTE 8F#5
+0DDD: 94       ; NOTE 8D5
+0DDE: 92       ; NOTE 8C5
+0DDF: 91       ; NOTE 8B4
+0DE0: B2       ; NOTE 4C5
+0DE1: 92       ; NOTE 8C5
+0DE2: 60       ; NOTE 16R
+0DE3: 76       ; NOTE 16E5
+0DE4: 94       ; NOTE 8D5
+0DE5: 60       ; NOTE 16R
+0DE6: 74       ; NOTE 16D5
+0DE7: 92       ; NOTE 8C5
+0DE8: 92       ; NOTE 8C5
+0DE9: 92       ; NOTE 8C5
+0DEA: 92       ; NOTE 8C5
+0DEB: D1       ; NOTE 2B4
+0DEC: 94       ; NOTE 8D5
+0DED: 60       ; NOTE 16R
+0DEE: 72       ; NOTE 16C5
+0DEF: 91       ; NOTE 8B4
+0DF0: 94       ; NOTE 8D5
+0DF1: B9       ; NOTE 4G5
+0DF2: 98       ; NOTE 8F#5
+0DF3: 94       ; NOTE 8D5
+0DF4: 92       ; NOTE 8C5
+0DF5: 91       ; NOTE 8B4
+0DF6: B2       ; NOTE 4C5
+0DF7: 92       ; NOTE 8C5
+0DF8: 60       ; NOTE 16R
+0DF9: 76       ; NOTE 16E5
+0DFA: 94       ; NOTE 8D5
+0DFB: 60       ; NOTE 16R
+0DFC: 74       ; NOTE 16D5
+0DFD: 92       ; NOTE 8C5
+0DFE: 92       ; NOTE 8C5
+0DFF: 92       ; NOTE 8C5
+0E00: 92       ; NOTE 8C5
+0E01: D1       ; NOTE 2B4
 0E02: FF       ; END OF VOICE
 ```
 
@@ -2729,131 +2745,129 @@ SongTable:
 ```code
 ;S11A Frog-home 7
 ; Song=11 Voice=A
-0E03: 1F 0B    ; SC00:Use note set index 11
-0E05: 3F 0D    ; SC01:Set tempo index 13
-0E07: 5F       ; SC02:Set volume to 2^2
-0E08: 06       ; NOTE 4C for 2^0
-0E09: 88       ; NOTE 4D for 2^4
-0E0A: 86       ; NOTE 4C for 2^4
-0E0B: 65       ; NOTE 3B for 2^3
-0E0C: 68       ; NOTE 4D for 2^3
-0E0D: 6D       ; NOTE 4G for 2^3
-0E0E: 71       ; NOTE 4B for 2^3
-0E0F: B4       ; NOTE 5D for 2^5
-0E10: 80       ; REST for 2^4
-0E11: 92       ; NOTE 5C for 2^4
-0E12: 71       ; NOTE 4B for 2^3
-0E13: 74       ; NOTE 5D for 2^3
-0E14: 6D       ; NOTE 4G for 2^3
-0E15: 71       ; NOTE 4B for 2^3
-0E16: A8       ; NOTE 4D for 2^5
-0E17: 80       ; REST for 2^4
-0E18: 91       ; NOTE 4B for 2^4
-0E19: 6F       ; NOTE 4A for 2^3
-0E1A: 72       ; NOTE 5C for 2^3
-0E1B: 6C       ; NOTE 4F# for 2^3
-0E1C: 6F       ; NOTE 4A for 2^3
-0E1D: A8       ; NOTE 4D for 2^5
-0E1E: 80       ; REST for 2^4
-0E1F: 92       ; NOTE 5C for 2^4
-0E20: 71       ; NOTE 4B for 2^3
-0E21: 74       ; NOTE 5D for 2^3
-0E22: 6D       ; NOTE 4G for 2^3
-0E23: 71       ; NOTE 4B for 2^3
-0E24: A8       ; NOTE 4D for 2^5
-0E25: 88       ; NOTE 4D for 2^4
-0E26: 60       ; REST for 2^3
-0E27: 66       ; NOTE 4C for 2^3
-0E28: 65       ; NOTE 3B for 2^3
-0E29: 68       ; NOTE 4D for 2^3
-0E2A: 6D       ; NOTE 4G for 2^3
-0E2B: 71       ; NOTE 4B for 2^3
-0E2C: B4       ; NOTE 5D for 2^5
-0E2D: 8D       ; NOTE 4G for 2^4
-0E2E: 60       ; REST for 2^3
-0E2F: 6B       ; NOTE 4F for 2^3
-0E30: 6A       ; NOTE 4E for 2^3
-0E31: 6D       ; NOTE 4G for 2^3
-0E32: 72       ; NOTE 5C for 2^3
-0E33: 76       ; NOTE 5E for 2^3
-0E34: B9       ; NOTE 5G for 2^5
-0E35: 98       ; NOTE 5F# for 2^4
-0E36: 96       ; NOTE 5E for 2^4
-0E37: 94       ; NOTE 5D for 2^4
-0E38: 60       ; REST for 2^3
-0E39: 71       ; NOTE 4B for 2^3
-0E3A: 96       ; NOTE 5E for 2^4
-0E3B: 60       ; REST for 2^3
-0E3C: 71       ; NOTE 4B for 2^3
-0E3D: 94       ; NOTE 5D for 2^4
-0E3E: 60       ; REST for 2^3
-0E3F: 71       ; NOTE 4B for 2^3
-0E40: 72       ; NOTE 5C for 2^3
-0E41: 68       ; NOTE 4D for 2^3
-0E42: 6C       ; NOTE 4F# for 2^3
-0E43: 6F       ; NOTE 4A for 2^3
-0E44: B4       ; NOTE 5D for 2^5
-0E45: 80       ; REST for 2^4
-0E46: 92       ; NOTE 5C for 2^4
-0E47: 71       ; NOTE 4B for 2^3
-0E48: 68       ; NOTE 4D for 2^3
-0E49: 6D       ; NOTE 4G for 2^3
-0E4A: 71       ; NOTE 4B for 2^3
-0E4B: B4       ; NOTE 5D for 2^5
-0E4C: 80       ; REST for 2^4
-0E4D: 91       ; NOTE 4B for 2^4
-0E4E: 6F       ; NOTE 4A for 2^3
-0E4F: 68       ; NOTE 4D for 2^3
-0E50: 71       ; NOTE 4B for 2^3
-0E51: 60       ; REST for 2^3
-0E52: 6F       ; NOTE 4A for 2^3
-0E53: 68       ; NOTE 4D for 2^3
-0E54: 71       ; NOTE 4B for 2^3
-0E55: 60       ; REST for 2^3
-0E56: 6F       ; NOTE 4A for 2^3
-0E57: 68       ; NOTE 4D for 2^3
-0E58: 74       ; NOTE 5D for 2^3
-0E59: 60       ; REST for 2^3
-0E5A: D9       ; NOTE 5G for 2^6
+0E03: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0E05: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+0E07: 5F 06    ; SC02:Set volume to 06
+0E09: 88       ; NOTE 8D4
+0E0A: 86       ; NOTE 8C4
+0E0B: 65       ; NOTE 16B3
+0E0C: 68       ; NOTE 16D4
+0E0D: 6D       ; NOTE 16G4
+0E0E: 71       ; NOTE 16B4
+0E0F: B4       ; NOTE 4D5
+0E10: 80       ; NOTE 8R
+0E11: 92       ; NOTE 8C5
+0E12: 71       ; NOTE 16B4
+0E13: 74       ; NOTE 16D5
+0E14: 6D       ; NOTE 16G4
+0E15: 71       ; NOTE 16B4
+0E16: A8       ; NOTE 4D4
+0E17: 80       ; NOTE 8R
+0E18: 91       ; NOTE 8B4
+0E19: 6F       ; NOTE 16A4
+0E1A: 72       ; NOTE 16C5
+0E1B: 6C       ; NOTE 16F#4
+0E1C: 6F       ; NOTE 16A4
+0E1D: A8       ; NOTE 4D4
+0E1E: 80       ; NOTE 8R
+0E1F: 92       ; NOTE 8C5
+0E20: 71       ; NOTE 16B4
+0E21: 74       ; NOTE 16D5
+0E22: 6D       ; NOTE 16G4
+0E23: 71       ; NOTE 16B4
+0E24: A8       ; NOTE 4D4
+0E25: 88       ; NOTE 8D4
+0E26: 60       ; NOTE 16R
+0E27: 66       ; NOTE 16C4
+0E28: 65       ; NOTE 16B3
+0E29: 68       ; NOTE 16D4
+0E2A: 6D       ; NOTE 16G4
+0E2B: 71       ; NOTE 16B4
+0E2C: B4       ; NOTE 4D5
+0E2D: 8D       ; NOTE 8G4
+0E2E: 60       ; NOTE 16R
+0E2F: 6B       ; NOTE 16F4
+0E30: 6A       ; NOTE 16E4
+0E31: 6D       ; NOTE 16G4
+0E32: 72       ; NOTE 16C5
+0E33: 76       ; NOTE 16E5
+0E34: B9       ; NOTE 4G5
+0E35: 98       ; NOTE 8F#5
+0E36: 96       ; NOTE 8E5
+0E37: 94       ; NOTE 8D5
+0E38: 60       ; NOTE 16R
+0E39: 71       ; NOTE 16B4
+0E3A: 96       ; NOTE 8E5
+0E3B: 60       ; NOTE 16R
+0E3C: 71       ; NOTE 16B4
+0E3D: 94       ; NOTE 8D5
+0E3E: 60       ; NOTE 16R
+0E3F: 71       ; NOTE 16B4
+0E40: 72       ; NOTE 16C5
+0E41: 68       ; NOTE 16D4
+0E42: 6C       ; NOTE 16F#4
+0E43: 6F       ; NOTE 16A4
+0E44: B4       ; NOTE 4D5
+0E45: 80       ; NOTE 8R
+0E46: 92       ; NOTE 8C5
+0E47: 71       ; NOTE 16B4
+0E48: 68       ; NOTE 16D4
+0E49: 6D       ; NOTE 16G4
+0E4A: 71       ; NOTE 16B4
+0E4B: B4       ; NOTE 4D5
+0E4C: 80       ; NOTE 8R
+0E4D: 91       ; NOTE 8B4
+0E4E: 6F       ; NOTE 16A4
+0E4F: 68       ; NOTE 16D4
+0E50: 71       ; NOTE 16B4
+0E51: 60       ; NOTE 16R
+0E52: 6F       ; NOTE 16A4
+0E53: 68       ; NOTE 16D4
+0E54: 71       ; NOTE 16B4
+0E55: 60       ; NOTE 16R
+0E56: 6F       ; NOTE 16A4
+0E57: 68       ; NOTE 16D4
+0E58: 74       ; NOTE 16D5
+0E59: 60       ; NOTE 16R
+0E5A: D9       ; NOTE 2G5
 0E5B: FF       ; END OF VOICE
 ;
 ;S11B Frog-home 7
 ; Song=11 Voice=B
-0E5C: 1F 0B    ; SC00:Use note set index 11
-0E5E: 5F       ; SC02:Set volume to 2^2
-0E5F: 06       ; NOTE 4C for 2^0
-0E60: A0       ; REST for 2^5
-0E61: AD       ; NOTE 4G for 2^5
-0E62: AC       ; NOTE 4F# for 2^5
-0E63: A0       ; REST for 2^5
-0E64: AA       ; NOTE 4E for 2^5
-0E65: A8       ; NOTE 4D for 2^5
-0E66: A0       ; REST for 2^5
-0E67: A6       ; NOTE 4C for 2^5
-0E68: A5       ; NOTE 3B for 2^5
-0E69: A0       ; REST for 2^5
-0E6A: A8       ; NOTE 4D for 2^5
-0E6B: A6       ; NOTE 4C for 2^5
-0E6C: A0       ; REST for 2^5
-0E6D: AD       ; NOTE 4G for 2^5
-0E6E: A7       ; NOTE 4C# for 2^5
-0E6F: A0       ; REST for 2^5
-0E70: AA       ; NOTE 4E for 2^5
-0E71: A8       ; NOTE 4D for 2^5
-0E72: A0       ; REST for 2^5
-0E73: A5       ; NOTE 3B for 2^5
-0E74: A6       ; NOTE 4C for 2^5
-0E75: A5       ; NOTE 3B for 2^5
-0E76: A8       ; NOTE 4D for 2^5
-0E77: A6       ; NOTE 4C for 2^5
-0E78: A0       ; REST for 2^5
-0E79: A8       ; NOTE 4D for 2^5
-0E7A: A5       ; NOTE 3B for 2^5
-0E7B: A0       ; REST for 2^5
-0E7C: A6       ; NOTE 4C for 2^5
-0E7D: A8       ; NOTE 4D for 2^5
-0E7E: A6       ; NOTE 4C for 2^5
-0E7F: C5       ; NOTE 3B for 2^6
+0E5C: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0E5E: 5F 06    ; SC02:Set volume to 06
+0E60: A0       ; NOTE 4R
+0E61: AD       ; NOTE 4G4
+0E62: AC       ; NOTE 4F#4
+0E63: A0       ; NOTE 4R
+0E64: AA       ; NOTE 4E4
+0E65: A8       ; NOTE 4D4
+0E66: A0       ; NOTE 4R
+0E67: A6       ; NOTE 4C4
+0E68: A5       ; NOTE 4B3
+0E69: A0       ; NOTE 4R
+0E6A: A8       ; NOTE 4D4
+0E6B: A6       ; NOTE 4C4
+0E6C: A0       ; NOTE 4R
+0E6D: AD       ; NOTE 4G4
+0E6E: A7       ; NOTE 4C#4
+0E6F: A0       ; NOTE 4R
+0E70: AA       ; NOTE 4E4
+0E71: A8       ; NOTE 4D4
+0E72: A0       ; NOTE 4R
+0E73: A5       ; NOTE 4B3
+0E74: A6       ; NOTE 4C4
+0E75: A5       ; NOTE 4B3
+0E76: A8       ; NOTE 4D4
+0E77: A6       ; NOTE 4C4
+0E78: A0       ; NOTE 4R
+0E79: A8       ; NOTE 4D4
+0E7A: A5       ; NOTE 4B3
+0E7B: A0       ; NOTE 4R
+0E7C: A6       ; NOTE 4C4
+0E7D: A8       ; NOTE 4D4
+0E7E: A6       ; NOTE 4C4
+0E7F: C5       ; NOTE 2B3
 0E80: FF       ; END OF VOICE
 ```
 
@@ -2862,97 +2876,95 @@ SongTable:
 ```code
 ;S12A Frog-home 8
 ; Song=12 Voice=A
-0E81: 1F 0B    ; SC00:Use note set index 11
-0E83: 3F 0D    ; SC01:Set tempo index 13
-0E85: 5F       ; SC02:Set volume to 2^2
-0E86: 06       ; NOTE 4C for 2^0
-0E87: 94       ; NOTE 5D for 2^4
-0E88: 99       ; NOTE 5G for 2^4
-0E89: 99       ; NOTE 5G for 2^4
-0E8A: 9B       ; NOTE 5A for 2^4
-0E8B: 9B       ; NOTE 5A for 2^4
-0E8C: 9D       ; NOTE 5B for 2^4
-0E8D: 9D       ; NOTE 5B for 2^4
-0E8E: 98       ; NOTE 5F# for 2^4
-0E8F: 9B       ; NOTE 5A for 2^4
-0E90: B9       ; NOTE 5G for 2^5
-0E91: B6       ; NOTE 5E for 2^5
-0E92: B4       ; NOTE 5D for 2^5
-0E93: 80       ; REST for 2^4
-0E94: 92       ; NOTE 5C for 2^4
-0E95: 91       ; NOTE 4B for 2^4
-0E96: 8F       ; NOTE 4A for 2^4
-0E97: 91       ; NOTE 4B for 2^4
-0E98: 92       ; NOTE 5C for 2^4
-0E99: 94       ; NOTE 5D for 2^4
-0E9A: B4       ; NOTE 5D for 2^5
-0E9B: 99       ; NOTE 5G for 2^4
-0E9C: 98       ; NOTE 5F# for 2^4
-0E9D: 94       ; NOTE 5D for 2^4
-0E9E: 96       ; NOTE 5E for 2^4
-0E9F: 98       ; NOTE 5F# for 2^4
-0EA0: B9       ; NOTE 5G for 2^5
-0EA1: 80       ; REST for 2^4
-0EA2: 92       ; NOTE 5C for 2^4
-0EA3: 91       ; NOTE 4B for 2^4
-0EA4: 8F       ; NOTE 4A for 2^4
-0EA5: 91       ; NOTE 4B for 2^4
-0EA6: 92       ; NOTE 5C for 2^4
-0EA7: 94       ; NOTE 5D for 2^4
-0EA8: B4       ; NOTE 5D for 2^5
-0EA9: 99       ; NOTE 5G for 2^4
-0EAA: 98       ; NOTE 5F# for 2^4
-0EAB: 94       ; NOTE 5D for 2^4
-0EAC: 96       ; NOTE 5E for 2^4
-0EAD: 98       ; NOTE 5F# for 2^4
-0EAE: B9       ; NOTE 5G for 2^5
+0E81: 1F 0B    ; SC00:Use note set index 11  (note 1 = F#3)
+0E83: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+0E85: 5F 06    ; SC02:Set volume to 06
+0E87: 94       ; NOTE 8D5
+0E88: 99       ; NOTE 8G5
+0E89: 99       ; NOTE 8G5
+0E8A: 9B       ; NOTE 8A5
+0E8B: 9B       ; NOTE 8A5
+0E8C: 9D       ; NOTE 8B5
+0E8D: 9D       ; NOTE 8B5
+0E8E: 98       ; NOTE 8F#5
+0E8F: 9B       ; NOTE 8A5
+0E90: B9       ; NOTE 4G5
+0E91: B6       ; NOTE 4E5
+0E92: B4       ; NOTE 4D5
+0E93: 80       ; NOTE 8R
+0E94: 92       ; NOTE 8C5
+0E95: 91       ; NOTE 8B4
+0E96: 8F       ; NOTE 8A4
+0E97: 91       ; NOTE 8B4
+0E98: 92       ; NOTE 8C5
+0E99: 94       ; NOTE 8D5
+0E9A: B4       ; NOTE 4D5
+0E9B: 99       ; NOTE 8G5
+0E9C: 98       ; NOTE 8F#5
+0E9D: 94       ; NOTE 8D5
+0E9E: 96       ; NOTE 8E5
+0E9F: 98       ; NOTE 8F#5
+0EA0: B9       ; NOTE 4G5
+0EA1: 80       ; NOTE 8R
+0EA2: 92       ; NOTE 8C5
+0EA3: 91       ; NOTE 8B4
+0EA4: 8F       ; NOTE 8A4
+0EA5: 91       ; NOTE 8B4
+0EA6: 92       ; NOTE 8C5
+0EA7: 94       ; NOTE 8D5
+0EA8: B4       ; NOTE 4D5
+0EA9: 99       ; NOTE 8G5
+0EAA: 98       ; NOTE 8F#5
+0EAB: 94       ; NOTE 8D5
+0EAC: 96       ; NOTE 8E5
+0EAD: 98       ; NOTE 8F#5
+0EAE: B9       ; NOTE 4G5
 0EAF: FF       ; END OF VOICE
 ;
 ;S12B Frog-home 8
 ; Song=12 Voice=B
-0EB0: 1F 0B    ; SC00:Use note set index 11
-0EB2: 5F       ; SC02:Set volume to 2^2
-0EB3: 06       ; NOTE 4C for 2^0
-0EB4: 94       ; NOTE 5D for 2^4
-0EB5: 94       ; NOTE 5D for 2^4
-0EB6: 94       ; NOTE 5D for 2^4
-0EB7: 94       ; NOTE 5D for 2^4
-0EB8: 94       ; NOTE 5D for 2^4
-0EB9: 94       ; NOTE 5D for 2^4
-0EBA: 94       ; NOTE 5D for 2^4
-0EBB: 92       ; NOTE 5C for 2^4
-0EBC: 92       ; NOTE 5C for 2^4
-0EBD: B1       ; NOTE 4B for 2^5
-0EBE: B3       ; NOTE 5C# for 2^5
-0EBF: B4       ; NOTE 5D for 2^5
-0EC0: 80       ; REST for 2^4
-0EC1: 8F       ; NOTE 4A for 2^4
-0EC2: 8D       ; NOTE 4G for 2^4
-0EC3: 8C       ; NOTE 4F# for 2^4
-0EC4: 8D       ; NOTE 4G for 2^4
-0EC5: 8F       ; NOTE 4A for 2^4
-0EC6: 8F       ; NOTE 4A for 2^4
-0EC7: 8F       ; NOTE 4A for 2^4
-0EC8: B4       ; NOTE 5D for 2^5
-0EC9: 92       ; NOTE 5C for 2^4
-0ECA: 92       ; NOTE 5C for 2^4
-0ECB: 92       ; NOTE 5C for 2^4
-0ECC: 92       ; NOTE 5C for 2^4
-0ECD: B1       ; NOTE 4B for 2^5
-0ECE: 80       ; REST for 2^4
-0ECF: 8F       ; NOTE 4A for 2^4
-0ED0: 8D       ; NOTE 4G for 2^4
-0ED1: 8C       ; NOTE 4F# for 2^4
-0ED2: 8D       ; NOTE 4G for 2^4
-0ED3: 8F       ; NOTE 4A for 2^4
-0ED4: 8F       ; NOTE 4A for 2^4
-0ED5: 8F       ; NOTE 4A for 2^4
-0ED6: B4       ; NOTE 5D for 2^5
-0ED7: 92       ; NOTE 5C for 2^4
-0ED8: 92       ; NOTE 5C for 2^4
-0ED9: 92       ; NOTE 5C for 2^4
-0EDA: 92       ; NOTE 5C for 2^4
-0EDB: B1       ; NOTE 4B for 2^5
+0EB0: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0EB2: 5F 06    ; SC02:Set volume to 06
+0EB4: 94       ; NOTE 8D5
+0EB5: 94       ; NOTE 8D5
+0EB6: 94       ; NOTE 8D5
+0EB7: 94       ; NOTE 8D5
+0EB8: 94       ; NOTE 8D5
+0EB9: 94       ; NOTE 8D5
+0EBA: 94       ; NOTE 8D5
+0EBB: 92       ; NOTE 8C5
+0EBC: 92       ; NOTE 8C5
+0EBD: B1       ; NOTE 4B4
+0EBE: B3       ; NOTE 4C#5
+0EBF: B4       ; NOTE 4D5
+0EC0: 80       ; NOTE 8R
+0EC1: 8F       ; NOTE 8A4
+0EC2: 8D       ; NOTE 8G4
+0EC3: 8C       ; NOTE 8F#4
+0EC4: 8D       ; NOTE 8G4
+0EC5: 8F       ; NOTE 8A4
+0EC6: 8F       ; NOTE 8A4
+0EC7: 8F       ; NOTE 8A4
+0EC8: B4       ; NOTE 4D5
+0EC9: 92       ; NOTE 8C5
+0ECA: 92       ; NOTE 8C5
+0ECB: 92       ; NOTE 8C5
+0ECC: 92       ; NOTE 8C5
+0ECD: B1       ; NOTE 4B4
+0ECE: 80       ; NOTE 8R
+0ECF: 8F       ; NOTE 8A4
+0ED0: 8D       ; NOTE 8G4
+0ED1: 8C       ; NOTE 8F#4
+0ED2: 8D       ; NOTE 8G4
+0ED3: 8F       ; NOTE 8A4
+0ED4: 8F       ; NOTE 8A4
+0ED5: 8F       ; NOTE 8A4
+0ED6: B4       ; NOTE 4D5
+0ED7: 92       ; NOTE 8C5
+0ED8: 92       ; NOTE 8C5
+0ED9: 92       ; NOTE 8C5
+0EDA: 92       ; NOTE 8C5
+0EDB: B1       ; NOTE 4B4
 0EDC: FF       ; END OF VOICE
 ```
 
@@ -2961,111 +2973,109 @@ SongTable:
 ```code
 ;S13A Frog-home 9
 ; Song=13 Voice=A
-0EDD: 1F 0B    ; SC00:Use note set index 11
-0EDF: 3F 0D    ; SC01:Set tempo index 13
-0EE1: 5F       ; SC02:Set volume to 2^2
-0EE2: 06       ; NOTE 4C for 2^0
-0EE3: 87       ; NOTE 4C# for 2^4
-0EE4: 60       ; REST for 2^3
-0EE5: 68       ; NOTE 4D for 2^3
-0EE6: AA       ; NOTE 4E for 2^5
-0EE7: 80       ; REST for 2^4
-0EE8: 8F       ; NOTE 4A for 2^4
-0EE9: 8E       ; NOTE 4G# for 2^4
-0EEA: 60       ; REST for 2^3
-0EEB: 6C       ; NOTE 4F# for 2^3
-0EEC: CA       ; NOTE 4E for 2^6
-0EED: 8F       ; NOTE 4A for 2^4
-0EEE: 60       ; REST for 2^3
-0EEF: 6F       ; NOTE 4A for 2^3
-0EF0: 6E       ; NOTE 4G# for 2^3
-0EF1: 71       ; NOTE 4B for 2^3
-0EF2: 94       ; NOTE 5D for 2^4
-0EF3: 9A       ; NOTE 5G# for 2^4
-0EF4: 60       ; REST for 2^3
-0EF5: 78       ; NOTE 5F# for 2^3
-0EF6: 96       ; NOTE 5E for 2^4
-0EF7: 8E       ; NOTE 4G# for 2^4
-0EF8: 8F       ; NOTE 4A for 2^4
-0EF9: 93       ; NOTE 5C# for 2^4
-0EFA: 8A       ; NOTE 4E for 2^4
-0EFB: 80       ; REST for 2^4
-0EFC: 87       ; NOTE 4C# for 2^4
-0EFD: 60       ; REST for 2^3
-0EFE: 68       ; NOTE 4D for 2^3
-0EFF: AA       ; NOTE 4E for 2^5
-0F00: 80       ; REST for 2^4
-0F01: 8F       ; NOTE 4A for 2^4
-0F02: 8E       ; NOTE 4G# for 2^4
-0F03: 60       ; REST for 2^3
-0F04: 6C       ; NOTE 4F# for 2^3
-0F05: CA       ; NOTE 4E for 2^6
-0F06: 8F       ; NOTE 4A for 2^4
-0F07: 60       ; REST for 2^3
-0F08: 6F       ; NOTE 4A for 2^3
-0F09: 6E       ; NOTE 4G# for 2^3
-0F0A: 71       ; NOTE 4B for 2^3
-0F0B: 94       ; NOTE 5D for 2^4
-0F0C: 9A       ; NOTE 5G# for 2^4
-0F0D: 60       ; REST for 2^3
-0F0E: 78       ; NOTE 5F# for 2^3
-0F0F: 96       ; NOTE 5E for 2^4
-0F10: 8E       ; NOTE 4G# for 2^4
-0F11: CF       ; NOTE 4A for 2^6
+0EDD: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0EDF: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+0EE1: 5F 06    ; SC02:Set volume to 06
+0EE3: 87       ; NOTE 8C#4
+0EE4: 60       ; NOTE 16R
+0EE5: 68       ; NOTE 16D4
+0EE6: AA       ; NOTE 4E4
+0EE7: 80       ; NOTE 8R
+0EE8: 8F       ; NOTE 8A4
+0EE9: 8E       ; NOTE 8G#4
+0EEA: 60       ; NOTE 16R
+0EEB: 6C       ; NOTE 16F#4
+0EEC: CA       ; NOTE 2E4
+0EED: 8F       ; NOTE 8A4
+0EEE: 60       ; NOTE 16R
+0EEF: 6F       ; NOTE 16A4
+0EF0: 6E       ; NOTE 16G#4
+0EF1: 71       ; NOTE 16B4
+0EF2: 94       ; NOTE 8D5
+0EF3: 9A       ; NOTE 8G#5
+0EF4: 60       ; NOTE 16R
+0EF5: 78       ; NOTE 16F#5
+0EF6: 96       ; NOTE 8E5
+0EF7: 8E       ; NOTE 8G#4
+0EF8: 8F       ; NOTE 8A4
+0EF9: 93       ; NOTE 8C#5
+0EFA: 8A       ; NOTE 8E4
+0EFB: 80       ; NOTE 8R
+0EFC: 87       ; NOTE 8C#4
+0EFD: 60       ; NOTE 16R
+0EFE: 68       ; NOTE 16D4
+0EFF: AA       ; NOTE 4E4
+0F00: 80       ; NOTE 8R
+0F01: 8F       ; NOTE 8A4
+0F02: 8E       ; NOTE 8G#4
+0F03: 60       ; NOTE 16R
+0F04: 6C       ; NOTE 16F#4
+0F05: CA       ; NOTE 2E4
+0F06: 8F       ; NOTE 8A4
+0F07: 60       ; NOTE 16R
+0F08: 6F       ; NOTE 16A4
+0F09: 6E       ; NOTE 16G#4
+0F0A: 71       ; NOTE 16B4
+0F0B: 94       ; NOTE 8D5
+0F0C: 9A       ; NOTE 8G#5
+0F0D: 60       ; NOTE 16R
+0F0E: 78       ; NOTE 16F#5
+0F0F: 96       ; NOTE 8E5
+0F10: 8E       ; NOTE 8G#4
+0F11: CF       ; NOTE 2A4
 0F12: FF       ; END OF VOICE
 ;
 ;S13B Frog-home 9
 ; Song=13 Voice=B
-0F13: 1F 0B    ; SC00:Use note set index 11
-0F15: 5F       ; SC02:Set volume to 2^2
-0F16: 06       ; NOTE 4C for 2^0
-0F17: 87       ; NOTE 4C# for 2^4
-0F18: 60       ; REST for 2^3
-0F19: 68       ; NOTE 4D for 2^3
-0F1A: AA       ; NOTE 4E for 2^5
-0F1B: 80       ; REST for 2^4
-0F1C: 8F       ; NOTE 4A for 2^4
-0F1D: 8E       ; NOTE 4G# for 2^4
-0F1E: 60       ; REST for 2^3
-0F1F: 6C       ; NOTE 4F# for 2^3
-0F20: CA       ; NOTE 4E for 2^6
-0F21: 8F       ; NOTE 4A for 2^4
-0F22: 60       ; REST for 2^3
-0F23: 6F       ; NOTE 4A for 2^3
-0F24: 6E       ; NOTE 4G# for 2^3
-0F25: 6E       ; NOTE 4G# for 2^3
-0F26: 91       ; NOTE 4B for 2^4
-0F27: 96       ; NOTE 5E for 2^4
-0F28: 60       ; REST for 2^3
-0F29: 74       ; NOTE 5D for 2^3
-0F2A: 91       ; NOTE 4B for 2^4
-0F2B: 88       ; NOTE 4D for 2^4
-0F2C: 87       ; NOTE 4C# for 2^4
-0F2D: 88       ; NOTE 4D for 2^4
-0F2E: 87       ; NOTE 4C# for 2^4
-0F2F: 80       ; REST for 2^4
-0F30: 87       ; NOTE 4C# for 2^4
-0F31: 60       ; REST for 2^3
-0F32: 68       ; NOTE 4D for 2^3
-0F33: AA       ; NOTE 4E for 2^5
-0F34: 80       ; REST for 2^4
-0F35: 87       ; NOTE 4C# for 2^4
-0F36: 88       ; NOTE 4D for 2^4
-0F37: 60       ; REST for 2^3
-0F38: 68       ; NOTE 4D for 2^3
-0F39: C7       ; NOTE 4C# for 2^6
-0F3A: 8F       ; NOTE 4A for 2^4
-0F3B: 60       ; REST for 2^3
-0F3C: 6F       ; NOTE 4A for 2^3
-0F3D: 6E       ; NOTE 4G# for 2^3
-0F3E: 6E       ; NOTE 4G# for 2^3
-0F3F: 91       ; NOTE 4B for 2^4
-0F40: 96       ; NOTE 5E for 2^4
-0F41: 60       ; REST for 2^3
-0F42: 74       ; NOTE 5D for 2^3
-0F43: 91       ; NOTE 4B for 2^4
-0F44: 88       ; NOTE 4D for 2^4
-0F45: C7       ; NOTE 4C# for 2^6
+0F13: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0F15: 5F 06    ; SC02:Set volume to 06
+0F17: 87       ; NOTE 8C#4
+0F18: 60       ; NOTE 16R
+0F19: 68       ; NOTE 16D4
+0F1A: AA       ; NOTE 4E4
+0F1B: 80       ; NOTE 8R
+0F1C: 8F       ; NOTE 8A4
+0F1D: 8E       ; NOTE 8G#4
+0F1E: 60       ; NOTE 16R
+0F1F: 6C       ; NOTE 16F#4
+0F20: CA       ; NOTE 2E4
+0F21: 8F       ; NOTE 8A4
+0F22: 60       ; NOTE 16R
+0F23: 6F       ; NOTE 16A4
+0F24: 6E       ; NOTE 16G#4
+0F25: 6E       ; NOTE 16G#4
+0F26: 91       ; NOTE 8B4
+0F27: 96       ; NOTE 8E5
+0F28: 60       ; NOTE 16R
+0F29: 74       ; NOTE 16D5
+0F2A: 91       ; NOTE 8B4
+0F2B: 88       ; NOTE 8D4
+0F2C: 87       ; NOTE 8C#4
+0F2D: 88       ; NOTE 8D4
+0F2E: 87       ; NOTE 8C#4
+0F2F: 80       ; NOTE 8R
+0F30: 87       ; NOTE 8C#4
+0F31: 60       ; NOTE 16R
+0F32: 68       ; NOTE 16D4
+0F33: AA       ; NOTE 4E4
+0F34: 80       ; NOTE 8R
+0F35: 87       ; NOTE 8C#4
+0F36: 88       ; NOTE 8D4
+0F37: 60       ; NOTE 16R
+0F38: 68       ; NOTE 16D4
+0F39: C7       ; NOTE 2C#4
+0F3A: 8F       ; NOTE 8A4
+0F3B: 60       ; NOTE 16R
+0F3C: 6F       ; NOTE 16A4
+0F3D: 6E       ; NOTE 16G#4
+0F3E: 6E       ; NOTE 16G#4
+0F3F: 91       ; NOTE 8B4
+0F40: 96       ; NOTE 8E5
+0F41: 60       ; NOTE 16R
+0F42: 74       ; NOTE 16D5
+0F43: 91       ; NOTE 8B4
+0F44: 88       ; NOTE 8D4
+0F45: C7       ; NOTE 2C#4
 0F46: FF       ; END OF VOICE
 ```
 
@@ -3074,101 +3084,99 @@ SongTable:
 ```code
 ;S14A Frog-home 10
 ; Song=14 Voice=A
-0F47: 1F 0B    ; SC00:Use note set index 11
-0F49: 3F 0D    ; SC01:Set tempo index 13
-0F4B: 5F       ; SC02:Set volume to 2^2
-0F4C: 06       ; NOTE 4C for 2^0
-0F4D: 8A       ; NOTE 4E for 2^4
-0F4E: 8F       ; NOTE 4A for 2^4
-0F4F: 8E       ; NOTE 4G# for 2^4
-0F50: 91       ; NOTE 4B for 2^4
-0F51: AA       ; NOTE 4E for 2^5
-0F52: 8C       ; NOTE 4F# for 2^4
-0F53: 8E       ; NOTE 4G# for 2^4
-0F54: 8F       ; NOTE 4A for 2^4
-0F55: 93       ; NOTE 5C# for 2^4
-0F56: AA       ; NOTE 4E for 2^5
-0F57: 8A       ; NOTE 4E for 2^4
-0F58: 8F       ; NOTE 4A for 2^4
-0F59: 8E       ; NOTE 4G# for 2^4
-0F5A: 91       ; NOTE 4B for 2^4
-0F5B: AA       ; NOTE 4E for 2^5
-0F5C: 8C       ; NOTE 4F# for 2^4
-0F5D: 8E       ; NOTE 4G# for 2^4
-0F5E: 8F       ; NOTE 4A for 2^4
-0F5F: 93       ; NOTE 5C# for 2^4
-0F60: AA       ; NOTE 4E for 2^5
-0F61: 87       ; NOTE 4C# for 2^4
-0F62: 60       ; REST for 2^3
-0F63: 68       ; NOTE 4D for 2^3
-0F64: AA       ; NOTE 4E for 2^5
-0F65: 80       ; REST for 2^4
-0F66: 8F       ; NOTE 4A for 2^4
-0F67: 8E       ; NOTE 4G# for 2^4
-0F68: 60       ; REST for 2^3
-0F69: 6C       ; NOTE 4F# for 2^3
-0F6A: CA       ; NOTE 4E for 2^6
-0F6B: 8F       ; NOTE 4A for 2^4
-0F6C: 60       ; REST for 2^3
-0F6D: 6F       ; NOTE 4A for 2^3
-0F6E: 6E       ; NOTE 4G# for 2^3
-0F6F: 71       ; NOTE 4B for 2^3
-0F70: 94       ; NOTE 5D for 2^4
-0F71: 9A       ; NOTE 5G# for 2^4
-0F72: 60       ; REST for 2^3
-0F73: 78       ; NOTE 5F# for 2^3
-0F74: 96       ; NOTE 5E for 2^4
-0F75: 8E       ; NOTE 4G# for 2^4
-0F76: CF       ; NOTE 4A for 2^6
+0F47: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0F49: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+0F4B: 5F 06    ; SC02:Set volume to 06
+0F4D: 8A       ; NOTE 8E4
+0F4E: 8F       ; NOTE 8A4
+0F4F: 8E       ; NOTE 8G#4
+0F50: 91       ; NOTE 8B4
+0F51: AA       ; NOTE 4E4
+0F52: 8C       ; NOTE 8F#4
+0F53: 8E       ; NOTE 8G#4
+0F54: 8F       ; NOTE 8A4
+0F55: 93       ; NOTE 8C#5
+0F56: AA       ; NOTE 4E4
+0F57: 8A       ; NOTE 8E4
+0F58: 8F       ; NOTE 8A4
+0F59: 8E       ; NOTE 8G#4
+0F5A: 91       ; NOTE 8B4
+0F5B: AA       ; NOTE 4E4
+0F5C: 8C       ; NOTE 8F#4
+0F5D: 8E       ; NOTE 8G#4
+0F5E: 8F       ; NOTE 8A4
+0F5F: 93       ; NOTE 8C#5
+0F60: AA       ; NOTE 4E4
+0F61: 87       ; NOTE 8C#4
+0F62: 60       ; NOTE 16R
+0F63: 68       ; NOTE 16D4
+0F64: AA       ; NOTE 4E4
+0F65: 80       ; NOTE 8R
+0F66: 8F       ; NOTE 8A4
+0F67: 8E       ; NOTE 8G#4
+0F68: 60       ; NOTE 16R
+0F69: 6C       ; NOTE 16F#4
+0F6A: CA       ; NOTE 2E4
+0F6B: 8F       ; NOTE 8A4
+0F6C: 60       ; NOTE 16R
+0F6D: 6F       ; NOTE 16A4
+0F6E: 6E       ; NOTE 16G#4
+0F6F: 71       ; NOTE 16B4
+0F70: 94       ; NOTE 8D5
+0F71: 9A       ; NOTE 8G#5
+0F72: 60       ; NOTE 16R
+0F73: 78       ; NOTE 16F#5
+0F74: 96       ; NOTE 8E5
+0F75: 8E       ; NOTE 8G#4
+0F76: CF       ; NOTE 2A4
 0F77: FF       ; END OF VOICE
 ;
 ;S14B Frog-home 10
 ; Song=14 Voice=B
-0F78: 1F 0B    ; SC00:Use note set index 11
-0F7A: 5F       ; SC02:Set volume to 2^2
-0F7B: 06       ; NOTE 4C for 2^0
-0F7C: 8A       ; NOTE 4E for 2^4
-0F7D: 87       ; NOTE 4C# for 2^4
-0F7E: 88       ; NOTE 4D for 2^4
-0F7F: 88       ; NOTE 4D for 2^4
-0F80: A8       ; NOTE 4D for 2^5
-0F81: 88       ; NOTE 4D for 2^4
-0F82: 88       ; NOTE 4D for 2^4
-0F83: 87       ; NOTE 4C# for 2^4
-0F84: 8A       ; NOTE 4E for 2^4
-0F85: A7       ; NOTE 4C# for 2^5
-0F86: 87       ; NOTE 4C# for 2^4
-0F87: 87       ; NOTE 4C# for 2^4
-0F88: 88       ; NOTE 4D for 2^4
-0F89: 88       ; NOTE 4D for 2^4
-0F8A: A8       ; NOTE 4D for 2^5
-0F8B: 88       ; NOTE 4D for 2^4
-0F8C: 88       ; NOTE 4D for 2^4
-0F8D: 87       ; NOTE 4C# for 2^4
-0F8E: 8A       ; NOTE 4E for 2^4
-0F8F: A7       ; NOTE 4C# for 2^5
-0F90: 87       ; NOTE 4C# for 2^4
-0F91: 60       ; REST for 2^3
-0F92: 68       ; NOTE 4D for 2^3
-0F93: AA       ; NOTE 4E for 2^5
-0F94: 80       ; REST for 2^4
-0F95: 87       ; NOTE 4C# for 2^4
-0F96: 88       ; NOTE 4D for 2^4
-0F97: 60       ; REST for 2^3
-0F98: 68       ; NOTE 4D for 2^3
-0F99: C7       ; NOTE 4C# for 2^6
-0F9A: 8F       ; NOTE 4A for 2^4
-0F9B: 60       ; REST for 2^3
-0F9C: 6F       ; NOTE 4A for 2^3
-0F9D: 6E       ; NOTE 4G# for 2^3
-0F9E: 6E       ; NOTE 4G# for 2^3
-0F9F: 91       ; NOTE 4B for 2^4
-0FA0: 96       ; NOTE 5E for 2^4
-0FA1: 60       ; REST for 2^3
-0FA2: 74       ; NOTE 5D for 2^3
-0FA3: 91       ; NOTE 4B for 2^4
-0FA4: 88       ; NOTE 4D for 2^4
-0FA5: C7       ; NOTE 4C# for 2^6
+0F78: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0F7A: 5F 06    ; SC02:Set volume to 06
+0F7C: 8A       ; NOTE 8E4
+0F7D: 87       ; NOTE 8C#4
+0F7E: 88       ; NOTE 8D4
+0F7F: 88       ; NOTE 8D4
+0F80: A8       ; NOTE 4D4
+0F81: 88       ; NOTE 8D4
+0F82: 88       ; NOTE 8D4
+0F83: 87       ; NOTE 8C#4
+0F84: 8A       ; NOTE 8E4
+0F85: A7       ; NOTE 4C#4
+0F86: 87       ; NOTE 8C#4
+0F87: 87       ; NOTE 8C#4
+0F88: 88       ; NOTE 8D4
+0F89: 88       ; NOTE 8D4
+0F8A: A8       ; NOTE 4D4
+0F8B: 88       ; NOTE 8D4
+0F8C: 88       ; NOTE 8D4
+0F8D: 87       ; NOTE 8C#4
+0F8E: 8A       ; NOTE 8E4
+0F8F: A7       ; NOTE 4C#4
+0F90: 87       ; NOTE 8C#4
+0F91: 60       ; NOTE 16R
+0F92: 68       ; NOTE 16D4
+0F93: AA       ; NOTE 4E4
+0F94: 80       ; NOTE 8R
+0F95: 87       ; NOTE 8C#4
+0F96: 88       ; NOTE 8D4
+0F97: 60       ; NOTE 16R
+0F98: 68       ; NOTE 16D4
+0F99: C7       ; NOTE 2C#4
+0F9A: 8F       ; NOTE 8A4
+0F9B: 60       ; NOTE 16R
+0F9C: 6F       ; NOTE 16A4
+0F9D: 6E       ; NOTE 16G#4
+0F9E: 6E       ; NOTE 16G#4
+0F9F: 91       ; NOTE 8B4
+0FA0: 96       ; NOTE 8E5
+0FA1: 60       ; NOTE 16R
+0FA2: 74       ; NOTE 16D5
+0FA3: 91       ; NOTE 8B4
+0FA4: 88       ; NOTE 8D4
+0FA5: C7       ; NOTE 2C#4
 0FA6: FF       ; END OF VOICE
 ```
 
@@ -3177,115 +3185,113 @@ SongTable:
 ```code
 ;S15A Frog-home 11
 ; Song=15 Voice=A
-0FA7: 1F 0B    ; SC00:Use note set index 11
-0FA9: 3F 0C    ; SC01:Set tempo index 12
-0FAB: 5F       ; SC02:Set volume to 2^2
-0FAC: 06       ; NOTE 4C for 2^0
-0FAD: B4       ; NOTE 5D for 2^5
-0FAE: 91       ; NOTE 4B for 2^4
-0FAF: 8D       ; NOTE 4G for 2^4
-0FB0: B9       ; NOTE 5G for 2^5
-0FB1: 98       ; NOTE 5F# for 2^4
-0FB2: 96       ; NOTE 5E for 2^4
-0FB3: B4       ; NOTE 5D for 2^5
-0FB4: 99       ; NOTE 5G for 2^4
-0FB5: 91       ; NOTE 4B for 2^4
-0FB6: 8F       ; NOTE 4A for 2^4
-0FB7: B4       ; NOTE 5D for 2^5
-0FB8: 80       ; REST for 2^4
-0FB9: 94       ; NOTE 5D for 2^4
-0FBA: 94       ; NOTE 5D for 2^4
-0FBB: 94       ; NOTE 5D for 2^4
-0FBC: 94       ; NOTE 5D for 2^4
-0FBD: 96       ; NOTE 5E for 2^4
-0FBE: 94       ; NOTE 5D for 2^4
-0FBF: 91       ; NOTE 4B for 2^4
-0FC0: 8D       ; NOTE 4G for 2^4
-0FC1: 99       ; NOTE 5G for 2^4
-0FC2: 99       ; NOTE 5G for 2^4
-0FC3: 99       ; NOTE 5G for 2^4
-0FC4: 99       ; NOTE 5G for 2^4
-0FC5: 9B       ; NOTE 5A for 2^4
-0FC6: 99       ; NOTE 5G for 2^4
-0FC7: 96       ; NOTE 5E for 2^4
-0FC8: 92       ; NOTE 5C for 2^4
-0FC9: 94       ; NOTE 5D for 2^4
-0FCA: 94       ; NOTE 5D for 2^4
-0FCB: 94       ; NOTE 5D for 2^4
-0FCC: 94       ; NOTE 5D for 2^4
-0FCD: 96       ; NOTE 5E for 2^4
-0FCE: 94       ; NOTE 5D for 2^4
-0FCF: 91       ; NOTE 4B for 2^4
-0FD0: 8D       ; NOTE 4G for 2^4
-0FD1: 99       ; NOTE 5G for 2^4
-0FD2: 99       ; NOTE 5G for 2^4
-0FD3: 99       ; NOTE 5G for 2^4
-0FD4: 99       ; NOTE 5G for 2^4
-0FD5: 9B       ; NOTE 5A for 2^4
-0FD6: 99       ; NOTE 5G for 2^4
-0FD7: 96       ; NOTE 5E for 2^4
-0FD8: 92       ; NOTE 5C for 2^4
-0FD9: 94       ; NOTE 5D for 2^4
-0FDA: 91       ; NOTE 4B for 2^4
-0FDB: 80       ; REST for 2^4
-0FDC: 91       ; NOTE 4B for 2^4
-0FDD: B9       ; NOTE 5G for 2^5
-0FDE: B1       ; NOTE 4B for 2^5
-0FDF: 94       ; NOTE 5D for 2^4
-0FE0: CF       ; NOTE 4A for 2^6
+0FA7: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+0FA9: 3F 0C    ; SC01:Set tempo index 12 (154 quarters/minute)
+0FAB: 5F 06    ; SC02:Set volume to 06
+0FAD: B4       ; NOTE 4D5
+0FAE: 91       ; NOTE 8B4
+0FAF: 8D       ; NOTE 8G4
+0FB0: B9       ; NOTE 4G5
+0FB1: 98       ; NOTE 8F#5
+0FB2: 96       ; NOTE 8E5
+0FB3: B4       ; NOTE 4D5
+0FB4: 99       ; NOTE 8G5
+0FB5: 91       ; NOTE 8B4
+0FB6: 8F       ; NOTE 8A4
+0FB7: B4       ; NOTE 4D5
+0FB8: 80       ; NOTE 8R
+0FB9: 94       ; NOTE 8D5
+0FBA: 94       ; NOTE 8D5
+0FBB: 94       ; NOTE 8D5
+0FBC: 94       ; NOTE 8D5
+0FBD: 96       ; NOTE 8E5
+0FBE: 94       ; NOTE 8D5
+0FBF: 91       ; NOTE 8B4
+0FC0: 8D       ; NOTE 8G4
+0FC1: 99       ; NOTE 8G5
+0FC2: 99       ; NOTE 8G5
+0FC3: 99       ; NOTE 8G5
+0FC4: 99       ; NOTE 8G5
+0FC5: 9B       ; NOTE 8A5
+0FC6: 99       ; NOTE 8G5
+0FC7: 96       ; NOTE 8E5
+0FC8: 92       ; NOTE 8C5
+0FC9: 94       ; NOTE 8D5
+0FCA: 94       ; NOTE 8D5
+0FCB: 94       ; NOTE 8D5
+0FCC: 94       ; NOTE 8D5
+0FCD: 96       ; NOTE 8E5
+0FCE: 94       ; NOTE 8D5
+0FCF: 91       ; NOTE 8B4
+0FD0: 8D       ; NOTE 8G4
+0FD1: 99       ; NOTE 8G5
+0FD2: 99       ; NOTE 8G5
+0FD3: 99       ; NOTE 8G5
+0FD4: 99       ; NOTE 8G5
+0FD5: 9B       ; NOTE 8A5
+0FD6: 99       ; NOTE 8G5
+0FD7: 96       ; NOTE 8E5
+0FD8: 92       ; NOTE 8C5
+0FD9: 94       ; NOTE 8D5
+0FDA: 91       ; NOTE 8B4
+0FDB: 80       ; NOTE 8R
+0FDC: 91       ; NOTE 8B4
+0FDD: B9       ; NOTE 4G5
+0FDE: B1       ; NOTE 4B4
+0FDF: 94       ; NOTE 8D5
+0FE0: CF       ; NOTE 2A4
 0FE1: FF       ; END OF VOICE
 ;
 ;S15B Frog-home 11
 ; Song=15 Voice=B
-0FE2: 1F 05    ; SC00:Use note set index 5
-0FE4: 5F       ; SC02:Set volume to 2^2
-0FE5: 06       ; NOTE 3C for 2^0
-0FE6: D9       ; NOTE 4G for 2^6
-0FE7: D6       ; NOTE 4E for 2^6
-0FE8: D9       ; NOTE 4G for 2^6
-0FE9: D8       ; NOTE 4F# for 2^6
-0FEA: 8D       ; NOTE 3G for 2^4
-0FEB: 91       ; NOTE 3B for 2^4
-0FEC: 88       ; NOTE 3D for 2^4
-0FED: 91       ; NOTE 3B for 2^4
-0FEE: 8D       ; NOTE 3G for 2^4
-0FEF: 91       ; NOTE 3B for 2^4
-0FF0: 88       ; NOTE 3D for 2^4
-0FF1: 91       ; NOTE 3B for 2^4
-0FF2: 8D       ; NOTE 3G for 2^4
-0FF3: 92       ; NOTE 4C for 2^4
-0FF4: 8A       ; NOTE 3E for 2^4
-0FF5: 92       ; NOTE 4C for 2^4
-0FF6: 8D       ; NOTE 3G for 2^4
-0FF7: 92       ; NOTE 4C for 2^4
-0FF8: 8A       ; NOTE 3E for 2^4
-0FF9: 92       ; NOTE 4C for 2^4
-0FFA: 8D       ; NOTE 3G for 2^4
-0FFB: 91       ; NOTE 3B for 2^4
-0FFC: 88       ; NOTE 3D for 2^4
-0FFD: 91       ; NOTE 3B for 2^4
-0FFE: 8D       ; NOTE 3G for 2^4
-0FFF: 91       ; NOTE 3B for 2^4
-1000: 88       ; NOTE 3D for 2^4
-1001: 91       ; NOTE 3B for 2^4
-1002: 8D       ; NOTE 3G for 2^4
-1003: 92       ; NOTE 4C for 2^4
-1004: 8A       ; NOTE 3E for 2^4
-1005: 92       ; NOTE 4C for 2^4
-1006: 8D       ; NOTE 3G for 2^4
-1007: 92       ; NOTE 4C for 2^4
-1008: 8A       ; NOTE 3E for 2^4
-1009: 92       ; NOTE 4C for 2^4
-100A: 8D       ; NOTE 3G for 2^4
-100B: 91       ; NOTE 3B for 2^4
-100C: 88       ; NOTE 3D for 2^4
-100D: 91       ; NOTE 3B for 2^4
-100E: 8D       ; NOTE 3G for 2^4
-100F: 91       ; NOTE 3B for 2^4
-1010: 88       ; NOTE 3D for 2^4
-1011: 91       ; NOTE 3B for 2^4
-1012: 8F       ; NOTE 3A for 2^4
-1013: 94       ; NOTE 4D for 2^4
+0FE2: 1F 05    ; SC00:Use note set index 5 (note 1 = F#2)
+0FE4: 5F 06    ; SC02:Set volume to 06
+0FE6: D9       ; NOTE 2G4
+0FE7: D6       ; NOTE 2E4
+0FE8: D9       ; NOTE 2G4
+0FE9: D8       ; NOTE 2F#4
+0FEA: 8D       ; NOTE 8G3
+0FEB: 91       ; NOTE 8B3
+0FEC: 88       ; NOTE 8D3
+0FED: 91       ; NOTE 8B3
+0FEE: 8D       ; NOTE 8G3
+0FEF: 91       ; NOTE 8B3
+0FF0: 88       ; NOTE 8D3
+0FF1: 91       ; NOTE 8B3
+0FF2: 8D       ; NOTE 8G3
+0FF3: 92       ; NOTE 8C4
+0FF4: 8A       ; NOTE 8E3
+0FF5: 92       ; NOTE 8C4
+0FF6: 8D       ; NOTE 8G3
+0FF7: 92       ; NOTE 8C4
+0FF8: 8A       ; NOTE 8E3
+0FF9: 92       ; NOTE 8C4
+0FFA: 8D       ; NOTE 8G3
+0FFB: 91       ; NOTE 8B3
+0FFC: 88       ; NOTE 8D3
+0FFD: 91       ; NOTE 8B3
+0FFE: 8D       ; NOTE 8G3
+0FFF: 91       ; NOTE 8B3
+1000: 88       ; NOTE 8D3
+1001: 91       ; NOTE 8B3
+1002: 8D       ; NOTE 8G3
+1003: 92       ; NOTE 8C4
+1004: 8A       ; NOTE 8E3
+1005: 92       ; NOTE 8C4
+1006: 8D       ; NOTE 8G3
+1007: 92       ; NOTE 8C4
+1008: 8A       ; NOTE 8E3
+1009: 92       ; NOTE 8C4
+100A: 8D       ; NOTE 8G3
+100B: 91       ; NOTE 8B3
+100C: 88       ; NOTE 8D3
+100D: 91       ; NOTE 8B3
+100E: 8D       ; NOTE 8G3
+100F: 91       ; NOTE 8B3
+1010: 88       ; NOTE 8D3
+1011: 91       ; NOTE 8B3
+1012: 8F       ; NOTE 8A3
+1013: 94       ; NOTE 8D4
 1014: FF       ; END OF VOICE
 
 ;I0F Main song
@@ -3316,53 +3322,52 @@ SongTable:
 ```code
 ;S25A Main song
 ; Song=25 Voice=A
-1034: 1F 0B    ; SC00:Use note set index 11
-1036: 3F 0C    ; SC01:Set tempo index 12
-1038: 5F       ; SC02:Set volume to 2^2
-1039: 05       ; NOTE 3B for 2^0
-103A: B4       ; NOTE 5D for 2^5
-103B: 91       ; NOTE 4B for 2^4
-103C: 8D       ; NOTE 4G for 2^4
-103D: B9       ; NOTE 5G for 2^5
-103E: 98       ; NOTE 5F# for 2^4
-103F: 96       ; NOTE 5E for 2^4
-1040: B4       ; NOTE 5D for 2^5
-1041: 99       ; NOTE 5G for 2^4
-1042: 91       ; NOTE 4B for 2^4
-1043: 8F       ; NOTE 4A for 2^4
-1044: B4       ; NOTE 5D for 2^5
-1045: 80       ; REST for 2^4
-1046: 80       ; REST for 2^4
-1047: 94       ; NOTE 5D for 2^4
-1048: 94       ; NOTE 5D for 2^4
-1049: 94       ; NOTE 5D for 2^4
-104A: 94       ; NOTE 5D for 2^4
-104B: 91       ; NOTE 4B for 2^4
-104C: 8F       ; NOTE 4A for 2^4
-104D: 8D       ; NOTE 4G for 2^4
-104E: 80       ; REST for 2^4
-104F: 99       ; NOTE 5G for 2^4
-1050: 99       ; NOTE 5G for 2^4
-1051: 99       ; NOTE 5G for 2^4
-1052: 9B       ; NOTE 5A for 2^4
-1053: 99       ; NOTE 5G for 2^4
-1054: 98       ; NOTE 5F# for 2^4
-1055: 96       ; NOTE 5E for 2^4
-1056: 94       ; NOTE 5D for 2^4
-1057: 91       ; NOTE 4B for 2^4
-1058: 80       ; REST for 2^4
-1059: 91       ; NOTE 4B for 2^4
-105A: B9       ; NOTE 5G for 2^5
-105B: B1       ; NOTE 4B for 2^5
-105C: 94       ; NOTE 5D for 2^4
-105D: CF       ; NOTE 4A for 2^6
-105E: 80       ; REST for 2^4
-105F: A0       ; REST for 2^5
-1060: 80       ; REST for 2^4
-1061: 91       ; NOTE 4B for 2^4
-1062: 91       ; NOTE 4B for 2^4
-1063: 92       ; NOTE 5C for 2^4
-1064: 94       ; NOTE 5D for 2^4
+1034: 1F 0B    ; SC00:Use note set index 11  (note 1 = F#3)
+1036: 3F 0C    ; SC01:Set tempo index 12 (154 quarters/minute)
+1038: 5F 05    ; SC02:Set volume to 05
+103A: B4       ; NOTE 4D5
+103B: 91       ; NOTE 8B4
+103C: 8D       ; NOTE 8G4
+103D: B9       ; NOTE 4G5
+103E: 98       ; NOTE 8F#5
+103F: 96       ; NOTE 8E5
+1040: B4       ; NOTE 4D5
+1041: 99       ; NOTE 8G5
+1042: 91       ; NOTE 8B4
+1043: 8F       ; NOTE 8A4
+1044: B4       ; NOTE 4D5
+1045: 80       ; NOTE 8R
+1046: 80       ; NOTE 8R
+1047: 94       ; NOTE 8D5
+1048: 94       ; NOTE 8D5
+1049: 94       ; NOTE 8D5
+104A: 94       ; NOTE 8D5
+104B: 91       ; NOTE 8B4
+104C: 8F       ; NOTE 8A4
+104D: 8D       ; NOTE 8G4
+104E: 80       ; NOTE 8R
+104F: 99       ; NOTE 8G5
+1050: 99       ; NOTE 8G5
+1051: 99       ; NOTE 8G5
+1052: 9B       ; NOTE 8A5
+1053: 99       ; NOTE 8G5
+1054: 98       ; NOTE 8F#5
+1055: 96       ; NOTE 8E5
+1056: 94       ; NOTE 8D5
+1057: 91       ; NOTE 8B4
+1058: 80       ; NOTE 8R
+1059: 91       ; NOTE 8B4
+105A: B9       ; NOTE 4G5
+105B: B1       ; NOTE 4B4
+105C: 94       ; NOTE 8D5
+105D: CF       ; NOTE 2A4
+105E: 80       ; NOTE 8R
+105F: A0       ; NOTE 4R
+1060: 80       ; NOTE 8R
+1061: 91       ; NOTE 8B4
+1062: 91       ; NOTE 8B4
+1063: 92       ; NOTE 8C5
+1064: 94       ; NOTE 8D5
 ```
 
 # Bug: Missing eighth note
@@ -3381,217 +3386,216 @@ the timing of the very next phrase.
 
 ```code
 ;
-; 1065: B6       ; NOTE 5E for 2^5 ; Change this to extend the quarter note to a half
-1065: 96       ; NOTE 5E for 2^4
+; 1065: B6       ; >NOTE 5E for 2^5 ; Change this to extend the quarter note to a half
+1065: 96       ; NOTE 8E5
 ;
-1066: 98       ; NOTE 5F# for 2^4
-1067: D6       ; NOTE 5E for 2^6
-1068: C0       ; REST for 2^6
-1069: 80       ; REST for 2^4
-106A: 92       ; NOTE 5C for 2^4
-106B: 92       ; NOTE 5C for 2^4
-106C: 94       ; NOTE 5D for 2^4
-106D: B6       ; NOTE 5E for 2^5
-106E: 98       ; NOTE 5F# for 2^4
-106F: 99       ; NOTE 5G for 2^4
-1070: D8       ; NOTE 5F# for 2^6
-1071: A0       ; REST for 2^5
-1072: B4       ; NOTE 5D for 2^5
-1073: D9       ; NOTE 5G for 2^6
-1074: 99       ; NOTE 5G for 2^4
-1075: 98       ; NOTE 5F# for 2^4
-1076: 96       ; NOTE 5E for 2^4
-1077: 94       ; NOTE 5D for 2^4
-1078: D8       ; NOTE 5F# for 2^6
-1079: B6       ; NOTE 5E for 2^5
-107A: B6       ; NOTE 5E for 2^5
-107B: B4       ; NOTE 5D for 2^5
-107C: BB       ; NOTE 5A for 2^5
-107D: B9       ; NOTE 5G for 2^5
-107E: B8       ; NOTE 5F# for 2^5
-107F: D9       ; NOTE 5G for 2^6
-1080: C0       ; REST for 2^6
-1081: 99       ; NOTE 5G for 2^4
-1082: 99       ; NOTE 5G for 2^4
-1083: 99       ; NOTE 5G for 2^4
-1084: 99       ; NOTE 5G for 2^4
-1085: 99       ; NOTE 5G for 2^4
-1086: 99       ; NOTE 5G for 2^4
-1087: 98       ; NOTE 5F# for 2^4
-1088: 96       ; NOTE 5E for 2^4
-1089: D9       ; NOTE 5G for 2^6
-108A: B4       ; NOTE 5D for 2^5
-108B: 91       ; NOTE 4B for 2^4
-108C: 91       ; NOTE 4B for 2^4
-108D: AF       ; NOTE 4A for 2^5
-108E: 8F       ; NOTE 4A for 2^4
-108F: 8F       ; NOTE 4A for 2^4
-1090: 99       ; NOTE 5G for 2^4
-1091: 99       ; NOTE 5G for 2^4
-1092: 98       ; NOTE 5F# for 2^4
-1093: 96       ; NOTE 5E for 2^4
-1094: D6       ; NOTE 5E for 2^6
-1095: D4       ; NOTE 5D for 2^6
-1096: 94       ; NOTE 5D for 2^4
-1097: 91       ; NOTE 4B for 2^4
-1098: 91       ; NOTE 4B for 2^4
-1099: 91       ; NOTE 4B for 2^4
-109A: B1       ; NOTE 4B for 2^5
-109B: 8F       ; NOTE 4A for 2^4
-109C: 8D       ; NOTE 4G for 2^4
-109D: 92       ; NOTE 5C for 2^4
-109E: 91       ; NOTE 4B for 2^4
-109F: 92       ; NOTE 5C for 2^4
-10A0: 94       ; NOTE 5D for 2^4
-10A1: B6       ; NOTE 5E for 2^5
-10A2: A0       ; REST for 2^5
-10A3: 94       ; NOTE 5D for 2^4
-10A4: 92       ; NOTE 5C for 2^4
-10A5: 8F       ; NOTE 4A for 2^4
-10A6: 8F       ; NOTE 4A for 2^4
-10A7: AF       ; NOTE 4A for 2^5
-10A8: 8D       ; NOTE 4G for 2^4
-10A9: 8C       ; NOTE 4F# for 2^4
-10AA: 8D       ; NOTE 4G for 2^4
-10AB: 8C       ; NOTE 4F# for 2^4
-10AC: 8D       ; NOTE 4G for 2^4
-10AD: 8F       ; NOTE 4A for 2^4
-10AE: D1       ; NOTE 4B for 2^6
-10AF: 94       ; NOTE 5D for 2^4
-10B0: 91       ; NOTE 4B for 2^4
-10B1: 91       ; NOTE 4B for 2^4
-10B2: 91       ; NOTE 4B for 2^4
-10B3: B1       ; NOTE 4B for 2^5
-10B4: 8F       ; NOTE 4A for 2^4
-10B5: 8D       ; NOTE 4G for 2^4
-10B6: 92       ; NOTE 5C for 2^4
-10B7: 91       ; NOTE 4B for 2^4
-10B8: 92       ; NOTE 5C for 2^4
-10B9: 94       ; NOTE 5D for 2^4
-10BA: B6       ; NOTE 5E for 2^5
-10BB: 98       ; NOTE 5F# for 2^4
-10BC: 96       ; NOTE 5E for 2^4
-10BD: B4       ; NOTE 5D for 2^5
-10BE: 94       ; NOTE 5D for 2^4
-10BF: 96       ; NOTE 5E for 2^4
-10C0: 94       ; NOTE 5D for 2^4
-10C1: 92       ; NOTE 5C for 2^4
-10C2: 91       ; NOTE 4B for 2^4
-10C3: 8F       ; NOTE 4A for 2^4
-10C4: CA       ; NOTE 4E for 2^6
-10C5: AC       ; NOTE 4F# for 2^5
-10C6: AF       ; NOTE 4A for 2^5
-10C7: CD       ; NOTE 4G for 2^6
-10C8: C0       ; REST for 2^6
+1066: 98       ; NOTE 8F#5
+1067: D6       ; NOTE 2E5
+1068: C0       ; NOTE 2R
+1069: 80       ; NOTE 8R
+106A: 92       ; NOTE 8C5
+106B: 92       ; NOTE 8C5
+106C: 94       ; NOTE 8D5
+106D: B6       ; NOTE 4E5
+106E: 98       ; NOTE 8F#5
+106F: 99       ; NOTE 8G5
+1070: D8       ; NOTE 2F#5
+1071: A0       ; NOTE 4R
+1072: B4       ; NOTE 4D5
+1073: D9       ; NOTE 2G5
+1074: 99       ; NOTE 8G5
+1075: 98       ; NOTE 8F#5
+1076: 96       ; NOTE 8E5
+1077: 94       ; NOTE 8D5
+1078: D8       ; NOTE 2F#5
+1079: B6       ; NOTE 4E5
+107A: B6       ; NOTE 4E5
+107B: B4       ; NOTE 4D5
+107C: BB       ; NOTE 4A5
+107D: B9       ; NOTE 4G5
+107E: B8       ; NOTE 4F#5
+107F: D9       ; NOTE 2G5
+1080: C0       ; NOTE 2R
+1081: 99       ; NOTE 8G5
+1082: 99       ; NOTE 8G5
+1083: 99       ; NOTE 8G5
+1084: 99       ; NOTE 8G5
+1085: 99       ; NOTE 8G5
+1086: 99       ; NOTE 8G5
+1087: 98       ; NOTE 8F#5
+1088: 96       ; NOTE 8E5
+1089: D9       ; NOTE 2G5
+108A: B4       ; NOTE 4D5
+108B: 91       ; NOTE 8B4
+108C: 91       ; NOTE 8B4
+108D: AF       ; NOTE 4A4
+108E: 8F       ; NOTE 8A4
+108F: 8F       ; NOTE 8A4
+1090: 99       ; NOTE 8G5
+1091: 99       ; NOTE 8G5
+1092: 98       ; NOTE 8F#5
+1093: 96       ; NOTE 8E5
+1094: D6       ; NOTE 2E5
+1095: D4       ; NOTE 2D5
+1096: 94       ; NOTE 8D5
+1097: 91       ; NOTE 8B4
+1098: 91       ; NOTE 8B4
+1099: 91       ; NOTE 8B4
+109A: B1       ; NOTE 4B4
+109B: 8F       ; NOTE 8A4
+109C: 8D       ; NOTE 8G4
+109D: 92       ; NOTE 8C5
+109E: 91       ; NOTE 8B4
+109F: 92       ; NOTE 8C5
+10A0: 94       ; NOTE 8D5
+10A1: B6       ; NOTE 4E5
+10A2: A0       ; NOTE 4R
+10A3: 94       ; NOTE 8D5
+10A4: 92       ; NOTE 8C5
+10A5: 8F       ; NOTE 8A4
+10A6: 8F       ; NOTE 8A4
+10A7: AF       ; NOTE 4A4
+10A8: 8D       ; NOTE 8G4
+10A9: 8C       ; NOTE 8F#4
+10AA: 8D       ; NOTE 8G4
+10AB: 8C       ; NOTE 8F#4
+10AC: 8D       ; NOTE 8G4
+10AD: 8F       ; NOTE 8A4
+10AE: D1       ; NOTE 2B4
+10AF: 94       ; NOTE 8D5
+10B0: 91       ; NOTE 8B4
+10B1: 91       ; NOTE 8B4
+10B2: 91       ; NOTE 8B4
+10B3: B1       ; NOTE 4B4
+10B4: 8F       ; NOTE 8A4
+10B5: 8D       ; NOTE 8G4
+10B6: 92       ; NOTE 8C5
+10B7: 91       ; NOTE 8B4
+10B8: 92       ; NOTE 8C5
+10B9: 94       ; NOTE 8D5
+10BA: B6       ; NOTE 4E5
+10BB: 98       ; NOTE 8F#5
+10BC: 96       ; NOTE 8E5
+10BD: B4       ; NOTE 4D5
+10BE: 94       ; NOTE 8D5
+10BF: 96       ; NOTE 8E5
+10C0: 94       ; NOTE 8D5
+10C1: 92       ; NOTE 8C5
+10C2: 91       ; NOTE 8B4
+10C3: 8F       ; NOTE 8A4
+10C4: CA       ; NOTE 2E4
+10C5: AC       ; NOTE 4F#4
+10C6: AF       ; NOTE 4A4
+10C7: CD       ; NOTE 2G4
+10C8: C0       ; NOTE 2R
 10C9: FF       ; END OF VOICE
 ;
 ;S25B Main song
 ; Song=25 Voice=B
-10CA: 1F 05    ; SC00:Use note set index 5
-10CC: 5F       ; SC02:Set volume to 2^2
-10CD: 05       ; NOTE 2B for 2^0
-10CE: D9       ; NOTE 4G for 2^6
-10CF: D6       ; NOTE 4E for 2^6
-10D0: D9       ; NOTE 4G for 2^6
-10D1: D8       ; NOTE 4F# for 2^6
-10D2: 8D       ; NOTE 3G for 2^4
-10D3: 91       ; NOTE 3B for 2^4
-10D4: 88       ; NOTE 3D for 2^4
-10D5: 91       ; NOTE 3B for 2^4
-10D6: 8D       ; NOTE 3G for 2^4
-10D7: 91       ; NOTE 3B for 2^4
-10D8: 88       ; NOTE 3D for 2^4
-10D9: 91       ; NOTE 3B for 2^4
-10DA: 8D       ; NOTE 3G for 2^4
-10DB: 92       ; NOTE 4C for 2^4
-10DC: 8A       ; NOTE 3E for 2^4
-10DD: 92       ; NOTE 4C for 2^4
-10DE: 8D       ; NOTE 3G for 2^4
-10DF: 92       ; NOTE 4C for 2^4
-10E0: 8A       ; NOTE 3E for 2^4
-10E1: 92       ; NOTE 4C for 2^4
-10E2: 8D       ; NOTE 3G for 2^4
-10E3: 91       ; NOTE 3B for 2^4
-10E4: 88       ; NOTE 3D for 2^4
-10E5: 91       ; NOTE 3B for 2^4
-10E6: 8D       ; NOTE 3G for 2^4
-10E7: 91       ; NOTE 3B for 2^4
-10E8: 88       ; NOTE 3D for 2^4
-10E9: 91       ; NOTE 3B for 2^4
-10EA: 8F       ; NOTE 3A for 2^4
-10EB: 94       ; NOTE 4D for 2^4
-10EC: 88       ; NOTE 3D for 2^4
-10ED: 94       ; NOTE 4D for 2^4
-10EE: 8A       ; NOTE 3E for 2^4
-10EF: 94       ; NOTE 4D for 2^4
-10F0: 8C       ; NOTE 3F# for 2^4
-10F1: 94       ; NOTE 4D for 2^4
-10F2: 8D       ; NOTE 3G for 2^4
-10F3: 91       ; NOTE 3B for 2^4
-10F4: 88       ; NOTE 3D for 2^4
-10F5: 91       ; NOTE 3B for 2^4
-10F6: 8D       ; NOTE 3G for 2^4
-10F7: 91       ; NOTE 3B for 2^4
-10F8: 88       ; NOTE 3D for 2^4
-10F9: 91       ; NOTE 3B for 2^4
-10FA: 8D       ; NOTE 3G for 2^4
-10FB: 92       ; NOTE 4C for 2^4
-10FC: 8A       ; NOTE 3E for 2^4
-10FD: 92       ; NOTE 4C for 2^4
-10FE: 8D       ; NOTE 3G for 2^4
-10FF: 92       ; NOTE 4C for 2^4
-1100: 8A       ; NOTE 3E for 2^4
-1101: 92       ; NOTE 4C for 2^4
-1102: 8D       ; NOTE 3G for 2^4
-1103: 92       ; NOTE 4C for 2^4
-1104: 8A       ; NOTE 3E for 2^4
-1105: 92       ; NOTE 4C for 2^4
-1106: 8D       ; NOTE 3G for 2^4
-1107: 92       ; NOTE 4C for 2^4
-1108: 8A       ; NOTE 3E for 2^4
-1109: 92       ; NOTE 4C for 2^4
-110A: 8F       ; NOTE 3A for 2^4
-110B: 94       ; NOTE 4D for 2^4
-110C: 88       ; NOTE 3D for 2^4
-110D: 94       ; NOTE 4D for 2^4
-110E: 8F       ; NOTE 3A for 2^4
-110F: 94       ; NOTE 4D for 2^4
-1110: 88       ; NOTE 3D for 2^4
-1111: 94       ; NOTE 4D for 2^4
-1112: 8D       ; NOTE 3G for 2^4
-1113: 91       ; NOTE 3B for 2^4
-1114: 88       ; NOTE 3D for 2^4
-1115: 91       ; NOTE 3B for 2^4
-1116: 8D       ; NOTE 3G for 2^4
-1117: 91       ; NOTE 3B for 2^4
-1118: 88       ; NOTE 3D for 2^4
-1119: 91       ; NOTE 3B for 2^4
-111A: 8D       ; NOTE 3G for 2^4
-111B: 91       ; NOTE 3B for 2^4
-111C: 89       ; NOTE 3D# for 2^4
-111D: 91       ; NOTE 3B for 2^4
-111E: 8A       ; NOTE 3E for 2^4
-111F: 92       ; NOTE 4C for 2^4
-1120: 8F       ; NOTE 3A for 2^4
-1121: 92       ; NOTE 4C for 2^4
-1122: 8F       ; NOTE 3A for 2^4
-1123: 94       ; NOTE 4D for 2^4
-1124: 88       ; NOTE 3D for 2^4
-1125: 94       ; NOTE 4D for 2^4
-1126: 8F       ; NOTE 3A for 2^4
-1127: 94       ; NOTE 4D for 2^4
-1128: 88       ; NOTE 3D for 2^4
-1129: 94       ; NOTE 4D for 2^4
-112A: 8D       ; NOTE 3G for 2^4
-112B: 91       ; NOTE 3B for 2^4
-112C: 88       ; NOTE 3D for 2^4
-112D: 91       ; NOTE 3B for 2^4
-112E: AD       ; NOTE 3G for 2^5
-112F: A0       ; REST for 2^5
-1130: D2       ; NOTE 4C for 2^6
-1131: C0       ; REST for 2^6
-1132: D1       ; NOTE 3B for 2^6
-1133: C0       ; REST for 2^6
+10CA: 1F 05    ; SC00:Use note set index 5 (note 1 = F#2)
+10CC: 5F 05    ; SC02:Set volume to 05
+10CE: D9       ; NOTE 2G4
+10CF: D6       ; NOTE 2E4
+10D0: D9       ; NOTE 2G4
+10D1: D8       ; NOTE 2F#4
+10D2: 8D       ; NOTE 8G3
+10D3: 91       ; NOTE 8B3
+10D4: 88       ; NOTE 8D3
+10D5: 91       ; NOTE 8B3
+10D6: 8D       ; NOTE 8G3
+10D7: 91       ; NOTE 8B3
+10D8: 88       ; NOTE 8D3
+10D9: 91       ; NOTE 8B3
+10DA: 8D       ; NOTE 8G3
+10DB: 92       ; NOTE 8C4
+10DC: 8A       ; NOTE 8E3
+10DD: 92       ; NOTE 8C4
+10DE: 8D       ; NOTE 8G3
+10DF: 92       ; NOTE 8C4
+10E0: 8A       ; NOTE 8E3
+10E1: 92       ; NOTE 8C4
+10E2: 8D       ; NOTE 8G3
+10E3: 91       ; NOTE 8B3
+10E4: 88       ; NOTE 8D3
+10E5: 91       ; NOTE 8B3
+10E6: 8D       ; NOTE 8G3
+10E7: 91       ; NOTE 8B3
+10E8: 88       ; NOTE 8D3
+10E9: 91       ; NOTE 8B3
+10EA: 8F       ; NOTE 8A3
+10EB: 94       ; NOTE 8D4
+10EC: 88       ; NOTE 8D3
+10ED: 94       ; NOTE 8D4
+10EE: 8A       ; NOTE 8E3
+10EF: 94       ; NOTE 8D4
+10F0: 8C       ; NOTE 8F#3
+10F1: 94       ; NOTE 8D4
+10F2: 8D       ; NOTE 8G3
+10F3: 91       ; NOTE 8B3
+10F4: 88       ; NOTE 8D3
+10F5: 91       ; NOTE 8B3
+10F6: 8D       ; NOTE 8G3
+10F7: 91       ; NOTE 8B3
+10F8: 88       ; NOTE 8D3
+10F9: 91       ; NOTE 8B3
+10FA: 8D       ; NOTE 8G3
+10FB: 92       ; NOTE 8C4
+10FC: 8A       ; NOTE 8E3
+10FD: 92       ; NOTE 8C4
+10FE: 8D       ; NOTE 8G3
+10FF: 92       ; NOTE 8C4
+1100: 8A       ; NOTE 8E3
+1101: 92       ; NOTE 8C4
+1102: 8D       ; NOTE 8G3
+1103: 92       ; NOTE 8C4
+1104: 8A       ; NOTE 8E3
+1105: 92       ; NOTE 8C4
+1106: 8D       ; NOTE 8G3
+1107: 92       ; NOTE 8C4
+1108: 8A       ; NOTE 8E3
+1109: 92       ; NOTE 8C4
+110A: 8F       ; NOTE 8A3
+110B: 94       ; NOTE 8D4
+110C: 88       ; NOTE 8D3
+110D: 94       ; NOTE 8D4
+110E: 8F       ; NOTE 8A3
+110F: 94       ; NOTE 8D4
+1110: 88       ; NOTE 8D3
+1111: 94       ; NOTE 8D4
+1112: 8D       ; NOTE 8G3
+1113: 91       ; NOTE 8B3
+1114: 88       ; NOTE 8D3
+1115: 91       ; NOTE 8B3
+1116: 8D       ; NOTE 8G3
+1117: 91       ; NOTE 8B3
+1118: 88       ; NOTE 8D3
+1119: 91       ; NOTE 8B3
+111A: 8D       ; NOTE 8G3
+111B: 91       ; NOTE 8B3
+111C: 89       ; NOTE 8D#3
+111D: 91       ; NOTE 8B3
+111E: 8A       ; NOTE 8E3
+111F: 92       ; NOTE 8C4
+1120: 8F       ; NOTE 8A3
+1121: 92       ; NOTE 8C4
+1122: 8F       ; NOTE 8A3
+1123: 94       ; NOTE 8D4
+1124: 88       ; NOTE 8D3
+1125: 94       ; NOTE 8D4
+1126: 8F       ; NOTE 8A3
+1127: 94       ; NOTE 8D4
+1128: 88       ; NOTE 8D3
+1129: 94       ; NOTE 8D4
+112A: 8D       ; NOTE 8G3
+112B: 91       ; NOTE 8B3
+112C: 88       ; NOTE 8D3
+112D: 91       ; NOTE 8B3
+112E: AD       ; NOTE 4G3
+112F: A0       ; NOTE 4R
+1130: D2       ; NOTE 2C4
+1131: C0       ; NOTE 2R
+1132: D1       ; NOTE 2B3
+1133: C0       ; NOTE 2R
 ```
 
 # Bug: Garbage note stops the voice
@@ -3617,71 +3621,71 @@ music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
 ; Needed:   110_01111
 ;               ^
 ;               |
-; 1134: CF      ; NOTE 3A for 2^6  ; This is the correct value
+; 1134: CF      ; >NOTE 3A for 2^6  ; This is the correct value
 1134: DF       ; SC06:Volume off and end song
 ;
-1135: C0       ; REST for 2^6
-1136: D2       ; NOTE 4C for 2^6
-1137: D2       ; NOTE 4C for 2^6
-1138: 8D       ; NOTE 3G for 2^4
-1139: 91       ; NOTE 3B for 2^4
-113A: 88       ; NOTE 3D for 2^4
-113B: 91       ; NOTE 3B for 2^4
-113C: 8D       ; NOTE 3G for 2^4
-113D: 91       ; NOTE 3B for 2^4
-113E: 88       ; NOTE 3D for 2^4
-113F: 91       ; NOTE 3B for 2^4
-1140: 8D       ; NOTE 3G for 2^4
-1141: 92       ; NOTE 4C for 2^4
-1142: 8A       ; NOTE 3E for 2^4
-1143: 92       ; NOTE 4C for 2^4
-1144: 8D       ; NOTE 3G for 2^4
-1145: 92       ; NOTE 4C for 2^4
-1146: 8A       ; NOTE 3E for 2^4
-1147: 92       ; NOTE 4C for 2^4
-1148: 8F       ; NOTE 3A for 2^4
-1149: 94       ; NOTE 4D for 2^4
-114A: 88       ; NOTE 3D for 2^4
-114B: 94       ; NOTE 4D for 2^4
-114C: 8F       ; NOTE 3A for 2^4
-114D: 94       ; NOTE 4D for 2^4
-114E: 88       ; NOTE 3D for 2^4
-114F: 94       ; NOTE 4D for 2^4
-1150: 8D       ; NOTE 3G for 2^4
-1151: 91       ; NOTE 3B for 2^4
-1152: 88       ; NOTE 3D for 2^4
-1153: 91       ; NOTE 3B for 2^4
-1154: 8D       ; NOTE 3G for 2^4
-1155: 91       ; NOTE 3B for 2^4
-1156: 88       ; NOTE 3D for 2^4
-1157: 91       ; NOTE 3B for 2^4
-1158: 8D       ; NOTE 3G for 2^4
-1159: 91       ; NOTE 3B for 2^4
-115A: 88       ; NOTE 3D for 2^4
-115B: 91       ; NOTE 3B for 2^4
-115C: 8D       ; NOTE 3G for 2^4
-115D: 91       ; NOTE 3B for 2^4
-115E: 88       ; NOTE 3D for 2^4
-115F: 91       ; NOTE 3B for 2^4
-1160: 8D       ; NOTE 3G for 2^4
-1161: 92       ; NOTE 4C for 2^4
-1162: 8A       ; NOTE 3E for 2^4
-1163: 92       ; NOTE 4C for 2^4
-1164: 8D       ; NOTE 3G for 2^4
-1165: 92       ; NOTE 4C for 2^4
-1166: 8A       ; NOTE 3E for 2^4
-1167: 92       ; NOTE 4C for 2^4
-1168: 8F       ; NOTE 3A for 2^4
-1169: 94       ; NOTE 4D for 2^4
-116A: 88       ; NOTE 3D for 2^4
-116B: 94       ; NOTE 4D for 2^4
-116C: 8F       ; NOTE 3A for 2^4
-116D: 94       ; NOTE 4D for 2^4
-116E: 88       ; NOTE 3D for 2^4
-116F: 94       ; NOTE 4D for 2^4
-1170: D2       ; NOTE 4C for 2^6
-1171: D4       ; NOTE 4D for 2^6
-1172: 8D       ; NOTE 3G for 2^4
+1135: C0       ; NOTE 2R
+1136: D2       ; NOTE 2C4
+1137: D2       ; NOTE 2C4
+1138: 8D       ; NOTE 8G3
+1139: 91       ; NOTE 8B3
+113A: 88       ; NOTE 8D3
+113B: 91       ; NOTE 8B3
+113C: 8D       ; NOTE 8G3
+113D: 91       ; NOTE 8B3
+113E: 88       ; NOTE 8D3
+113F: 91       ; NOTE 8B3
+1140: 8D       ; NOTE 8G3
+1141: 92       ; NOTE 8C4
+1142: 8A       ; NOTE 8E3
+1143: 92       ; NOTE 8C4
+1144: 8D       ; NOTE 8G3
+1145: 92       ; NOTE 8C4
+1146: 8A       ; NOTE 8E3
+1147: 92       ; NOTE 8C4
+1148: 8F       ; NOTE 8A3
+1149: 94       ; NOTE 8D4
+114A: 88       ; NOTE 8D3
+114B: 94       ; NOTE 8D4
+114C: 8F       ; NOTE 8A3
+114D: 94       ; NOTE 8D4
+114E: 88       ; NOTE 8D3
+114F: 94       ; NOTE 8D4
+1150: 8D       ; NOTE 8G3
+1151: 91       ; NOTE 8B3
+1152: 88       ; NOTE 8D3
+1153: 91       ; NOTE 8B3
+1154: 8D       ; NOTE 8G3
+1155: 91       ; NOTE 8B3
+1156: 88       ; NOTE 8D3
+1157: 91       ; NOTE 8B3
+1158: 8D       ; NOTE 8G3
+1159: 91       ; NOTE 8B3
+115A: 88       ; NOTE 8D3
+115B: 91       ; NOTE 8B3
+115C: 8D       ; NOTE 8G3
+115D: 91       ; NOTE 8B3
+115E: 88       ; NOTE 8D3
+115F: 91       ; NOTE 8B3
+1160: 8D       ; NOTE 8G3
+1161: 92       ; NOTE 8C4
+1162: 8A       ; NOTE 8E3
+1163: 92       ; NOTE 8C4
+1164: 8D       ; NOTE 8G3
+1165: 92       ; NOTE 8C4
+1166: 8A       ; NOTE 8E3
+1167: 92       ; NOTE 8C4
+1168: 8F       ; NOTE 8A3
+1169: 94       ; NOTE 8D4
+116A: 88       ; NOTE 8D3
+116B: 94       ; NOTE 8D4
+116C: 8F       ; NOTE 8A3
+116D: 94       ; NOTE 8D4
+116E: 88       ; NOTE 8D3
+116F: 94       ; NOTE 8D4
+1170: D2       ; NOTE 2C4
+1171: D4       ; NOTE 2D4
+1172: 8D       ; NOTE 8G3
 1173: FF       ; END OF VOICE
 ```
 
@@ -3690,130 +3694,128 @@ music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
 ```code
 ;S16A Frog-home 12
 ; Song=16 Voice=A
-1174: 1F 0B    ; SC00:Use note set index 11
-1176: 3F 0D    ; SC01:Set tempo index 13
-1178: 5F       ; SC02:Set volume to 2^2
-1179: 06       ; NOTE 4C for 2^0
-117A: 8F       ; NOTE 4A for 2^4
-117B: 60       ; REST for 2^3
-117C: 6F       ; NOTE 4A for 2^3
-117D: 8F       ; NOTE 4A for 2^4
-117E: 60       ; REST for 2^3
-117F: 6F       ; NOTE 4A for 2^3
-1180: 91       ; NOTE 4B for 2^4
-1181: 60       ; REST for 2^3
-1182: 71       ; NOTE 4B for 2^3
-1183: 93       ; NOTE 5C# for 2^4
-1184: 60       ; REST for 2^3
-1185: 73       ; NOTE 5C# for 2^3
-1186: 74       ; NOTE 5D for 2^3
-1187: 74       ; NOTE 5D for 2^3
-1188: 74       ; NOTE 5D for 2^3
-1189: 60       ; REST for 2^3
-118A: 94       ; NOTE 5D for 2^4
-118B: 60       ; REST for 2^3
-118C: 76       ; NOTE 5E for 2^3
-118D: D8       ; NOTE 5F# for 2^6
-118E: B9       ; NOTE 5G for 2^5
-118F: B9       ; NOTE 5G for 2^5
-1190: 98       ; NOTE 5F# for 2^4
-1191: 60       ; REST for 2^3
-1192: B9       ; NOTE 5G for 2^5
-1193: 60       ; REST for 2^3
-1194: 8F       ; NOTE 4A for 2^4
-1195: 60       ; REST for 2^3
-1196: 6F       ; NOTE 4A for 2^3
-1197: 91       ; NOTE 4B for 2^4
-1198: 60       ; REST for 2^3
-1199: D2       ; NOTE 5C for 2^6
-119A: 60       ; REST for 2^3
-119B: 94       ; NOTE 5D for 2^4
-119C: 60       ; REST for 2^3
-119D: 76       ; NOTE 5E for 2^3
-119E: 94       ; NOTE 5D for 2^4
-119F: 60       ; REST for 2^3
-11A0: 72       ; NOTE 5C for 2^3
-11A1: 91       ; NOTE 4B for 2^4
-11A2: 60       ; REST for 2^3
-11A3: 71       ; NOTE 4B for 2^3
-11A4: 92       ; NOTE 5C for 2^4
-11A5: 60       ; REST for 2^3
-11A6: D4       ; NOTE 5D for 2^6
-11A7: 60       ; REST for 2^3
-11A8: A0       ; REST for 2^5
-11A9: 74       ; NOTE 5D for 2^3
-11AA: 76       ; NOTE 5E for 2^3
-11AB: 78       ; NOTE 5F# for 2^3
-11AC: 60       ; REST for 2^3
-11AD: B9       ; NOTE 5G for 2^5
-11AE: B9       ; NOTE 5G for 2^5
-11AF: 98       ; NOTE 5F# for 2^4
-11B0: 60       ; REST for 2^3
-11B1: B9       ; NOTE 5G for 2^5
-11B2: 60       ; REST for 2^3
-11B3: 8F       ; NOTE 4A for 2^4
-11B4: 60       ; REST for 2^3
-11B5: 6F       ; NOTE 4A for 2^3
-11B6: 91       ; NOTE 4B for 2^4
-11B7: 60       ; REST for 2^3
-11B8: 72       ; NOTE 5C for 2^3
-11B9: 80       ; REST for 2^4
-11BA: 60       ; REST for 2^3
-11BB: 76       ; NOTE 5E for 2^3
-11BC: 94       ; NOTE 5D for 2^4
-11BD: 60       ; REST for 2^3
-11BE: 73       ; NOTE 5C# for 2^3
-11BF: 94       ; NOTE 5D for 2^4
-11C0: 80       ; REST for 2^4
-11C1: B2       ; NOTE 5C for 2^5
-11C2: B1       ; NOTE 4B for 2^5
-11C3: 8F       ; NOTE 4A for 2^4
-11C4: 60       ; REST for 2^3
-11C5: CD       ; NOTE 4G for 2^6
+1174: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+1176: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+1178: 5F 06    ; SC02:Set volume to 06
+117A: 8F       ; NOTE 8A4
+117B: 60       ; NOTE 16R
+117C: 6F       ; NOTE 16A4
+117D: 8F       ; NOTE 8A4
+117E: 60       ; NOTE 16R
+117F: 6F       ; NOTE 16A4
+1180: 91       ; NOTE 8B4
+1181: 60       ; NOTE 16R
+1182: 71       ; NOTE 16B4
+1183: 93       ; NOTE 8C#5
+1184: 60       ; NOTE 16R
+1185: 73       ; NOTE 16C#5
+1186: 74       ; NOTE 16D5
+1187: 74       ; NOTE 16D5
+1188: 74       ; NOTE 16D5
+1189: 60       ; NOTE 16R
+118A: 94       ; NOTE 8D5
+118B: 60       ; NOTE 16R
+118C: 76       ; NOTE 16E5
+118D: D8       ; NOTE 2F#5
+118E: B9       ; NOTE 4G5
+118F: B9       ; NOTE 4G5
+1190: 98       ; NOTE 8F#5
+1191: 60       ; NOTE 16R
+1192: B9       ; NOTE 4G5
+1193: 60       ; NOTE 16R
+1194: 8F       ; NOTE 8A4
+1195: 60       ; NOTE 16R
+1196: 6F       ; NOTE 16A4
+1197: 91       ; NOTE 8B4
+1198: 60       ; NOTE 16R
+1199: D2       ; NOTE 2C5
+119A: 60       ; NOTE 16R
+119B: 94       ; NOTE 8D5
+119C: 60       ; NOTE 16R
+119D: 76       ; NOTE 16E5
+119E: 94       ; NOTE 8D5
+119F: 60       ; NOTE 16R
+11A0: 72       ; NOTE 16C5
+11A1: 91       ; NOTE 8B4
+11A2: 60       ; NOTE 16R
+11A3: 71       ; NOTE 16B4
+11A4: 92       ; NOTE 8C5
+11A5: 60       ; NOTE 16R
+11A6: D4       ; NOTE 2D5
+11A7: 60       ; NOTE 16R
+11A8: A0       ; NOTE 4R
+11A9: 74       ; NOTE 16D5
+11AA: 76       ; NOTE 16E5
+11AB: 78       ; NOTE 16F#5
+11AC: 60       ; NOTE 16R
+11AD: B9       ; NOTE 4G5
+11AE: B9       ; NOTE 4G5
+11AF: 98       ; NOTE 8F#5
+11B0: 60       ; NOTE 16R
+11B1: B9       ; NOTE 4G5
+11B2: 60       ; NOTE 16R
+11B3: 8F       ; NOTE 8A4
+11B4: 60       ; NOTE 16R
+11B5: 6F       ; NOTE 16A4
+11B6: 91       ; NOTE 8B4
+11B7: 60       ; NOTE 16R
+11B8: 72       ; NOTE 16C5
+11B9: 80       ; NOTE 8R
+11BA: 60       ; NOTE 16R
+11BB: 76       ; NOTE 16E5
+11BC: 94       ; NOTE 8D5
+11BD: 60       ; NOTE 16R
+11BE: 73       ; NOTE 16C#5
+11BF: 94       ; NOTE 8D5
+11C0: 80       ; NOTE 8R
+11C1: B2       ; NOTE 4C5
+11C2: B1       ; NOTE 4B4
+11C3: 8F       ; NOTE 8A4
+11C4: 60       ; NOTE 16R
+11C5: CD       ; NOTE 2G4
 11C6: FF       ; END OF VOICE
 ;
 ;S16B Frog-home 12
 ; Song=16 Voice=B
-11C7: 1F 05    ; SC00:Use note set index 5
-11C9: 5F       ; SC02:Set volume to 2^2
-11CA: 06       ; NOTE 3C for 2^0
-11CB: B9       ; NOTE 4G for 2^5
-11CC: B9       ; NOTE 4G for 2^5
-11CD: B9       ; NOTE 4G for 2^5
-11CE: B9       ; NOTE 4G for 2^5
-11CF: B8       ; NOTE 4F# for 2^5
-11D0: B2       ; NOTE 4C for 2^5
-11D1: B1       ; NOTE 3B for 2^5
-11D2: AF       ; NOTE 3A for 2^5
-11D3: AD       ; NOTE 3G for 2^5
-11D4: B4       ; NOTE 4D for 2^5
-11D5: B6       ; NOTE 4E for 2^5
-11D6: B6       ; NOTE 4E for 2^5
-11D7: B6       ; NOTE 4E for 2^5
-11D8: B6       ; NOTE 4E for 2^5
-11D9: B6       ; NOTE 4E for 2^5
-11DA: B6       ; NOTE 4E for 2^5
-11DB: B8       ; NOTE 4F# for 2^5
-11DC: B8       ; NOTE 4F# for 2^5
-11DD: B8       ; NOTE 4F# for 2^5
-11DE: B8       ; NOTE 4F# for 2^5
-11DF: B4       ; NOTE 4D for 2^5
-11E0: B1       ; NOTE 3B for 2^5
-11E1: BD       ; NOTE 4B for 2^5
-11E2: B4       ; NOTE 4D for 2^5
-11E3: B4       ; NOTE 4D for 2^5
-11E4: B4       ; NOTE 4D for 2^5
-11E5: B6       ; NOTE 4E for 2^5
-11E6: B6       ; NOTE 4E for 2^5
-11E7: B6       ; NOTE 4E for 2^5
-11E8: B6       ; NOTE 4E for 2^5
-11E9: B6       ; NOTE 4E for 2^5
-11EA: B6       ; NOTE 4E for 2^5
-11EB: 98       ; NOTE 4F# for 2^4
-11EC: 80       ; REST for 2^4
-11ED: A0       ; REST for 2^5
-11EE: B6       ; NOTE 4E for 2^5
-11EF: B4       ; NOTE 4D for 2^5
+11C7: 1F 05    ; SC00:Use note set index 5 (note 1 = F#2)
+11C9: 5F 06    ; SC02:Set volume to 06
+11CB: B9       ; NOTE 4G4
+11CC: B9       ; NOTE 4G4
+11CD: B9       ; NOTE 4G4
+11CE: B9       ; NOTE 4G4
+11CF: B8       ; NOTE 4F#4
+11D0: B2       ; NOTE 4C4
+11D1: B1       ; NOTE 4B3
+11D2: AF       ; NOTE 4A3
+11D3: AD       ; NOTE 4G3
+11D4: B4       ; NOTE 4D4
+11D5: B6       ; NOTE 4E4
+11D6: B6       ; NOTE 4E4
+11D7: B6       ; NOTE 4E4
+11D8: B6       ; NOTE 4E4
+11D9: B6       ; NOTE 4E4
+11DA: B6       ; NOTE 4E4
+11DB: B8       ; NOTE 4F#4
+11DC: B8       ; NOTE 4F#4
+11DD: B8       ; NOTE 4F#4
+11DE: B8       ; NOTE 4F#4
+11DF: B4       ; NOTE 4D4
+11E0: B1       ; NOTE 4B3
+11E1: BD       ; NOTE 4B4
+11E2: B4       ; NOTE 4D4
+11E3: B4       ; NOTE 4D4
+11E4: B4       ; NOTE 4D4
+11E5: B6       ; NOTE 4E4
+11E6: B6       ; NOTE 4E4
+11E7: B6       ; NOTE 4E4
+11E8: B6       ; NOTE 4E4
+11E9: B6       ; NOTE 4E4
+11EA: B6       ; NOTE 4E4
+11EB: 98       ; NOTE 8F#4
+11EC: 80       ; NOTE 8R
+11ED: A0       ; NOTE 4R
+11EE: B6       ; NOTE 4E4
+11EF: B4       ; NOTE 4D4
 11F0: FF       ; END OF VOICE
 ```
 
@@ -3822,41 +3824,40 @@ music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
 ```code
 ;S17A Frog-home 13
 ; Song=17 Voice=A
-11F1: 1F 0B    ; SC00:Use note set index 11
-11F3: 3F 0D    ; SC01:Set tempo index 13
-11F5: 5F       ; SC02:Set volume to 2^2
-11F6: 06       ; NOTE 4C for 2^0
-11F7: 92       ; NOTE 5C for 2^4
-11F8: 97       ; NOTE 5F for 2^4
-11F9: 97       ; NOTE 5F for 2^4
-11FA: 99       ; NOTE 5G for 2^4
-11FB: 9B       ; NOTE 5A for 2^4
-11FC: 97       ; NOTE 5F for 2^4
-11FD: 9B       ; NOTE 5A for 2^4
-11FE: 99       ; NOTE 5G for 2^4
-11FF: 92       ; NOTE 5C for 2^4
-1200: 97       ; NOTE 5F for 2^4
-1201: 97       ; NOTE 5F for 2^4
-1202: 99       ; NOTE 5G for 2^4
-1203: 9B       ; NOTE 5A for 2^4
-1204: B7       ; NOTE 5F for 2^5
-1205: 96       ; NOTE 5E for 2^4
-1206: 92       ; NOTE 5C for 2^4
-1207: 97       ; NOTE 5F for 2^4
-1208: 97       ; NOTE 5F for 2^4
-1209: 99       ; NOTE 5G for 2^4
-120A: 9B       ; NOTE 5A for 2^4
-120B: 9C       ; NOTE 5A# for 2^4
-120C: 9B       ; NOTE 5A for 2^4
-120D: 99       ; NOTE 5G for 2^4
-120E: 97       ; NOTE 5F for 2^4
-120F: 96       ; NOTE 5E for 2^4
-1210: 92       ; NOTE 5C for 2^4
-1211: 94       ; NOTE 5D for 2^4
-1212: 96       ; NOTE 5E for 2^4
-1213: B7       ; NOTE 5F for 2^5
-1214: 97       ; NOTE 5F for 2^4
-1215: 80       ; REST for 2^4
+11F1: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+11F3: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+11F5: 5F 06    ; SC02:Set volume to 06
+11F7: 92       ; NOTE 8C5
+11F8: 97       ; NOTE 8F5
+11F9: 97       ; NOTE 8F5
+11FA: 99       ; NOTE 8G5
+11FB: 9B       ; NOTE 8A5
+11FC: 97       ; NOTE 8F5
+11FD: 9B       ; NOTE 8A5
+11FE: 99       ; NOTE 8G5
+11FF: 92       ; NOTE 8C5
+1200: 97       ; NOTE 8F5
+1201: 97       ; NOTE 8F5
+1202: 99       ; NOTE 8G5
+1203: 9B       ; NOTE 8A5
+1204: B7       ; NOTE 4F5
+1205: 96       ; NOTE 8E5
+1206: 92       ; NOTE 8C5
+1207: 97       ; NOTE 8F5
+1208: 97       ; NOTE 8F5
+1209: 99       ; NOTE 8G5
+120A: 9B       ; NOTE 8A5
+120B: 9C       ; NOTE 8A#5
+120C: 9B       ; NOTE 8A5
+120D: 99       ; NOTE 8G5
+120E: 97       ; NOTE 8F5
+120F: 96       ; NOTE 8E5
+1210: 92       ; NOTE 8C5
+1211: 94       ; NOTE 8D5
+1212: 96       ; NOTE 8E5
+1213: B7       ; NOTE 4F5
+1214: 97       ; NOTE 8F5
+1215: 80       ; NOTE 8R
 1216: FF       ; END OF VOICE
 ;
 ;S17B Frog-home 13
@@ -3869,83 +3870,81 @@ music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
 ```code
 ;S18A Frog-home 14
 ; Song=18 Voice=A
-1218: 1F 0B    ; SC00:Use note set index 11
-121A: 3F 0D    ; SC01:Set tempo index 13
-121C: 5F       ; SC02:Set volume to 2^2
-121D: 06       ; NOTE 4C for 2^0
-121E: 94       ; NOTE 5D for 2^4
-121F: 60       ; REST for 2^3
-1220: 76       ; NOTE 5E for 2^3
-1221: 94       ; NOTE 5D for 2^4
-1222: 92       ; NOTE 5C for 2^4
-1223: 94       ; NOTE 5D for 2^4
-1224: 96       ; NOTE 5E for 2^4
-1225: B7       ; NOTE 5F for 2^5
-1226: 92       ; NOTE 5C for 2^4
-1227: 60       ; REST for 2^3
-1228: 74       ; NOTE 5D for 2^3
-1229: 92       ; NOTE 5C for 2^4
-122A: 90       ; NOTE 4A# for 2^4
-122B: 8F       ; NOTE 4A for 2^4
-122C: 90       ; NOTE 4A# for 2^4
-122D: 92       ; NOTE 5C for 2^4
-122E: 80       ; REST for 2^4
-122F: 94       ; NOTE 5D for 2^4
-1230: 60       ; REST for 2^3
-1231: 76       ; NOTE 5E for 2^3
-1232: 94       ; NOTE 5D for 2^4
-1233: 92       ; NOTE 5C for 2^4
-1234: 94       ; NOTE 5D for 2^4
-1235: 96       ; NOTE 5E for 2^4
-1236: 97       ; NOTE 5F for 2^4
-1237: 94       ; NOTE 5D for 2^4
-1238: 94       ; NOTE 5D for 2^4
-1239: 97       ; NOTE 5F for 2^4
-123A: 96       ; NOTE 5E for 2^4
-123B: 99       ; NOTE 5G for 2^4
-123C: B7       ; NOTE 5F for 2^5
-123D: 97       ; NOTE 5F for 2^4
-123E: 80       ; REST for 2^4
+1218: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+121A: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+121C: 5F 06    ; SC02:Set volume to 06
+121E: 94       ; NOTE 8D5
+121F: 60       ; NOTE 16R
+1220: 76       ; NOTE 16E5
+1221: 94       ; NOTE 8D5
+1222: 92       ; NOTE 8C5
+1223: 94       ; NOTE 8D5
+1224: 96       ; NOTE 8E5
+1225: B7       ; NOTE 4F5
+1226: 92       ; NOTE 8C5
+1227: 60       ; NOTE 16R
+1228: 74       ; NOTE 16D5
+1229: 92       ; NOTE 8C5
+122A: 90       ; NOTE 8A#4
+122B: 8F       ; NOTE 8A4
+122C: 90       ; NOTE 8A#4
+122D: 92       ; NOTE 8C5
+122E: 80       ; NOTE 8R
+122F: 94       ; NOTE 8D5
+1230: 60       ; NOTE 16R
+1231: 76       ; NOTE 16E5
+1232: 94       ; NOTE 8D5
+1233: 92       ; NOTE 8C5
+1234: 94       ; NOTE 8D5
+1235: 96       ; NOTE 8E5
+1236: 97       ; NOTE 8F5
+1237: 94       ; NOTE 8D5
+1238: 94       ; NOTE 8D5
+1239: 97       ; NOTE 8F5
+123A: 96       ; NOTE 8E5
+123B: 99       ; NOTE 8G5
+123C: B7       ; NOTE 4F5
+123D: 97       ; NOTE 8F5
+123E: 80       ; NOTE 8R
 123F: FF       ; END OF VOICE
 ;
 ;S18B Frog-home 14
 ; Song=18 Voice=B
-1240: 1F 0B    ; SC00:Use note set index 11
-1242: 5F       ; SC02:Set volume to 2^2
-1243: 06       ; NOTE 4C for 2^0
-1244: 90       ; NOTE 4A# for 2^4
-1245: 60       ; REST for 2^3
-1246: 70       ; NOTE 4A# for 2^3
-1247: 90       ; NOTE 4A# for 2^4
-1248: 92       ; NOTE 5C for 2^4
-1249: 90       ; NOTE 4A# for 2^4
-124A: 90       ; NOTE 4A# for 2^4
-124B: B0       ; NOTE 4A# for 2^5
-124C: 8F       ; NOTE 4A for 2^4
-124D: 60       ; REST for 2^3
-124E: 70       ; NOTE 4A# for 2^3
-124F: 8F       ; NOTE 4A for 2^4
-1250: 8D       ; NOTE 4G for 2^4
-1251: 8B       ; NOTE 4F for 2^4
-1252: 8B       ; NOTE 4F for 2^4
-1253: 8B       ; NOTE 4F for 2^4
-1254: 80       ; REST for 2^4
-1255: 90       ; NOTE 4A# for 2^4
-1256: 60       ; REST for 2^3
-1257: 70       ; NOTE 4A# for 2^3
-1258: 90       ; NOTE 4A# for 2^4
-1259: 92       ; NOTE 5C for 2^4
-125A: 90       ; NOTE 4A# for 2^4
-125B: 90       ; NOTE 4A# for 2^4
-125C: 90       ; NOTE 4A# for 2^4
-125D: 90       ; NOTE 4A# for 2^4
-125E: 8F       ; NOTE 4A for 2^4
-125F: 92       ; NOTE 5C for 2^4
-1260: 92       ; NOTE 5C for 2^4
-1261: 90       ; NOTE 4A# for 2^4
-1262: AF       ; NOTE 4A for 2^5
-1263: 8F       ; NOTE 4A for 2^4
-1264: 80       ; REST for 2^4
+1240: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+1242: 5F 06    ; SC02:Set volume to 06
+1244: 90       ; NOTE 8A#4
+1245: 60       ; NOTE 16R
+1246: 70       ; NOTE 16A#4
+1247: 90       ; NOTE 8A#4
+1248: 92       ; NOTE 8C5
+1249: 90       ; NOTE 8A#4
+124A: 90       ; NOTE 8A#4
+124B: B0       ; NOTE 4A#4
+124C: 8F       ; NOTE 8A4
+124D: 60       ; NOTE 16R
+124E: 70       ; NOTE 16A#4
+124F: 8F       ; NOTE 8A4
+1250: 8D       ; NOTE 8G4
+1251: 8B       ; NOTE 8F4
+1252: 8B       ; NOTE 8F4
+1253: 8B       ; NOTE 8F4
+1254: 80       ; NOTE 8R
+1255: 90       ; NOTE 8A#4
+1256: 60       ; NOTE 16R
+1257: 70       ; NOTE 16A#4
+1258: 90       ; NOTE 8A#4
+1259: 92       ; NOTE 8C5
+125A: 90       ; NOTE 8A#4
+125B: 90       ; NOTE 8A#4
+125C: 90       ; NOTE 8A#4
+125D: 90       ; NOTE 8A#4
+125E: 8F       ; NOTE 8A4
+125F: 92       ; NOTE 8C5
+1260: 92       ; NOTE 8C5
+1261: 90       ; NOTE 8A#4
+1262: AF       ; NOTE 4A4
+1263: 8F       ; NOTE 8A4
+1264: 80       ; NOTE 8R
 1265: FF       ; END OF VOICE
 ```
 
@@ -3954,93 +3953,91 @@ music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
 ```code
 ;S19A Frog-home 15
 ; Song=19 Voice=A
-1266: 1F 0B    ; SC00:Use note set index 11
-1268: 3F 0D    ; SC01:Set tempo index 13
-126A: 5F       ; SC02:Set volume to 2^2
-126B: 06       ; NOTE 4C for 2^0
-126C: 72       ; NOTE 5C for 2^3
-126D: 74       ; NOTE 5D for 2^3
-126E: B6       ; NOTE 5E for 2^5
-126F: 96       ; NOTE 5E for 2^4
-1270: B6       ; NOTE 5E for 2^5
-1271: 96       ; NOTE 5E for 2^4
-1272: B7       ; NOTE 5F for 2^5
-1273: 96       ; NOTE 5E for 2^4
-1274: B6       ; NOTE 5E for 2^5
-1275: 7B       ; NOTE 5A for 2^3
-1276: 7B       ; NOTE 5A for 2^3
-1277: B9       ; NOTE 5G for 2^5
-1278: 96       ; NOTE 5E for 2^4
-1279: 96       ; NOTE 5E for 2^4
-127A: 94       ; NOTE 5D for 2^4
-127B: 92       ; NOTE 5C for 2^4
-127C: B4       ; NOTE 5D for 2^5
-127D: 94       ; NOTE 5D for 2^4
-127E: B4       ; NOTE 5D for 2^5
-127F: 80       ; REST for 2^4
-1280: B6       ; NOTE 5E for 2^5
-1281: 96       ; NOTE 5E for 2^4
-1282: B6       ; NOTE 5E for 2^5
-1283: 96       ; NOTE 5E for 2^4
-1284: B7       ; NOTE 5F for 2^5
-1285: 96       ; NOTE 5E for 2^4
-1286: B6       ; NOTE 5E for 2^5
-1287: 9B       ; NOTE 5A for 2^4
-1288: B9       ; NOTE 5G for 2^5
-1289: 96       ; NOTE 5E for 2^4
-128A: 94       ; NOTE 5D for 2^4
-128B: 96       ; NOTE 5E for 2^4
-128C: 94       ; NOTE 5D for 2^4
-128D: B2       ; NOTE 5C for 2^5
-128E: 92       ; NOTE 5C for 2^4
-128F: B2       ; NOTE 5C for 2^5
-1290: 80       ; REST for 2^4
+1266: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+1268: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+126A: 5F 06    ; SC02:Set volume to 06
+126C: 72       ; NOTE 16C5
+126D: 74       ; NOTE 16D5
+126E: B6       ; NOTE 4E5
+126F: 96       ; NOTE 8E5
+1270: B6       ; NOTE 4E5
+1271: 96       ; NOTE 8E5
+1272: B7       ; NOTE 4F5
+1273: 96       ; NOTE 8E5
+1274: B6       ; NOTE 4E5
+1275: 7B       ; NOTE 16A5
+1276: 7B       ; NOTE 16A5
+1277: B9       ; NOTE 4G5
+1278: 96       ; NOTE 8E5
+1279: 96       ; NOTE 8E5
+127A: 94       ; NOTE 8D5
+127B: 92       ; NOTE 8C5
+127C: B4       ; NOTE 4D5
+127D: 94       ; NOTE 8D5
+127E: B4       ; NOTE 4D5
+127F: 80       ; NOTE 8R
+1280: B6       ; NOTE 4E5
+1281: 96       ; NOTE 8E5
+1282: B6       ; NOTE 4E5
+1283: 96       ; NOTE 8E5
+1284: B7       ; NOTE 4F5
+1285: 96       ; NOTE 8E5
+1286: B6       ; NOTE 4E5
+1287: 9B       ; NOTE 8A5
+1288: B9       ; NOTE 4G5
+1289: 96       ; NOTE 8E5
+128A: 94       ; NOTE 8D5
+128B: 96       ; NOTE 8E5
+128C: 94       ; NOTE 8D5
+128D: B2       ; NOTE 4C5
+128E: 92       ; NOTE 8C5
+128F: B2       ; NOTE 4C5
+1290: 80       ; NOTE 8R
 1291: FF       ; END OF VOICE
 ;
 ;S19B Frog-home 15
 ; Song=19 Voice=B
-1292: 1F 0B    ; SC00:Use note set index 11
-1294: 5F       ; SC02:Set volume to 2^2
-1295: 06       ; NOTE 4C for 2^0
-1296: 72       ; NOTE 5C for 2^3
-1297: 74       ; NOTE 5D for 2^3
-1298: B6       ; NOTE 5E for 2^5
-1299: 8D       ; NOTE 4G for 2^4
-129A: 8D       ; NOTE 4G for 2^4
-129B: 8F       ; NOTE 4A for 2^4
-129C: 8D       ; NOTE 4G for 2^4
-129D: AF       ; NOTE 4A for 2^5
-129E: 92       ; NOTE 5C for 2^4
-129F: B2       ; NOTE 5C for 2^5
-12A0: 80       ; REST for 2^4
-12A1: AD       ; NOTE 4G for 2^5
-12A2: 8D       ; NOTE 4G for 2^4
-12A3: 8F       ; NOTE 4A for 2^4
-12A4: 91       ; NOTE 4B for 2^4
-12A5: 92       ; NOTE 5C for 2^4
-12A6: B2       ; NOTE 5C for 2^5
-12A7: 91       ; NOTE 4B for 2^4
-12A8: B1       ; NOTE 4B for 2^5
-12A9: 72       ; NOTE 5C for 2^3
-12AA: 74       ; NOTE 5D for 2^3
-12AB: B6       ; NOTE 5E for 2^5
-12AC: 8D       ; NOTE 4G for 2^4
-12AD: 8D       ; NOTE 4G for 2^4
-12AE: 8F       ; NOTE 4A for 2^4
-12AF: 8D       ; NOTE 4G for 2^4
-12B0: AF       ; NOTE 4A for 2^5
-12B1: 92       ; NOTE 5C for 2^4
-12B2: B2       ; NOTE 5C for 2^5
-12B3: 97       ; NOTE 5F for 2^4
-12B4: B6       ; NOTE 5E for 2^5
-12B5: 92       ; NOTE 5C for 2^4
-12B6: 91       ; NOTE 4B for 2^4
-12B7: 92       ; NOTE 5C for 2^4
-12B8: 9D       ; NOTE 5B for 2^4
-12B9: AA       ; NOTE 4E for 2^5
-12BA: 8A       ; NOTE 4E for 2^4
-12BB: AA       ; NOTE 4E for 2^5
-12BC: 80       ; REST for 2^4
+1292: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+1294: 5F 06    ; SC02:Set volume to 06
+1296: 72       ; NOTE 16C5
+1297: 74       ; NOTE 16D5
+1298: B6       ; NOTE 4E5
+1299: 8D       ; NOTE 8G4
+129A: 8D       ; NOTE 8G4
+129B: 8F       ; NOTE 8A4
+129C: 8D       ; NOTE 8G4
+129D: AF       ; NOTE 4A4
+129E: 92       ; NOTE 8C5
+129F: B2       ; NOTE 4C5
+12A0: 80       ; NOTE 8R
+12A1: AD       ; NOTE 4G4
+12A2: 8D       ; NOTE 8G4
+12A3: 8F       ; NOTE 8A4
+12A4: 91       ; NOTE 8B4
+12A5: 92       ; NOTE 8C5
+12A6: B2       ; NOTE 4C5
+12A7: 91       ; NOTE 8B4
+12A8: B1       ; NOTE 4B4
+12A9: 72       ; NOTE 16C5
+12AA: 74       ; NOTE 16D5
+12AB: B6       ; NOTE 4E5
+12AC: 8D       ; NOTE 8G4
+12AD: 8D       ; NOTE 8G4
+12AE: 8F       ; NOTE 8A4
+12AF: 8D       ; NOTE 8G4
+12B0: AF       ; NOTE 4A4
+12B1: 92       ; NOTE 8C5
+12B2: B2       ; NOTE 4C5
+12B3: 97       ; NOTE 8F5
+12B4: B6       ; NOTE 4E5
+12B5: 92       ; NOTE 8C5
+12B6: 91       ; NOTE 8B4
+12B7: 92       ; NOTE 8C5
+12B8: 9D       ; NOTE 8B5
+12B9: AA       ; NOTE 4E4
+12BA: 8A       ; NOTE 8E4
+12BB: AA       ; NOTE 4E4
+12BC: 80       ; NOTE 8R
 12BD: FF       ; END OF VOICE
 ```
 
@@ -4049,61 +4046,59 @@ music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
 ```code
 ;S20A Frog-home 16
 ; Song=20 Voice=A
-12BE: 1F 0B    ; SC00:Use note set index 11
-12C0: 3F 0D    ; SC01:Set tempo index 13
-12C2: 5F       ; SC02:Set volume to 2^2
-12C3: 06       ; NOTE 4C for 2^0
-12C4: 8A       ; NOTE 4E for 2^4
-12C5: AF       ; NOTE 4A for 2^5
-12C6: 8E       ; NOTE 4G# for 2^4
-12C7: 8C       ; NOTE 4F# for 2^4
-12C8: AA       ; NOTE 4E for 2^5
-12C9: 80       ; REST for 2^4
-12CA: 8A       ; NOTE 4E for 2^4
-12CB: AC       ; NOTE 4F# for 2^5
-12CC: AE       ; NOTE 4G# for 2^5
-12CD: AF       ; NOTE 4A for 2^5
-12CE: 8A       ; NOTE 4E for 2^4
-12CF: 8A       ; NOTE 4E for 2^4
-12D0: 8C       ; NOTE 4F# for 2^4
-12D1: 8A       ; NOTE 4E for 2^4
-12D2: 88       ; NOTE 4D for 2^4
-12D3: 87       ; NOTE 4C# for 2^4
-12D4: 8C       ; NOTE 4F# for 2^4
-12D5: 8A       ; NOTE 4E for 2^4
-12D6: 88       ; NOTE 4D for 2^4
-12D7: 87       ; NOTE 4C# for 2^4
-12D8: A5       ; NOTE 3B for 2^5
-12D9: AA       ; NOTE 4E for 2^5
-12DA: AA       ; NOTE 4E for 2^5
-12DB: 80       ; REST for 2^4
+12BE: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+12C0: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+12C2: 5F 06    ; SC02:Set volume to 06
+12C4: 8A       ; NOTE 8E4
+12C5: AF       ; NOTE 4A4
+12C6: 8E       ; NOTE 8G#4
+12C7: 8C       ; NOTE 8F#4
+12C8: AA       ; NOTE 4E4
+12C9: 80       ; NOTE 8R
+12CA: 8A       ; NOTE 8E4
+12CB: AC       ; NOTE 4F#4
+12CC: AE       ; NOTE 4G#4
+12CD: AF       ; NOTE 4A4
+12CE: 8A       ; NOTE 8E4
+12CF: 8A       ; NOTE 8E4
+12D0: 8C       ; NOTE 8F#4
+12D1: 8A       ; NOTE 8E4
+12D2: 88       ; NOTE 8D4
+12D3: 87       ; NOTE 8C#4
+12D4: 8C       ; NOTE 8F#4
+12D5: 8A       ; NOTE 8E4
+12D6: 88       ; NOTE 8D4
+12D7: 87       ; NOTE 8C#4
+12D8: A5       ; NOTE 4B3
+12D9: AA       ; NOTE 4E4
+12DA: AA       ; NOTE 4E4
+12DB: 80       ; NOTE 8R
 12DC: FF       ; END OF VOICE
 ;
 ;S20B Frog-home 16
 ; Song=20 Voice=B
-12DD: 1F 0B    ; SC00:Use note set index 11
-12DF: 5F       ; SC02:Set volume to 2^2
-12E0: 06       ; NOTE 4C for 2^0
-12E1: 8A       ; NOTE 4E for 2^4
-12E2: AF       ; NOTE 4A for 2^5
-12E3: 8E       ; NOTE 4G# for 2^4
-12E4: 8C       ; NOTE 4F# for 2^4
-12E5: AA       ; NOTE 4E for 2^5
-12E6: 80       ; REST for 2^4
-12E7: 8A       ; NOTE 4E for 2^4
-12E8: A9       ; NOTE 4D# for 2^5
-12E9: A8       ; NOTE 4D for 2^5
-12EA: A7       ; NOTE 4C# for 2^5
-12EB: 87       ; NOTE 4C# for 2^4
-12EC: 83       ; NOTE 3A for 2^4
-12ED: 88       ; NOTE 4D for 2^4
-12EE: 87       ; NOTE 4C# for 2^4
-12EF: 85       ; NOTE 3B for 2^4
-12F0: 83       ; NOTE 3A for 2^4
-12F1: A3       ; NOTE 3A for 2^5
-12F2: A5       ; NOTE 3B for 2^5
-12F3: A1       ; NOTE 3G for 2^5
-12F4: 80       ; REST for 2^4
+12DD: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+12DF: 5F 06    ; SC02:Set volume to 06
+12E1: 8A       ; NOTE 8E4
+12E2: AF       ; NOTE 4A4
+12E3: 8E       ; NOTE 8G#4
+12E4: 8C       ; NOTE 8F#4
+12E5: AA       ; NOTE 4E4
+12E6: 80       ; NOTE 8R
+12E7: 8A       ; NOTE 8E4
+12E8: A9       ; NOTE 4D#4
+12E9: A8       ; NOTE 4D4
+12EA: A7       ; NOTE 4C#4
+12EB: 87       ; NOTE 8C#4
+12EC: 83       ; NOTE 8A3
+12ED: 88       ; NOTE 8D4
+12EE: 87       ; NOTE 8C#4
+12EF: 85       ; NOTE 8B3
+12F0: 83       ; NOTE 8A3
+12F1: A3       ; NOTE 4A3
+12F2: A5       ; NOTE 4B3
+12F3: A1       ; NOTE 4G3
+12F4: 80       ; NOTE 8R
 12F5: FF       ; END OF VOICE
 ```
 
@@ -4112,73 +4107,71 @@ music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
 ```code
 ;S21A Frog-home 17
 ; Song=21 Voice=A
-12F6: 1F 0B    ; SC00:Use note set index 11
-12F8: 3F 0D    ; SC01:Set tempo index 13
-12FA: 5F       ; SC02:Set volume to 2^2
-12FB: 06       ; NOTE 4C for 2^0
-12FC: 8A       ; NOTE 4E for 2^4
-12FD: 87       ; NOTE 4C# for 2^4
-12FE: 8A       ; NOTE 4E for 2^4
-12FF: 8A       ; NOTE 4E for 2^4
-1300: 8A       ; NOTE 4E for 2^4
-1301: 8C       ; NOTE 4F# for 2^4
-1302: 8A       ; NOTE 4E for 2^4
-1303: 8A       ; NOTE 4E for 2^4
-1304: 8A       ; NOTE 4E for 2^4
-1305: 87       ; NOTE 4C# for 2^4
-1306: 8A       ; NOTE 4E for 2^4
-1307: 8A       ; NOTE 4E for 2^4
-1308: 8A       ; NOTE 4E for 2^4
-1309: 8C       ; NOTE 4F# for 2^4
-130A: 8A       ; NOTE 4E for 2^4
-130B: 8A       ; NOTE 4E for 2^4
-130C: 8A       ; NOTE 4E for 2^4
-130D: AF       ; NOTE 4A for 2^5
-130E: B1       ; NOTE 4B for 2^5
-130F: 93       ; NOTE 5C# for 2^4
-1310: 60       ; REST for 2^3
-1311: 6F       ; NOTE 4A for 2^3
-1312: 8F       ; NOTE 4A for 2^4
-1313: 8F       ; NOTE 4A for 2^4
-1314: B1       ; NOTE 4B for 2^5
-1315: AE       ; NOTE 4G# for 2^5
-1316: AF       ; NOTE 4A for 2^5
-1317: 80       ; REST for 2^4
+12F6: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+12F8: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+12FA: 5F 06    ; SC02:Set volume to 06
+12FC: 8A       ; NOTE 8E4
+12FD: 87       ; NOTE 8C#4
+12FE: 8A       ; NOTE 8E4
+12FF: 8A       ; NOTE 8E4
+1300: 8A       ; NOTE 8E4
+1301: 8C       ; NOTE 8F#4
+1302: 8A       ; NOTE 8E4
+1303: 8A       ; NOTE 8E4
+1304: 8A       ; NOTE 8E4
+1305: 87       ; NOTE 8C#4
+1306: 8A       ; NOTE 8E4
+1307: 8A       ; NOTE 8E4
+1308: 8A       ; NOTE 8E4
+1309: 8C       ; NOTE 8F#4
+130A: 8A       ; NOTE 8E4
+130B: 8A       ; NOTE 8E4
+130C: 8A       ; NOTE 8E4
+130D: AF       ; NOTE 4A4
+130E: B1       ; NOTE 4B4
+130F: 93       ; NOTE 8C#5
+1310: 60       ; NOTE 16R
+1311: 6F       ; NOTE 16A4
+1312: 8F       ; NOTE 8A4
+1313: 8F       ; NOTE 8A4
+1314: B1       ; NOTE 4B4
+1315: AE       ; NOTE 4G#4
+1316: AF       ; NOTE 4A4
+1317: 80       ; NOTE 8R
 1318: FF       ; END OF VOICE
 ;
 ;S21B Frog-home 17
 ; Song=21 Voice=B
-1319: 1F 0B    ; SC00:Use note set index 11
-131B: 5F       ; SC02:Set volume to 2^2
-131C: 06       ; NOTE 4C for 2^0
-131D: 87       ; NOTE 4C# for 2^4
-131E: 83       ; NOTE 3A for 2^4
-131F: 87       ; NOTE 4C# for 2^4
-1320: 87       ; NOTE 4C# for 2^4
-1321: 87       ; NOTE 4C# for 2^4
-1322: 86       ; NOTE 4C for 2^4
-1323: 87       ; NOTE 4C# for 2^4
-1324: 87       ; NOTE 4C# for 2^4
-1325: 87       ; NOTE 4C# for 2^4
-1326: 83       ; NOTE 3A for 2^4
-1327: 87       ; NOTE 4C# for 2^4
-1328: 87       ; NOTE 4C# for 2^4
-1329: 87       ; NOTE 4C# for 2^4
-132A: 87       ; NOTE 4C# for 2^4
-132B: 85       ; NOTE 3B for 2^4
-132C: 87       ; NOTE 4C# for 2^4
-132D: 88       ; NOTE 4D for 2^4
-132E: AA       ; NOTE 4E for 2^5
-132F: AA       ; NOTE 4E for 2^5
-1330: 8A       ; NOTE 4E for 2^4
-1331: 60       ; REST for 2^3
-1332: 67       ; NOTE 4C# for 2^3
-1333: 87       ; NOTE 4C# for 2^4
-1334: 8A       ; NOTE 4E for 2^4
-1335: A8       ; NOTE 4D for 2^5
-1336: A8       ; NOTE 4D for 2^5
-1337: A7       ; NOTE 4C# for 2^5
-1338: 80       ; REST for 2^4
+1319: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+131B: 5F 06    ; SC02:Set volume to 06
+131D: 87       ; NOTE 8C#4
+131E: 83       ; NOTE 8A3
+131F: 87       ; NOTE 8C#4
+1320: 87       ; NOTE 8C#4
+1321: 87       ; NOTE 8C#4
+1322: 86       ; NOTE 8C4
+1323: 87       ; NOTE 8C#4
+1324: 87       ; NOTE 8C#4
+1325: 87       ; NOTE 8C#4
+1326: 83       ; NOTE 8A3
+1327: 87       ; NOTE 8C#4
+1328: 87       ; NOTE 8C#4
+1329: 87       ; NOTE 8C#4
+132A: 87       ; NOTE 8C#4
+132B: 85       ; NOTE 8B3
+132C: 87       ; NOTE 8C#4
+132D: 88       ; NOTE 8D4
+132E: AA       ; NOTE 4E4
+132F: AA       ; NOTE 4E4
+1330: 8A       ; NOTE 8E4
+1331: 60       ; NOTE 16R
+1332: 67       ; NOTE 16C#4
+1333: 87       ; NOTE 8C#4
+1334: 8A       ; NOTE 8E4
+1335: A8       ; NOTE 4D4
+1336: A8       ; NOTE 4D4
+1337: A7       ; NOTE 4C#4
+1338: 80       ; NOTE 8R
 1339: FF       ; END OF VOICE
 ```
 
@@ -4187,131 +4180,129 @@ music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
 ```code
 ;S22A Frog-home 18
 ; Song=22 Voice=A
-133A: 1F 0B    ; SC00:Use note set index 11
-133C: 3F 0D    ; SC01:Set tempo index 13
-133E: 5F       ; SC02:Set volume to 2^2
-133F: 06       ; NOTE 4C for 2^0
-1340: 8F       ; NOTE 4A for 2^4
-1341: 93       ; NOTE 5C# for 2^4
-1342: B6       ; NOTE 5E for 2^5
-1343: B6       ; NOTE 5E for 2^5
-1344: BB       ; NOTE 5A for 2^5
-1345: 9A       ; NOTE 5G# for 2^4
-1346: 98       ; NOTE 5F# for 2^4
-1347: 96       ; NOTE 5E for 2^4
-1348: 96       ; NOTE 5E for 2^4
-1349: 93       ; NOTE 5C# for 2^4
-134A: 94       ; NOTE 5D for 2^4
-134B: 96       ; NOTE 5E for 2^4
-134C: 80       ; REST for 2^4
-134D: BA       ; NOTE 5G# for 2^5
-134E: 98       ; NOTE 5F# for 2^4
-134F: 98       ; NOTE 5F# for 2^4
-1350: 94       ; NOTE 5D for 2^4
-1351: 98       ; NOTE 5F# for 2^4
-1352: 96       ; NOTE 5E for 2^4
-1353: 96       ; NOTE 5E for 2^4
-1354: 9B       ; NOTE 5A for 2^4
-1355: 9B       ; NOTE 5A for 2^4
-1356: 9A       ; NOTE 5G# for 2^4
-1357: 98       ; NOTE 5F# for 2^4
-1358: 96       ; NOTE 5E for 2^4
-1359: 9A       ; NOTE 5G# for 2^4
-135A: 9B       ; NOTE 5A for 2^4
-135B: 80       ; REST for 2^4
-135C: 8F       ; NOTE 4A for 2^4
-135D: 93       ; NOTE 5C# for 2^4
-135E: B6       ; NOTE 5E for 2^5
-135F: B6       ; NOTE 5E for 2^5
-1360: BB       ; NOTE 5A for 2^5
-1361: 9A       ; NOTE 5G# for 2^4
-1362: 98       ; NOTE 5F# for 2^4
-1363: 96       ; NOTE 5E for 2^4
-1364: 96       ; NOTE 5E for 2^4
-1365: 93       ; NOTE 5C# for 2^4
-1366: 94       ; NOTE 5D for 2^4
-1367: 96       ; NOTE 5E for 2^4
-1368: 80       ; REST for 2^4
-1369: BA       ; NOTE 5G# for 2^5
-136A: 98       ; NOTE 5F# for 2^4
-136B: 98       ; NOTE 5F# for 2^4
-136C: 94       ; NOTE 5D for 2^4
-136D: 98       ; NOTE 5F# for 2^4
-136E: 96       ; NOTE 5E for 2^4
-136F: 96       ; NOTE 5E for 2^4
-1370: 9B       ; NOTE 5A for 2^4
-1371: 9B       ; NOTE 5A for 2^4
-1372: 9A       ; NOTE 5G# for 2^4
-1373: 98       ; NOTE 5F# for 2^4
-1374: 96       ; NOTE 5E for 2^4
-1375: 9A       ; NOTE 5G# for 2^4
-1376: 9B       ; NOTE 5A for 2^4
-1377: 80       ; REST for 2^4
-1378: A0       ; REST for 2^5
+133A: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+133C: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+133E: 5F 06    ; SC02:Set volume to 06
+1340: 8F       ; NOTE 8A4
+1341: 93       ; NOTE 8C#5
+1342: B6       ; NOTE 4E5
+1343: B6       ; NOTE 4E5
+1344: BB       ; NOTE 4A5
+1345: 9A       ; NOTE 8G#5
+1346: 98       ; NOTE 8F#5
+1347: 96       ; NOTE 8E5
+1348: 96       ; NOTE 8E5
+1349: 93       ; NOTE 8C#5
+134A: 94       ; NOTE 8D5
+134B: 96       ; NOTE 8E5
+134C: 80       ; NOTE 8R
+134D: BA       ; NOTE 4G#5
+134E: 98       ; NOTE 8F#5
+134F: 98       ; NOTE 8F#5
+1350: 94       ; NOTE 8D5
+1351: 98       ; NOTE 8F#5
+1352: 96       ; NOTE 8E5
+1353: 96       ; NOTE 8E5
+1354: 9B       ; NOTE 8A5
+1355: 9B       ; NOTE 8A5
+1356: 9A       ; NOTE 8G#5
+1357: 98       ; NOTE 8F#5
+1358: 96       ; NOTE 8E5
+1359: 9A       ; NOTE 8G#5
+135A: 9B       ; NOTE 8A5
+135B: 80       ; NOTE 8R
+135C: 8F       ; NOTE 8A4
+135D: 93       ; NOTE 8C#5
+135E: B6       ; NOTE 4E5
+135F: B6       ; NOTE 4E5
+1360: BB       ; NOTE 4A5
+1361: 9A       ; NOTE 8G#5
+1362: 98       ; NOTE 8F#5
+1363: 96       ; NOTE 8E5
+1364: 96       ; NOTE 8E5
+1365: 93       ; NOTE 8C#5
+1366: 94       ; NOTE 8D5
+1367: 96       ; NOTE 8E5
+1368: 80       ; NOTE 8R
+1369: BA       ; NOTE 4G#5
+136A: 98       ; NOTE 8F#5
+136B: 98       ; NOTE 8F#5
+136C: 94       ; NOTE 8D5
+136D: 98       ; NOTE 8F#5
+136E: 96       ; NOTE 8E5
+136F: 96       ; NOTE 8E5
+1370: 9B       ; NOTE 8A5
+1371: 9B       ; NOTE 8A5
+1372: 9A       ; NOTE 8G#5
+1373: 98       ; NOTE 8F#5
+1374: 96       ; NOTE 8E5
+1375: 9A       ; NOTE 8G#5
+1376: 9B       ; NOTE 8A5
+1377: 80       ; NOTE 8R
+1378: A0       ; NOTE 4R
 1379: FF       ; END OF VOICE
 ;
 ;S22B Frog-home 18
 ; Song=22 Voice=B
-137A: 1F 0B    ; SC00:Use note set index 11
-137C: 5F       ; SC02:Set volume to 2^2
-137D: 06       ; NOTE 4C for 2^0
-137E: 8F       ; NOTE 4A for 2^4
-137F: 8F       ; NOTE 4A for 2^4
-1380: B3       ; NOTE 5C# for 2^5
-1381: B3       ; NOTE 5C# for 2^5
-1382: B8       ; NOTE 5F# for 2^5
-1383: 96       ; NOTE 5E for 2^4
-1384: 94       ; NOTE 5D for 2^4
-1385: 93       ; NOTE 5C# for 2^4
-1386: 93       ; NOTE 5C# for 2^4
-1387: 8F       ; NOTE 4A for 2^4
-1388: 91       ; NOTE 4B for 2^4
-1389: 93       ; NOTE 5C# for 2^4
-138A: 80       ; REST for 2^4
-138B: B6       ; NOTE 5E for 2^5
-138C: 94       ; NOTE 5D for 2^4
-138D: 94       ; NOTE 5D for 2^4
-138E: 8F       ; NOTE 4A for 2^4
-138F: 94       ; NOTE 5D for 2^4
-1390: 93       ; NOTE 5C# for 2^4
-1391: 93       ; NOTE 5C# for 2^4
-1392: 93       ; NOTE 5C# for 2^4
-1393: 93       ; NOTE 5C# for 2^4
-1394: 96       ; NOTE 5E for 2^4
-1395: 93       ; NOTE 5C# for 2^4
-1396: 8F       ; NOTE 4A for 2^4
-1397: 91       ; NOTE 4B for 2^4
-1398: 93       ; NOTE 5C# for 2^4
-1399: 80       ; REST for 2^4
-139A: 8F       ; NOTE 4A for 2^4
-139B: 8F       ; NOTE 4A for 2^4
-139C: B3       ; NOTE 5C# for 2^5
-139D: B3       ; NOTE 5C# for 2^5
-139E: B8       ; NOTE 5F# for 2^5
-139F: 96       ; NOTE 5E for 2^4
-13A0: 94       ; NOTE 5D for 2^4
-13A1: 93       ; NOTE 5C# for 2^4
-13A2: 93       ; NOTE 5C# for 2^4
-13A3: 8F       ; NOTE 4A for 2^4
-13A4: 91       ; NOTE 4B for 2^4
-13A5: 93       ; NOTE 5C# for 2^4
-13A6: 80       ; REST for 2^4
-13A7: B6       ; NOTE 5E for 2^5
-13A8: 94       ; NOTE 5D for 2^4
-13A9: 94       ; NOTE 5D for 2^4
-13AA: 8F       ; NOTE 4A for 2^4
-13AB: 94       ; NOTE 5D for 2^4
-13AC: 93       ; NOTE 5C# for 2^4
-13AD: 93       ; NOTE 5C# for 2^4
-13AE: 93       ; NOTE 5C# for 2^4
-13AF: 93       ; NOTE 5C# for 2^4
-13B0: 96       ; NOTE 5E for 2^4
-13B1: 93       ; NOTE 5C# for 2^4
-13B2: 8F       ; NOTE 4A for 2^4
-13B3: 91       ; NOTE 4B for 2^4
-13B4: 93       ; NOTE 5C# for 2^4
-13B5: 80       ; REST for 2^4
-13B6: A0       ; REST for 2^5
+137A: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+137C: 5F 06    ; SC02:Set volume to 06
+137E: 8F       ; NOTE 8A4
+137F: 8F       ; NOTE 8A4
+1380: B3       ; NOTE 4C#5
+1381: B3       ; NOTE 4C#5
+1382: B8       ; NOTE 4F#5
+1383: 96       ; NOTE 8E5
+1384: 94       ; NOTE 8D5
+1385: 93       ; NOTE 8C#5
+1386: 93       ; NOTE 8C#5
+1387: 8F       ; NOTE 8A4
+1388: 91       ; NOTE 8B4
+1389: 93       ; NOTE 8C#5
+138A: 80       ; NOTE 8R
+138B: B6       ; NOTE 4E5
+138C: 94       ; NOTE 8D5
+138D: 94       ; NOTE 8D5
+138E: 8F       ; NOTE 8A4
+138F: 94       ; NOTE 8D5
+1390: 93       ; NOTE 8C#5
+1391: 93       ; NOTE 8C#5
+1392: 93       ; NOTE 8C#5
+1393: 93       ; NOTE 8C#5
+1394: 96       ; NOTE 8E5
+1395: 93       ; NOTE 8C#5
+1396: 8F       ; NOTE 8A4
+1397: 91       ; NOTE 8B4
+1398: 93       ; NOTE 8C#5
+1399: 80       ; NOTE 8R
+139A: 8F       ; NOTE 8A4
+139B: 8F       ; NOTE 8A4
+139C: B3       ; NOTE 4C#5
+139D: B3       ; NOTE 4C#5
+139E: B8       ; NOTE 4F#5
+139F: 96       ; NOTE 8E5
+13A0: 94       ; NOTE 8D5
+13A1: 93       ; NOTE 8C#5
+13A2: 93       ; NOTE 8C#5
+13A3: 8F       ; NOTE 8A4
+13A4: 91       ; NOTE 8B4
+13A5: 93       ; NOTE 8C#5
+13A6: 80       ; NOTE 8R
+13A7: B6       ; NOTE 4E5
+13A8: 94       ; NOTE 8D5
+13A9: 94       ; NOTE 8D5
+13AA: 8F       ; NOTE 8A4
+13AB: 94       ; NOTE 8D5
+13AC: 93       ; NOTE 8C#5
+13AD: 93       ; NOTE 8C#5
+13AE: 93       ; NOTE 8C#5
+13AF: 93       ; NOTE 8C#5
+13B0: 96       ; NOTE 8E5
+13B1: 93       ; NOTE 8C#5
+13B2: 8F       ; NOTE 8A4
+13B3: 91       ; NOTE 8B4
+13B4: 93       ; NOTE 8C#5
+13B5: 80       ; NOTE 8R
+13B6: A0       ; NOTE 4R
 13B7: FF       ; END OF VOICE
 ```
 
@@ -4320,107 +4311,105 @@ music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
 ```code
 ;S23A Frog-home 19
 ; Song=23 Voice=A
-13B8: 1F 0B    ; SC00:Use note set index 11
-13BA: 3F 0D    ; SC01:Set tempo index 13
-13BC: 5F       ; SC02:Set volume to 2^2
-13BD: 06       ; NOTE 4C for 2^0
-13BE: 8D       ; NOTE 4G for 2^4
-13BF: 92       ; NOTE 5C for 2^4
-13C0: 96       ; NOTE 5E for 2^4
-13C1: B9       ; NOTE 5G for 2^5
-13C2: 99       ; NOTE 5G for 2^4
-13C3: 96       ; NOTE 5E for 2^4
-13C4: B7       ; NOTE 5F for 2^5
-13C5: 97       ; NOTE 5F for 2^4
-13C6: 94       ; NOTE 5D for 2^4
-13C7: B6       ; NOTE 5E for 2^5
-13C8: B9       ; NOTE 5G for 2^5
-13C9: 80       ; REST for 2^4
-13CA: 96       ; NOTE 5E for 2^4
-13CB: 97       ; NOTE 5F for 2^4
-13CC: 99       ; NOTE 5G for 2^4
-13CD: BB       ; NOTE 5A for 2^5
-13CE: 9B       ; NOTE 5A for 2^4
-13CF: 9B       ; NOTE 5A for 2^4
-13D0: 9B       ; NOTE 5A for 2^4
-13D1: 99       ; NOTE 5G for 2^4
-13D2: 9B       ; NOTE 5A for 2^4
-13D3: 9C       ; NOTE 5A# for 2^4
-13D4: DD       ; NOTE 5B for 2^6
-13D5: A0       ; REST for 2^5
-13D6: 9D       ; NOTE 5B for 2^4
-13D7: 9D       ; NOTE 5B for 2^4
-13D8: BD       ; NOTE 5B for 2^5
-13D9: 9B       ; NOTE 5A for 2^4
-13DA: 99       ; NOTE 5G for 2^4
-13DB: BB       ; NOTE 5A for 2^5
-13DC: 99       ; NOTE 5G for 2^4
-13DD: 97       ; NOTE 5F for 2^4
-13DE: 9B       ; NOTE 5A for 2^4
-13DF: 80       ; REST for 2^4
-13E0: B9       ; NOTE 5G for 2^5
-13E1: A0       ; REST for 2^5
-13E2: 96       ; NOTE 5E for 2^4
-13E3: 97       ; NOTE 5F for 2^4
-13E4: B9       ; NOTE 5G for 2^5
-13E5: 98       ; NOTE 5F# for 2^4
-13E6: 99       ; NOTE 5G for 2^4
-13E7: BB       ; NOTE 5A for 2^5
-13E8: 99       ; NOTE 5G for 2^4
-13E9: 97       ; NOTE 5F for 2^4
-13EA: D6       ; NOTE 5E for 2^6
+13B8: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+13BA: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+13BC: 5F 06    ; SC02:Set volume to 06
+13BE: 8D       ; NOTE 8G4
+13BF: 92       ; NOTE 8C5
+13C0: 96       ; NOTE 8E5
+13C1: B9       ; NOTE 4G5
+13C2: 99       ; NOTE 8G5
+13C3: 96       ; NOTE 8E5
+13C4: B7       ; NOTE 4F5
+13C5: 97       ; NOTE 8F5
+13C6: 94       ; NOTE 8D5
+13C7: B6       ; NOTE 4E5
+13C8: B9       ; NOTE 4G5
+13C9: 80       ; NOTE 8R
+13CA: 96       ; NOTE 8E5
+13CB: 97       ; NOTE 8F5
+13CC: 99       ; NOTE 8G5
+13CD: BB       ; NOTE 4A5
+13CE: 9B       ; NOTE 8A5
+13CF: 9B       ; NOTE 8A5
+13D0: 9B       ; NOTE 8A5
+13D1: 99       ; NOTE 8G5
+13D2: 9B       ; NOTE 8A5
+13D3: 9C       ; NOTE 8A#5
+13D4: DD       ; NOTE 2B5
+13D5: A0       ; NOTE 4R
+13D6: 9D       ; NOTE 8B5
+13D7: 9D       ; NOTE 8B5
+13D8: BD       ; NOTE 4B5
+13D9: 9B       ; NOTE 8A5
+13DA: 99       ; NOTE 8G5
+13DB: BB       ; NOTE 4A5
+13DC: 99       ; NOTE 8G5
+13DD: 97       ; NOTE 8F5
+13DE: 9B       ; NOTE 8A5
+13DF: 80       ; NOTE 8R
+13E0: B9       ; NOTE 4G5
+13E1: A0       ; NOTE 4R
+13E2: 96       ; NOTE 8E5
+13E3: 97       ; NOTE 8F5
+13E4: B9       ; NOTE 4G5
+13E5: 98       ; NOTE 8F#5
+13E6: 99       ; NOTE 8G5
+13E7: BB       ; NOTE 4A5
+13E8: 99       ; NOTE 8G5
+13E9: 97       ; NOTE 8F5
+13EA: D6       ; NOTE 2E5
 13EB: FF       ; END OF VOICE
 ;
 ;S23B Frog-home 19
 ; Song=23 Voice=B
-13EC: 1F 0B    ; SC00:Use note set index 11
-13EE: 5F       ; SC02:Set volume to 2^2
-13EF: 06       ; NOTE 4C for 2^0
-13F0: 8D       ; NOTE 4G for 2^4
-13F1: 92       ; NOTE 5C for 2^4
-13F2: 96       ; NOTE 5E for 2^4
-13F3: B6       ; NOTE 5E for 2^5
-13F4: 96       ; NOTE 5E for 2^4
-13F5: 92       ; NOTE 5C for 2^4
-13F6: B4       ; NOTE 5D for 2^5
-13F7: 94       ; NOTE 5D for 2^4
-13F8: 91       ; NOTE 4B for 2^4
-13F9: B2       ; NOTE 5C for 2^5
-13FA: B6       ; NOTE 5E for 2^5
-13FB: 80       ; REST for 2^4
-13FC: 92       ; NOTE 5C for 2^4
-13FD: 94       ; NOTE 5D for 2^4
-13FE: 96       ; NOTE 5E for 2^4
-13FF: B7       ; NOTE 5F for 2^5
-1400: 97       ; NOTE 5F for 2^4
-1401: 97       ; NOTE 5F for 2^4
-1402: 97       ; NOTE 5F for 2^4
-1403: 96       ; NOTE 5E for 2^4
-1404: 97       ; NOTE 5F for 2^4
-1405: 98       ; NOTE 5F# for 2^4
-1406: D9       ; NOTE 5G for 2^6
-1407: A0       ; REST for 2^5
-1408: 99       ; NOTE 5G for 2^4
-1409: 99       ; NOTE 5G for 2^4
-140A: B9       ; NOTE 5G for 2^5
-140B: 97       ; NOTE 5F for 2^4
-140C: 96       ; NOTE 5E for 2^4
-140D: B7       ; NOTE 5F for 2^5
-140E: 96       ; NOTE 5E for 2^4
-140F: 94       ; NOTE 5D for 2^4
-1410: 97       ; NOTE 5F for 2^4
-1411: 80       ; REST for 2^4
-1412: B6       ; NOTE 5E for 2^5
-1413: A0       ; REST for 2^5
-1414: 92       ; NOTE 5C for 2^4
-1415: 94       ; NOTE 5D for 2^4
-1416: B6       ; NOTE 5E for 2^5
-1417: 95       ; NOTE 5D# for 2^4
-1418: 96       ; NOTE 5E for 2^4
-1419: B7       ; NOTE 5F for 2^5
-141A: 96       ; NOTE 5E for 2^4
-141B: 94       ; NOTE 5D for 2^4
-141C: D2       ; NOTE 5C for 2^6
+13EC: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+13EE: 5F 06    ; SC02:Set volume to 06
+13F0: 8D       ; NOTE 8G4
+13F1: 92       ; NOTE 8C5
+13F2: 96       ; NOTE 8E5
+13F3: B6       ; NOTE 4E5
+13F4: 96       ; NOTE 8E5
+13F5: 92       ; NOTE 8C5
+13F6: B4       ; NOTE 4D5
+13F7: 94       ; NOTE 8D5
+13F8: 91       ; NOTE 8B4
+13F9: B2       ; NOTE 4C5
+13FA: B6       ; NOTE 4E5
+13FB: 80       ; NOTE 8R
+13FC: 92       ; NOTE 8C5
+13FD: 94       ; NOTE 8D5
+13FE: 96       ; NOTE 8E5
+13FF: B7       ; NOTE 4F5
+1400: 97       ; NOTE 8F5
+1401: 97       ; NOTE 8F5
+1402: 97       ; NOTE 8F5
+1403: 96       ; NOTE 8E5
+1404: 97       ; NOTE 8F5
+1405: 98       ; NOTE 8F#5
+1406: D9       ; NOTE 2G5
+1407: A0       ; NOTE 4R
+1408: 99       ; NOTE 8G5
+1409: 99       ; NOTE 8G5
+140A: B9       ; NOTE 4G5
+140B: 97       ; NOTE 8F5
+140C: 96       ; NOTE 8E5
+140D: B7       ; NOTE 4F5
+140E: 96       ; NOTE 8E5
+140F: 94       ; NOTE 8D5
+1410: 97       ; NOTE 8F5
+1411: 80       ; NOTE 8R
+1412: B6       ; NOTE 4E5
+1413: A0       ; NOTE 4R
+1414: 92       ; NOTE 8C5
+1415: 94       ; NOTE 8D5
+1416: B6       ; NOTE 4E5
+1417: 95       ; NOTE 8D#5
+1418: 96       ; NOTE 8E5
+1419: B7       ; NOTE 4F5
+141A: 96       ; NOTE 8E5
+141B: 94       ; NOTE 8D5
+141C: D2       ; NOTE 2C5
 141D: FF       ; END OF VOICE
 ```
 
@@ -4429,76 +4418,74 @@ music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
 ```code
 ;S24A Frog-home 20
 ; Song=24 Voice=A
-141E: 1F 0B    ; SC00:Use note set index 11
-1420: 3F 0D    ; SC01:Set tempo index 13
-1422: 5F       ; SC02:Set volume to 2^2
-1423: 06       ; NOTE 4C for 2^0
-1424: 8C       ; NOTE 4F# for 2^4
-1425: B1       ; NOTE 4B for 2^5
-1426: 91       ; NOTE 4B for 2^4
-1427: 94       ; NOTE 5D for 2^4
-1428: B8       ; NOTE 5F# for 2^5
-1429: 80       ; REST for 2^4
-142A: 8C       ; NOTE 4F# for 2^4
-142B: 90       ; NOTE 4A# for 2^4
-142C: 90       ; NOTE 4A# for 2^4
-142D: 90       ; NOTE 4A# for 2^4
-142E: 93       ; NOTE 5C# for 2^4
-142F: B6       ; NOTE 5E for 2^5
-1430: A0       ; REST for 2^5
-1431: B6       ; NOTE 5E for 2^5
-1432: 98       ; NOTE 5F# for 2^4
-1433: 96       ; NOTE 5E for 2^4
-1434: 94       ; NOTE 5D for 2^4
-1435: 94       ; NOTE 5D for 2^4
-1436: 93       ; NOTE 5C# for 2^4
-1437: 91       ; NOTE 4B for 2^4
-1438: 93       ; NOTE 5C# for 2^4
-1439: 93       ; NOTE 5C# for 2^4
-143A: 94       ; NOTE 5D for 2^4
-143B: 96       ; NOTE 5E for 2^4
-143C: B8       ; NOTE 5F# for 2^5
-143D: A0       ; REST for 2^5
-143E: 96       ; NOTE 5E for 2^4
-143F: 76       ; NOTE 5E for 2^3
-1440: 74       ; NOTE 5D for 2^3
-1441: 96       ; NOTE 5E for 2^4
-1442: 76       ; NOTE 5E for 2^3
-1443: 74       ; NOTE 5D for 2^3
-1444: AC       ; NOTE 4F# for 2^5
-1445: B0       ; NOTE 4A# for 2^5
-1446: D1       ; NOTE 4B for 2^6
+141E: 1F 0B    ; SC00:Use note set index 11 (note 1 = F#3)
+1420: 3F 0D    ; SC01:Set tempo index 13 (164 quarters/minute)
+1422: 5F 06    ; SC02:Set volume to 06
+1424: 8C       ; NOTE 8F#4
+1425: B1       ; NOTE 4B4
+1426: 91       ; NOTE 8B4
+1427: 94       ; NOTE 8D5
+1428: B8       ; NOTE 4F#5
+1429: 80       ; NOTE 8R
+142A: 8C       ; NOTE 8F#4
+142B: 90       ; NOTE 8A#4
+142C: 90       ; NOTE 8A#4
+142D: 90       ; NOTE 8A#4
+142E: 93       ; NOTE 8C#5
+142F: B6       ; NOTE 4E5
+1430: A0       ; NOTE 4R
+1431: B6       ; NOTE 4E5
+1432: 98       ; NOTE 8F#5
+1433: 96       ; NOTE 8E5
+1434: 94       ; NOTE 8D5
+1435: 94       ; NOTE 8D5
+1436: 93       ; NOTE 8C#5
+1437: 91       ; NOTE 8B4
+1438: 93       ; NOTE 8C#5
+1439: 93       ; NOTE 8C#5
+143A: 94       ; NOTE 8D5
+143B: 96       ; NOTE 8E5
+143C: B8       ; NOTE 4F#5
+143D: A0       ; NOTE 4R
+143E: 96       ; NOTE 8E5
+143F: 76       ; NOTE 16E5
+1440: 74       ; NOTE 16D5
+1441: 96       ; NOTE 8E5
+1442: 76       ; NOTE 16E5
+1443: 74       ; NOTE 16D5
+1444: AC       ; NOTE 4F#4
+1445: B0       ; NOTE 4A#4
+1446: D1       ; NOTE 2B4
 1447: FF       ; END OF VOICE
 ;
 ;S24B Frog-home 20
 ; Song=24 Voice=B
-1448: 1F 05    ; SC00:Use note set index 5
-144A: 5F       ; SC02:Set volume to 2^2
-144B: 06       ; NOTE 3C for 2^0
-144C: 80       ; REST for 2^4
-144D: B1       ; NOTE 3B for 2^5
-144E: B1       ; NOTE 3B for 2^5
-144F: B1       ; NOTE 3B for 2^5
-1450: B1       ; NOTE 3B for 2^5
-1451: AC       ; NOTE 3F# for 2^5
-1452: AC       ; NOTE 3F# for 2^5
-1453: AC       ; NOTE 3F# for 2^5
-1454: AC       ; NOTE 3F# for 2^5
-1455: AA       ; NOTE 3E for 2^5
-1456: AA       ; NOTE 3E for 2^5
-1457: AA       ; NOTE 3E for 2^5
-1458: AA       ; NOTE 3E for 2^5
-1459: AC       ; NOTE 3F# for 2^5
-145A: AC       ; NOTE 3F# for 2^5
-145B: AC       ; NOTE 3F# for 2^5
-145C: AC       ; NOTE 3F# for 2^5
-145D: 8A       ; NOTE 3E for 2^4
-145E: 80       ; REST for 2^4
-145F: 8A       ; NOTE 3E for 2^4
-1460: 80       ; REST for 2^4
-1461: AC       ; NOTE 3F# for 2^5
-1462: AC       ; NOTE 3F# for 2^5
-1463: B1       ; NOTE 3B for 2^5
+1448: 1F 05    ; SC00:Use note set index 5 (note 1 = F#2)
+144A: 5F 06    ; SC02:Set volume to 06
+144C: 80       ; NOTE 8R
+144D: B1       ; NOTE 4B3
+144E: B1       ; NOTE 4B3
+144F: B1       ; NOTE 4B3
+1450: B1       ; NOTE 4B3
+1451: AC       ; NOTE 4F#3
+1452: AC       ; NOTE 4F#3
+1453: AC       ; NOTE 4F#3
+1454: AC       ; NOTE 4F#3
+1455: AA       ; NOTE 4E3
+1456: AA       ; NOTE 4E3
+1457: AA       ; NOTE 4E3
+1458: AA       ; NOTE 4E3
+1459: AC       ; NOTE 4F#3
+145A: AC       ; NOTE 4F#3
+145B: AC       ; NOTE 4F#3
+145C: AC       ; NOTE 4F#3
+145D: 8A       ; NOTE 8E3
+145E: 80       ; NOTE 8R
+145F: 8A       ; NOTE 8E3
+1460: 80       ; NOTE 8R
+1461: AC       ; NOTE 4F#3
+1462: AC       ; NOTE 4F#3
+1463: B1       ; NOTE 4B3
 1464: FF       ; END OF VOICE
 ```
 
