@@ -370,31 +370,32 @@ JumpTabler:
 CommandInit: 
 ; These functions are called once to initialize a voice function. After that the
 ; corresponding continue-function is called each pass.
-01A7: 9C 02 ; I00 Shutdown voice
-01A9: 0F 03 ; I01 Coin inserted
-01AB: BD 03 ; I02 Die in water
-01AD: 5D 04 ; I03 Die in road
-01AF: 82 14 ; I04 Frog hopping
-01B1: 65 14 ; I05 Time running out
-01B3: 9D 0B ; I06 Next life begins  
-01B5: 8D 04 ; I07 Extra frog
-01B7: 67 0B ; I08 Song interlude after getting frog home (changes each frog)
-01B9: 7F 07 ; I09 Main song intro (1st 16 beats)
-01BB: 8B 07 ; I0A Music voice B
-01BD: 8E 07 ; I0B Music voice C
-01BF: B0 0A ; I0C Game over song   
-01C1: C4 0A ; I0D Music voice B
-01C3: 8C 0B ; I0E Music voice B        
-01C5: 15 10 ; I0F Main song after intro
-01C7: EB 06 ; I10 effect Frogger landing safe
-01C9: 3B 0B ; I11 complete song          
-01CB: 53 0B ; I12 Music voice B              
-01CD: 5D 0B ; I13 Music voice C               
-01CF: 00 00 ; I14 Reset program
-01D1: 05 05 ; I15 Snake on the ground  
-01D3: 23 10 ; I16 Music voice B
-01D5: C3 05 ; I17 Race car           
-01D7: 3D 06 ; I18 Pick up mate
+; Shown with priorities (higher the number, higher the priority -- 18 hopping cannot be interrupted)
+01A7: 9C 02 ; 00 I00 Shutdown voice
+01A9: 0F 03 ; 05 I01 Coin inserted
+01AB: BD 03 ; 0A I02 Die in water
+01AD: 5D 04 ; 0D I03 Die in road
+01AF: 82 14 ; 18 I04 Frog hopping
+01B1: 65 14 ; 07 I05 Time running out
+01B3: 9D 0B ; 0E I06 Next life begins  
+01B5: 8D 04 ; 0C I07 Extra frog
+01B7: 67 0B ; 06 I08 Music interlude after getting frog home (changes each frog)
+01B9: 7F 07 ; 15 I09 Music main song intro (1st 16 beats)
+01BB: 8B 07 ; 14 I0A Music voice B
+01BD: 8E 07 ; 13 I0B Music voice C
+01BF: B0 0A ; 10 I0C Music game over song   
+01C1: C4 0A ; 0F I0D Music voice B
+01C3: 8C 0B ; 04 I0E Music voice B        
+01C5: 15 10 ; 16 I0F Main song after intro
+01C7: EB 06 ; 03 I10 Frogger landing safe
+01C9: 3B 0B ; 12 I11 Music level complete          
+01CB: 53 0B ; 11 I12 Music voice B              
+01CD: 5D 0B ; 02 I13 Music voice C               
+01CF: 00 00 ; 09 I14 Reset program
+01D1: 05 05 ; 08 I15 Snake on the ground  
+01D3: 23 10 ; 01 I16 Music voice B
+01D5: C3 05 ; 16 I17 Race car           
+01D7: 3D 06 ; 17 I18 Pick up mate
 
 VCommandInit: 
 ; Call the initialization function for a voice command
@@ -533,7 +534,7 @@ CommandPriority:
 0283: 00 05 0A 0D 18 07 0E 0C 06 15 14 13 10 0F 04 16 03 12 11 02 09 08 01 16 17             
 
 ShutdownVoice: 
-;I00
+;I00 Shutdown
 ; Disable TONE and NOISe on a voice, set amplitude to 0, and remove cap filtering.    
 029C: 3A 4B 40        LD      A,($404B)           ; {ram.voiceNum} Voice number
 029F: 47              LD      B,A                 ; Copy to B
@@ -2107,7 +2108,7 @@ SongTable:
 0BA0: 32 A3 42        LD      ($42A3),A           ; {ram.m42A3}
 0BA3: F7              RST     $30                 
 0BA4: C3 5B 09        JP      $095B               ; {}
-
+;
 ;C06 Next life begins
 0BA7: 3A A5 42        LD      A,($42A5)           ; {ram.m42A5} Music preemption ...
 0BAA: A7              AND     A                   ; ... allowed
