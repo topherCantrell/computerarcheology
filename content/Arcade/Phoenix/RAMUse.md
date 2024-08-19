@@ -39,6 +39,7 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | --- | --- | --- |
 | 4000:433F | ForegroundScreen     | 32*26 bytes for the foreground screen |
 | --- | --- | --- |
+| 435F      | M435F                | ? |
 | 4360      | M4360                | ? |
 | 4361      | M4361                | ? |
 | 4363      | M4363                | ? |
@@ -68,11 +69,12 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 4394      | M4394                | ? |
 | 4395      | M4395                | ? |
 | 4396      | M4396                | ? |
-| 4397      | ?                    | ? |
+| 4397      | M4397                | ? |
 | 4398      | M4398                | Zero reference for M4399 |
 | 4399      | M4399                | Actual index for slow print at intro splash |
 | 439A:439B | Counter16            | 16 bit counter (MSB:LSB) and.. |
 | 439B      | M439B                | Next index for slow print at intro splash |
+| 439C      | M439C                | ? |
 | 439E      | M439E                | ? |
 | 439F      | M439F                | ? |
 | 43A0      | IN0Current           | Current value of IN0     |
@@ -85,90 +87,90 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 43A8      | M43A8                | temporary storage (MSB of pointer to table $1860) |
 | 43A9      | M43A9                | temporary storage (LSB of pointer to table $1860) |
 | 43AB      | M43AB                | ? |
-| 43AC      | ?                    | ? |
-| 43AD      | ?                    | ? |
-| 43AE      | ?                    | ? |
-| 43AF      | ?                    | ? |
-| 43B0      | ?                    | ? |
+| 43AC      | M43AC                | ? |
+| 43AD      | M43AD                | ? |
+| 43AE      | M43AE                | ? |
+| 43AF      | M43AF                | ? |
+| 43B0      | M43B0                | ? |
 | 43B1      | M43B1                | ? |
-| 43B2      | ?                    | ? |
+| 43B2      | M43B2                | ? |
 | 43B3      | M43B3                | ? |
 | 43B4      | B4Counter            | 8 bit counter (stars scrolling down, aliens fade in time) |
-| 43B5      | ?                    | ? |
-| 43B6      | ?                    | ? |
+| 43B5      | M43B5                | ? |
+| 43B6      | M43B6                | ? |
 | 43B8      | LevelAndRound        | bit0 - 3: game level, bit4 - 7: game round |
 | 43B9      | M43B9                | free running 8 bit backwards counter |
 | 43BA      | M43BA                | ? |
 | 43BB      | M43BB                | ? |
-| 43BC      | ?                    | ? |
-| 43BD      | ?                    | ? |
+| 43BC      | M43BC                | ? |
+| 43BD      | M43BD                | ? |
 | 43BE      | BonusLivesAt         | Bonus lives (at 30K, 40K, 50K or 60K) from DIP switch settings |
-| 43BF      | ?                    | ? |
+| 43BF      | M43BF                | ? |
 | --- | --- | --- |
 | 43C0      | M43C0                | 32 byte data structure (43C0:43DF) for player ship and shields ? |
-| 43C1      | ?                    |  ? |
+| 43C1      | M43C1                |  ? |
 | 43C2      | M43C2                |  ? |
 | 43C3      | M43C3                |  ? |
 | 43C4      | M43C4                |  ? |
-| 43C5      | ?                    |  ? |
-| 43C6      | ?                    |  ? |
-| 43C7      | ?                    |  ? |
+| 43C5      | M43C5                |  ? |
+| 43C6      | M43C6                |  ? |
+| 43C7      | M43C7                |  ? |
 | 43C8      | M43C8                |  ? |
-| 43C9      | ?                    |  ? |
-| 43CA      | ?                    |  ? |
-| 43CB      | ?                    |  ? |
+| 43C9      | M43C9                |  ? |
+| 43CA      | M43CA                |  ? |
+| 43CB      | M43CB                |  ? |
 | 43CC      | M43CC                |  ? |
-| 43CD      | ?                    |  ? |
+| 43CD      | M43CD                |  ? |
 | 43CE      | M43CE                |  ? |
-| 43CF      | ?                    |  ? |
-| 43D0      | ?                    |  ? |
-| 43D1      | ?                    |  ? |
-| 43D2      | ?                    |  ? |
-| 43D3      | ?                    |  ? |
-| 43D4      | ?                    |  ? |
-| 43D5      | ?                    |  ? |
-| 43D6      | ?                    |  ? |
-| 43D7      | ?                    |  ? |
-| 43D8      | ?                    |  ? |
-| 43D9      | ?                    |  ? |
-| 43DA      | ?                    |  ? |
-| 43DB      | ?                    |  ? |
-| 43DC      | ?                    |  ? |
-| 43DD      | ?                    |  ? |
-| 43DE      | ?                    |  ? |
-| 43DF      | ?                    |  ? |
+| 43CF      | M43CF                |  ? |
+| 43D0      | M43D0                |  ? |
+| 43D1      | M43D1                |  ? |
+| 43D2      | M43D2                |  ? |
+| 43D3      | M43D3                |  ? |
+| 43D4      | M43D4                |  ? |
+| 43D5      | M43D5                |  ? |
+| 43D6      | M43D6                |  ? |
+| 43D7      | M43D7                |  ? |
+| 43D8      | M43D8                |  ? |
+| 43D9      | M43D9                |  ? |
+| 43DA      | M43DA                |  ? |
+| 43DB      | M43DB                |  ? |
+| 43DC      | M43DC                |  ? |
+| 43DD      | M43DD                |  ? |
+| 43DE      | M43DE                |  ? |
+| 43DF      | M43DF                |  ? |
 | --- | --- | --- |
 | 43E0      | M43E0                | 32 byte data structure (43E0:43FF) for player ship and shields ? |
-| 43E1      | ?                    |  ? |
+| 43E1      | M43E1                |  ? |
 | 43E2      | PlayerCoordMSB       |  The X,Y in screen memory (doesn't include bit offset) |
 | 43E3      | PlayerCoordLSB       |  The X,Y in screen memory (doesn't include bit offset) |
-| 43E4      | ?                    |  ? |
-| 43E5      | ?                    |  ? |
+| 43E4      | M43E4                |  ? |
+| 43E5      | M43E5                |  ? |
 | 43E6      | M43E6                |  ? |
-| 43E7      | ?                    |  ? |
-| 43E8      | ?                    |  ? |
-| 43E9      | ?                    |  ? |
+| 43E7      | M43E7                |  ? |
+| 43E8      | M43E8                |  ? |
+| 43E9      | M43E9                |  ? |
 | 43EA      | M43EA                |  ? |
 | 43EB      | M43EB                |  ? |
 | 43EC      | M43EC                |  ? |
-| 43ED      | ?                    |  ? |
+| 43ED      | M43ED                |  ? |
 | 43EE      | M43EE                |  ? |
-| 43EF      | ?                    |  ? |
-| 43F0      | ?                    |  ? |
-| 43F1      | ?                    |  ? |
-| 43F2      | ?                    |  ? |
-| 43F3      | ?                    |  ? |
-| 43F4      | ?                    |  ? |
-| 43F5      | ?                    |  ? |
-| 43F6      | ?                    |  ? |
-| 43F7      | ?                    |  ? |
-| 43F8      | ?                    |  ? |
-| 43F9      | ?                    |  ? |
-| 43FA      | ?                    |  ? |
-| 43FB      | ?                    |  ? |
-| 43FC      | ?                    |  ? |
-| 43FD      | ?                    |  ? |
-| 43FE      | ?                    |  ? |
+| 43EF      | M43EF                |  ? |
+| 43F0      | M43F0                |  ? |
+| 43F1      | M43F1                |  ? |
+| 43F2      | M43F2                |  ? |
+| 43F3      | M43F3                |  ? |
+| 43F4      | M43F4                |  ? |
+| 43F5      | M43F5                |  ? |
+| 43F6      | M43F6                |  ? |
+| 43F7      | M43F7                |  ? |
+| 43F8      | M43F8                |  ? |
+| 43F9      | M43F9                |  ? |
+| 43FA      | M43FA                |  ? |
+| 43FB      | M43FB                |  ? |
+| 43FC      | M43FC                |  ? |
+| 43FD      | M43FD                |  ? |
+| 43FE      | M43FE                |  ? |
 | 43FF      | M43FF                |  ? |
 | --- | --- | --- |
 | 4800:4B3F | BackgroundScreen     | 32*26 bytes for the background screen |
