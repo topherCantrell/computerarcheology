@@ -26,7 +26,7 @@ This disassembly is Peter Martinides' hard work (https://github.com/Sorbas2020).
 
 * [Main Board Code](Code.md)
 * [Hardware](Hardware.md)
-* [RAM Usage](RAMTable.md)
+* [RAM Usage](RAMUse.md)
 * [Background Tiles](bgtiles.md)
 * [Foreground Tiles](fgtiles.md)
 * [Color PROM](proms.md)
