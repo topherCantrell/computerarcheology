@@ -36,14 +36,14 @@
 ; Main loop begin
 001A: CD 80 00        CALL    $0080               ; {code.WaitVBlankCoin} Wait for VBlank and count any coins
 001D: 3A A2 43        LD      A,($43A2)           ; {ram.GameOrAttract}
-0020: A7              AND     A                   
+0020: A7              AND     A                   ; updates the zero flag
 0021: CA 2D 00        JP      Z,$002D             ; {}
 ; game mode
 0024: CD 00 04        CALL    $0400               ; {code.IntervalGameStateMachine}
 0027: CD 00 27        CALL    $2700               ; {code.GameFlow}
 002A: C3 1A 00        JP      $001A               ; {}
-; attract mode (no sound, no scoreing, no steering)
-002D: 3E 0F           LD      A,$0F               ; 
+; attract mode (no sound, no scoreing, no manual steering)
+002D: 3E 0F           LD      A,$0F               ; 0000_1111
 002F: 26 60           LD      H,$60               ; 60xx sound A
 0031: 77              LD      (HL),A              ; 
 0032: 26 68           LD      H,$68               ; 68xx sound B
@@ -51,7 +51,7 @@
 0035: CD 77 03        CALL    $0377               ; {code.UpdateSoundControlRAM}
 0038: 00              NOP                         ; 
 0039: CD E0 17        CALL    $17E0               ; {code.CoinChecking}
-003C: A7              AND     A                   ; 
+003C: A7              AND     A                   ; updates the zero flag
 003D: CA 46 00        JP      Z,$0046             ; {} No credits ... continue splash
 0040: CD 88 02        CALL    $0288               ; {code.PromptForStartGame}
 0043: C3 1A 00        JP      $001A               ; {} Back to top of main loop
@@ -233,7 +233,7 @@ ClearForeAndBackground:
 0152: 00              NOP                         ; ..
 0153: 00              NOP                         ; ..
 0154: 2E B8           LD      L,$B8               ; LevelAndRound, $43B9, $43BA, $43BB, $43BC, $43BD, BonusLivesAt, $43BF to 0
-0156: 06 08           LD      B,$08               ; number of bytes
+0156: 06 08           LD      B,$08               ; number of bytes to clear
 0158: CD D8 05        CALL    $05D8               ; {code.ClearBbytesAtHL}
 015B: 2E BA           LD      L,$BA               ; Set $43BA
 015D: 36 10           LD      (HL),$10            ; to 0001_0000
@@ -519,17 +519,17 @@ PromptForStartGame:
 0290: CD D0 01        CALL    $01D0               ; {code.PrintTextLines}
 0293: 0E 02           LD      C,$02               ; 
 0295: CD E0 17        CALL    $17E0               ; {code.CoinChecking}
-0298: FE 02           CP      $02                 ; 2 player mode possible if credit >1
+0298: FE 02           CP      $02                 ; 2 player mode possible if credit > 1
 029A: DA A7 02        JP      C,$02A7             ; {}
 029D: 21 A0 1B        LD      HL,$1BA0            ; {+code.T1BA0}
 02A0: 0E 01           LD      C,$01               ; print one line: '1 OR 2PLAYERS BUTTON'
 02A2: CD D0 01        CALL    $01D0               ; {code.PrintTextLines}
 02A5: 0E 06           LD      C,$06               ; 
-02A7: 3A 00 70        LD      A,($7000)           ; {hard.IN0} 70xx IN0
-02AA: 2F              CPL                         ; 
-02AB: A1              AND     C                   ; 
-02AC: C8              RET     Z                   ; ret if no start buttons pressed
-02AD: CD CB 02        CALL    $02CB               ; {code.DecrementCoins}
+02A7: 3A 00 70        LD      A,($7000)           ; {hard.IN0} 70xx IN0  Get the bits...
+02AA: 2F              CPL                         ; ...for the two...
+02AB: A1              AND     C                   ; ...start buttons and...
+02AC: C8              RET     Z                   ; ...ret if no start button was pressed.
+02AD: CD CB 02        CALL    $02CB               ; {code.DecrementCoins} (GameOrAttract will be affected here as well)
 02B0: CD F0 02        CALL    $02F0               ; {code.UpdateHiScore}
 02B3: CD 2E 03        CALL    $032E               ; {code.ClearAndPrintScores}
 02B6: CD 50 03        CALL    $0350               ; {code.UpdatePlayerLives}
@@ -545,23 +545,23 @@ PromptForStartGame:
 
 DecrementCoins:
 ;
-02CB: 0E 01           LD      C,$01               ; 
-02CD: FE 02           CP      $02                 ; 
-02CF: CA D4 02        JP      Z,$02D4             ; {}
-02D2: 0E 02           LD      C,$02               ; 
+02CB: 0E 01           LD      C,$01               ; Value for 'one player game mode'
+02CD: FE 02           CP      $02                 ; A register holds the value of start buttons
+02CF: CA D4 02        JP      Z,$02D4             ; {} jump if 'start 1' was pressed.
+02D2: 0E 02           LD      C,$02               ; Value for 'two players game mode'
 02D4: 21 A2 43        LD      HL,$43A2            ; {+ram.GameOrAttract}
-02D7: 71              LD      (HL),C              ; 
+02D7: 71              LD      (HL),C              ; set it to 1 or 2 and leave the attract mode.
 02D8: 3A 00 78        LD      A,($7800)           ; {hard.DSW0} 78xx DSW0
-02DB: E6 10           AND     $10                 ; Coinage
+02DB: E6 10           AND     $10                 ; mask for coinage 0001_0000
 02DD: CA E3 02        JP      Z,$02E3             ; {}
 02E0: 79              LD      A,C                 ; 
 02E1: 07              RLCA                        ; Multiply by 2
 02E2: 4F              LD      C,A                 ; 
 02E3: 2E 8F           LD      L,$8F               ; 
-02E5: 7E              LD      A,(HL)              ; {ram.CoinCount}
+02E5: 7E              LD      A,(HL)              ; get CoinCount value
 02E6: 91              SUB     C                   ; decrement coins
-02E7: 77              LD      (HL),A              ; 
-02E8: C6 20           ADD     $20                 ; 
+02E7: 77              LD      (HL),A              ; save it
+02E8: C6 20           ADD     $20                 ; map value to character code
 02EA: 32 42 41        LD      ($4142),A           ; {ram.ForegroundScreen+142} updates the number of coins on the screen
 02ED: C9              RET                         ; 
 
@@ -657,7 +657,7 @@ UpdatePlayerLives:
 0370: 7E              LD      A,(HL)              ; 
 0371: F6 20           OR      $20                 ; 0010_0000
 0373: 32 62 40        LD      ($4062),A           ; {ram.ForegroundScreen+62} number of lives, for player 2 at screen ram
-0376: C9              RET                         
+0376: C9              RET                         ; 
 
 UpdateSoundControlRAM:
 ; Update the sound control RAM registers
@@ -953,19 +953,20 @@ IntervalGameStateMachine:
 0544: FF FF FF
 
 ; Copy 32 byte from $0560 to $43C0 and clear 32 bytes from $43E0
-0547: 21 60 05        LD      HL,$0560            
+0547: 21 60 05        LD      HL,$0560            ; {+code.T0560}
 054A: 11 C0 43        LD      DE,$43C0            ; {+ram.M43C0}
-054D: 06 20           LD      B,$20               
+054D: 06 20           LD      B,$20               ; 
 054F: CD E0 05        CALL    $05E0               ; {code.CopyBbytesHLtoDE}
 0552: 21 E0 43        LD      HL,$43E0            ; {+ram.M43E0}
-0555: 06 20           LD      B,$20               
+0555: 06 20           LD      B,$20               ; 
 0557: CD D8 05        CALL    $05D8               ; {code.ClearBbytesAtHL}
-055A: C9              RET                         
+055A: C9              RET                         ; 
 
 055B: FF FF FF FF FF
 
 ; data copied to $43C0-$43DF
 ;?
+T0560:
 0560: 0C 10 64 D8
 0564: 00 50 00 D0
 0568: 00 50 00 D0
@@ -985,7 +986,7 @@ IntervalGameStateMachine:
 058D: 11 AB 43        LD      DE,$43AB            ; {+ram.M43AB}
 0590: 06 0C           LD      B,$0C               ; {+}
 0592: CD E0 05        CALL    $05E0               ; {code.CopyBbytesHLtoDE}
-0595: C9              RET                         
+0595: C9              RET                         ; 
 
 0596: FF FF
 
@@ -1026,7 +1027,7 @@ ClearBbytesAtHL:
 05DA: 23              INC     HL                  ; next
 05DB: 05              DEC     B                   ; decrease counter.
 05DC: C2 D9 05        JP      NZ,$05D9            ; {}
-05DF: C9              RET                         
+05DF: C9              RET                         ; 
 ;
 CopyBbytesHLtoDE:
 05E0: 7E              LD      A,(HL)              ; Copy to HL ...
@@ -1539,7 +1540,7 @@ CopyBbytesHLtoDE:
 08A3: 21 C4 43        LD      HL,$43C4            ; {+ram.M43C4}
 08A6: CD 30 09        CALL    $0930               ; {}
 08A9: 3A B8 43        LD      A,($43B8)           ; {ram.LevelAndRound}
-08AC: E6 0F           AND     $0F                 
+08AC: E6 0F           AND     $0F                 ; 0000_1111
 08AE: FE 03           CP      $03                 
 08B0: C0              RET     NZ                  
 08B1: 21 C8 43        LD      HL,$43C8            ; {+ram.M43C8}
@@ -1552,7 +1553,7 @@ CopyBbytesHLtoDE:
 MovePlayer??:
 08C4: 21 C0 43        LD      HL,$43C0            ; {+ram.M43C0}
 08C7: 7E              LD      A,(HL)              
-08C8: E6 08           AND     $08                 
+08C8: E6 08           AND     $08                 ; 0000_1000
 08CA: CA A0 0A        JP      Z,$0AA0             ; {code.DrawShields} Draw shields
 08CD: 2E A6           LD      L,$A6               
 08CF: 7E              LD      A,(HL)              
@@ -1565,7 +1566,7 @@ MovePlayer??:
 08DE: 36 40           LD      (HL),$40            
 08E0: 2E C0           LD      L,$C0               
 08E2: 7E              LD      A,(HL)              
-08E3: E6 F7           AND     $F7                 
+08E3: E6 F7           AND     $F7                 ; 1111_0111
 08E5: 77              LD      (HL),A              
 08E6: 2E A6           LD      L,$A6               
 08E8: 36 FF           LD      (HL),$FF            
@@ -1679,6 +1680,7 @@ MovePlayer??:
 098D: 86              ADD     A,(HL)              ; 
 098E: 32 9F 43        LD      ($439F),A           ; {ram.M439F}
 0991: C9              RET                         ; 
+; 
 0992: 32 9F 43        LD      ($439F),A           ; {ram.M439F}
 0995: C9              RET                         ; 
 
@@ -1966,6 +1968,7 @@ ShieldsExpired:
 0B8E: 01 00 01        LD      BC,$0100            
 0B91: CD 60 04        CALL    $0460               ; {}
 0B94: C9              RET                         
+; 
 0B95: CD D0 01        CALL    $01D0               ; {code.PrintTextLines}
 0B98: CD E4 01        CALL    $01E4               ; {}
 0B9B: C3 F0 1D        JP      $1DF0               ; {}
@@ -2037,7 +2040,7 @@ DrawScoreAverageTableTiles:
 0C18: D2 A4 0E        JP      NC,$0EA4            ; {}
 0C1B: 11 20 10        LD      DE,$1020            
 0C1E: 3E FF           LD      A,$FF               
-0C20: 32 69 43        LD      ($4369),A           
+0C20: 32 69 43        LD      ($4369),A           ; {ram.M4369}
 0C23: C3 A4 0E        JP      $0EA4               ; {}
 
 0C26: FF FF FF FF FF FF FF FF FF FF  FF FF FF FF FF FF
@@ -3821,22 +3824,23 @@ T1BA0:
 ;characters using setB for animation of the mothership's
 ;.....antenna animation and the
 ;...........alien pilot animation
-1BC0: 41 54 76 7E
-1BC4: 42 55 77 7F
-1BC8: 41 56 74 7C
-1BCC: 42 57 75 7D
-1BD0: 44 51 72 7A
-1BD4: 45 52 73 7B
-1BD8: 46 51 70 78
-1BDC: 47 52 71 79
-1BE0: 41 51 70 78
-1BE4: 42 52 71 79
-1BE8: 41 51 72 7A
-1BEC: 42 52 73 7B
-1BF0: 41 51 74 7C
-1BF4: 42 52 75 7D
-1BF8: 41 51 76 7E
-1BFC: 42 52 77 7F
+T1BC0:
+1BC0: 41 54 76 7E   ; frame 0
+1BC4: 42 55 77 7F   ; 
+1BC8: 41 56 74 7C   ; frame 1
+1BCC: 42 57 75 7D   ; 
+1BD0: 44 51 72 7A   ; frame 2
+1BD4: 45 52 73 7B   ; 
+1BD8: 46 51 70 78   ; frame 3
+1BDC: 47 52 71 79   ; 
+1BE0: 41 51 70 78   ; frame 4
+1BE4: 42 52 71 79   ; 
+1BE8: 41 51 72 7A   ; frame 5
+1BEC: 42 52 73 7B   ; 
+1BF0: 41 51 74 7C   ; frame 6
+1BF4: 42 52 75 7D   ; 
+1BF8: 41 51 76 7E   ; frame 7
+1BFC: 42 52 77 7F   ; 
 
 ;part of the starfield (without planets) using setB
 ; This is a 20x9 tile image used to erase the mothership
@@ -4057,8 +4061,10 @@ T1E60:
 206B: 78              LD      A,B                 
 206C: 12              LD      (DE),A              
 206D: C9              RET                         
+; 
 206E: C9              RET                         
 206F: FF
+; 
 2070: 7B              LD      A,E                 
 2071: D6 0A           SUB     $0A                 
 2073: C6 C0           ADD     $C0                 
@@ -4167,7 +4173,7 @@ T1E60:
 2107: 2C              INC     L                   
 2108: 6E              LD      L,(HL)              
 2109: 67              LD      H,A                 
-210A: 01 04 04        LD      BC,$0404            
+210A: 01 04 04        LD      BC,$0404            ; images are 4x4
 210D: C3 D6 0A        JP      $0AD6               ; {code.DrawImageCbyB}
 
 2110: FF FF FF FF FF FF FF FF FF FF FF FF
@@ -4265,7 +4271,7 @@ DrawIntroBirdAnimationFrame:
 21DC: 7E              LD      A,(HL)              ; {ram.M4399} Actual index for slow print at intro splash
 21DD: 00              NOP                         ; 
 21DE: 47              LD      B,A                 ; save it
-21DF: 21 73 4B        LD      HL,$4B73            ; 
+21DF: 21 73 4B        LD      HL,$4B73            ; {+ram.M4B73}
 21E2: E6 07           AND     $07                 ; mask out 0000_0111
 21E4: 77              LD      (HL),A              ; 
 21E5: 2D              DEC     L                   ; 
@@ -4390,7 +4396,7 @@ DrawIntroBirdAnimationFrame:
 2296: E6 08           AND     $08                 
 2298: CA F0 22        JP      Z,$22F0             ; {}
 229B: 21 00 1C        LD      HL,$1C00            ; Background stars to erase mother ship
-229E: 11 3F 4B        LD      DE,$4B3F            ; 
+229E: 11 3F 4B        LD      DE,$4B3F            ; End of background screen memory
 22A1: 06 47           LD      B,$47               
 22A3: 7E              LD      A,(HL)              
 22A4: 12              LD      (DE),A              
@@ -4408,7 +4414,7 @@ DrawIntroBirdAnimationFrame:
 22B3: FF
 
 22B4: CD 7A 06        CALL    $067A               ; {}
-22B7: 21 B4 43        LD      HL,$43B4            ; 
+22B7: 21 B4 43        LD      HL,$43B4            ; {+ram.B4Counter}
 22BA: 35              DEC     (HL)                
 22BB: 7E              LD      A,(HL)              
 22BC: FE 28           CP      $28                 
@@ -4419,7 +4425,7 @@ DrawIntroBirdAnimationFrame:
 
 22C6: FF FF FF FF
 
-22CA: 21 B4 43        LD      HL,$43B4            ; 
+22CA: 21 B4 43        LD      HL,$43B4            ; {+ram.B4Counter}
 22CD: 7E              LD      A,(HL)              
 22CE: FE C0           CP      $C0                 
 22D0: C2 34 08        JP      NZ,$0834            ; {}
@@ -4445,7 +4451,7 @@ DrawIntroBirdAnimationFrame:
 
 22F7: FF FF FF
 
-22FA: 21 AA 4A        LD      HL,$4AAA            
+22FA: 21 AA 4A        LD      HL,$4AAA            ; {+ram.BackgroundScreen+2AA}
 22FD: 06 12           LD      B,$12               
 22FF: 3A 8A 48        LD      A,($488A)           ; {ram.BackgroundScreen+8A}
 2302: 4F              LD      C,A                 
@@ -4472,19 +4478,19 @@ DrawIntroBirdAnimationFrame:
 231F: C9              RET                         
 
 2320: FF FF
-
-2322: 21 A7 43        LD      HL,$43A7            ; {+}
-2325: 34              INC     (HL)                
-2326: 7E              LD      A,(HL)              
-2327: E6 07           AND     $07                 
+; Animation of the mothership's antenna and the alien pilot
+2322: 21 A7 43        LD      HL,$43A7            ; {+ram.AnimationCounter}
+2325: 34              INC     (HL)                ; increment the animation counter
+2326: 7E              LD      A,(HL)              ; 
+2327: E6 07           AND     $07                 ; mask out 0000_0111, in order to count from 0 to 7 for 8 frames
 2329: 07              RLCA                        ; Multiply by 8 ..
-232A: 07              RLCA                        ; ..
-232B: 07              RLCA                        ; ..
-232C: C6 C0           ADD     $C0                 
-232E: 6F              LD      L,A                 
-232F: 26 1B           LD      H,$1B               
-2331: 11 A6 49        LD      DE,$49A6            
-2334: 01 02 04        LD      BC,$0402            
+232A: 07              RLCA                        ; ..to get..
+232B: 07              RLCA                        ; ..the frame data adress (8 characters per frame)
+232C: C6 C0           ADD     $C0                 ; LSB of T1BC0
+232E: 6F              LD      L,A                 ; 
+232F: 26 1B           LD      H,$1B               ; MSB of T1BC0
+2331: 11 A6 49        LD      DE,$49A6            ; {+ram.BackgroundScreen+1A6} at the middle of the mothership
+2334: 01 02 04        LD      BC,$0402            ; images are 2x4
 2337: C3 D6 0A        JP      $0AD6               ; {code.DrawImageCbyB}
 ;
 ; bird animation frame indexes at splash intro
@@ -4519,11 +4525,12 @@ DrawIntroBirdAnimationFrame:
 2375: FE 60           CP      $60                 
 2377: CA 98 23        JP      Z,$2398             ; {}
 237A: C9              RET                         
+; 
 237B: 1A              LD      A,(DE)              
 237C: E6 F7           AND     $F7                 
 237E: 12              LD      (DE),A              
 237F: 3E FF           LD      A,$FF               
-2381: 32 66 43        LD      ($4366),A           
+2381: 32 66 43        LD      ($4366),A           ; {ram.M4366}
 2384: 78              LD      A,B                 
 2385: 3D              DEC     A                   
 2386: 77              LD      (HL),A              
@@ -4559,7 +4566,7 @@ DrawIntroBirdAnimationFrame:
 23B4: 1A              LD      A,(DE)              
 23B5: 77              LD      (HL),A              
 23B6: 3E FF           LD      A,$FF               
-23B8: 32 66 43        LD      ($4366),A           
+23B8: 32 66 43        LD      ($4366),A           ; {ram.M4366}
 23BB: C9              RET                         
 
 23BC: FF FF FF FF
@@ -4693,8 +4700,9 @@ EraseMothership:
 248C: 7E              LD      A,(HL)              
 248D: E6 1E           AND     $1E                 
 248F: 80              ADD     A,B                 
-2490: 32 D1 4B        LD      ($4BD1),A           ; 
+2490: 32 D1 4B        LD      ($4BD1),A           ; {ram.M4BD1}
 2493: C9              RET                         
+; 
 2494: 1F              RRA                         
 2495: 80              ADD     A,B                 
 2496: 0D              DEC     C                   
@@ -4707,6 +4715,7 @@ EraseMothership:
 249D: C8              RET     Z                   
 249E: 87              ADD     A,A                 
 249F: C9              RET                         
+; 
 24A0: 3A B8 43        LD      A,($43B8)           ; {ram.LevelAndRound}
 24A3: E6 0F           AND     $0F                 
 24A5: FE 08           CP      $08                 
@@ -4729,7 +4738,7 @@ EraseMothership:
 24C9: FE 08           CP      $08                 
 24CB: DA F0 06        JP      C,$06F0             ; {}
 24CE: CD E0 24        CALL    $24E0               ; {}
-24D1: 21 AA 43        LD      HL,$43AA            ; {+}
+24D1: 21 AA 43        LD      HL,$43AA            ; {+ram.M43AA}
 24D4: 34              INC     (HL)                
 24D5: 7E              LD      A,(HL)              
 24D6: E6 03           AND     $03                 
@@ -4737,7 +4746,7 @@ EraseMothership:
 24DB: C3 22 23        JP      $2322               ; {}
 24DE: 24              INC     H                   
 24DF: BF              CP      A                   
-24E0: 3A AA 43        LD      A,($43AA)           
+24E0: 3A AA 43        LD      A,($43AA)           ; {ram.M43AA}
 24E3: E6 0F           AND     $0F                 
 24E5: C0              RET     NZ                  
 24E6: 3A B9 43        LD      A,($43B9)           ; {ram.M43B9}
@@ -4792,7 +4801,7 @@ EraseMothership:
 253D: AF              XOR     A                   
 253E: 78              LD      A,B                 
 253F: 27              DAA                         
-2540: 21 9D 43        LD      HL,$439D            ; {+}
+2540: 21 9D 43        LD      HL,$439D            ; {+ram.M439D}
 2543: 77              LD      (HL),A              
 2544: 2C              INC     L                   
 2545: 36 00           LD      (HL),$00            
@@ -4824,7 +4833,7 @@ EraseMothership:
 256D: 6F              LD      L,A                 
 256E: 26 4B           LD      H,$4B               
 2570: 1E 08           LD      E,$08               
-2572: 3A 57 43        LD      A,($4357)           
+2572: 3A 57 43        LD      A,($4357)           ; {ram.M4357}
 2575: 07              RLCA                        ; Multiply by 8 ..
 2576: 07              RLCA                        ; ..
 2577: 07              RLCA                        ; ..
@@ -4937,13 +4946,13 @@ EraseMothership:
 260A: 0F              RRCA                        
 260B: 0F              RRCA                        
 260C: E6 1F           AND     $1F                 
-260E: 21 D2 4B        LD      HL,$4BD2            
+260E: 21 D2 4B        LD      HL,$4BD2            ; {+ram.M4BD2}
 2611: 77              LD      (HL),A              
 2612: 2C              INC     L                   
-2613: 3A D1 4B        LD      A,($4BD1)           ; 
+2613: 3A D1 4B        LD      A,($4BD1)           ; {ram.M4BD1}
 2616: BE              CP      (HL)                
 2617: DA 50 26        JP      C,$2650             ; {}
-261A: 3A D5 4B        LD      A,($4BD5)           ; 
+261A: 3A D5 4B        LD      A,($4BD5)           ; {ram.M4BD5}
 261D: 57              LD      D,A                 
 261E: E6 03           AND     $03                 
 2620: 5F              LD      E,A                 
@@ -4985,7 +4994,7 @@ EraseMothership:
 2661: 86              ADD     A,(HL)              
 2662: C3 39 26        JP      $2639               ; {}
 2665: D2 AE 26        JP      NC,$26AE            ; {}
-2668: 3A 6E 43        LD      A,($436E)           
+2668: 3A 6E 43        LD      A,($436E)           ; {ram.M436E}
 266B: 00              NOP                         
 266C: 47              LD      B,A                 
 266D: 3A 9A 43        LD      A,($439A)           ; {ram.Counter16}
@@ -4999,7 +5008,7 @@ EraseMothership:
 267F: FE 03           CP      $03                 
 2681: D2 85 26        JP      NC,$2685            ; {}
 2684: 04              INC     B                   
-2685: 3A D6 4B        LD      A,($4BD6)           ; 
+2685: 3A D6 4B        LD      A,($4BD6)           ; {ram.M4BD6}
 2688: C6 E0           ADD     $E0                 
 268A: 6F              LD      L,A                 
 268B: 26 3E           LD      H,$3E               
@@ -5016,11 +5025,12 @@ EraseMothership:
 269F: D2 A3 26        JP      NC,$26A3            ; {}
 26A2: 14              INC     D                   
 26A3: 7A              LD      A,D                 
-26A4: 32 D5 4B        LD      ($4BD5),A           ; 
+26A4: 32 D5 4B        LD      ($4BD5),A           ; {ram.M4BD5}
 26A7: C9              RET                         
+;
 26A8: 00              NOP                         
 26A9: 58              LD      E,B                 
-26AA: 21 D3 4B        LD      HL,$4BD3            
+26AA: 21 D3 4B        LD      HL,$4BD3            ; {+ram.M4BD3}
 26AD: 7E              LD      A,(HL)              
 26AE: 35              DEC     (HL)                
 26AF: A7              AND     A                   
@@ -5036,7 +5046,7 @@ EraseMothership:
 26BC: 96              SUB     (HL)                
 26BD: 07              RLCA                        ; Multiply by 2
 26BE: 47              LD      B,A                 
-26BF: 3A 6F 43        LD      A,($436F)           
+26BF: 3A 6F 43        LD      A,($436F)           ; {ram.M436F}
 26C2: E6 03           AND     $03                 
 26C4: 2E D4           LD      L,$D4               
 26C6: 77              LD      (HL),A              
@@ -5046,7 +5056,8 @@ EraseMothership:
 26CB: 4F              LD      C,A                 
 26CC: C3 76 24        JP      $2476               ; {}
 26CF: C9              RET                         
-26D0: 21 A8 4B        LD      HL,$4BA8            
+;
+26D0: 21 A8 4B        LD      HL,$4BA8            ; {+ram.M4BA8}
 26D3: 01 00 08        LD      BC,$0800            
 26D6: 11 00 80        LD      DE,$8000            
 26D9: 7E              LD      A,(HL)              
@@ -5063,14 +5074,14 @@ EraseMothership:
 26E8: 6F              LD      L,A                 
 26E9: FE 68           CP      $68                 
 26EB: C2 D9 26        JP      NZ,$26D9            ; {}
-26EE: 3A D2 4B        LD      A,($4BD2)           ; 
+26EE: 3A D2 4B        LD      A,($4BD2)           ; {ram.M4BD2}
 26F1: 82              ADD     A,D                 
 26F2: 83              ADD     A,E                 
 26F3: E6 1F           AND     $1F                 
-26F5: 32 D6 4B        LD      ($4BD6),A           ; 
+26F5: 32 D6 4B        LD      ($4BD6),A           ; {ram.M4BD6}
 26F8: 7B              LD      A,E                 
 26F9: 92              SUB     D                   
-26FA: 32 D7 4B        LD      ($4BD7),A           ; 
+26FA: 32 D7 4B        LD      ($4BD7),A           ; {ram.M4BD7}
 26FD: C9              RET                         
 
 26FE: FF FF
@@ -5139,9 +5150,9 @@ GameFlow:
 2760: 12              LD      (DE),A              
 2761: 32 97 43        LD      ($4397),A           ; {ram.M4397}
 2764: C9              RET                         
-
+; 
 2765: FF FF FF
-
+; 
 2768: E5              PUSH    HL                  
 2769: 11 61 42        LD      DE,$4261            
 276C: 06 06           LD      B,$06               
@@ -5167,7 +5178,7 @@ GameFlow:
 2790: 34              INC     (HL)                
 2791: CD 67 03        CALL    $0367               ; {}
 2794: 3E FF           LD      A,$FF               
-2796: 32 6A 43        LD      ($436A),A           
+2796: 32 6A 43        LD      ($436A),A           ; {ram.M436A}
 2799: 2E BE           LD      L,$BE               
 279B: 7E              LD      A,(HL)              
 279C: 36 00           LD      (HL),$00            
@@ -5213,6 +5224,7 @@ UpdateSoundControlHW:
 27D3: F6 40           OR      $40                 
 27D5: 77              LD      (HL),A              
 27D6: C9              RET                         
+; 
 27D7: 77              LD      (HL),A              
 27D8: 36 18           LD      (HL),$18            
 27DA: 2E 8C           LD      L,$8C               
@@ -5220,6 +5232,7 @@ UpdateSoundControlHW:
 27DD: E6 BF           AND     $BF                 
 27DF: 77              LD      (HL),A              
 27E0: C9              RET                         
+; 
 27E1: 36 FE           LD      (HL),$FE            
 27E3: 40              LD      B,B                 
 27E4: DA E9 27        JP      C,$27E9             ; {}
@@ -5395,9 +5408,9 @@ T2B00:
 3010: 67              LD      H,A                 
 3011: E9              JP      (HL)                
 3012: C9              RET                         
-
+; 
 3013: FF FF FF FF FF
-
+; 
 3018: 32 64 30        LD      ($3064),A           ; {}
 301B: 28 30           JR      Z,$304D             ; {}
 301D: BA              CP      D                   
@@ -5406,7 +5419,7 @@ T2B00:
 3022: 31 B4 32        LD      SP,$32B4            
 3025: 2C              INC     L                   
 3026: 30 12           JR      NC,$303A            ; {}
-3028: 21 57 43        LD      HL,$4357            ; {+}
+3028: 21 57 43        LD      HL,$4357            ; {+ram.M4357}
 302B: 7E              LD      A,(HL)              
 302C: FE 03           CP      $03                 
 302E: D0              RET     NC                  
@@ -5437,24 +5450,24 @@ T2B00:
 3056: D8              RET     C                   
 3057: 36 40           LD      (HL),$40            
 3059: C9              RET                         
-
+; 
 305A: FF FF
-
+; 
 305C: CD 74 30        CALL    $3074               ; {}
-305F: 21 57 43        LD      HL,$4357            ; {+}
-3062: 7E              LD      A,(HL)              
+305F: 21 57 43        LD      HL,$4357            ; {+ram.M4357}
+3062: 7E              LD      A,(HL)              ; 
 3063: 07              RLCA                        ; Multiply by 4 ..
 3064: 07              RLCA                        ; ..
-3065: 00              NOP                         
-3066: 00              NOP                         
-3067: 81              ADD     A,C                 
-3068: C6 07           ADD     $07                 
-306A: 2E 58           LD      L,$58               
-306C: 77              LD      (HL),A              
-306D: C9              RET                         
-
+3065: 00              NOP                         ; 
+3066: 00              NOP                         ; 
+3067: 81              ADD     A,C                 ; 
+3068: C6 07           ADD     $07                 ; 
+306A: 2E 58           LD      L,$58               ; 
+306C: 77              LD      (HL),A              ; store to $4358
+306D: C9              RET                         ; 
+; 
 306E: FF FF FF FF FF FF
-
+; 
 3074: 21 B8 43        LD      HL,$43B8            ; {+ram.LevelAndRound}
 3077: 7E              LD      A,(HL)              
 3078: 0F              RRCA                        
@@ -5489,9 +5502,9 @@ T2B00:
 30A6: 81              ADD     A,C                 
 30A7: 4F              LD      C,A                 
 30A8: C9              RET                         
-
+; 
 30A9: FF
-
+; 
 30AA: 21 9B 43        LD      HL,$439B            ; {+ram.Counter16+1}
 30AD: 7E              LD      A,(HL)              
 30AE: 07              RLCA                        ; Multiply by 8 ..
@@ -5502,8 +5515,9 @@ T2B00:
 30B5: 86              ADD     A,(HL)              
 30B6: E6 0F           AND     $0F                 
 30B8: C9              RET                         
+; ?
 30B9: C0              RET     NZ                  
-30BA: 21 58 43        LD      HL,$4358            ; {+}
+30BA: 21 58 43        LD      HL,$4358            ; {+ram.M4358}
 30BD: CD DA 30        CALL    $30DA               ; {}
 30C0: CD DA 30        CALL    $30DA               ; {}
 30C3: CD DA 30        CALL    $30DA               ; {}
@@ -5520,12 +5534,14 @@ T2B00:
 30D4: 2E 50           LD      L,$50               
 30D6: 36 01           LD      (HL),$01            
 30D8: C9              RET                         
+; 
 30D9: FE 2C           CP      $2C                 
 30DB: 7E              LD      A,(HL)              
 30DC: A7              AND     A                   
 30DD: C8              RET     Z                   
 30DE: 35              DEC     (HL)                
 30DF: C9              RET                         
+; 
 30E0: 7E              LD      A,(HL)              
 30E1: FE 01           CP      $01                 
 30E3: D0              RET     NC                  
@@ -5553,6 +5569,7 @@ T2B00:
 310C: 2E 55           LD      L,$55               
 310E: 77              LD      (HL),A              
 310F: C9              RET                         
+; 
 3110: 21 50 2C        LD      HL,$2C50            
 3113: 7E              LD      A,(HL)              
 3114: A7              AND     A                   
@@ -5567,9 +5584,10 @@ T2B00:
 311E: 05              DEC     B                   
 311F: 36 0C           LD      (HL),$0C            
 3121: C9              RET                         
+; 
 3122: 86              ADD     A,(HL)              
 3123: 47              LD      B,A                 
-3124: 21 50 43        LD      HL,$4350            ; {+}
+3124: 21 50 43        LD      HL,$4350            ; {+ram.M4350}
 3127: 7E              LD      A,(HL)              
 3128: FE 01           CP      $01                 
 312A: C0              RET     NZ                  
@@ -5594,16 +5612,10 @@ T2B00:
 314B: 2E 53           LD      L,$53               
 314D: 77              LD      (HL),A              
 314E: C9              RET                         
-314F: 0A              LD      A,(BC)              
-3150: 0C              INC     C                   
-3151: 0B              DEC     BC                  
-3152: 0C              INC     C                   
-3153: 0B              DEC     BC                  
-3154: 0E 0F           LD      C,$0F               
-3156: 0E 0F           LD      C,$0F               
-3158: FF
-3159: FF
-315A: 21 50 43        LD      HL,$4350            ; {+}
+; ?
+314F: 0A 0C 0B 0C 0B 0E 0F 0E 0F FF FF
+; 
+315A: 21 50 43        LD      HL,$4350            ; {+ram.M4350}
 315D: 7E              LD      A,(HL)              
 315E: FE 02           CP      $02                 
 3160: C0              RET     NZ                  
@@ -5638,34 +5650,34 @@ T2B00:
 318A: 0D              DEC     C                   
 318B: C2 79 31        JP      NZ,$3179            ; {}
 318E: C9              RET                         
-
+; 
 318F: FF FF FF
-
+; 
 3192: 1A              LD      A,(DE)              
 3193: E6 08           AND     $08                 
 3195: C8              RET     Z                   
 3196: 3A 94 43        LD      A,($4394)           ; {ram.M4394}
 3199: BE              CP      (HL)                
 319A: C0              RET     NZ                  
-319B: 3A 56 43        LD      A,($4356)           
+319B: 3A 56 43        LD      A,($4356)           ; {ram.M4356}
 319E: 2C              INC     L                   
 319F: 46              LD      B,(HL)              
 31A0: 2D              DEC     L                   
 31A1: B8              CP      B                   
 31A2: C0              RET     NZ                  
 31A3: 7D              LD      A,L                 
-31A4: 32 54 43        LD      ($4354),A           
+31A4: 32 54 43        LD      ($4354),A           ; {ram.M4354}
 31A7: 3E 03           LD      A,$03               
-31A9: 32 50 43        LD      ($4350),A           
+31A9: 32 50 43        LD      ($4350),A           ; {ram.M4350}
 31AC: E1              POP     HL                  
 31AD: C9              RET                         
-
+; 
 31AE: FF FF FF FF FF FF
-
-31B4: 3A 50 43        LD      A,($4350)           
+; 
+31B4: 3A 50 43        LD      A,($4350)           ; {ram.M4350}
 31B7: FE 03           CP      $03                 
 31B9: C0              RET     NZ                  
-31BA: 3A 54 43        LD      A,($4354)           
+31BA: 3A 54 43        LD      A,($4354)           ; {ram.M4354}
 31BD: D6 50           SUB     $50                 
 31BF: 07              RLCA                        ; Multiply by 2
 31C0: C6 72           ADD     $72                 
@@ -5698,7 +5710,7 @@ T2B00:
 31E6: 00              NOP                         
 31E7: 00              NOP                         
 31E8: 00              NOP                         
-31E9: 3A 57 43        LD      A,($4357)           
+31E9: 3A 57 43        LD      A,($4357)           ; {ram.M4357}
 31EC: 47              LD      B,A                 
 31ED: CD 10 32        CALL    $3210               ; {}
 31F0: 79              LD      A,C                 
@@ -5715,16 +5727,17 @@ T2B00:
 3201: 7E              LD      A,(HL)              
 3202: 2C              INC     L                   
 3203: 46              LD      B,(HL)              
-3204: 21 50 43        LD      HL,$4350            ; {+}
+3204: 21 50 43        LD      HL,$4350            ; {+ram.M4350}
 3207: 36 05           LD      (HL),$05            
 3209: 2C              INC     L                   
 320A: 77              LD      (HL),A              
 320B: 2C              INC     L                   
 320C: 70              LD      (HL),B              
 320D: C9              RET                         
+; 
 320E: 81              ADD     A,C                 
 320F: 6F              LD      L,A                 
-3210: 3A 53 43        LD      A,($4353)           
+3210: 3A 53 43        LD      A,($4353)           ; {ram.M4353}
 3213: FE 01           CP      $01                 
 3215: C0              RET     NZ                  
 3216: 7A              LD      A,D                 
@@ -5739,15 +5752,16 @@ T2B00:
 3225: D8              RET     C                   
 3226: 06 03           LD      B,$03               
 3228: C9              RET                         
+; 
 3229: C0              RET     NZ                  
 322A: 21 50 3A        LD      HL,$3A50            
 322D: 50              LD      D,B                 
 322E: 43              LD      B,E                 
 322F: FE 04           CP      $04                 
 3231: C0              RET     NZ                  
-3232: 21 50 4B        LD      HL,$4B50            
-3235: 11 70 4B        LD      DE,$4B70            
-3238: 3A 56 43        LD      A,($4356)           
+3232: 21 50 4B        LD      HL,$4B50            ; {+ram.M4B50}
+3235: 11 70 4B        LD      DE,$4B70            ; {+ram.M4B70}
+3238: 3A 56 43        LD      A,($4356)           ; {ram.M4356}
 323B: 4F              LD      C,A                 
 323C: 3A 94 43        LD      A,($4394)           ; {ram.M4394}
 323F: 47              LD      B,A                 
@@ -5770,8 +5784,9 @@ T2B00:
 3254: FE B0           CP      $B0                 
 3256: C2 40 32        JP      NZ,$3240            ; {}
 3259: 3E 06           LD      A,$06               
-325B: 32 50 43        LD      ($4350),A           
+325B: 32 50 43        LD      ($4350),A           ; {ram.M4350}
 325E: C9              RET                         
+; 
 325F: 3C              INC     A                   
 3260: E6 0F           AND     $0F                 
 3262: 77              LD      (HL),A              
@@ -5779,7 +5794,7 @@ T2B00:
 3265: 95              SUB     L                   
 3266: 43              LD      B,E                 
 3267: 7E              LD      A,(HL)              
-3268: 32 56 43        LD      ($4356),A           
+3268: 32 56 43        LD      ($4356),A           ; {ram.M4356}
 326B: 3C              INC     A                   
 326C: E6 0F           AND     $0F                 
 326E: 77              LD      (HL),A              
@@ -5793,7 +5808,7 @@ T2B00:
 327A: 2C              INC     L                   
 327B: 6E              LD      L,(HL)              
 327C: 26 4B           LD      H,$4B               
-327E: 3A 56 43        LD      A,($4356)           
+327E: 3A 56 43        LD      A,($4356)           ; {ram.M4356}
 3281: 57              LD      D,A                 
 3282: 3A 94 43        LD      A,($4394)           ; {ram.M4394}
 3285: 5F              LD      E,A                 
@@ -5812,10 +5827,10 @@ T2B00:
 3296: BA              CP      D                   
 3297: C2 A4 32        JP      NZ,$32A4            ; {}
 329A: 2D              DEC     L                   
-329B: 3A 51 43        LD      A,($4351)           
+329B: 3A 51 43        LD      A,($4351)           ; {ram.M4351}
 329E: 77              LD      (HL),A              
 329F: 2C              INC     L                   
-32A0: 3A 52 43        LD      A,($4352)           
+32A0: 3A 52 43        LD      A,($4352)           ; {ram.M4352}
 32A3: 77              LD      (HL),A              
 32A4: 2C              INC     L                   
 32A5: 05              DEC     B                   
@@ -5824,7 +5839,8 @@ T2B00:
 32AB: 0D              DEC     C                   
 32AC: C2 8F 32        JP      NZ,$328F            ; {}
 32AF: C9              RET                         
-32B0: 21 50 43        LD      HL,$4350            ; {+}
+; 
+32B0: 21 50 43        LD      HL,$4350            ; {+ram.M4350}
 32B3: 06 30           LD      B,$30               
 32B5: CD D8 05        CALL    $05D8               ; {code.ClearBbytesAtHL}
 32B8: 2E 9A           LD      L,$9A               
@@ -5837,7 +5853,7 @@ T2B00:
 32C5: 07              RLCA                        ; ..
 32C6: 07              RLCA                        ; ..
 32C7: 4F              LD      C,A                 
-32C8: 21 70 4B        LD      HL,$4B70            
+32C8: 21 70 4B        LD      HL,$4B70            ; {+ram.M4B70}
 32CB: 06 40           LD      B,$40               
 32CD: CD D8 05        CALL    $05D8               ; {code.ClearBbytesAtHL}
 32D0: 16 4B           LD      D,$4B               
@@ -5859,7 +5875,7 @@ T2B00:
 32EA: C3 E0 05        JP      $05E0               ; {code.CopyBbytesHLtoDE}
 32ED: CD E0 05        CALL    $05E0               ; {code.CopyBbytesHLtoDE}
 32F0: C3 A0 03        JP      $03A0               ; {code.ClearBackground}
-
+; 
 32F3: FF FF FF FF FF FF FF FF FF FF FF FF FF
 
 ;?
@@ -5933,7 +5949,7 @@ T2B00:
 
 3470: FF FF FF FF
 
-3474: 21 70 4B        LD      HL,$4B70            
+3474: 21 70 4B        LD      HL,$4B70            ; {+ram.M4B70}
 3477: E5              PUSH    HL                  
 3478: CD C0 34        CALL    $34C0               ; {}
 347B: E1              POP     HL                  
@@ -5943,7 +5959,8 @@ T2B00:
 3480: FE 90           CP      $90                 
 3482: C2 77 34        JP      NZ,$3477            ; {}
 3485: C9              RET                         
-3486: 21 90 4B        LD      HL,$4B90            
+; 
+3486: 21 90 4B        LD      HL,$4B90            ; {+ram.M4B90}
 ;
 3489: E5              PUSH    HL                  
 348A: CD C0 34        CALL    $34C0               ; {}
@@ -5954,7 +5971,8 @@ T2B00:
 3492: FE B0           CP      $B0                 
 3494: C2 89 34        JP      NZ,$3489            ; {}
 3497: C9              RET                         
-3498: 21 70 4B        LD      HL,$4B70            
+; 
+3498: 21 70 4B        LD      HL,$4B70            ; {+ram.M4B70}
 349B: E5              PUSH    HL                  
 349C: CD B0 35        CALL    $35B0               ; {}
 349F: E1              POP     HL                  
@@ -5964,7 +5982,8 @@ T2B00:
 34A4: FE 90           CP      $90                 
 34A6: C2 9B 34        JP      NZ,$349B            ; {}
 34A9: C9              RET                         
-34AA: 21 90 4B        LD      HL,$4B90            
+; 
+34AA: 21 90 4B        LD      HL,$4B90            ; {+ram.M4B90}
 34AD: E5              PUSH    HL                  
 34AE: CD B0 35        CALL    $35B0               ; {}
 34B1: E1              POP     HL                  
@@ -6123,7 +6142,7 @@ Draw1x2:
 355D: C9              RET                         ; 
 ;
 355E: FF FF
-
+; 
 3560: CD AA 30        CALL    $30AA               ; {}
 3563: 47              LD      B,A                 
 3564: 07              RLCA                        ; Multiply by 4 ..
@@ -6132,7 +6151,7 @@ Draw1x2:
 3567: 07              RLCA                        ; Multiply by 4 ..
 3568: 07              RLCA                        ; ..
 3569: B0              OR      B                   
-356A: 32 6F 43        LD      ($436F),A           
+356A: 32 6F 43        LD      ($436F),A           ; {ram.M436F}
 356D: 3A B8 43        LD      A,($43B8)           ; {ram.LevelAndRound}
 3570: FE 40           CP      $40                 
 3572: DA 77 35        JP      C,$3577             ; {}
@@ -6157,16 +6176,16 @@ Draw1x2:
 3593: 6F              LD      L,A                 
 3594: 26 3E           LD      H,$3E               
 3596: 7E              LD      A,(HL)              ; data from table $3E80
-3597: 32 6E 43        LD      ($436E),A           
+3597: 32 6E 43        LD      ($436E),A           ; {ram.M436E}
 359A: 2C              INC     L                   
 359B: 7E              LD      A,(HL)              ; data from table $3E80
 359C: 81              ADD     A,C                 
 359D: E6 F8           AND     $F8                 
-359F: 32 6D 43        LD      ($436D),A           
+359F: 32 6D 43        LD      ($436D),A           ; {ram.M436D}
 35A2: C9              RET                         
-
+; 
 35A3: FF FF FF FF FF FF FF FF FF FF FF FF FF
-
+; 
 35B0: 7E              LD      A,(HL)              
 35B1: A7              AND     A                   
 35B2: C8              RET     Z                   
@@ -6257,7 +6276,7 @@ Draw1x2:
 3619: 3C              INC     A                   
 361A: 77              LD      (HL),A              
 361B: D8              RET     C                   
-361C: 3A 6E 43        LD      A,($436E)           
+361C: 3A 6E 43        LD      A,($436E)           ; {ram.M436E}
 361F: 77              LD      (HL),A              
 3620: B8              CP      B                   
 3621: C8              RET     Z                   
@@ -6305,7 +6324,7 @@ Draw1x2:
 3655: 3C              INC     A                   
 3656: 2D              DEC     L                   
 3657: DA 63 36        JP      C,$3663             ; {}
-365A: 3A 6E 43        LD      A,($436E)           
+365A: 3A 6E 43        LD      A,($436E)           ; {ram.M436E}
 365D: B8              CP      B                   
 365E: CA 63 36        JP      Z,$3663             ; {}
 3661: 78              LD      A,B                 
@@ -6313,6 +6332,7 @@ Draw1x2:
 3663: F6 10           OR      $10                 
 3665: 77              LD      (HL),A              
 3666: C9              RET                         
+; 
 3667: 77              LD      (HL),A              
 3668: C9              RET                         
 
@@ -6326,6 +6346,7 @@ Draw1x2:
 366F: 2C              INC     L                   
 3670: 34              INC     (HL)                
 3671: C9              RET                         
+; 
 3672: 2D              DEC     L                   
 3673: 46              LD      B,(HL)              
 3674: 2C              INC     L                   
@@ -6335,10 +6356,10 @@ Draw1x2:
 367B: B8              CP      B                   
 367C: D2 80 36        JP      NC,$3680            ; {}
 367F: 47              LD      B,A                 
-3680: 3A 6D 43        LD      A,($436D)           
+3680: 3A 6D 43        LD      A,($436D)           ; {ram.M436D}
 3683: 4F              LD      C,A                 
 3684: C6 08           ADD     $08                 
-3686: 32 6D 43        LD      ($436D),A           
+3686: 32 6D 43        LD      ($436D),A           ; {ram.M436D}
 3689: 78              LD      A,B                 
 368A: 91              SUB     C                   
 368B: 36 08           LD      (HL),$08            
@@ -6347,6 +6368,7 @@ Draw1x2:
 3690: D8              RET     C                   
 3691: 77              LD      (HL),A              
 3692: C9              RET                         
+; 
 3693: D8              RET     C                   
 3694: FE 2C           CP      $2C                 
 3696: 2C              INC     L                   
@@ -6364,9 +6386,9 @@ Draw1x2:
 36A6: B8              CP      B                   
 36A7: DA AB 36        JP      C,$36AB             ; {}
 36AA: 47              LD      B,A                 
-36AB: 3A 6D 43        LD      A,($436D)           
+36AB: 3A 6D 43        LD      A,($436D)           ; {ram.M436D}
 36AE: C6 08           ADD     $08                 
-36B0: 32 6D 43        LD      ($436D),A           
+36B0: 32 6D 43        LD      ($436D),A           ; {ram.M436D}
 36B3: 80              ADD     A,B                 
 36B4: 36 C8           LD      (HL),$C8            
 36B6: D8              RET     C                   
@@ -6374,6 +6396,7 @@ Draw1x2:
 36B9: D0              RET     NC                  
 36BA: 77              LD      (HL),A              
 36BB: C9              RET                         
+; 
 36BC: 77              LD      (HL),A              
 36BD: C9              RET                         
 
@@ -6410,9 +6433,9 @@ Draw1x2:
 36DB: 2D              DEC     L                   
 36DC: 2D              DEC     L                   
 36DD: 72              LD      (HL),D              
-36DE: 3A 68 43        LD      A,($4368)           
+36DE: 3A 68 43        LD      A,($4368)           ; {ram.M4368}
 36E1: F6 01           OR      $01                 
-36E3: 32 68 43        LD      ($4368),A           
+36E3: 32 68 43        LD      ($4368),A           ; {ram.M4368}
 36E6: C9              RET                         
 
 36E7: FF FF FF
@@ -6436,9 +6459,9 @@ Draw1x2:
 36FB: 2D              DEC     L                   
 36FC: 2D              DEC     L                   
 36FD: 72              LD      (HL),D              
-36FE: 3A 68 43        LD      A,($4368)           
+36FE: 3A 68 43        LD      A,($4368)           ; {ram.M4368}
 3701: F6 02           OR      $02                 
-3703: 32 68 43        LD      ($4368),A           
+3703: 32 68 43        LD      ($4368),A           ; {ram.M4368}
 3706: C9              RET                         
 
 3707: FF FF FF
@@ -6462,10 +6485,10 @@ Draw1x2:
 371B: 2D              DEC     L                   
 371C: 2D              DEC     L                   
 371D: 72              LD      (HL),D              
-371E: 3A 68 43        LD      A,($4368)           
+371E: 3A 68 43        LD      A,($4368)           ; {ram.M4368}
 3721: F6 04           OR      $04                 
-3723: 32 68 43        LD      ($4368),A           
-3726: 3A 6F 43        LD      A,($436F)           
+3723: 32 68 43        LD      ($4368),A           ; {ram.M4368}
+3726: 3A 6F 43        LD      A,($436F)           ; {ram.M436F}
 3729: A3              AND     E                   
 372A: E6 F0           AND     $F0                 
 372C: C0              RET     NZ                  
@@ -6477,9 +6500,9 @@ Draw1x2:
 3733: 2C              INC     L                   
 3734: 2C              INC     L                   
 3735: 71              LD      (HL),C              
-3736: 3A 68 43        LD      A,($4368)           
+3736: 3A 68 43        LD      A,($4368)           ; {ram.M4368}
 3739: F6 08           OR      $08                 
-373B: 32 68 43        LD      ($4368),A           
+373B: 32 68 43        LD      ($4368),A           ; {ram.M4368}
 373E: C9              RET                         
 
 373F: FF FF FF FF FF
@@ -6608,7 +6631,7 @@ Draw1x2:
 3806: 3A E6 43        LD      A,($43E6)           ; {ram.M43E6}
 3809: C6 08           ADD     $08                 
 380B: 57              LD      D,A                 
-380C: 3A D2 4B        LD      A,($4BD2)           ; 
+380C: 3A D2 4B        LD      A,($4BD2)           ; {ram.M4BD2}
 380F: 5F              LD      E,A                 
 3810: 3A E7 43        LD      A,($43E7)           ; {ram.M43E7}
 3813: E6 E0           AND     $E0                 
@@ -6664,7 +6687,7 @@ Draw1x2:
 385F: DA 94 38        JP      C,$3894             ; {}
 3862: 5F              LD      E,A                 
 3863: 3E FF           LD      A,$FF               
-3865: 32 69 43        LD      ($4369),A           
+3865: 32 69 43        LD      ($4369),A           ; {ram.M4369}
 3868: 21 78 43        LD      HL,$4378            ; {+ram.M4378}
 386B: 01 10 10        LD      BC,$1010            
 386E: 7B              LD      A,E                 
@@ -6693,7 +6716,7 @@ Draw1x2:
 
 3894: 01 05 0D        LD      BC,$0D05            
 3897: 3E FF           LD      A,$FF               
-3899: 32 64 43        LD      ($4364),A           
+3899: 32 64 43        LD      ($4364),A           ; {ram.M4364}
 389C: C3 F8 38        JP      $38F8               ; {}
 
 389F: FF FF
@@ -6712,10 +6735,11 @@ Draw1x2:
 38B1: CD DE 34        CALL    $34DE               ; {}
 38B4: D1              POP     DE                  
 38B5: C9              RET                         
+; 
 38B6: 35              DEC     (HL)                
 38B7: D1              POP     DE                  
 38B8: C9              RET                         
-
+; 
 38B9: FF FF FF
 
 38BC: C6 B0           ADD     $B0                 
@@ -6748,7 +6772,7 @@ Draw1x2:
 38E7: 7E              LD      A,(HL)              
 38E8: 12              LD      (DE),A              
 38E9: 3E FF           LD      A,$FF               
-38EB: 32 66 43        LD      ($4366),A           
+38EB: 32 66 43        LD      ($4366),A           ; {ram.M4366}
 38EE: 01 02 07        LD      BC,$0702            
 38F1: C3 F8 38        JP      $38F8               ; {}
 
@@ -6777,10 +6801,12 @@ Draw1x2:
 3916: E6 F7           AND     $F7                 
 3918: 32 C4 43        LD      ($43C4),A           ; {ram.M43C4}
 391B: C9              RET                         
+; 
 391C: 78              LD      A,B                 
 391D: FE 20           CP      $20                 
 391F: D2 BC 38        JP      NC,$38BC            ; {}
 3922: C9              RET                         
+; 
 3923: C8              RET     Z                   
 3924: 35              DEC     (HL)                
 3925: 2E 8D           LD      L,$8D               
@@ -6789,11 +6815,12 @@ Draw1x2:
 392A: F6 80           OR      $80                 
 392C: 77              LD      (HL),A              
 392D: C9              RET                         
+; 
 392E: C9              RET                         
-
+; 
 392F: FF
 
-3930: 3A D2 4B        LD      A,($4BD2)           ; 
+3930: 3A D2 4B        LD      A,($4BD2)           ; {ram.M4BD2}
 3933: E6 1E           AND     $1E                 
 3935: C6 C0           ADD     $C0                 
 3937: 6F              LD      L,A                 
@@ -6837,7 +6864,7 @@ Draw1x2:
 396C: 2D              DEC     L                   
 396D: 2D              DEC     L                   
 396E: 2D              DEC     L                   
-396F: 3A D2 4B        LD      A,($4BD2)           ; 
+396F: 3A D2 4B        LD      A,($4BD2)           ; {ram.M4BD2}
 3972: 86              ADD     A,(HL)              
 3973: E6 1F           AND     $1F                 
 3975: 07              RLCA                        ; Multiply by 8 ..
@@ -6849,7 +6876,7 @@ Draw1x2:
 
 397E: FF FF
 
-3980: 3A D2 4B        LD      A,($4BD2)           ; 
+3980: 3A D2 4B        LD      A,($4BD2)           ; {ram.M4BD2}
 3983: D6 0C           SUB     $0C                 
 3985: D8              RET     C                   
 3986: FE 10           CP      $10                 
@@ -6893,7 +6920,7 @@ Draw1x2:
 39D4: E6 1F           AND     $1F                 
 39D6: FE 1D           CP      $1D                 
 39D8: DA C3 39        JP      C,$39C3             ; {}
-39DB: 21 C0 4B        LD      HL,$4BC0            
+39DB: 21 C0 4B        LD      HL,$4BC0            ; {+ram.M4BC0}
 39DE: 11 C4 43        LD      DE,$43C4            ; {+ram.M43C4}
 39E1: 06 04           LD      B,$04               
 39E3: CD E0 05        CALL    $05E0               ; {code.CopyBbytesHLtoDE}
@@ -6933,7 +6960,7 @@ Draw1x2:
 3A1A: 36 CF           LD      (HL),$CF            ; 1100_1111 triggers Tune3 -- ESTUDIO (Phoenix theme song)
 3A1C: C9              RET                         
 ;
-3A1D: 21 69 43        LD      HL,$4369            ; {+}
+3A1D: 21 69 43        LD      HL,$4369            ; {+ram.M4369}
 3A20: 7E              LD      A,(HL)              
 3A21: A7              AND     A                   
 3A22: CA 40 3A        JP      Z,$3A40             ; {}
@@ -6954,6 +6981,7 @@ Draw1x2:
 3A3B: 2E 66           LD      L,$66               
 3A3D: 36 00           LD      (HL),$00            
 3A3F: C9              RET                         
+; 
 3A40: 2E 64           LD      L,$64               
 3A42: 7E              LD      A,(HL)              
 3A43: A7              AND     A                   
@@ -6974,6 +7002,7 @@ Draw1x2:
 3A5B: 2E 66           LD      L,$66               
 3A5D: 36 00           LD      (HL),$00            
 3A5F: C9              RET                         
+; 
 3A60: 0F              RRCA                        
 3A61: 00              NOP                         
 3A62: 2E 66           LD      L,$66               
@@ -6994,6 +7023,7 @@ Draw1x2:
 3A7E: F6 04           OR      $04                 
 3A80: 77              LD      (HL),A              
 3A81: C9              RET                         
+; 
 3A82: 21 9A 43        LD      HL,$439A            ; {+ram.Counter16}
 3A85: 7E              LD      A,(HL)              
 3A86: FE 03           CP      $03                 
@@ -7003,11 +7033,12 @@ Draw1x2:
 3A8C: E6 3F           AND     $3F                 
 3A8E: 77              LD      (HL),A              
 3A8F: C9              RET                         
-3A90: 21 6B 43        LD      HL,$436B            ; {+}
+; 
+3A90: 21 6B 43        LD      HL,$436B            ; {+ram.M436B}
 3A93: 7E              LD      A,(HL)              
 3A94: A7              AND     A                   
 3A95: C3 23 39        JP      $3923               ; {}
-3A98: 21 70 4B        LD      HL,$4B70            
+3A98: 21 70 4B        LD      HL,$4B70            ; {+ram.M4B70}
 3A9B: 01 00 08        LD      BC,$0800            
 3A9E: 11 B0 03        LD      DE,$03B0            
 3AA1: 7E              LD      A,(HL)              
@@ -7031,7 +7062,7 @@ Draw1x2:
 3ABD: 3E 08           LD      A,$08               
 3ABF: C6 25           ADD     $25                 
 3AC1: 4F              LD      C,A                 
-3AC2: 21 8C 43        LD      HL,$438C            ; 
+3AC2: 21 8C 43        LD      HL,$438C            ; {+ram.SoundControlA}
 3AC5: 7E              LD      A,(HL)              
 3AC6: E6 C0           AND     $C0                 
 3AC8: B1              OR      C                   
@@ -7040,7 +7071,7 @@ Draw1x2:
 
 3ACB: FF FF FF FF FF
 
-3AD0: 21 8E 43        LD      HL,$438E            ; {+}
+3AD0: 21 8E 43        LD      HL,$438E            ; {+ram.M438E}
 3AD3: 7E              LD      A,(HL)              
 3AD4: E6 01           AND     $01                 
 3AD6: 07              RLCA                        ; Multiply by 4 ..
@@ -7057,7 +7088,7 @@ Draw1x2:
 3AE4: 34              INC     (HL)                
 3AE5: A7              AND     A                   
 3AE6: CA F8 3A        JP      Z,$3AF8             ; {}
-3AE9: 3A D6 4B        LD      A,($4BD6)           ; 
+3AE9: 3A D6 4B        LD      A,($4BD6)           ; {ram.M4BD6}
 3AEC: C6 E0           ADD     $E0                 
 3AEE: 5F              LD      E,A                 
 3AEF: 16 3D           LD      D,$3D               
@@ -7066,6 +7097,7 @@ Draw1x2:
 3AF3: D0              RET     NC                  
 3AF4: 36 00           LD      (HL),$00            
 3AF6: C9              RET                         
+; 
 3AF7: 5F              LD      E,A                 
 3AF8: 2E 8E           LD      L,$8E               
 3AFA: 34              INC     (HL)                
@@ -7074,6 +7106,7 @@ Draw1x2:
 3AFD: F6 10           OR      $10                 
 3AFF: 77              LD      (HL),A              
 3B00: C9              RET                         
+; 
 3B01: 8E              ADC     A,(HL)              
 3B02: 21 9A 43        LD      HL,$439A            ; {+ram.Counter16}
 3B05: 7E              LD      A,(HL)              
@@ -7091,8 +7124,9 @@ Draw1x2:
 3B16: C6 1C           ADD     $1C                 
 3B18: 77              LD      (HL),A              
 3B19: C9              RET                         
+; 
 3B1A: 78              LD      A,B                 
-3B1B: 21 62 43        LD      HL,$4362            ; {+}
+3B1B: 21 62 43        LD      HL,$4362            ; {+ram.M4362}
 3B1E: 7E              LD      A,(HL)              
 3B1F: A7              AND     A                   
 3B20: C8              RET     Z                   
@@ -7110,7 +7144,7 @@ Draw1x2:
 
 3B32: FF
 
-3B33: 21 6A 43        LD      HL,$436A            ; {+}
+3B33: 21 6A 43        LD      HL,$436A            ; {+ram.M436A}
 3B36: 7E              LD      A,(HL)              
 3B37: A7              AND     A                   
 3B38: C8              RET     Z                   

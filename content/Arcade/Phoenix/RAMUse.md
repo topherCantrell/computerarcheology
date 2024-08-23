@@ -39,10 +39,28 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | --- | --- | --- |
 | 4000:433F | ForegroundScreen     | 32*26 bytes for the foreground screen |
 | --- | --- | --- |
+| 4350      | M4350                | ? |
+| 4351      | M4351                | ? |
+| 4352      | M4352                | ? |
+| 4353      | M4353                | ? |
+| 4354      | M4354                | ? |
+| 4356      | M4356                | ? |
+| 4357      | M4357                | ? |
+| 4358      | M4358                | ? |
 | 435F      | M435F                | ? |
 | 4360      | M4360                | ? |
 | 4361      | M4361                | ? |
+| 4362      | M4362                | ? |
 | 4363      | M4363                | ? |
+| 4364      | M4364                | ? |
+| 4366      | M4366                | ? |
+| 4368      | M4368                | ? |
+| 4369      | M4369                | ? |
+| 436A      | M436A                | ? |
+| 436B      | M436B                | ? |
+| 436D      | M436D                | ? |
+| 436E      | M436E                | ? |
+| 436F      | M436F                | ? |
 | 4370      | M4370                | ? |
 | 4374      | M4374                | ? |
 | 4378      | M4378                | ? |
@@ -61,6 +79,7 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 438B      | HiScorelow           | Hi score BCD (low) |
 | 438C      | SoundControlA        | RAM copy of sound device control register A (0x6000) |
 | 438D      | SoundControlB        | RAM copy of sound device control register B (0x6800) |
+| 438E      | M438E                | ? |
 | 438F      | CoinCount            | Number of coins inserted (max counted is 9) |
 | 4390      | Player1Lives         | Player 1 number of lives |
 | 4391      | Player2Lives         | Player 2 number of lives |
@@ -75,17 +94,20 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 439A:439B | Counter16            | 16 bit counter (MSB:LSB) and.. |
 | 439B      | M439B                | Next index for slow print at intro splash |
 | 439C      | M439C                | ? |
+| 439D      | M439D                | ? |
 | 439E      | M439E                | ? |
 | 439F      | M439F                | ? |
 | 43A0      | IN0Current           | Current value of IN0     |
 | 43A1      | IN0Previous          | Previous value of IN0    |
-| 43A2      | GameOrAttract        | Attract mode:0 Game mode:1 |
+| 43A2      | GameOrAttract        | Attract mode:0, One player game mode:1, Two players game mode:2 |
 | 43A3      | GameAndDemoOrSplash  | Game and demo:0 Intro splash:2 |
 | 43A4      | GameState            | Game state:0 - 7 |
 | 43A5      | Counter8             | 8 bit counter (score flash time) |
 | 43A6      | ShieldCount          | Counts shield time and controls shield picture. Shields end at C0. |
+| 43A7      | AnimationCounter     | for mothership's antenna and the alien pilot animation |
 | 43A8      | M43A8                | temporary storage (MSB of pointer to table $1860) |
 | 43A9      | M43A9                | temporary storage (LSB of pointer to table $1860) |
+| 43AA      | M43AA                | ? |
 | 43AB      | M43AB                | ? |
 | 43AC      | M43AC                | ? |
 | 43AD      | M43AD                | ? |
@@ -245,6 +267,12 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 4BB0      | M4BB0                | ? |
 | 4BB3      | M4BB3                | ? |
 | 4BC0      | M4BC0                | ? |
+| 4BD1      | M4BD1                | ? |
+| 4BD2      | M4BD2                | ? |
+| 4BD3      | M4BD3                | ? |
+| 4BD5      | M4BD5                | ? |
+| 4BD6      | M4BD6                | ? |
+| 4BD7      | M4BD7                | ? |
 | --- | --- | --- |
 | 4BD8:4BFF | Stack                | Stack space |
 | --- | --- | --- |
