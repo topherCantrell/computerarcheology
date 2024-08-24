@@ -268,7 +268,7 @@ GetComPriority:
 # Main Loop
 
 ```code
-MainLoop: 
+
 ;
 ; Commands are processed for all three voices one by one. Interrupts are turned on for a
 ; brief time between voices to allow new commands to come in. Each voice has a two-byte
@@ -281,21 +281,22 @@ MainLoop:
 ; by 1280. Thus 1789750 / 1280 = 1398.24 Hz. The main loop divides that by two. Yielding
 ; a sound tick of 700Hz.
 
+MainLoop: 
 
 0136: FB              EI                          ; Enable interrupts
-0137: 21 3F 40        LD      HL,$403F            ; ?? Counter? Nobody ever looks at this
-013A: 34              INC     (HL)                ; ?? Counter? Nobody ever looks at this
-013B: 3E 0F           LD      A,$0F               ; Register IO port B (timer)
+0137: 21 3F 40        LD      HL,$403F            ; 700Hz timer value ...
+013A: 34              INC     (HL)                ; ... is never used
+013B: 3E 0F           LD      A,$0F               ; Register IO port B (timing tick)
 013D: CD C1 02        CALL    $02C1               ; {code.ReadAY} Read IO port B
 0140: E6 08           AND     $08                 ; Watch for bit 4
-0142: 20 F7           JR      NZ,$13B             ; {} Not a 0 ... delay until it is 0
+0142: 20 F7           JR      NZ,$13B             ; {} Not a 0 ... wait until 0
 ;
 0144: 3E 0F           LD      A,$0F               ; Now wait ...
 0146: CD C1 02        CALL    $02C1               ; {code.ReadAY} ... for ...
 0149: E6 08           AND     $08                 ; ... bit to ...
 014B: 28 F7           JR      Z,$144              ; {} ... go to 1
-014D: F3              DI                          ; Interrupts off
 ;
+014D: F3              DI                          ; Interrupts off
 014E: 3E 01           LD      A,$01               ; Start with ...
 0150: 32 4B 40        LD      ($404B),A           ; {ram.voiceNum} ... voice 1
 0153: 21 41 40        LD      HL,$4041            ; Get ...
@@ -308,7 +309,7 @@ MainLoop:
 015F: FB              EI                          ; Interrupts on
 0160: 00              NOP                         ; For ...
 0161: 00              NOP                         ; ... just ...
-0162: 00              NOP                         ; ... an instance
+0162: 00              NOP                         ; ... an instant
 0163: F3              DI                          ; Interrupts back off
 ;
 0164: 21 4B 40        LD      HL,$404B            ; Now for ...
@@ -3387,7 +3388,7 @@ the timing of the very next phrase.
 
 ```code
 ;
-; 1065: B6       ; >NOTE 5E for 2^5 ; Change this to extend the quarter note to a half
+; 1065: B6       ; >NOTE 4E5 change quater to half
 1065: 96       ; NOTE 8E5
 ;
 1066: 98       ; NOTE 8F#5
@@ -3620,9 +3621,7 @@ music. You couldn't hear this part of the tune anyway. But now you can! Enjoy!
 ; I listened to the original song -- this should be an 3A for 2^6. One bit is flipped:
 ; Original: 110_11111
 ; Needed:   110_01111
-;               ^
-;               |
-; 1134: CF      ; >NOTE 3A for 2^6  ; This is the correct value
+; 1134: CF      ; >NOTE 2A3 ; This is the correct value
 1134: DF       ; SC06:Volume off and end song
 ;
 1135: C0       ; NOTE 2R
