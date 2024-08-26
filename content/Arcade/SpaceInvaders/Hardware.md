@@ -23,9 +23,9 @@ The mame/drivers/mw8080bw.c comments have the following information about the in
         one of its memory access control signals.
 ```
 
-The value CF is RST 8 and D7 is RST 10.
+The value 0xCF is RST 2 and 0xD7 is RST 3.
 
-If I understand this right then the system gets RST 8 when the beam is *near* the middle of the screen and RST 10 
+If I understand this right then the CPU gets RST 2 when the beam is *near* the middle of the screen and RST 3 
 when it is at the end (start of VBLANK).
 
 # Video
