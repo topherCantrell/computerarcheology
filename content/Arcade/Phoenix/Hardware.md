@@ -36,15 +36,25 @@ Upper bit of DSW (0x78xx) is a screen-blanking flag. 0=in_VBLANK 1=not_in_VBLANK
 
 ```
 0x7000
-LSB goes from 1 to 0 when a coin is inserted
+Bit goes from 1 to 0 when a button is pressed:
+  0xBF..1011_1111 = button 'left'
+  0xDF..1101_1111 = button 'right'
+  0xEF..1110_1111 = button 'fire'
+  0x7F..0111_1111 = button 'shield'
+  0xFD..1111_1101 = button '1 player start'
+  0xFB..1111_1011 = button '2 players start'
+  0xFE..1111_1110 = coin is inserted
+  0xFF..1111_1111 = no button pressed
 ```
 
 Music:
+Melody chip used is a 18 pin DIL IC: Matsushita MN6221AA (and rare MN6221AB playing different tunes).
+For technical details and the differences with tunes, see: https://eleken.y-lab.org/melody_ic/MN6221.shtml
 
 ```
 Tune1 -- Alarm sound
-Tune2 -- Fuer Elise, Beethoven          0x6800:1000_1111
-Tune3 -- ESTUDIO (Phoenix theme song)   0x6800:1100_1111
+Tune2 -- Fuer Elise, Beethoven          0x6800 = 1000_1111
+Tune3 -- ESTUDIO (Phoenix theme song)   0x6800 = 1100_1111
 Tune4 --  single notes
 ```
 
