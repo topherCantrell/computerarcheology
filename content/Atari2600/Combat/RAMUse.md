@@ -85,7 +85,7 @@
 | 00CF      | mCF                | |
 | 00D0      | mD0                | |
 | 00D1      | mD1                | |
-| 00D2      | mD2                | |
+| 00D2      | scratch1           | Temporary variable used several places |
 | 00D3      | stackPointer       | Holds stack pointer while drawing the screen (with the stack pointer) |
 | 00D4      | mD4                | |
 | 00D5      | mD5                | |
@@ -130,5 +130,5 @@
 | 00FC      | mFC                | |
 | 00FD      | mFD                | |
 | 00FE      | mFE                | |
-| 00FF      | mFF                | Stack builds from here |
+| 00FF      | mFF                | Stack builds towards 00 from here |
 
