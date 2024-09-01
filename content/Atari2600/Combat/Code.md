@@ -59,10 +59,10 @@ F002: A2 FF           LDX     #$FF                ; Stack pointer to 1_FF ...
 F004: 9A              TXS                         ; ... ghosts to 0_FF
 
 F005: A2 5D           LDX     #$5D                ; Clear memory ...
-F007: 20 BD F5        JSR     $F5BD               ; {} ... 00 through A2 (all registers and ??)
+F007: 20 BD F5        JSR     $F5BD               ; {} ... 00 through A2 (hardware registers and game variables)
 F00A: A9 10           LDA     #$10                ; Console switches are all ...
 F00C: 8D 83 02        STA     $0283               ; {hard.SWBCNT} ... inputs (D4 is not used)
-F00F: 85 88           STA     $88                 ; {ram.m88} ?? Is this the debounce? Mirror?
+F00F: 85 88           STA     $88                 ; {ram.m88} ?? Is this the debounce?
 
 F011: 20 A3 F1        JSR     $F1A3               ; {}
 ```
@@ -964,12 +964,12 @@ F5BA: 10 EF           BPL     $F5AB               ; {}
 F5BC: 60              RTS                         
                    
 ; Clear memory ($A2+X) incrementing X until X=0
-; From F007 X=5D to FF (clear 00 through A2)  All registers and RAM
-; From F16B X=E6 to FF (clear 88 through A2)
-; From F1A5 X=DF to FF (clear 81 through A2)  
+; From F007 X=5D to FF (clear 00 through A2)  All registers and variables RAM
+; From F16B X=E6 to FF (clear 89 through A2)
+; From F1A5 X=DF to FF (clear 82 through A2)  
 F5BD: A9 00           LDA     #$00                ; Value 0
 F5BF: E8              INX                         ; Next location
-F5C0: 95 A2           STA     $A2,X               ; {ram.scoreP1} Clear memory
+F5C0: 95 A2           STA     $A2,X               ; {-} Clear memory
 F5C2: D0 FB           BNE     $F5BF               ; {} All done?
 F5C4: 60              RTS                         ; No ... back for more
 
@@ -1250,7 +1250,6 @@ F773: DA
 F774: 4A         
 F775: 08 04 00 0E     
 
-
 ; There are 4 play field patterns
 ; - Empty tank field
 ; - Simple tank field
@@ -1294,8 +1293,11 @@ F7AE: FF 00 00 00 00 00 00 00 00 60 20 21
 ; PF2 for simple tanks 
 F7BA: FF 00 00 00 80 80 80 80 00 00 00 07
 
-; Pointers to player pictures 0=tank, 1=jet, 2=plane                                    
+; Pointers to player pictures 0=tank, 1=jet, 2=plane  
+PlayerPicLSB:                                  
 F7C6: 4F CF 8F ; Picture pointers LSB                                  
+
+PlayerPicMSB:
 F7C9: F6 F6 F6 ; Picture pointers MSB
 
 ; Four different play fields
