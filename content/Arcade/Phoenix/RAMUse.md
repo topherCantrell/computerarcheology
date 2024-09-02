@@ -89,8 +89,7 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 4395      | M4395                | ? |
 | 4396      | M4396                | ? |
 | 4397      | M4397                | ? |
-| 4398      | M4398                | Zero reference for M4399 |
-| 4399      | M4399                | Actual index for slow print at intro splash |
+| 4398:4399 | M4398                | 16 bit counter (MSB:LSB) actual index for slow print at intro splash |
 | 439A:439B | Counter16            | 16 bit counter (MSB:LSB) and.. |
 | 439B      | M439B                | Next index for slow print at intro splash |
 | 439C      | M439C                | ? |
@@ -99,9 +98,9 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 439F      | M439F                | ? |
 | 43A0      | IN0Current           | Current value of IN0     |
 | 43A1      | IN0Previous          | Previous value of IN0    |
-| 43A2      | GameOrAttract        | Attract mode:0, One player game mode:1, Two players game mode:2 |
-| 43A3      | GameAndDemoOrSplash  | Game and demo:0 Intro splash:2 |
-| 43A4      | GameState            | Game state:0 - 7 |
+| 43A2      | GameOrAttract        | Attract mode=0, One player game mode=1, Two players game mode=2 |
+| 43A3      | GameAndDemoOrSplash  | Game and demo for player 1=0, Game for player 2=1, Intro splash=2 |
+| 43A4      | GameState            | Game state=0 - 7 |
 | 43A5      | Counter8             | 8 bit counter (score flash time) |
 | 43A6      | ShieldCount          | Counts shield time and controls shield picture. Shields end at C0. |
 | 43A7      | AnimationCounter     | for mothership's antenna and the alien pilot animation |
@@ -197,7 +196,7 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | --- | --- | --- |
 | 4800:4B3F | BackgroundScreen     | 32*26 bytes for the background screen |
 | --- | --- | --- |
-| 4B50      | M4B50                | ? |
+| 4B50:4B6F | M4B50                | data structure for 16 aliens ? |
 | --- | --- | --- |
 | 4B70      | M4B70                |  alien0 control state A ?   |
 | 4B71      | M4B71                |  alien0 control state B ?   |
