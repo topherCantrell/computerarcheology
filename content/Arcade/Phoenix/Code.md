@@ -189,7 +189,7 @@ PrintNumber:
 
 ; Handles the intro splash and the game demo.
 SplashAndDemo:
-00E3: 21 99 43        LD      HL,$4399            ; {+ram.M4399} starts with 0
+00E3: 21 99 43        LD      HL,$4399            ; {+ram.M4398+1} starts with 0
 00E6: CD 00 02        CALL    $0200               ; {code.AddOneToMem} increases it by one
 00E9: 01 01 00        LD      BC,$0001            ; 
 00EC: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
@@ -200,25 +200,25 @@ SplashAndDemo:
 00FB: D2 96 01        JP      NC,$0196            ; {code.SlowPrintScoreAverageTable} do if $4398:$4399 is >= 00 02
 00FE: 01 20 01        LD      BC,$0120            ; for a longer break
 0101: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
-0104: CA CA 0B        JP      Z,$0BCA             ; {code.DrawScoreAverageTableTiles} do if $4398:$4399 is >= 01 20 
+0104: CA CA 0B        JP      Z,$0BCA             ; {code.DrawScoreAverageTableTiles} do if $4398:$4399 is >= 01 20
 0107: 0E B0           LD      C,$B0               ; for a short break
 0109: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
-010C: CA E1 01        JP      Z,$01E1             ; {code.PrintCopyright} do if $4398:$4399 is >= 01 B0 
+010C: CA E1 01        JP      Z,$01E1             ; {code.PrintCopyright} do if $4398:$4399 is >= 01 B0
 010F: 0E B8           LD      C,$B8               ; 
 0111: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
-0114: CA 80 05        JP      Z,$0580             ; {code.InitGlobalLevelData} do if $4398:$4399 is >= 01 B8 
+0114: CA 80 05        JP      Z,$0580             ; {code.InitGlobalLevelData} do if $4398:$4399 is >= 01 B8
 0117: 0E C0           LD      C,$C0               ; for a short break
 0119: 11 DF 02        LD      DE,$02DF            ; 
 011C: CD 60 02        CALL    $0260               ; {code.SubtractIfEnough}
-011F: D2 78 00        JP      NC,$0078            ; {code.SlowPrintAndScrollRegisterUpdate} do if $4398:$4399 is >= 01 C0 
+011F: D2 78 00        JP      NC,$0078            ; {code.SlowPrintAndScrollRegisterUpdate} do if $4398:$4399 is >= 01 C0
 0122: 01 00 03        LD      BC,$0300            ; 
 0125: 11 AF 03        LD      DE,$03AF            ; 
 0128: CD 60 02        CALL    $0260               ; {code.SubtractIfEnough}
-012B: D2 DC 21        JP      NC,$21DC            ; {code.DrawIntroBirdAnimationFrame} do if $4398:$4399 is >= 03 00 
+012B: D2 DC 21        JP      NC,$21DC            ; {code.DrawIntroBirdAnimationFrame} do if $4398:$4399 is >= 03 00
 012E: 01 E6 03        LD      BC,$03E6            ; 
 0131: 11 FF FF        LD      DE,$FFFF            ; 
 0134: CD 60 02        CALL    $0260               ; {code.SubtractIfEnough}
-0137: D2 B0 03        JP      NC,$03B0            ; {code.GameDemo} do if $4398:$4399 is >= 03 E6 
+0137: D2 B0 03        JP      NC,$03B0            ; {code.GameDemo} do if $4398:$4399 is >= 03 E6
 013A: C9              RET                         ; 
 
 013B: FF FF FF FF FF
@@ -1505,7 +1505,7 @@ T063A:
 0800: 21 14 08        LD      HL,$0814            ; {+code.T0814}
 0803: 3A B8 43        LD      A,($43B8)           ; {ram.LevelAndRound}
 0806: 07              RLCA                        ; Multiply by 2
-0807: E6 1E           AND     $1E                 ; mask out 0001_1110 
+0807: E6 1E           AND     $1E                 ; mask out 0001_1110
 0809: 85              ADD     A,L                 ; 
 080A: 6F              LD      L,A                 ; 
 080B: 7E              LD      A,(HL)              ; 
@@ -4403,7 +4403,7 @@ DrawIntroBirdAnimationFrame:
 224C: 21 B8 43        LD      HL,$43B8            ; {+ram.LevelAndRound}
 224F: 34              INC     (HL)                
 2250: 2E A4           LD      L,$A4               ; HL=43A4 -- game state
-2252: 36 02           LD      (HL),$02            ; Next function to run is 2 
+2252: 36 02           LD      (HL),$02            ; Next function to run is 2
 2254: C9              RET                         
 
 2255: 58              LD      E,B                 
@@ -5458,16 +5458,16 @@ T2B00:
 2FF0: 05 05 02 02 02 05 1C 08 08 07 07 08 08 08 00 FF
 ;
 3000: 21 93 43        LD      HL,$4393            ; {+ram.M4393}
-3003: 7E              LD      A,(HL)              ; load and save ram value 
+3003: 7E              LD      A,(HL)              ; load and save ram value
 3004: 34              INC     (HL)                ; increment $4393
 3005: E6 07           AND     $07                 ; masc out 0000_0111 the saved value in order to count from 0 to 7
 3007: 21 18 30        LD      HL,$3018            ; {+code.T3018} base of jump table
 300A: 07              RLCA                        ; Multiply by 2 to get a 2 byte offset
 300B: 85              ADD     A,L                 ; 
 300C: 6F              LD      L,A                 ; 
-300D: 7E              LD      A,(HL)              ; get MSB from jump table 
+300D: 7E              LD      A,(HL)              ; get MSB from jump table
 300E: 23              INC     HL                  ; 
-300F: 6E              LD      L,(HL)              ; get LSB from jump table 
+300F: 6E              LD      L,(HL)              ; get LSB from jump table
 3010: 67              LD      H,A                 ; 
 3011: E9              JP      (HL)                ; jump to the corresponding function
 ; from jump table T3018 if $4393 is 7
@@ -5828,7 +5828,7 @@ T3018:
 ; not used ?
 3229: C0 21 50 ; 
 ; from jump table T3018 if $4393 is 6
-322C: 3A 50 43        LD      A,($4350)           ; 
+322C: 3A 50 43        LD      A,($4350)           ; {ram.M4350}
 322F: FE 04           CP      $04                 
 3231: C0              RET     NZ                  
 3232: 21 50 4B        LD      HL,$4B50            ; {+ram.M4B50}
