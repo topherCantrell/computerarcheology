@@ -331,9 +331,9 @@ E440: A9 00           LDA     #$00                ;
 E442: 85 F4           STA     <$F4                ; {ram.??!BatRamInit??}
 E444: A9 05           LDA     #$05                ; Switch to ...
 E446: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank} ... bank 5
-E449: 20 AC B4        JSR     $B4AC               ; {hard.MMC1_1+14AC} 5 Format battery-backed RAM
-E44C: 20 E8 B4        JSR     $B4E8               ; {hard.MMC1_1+14E8} 5
-E44F: 20 5E E4        JSR     $E45E               ; {hard.MMC1_2+245E}
+E449: 20 AC B4        JSR     $B4AC               ; 5 Format battery-backed RAM
+E44C: 20 E8 B4        JSR     $B4E8               ; 5
+E44F: 20 5E E4        JSR     $E45E               ; {}
 E452: A5 FF           LDA     <$FF                ; {ram.CUR_2000} Enable NMI ...
 E454: 09 A0           ORA     #$A0                ; ... and sprites ...
 E456: 8D 00 20        STA     $2000               ; {hard.P_CNTRL_1} ... are 8x16
@@ -351,7 +351,7 @@ E46D: 20 F7 E5        JSR     $E5F7               ; {code.HideAllSprites}
 E470: 20 80 E5        JSR     $E580               ; {code.ClearScroll}
 E473: 20 25 E6        JSR     $E625               ; {code.DisableVideo}
 E476: A9 20           LDA     #$20                ; 
-E478: 20 7D E4        JSR     $E47D               ; {hard.MMC1_2+247D}
+E478: 20 7D E4        JSR     $E47D               ; {}
 E47B: A9 28           LDA     #$28                ; 
 E47D: A2 24           LDX     #$24                ; 
 E47F: A0 00           LDY     #$00                ; 
@@ -368,7 +368,7 @@ NMI:
 ;
 E484: A5 FF           LDA     <$FF                ; {ram.CUR_2000} Current value of 2000
 E486: A6 5C           LDX     <$5C                ; {ram.!FlipFlag} Flip name tables?
-E488: F0 02           BEQ     $E48C               ; {hard.MMC1_2+248C} No ... skip the flipping
+E488: F0 02           BEQ     $E48C               ; {} No ... skip the flipping
 E48A: 49 02           EOR     #$02                ; Flip name-table addresses (2000 or 2800)
 E48C: 29 7F           AND     #$7F                ; Clear bit 7 (disable NMIs)
 E48E: 85 FF           STA     <$FF                ; {ram.CUR_2000} Hold new value of 2000
@@ -377,11 +377,11 @@ E492: 8D 00 20        STA     $2000               ; {hard.P_CNTRL_1} Select new 
 ;
 E495: A5 FE           LDA     <$FE                ; {ram.CUR_2001} Current value of 2001
 E497: A4 E3           LDY     <$E3                ; {ram.00E3}
-E499: D0 08           BNE     $E4A3               ; {hard.MMC1_2+24A3}
+E499: D0 08           BNE     $E4A3               ; {}
 E49B: A4 14           LDY     <$14                ; {ram.0014}
-E49D: D0 06           BNE     $E4A5               ; {hard.MMC1_2+24A5}
+E49D: D0 06           BNE     $E4A5               ; {}
 E49F: A4 17           LDY     <$17                ; {ram.0017}
-E4A1: D0 02           BNE     $E4A5               ; {hard.MMC1_2+24A5}
+E4A1: D0 02           BNE     $E4A5               ; {}
 E4A3: 09 1E           ORA     #$1E                ; Sprites on, Background on, don't clip sprites or background
 E4A5: 8D 01 20        STA     $2001               ; {hard.P_CNTRL_2} Change hardware and ...
 E4A8: 85 FE           STA     <$FE                ; {ram.CUR_2001} ... store new value of 2001
@@ -396,7 +396,7 @@ E4B6: 8D 05 20        STA     $2005               ; {hard.P_BKG_SCROLL} ... scro
 E4B9: 8D 05 20        STA     $2005               ; {hard.P_BKG_SCROLL} ... register
 E4BC: A9 06           LDA     #$06                ; Switch to ...
 E4BE: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank} ... bank 6
-E4C1: 20 80 A0        JSR     $A080               ; {hard.MMC1_1+80} 6
+E4C1: 20 80 A0        JSR     $A080               ; 6
 ;
 E4C4: A9 3F           LDA     #$3F                ; Set VRAM ...
 E4C6: 8D 06 20        STA     $2006               ; {hard.P_VRAM_ADDR} ... address pointer ...
@@ -409,28 +409,28 @@ E4D1: 8D 06 20        STA     $2006               ; {hard.P_VRAM_ADDR} ?? ... to
 ; ?? Seems to be waiting for the VBLANK to *END* and drawing to begin
 E4D4: AD 02 20        LDA     $2002               ; {hard.P_STATUS} Is sprite 0 ...
 E4D7: 29 40           AND     #$40                ; ... overlapping background?
-E4D9: D0 F9           BNE     $E4D4               ; {hard.MMC1_2+24D4} Yes ... wait for VBLANK to clear it
+E4D9: D0 F9           BNE     $E4D4               ; {} Yes ... wait for VBLANK to clear it
 ;
 E4DB: AD 02 20        LDA     $2002               ; {hard.P_STATUS} [NES] PPU status
 E4DE: A5 E3           LDA     <$E3                ; {ram.00E3}
-E4E0: F0 08           BEQ     $E4EA               ; {hard.MMC1_2+24EA}
+E4E0: F0 08           BEQ     $E4EA               ; {}
 E4E2: A9 05           LDA     #$05                ; Switch to ...
 E4E4: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank} ... bank 5
-E4E7: 20 21 85        JSR     $8521               ; {hard.MMC1_0+521} 5
+E4E7: 20 21 85        JSR     $8521               ; 5
 E4EA: A5 11           LDA     <$11                ; {ram.0011}
-E4EC: F0 2A           BEQ     $E518               ; {hard.MMC1_2+2518}
+E4EC: F0 2A           BEQ     $E518               ; {}
 E4EE: A5 12           LDA     <$12                ; {ram.0012}
-E4F0: F0 14           BEQ     $E506               ; {hard.MMC1_2+2506}
+E4F0: F0 14           BEQ     $E506               ; {}
 E4F2: C9 05           CMP     #$05                ; 
-E4F4: F0 10           BEQ     $E506               ; {hard.MMC1_2+2506}
+E4F4: F0 10           BEQ     $E506               ; {}
 E4F6: C9 09           CMP     #$09                ; 
-E4F8: F0 0C           BEQ     $E506               ; {hard.MMC1_2+2506}
+E4F8: F0 0C           BEQ     $E506               ; {}
 E4FA: C9 0B           CMP     #$0B                ; 
-E4FC: F0 08           BEQ     $E506               ; {hard.MMC1_2+2506}
+E4FC: F0 08           BEQ     $E506               ; {}
 E4FE: C9 0C           CMP     #$0C                ; 
-E500: F0 04           BEQ     $E506               ; {hard.MMC1_2+2506}
+E500: F0 04           BEQ     $E506               ; {}
 E502: C9 13           CMP     #$13                ; 
-E504: D0 12           BNE     $E518               ; {hard.MMC1_2+2518}
+E504: D0 12           BNE     $E518               ; {}
 ;
 E506: AD 02 20        LDA     $2002               ; {hard.P_STATUS} Clear bit 7 of 2002 and clear 2005 and 2006 [NES] PPU status
 E509: A5 FD           LDA     <$FD                ; {ram.CUR_HScroll} Set ...
@@ -441,25 +441,25 @@ E513: A5 FF           LDA     <$FF                ; {ram.CUR_2000} Set ...
 E515: 8D 00 20        STA     $2000               ; {hard.P_CNTRL_1} ... PPU1 value [NES] PPU setup #1
 E518: A5 E1           LDA     <$E1                ; {ram.00E1}
 E51A: 05 E0           ORA     <$E0                ; {ram.??SND_E0??}
-E51C: D0 1D           BNE     $E53B               ; {hard.MMC1_2+253B}
+E51C: D0 1D           BNE     $E53B               ; {}
 E51E: A2 26           LDX     #$26                ; 
 E520: A9 3C           LDA     #$3C                ; 
 E522: A0 4E           LDY     #$4E                ; 
 E524: 86 00           STX     <$00                ; {ram.GP_00}
 E526: D6 00           DEC     $00,X               ; {ram.GP_00}
-E528: 10 05           BPL     $E52F               ; {hard.MMC1_2+252F}
+E528: 10 05           BPL     $E52F               ; {}
 E52A: A9 09           LDA     #$09                ; 
 E52C: 95 00           STA     $00,X               ; {ram.GP_00}
 E52E: 98              TYA                         ; 
 E52F: AA              TAX                         ; 
 E530: B5 00           LDA     $00,X               ; {ram.GP_00}
-E532: F0 02           BEQ     $E536               ; {hard.MMC1_2+2536}
+E532: F0 02           BEQ     $E536               ; {}
 E534: D6 00           DEC     $00,X               ; {ram.GP_00}
 E536: CA              DEX                         ; 
 E537: E4 00           CPX     <$00                ; {ram.GP_00}
-E539: D0 F5           BNE     $E530               ; {hard.MMC1_2+2530}
+E539: D0 F5           BNE     $E530               ; {}
 E53B: A5 E3           LDA     <$E3                ; {ram.00E3}
-E53D: D0 03           BNE     $E542               ; {hard.MMC1_2+2542}
+E53D: D0 03           BNE     $E542               ; {}
 E53F: 20 2D E6        JSR     $E62D               ; {code.ReadInputs}
 E542: A2 18           LDX     #$18                ; 
 E544: A0 0D           LDY     #$0D                ; 
@@ -470,21 +470,21 @@ E54C: B5 01           LDA     $01,X               ; {ram.GP_01}
 E54E: 29 02           AND     #$02                ; 
 E550: 45 00           EOR     <$00                ; {ram.GP_00}
 E552: 18              CLC                         ; 
-E553: F0 01           BEQ     $E556               ; {hard.MMC1_2+2556}
+E553: F0 01           BEQ     $E556               ; {}
 E555: 38              SEC                         ; 
 E556: 76 00           ROR     <$00,X              ; {ram.GP_00}
 E558: E8              INX                         ; 
 E559: 88              DEY                         ; 
-E55A: D0 FA           BNE     $E556               ; {hard.MMC1_2+2556}
+E55A: D0 FA           BNE     $E556               ; {}
 E55C: A9 00           LDA     #$00                ; Switch to ...
 E55E: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank} ... bank 0
-E561: 20 25 98        JSR     $9825               ; {hard.MMC1_0+1825} 0 Execute any sound processing
+E561: 20 25 98        JSR     $9825               ; 0 Execute any sound processing
 E564: E6 15           INC     <$15                ; {ram.0015}
 E566: A5 11           LDA     <$11                ; {ram.0011}
-E568: D0 06           BNE     $E570               ; {hard.MMC1_2+2570}
-E56A: 20 F8 E8        JSR     $E8F8               ; {hard.MMC1_2+28F8} ?? Execute game tasks ??
-E56D: 4C 73 E5        JMP     $E573               ; {hard.MMC1_2+2573}
-E570: 20 30 EB        JSR     $EB30               ; {hard.MMC1_2+2B30}
+E568: D0 06           BNE     $E570               ; {}
+E56A: 20 F8 E8        JSR     $E8F8               ; {} ?? Execute game tasks ??
+E56D: 4C 73 E5        JMP     $E573               ; {}
+E570: 20 30 EB        JSR     $EB30               ; {}
 E573: AD 02 20        LDA     $2002               ; {hard.P_STATUS} Clear VBLANK status bit
 E576: A5 FF           LDA     <$FF                ; {ram.CUR_2000} Current value of 2000
 E578: 09 80           ORA     #$80                ; Re-enable ...
@@ -540,20 +540,20 @@ E5AB: A0 00           LDY     #$00                ; 00 to ...
 E5AD: 8C 06 20        STY     $2006               ; {hard.P_VRAM_ADDR} ... VRAM pointer MSB
 E5B0: A2 04           LDX     #$04                ; Name tables are 400 bytes (4 sets of 256)
 E5B2: C9 20           CMP     #$20                ; Are we clearing map/atts?
-E5B4: B0 02           BCS     $E5B8               ; {hard.MMC1_2+25B8} Yes ... use 400
+E5B4: B0 02           BCS     $E5B8               ; {} Yes ... use 400
 E5B6: A6 02           LDX     <$02                ; {ram.GP_02} No ... clearning tiles. Use this as the size (*256)
 E5B8: A0 00           LDY     #$00                ; 256 counts
 E5BA: A5 01           LDA     <$01                ; {ram.GP_01} Fill value
 E5BC: 8D 07 20        STA     $2007               ; {hard.P_VRAM_DATA} Store value to VRAM (and increment)
 E5BF: 88              DEY                         ; All 256 done?
-E5C0: D0 FA           BNE     $E5BC               ; {hard.MMC1_2+25BC} No ... fill all 256 bytes
+E5C0: D0 FA           BNE     $E5BC               ; {} No ... fill all 256 bytes
 E5C2: CA              DEX                         ; All sets of 256 done?
-E5C3: D0 F7           BNE     $E5BC               ; {hard.MMC1_2+25BC} No ... fill all sets of 256 bytes
+E5C3: D0 F7           BNE     $E5BC               ; {} No ... fill all sets of 256 bytes
 ;
 E5C5: A4 02           LDY     <$02                ; {ram.GP_02} Get the constant fill value
 E5C7: A5 00           LDA     <$00                ; {ram.GP_00} Get the MSB of the VRAM name table pointer
 E5C9: C9 20           CMP     #$20                ; Are we clearing map/atts?
-E5CB: 90 12           BCC     $E5DF               ; {hard.MMC1_2+25DF} No ... done
+E5CB: 90 12           BCC     $E5DF               ; {} No ... done
 E5CD: 69 02           ADC     #$02                ; C=1 so +3 to Offset to attributes (2000->23C0 for instance)
 E5CF: 8D 06 20        STA     $2006               ; {hard.P_VRAM_ADDR} VRAM address select (MSB 6 bits)
 E5D2: A9 C0           LDA     #$C0                ; VRAM address LSB ...
@@ -561,7 +561,7 @@ E5D4: 8D 06 20        STA     $2006               ; {hard.P_VRAM_ADDR} ... is xx
 E5D7: A2 40           LDX     #$40                ; 64
 E5D9: 8C 07 20        STY     $2007               ; {hard.P_VRAM_DATA} VRAM data
 E5DC: CA              DEX                         ; Write all ...
-E5DD: D0 FA           BNE     $E5D9               ; {hard.MMC1_2+25D9} ... attribute values
+E5DD: D0 FA           BNE     $E5D9               ; {} ... attribute values
 E5DF: A6 01           LDX     <$01                ; {ram.GP_01} Restore X register
 E5E1: 60              RTS                         ; Done
 ```
@@ -609,7 +609,7 @@ E601: C8              INY                         ; ... to ...
 E602: C8              INY                         ; ... next ...
 E603: C8              INY                         ; ... sprite
 E604: CA              DEX                         ; All done?
-E605: D0 F4           BNE     $E5FB               ; {hard.MMC1_2+25FB} No ... hide all sprites
+E605: D0 F4           BNE     $E5FB               ; {} No ... hide all sprites
 E607: 60              RTS                         ; Done
 
 E608: 85 01           STA     <$01                ; {ram.GP_01}
@@ -619,11 +619,11 @@ E60E: A9 00           LDA     #$00                ;
 E610: 91 00           STA     ($00),Y             ; {ram.GP_00}
 E612: 88              DEY                         ; 
 E613: C0 FF           CPY     #$FF                ; 
-E615: D0 F7           BNE     $E60E               ; {hard.MMC1_2+260E}
+E615: D0 F7           BNE     $E60E               ; {}
 E617: C6 01           DEC     <$01                ; {ram.GP_01}
 E619: A5 01           LDA     <$01                ; {ram.GP_01}
 E61B: C9 03           CMP     #$03                ; 
-E61D: B0 EF           BCS     $E60E               ; {hard.MMC1_2+260E}
+E61D: B0 EF           BCS     $E60E               ; {}
 E61F: A9 FF           LDA     #$FF                ; 
 E621: 8D 02 03        STA     $0302               ; {ram.0302}
 E624: 60              RTS                         ; 
@@ -657,7 +657,7 @@ E634: 8D 16 40        STA     $4016               ; {hard.4016} ... resets in bo
 E637: 85 03           STA     <$03                ; {ram.GP_03}
 E639: 85 04           STA     <$04                ; {ram.0004}
 E63B: AA              TAX                         ; Read 4016 (player 1) ...
-E63C: 20 40 E6        JSR     $E640               ; {hard.MMC1_2+2640} ... inputs
+E63C: 20 40 E6        JSR     $E640               ; {} ... inputs
 E63F: E8              INX                         ; Fall in to read 4017 (player 2) inputs
 ;
 E640: 85 02           STA     <$02                ; {ram.GP_02}
@@ -672,14 +672,14 @@ E652: 36 F8           ROL     $F8,X               ; {ram.00F8} ... and into F8 o
 E654: 4A              LSR     A                   ; 
 E655: 26 00           ROL     <$00                ; {ram.GP_00}
 E657: 88              DEY                         ; All 8 bits read?
-E658: D0 F4           BNE     $E64E               ; {hard.MMC1_2+264E} No ... do all
+E658: D0 F4           BNE     $E64E               ; {} No ... do all
 E65A: B5 F8           LDA     $F8,X               ; {ram.00F8}
 E65C: C5 02           CMP     <$02                ; {ram.GP_02}
-E65E: D0 E0           BNE     $E640               ; {hard.MMC1_2+2640}
+E65E: D0 E0           BNE     $E640               ; {}
 E660: F6 03           INC     $03,X               ; {ram.GP_03}
 E662: B4 03           LDY     $03,X               ; {ram.GP_03}
 E664: C0 02           CPY     #$02                ; 
-E666: 90 D8           BCC     $E640               ; {hard.MMC1_2+2640}
+E666: 90 D8           BCC     $E640               ; {}
 E668: A5 00           LDA     <$00                ; {ram.GP_00}
 E66A: 15 F8           ORA     $F8,X               ; {ram.00F8}
 E66C: 95 F8           STA     $F8,X               ; {ram.00F8}
@@ -693,22 +693,22 @@ E678: 60              RTS                         ;
 
 
 E679: A5 10           LDA     <$10                ; {ram.0010} Current level is the overworld?
-E67B: F0 50           BEQ     $E6CD               ; {hard.MMC1_2+26CD} Yes ... out
+E67B: F0 50           BEQ     $E6CD               ; {} Yes ... out
 E67D: A9 05           LDA     #$05                ; 
 E67F: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-E682: 20 EB B5        JSR     $B5EB               ; {hard.MMC1_1+15EB} 5
-E685: F0 46           BEQ     $E6CD               ; {hard.MMC1_2+26CD}
+E682: 20 EB B5        JSR     $B5EB               ; 5
+E685: F0 46           BEQ     $E6CD               ; {}
 E687: AD AE 6B        LDA     $6BAE               ; {ram.6BAE}
 E68A: A2 04           LDX     #$04                ; 
 E68C: 4C ED 71        JMP     $71ED               ; {ram.71ED}
 
 E68F: A4 10           LDY     <$10                ; {ram.0010}
-E691: F0 25           BEQ     $E6B8               ; {hard.MMC1_2+26B8}
+E691: F0 25           BEQ     $E6B8               ; {}
 E693: A5 98           LDA     <$98                ; {ram.0098}
 E695: 85 02           STA     <$02                ; {ram.GP_02}
 E697: A9 05           LDA     #$05                ; 
 E699: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-E69C: 20 F6 A3        JSR     $A3F6               ; {hard.MMC1_1+3F6} 5
+E69C: 20 F6 A3        JSR     $A3F6               ; 5
 E69F: A4 01           LDY     <$01                ; {ram.GP_01}
 E6A1: 84 E7           STY     <$E7                ; {ram.00E7}
 E6A3: 20 E2 E5        JSR     $E5E2               ; {code.SwitchAJumpRet}
@@ -730,7 +730,7 @@ E6C0: 04 08        ; 0D 0804
 E6C2: 10 20        ; 0E 2010
 E6C4: 40 80        ; 0F 8040
 
-E6C6: 20 CE E6        JSR     $E6CE               ; {hard.MMC1_2+26CE}
+E6C6: 20 CE E6        JSR     $E6CE               ; {}
 E6C9: 09 20           ORA     #$20                ; 
 E6CB: 91 00           STA     ($00),Y             ; {ram.GP_00}
 E6CD: 60              RTS                         ; 
@@ -747,58 +747,58 @@ E6DD: A5 71           LDA     <$71                ; {ram.0071}
 E6DF: 85 83           STA     <$83                ; {ram.0083}
 E6E1: A5 85           LDA     <$85                ; {ram.0085}
 E6E3: 85 97           STA     <$97                ; {ram.0097}
-E6E5: 4C 0C E7        JMP     $E70C               ; {hard.MMC1_2+270C}
+E6E5: 4C 0C E7        JMP     $E70C               ; {}
 
 E6E8: 68              PLA                         ; 
 E6E9: 60              RTS                         ; 
 E6EA: 20 14 73        JSR     $7314               ; {ram.7314}
-E6ED: D0 FA           BNE     $E6E9               ; {hard.MMC1_2+26E9}
+E6ED: D0 FA           BNE     $E6E9               ; {}
 E6EF: A5 BF           LDA     <$BF                ; {ram.00BF}
-E6F1: 30 F6           BMI     $E6E9               ; {hard.MMC1_2+26E9}
+E6F1: 30 F6           BMI     $E6E9               ; {}
 E6F3: A5 AB           LDA     <$AB                ; {ram.00AB}
 E6F5: C9 3F           CMP     #$3F                ; 
-E6F7: F0 F0           BEQ     $E6E9               ; {hard.MMC1_2+26E9}
+E6F7: F0 F0           BEQ     $E6E9               ; {}
 E6F9: A2 01           LDX     #$01                ; 
 E6FB: AD 50 03        LDA     $0350               ; {ram.0350}
 E6FE: C9 17           CMP     #$17                ; 
-E700: F0 DB           BEQ     $E6DD               ; {hard.MMC1_2+26DD}
+E700: F0 DB           BEQ     $E6DD               ; {}
 E702: C9 2A           CMP     #$2A                ; 
-E704: F0 D7           BEQ     $E6DD               ; {hard.MMC1_2+26DD}
+E704: F0 D7           BEQ     $E6DD               ; {}
 E706: C9 30           CMP     #$30                ; 
-E708: F0 D3           BEQ     $E6DD               ; {hard.MMC1_2+26DD}
+E708: F0 D3           BEQ     $E6DD               ; {}
 E70A: A2 13           LDX     #$13                ; 
 E70C: A5 AB           LDA     <$AB                ; {ram.00AB}
 E70E: 48              PHA                         ; 
 E70F: BD A8 03        LDA     $03A8,X             ; {ram.03A8}
 E712: C9 F0           CMP     #$F0                ; 
-E714: 90 03           BCC     $E719               ; {hard.MMC1_2+2719}
+E714: 90 03           BCC     $E719               ; {}
 E716: 4A              LSR     A                   ; 
-E717: 90 CF           BCC     $E6E8               ; {hard.MMC1_2+26E8}
-E719: 20 93 FA        JSR     $FA93               ; {hard.MMC1_3+1A93}
+E717: 90 CF           BCC     $E6E8               ; {}
+E719: 20 93 FA        JSR     $FA93               ; {}
 E71C: 68              PLA                         ; 
 E71D: AA              TAX                         ; 
 E71E: BD C8 72        LDA     $72C8,X             ; 
 E721: C9 30           CMP     #$30                ; 
-E723: F0 0C           BEQ     $E731               ; {hard.MMC1_2+2731}
+E723: F0 0C           BEQ     $E731               ; {}
 E725: 29 0F           AND     #$0F                ; 
 E727: 85 04           STA     <$04                ; {ram.0004}
 E729: BD A4 72        LDA     $72A4,X             ; 
 E72C: AA              TAX                         ; 
 E72D: A8              TAY                         ; 
-E72E: 4C 3A E7        JMP     $E73A               ; {hard.MMC1_2+273A}
+E72E: 4C 3A E7        JMP     $E73A               ; {}
 E731: A9 FF           LDA     #$FF                ; 
-E733: D0 F2           BNE     $E727               ; {hard.MMC1_2+2727}
+E733: D0 F2           BNE     $E727               ; {}
 E735: BD 57 06        LDA     $0657,X             ; {ram.0657}
 E738: 85 04           STA     <$04                ; {ram.0004}
 E73A: BD EC 72        LDA     $72EC,X             ; 
 E73D: E0 16           CPX     #$16                ; 
-E73F: F0 0C           BEQ     $E74D               ; {hard.MMC1_2+274D}
+E73F: F0 0C           BEQ     $E74D               ; {}
 E741: E0 1A           CPX     #$1A                ; 
-E743: F0 08           BEQ     $E74D               ; {hard.MMC1_2+274D}
+E743: F0 08           BEQ     $E74D               ; {}
 E745: E0 1B           CPX     #$1B                ; 
-E747: F0 04           BEQ     $E74D               ; {hard.MMC1_2+274D}
+E747: F0 04           BEQ     $E74D               ; {}
 E749: E0 19           CPX     #$19                ; 
-E74B: D0 09           BNE     $E756               ; {hard.MMC1_2+2756}
+E74B: D0 09           BNE     $E756               ; {}
 E74D: A5 15           LDA     <$15                ; {ram.0015}
 E74F: 29 08           AND     #$08                ; 
 E751: 4A              LSR     A                   ; 
@@ -806,15 +806,15 @@ E752: 4A              LSR     A                   ;
 E753: 4A              LSR     A                   ; 
 E754: 69 01           ADC     #$01                ; 
 E756: E0 00           CPX     #$00                ; 
-E758: F0 19           BEQ     $E773               ; {hard.MMC1_2+2773}
+E758: F0 19           BEQ     $E773               ; {}
 E75A: E0 04           CPX     #$04                ; 
-E75C: F0 15           BEQ     $E773               ; {hard.MMC1_2+2773}
+E75C: F0 15           BEQ     $E773               ; {}
 E75E: E0 02           CPX     #$02                ; 
-E760: F0 11           BEQ     $E773               ; {hard.MMC1_2+2773}
+E760: F0 11           BEQ     $E773               ; {}
 E762: E0 07           CPX     #$07                ; 
-E764: F0 0D           BEQ     $E773               ; {hard.MMC1_2+2773}
+E764: F0 0D           BEQ     $E773               ; {}
 E766: E0 0B           CPX     #$0B                ; 
-E768: F0 09           BEQ     $E773               ; {hard.MMC1_2+2773}
+E768: F0 09           BEQ     $E773               ; {}
 E76A: A2 00           LDX     #$00                ; 
 E76C: 86 0C           STX     <$0C                ; {ram.000C}
 E76E: A2 0F           LDX     #$0F                ; 
@@ -822,22 +822,22 @@ E770: 4C 0C 79        JMP     $790C               ; {ram.790C}
 E773: 18              CLC                         ; 
 E774: 65 04           ADC     <$04                ; {ram.0004}
 E776: E0 00           CPX     #$00                ; 
-E778: D0 F0           BNE     $E76A               ; {hard.MMC1_2+276A}
+E778: D0 F0           BNE     $E76A               ; {}
 E77A: C9 02           CMP     #$02                ; 
-E77C: D0 EC           BNE     $E76A               ; {hard.MMC1_2+276A}
+E77C: D0 EC           BNE     $E76A               ; {}
 E77E: A0 20           LDY     #$20                ; 
-E780: 4C 6A E7        JMP     $E76A               ; {hard.MMC1_2+276A}
+E780: 4C 6A E7        JMP     $E76A               ; {}
 E783: A2 07           LDX     #$07                ; 
 E785: 8E 56 06        STX     $0656               ; {ram.0656}
-E788: D0 16           BNE     $E7A0               ; {hard.MMC1_2+27A0}
+E788: D0 16           BNE     $E7A0               ; {}
 E78A: AE 56 06        LDX     $0656               ; {ram.0656}
-E78D: F0 26           BEQ     $E7B5               ; {hard.MMC1_2+27B5}
+E78D: F0 26           BEQ     $E7B5               ; {}
 E78F: BD 57 06        LDA     $0657,X             ; {ram.0657}
-E792: F0 5A           BEQ     $E7EE               ; {hard.MMC1_2+27EE}
+E792: F0 5A           BEQ     $E7EE               ; {}
 E794: E0 0F           CPX     #$0F                ; 
-E796: D0 08           BNE     $E7A0               ; {hard.MMC1_2+27A0}
+E796: D0 08           BNE     $E7A0               ; {}
 E798: AC 5E 06        LDY     $065E               ; {ram.065E}
-E79B: D0 E6           BNE     $E783               ; {hard.MMC1_2+2783}
+E79B: D0 E6           BNE     $E783               ; {}
 E79D: 4A              LSR     A                   ; 
 E79E: 09 01           ORA     #$01                ; 
 E7A0: 85 04           STA     <$04                ; {ram.0004}
@@ -847,45 +847,45 @@ E7A6: A9 7C           LDA     #$7C                ;
 E7A8: 85 00           STA     <$00                ; {ram.GP_00}
 E7AA: A9 05           LDA     #$05                ; 
 E7AC: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-E7AF: 20 1C B8        JSR     $B81C               ; {hard.MMC1_1+181C} 5
-E7B2: 4C D7 E7        JMP     $E7D7               ; {hard.MMC1_2+27D7}
+E7AF: 20 1C B8        JSR     $B81C               ; 5
+E7B2: 4C D7 E7        JMP     $E7D7               ; {}
 E7B5: A2 1E           LDX     #$1E                ; 
 E7B7: BD 57 06        LDA     $0657,X             ; {ram.0657}
-E7BA: D0 E4           BNE     $E7A0               ; {hard.MMC1_2+27A0}
+E7BA: D0 E4           BNE     $E7A0               ; {}
 E7BC: CA              DEX                         ; 
 E7BD: E0 1C           CPX     #$1C                ; 
-E7BF: D0 F6           BNE     $E7B7               ; {hard.MMC1_2+27B7}
+E7BF: D0 F6           BNE     $E7B7               ; {}
 E7C1: A2 00           LDX     #$00                ; 
-E7C3: 4C CB E7        JMP     $E7CB               ; {hard.MMC1_2+27CB}
+E7C3: 4C CB E7        JMP     $E7CB               ; {}
 E7C6: BD 57 06        LDA     $0657,X             ; {ram.0657}
-E7C9: D0 0C           BNE     $E7D7               ; {hard.MMC1_2+27D7}
+E7C9: D0 0C           BNE     $E7D7               ; {}
 E7CB: 8A              TXA                         ; 
 E7CC: A8              TAY                         ; 
 E7CD: A9 05           LDA     #$05                ; 
 E7CF: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
 E7D2: A9 02           LDA     #$02                ; 
-E7D4: 20 C8 B7        JSR     $B7C8               ; {hard.MMC1_1+17C8} 5
+E7D4: 20 C8 B7        JSR     $B7C8               ; 5
 E7D7: A2 00           LDX     #$00                ; 
 E7D9: BD 57 06        LDA     $0657,X             ; {ram.0657}
-E7DC: F0 69           BEQ     $E847               ; {hard.MMC1_2+2847}
+E7DC: F0 69           BEQ     $E847               ; {}
 E7DE: A9 1F           LDA     #$1F                ; 
 E7E0: 85 01           STA     <$01                ; {ram.GP_01}
 E7E2: A9 94           LDA     #$94                ; 
 E7E4: 85 00           STA     <$00                ; {ram.GP_00}
 E7E6: A9 05           LDA     #$05                ; 
 E7E8: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-E7EB: 4C 1C B8        JMP     $B81C               ; {hard.MMC1_1+181C} 5
+E7EB: 4C 1C B8        JMP     $B81C               ; 5
 E7EE: E0 07           CPX     #$07                ; 
-E7F0: D0 D4           BNE     $E7C6               ; {hard.MMC1_2+27C6}
+E7F0: D0 D4           BNE     $E7C6               ; {}
 E7F2: AD 66 06        LDA     $0666               ; {ram.0666}
-E7F5: F0 D4           BEQ     $E7CB               ; {hard.MMC1_2+27CB}
+E7F5: F0 D4           BEQ     $E7CB               ; {}
 E7F7: A2 0F           LDX     #$0F                ; 
 E7F9: 8E 56 06        STX     $0656               ; {ram.0656}
-E7FC: D0 C8           BNE     $E7C6               ; {hard.MMC1_2+27C6}
+E7FC: D0 C8           BNE     $E7C6               ; {}
 E7FE: AD 05 05        LDA     $0505               ; {ram.0505}
-E801: F0 56           BEQ     $E859               ; {hard.MMC1_2+2859}
+E801: F0 56           BEQ     $E859               ; {}
 E803: CE 06 05        DEC     $0506               ; {ram.0506}
-E806: F0 40           BEQ     $E848               ; {hard.MMC1_2+2848}
+E806: F0 40           BEQ     $E848               ; {}
 E808: A9 40           LDA     #$40                ; 
 E80A: 85 AC           STA     <$AC                ; {ram.00AC}
 E80C: A5 70           LDA     <$70                ; {ram.0070}
@@ -895,7 +895,7 @@ E812: 38              SEC                         ;
 E813: E9 10           SBC     #$10                ; 
 E815: 85 97           STA     <$97                ; {ram.0097}
 E817: A2 00           LDX     #$00                ; 
-E819: 20 93 FA        JSR     $FA93               ; {hard.MMC1_3+1A93}
+E819: 20 93 FA        JSR     $FA93               ; {}
 E81C: 20 88 79        JSR     $7988               ; {ram.7988}
 E81F: 85 0C           STA     <$0C                ; {ram.000C}
 E821: A9 48           LDA     #$48                ; 
@@ -907,10 +907,10 @@ E82D: 20 2C 79        JSR     $792C               ; {ram.792C}
 E830: EE 04 05        INC     $0504               ; {ram.0504}
 E833: AD 05 05        LDA     $0505               ; {ram.0505}
 E836: A2 13           LDX     #$13                ; 
-E838: 20 0E E7        JSR     $E70E               ; {hard.MMC1_2+270E}
+E838: 20 0E E7        JSR     $E70E               ; {}
 E83B: CE 04 05        DEC     $0504               ; {ram.0504}
 E83E: A5 52           LDA     <$52                ; {ram.0052}
-E840: F0 05           BEQ     $E847               ; {hard.MMC1_2+2847}
+E840: F0 05           BEQ     $E847               ; {}
 E842: A9 08           LDA     #$08                ; 
 E844: 8D 4D 02        STA     $024D               ; {ram.024D}
 E847: 60              RTS                         ; 
@@ -918,8 +918,8 @@ E848: A9 00           LDA     #$00                ;
 E84A: 85 AC           STA     <$AC                ; {ram.00AC}
 E84C: 8D 05 05        STA     $0505               ; {ram.0505}
 E84F: A4 10           LDY     <$10                ; {ram.0010}
-E851: F0 06           BEQ     $E859               ; {hard.MMC1_2+2859}
-E853: B9 E0 EB        LDA     $EBE0,Y             ; {hard.MMC1_2+2BE0}
+E851: F0 06           BEQ     $E859               ; {}
+E853: B9 E0 EB        LDA     $EBE0,Y             ; {}
 E856: 8D 00 06        STA     $0600               ; {ram.SND_ReqMusic}
 E859: 60              RTS                         ; 
 E85A: A4 EB           LDY     <$EB                ; {ram.00EB}
@@ -948,9 +948,9 @@ E88C: 9D 06 03        STA     $0306,X             ; {ram.0306}
 E88F: 9D 0A 03        STA     $030A,X             ; 
 E892: 9D 0B 03        STA     $030B,X             ; 
 E895: C9 46           CMP     #$46                ; 
-E897: 90 13           BCC     $E8AC               ; {hard.MMC1_2+28AC}
+E897: 90 13           BCC     $E8AC               ; {}
 E899: C9 F3           CMP     #$F3                ; 
-E89B: B0 0F           BCS     $E8AC               ; {hard.MMC1_2+28AC}
+E89B: B0 0F           BCS     $E8AC               ; {}
 E89D: 18              CLC                         ; 
 E89E: 69 02           ADC     #$02                ; 
 E8A0: 9D 0A 03        STA     $030A,X             ; 
@@ -970,9 +970,9 @@ E8C0: 68              PLA                         ;
 E8C1: AA              TAX                         ; 
 E8C2: A9 05           LDA     #$05                ; 
 E8C4: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-E8C7: 20 C4 AB        JSR     $ABC4               ; {hard.MMC1_1+BC4} 5
+E8C7: 20 C4 AB        JSR     $ABC4               ; 5
 E8CA: A5 F7           LDA     <$F7                ; {ram.00F7}
-E8CC: F0 05           BEQ     $E8D3               ; {hard.MMC1_2+28D3}
+E8CC: F0 05           BEQ     $E8D3               ; {}
 E8CE: A9 04           LDA     #$04                ; 
 E8D0: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
 E8D3: A9 00           LDA     #$00                ; 
@@ -980,29 +980,29 @@ E8D5: 85 F7           STA     <$F7                ; {ram.00F7}
 E8D7: 60              RTS                         ; 
 E8D8: A9 05           LDA     #$05                ; 
 E8DA: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-E8DD: 20 07 AC        JSR     $AC07               ; {hard.MMC1_1+C07} 5
+E8DD: 20 07 AC        JSR     $AC07               ; 5
 E8E0: A0 00           LDY     #$00                ; 
 E8E2: A5 0A           LDA     <$0A                ; {ram.000A}
 E8E4: 91 00           STA     ($00),Y             ; {ram.GP_00}
 E8E6: 20 74 72        JSR     $7274               ; {ram.7274}
 E8E9: A5 00           LDA     <$00                ; {ram.GP_00}
 E8EB: C9 F0           CMP     #$F0                ; 
-E8ED: D0 F3           BNE     $E8E2               ; {hard.MMC1_2+28E2}
+E8ED: D0 F3           BNE     $E8E2               ; {}
 E8EF: A5 01           LDA     <$01                ; {ram.GP_01}
 E8F1: C9 67           CMP     #$67                ; 
-E8F3: D0 ED           BNE     $E8E2               ; {hard.MMC1_2+28E2}
+E8F3: D0 ED           BNE     $E8E2               ; {}
 E8F5: 60              RTS                         ; 
 
 E8F6: FF FF
 
 E8F8: A5 F4           LDA     <$F4                ; {ram.??!BatRamInit??}
-E8FA: D0 1D           BNE     $E919               ; {hard.MMC1_2+2919}
+E8FA: D0 1D           BNE     $E919               ; {}
 E8FC: A9 01           LDA     #$01                ; Switch to ...
 E8FE: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank} ... bank 1
-E901: 20 00 8D        JSR     $8D00               ; {hard.MMC1_0+D00} 1
+E901: 20 00 8D        JSR     $8D00               ; 1
 E904: A9 06           LDA     #$06                ; Switch to ...
 E906: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank} ... bank 6
-E909: 20 8C 80        JSR     $808C               ; {hard.MMC1_0+8C} 6
+E909: 20 8C 80        JSR     $808C               ; 6
 E90C: A9 5A           LDA     #$5A                ; 
 E90E: 8D 01 60        STA     $6001               ; {ram.MARK_A}
 E911: A9 A5           LDA     #$A5                ; 
@@ -1042,69 +1042,69 @@ E949: CB E9        ; 13 E9CB
 ;
 E94B: A5 F5           LDA     <$F5                ; {ram.TileFlagA} Have the scrolling text tiles ...
 E94D: C9 5A           CMP     #$5A                ; ... been copied to VRAM?
-E94F: F0 08           BEQ     $E959               ; {hard.MMC1_2+2959} Yes ... skip it
+E94F: F0 08           BEQ     $E959               ; {} Yes ... skip it
 E951: A9 02           LDA     #$02                ; Switch to ...
 E953: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank} ... bank 2
-E956: 4C 12 80        JMP     $8012               ; {hard.MMC1_0+12} Initialize tiles for scrolling info
+E956: 4C 12 80        JMP     $8012               ; Initialize tiles for scrolling info
 ;
 E959: A5 F6           LDA     <$F6                ; {ram.TileFlagB} Have the splash tiles ...
 E95B: C9 A5           CMP     #$A5                ; ... been copied to VRAM?
-E95D: F0 08           BEQ     $E967               ; {hard.MMC1_2+2967} Yes ... skip it
+E95D: F0 08           BEQ     $E967               ; {} Yes ... skip it
 E95F: A9 01           LDA     #$01                ; Switch to ...
 E961: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank} ... bank 1
-E964: 4C 47 8D        JMP     $8D47               ; {hard.MMC1_0+D47} Initialize tiles for splash
+E964: 4C 47 8D        JMP     $8D47               ; Initialize tiles for splash
 ;
 E967: A9 02           LDA     #$02                ; Switch to ...
 E969: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank} ... bank 2
-E96C: 4C 00 90        JMP     $9000               ; {hard.MMC1_0+1000} Run the attract-mode (Zelda splash and scrolling info)
+E96C: 4C 00 90        JMP     $9000               ; Run the attract-mode (Zelda splash and scrolling info)
 
 E96F: A9 02           LDA     #$02                ; 
 E971: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-E974: 4C 8A A2        JMP     $A28A               ; {hard.MMC1_1+28A}
+E974: 4C 8A A2        JMP     $A28A               ; 
 
 E977: 20 25 E6        JSR     $E625               ; {code.DisableVideo}
 E97A: A5 13           LDA     <$13                ; {ram.0013}
-E97C: D0 1B           BNE     $E999               ; {hard.MMC1_2+2999}
-E97E: 20 00 EA        JSR     $EA00               ; {hard.MMC1_2+2A00}
+E97C: D0 1B           BNE     $E999               ; {}
+E97E: 20 00 EA        JSR     $EA00               ; {}
 E981: A0 7F           LDY     #$7F                ; 
 E983: 99 60 05        STA     $0560,Y             ; 
 E986: 88              DEY                         ; 
-E987: 10 FA           BPL     $E983               ; {hard.MMC1_2+2983}
+E987: 10 FA           BPL     $E983               ; {}
 E989: A9 03           LDA     #$03                ; Switch to ...
 E98B: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank} ... bank 3
-E98E: 20 44 80        JSR     $8044               ; {hard.MMC1_0+44} Configure tile sets
+E98E: 20 44 80        JSR     $8044               ; Configure tile sets
 E991: A9 01           LDA     #$01                ; Switch to ...
 E993: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank} ... bank 1
-E996: 20 00 8D        JSR     $8D00               ; {hard.MMC1_0+D00}
+E996: 20 00 8D        JSR     $8D00               ; 
 E999: A9 06           LDA     #$06                ; 
 E99B: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-E99E: 4C 3E 80        JMP     $803E               ; {hard.MMC1_0+3E}
+E99E: 4C 3E 80        JMP     $803E               ; 
 
 E9A1: A9 05           LDA     #$05                ; 
 E9A3: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-E9A6: 20 A8 82        JSR     $82A8               ; {hard.MMC1_0+2A8}
+E9A6: 20 A8 82        JSR     $82A8               ; 
 E9A9: A5 E3           LDA     <$E3                ; {ram.00E3}
-E9AB: F0 15           BEQ     $E9C2               ; {hard.MMC1_2+29C2}
+E9AB: F0 15           BEQ     $E9C2               ; {}
 E9AD: A5 F3           LDA     <$F3                ; {ram.00F3}
-E9AF: D0 11           BNE     $E9C2               ; {hard.MMC1_2+29C2}
+E9AF: D0 11           BNE     $E9C2               ; {}
 E9B1: E6 F3           INC     <$F3                ; {ram.00F3}
 E9B3: A5 98           LDA     <$98                ; {ram.0098}
 E9B5: C9 04           CMP     #$04                ; 
-E9B7: 90 04           BCC     $E9BD               ; {hard.MMC1_2+29BD}
+E9B7: 90 04           BCC     $E9BD               ; {}
 E9B9: A9 0F           LDA     #$0F                ; Do two-screen veritcal mirroring
-E9BB: D0 02           BNE     $E9BF               ; {hard.MMC1_2+29BF}
+E9BB: D0 02           BNE     $E9BF               ; {}
 E9BD: A9 0E           LDA     #$0E                ; Do two-screen horizontal mirroring
 E9BF: 20 98 FF        JSR     $FF98               ; {code.MMC_Control}
 E9C2: 60              RTS                         ; 
 
 E9C3: A9 02           LDA     #$02                ; 
 E9C5: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-E9C8: 4C 11 9E        JMP     $9E11               ; {hard.MMC1_0+1E11}
+E9C8: 4C 11 9E        JMP     $9E11               ; 
 E9CB: A9 0F           LDA     #$0F                ; 
 E9CD: 20 98 FF        JSR     $FF98               ; {code.MMC_Control}
 E9D0: A9 02           LDA     #$02                ; 
 E9D2: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-E9D5: 4C 00 A9        JMP     $A900               ; {hard.MMC1_1+900}
+E9D5: 4C 00 A9        JMP     $A900               ; 
 E9D8: A9 05           LDA     #$05                ; 
 E9DA: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
 E9DD: 20 25 E6        JSR     $E625               ; {code.DisableVideo}
@@ -1123,30 +1123,30 @@ E9F5: 36 B0        ; 08 B036
 E9F7: A9 01           LDA     #$01                ; 
 E9F9: 85 17           STA     <$17                ; {ram.0017}
 E9FB: E6 13           INC     <$13                ; {ram.0013}
-E9FD: 20 6D E4        JSR     $E46D               ; {hard.MMC1_2+246D}
+E9FD: 20 6D E4        JSR     $E46D               ; {}
 EA00: A0 05           LDY     #$05                ; 
 EA02: A9 00           LDA     #$00                ; 
 EA04: 8D 29 05        STA     $0529               ; {ram.0529}
 EA07: 99 21 06        STA     $0621,Y             ; 
 EA0A: 88              DEY                         ; 
-EA0B: 10 FA           BPL     $EA07               ; {hard.MMC1_2+2A07}
+EA0B: 10 FA           BPL     $EA07               ; {}
 EA0D: 60              RTS                         ; 
 
 EA0E: 00 04 08
 
 EA11: A5 10           LDA     <$10                ; {ram.0010}
-EA13: D0 07           BNE     $EA1C               ; {hard.MMC1_2+2A1C}
+EA13: D0 07           BNE     $EA1C               ; {}
 EA15: AD 26 05        LDA     $0526               ; {ram.0526}
 EA18: C9 FF           CMP     #$FF                ; 
-EA1A: D0 03           BNE     $EA1F               ; {hard.MMC1_2+2A1F}
+EA1A: D0 03           BNE     $EA1F               ; {}
 EA1C: AD AD 6B        LDA     $6BAD               ; {ram.6BAD}
 EA1F: 85 EB           STA     <$EB                ; {ram.00EB}
 EA21: CD 26 05        CMP     $0526               ; {ram.0526}
-EA24: D0 05           BNE     $EA2B               ; {hard.MMC1_2+2A2B}
+EA24: D0 05           BNE     $EA2B               ; {}
 EA26: A9 FF           LDA     #$FF                ; 
 EA28: 8D 26 05        STA     $0526               ; {ram.0526}
 EA2B: A6 16           LDX     <$16                ; {ram.0016}
-EA2D: BC 0E EA        LDY     $EA0E,X             ; {hard.MMC1_2+2A0E}
+EA2D: BC 0E EA        LDY     $EA0E,X             ; {}
 EA30: B9 04 68        LDA     $6804,Y             ; 
 EA33: 8D 92 6B        STA     $6B92               ; {ram.6B92}
 EA36: A9 18           LDA     #$18                ; 
@@ -1156,11 +1156,11 @@ EA3C: 60              RTS                         ;
 
 EA3D: 20 F7 E5        JSR     $E5F7               ; {code.HideAllSprites}
 EA40: 20 DE 71        JSR     $71DE               ; {ram.71DE}
-EA43: 20 79 E6        JSR     $E679               ; {hard.MMC1_2+2679}
+EA43: 20 79 E6        JSR     $E679               ; {}
 EA46: A9 05           LDA     #$05                ; 
 EA48: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EA4B: 20 29 89        JSR     $8929               ; {hard.MMC1_0+929}
-EA4E: 4C 8A E7        JMP     $E78A               ; {hard.MMC1_2+278A}
+EA4B: 20 29 89        JSR     $8929               ; 
+EA4E: 4C 8A E7        JMP     $E78A               ; {}
 EA51: A9 00           LDA     #$00                ; 
 EA53: 85 AC           STA     <$AC                ; {ram.00AC}
 EA55: 8D 6C 06        STA     $066C               ; {ram.066C}
@@ -1170,87 +1170,87 @@ EA59: 08 36 0A 0A 0A 0A 7C 7C 7C 3D 3E 38
 EA65: 39 32 31 43 44 45 20 3D EA 20 3C F2
 
 EA71: A5 10           LDA     <$10                ; {ram.0010}
-EA73: F0 14           BEQ     $EA89               ; {hard.MMC1_2+2A89}
+EA73: F0 14           BEQ     $EA89               ; {}
 EA75: A0 08           LDY     #$08                ; 
 EA77: AD 50 03        LDA     $0350               ; {ram.0350}
-EA7A: D9 62 EA        CMP     $EA62,Y             ; {hard.MMC1_2+2A62}
-EA7D: D0 05           BNE     $EA84               ; {hard.MMC1_2+2A84}
-EA7F: BE 59 EA        LDX     $EA59,Y             ; {hard.MMC1_2+2A59}
-EA82: D0 45           BNE     $EAC9               ; {hard.MMC1_2+2AC9}
+EA7A: D9 62 EA        CMP     $EA62,Y             ; {}
+EA7D: D0 05           BNE     $EA84               ; {}
+EA7F: BE 59 EA        LDX     $EA59,Y             ; {}
+EA82: D0 45           BNE     $EAC9               ; {}
 EA84: 88              DEY                         ; 
-EA85: 10 F3           BPL     $EA7A               ; {hard.MMC1_2+2A7A}
-EA87: 30 33           BMI     $EABC               ; {hard.MMC1_2+2ABC}
+EA85: 10 F3           BPL     $EA7A               ; {}
+EA87: 30 33           BMI     $EABC               ; {}
 EA89: A5 EB           LDA     <$EB                ; {ram.00EB}
 EA8B: C9 0F           CMP     #$0F                ; 
-EA8D: D0 09           BNE     $EA98               ; {hard.MMC1_2+2A98}
+EA8D: D0 09           BNE     $EA98               ; {}
 EA8F: A5 5A           LDA     <$5A                ; {ram.005A}
-EA91: D0 05           BNE     $EA98               ; {hard.MMC1_2+2A98}
+EA91: D0 05           BNE     $EA98               ; {}
 EA93: A9 04           LDA     #$04                ; 
 EA95: 8D 02 06        STA     $0602               ; {ram.SND_ReqMusEff}
 EA98: A2 20           LDX     #$20                ; 
 EA9A: AD 5A 03        LDA     $035A               ; {ram.035A}
 EA9D: C9 65           CMP     #$65                ; 
-EA9F: F0 28           BEQ     $EAC9               ; {hard.MMC1_2+2AC9}
+EA9F: F0 28           BEQ     $EAC9               ; {}
 EAA1: C9 66           CMP     #$66                ; 
-EAA3: F0 06           BEQ     $EAAB               ; {hard.MMC1_2+2AAB}
+EAA3: F0 06           BEQ     $EAAB               ; {}
 EAA5: C9 62           CMP     #$62                ; 
-EAA7: D0 0F           BNE     $EAB8               ; {hard.MMC1_2+2AB8}
+EAA7: D0 0F           BNE     $EAB8               ; {}
 EAA9: A2 24           LDX     #$24                ; 
 EAAB: A4 EB           LDY     <$EB                ; {ram.00EB}
 EAAD: B9 FE 68        LDA     $68FE,Y             ; 
 EAB0: 29 01           AND     #$01                ; 
-EAB2: D0 15           BNE     $EAC9               ; {hard.MMC1_2+2AC9}
+EAB2: D0 15           BNE     $EAC9               ; {}
 EAB4: A2 22           LDX     #$22                ; 
-EAB6: D0 11           BNE     $EAC9               ; {hard.MMC1_2+2AC9}
+EAB6: D0 11           BNE     $EAC9               ; {}
 EAB8: A2 7A           LDX     #$7A                ; 
-EABA: D0 0D           BNE     $EAC9               ; {hard.MMC1_2+2AC9}
+EABA: D0 0D           BNE     $EAC9               ; {}
 EABC: A0 03           LDY     #$03                ; 
 EABE: B9 9D 6B        LDA     $6B9D,Y             ; 
 EAC1: 99 17 68        STA     $6817,Y             ; 
 EAC4: 88              DEY                         ; 
-EAC5: 10 F7           BPL     $EABE               ; {hard.MMC1_2+2ABE}
+EAC5: 10 F7           BPL     $EABE               ; {}
 EAC7: A2 06           LDX     #$06                ; 
 EAC9: 86 14           STX     <$14                ; {ram.0014}
 EACB: A9 05           LDA     #$05                ; 
 EACD: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EAD0: 20 5E B0        JSR     $B05E               ; {hard.MMC1_1+105E}
+EAD0: 20 5E B0        JSR     $B05E               ; 
 EAD3: A5 10           LDA     <$10                ; {ram.0010}
-EAD5: F0 06           BEQ     $EADD               ; {hard.MMC1_2+2ADD}
-EAD7: 20 C6 E6        JSR     $E6C6               ; {hard.MMC1_2+26C6}
+EAD5: F0 06           BEQ     $EADD               ; {}
+EAD7: 20 C6 E6        JSR     $E6C6               ; {}
 EADA: 20 12 75        JSR     $7512               ; {ram.7512}
 EADD: A9 05           LDA     #$05                ; 
 EADF: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EAE2: 20 3A B8        JSR     $B83A               ; {hard.MMC1_1+183A}
+EAE2: 20 3A B8        JSR     $B83A               ; 
 EAE5: A0 00           LDY     #$00                ; 
 EAE7: A2 05           LDX     #$05                ; 
 EAE9: A5 EB           LDA     <$EB                ; {ram.00EB}
 EAEB: DD 21 06        CMP     $0621,X             ; 
-EAEE: D0 01           BNE     $EAF1               ; {hard.MMC1_2+2AF1}
+EAEE: D0 01           BNE     $EAF1               ; {}
 EAF0: C8              INY                         ; 
 EAF1: CA              DEX                         ; 
-EAF2: 10 F7           BPL     $EAEB               ; {hard.MMC1_2+2AEB}
+EAF2: 10 F7           BPL     $EAEB               ; {}
 EAF4: C0 00           CPY     #$00                ; 
-EAF6: D0 15           BNE     $EB0D               ; {hard.MMC1_2+2B0D}
+EAF6: D0 15           BNE     $EB0D               ; {}
 EAF8: AE 20 06        LDX     $0620               ; {ram.0620}
 EAFB: 9D 21 06        STA     $0621,X             ; 
 EAFE: EE 20 06        INC     $0620               ; {ram.0620}
 EB01: AD 20 06        LDA     $0620               ; {ram.0620}
 EB04: C9 06           CMP     #$06                ; 
-EB06: 90 05           BCC     $EB0D               ; {hard.MMC1_2+2B0D}
+EB06: 90 05           BCC     $EB0D               ; {}
 EB08: A9 00           LDA     #$00                ; 
 EB0A: 8D 20 06        STA     $0620               ; {ram.0620}
 EB0D: A5 12           LDA     <$12                ; {ram.0012}
 EB0F: C9 05           CMP     #$05                ; 
-EB11: D0 0C           BNE     $EB1F               ; {hard.MMC1_2+2B1F}
+EB11: D0 0C           BNE     $EB1F               ; {}
 EB13: A5 10           LDA     <$10                ; {ram.0010}
-EB15: F0 0B           BEQ     $EB22               ; {hard.MMC1_2+2B22}
+EB15: F0 0B           BEQ     $EB22               ; {}
 EB17: A9 05           LDA     #$05                ; 
 EB19: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EB1C: 20 28 93        JSR     $9328               ; {hard.MMC1_0+1328}
+EB1C: 20 28 93        JSR     $9328               ; 
 EB1F: 4C 90 6C        JMP     $6C90               ; {ram.6C90}
 EB22: A9 01           LDA     #$01                ; 
 EB24: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EB27: 4C 21 A1        JMP     $A121               ; {hard.MMC1_1+121}
+EB27: 4C 21 A1        JMP     $A121               ; 
 
 EB2A: FF FF FF FF FF FF
 
@@ -1281,30 +1281,30 @@ EB60: 10 AA        ; 13 AA10
 
 EB62: A9 05           LDA     #$05                ; 
 EB64: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EB67: 20 1E 84        JSR     $841E               ; {hard.MMC1_0+41E}
+EB67: 20 1E 84        JSR     $841E               ; 
 EB6A: A5 E3           LDA     <$E3                ; {ram.00E3}
-EB6C: D0 07           BNE     $EB75               ; {hard.MMC1_2+2B75}
+EB6C: D0 07           BNE     $EB75               ; {}
 EB6E: 85 F3           STA     <$F3                ; {ram.00F3}
 EB70: A9 0F           LDA     #$0F                ; 
 EB72: 20 98 FF        JSR     $FF98               ; {code.MMC_Control}
 EB75: 60              RTS                         ; 
 EB76: A9 05           LDA     #$05                ; 
 EB78: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EB7B: 4C F4 8A        JMP     $8AF4               ; {hard.MMC1_0+AF4}
+EB7B: 4C F4 8A        JMP     $8AF4               ; 
 EB7E: A9 05           LDA     #$05                ; 
 EB80: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EB83: 4C 8B 8B        JMP     $8B8B               ; {hard.MMC1_0+B8B}
+EB83: 4C 8B 8B        JMP     $8B8B               ; 
 EB86: A9 05           LDA     #$05                ; 
 EB88: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EB8B: 4C 7D 8C        JMP     $8C7D               ; {hard.MMC1_0+C7D}
+EB8B: 4C 7D 8C        JMP     $8C7D               ; 
 EB8E: A9 05           LDA     #$05                ; 
 EB90: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EB93: 4C 58 A8        JMP     $A858               ; {hard.MMC1_1+858}
+EB93: 4C 58 A8        JMP     $A858               ; 
 
 EB96: 20 25 E6        JSR     $E625               ; {code.DisableVideo}
 EB99: A9 06           LDA     #$06                ; 
 EB9B: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EB9E: 20 09 81        JSR     $8109               ; {hard.MMC1_0+109}
+EB9E: 20 09 81        JSR     $8109               ; 
 EBA1: E6 12           INC     <$12                ; {ram.0012}
 EBA3: A9 00           LDA     #$00                ; 
 EBA5: 85 11           STA     <$11                ; {ram.0011}
@@ -1312,185 +1312,185 @@ EBA7: 85 13           STA     <$13                ; {ram.0013}
 EBA9: 60              RTS                         ; 
 EBAA: 20 48 72        JSR     $7248               ; {ram.7248}
 EBAD: A5 7C           LDA     <$7C                ; {ram.007C}
-EBAF: D0 47           BNE     $EBF8               ; {hard.MMC1_2+2BF8}
+EBAF: D0 47           BNE     $EBF8               ; {}
 EBB1: A9 0F           LDA     #$0F                ; 
 EBB3: 20 98 FF        JSR     $FF98               ; {code.MMC_Control}
 EBB6: A5 5A           LDA     <$5A                ; {ram.005A}
-EBB8: F0 03           BEQ     $EBBD               ; {hard.MMC1_2+2BBD}
-EBBA: 4C F2 EB        JMP     $EBF2               ; {hard.MMC1_2+2BF2}
-EBBD: 4C EA EB        JMP     $EBEA               ; {hard.MMC1_2+2BEA}
+EBB8: F0 03           BEQ     $EBBD               ; {}
+EBBA: 4C F2 EB        JMP     $EBF2               ; {}
+EBBD: 4C EA EB        JMP     $EBEA               ; {}
 EBC0: A5 5A           LDA     <$5A                ; {ram.005A}
-EBC2: D0 35           BNE     $EBF9               ; {hard.MMC1_2+2BF9}
+EBC2: D0 35           BNE     $EBF9               ; {}
 EBC4: AD 94 03        LDA     $0394               ; {ram.0394}
-EBC7: F0 29           BEQ     $EBF2               ; {hard.MMC1_2+2BF2}
+EBC7: F0 29           BEQ     $EBF2               ; {}
 EBC9: C9 08           CMP     #$08                ; 
-EBCB: F0 25           BEQ     $EBF2               ; {hard.MMC1_2+2BF2}
+EBCB: F0 25           BEQ     $EBF2               ; {}
 EBCD: C9 F8           CMP     #$F8                ; 
-EBCF: F0 21           BEQ     $EBF2               ; {hard.MMC1_2+2BF2}
+EBCF: F0 21           BEQ     $EBF2               ; {}
 EBD1: A5 98           LDA     <$98                ; {ram.0098}
 EBD3: 8D F8 03        STA     $03F8               ; {ram.03F8}
 EBD6: 85 0F           STA     <$0F                ; {ram.000F}
 EBD8: A2 00           LDX     #$00                ; 
-EBDA: 20 8D F0        JSR     $F08D               ; {hard.MMC1_3+108D}
-EBDD: 4C C5 ED        JMP     $EDC5               ; {hard.MMC1_2+2DC5}
+EBDA: 20 8D F0        JSR     $F08D               ; {}
+EBDD: 4C C5 ED        JMP     $EDC5               ; {}
 
 EBE0: 01 40 40 40 40 40 40 40 40 20
 
 EBEA: A4 10           LDY     <$10                ; {ram.0010}
-EBEC: B9 E0 EB        LDA     $EBE0,Y             ; {hard.MMC1_2+2BE0}
+EBEC: B9 E0 EB        LDA     $EBE0,Y             ; {}
 EBEF: 8D 00 06        STA     $0600               ; {ram.SND_ReqMusic}
-EBF2: 20 A1 EB        JSR     $EBA1               ; {hard.MMC1_2+2BA1}
+EBF2: 20 A1 EB        JSR     $EBA1               ; {}
 EBF5: 8D 94 03        STA     $0394               ; {ram.0394}
 EBF8: 60              RTS                         ; 
 EBF9: A5 10           LDA     <$10                ; {ram.0010}
-EBFB: D0 ED           BNE     $EBEA               ; {hard.MMC1_2+2BEA}
+EBFB: D0 ED           BNE     $EBEA               ; {}
 EBFD: A5 65           LDA     <$65                ; {ram.0065}
 EBFF: C9 24           CMP     #$24                ; 
-EC01: D0 E7           BNE     $EBEA               ; {hard.MMC1_2+2BEA}
+EC01: D0 E7           BNE     $EBEA               ; {}
 EC03: A9 05           LDA     #$05                ; 
 EC05: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EC08: 20 A8 8B        JSR     $8BA8               ; {hard.MMC1_0+BA8} 5
+EC08: 20 A8 8B        JSR     $8BA8               ; 5
 EC0B: A5 15           LDA     <$15                ; {ram.0015}
 EC0D: 29 03           AND     #$03                ; 
-EC0F: D0 09           BNE     $EC1A               ; {hard.MMC1_2+2C1A}
+EC0F: D0 09           BNE     $EC1A               ; {}
 EC11: C6 84           DEC     <$84                ; {ram.0084}
 EC13: A5 84           LDA     <$84                ; {ram.0084}
 EC15: CD 12 04        CMP     $0412               ; {ram.0412}
-EC18: F0 D0           BEQ     $EBEA               ; {hard.MMC1_2+2BEA}
+EC18: F0 D0           BEQ     $EBEA               ; {}
 EC1A: 60              RTS                         ; 
 EC1B: A5 3C           LDA     <$3C                ; {ram.003C}
-EC1D: D0 D9           BNE     $EBF8               ; {hard.MMC1_2+2BF8}
+EC1D: D0 D9           BNE     $EBF8               ; {}
 EC1F: AD 1E 05        LDA     $051E               ; {ram.051E}
-EC22: F0 08           BEQ     $EC2C               ; {hard.MMC1_2+2C2C}
+EC22: F0 08           BEQ     $EC2C               ; {}
 EC24: A9 04           LDA     #$04                ; 
 EC26: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EC29: 4C BE B1        JMP     $B1BE               ; {hard.MMC1_1+11BE} 4
+EC29: 4C BE B1        JMP     $B1BE               ; 4
 EC2C: A5 E1           LDA     <$E1                ; {ram.00E1}
-EC2E: D0 28           BNE     $EC58               ; {hard.MMC1_2+2C58}
+EC2E: D0 28           BNE     $EC58               ; {}
 EC30: A5 E0           LDA     <$E0                ; {ram.??SND_E0??}
 EC32: C9 02           CMP     #$02                ; 
-EC34: F0 13           BEQ     $EC49               ; {hard.MMC1_2+2C49}
+EC34: F0 13           BEQ     $EC49               ; {}
 EC36: A5 F8           LDA     <$F8                ; {ram.00F8}
 EC38: 29 20           AND     #$20                ; 
-EC3A: F0 0D           BEQ     $EC49               ; {hard.MMC1_2+2C49}
+EC3A: F0 0D           BEQ     $EC49               ; {}
 EC3C: A5 E0           LDA     <$E0                ; {ram.??SND_E0??}
 EC3E: 49 01           EOR     #$01                ; 
 EC40: 85 E0           STA     <$E0                ; {ram.??SND_E0??}
-EC42: D0 05           BNE     $EC49               ; {hard.MMC1_2+2C49}
+EC42: D0 05           BNE     $EC49               ; {}
 EC44: A9 0F           LDA     #$0F                ; 
 EC46: 8D 15 40        STA     $4015               ; {hard.S_Status} [NES] IRQ status / Sound enable
 EC49: A5 E0           LDA     <$E0                ; {ram.??SND_E0??}
-EC4B: F0 0B           BEQ     $EC58               ; {hard.MMC1_2+2C58}
+EC4B: F0 0B           BEQ     $EC58               ; {}
 EC4D: A9 05           LDA     #$05                ; 
 EC4F: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EC52: 20 59 B5        JSR     $B559               ; {hard.MMC1_1+1559} 5
-EC55: 4C 89 ED        JMP     $ED89               ; {hard.MMC1_2+2D89}
+EC52: 20 59 B5        JSR     $B559               ; 5
+EC55: 4C 89 ED        JMP     $ED89               ; {}
 EC58: 20 1D 6E        JSR     $6E1D               ; {ram.6E1D}
 EC5B: A5 FA           LDA     <$FA                ; {ram.00FA}
 EC5D: 29 0F           AND     #$0F                ; 
 EC5F: 8D F8 03        STA     $03F8               ; {ram.03F8}
 EC62: A5 E1           LDA     <$E1                ; {ram.00E1}
-EC64: F0 0B           BEQ     $EC71               ; {hard.MMC1_2+2C71}
+EC64: F0 0B           BEQ     $EC71               ; {}
 EC66: A9 05           LDA     #$05                ; 
 EC68: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EC6B: 20 59 B5        JSR     $B559               ; {hard.MMC1_1+1559} 5
-EC6E: 4C 00 80        JMP     $8000               ; {hard.MMC1_0} 5
+EC6B: 20 59 B5        JSR     $B559               ; 5
+EC6E: 4C 00 80        JMP     $8000               ; 5
 EC71: A5 F8           LDA     <$F8                ; {ram.00F8}
 EC73: 29 10           AND     #$10                ; 
-EC75: F0 03           BEQ     $EC7A               ; {hard.MMC1_2+2C7A}
+EC75: F0 03           BEQ     $EC7A               ; {}
 EC77: E6 E1           INC     <$E1                ; {ram.00E1}
 EC79: 60              RTS                         ; 
 EC7A: AD 6C 06        LDA     $066C               ; {ram.066C}
-EC7D: F0 09           BEQ     $EC88               ; {hard.MMC1_2+2C88}
+EC7D: F0 09           BEQ     $EC88               ; {}
 EC7F: AD F0 04        LDA     $04F0               ; {ram.04F0}
 EC82: 18              CLC                         ; 
 EC83: 69 10           ADC     #$10                ; 
 EC85: 8D F0 04        STA     $04F0               ; {ram.04F0}
-EC88: 20 A0 ED        JSR     $EDA0               ; {hard.MMC1_2+2DA0}
+EC88: 20 A0 ED        JSR     $EDA0               ; {}
 EC8B: A5 11           LDA     <$11                ; {ram.0011}
-EC8D: D0 03           BNE     $EC92               ; {hard.MMC1_2+2C92}
-EC8F: 4C 7D ED        JMP     $ED7D               ; {hard.MMC1_2+2D7D}
+EC8D: D0 03           BNE     $EC92               ; {}
+EC8F: 4C 7D ED        JMP     $ED7D               ; {}
 EC92: A5 60           LDA     <$60                ; {ram.0060}
-EC94: D0 08           BNE     $EC9E               ; {hard.MMC1_2+2C9E}
+EC94: D0 08           BNE     $EC9E               ; {}
 EC96: A5 70           LDA     <$70                ; {ram.0070}
 EC98: 85 61           STA     <$61                ; {ram.0061}
 EC9A: A5 84           LDA     <$84                ; {ram.0084}
 EC9C: 85 62           STA     <$62                ; {ram.0062}
 EC9E: A2 0D           LDX     #$0D                ; 
-ECA0: 20 69 F7        JSR     $F769               ; {hard.MMC1_3+1769}
+ECA0: 20 69 F7        JSR     $F769               ; {}
 ECA3: A2 0E           LDX     #$0E                ; 
-ECA5: 20 6F F3        JSR     $F36F               ; {hard.MMC1_3+136F}
+ECA5: 20 6F F3        JSR     $F36F               ; {}
 ECA8: A2 0F           LDX     #$0F                ; 
-ECAA: 20 A0 F4        JSR     $F4A0               ; {hard.MMC1_3+14A0}
+ECAA: 20 A0 F4        JSR     $F4A0               ; {}
 ECAD: A2 10           LDX     #$10                ; 
-ECAF: 20 2A F9        JSR     $F92A               ; {hard.MMC1_3+192A}
+ECAF: 20 2A F9        JSR     $F92A               ; {}
 ECB2: A2 11           LDX     #$11                ; 
-ECB4: 20 2A F9        JSR     $F92A               ; {hard.MMC1_3+192A}
+ECB4: 20 2A F9        JSR     $F92A               ; {}
 ECB7: A2 12           LDX     #$12                ; 
-ECB9: 20 3E F7        JSR     $F73E               ; {hard.MMC1_3+173E}
+ECB9: 20 3E F7        JSR     $F73E               ; {}
 ECBC: A5 4A           LDA     <$4A                ; {ram.004A}
-ECBE: D0 1E           BNE     $ECDE               ; {hard.MMC1_2+2CDE}
+ECBE: D0 1E           BNE     $ECDE               ; {}
 ECC0: A5 19           LDA     <$19                ; {ram.0019}
 ECC2: 29 07           AND     #$07                ; 
 ECC4: 85 4A           STA     <$4A                ; {ram.004A}
 ECC6: A5 60           LDA     <$60                ; {ram.0060}
 ECC8: 49 01           EOR     #$01                ; 
 ECCA: 85 60           STA     <$60                ; {ram.0060}
-ECCC: F0 10           BEQ     $ECDE               ; {hard.MMC1_2+2CDE}
+ECCC: F0 10           BEQ     $ECDE               ; {}
 ECCE: A5 61           LDA     <$61                ; {ram.0061}
 ECD0: C5 70           CMP     <$70                ; {ram.0070}
-ECD2: D0 0A           BNE     $ECDE               ; {hard.MMC1_2+2CDE}
+ECD2: D0 0A           BNE     $ECDE               ; {}
 ECD4: 49 FF           EOR     #$FF                ; 
 ECD6: 85 61           STA     <$61                ; {ram.0061}
 ECD8: A5 62           LDA     <$62                ; {ram.0062}
 ECDA: 49 FF           EOR     #$FF                ; 
 ECDC: 85 62           STA     <$62                ; {ram.0062}
 ECDE: AE 40 03        LDX     $0340               ; {ram.0340}
-ECE1: 20 98 FE        JSR     $FE98               ; {hard.MMC1_3+1E98}
+ECE1: 20 98 FE        JSR     $FE98               ; {}
 ECE4: BD 4F 03        LDA     $034F,X             ; {ram.034F}
-ECE7: F0 25           BEQ     $ED0E               ; {hard.MMC1_2+2D0E}
+ECE7: F0 25           BEQ     $ED0E               ; {}
 ECE9: BD 4F 03        LDA     $034F,X             ; {ram.034F}
-ECEC: 20 74 FB        JSR     $FB74               ; {hard.MMC1_3+1B74}
+ECEC: 20 74 FB        JSR     $FB74               ; {}
 ECEF: AE 40 03        LDX     $0340               ; {ram.0340}
 ECF2: BD 05 04        LDA     $0405,X             ; {ram.0405}
-ECF5: D0 17           BNE     $ED0E               ; {hard.MMC1_2+2D0E}
+ECF5: D0 17           BNE     $ED0E               ; {}
 ECF7: BD BF 04        LDA     $04BF,X             ; 
 ECFA: 29 01           AND     #$01                ; 
-ECFC: D0 10           BNE     $ED0E               ; {hard.MMC1_2+2D0E}
+ECFC: D0 10           BNE     $ED0E               ; {}
 ECFE: BD BF 04        LDA     $04BF,X             ; 
 ED01: 29 04           AND     #$04                ; 
-ED03: D0 03           BNE     $ED08               ; {hard.MMC1_2+2D08}
+ED03: D0 03           BNE     $ED08               ; {}
 ED05: 20 D4 77        JSR     $77D4               ; {ram.77D4}
 ED08: AE 40 03        LDX     $0340               ; {ram.0340}
 ED0B: 20 D0 79        JSR     $79D0               ; {ram.79D0}
 ED0E: CE 40 03        DEC     $0340               ; {ram.0340}
-ED11: D0 CB           BNE     $ECDE               ; {hard.MMC1_2+2CDE}
+ED11: D0 CB           BNE     $ECDE               ; {}
 ED13: A9 0B           LDA     #$0B                ; 
 ED15: 8D 40 03        STA     $0340               ; {ram.0340}
 ED18: AD 6F 06        LDA     $066F               ; {ram.066F}
 ED1B: 29 0F           AND     #$0F                ; 
-ED1D: D0 08           BNE     $ED27               ; {hard.MMC1_2+2D27}
+ED1D: D0 08           BNE     $ED27               ; {}
 ED1F: AD 04 06        LDA     $0604               ; {ram.SND_Request}
 ED22: 09 40           ORA     #$40                ; 
 ED24: 8D 04 06        STA     $0604               ; {ram.SND_Request}
 ED27: A5 10           LDA     <$10                ; {ram.0010}
-ED29: F0 24           BEQ     $ED4F               ; {hard.MMC1_2+2D4F}
+ED29: F0 24           BEQ     $ED4F               ; {}
 ED2B: A9 04           LDA     #$04                ; 
 ED2D: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-ED30: 20 50 86        JSR     $8650               ; {hard.MMC1_0+650} 4
-ED33: 20 79 E6        JSR     $E679               ; {hard.MMC1_2+2679}
+ED30: 20 50 86        JSR     $8650               ; 4
+ED33: 20 79 E6        JSR     $E679               ; {}
 ED36: A9 05           LDA     #$05                ; 
 ED38: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-ED3B: 20 BC 8B        JSR     $8BBC               ; {hard.MMC1_0+BBC} 5
-ED3E: 20 AD 8A        JSR     $8AAD               ; {hard.MMC1_0+AAD} 5
-ED41: 20 F3 A5        JSR     $A5F3               ; {hard.MMC1_1+5F3} 5
+ED3B: 20 BC 8B        JSR     $8BBC               ; 5
+ED3E: 20 AD 8A        JSR     $8AAD               ; 5
+ED41: 20 F3 A5        JSR     $A5F3               ; 5
 ED44: A9 01           LDA     #$01                ; 
 ED46: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-ED49: 20 7C A1        JSR     $A17C               ; {hard.MMC1_1+17C} 1
-ED4C: 4C 6A ED        JMP     $ED6A               ; {hard.MMC1_2+2D6A}
+ED49: 20 7C A1        JSR     $A17C               ; 1
+ED4C: 4C 6A ED        JMP     $ED6A               ; {}
 ED4F: A5 12           LDA     <$12                ; {ram.0012}
 ED51: C9 05           CMP     #$05                ; 
-ED53: D0 0D           BNE     $ED62               ; {hard.MMC1_2+2D62}
+ED53: D0 0D           BNE     $ED62               ; {}
 ED55: A4 EB           LDY     <$EB                ; {ram.00EB}
 ED57: B9 7E 68        LDA     $687E,Y             ; 
 ED5A: 29 04           AND     #$04                ; 
@@ -1500,51 +1500,51 @@ ED5E: 0A              ASL     A                   ;
 ED5F: 20 80 6D        JSR     $6D80               ; {ram.6D80}
 ED62: A9 04           LDA     #$04                ; 
 ED64: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-ED67: 20 E0 86        JSR     $86E0               ; {hard.MMC1_0+6E0} 4
+ED67: 20 E0 86        JSR     $86E0               ; 4
 ED6A: AD 01 03        LDA     $0301               ; {ram.0301}
-ED6D: D0 0E           BNE     $ED7D               ; {hard.MMC1_2+2D7D}
+ED6D: D0 0E           BNE     $ED7D               ; {}
 ED6F: AD E5 04        LDA     $04E5               ; {ram.04E5}
-ED72: F0 09           BEQ     $ED7D               ; {hard.MMC1_2+2D7D}
+ED72: F0 09           BEQ     $ED7D               ; {}
 ED74: A9 00           LDA     #$00                ; 
 ED76: 8D E5 04        STA     $04E5               ; {ram.04E5}
 ED79: A9 44           LDA     #$44                ; 
 ED7B: 85 14           STA     <$14                ; {ram.0014}
-ED7D: 20 FE E7        JSR     $E7FE               ; {hard.MMC1_2+27FE}
-ED80: 20 EA E6        JSR     $E6EA               ; {hard.MMC1_2+26EA}
+ED7D: 20 FE E7        JSR     $E7FE               ; {}
+ED80: 20 EA E6        JSR     $E6EA               ; {}
 ED83: 20 28 73        JSR     $7328               ; {ram.7328}
-ED86: 20 8A E7        JSR     $E78A               ; {hard.MMC1_2+278A}
+ED86: 20 8A E7        JSR     $E78A               ; {}
 ED89: A9 05           LDA     #$05                ; 
 ED8B: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-ED8E: 20 E6 B1        JSR     $B1E6               ; {hard.MMC1_1+11E6} 5
+ED8E: 20 E6 B1        JSR     $B1E6               ; 5
 ED91: 4C C0 6C        JMP     $6CC0               ; {ram.6CC0}
 
 ED94: FF FF FF FF FF FF FF FF FF FF FF FF
 
 EDA0: A2 00           LDX     #$00                ; 
-EDA2: 20 98 FE        JSR     $FE98               ; {hard.MMC1_3+1E98}
+EDA2: 20 98 FE        JSR     $FE98               ; {}
 EDA5: A5 AC           LDA     <$AC                ; {ram.00AC}
 EDA7: 29 C0           AND     #$C0                ; 
 EDA9: C9 40           CMP     #$40                ; 
-EDAB: F0 3D           BEQ     $EDEA               ; {hard.MMC1_2+2DEA}
+EDAB: F0 3D           BEQ     $EDEA               ; {}
 EDAD: AD 12 05        LDA     $0512               ; {ram.0512}
-EDB0: F0 08           BEQ     $EDBA               ; {hard.MMC1_2+2DBA}
+EDB0: F0 08           BEQ     $EDBA               ; {}
 EDB2: AD F8 03        LDA     $03F8               ; {ram.03F8}
 EDB5: 29 F0           AND     #$F0                ; 
 EDB7: 8D F8 03        STA     $03F8               ; {ram.03F8}
 EDBA: A9 05           LDA     #$05                ; 
 EDBC: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EDBF: 20 9A B2        JSR     $B29A               ; {hard.MMC1_1+129A} 5
-EDC2: 20 D0 EF        JSR     $EFD0               ; {hard.MMC1_2+2FD0}
+EDBF: 20 9A B2        JSR     $B29A               ; 5
+EDC2: 20 D0 EF        JSR     $EFD0               ; {}
 EDC5: A5 12           LDA     <$12                ; {ram.0012}
 EDC7: C9 0A           CMP     #$0A                ; 
-EDC9: F0 1F           BEQ     $EDEA               ; {hard.MMC1_2+2DEA}
-EDCB: 20 3C F2        JSR     $F23C               ; {hard.MMC1_3+123C}
+EDC9: F0 1F           BEQ     $EDEA               ; {}
+EDCB: 20 3C F2        JSR     $F23C               ; {}
 EDCE: A5 10           LDA     <$10                ; {ram.0010}
-EDD0: F0 03           BEQ     $EDD5               ; {hard.MMC1_2+2DD5}
+EDD0: F0 03           BEQ     $EDD5               ; {}
 EDD2: 20 FB 6E        JSR     $6EFB               ; {ram.6EFB}
 EDD5: A2 00           LDX     #$00                ; 
 EDD7: BD 94 03        LDA     $0394,X             ; {ram.0394}
-EDDA: D0 0E           BNE     $EDEA               ; {hard.MMC1_2+2DEA}
+EDDA: D0 0E           BNE     $EDEA               ; {}
 EDDC: B5 70           LDA     $70,X               ; {ram.0070}
 EDDE: 29 F8           AND     #$F8                ; 
 EDE0: 95 70           STA     $70,X               ; {ram.0070}
@@ -1558,17 +1558,17 @@ EDEB: 8D 91 9C AC AD CC D2 D5 DF
 
 EDF4: A0 00           LDY     #$00                ; 
 EDF6: 84 0F           STY     <$0F                ; {ram.000F}
-EDF8: F0 16           BEQ     $EE10               ; {hard.MMC1_2+2E10}
+EDF8: F0 16           BEQ     $EE10               ; {}
 EDFA: A0 F8           LDY     #$F8                ; 
 EDFC: E0 00           CPX     #$00                ; 
-EDFE: F0 02           BEQ     $EE02               ; {hard.MMC1_2+2E02}
+EDFE: F0 02           BEQ     $EE02               ; {}
 EE00: A0 F0           LDY     #$F0                ; 
 EE02: A5 0F           LDA     <$0F                ; {ram.000F}
 EE04: 29 05           AND     #$05                ; 
-EE06: F0 08           BEQ     $EE10               ; {hard.MMC1_2+2E10}
+EE06: F0 08           BEQ     $EE10               ; {}
 EE08: A0 08           LDY     #$08                ; 
 EE0A: 29 04           AND     #$04                ; 
-EE0C: D0 02           BNE     $EE10               ; {hard.MMC1_2+2E10}
+EE0C: D0 02           BNE     $EE10               ; {}
 EE0E: A0 10           LDY     #$10                ; 
 EE10: 84 04           STY     <$04                ; {ram.0004}
 EE12: B5 84           LDA     $84,X               ; {ram.0084}
@@ -1578,26 +1578,26 @@ EE17: A8              TAY                         ;
 EE18: 48              PHA                         ; 
 EE19: A5 0F           LDA     <$0F                ; {ram.000F}
 EE1B: 29 0C           AND     #$0C                ; 
-EE1D: F0 12           BEQ     $EE31               ; {hard.MMC1_2+2E31}
+EE1D: F0 12           BEQ     $EE31               ; {}
 EE1F: 29 04           AND     #$04                ; 
-EE21: F0 04           BEQ     $EE27               ; {hard.MMC1_2+2E27}
+EE21: F0 04           BEQ     $EE27               ; {}
 EE23: C0 DD           CPY     #$DD                ; 
-EE25: B0 05           BCS     $EE2C               ; {hard.MMC1_2+2E2C}
+EE25: B0 05           BCS     $EE2C               ; {}
 EE27: 68              PLA                         ; 
 EE28: 18              CLC                         ; 
 EE29: 65 04           ADC     <$04                ; {ram.0004}
 EE2B: 48              PHA                         ; 
 EE2C: B4 70           LDY     $70,X               ; {ram.0070}
-EE2E: 4C 48 EE        JMP     $EE48               ; {hard.MMC1_2+2E48}
+EE2E: 4C 48 EE        JMP     $EE48               ; {}
 EE31: B4 70           LDY     $70,X               ; {ram.0070}
 EE33: A5 0F           LDA     <$0F                ; {ram.000F}
 EE35: 29 01           AND     #$01                ; 
-EE37: F0 06           BEQ     $EE3F               ; {hard.MMC1_2+2E3F}
+EE37: F0 06           BEQ     $EE3F               ; {}
 EE39: C0 F0           CPY     #$F0                ; 
-EE3B: B0 0B           BCS     $EE48               ; {hard.MMC1_2+2E48}
-EE3D: 90 04           BCC     $EE43               ; {hard.MMC1_2+2E43}
+EE3B: B0 0B           BCS     $EE48               ; {}
+EE3D: 90 04           BCC     $EE43               ; {}
 EE3F: C0 10           CPY     #$10                ; 
-EE41: 90 05           BCC     $EE48               ; {hard.MMC1_2+2E48}
+EE41: 90 05           BCC     $EE48               ; {}
 EE43: 98              TYA                         ; 
 EE44: 18              CLC                         ; 
 EE45: 65 04           ADC     <$04                ; {ram.0004}
@@ -1607,9 +1607,9 @@ EE49: 29 F8           AND     #$F8                ;
 EE4B: 4A              LSR     A                   ; 
 EE4C: 4A              LSR     A                   ; 
 EE4D: A8              TAY                         ; 
-EE4E: B9 00 E4        LDA     $E400,Y             ; {hard.MMC1_2+2400}
+EE4E: B9 00 E4        LDA     $E400,Y             ; {}
 EE51: 85 00           STA     <$00                ; {ram.GP_00}
-EE53: B9 01 E4        LDA     $E401,Y             ; {hard.MMC1_2+2401}
+EE53: B9 01 E4        LDA     $E401,Y             ; {}
 EE56: 85 01           STA     <$01                ; {ram.GP_01}
 EE58: 68              PLA                         ; 
 EE59: 38              SEC                         ; 
@@ -1622,67 +1622,67 @@ EE60: B1 00           LDA     ($00),Y             ; {ram.GP_00}
 EE62: 9D 9E 04        STA     $049E,X             ; {ram.049E}
 EE65: A5 0F           LDA     <$0F                ; {ram.000F}
 EE67: 29 0C           AND     #$0C                ; 
-EE69: F0 0F           BEQ     $EE7A               ; {hard.MMC1_2+2E7A}
+EE69: F0 0F           BEQ     $EE7A               ; {}
 EE6B: 98              TYA                         ; 
 EE6C: 18              CLC                         ; 
 EE6D: 69 16           ADC     #$16                ; 
 EE6F: A8              TAY                         ; 
 EE70: B1 00           LDA     ($00),Y             ; {ram.GP_00}
 EE72: DD 9E 04        CMP     $049E,X             ; {ram.049E}
-EE75: 90 03           BCC     $EE7A               ; {hard.MMC1_2+2E7A}
+EE75: 90 03           BCC     $EE7A               ; {}
 EE77: 9D 9E 04        STA     $049E,X             ; {ram.049E}
 EE7A: BD 9E 04        LDA     $049E,X             ; {ram.049E}
 EE7D: A4 10           LDY     <$10                ; {ram.0010}
-EE7F: D0 36           BNE     $EEB7               ; {hard.MMC1_2+2EB7}
+EE7F: D0 36           BNE     $EEB7               ; {}
 EE81: BD 9E 04        LDA     $049E,X             ; {ram.049E}
 EE84: A0 09           LDY     #$09                ; 
 EE86: 88              DEY                         ; 
-EE87: 30 07           BMI     $EE90               ; {hard.MMC1_2+2E90}
-EE89: D9 EB ED        CMP     $EDEB,Y             ; {hard.MMC1_2+2DEB}
-EE8C: D0 F8           BNE     $EE86               ; {hard.MMC1_2+2E86}
+EE87: 30 07           BMI     $EE90               ; {}
+EE89: D9 EB ED        CMP     $EDEB,Y             ; {}
+EE8C: D0 F8           BNE     $EE86               ; {}
 EE8E: A9 26           LDA     #$26                ; 
 EE90: 9D 9E 04        STA     $049E,X             ; {ram.049E}
 EE93: E0 00           CPX     #$00                ; 
-EE95: D0 1D           BNE     $EEB4               ; {hard.MMC1_2+2EB4}
+EE95: D0 1D           BNE     $EEB4               ; {}
 EE97: A5 EB           LDA     <$EB                ; {ram.00EB}
 EE99: C9 1F           CMP     #$1F                ; 
-EE9B: D0 17           BNE     $EEB4               ; {hard.MMC1_2+2EB4}
+EE9B: D0 17           BNE     $EEB4               ; {}
 EE9D: A9 0C           LDA     #$0C                ; 
 EE9F: 25 0F           AND     <$0F                ; {ram.000F}
-EEA1: F0 11           BEQ     $EEB4               ; {hard.MMC1_2+2EB4}
+EEA1: F0 11           BEQ     $EEB4               ; {}
 EEA3: A5 70           LDA     <$70                ; {ram.0070}
 EEA5: C9 80           CMP     #$80                ; 
-EEA7: D0 0B           BNE     $EEB4               ; {hard.MMC1_2+2EB4}
+EEA7: D0 0B           BNE     $EEB4               ; {}
 EEA9: A5 84           LDA     <$84                ; {ram.0084}
 EEAB: C9 56           CMP     #$56                ; 
-EEAD: B0 05           BCS     $EEB4               ; {hard.MMC1_2+2EB4}
+EEAD: B0 05           BCS     $EEB4               ; {}
 EEAF: A9 26           LDA     #$26                ; 
 EEB1: 8D 9E 04        STA     $049E               ; {ram.049E}
 EEB4: BD 9E 04        LDA     $049E,X             ; {ram.049E}
 EEB7: 60              RTS                         ; 
 EEB8: B5 C0           LDA     $C0,X               ; {ram.00C0}
 EEBA: 0A              ASL     A                   ; 
-EEBB: 90 23           BCC     $EEE0               ; {hard.MMC1_2+2EE0}
+EEBB: 90 23           BCC     $EEE0               ; {}
 EEBD: 4A              LSR     A                   ; 
 EEBE: 95 C0           STA     $C0,X               ; {ram.00C0}
 EEC0: B4 98           LDY     $98,X               ; {ram.0098}
 EEC2: C0 03           CPY     #$03                ; 
-EEC4: 90 15           BCC     $EEDB               ; {hard.MMC1_2+2EDB}
+EEC4: 90 15           BCC     $EEDB               ; {}
 EEC6: 29 03           AND     #$03                ; 
-EEC8: F0 10           BEQ     $EEDA               ; {hard.MMC1_2+2EDA}
+EEC8: F0 10           BEQ     $EEDA               ; {}
 EECA: BD 94 03        LDA     $0394,X             ; {ram.0394}
-EECD: F0 0B           BEQ     $EEDA               ; {hard.MMC1_2+2EDA}
+EECD: F0 0B           BEQ     $EEDA               ; {}
 EECF: E0 00           CPX     #$00                ; 
-EED1: D0 11           BNE     $EEE4               ; {hard.MMC1_2+2EE4}
+EED1: D0 11           BNE     $EEE4               ; {}
 EED3: A5 98           LDA     <$98                ; {ram.0098}
 EED5: 20 13 70        JSR     $7013               ; {ram.7013}
 EED8: 85 C0           STA     <$C0                ; {ram.00C0}
 EEDA: 60              RTS                         ; 
 EEDB: 29 0C           AND     #$0C                ; 
-EEDD: D0 EB           BNE     $EECA               ; {hard.MMC1_2+2ECA}
+EEDD: D0 EB           BNE     $EECA               ; {}
 EEDF: 60              RTS                         ; 
 EEE0: B5 D3           LDA     $D3,X               ; {ram.00D3}
-EEE2: D0 07           BNE     $EEEB               ; {hard.MMC1_2+2EEB}
+EEE2: D0 07           BNE     $EEEB               ; {}
 EEE4: A9 00           LDA     #$00                ; 
 EEE6: 95 C0           STA     $C0,X               ; {ram.00C0}
 EEE8: 95 D3           STA     $D3,X               ; {ram.00D3}
@@ -1690,32 +1690,32 @@ EEEA: 60              RTS                         ;
 EEEB: A9 04           LDA     #$04                ; 
 EEED: 85 03           STA     <$03                ; {ram.GP_03}
 EEEF: BD 94 03        LDA     $0394,X             ; {ram.0394}
-EEF2: D0 11           BNE     $EF05               ; {hard.MMC1_2+2F05}
-EEF4: 20 D7 ED        JSR     $EDD7               ; {hard.MMC1_2+2DD7}
+EEF2: D0 11           BNE     $EF05               ; {}
+EEF4: 20 D7 ED        JSR     $EDD7               ; {}
 EEF7: B5 C0           LDA     $C0,X               ; {ram.00C0}
 EEF9: 29 0F           AND     #$0F                ; 
 EEFB: 85 0F           STA     <$0F                ; {ram.000F}
-EEFD: 20 FA ED        JSR     $EDFA               ; {hard.MMC1_2+2DFA}
+EEFD: 20 FA ED        JSR     $EDFA               ; {}
 EF00: CD 4A 03        CMP     $034A               ; {ram.034A}
-EF03: B0 DF           BCS     $EEE4               ; {hard.MMC1_2+2EE4}
+EF03: B0 DF           BCS     $EEE4               ; {}
 EF05: B5 C0           LDA     $C0,X               ; {ram.00C0}
 EF07: 29 0F           AND     #$0F                ; 
 EF09: 20 B6 6F        JSR     $6FB6               ; {ram.6FB6}
-EF0C: F0 D6           BEQ     $EEE4               ; {hard.MMC1_2+2EE4}
+EF0C: F0 D6           BEQ     $EEE4               ; {}
 EF0E: AD 50 03        LDA     $0350               ; {ram.0350}
 EF11: C9 36           CMP     #$36                ; 
-EF13: F0 08           BEQ     $EF1D               ; {hard.MMC1_2+2F1D}
+EF13: F0 08           BEQ     $EF1D               ; {}
 EF15: C9 4B           CMP     #$4B                ; 
-EF17: 90 0B           BCC     $EF24               ; {hard.MMC1_2+2F24}
+EF17: 90 0B           BCC     $EF24               ; {}
 EF19: C9 53           CMP     #$53                ; 
-EF1B: B0 07           BCS     $EF24               ; {hard.MMC1_2+2F24}
+EF1B: B0 07           BCS     $EF24               ; {}
 EF1D: 20 46 6E        JSR     $6E46               ; {ram.6E46}
 EF20: A5 0F           LDA     <$0F                ; {ram.000F}
-EF22: F0 C0           BEQ     $EEE4               ; {hard.MMC1_2+2EE4}
+EF22: F0 C0           BEQ     $EEE4               ; {}
 EF24: A0 01           LDY     #$01                ; 
 EF26: B5 C0           LDA     $C0,X               ; {ram.00C0}
 EF28: 29 05           AND     #$05                ; 
-EF2A: D0 02           BNE     $EF2E               ; {hard.MMC1_2+2F2E}
+EF2A: D0 02           BNE     $EF2E               ; {}
 EF2C: A0 FF           LDY     #$FF                ; 
 EF2E: 84 02           STY     <$02                ; {ram.GP_02}
 EF30: D6 D3           DEC     $D3,X               ; {ram.00D3}
@@ -1724,178 +1724,178 @@ EF35: 18              CLC                         ;
 EF36: 65 02           ADC     <$02                ; {ram.GP_02}
 EF38: 9D 94 03        STA     $0394,X             ; {ram.0394}
 EF3B: 29 0F           AND     #$0F                ; 
-EF3D: F0 08           BEQ     $EF47               ; {hard.MMC1_2+2F47}
+EF3D: F0 08           BEQ     $EF47               ; {}
 EF3F: E0 00           CPX     #$00                ; 
-EF41: D0 07           BNE     $EF4A               ; {hard.MMC1_2+2F4A}
+EF41: D0 07           BNE     $EF4A               ; {}
 EF43: 29 07           AND     #$07                ; 
-EF45: D0 03           BNE     $EF4A               ; {hard.MMC1_2+2F4A}
+EF45: D0 03           BNE     $EF4A               ; {}
 EF47: 9D 94 03        STA     $0394,X             ; {ram.0394}
 EF4A: B5 C0           LDA     $C0,X               ; {ram.00C0}
 EF4C: 29 03           AND     #$03                ; 
-EF4E: F0 0A           BEQ     $EF5A               ; {hard.MMC1_2+2F5A}
+EF4E: F0 0A           BEQ     $EF5A               ; {}
 EF50: B5 70           LDA     $70,X               ; {ram.0070}
 EF52: 18              CLC                         ; 
 EF53: 65 02           ADC     <$02                ; {ram.GP_02}
 EF55: 95 70           STA     $70,X               ; {ram.0070}
-EF57: 4C 61 EF        JMP     $EF61               ; {hard.MMC1_2+2F61}
+EF57: 4C 61 EF        JMP     $EF61               ; {}
 EF5A: B5 84           LDA     $84,X               ; {ram.0084}
 EF5C: 18              CLC                         ; 
 EF5D: 65 02           ADC     <$02                ; {ram.GP_02}
 EF5F: 95 84           STA     $84,X               ; {ram.0084}
 EF61: C6 03           DEC     <$03                ; {ram.GP_03}
-EF63: D0 8A           BNE     $EEEF               ; {hard.MMC1_2+2EEF}
+EF63: D0 8A           BNE     $EEEF               ; {}
 EF65: 60              RTS                         ; 
 
 EF66: 42 06 29 2B 30 3A 3C 58 60 6E 72 A9
 EF72: 10 8D 02 06 A9 98 85 3C
 
 EF7A: A5 10           LDA     <$10                ; {ram.0010}
-EF7C: D0 49           BNE     $EFC7               ; {hard.MMC1_2+2FC7}
+EF7C: D0 49           BNE     $EFC7               ; {}
 EF7E: A5 12           LDA     <$12                ; {ram.0012}
 EF80: C9 05           CMP     #$05                ; 
-EF82: D0 34           BNE     $EFB8               ; {hard.MMC1_2+2FB8}
+EF82: D0 34           BNE     $EFB8               ; {}
 EF84: A4 16           LDY     <$16                ; {ram.0016}
 EF86: B9 2D 06        LDA     $062D,Y             ; 
 EF89: 48              PHA                         ; 
 EF8A: A5 EB           LDA     <$EB                ; {ram.00EB}
 EF8C: A0 0A           LDY     #$0A                ; 
-EF8E: D9 66 EF        CMP     $EF66,Y             ; {hard.MMC1_2+2F66}
-EF91: F0 05           BEQ     $EF98               ; {hard.MMC1_2+2F98}
+EF8E: D9 66 EF        CMP     $EF66,Y             ; {}
+EF91: F0 05           BEQ     $EF98               ; {}
 EF93: 88              DEY                         ; 
-EF94: 10 F8           BPL     $EF8E               ; {hard.MMC1_2+2F8E}
-EF96: 30 21           BMI     $EFB9               ; {hard.MMC1_2+2FB9}
+EF94: 10 F8           BPL     $EF8E               ; {}
+EF96: 30 21           BMI     $EFB9               ; {}
 EF98: C0 00           CPY     #$00                ; 
-EF9A: D0 05           BNE     $EFA1               ; {hard.MMC1_2+2FA1}
+EF9A: D0 05           BNE     $EFA1               ; {}
 EF9C: 68              PLA                         ; 
-EF9D: D0 1B           BNE     $EFBA               ; {hard.MMC1_2+2FBA}
-EF9F: F0 03           BEQ     $EFA4               ; {hard.MMC1_2+2FA4}
+EF9D: D0 1B           BNE     $EFBA               ; {}
+EF9F: F0 03           BEQ     $EFA4               ; {}
 EFA1: 68              PLA                         ; 
-EFA2: F0 16           BEQ     $EFBA               ; {hard.MMC1_2+2FBA}
+EFA2: F0 16           BEQ     $EFBA               ; {}
 EFA4: AD 1A 05        LDA     $051A               ; {ram.051A}
-EFA7: D0 0F           BNE     $EFB8               ; {hard.MMC1_2+2FB8}
+EFA7: D0 0F           BNE     $EFB8               ; {}
 EFA9: A0 09           LDY     #$09                ; 
 EFAB: 88              DEY                         ; 
-EFAC: 30 0A           BMI     $EFB8               ; {hard.MMC1_2+2FB8}
+EFAC: 30 0A           BMI     $EFB8               ; {}
 EFAE: B9 50 03        LDA     $0350,Y             ; {ram.0350}
-EFB1: D0 F8           BNE     $EFAB               ; {hard.MMC1_2+2FAB}
+EFB1: D0 F8           BNE     $EFAB               ; {}
 EFB3: A9 5E           LDA     #$5E                ; 
 EFB5: 99 50 03        STA     $0350,Y             ; {ram.0350}
 EFB8: 60              RTS                         ; 
 EFB9: 68              PLA                         ; 
 EFBA: A9 01           LDA     #$01                ; 
 EFBC: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-EFBF: 20 A8 A0        JSR     $A0A8               ; {hard.MMC1_1+A8} 1
+EFBF: 20 A8 A0        JSR     $A0A8               ; 1
 EFC2: A9 05           LDA     #$05                ; 
 EFC4: 4C AC FF        JMP     $FFAC               ; {code.MMC_Bank}
 EFC7: AD 1B 05        LDA     $051B               ; {ram.051B}
-EFCA: D0 03           BNE     $EFCF               ; {hard.MMC1_2+2FCF}
+EFCA: D0 03           BNE     $EFCF               ; {}
 EFCC: EE 1B 05        INC     $051B               ; {ram.051B}
 EFCF: 60              RTS                         ; 
 EFD0: B5 C0           LDA     $C0,X               ; {ram.00C0}
-EFD2: F0 03           BEQ     $EFD7               ; {hard.MMC1_2+2FD7}
-EFD4: 4C B8 EE        JMP     $EEB8               ; {hard.MMC1_2+2EB8}
+EFD2: F0 03           BEQ     $EFD7               ; {}
+EFD4: 4C B8 EE        JMP     $EEB8               ; {}
 EFD7: E0 00           CPX     #$00                ; 
-EFD9: D0 0E           BNE     $EFE9               ; {hard.MMC1_2+2FE9}
+EFD9: D0 0E           BNE     $EFE9               ; {}
 EFDB: AD 94 03        LDA     $0394               ; {ram.0394}
-EFDE: F0 09           BEQ     $EFE9               ; {hard.MMC1_2+2FE9}
+EFDE: F0 09           BEQ     $EFE9               ; {}
 EFE0: AD F8 03        LDA     $03F8               ; {ram.03F8}
-EFE3: F0 1C           BEQ     $F001               ; {hard.MMC1_3+1001}
+EFE3: F0 1C           BEQ     $F001               ; {}
 EFE5: A5 98           LDA     <$98                ; {ram.0098}
-EFE7: D0 1A           BNE     $F003               ; {hard.MMC1_3+1003}
+EFE7: D0 1A           BNE     $F003               ; {}
 EFE9: E0 00           CPX     #$00                ; 
-EFEB: F0 07           BEQ     $EFF4               ; {hard.MMC1_2+2FF4}
+EFEB: F0 07           BEQ     $EFF4               ; {}
 EFED: AD 6C 06        LDA     $066C               ; {ram.066C}
 EFF0: 15 3D           ORA     $3D,X               ; {ram.003D}
-EFF2: D0 DB           BNE     $EFCF               ; {hard.MMC1_2+2FCF}
+EFF2: D0 DB           BNE     $EFCF               ; {}
 EFF4: BD F8 03        LDA     $03F8,X             ; {ram.03F8}
-EFF7: F0 08           BEQ     $F001               ; {hard.MMC1_3+1001}
+EFF7: F0 08           BEQ     $F001               ; {}
 EFF9: 20 13 70        JSR     $7013               ; {ram.7013}
 EFFC: B9 C3 6D        LDA     $6DC3,Y             ; 
-EFFF: D0 02           BNE     $F003               ; {hard.MMC1_3+1003}
+EFFF: D0 02           BNE     $F003               ; {}
 F001: A9 00           LDA     #$00                ; 
 F003: 29 0F           AND     #$0F                ; 
 F005: 85 0F           STA     <$0F                ; {ram.000F}
 F007: A9 00           LDA     #$00                ; 
 F009: 85 0E           STA     <$0E                ; {ram.000E}
 F00B: E0 00           CPX     #$00                ; 
-F00D: D0 0E           BNE     $F01D               ; {hard.MMC1_3+101D}
+F00D: D0 0E           BNE     $F01D               ; {}
 F00F: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F011: 29 F0           AND     #$F0                ; 
 F013: C9 10           CMP     #$10                ; 
-F015: F0 04           BEQ     $F01B               ; {hard.MMC1_3+101B}
+F015: F0 04           BEQ     $F01B               ; {}
 F017: C9 20           CMP     #$20                ; 
-F019: D0 02           BNE     $F01D               ; {hard.MMC1_3+101D}
+F019: D0 02           BNE     $F01D               ; {}
 F01B: 86 0F           STX     <$0F                ; {ram.000F}
 F01D: E0 00           CPX     #$00                ; 
-F01F: D0 42           BNE     $F063               ; {hard.MMC1_3+1063}
+F01F: D0 42           BNE     $F063               ; {}
 F021: A9 01           LDA     #$01                ; 
 F023: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-F026: 20 3E A1        JSR     $A13E               ; {hard.MMC1_1+13E} 1
+F026: 20 3E A1        JSR     $A13E               ; 1
 F029: AD 50 03        LDA     $0350               ; {ram.0350}
 F02C: C9 36           CMP     #$36                ; 
-F02E: F0 08           BEQ     $F038               ; {hard.MMC1_3+1038}
+F02E: F0 08           BEQ     $F038               ; {}
 F030: C9 4B           CMP     #$4B                ; 
-F032: 90 07           BCC     $F03B               ; {hard.MMC1_3+103B}
+F032: 90 07           BCC     $F03B               ; {}
 F034: C9 53           CMP     #$53                ; 
-F036: B0 03           BCS     $F03B               ; {hard.MMC1_3+103B}
+F036: B0 03           BCS     $F03B               ; {}
 F038: 20 46 6E        JSR     $6E46               ; {ram.6E46}
 F03B: A5 53           LDA     <$53                ; {ram.0053}
-F03D: D0 27           BNE     $F066               ; {hard.MMC1_3+1066}
+F03D: D0 27           BNE     $F066               ; {}
 F03F: A5 12           LDA     <$12                ; {ram.0012}
 F041: C9 09           CMP     #$09                ; 
-F043: F0 08           BEQ     $F04D               ; {hard.MMC1_3+104D}
+F043: F0 08           BEQ     $F04D               ; {}
 F045: C9 0B           CMP     #$0B                ; 
-F047: F0 04           BEQ     $F04D               ; {hard.MMC1_3+104D}
+F047: F0 04           BEQ     $F04D               ; {}
 F049: C9 0C           CMP     #$0C                ; 
-F04B: D0 0E           BNE     $F05B               ; {hard.MMC1_3+105B}
+F04B: D0 0E           BNE     $F05B               ; {}
 F04D: A9 05           LDA     #$05                ; 
 F04F: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-F052: 20 D7 8E        JSR     $8ED7               ; {hard.MMC1_0+ED7} 5
+F052: 20 D7 8E        JSR     $8ED7               ; 5
 F055: A5 12           LDA     <$12                ; {ram.0012}
 F057: C9 09           CMP     #$09                ; 
-F059: F0 0B           BEQ     $F066               ; {hard.MMC1_3+1066}
+F059: F0 0B           BEQ     $F066               ; {}
 F05B: A5 10           LDA     <$10                ; {ram.0010}
-F05D: F0 07           BEQ     $F066               ; {hard.MMC1_3+1066}
+F05D: F0 07           BEQ     $F066               ; {}
 F05F: A5 53           LDA     <$53                ; {ram.0053}
-F061: D0 03           BNE     $F066               ; {hard.MMC1_3+1066}
+F061: D0 03           BNE     $F066               ; {}
 F063: 20 B8 6F        JSR     $6FB8               ; {ram.6FB8}
 F066: E0 00           CPX     #$00                ; 
-F068: D0 14           BNE     $F07E               ; {hard.MMC1_3+107E}
+F068: D0 14           BNE     $F07E               ; {}
 F06A: A5 10           LDA     <$10                ; {ram.0010}
-F06C: F0 10           BEQ     $F07E               ; {hard.MMC1_3+107E}
+F06C: F0 10           BEQ     $F07E               ; {}
 F06E: A5 12           LDA     <$12                ; {ram.0012}
 F070: C9 09           CMP     #$09                ; 
-F072: F0 0A           BEQ     $F07E               ; {hard.MMC1_3+107E}
+F072: F0 0A           BEQ     $F07E               ; {}
 F074: A9 05           LDA     #$05                ; 
 F076: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-F079: 20 7C 91        JSR     $917C               ; {hard.MMC1_0+117C} 5
+F079: 20 7C 91        JSR     $917C               ; 5
 F07C: A2 00           LDX     #$00                ; 
-F07E: 20 E3 F0        JSR     $F0E3               ; {hard.MMC1_3+10E3}
+F07E: 20 E3 F0        JSR     $F0E3               ; {}
 F081: E0 00           CPX     #$00                ; 
-F083: D0 08           BNE     $F08D               ; {hard.MMC1_3+108D}
+F083: D0 08           BNE     $F08D               ; {}
 F085: A9 05           LDA     #$05                ; 
 F087: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-F08A: 20 7B 8F        JSR     $8F7B               ; {hard.MMC1_0+F7B} 5
+F08A: 20 7B 8F        JSR     $8F7B               ; 5
 F08D: A9 08           LDA     #$08                ; 
 F08F: A0 F8           LDY     #$F8                ; 
 F091: E0 00           CPX     #$00                ; 
-F093: F0 04           BEQ     $F099               ; {hard.MMC1_3+1099}
+F093: F0 04           BEQ     $F099               ; {}
 F095: A9 10           LDA     #$10                ; 
 F097: A0 F0           LDY     #$F0                ; 
 F099: 8D 0E 01        STA     $010E               ; {ram.010E}
 F09C: 8C 0F 01        STY     $010F               ; {ram.010F}
 F09F: A5 0F           LDA     <$0F                ; {ram.000F}
-F0A1: F0 1D           BEQ     $F0C0               ; {hard.MMC1_3+10C0}
-F0A3: 20 AC F0        JSR     $F0AC               ; {hard.MMC1_3+10AC}
-F0A6: 20 AC F0        JSR     $F0AC               ; {hard.MMC1_3+10AC}
-F0A9: 20 AC F0        JSR     $F0AC               ; {hard.MMC1_3+10AC}
+F0A1: F0 1D           BEQ     $F0C0               ; {}
+F0A3: 20 AC F0        JSR     $F0AC               ; {}
+F0A6: 20 AC F0        JSR     $F0AC               ; {}
+F0A9: 20 AC F0        JSR     $F0AC               ; {}
 F0AC: A5 0F           LDA     <$0F                ; {ram.000F}
 F0AE: 4A              LSR     A                   ; 
-F0AF: B0 1A           BCS     $F0CB               ; {hard.MMC1_3+10CB}
+F0AF: B0 1A           BCS     $F0CB               ; {}
 F0B1: 4A              LSR     A                   ; 
-F0B2: B0 21           BCS     $F0D5               ; {hard.MMC1_3+10D5}
+F0B2: B0 21           BCS     $F0D5               ; {}
 F0B4: 4A              LSR     A                   ; 
-F0B5: B0 0A           BCS     $F0C1               ; {hard.MMC1_3+10C1}
+F0B5: B0 0A           BCS     $F0C1               ; {}
 F0B7: 20 E8 6F        JSR     $6FE8               ; {ram.6FE8}
 F0BA: B5 84           LDA     $84,X               ; {ram.0084}
 F0BC: E9 00           SBC     #$00                ; 
@@ -1917,76 +1917,76 @@ F0DA: E9 00           SBC     #$00                ;
 F0DC: 95 70           STA     $70,X               ; {ram.0070}
 F0DE: 60              RTS                         ; 
 F0DF: 3D DD 00        AND     $00DD,X             ; 
-F0E2: F0 E0           BEQ     $F0C4               ; {hard.MMC1_3+10C4}
+F0E2: F0 E0           BEQ     $F0C4               ; {}
 F0E4: 00              BRK                         ; 
-F0E5: D0 0B           BNE     $F0F2               ; {hard.MMC1_3+10F2}
+F0E5: D0 0B           BNE     $F0F2               ; {}
 F0E7: A5 53           LDA     <$53                ; {ram.0053}
-F0E9: F0 03           BEQ     $F0EE               ; {hard.MMC1_3+10EE}
-F0EB: 4C 4E F1        JMP     $F14E               ; {hard.MMC1_3+114E}
+F0E9: F0 03           BEQ     $F0EE               ; {}
+F0EB: 4C 4E F1        JMP     $F14E               ; {}
 F0EE: A5 0E           LDA     <$0E                ; {ram.000E}
-F0F0: 30 56           BMI     $F148               ; {hard.MMC1_3+1148}
+F0F0: 30 56           BMI     $F148               ; {}
 F0F2: BD 94 03        LDA     $0394,X             ; {ram.0394}
-F0F5: D0 51           BNE     $F148               ; {hard.MMC1_3+1148}
+F0F5: D0 51           BNE     $F148               ; {}
 F0F7: 85 0E           STA     <$0E                ; {ram.000E}
 F0F9: A5 0F           LDA     <$0F                ; {ram.000F}
-F0FB: D0 19           BNE     $F116               ; {hard.MMC1_3+1116}
+F0FB: D0 19           BNE     $F116               ; {}
 F0FD: E0 00           CPX     #$00                ; 
-F0FF: F0 47           BEQ     $F148               ; {hard.MMC1_3+1148}
+F0FF: F0 47           BEQ     $F148               ; {}
 F101: BD BF 04        LDA     $04BF,X             ; 
 F104: 29 10           AND     #$10                ; 
-F106: D0 08           BNE     $F110               ; {hard.MMC1_3+1110}
+F106: D0 08           BNE     $F110               ; {}
 F108: BD F8 03        LDA     $03F8,X             ; {ram.03F8}
 F10B: 85 0F           STA     <$0F                ; {ram.000F}
-F10D: 4C 29 F1        JMP     $F129               ; {hard.MMC1_3+1129}
-F110: 20 D0 F1        JSR     $F1D0               ; {hard.MMC1_3+11D0}
-F113: 4C 98 F1        JMP     $F198               ; {hard.MMC1_3+1198}
-F116: 20 FA ED        JSR     $EDFA               ; {hard.MMC1_2+2DFA}
+F10D: 4C 29 F1        JMP     $F129               ; {}
+F110: 20 D0 F1        JSR     $F1D0               ; {}
+F113: 4C 98 F1        JMP     $F198               ; {}
+F116: 20 FA ED        JSR     $EDFA               ; {}
 F119: CD 4A 03        CMP     $034A               ; {ram.034A}
-F11C: 90 30           BCC     $F14E               ; {hard.MMC1_3+114E}
+F11C: 90 30           BCC     $F14E               ; {}
 F11E: E0 00           CPX     #$00                ; 
-F120: F0 11           BEQ     $F133               ; {hard.MMC1_3+1133}
+F120: F0 11           BEQ     $F133               ; {}
 F122: BD BF 04        LDA     $04BF,X             ; 
 F125: 29 10           AND     #$10                ; 
-F127: D0 E7           BNE     $F110               ; {hard.MMC1_3+1110}
-F129: 20 A0 F1        JSR     $F1A0               ; {hard.MMC1_3+11A0}
+F127: D0 E7           BNE     $F110               ; {}
+F129: 20 A0 F1        JSR     $F1A0               ; {}
 F12C: 85 0F           STA     <$0F                ; {ram.000F}
 F12E: A5 0E           LDA     <$0E                ; {ram.000E}
-F130: D0 E4           BNE     $F116               ; {hard.MMC1_3+1116}
+F130: D0 E4           BNE     $F116               ; {}
 F132: 60              RTS                         ; 
 F133: A5 10           LDA     <$10                ; {ram.0010}
-F135: D0 08           BNE     $F13F               ; {hard.MMC1_3+113F}
+F135: D0 08           BNE     $F13F               ; {}
 F137: A9 01           LDA     #$01                ; 
 F139: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-F13C: 20 23 A2        JSR     $A223               ; {hard.MMC1_1+223} 1
-F13F: 20 49 F1        JSR     $F149               ; {hard.MMC1_3+1149}
+F13C: 20 23 A2        JSR     $A223               ; 1
+F13F: 20 49 F1        JSR     $F149               ; {}
 F142: 85 F8           STA     <$F8                ; {ram.00F8}
 F144: A5 10           LDA     <$10                ; {ram.0010}
-F146: F0 06           BEQ     $F14E               ; {hard.MMC1_3+114E}
+F146: F0 06           BEQ     $F14E               ; {}
 F148: 60              RTS                         ; 
 F149: A9 00           LDA     #$00                ; 
 F14B: 85 0F           STA     <$0F                ; {ram.000F}
 F14D: 60              RTS                         ; 
 F14E: E0 00           CPX     #$00                ; 
-F150: D0 46           BNE     $F198               ; {hard.MMC1_3+1198}
+F150: D0 46           BNE     $F198               ; {}
 F152: A5 12           LDA     <$12                ; {ram.0012}
 F154: C9 05           CMP     #$05                ; 
-F156: D0 3D           BNE     $F195               ; {hard.MMC1_3+1195}
+F156: D0 3D           BNE     $F195               ; {}
 F158: A5 64           LDA     <$64                ; {ram.0064}
-F15A: D0 EC           BNE     $F148               ; {hard.MMC1_3+1148}
+F15A: D0 EC           BNE     $F148               ; {}
 F15C: AD 94 03        LDA     $0394               ; {ram.0394}
-F15F: D0 34           BNE     $F195               ; {hard.MMC1_3+1195}
+F15F: D0 34           BNE     $F195               ; {}
 F161: A6 84           LDX     <$84                ; {ram.0084}
 F163: AD F8 03        LDA     $03F8               ; {ram.03F8}
-F166: F0 2D           BEQ     $F195               ; {hard.MMC1_3+1195}
+F166: F0 2D           BEQ     $F195               ; {}
 F168: 20 13 70        JSR     $7013               ; {ram.7013}
 F16B: B9 C3 6D        LDA     $6DC3,Y             ; 
 F16E: 29 0C           AND     #$0C                ; 
-F170: D0 02           BNE     $F174               ; {hard.MMC1_3+1174}
+F170: D0 02           BNE     $F174               ; {}
 F172: A6 70           LDX     <$70                ; {ram.0070}
 F174: 86 00           STX     <$00                ; {ram.GP_00}
 F176: A5 00           LDA     <$00                ; {ram.GP_00}
-F178: D9 DF F0        CMP     $F0DF,Y             ; {hard.MMC1_3+10DF}
-F17B: D0 18           BNE     $F195               ; {hard.MMC1_3+1195}
+F178: D9 DF F0        CMP     $F0DF,Y             ; {}
+F17B: D0 18           BNE     $F195               ; {}
 F17D: B9 C3 6D        LDA     $6DC3,Y             ; 
 F180: 85 98           STA     <$98                ; {ram.0098}
 F182: E6 12           INC     <$12                ; {ram.0012}
@@ -2001,7 +2001,7 @@ F192: 8D F0 04        STA     $04F0               ; {ram.04F0}
 F195: A2 00           LDX     #$00                ; 
 F197: 60              RTS                         ; 
 F198: 20 B8 6F        JSR     $6FB8               ; {ram.6FB8}
-F19B: F0 85           BEQ     $F122               ; {hard.MMC1_3+1122}
+F19B: F0 85           BEQ     $F122               ; {}
 F19D: 95 98           STA     $98,X               ; {ram.0098}
 F19F: 60              RTS                         ; 
 F1A0: A5 0E           LDA     <$0E                ; {ram.000E}
@@ -2015,11 +2015,11 @@ F1AE: F1 A0           SBC     ($A0),Y             ; {ram.00A0}
 F1B0: 00              BRK                         ; 
 F1B1: B5 18           LDA     $18,X               ; {ram.0018}
 F1B3: 0A              ASL     A                   ; 
-F1B4: B0 01           BCS     $F1B7               ; {hard.MMC1_3+11B7}
+F1B4: B0 01           BCS     $F1B7               ; {}
 F1B6: C8              INY                         ; 
 F1B7: B5 98           LDA     $98,X               ; {ram.0098}
 F1B9: 29 0C           AND     #$0C                ; 
-F1BB: F0 02           BEQ     $F1BF               ; {hard.MMC1_3+11BF}
+F1BB: F0 02           BEQ     $F1BF               ; {}
 F1BD: C8              INY                         ; 
 F1BE: C8              INY                         ; 
 F1BF: B9 C3 6D        LDA     $6DC3,Y             ; 
@@ -2027,7 +2027,7 @@ F1C2: 60              RTS                         ;
 F1C3: A5 0F           LDA     <$0F                ; {ram.000F}
 F1C5: 48              PHA                         ; 
 F1C6: 29 0A           AND     #$0A                ; 
-F1C8: F0 03           BEQ     $F1CD               ; {hard.MMC1_3+11CD}
+F1C8: F0 03           BEQ     $F1CD               ; {}
 F1CA: 68              PLA                         ; 
 F1CB: 4A              LSR     A                   ; 
 F1CC: 60              RTS                         ; 
@@ -2043,141 +2043,141 @@ F1DA: A9 00           LDA     #$00                ;
 F1DC: 85 0E           STA     <$0E                ; {ram.000E}
 F1DE: 60              RTS                         ; 
 F1DF: BD 94 03        LDA     $0394,X             ; {ram.0394}
-F1E2: D0 18           BNE     $F1FC               ; {hard.MMC1_3+11FC}
+F1E2: D0 18           BNE     $F1FC               ; {}
 F1E4: 85 0E           STA     <$0E                ; {ram.000E}
-F1E6: 20 A0 F1        JSR     $F1A0               ; {hard.MMC1_3+11A0}
+F1E6: 20 A0 F1        JSR     $F1A0               ; {}
 F1E9: 85 0F           STA     <$0F                ; {ram.000F}
-F1EB: F0 0F           BEQ     $F1FC               ; {hard.MMC1_3+11FC}
-F1ED: 20 FA ED        JSR     $EDFA               ; {hard.MMC1_2+2DFA}
+F1EB: F0 0F           BEQ     $F1FC               ; {}
+F1ED: 20 FA ED        JSR     $EDFA               ; {}
 F1F0: CD 4A 03        CMP     $034A               ; {ram.034A}
-F1F3: B0 F1           BCS     $F1E6               ; {hard.MMC1_3+11E6}
+F1F3: B0 F1           BCS     $F1E6               ; {}
 F1F5: 20 B8 6F        JSR     $6FB8               ; {ram.6FB8}
-F1F8: F0 EC           BEQ     $F1E6               ; {hard.MMC1_3+11E6}
+F1F8: F0 EC           BEQ     $F1E6               ; {}
 F1FA: 95 98           STA     $98,X               ; {ram.0098}
 F1FC: 60              RTS                         ; 
 
 F1FD: 00 00 F0 10 FB 13 03 03 02 06 08 0A 80 54 60 60 17 18 19 27 4F 5F
 
-F213: 20 3C F2        JSR     $F23C               ; {hard.MMC1_3+123C}
+F213: 20 3C F2        JSR     $F23C               ; {}
 F216: A9 04           LDA     #$04                ; 
 F218: 4C AC FF        JMP     $FFAC               ; {code.MMC_Bank}
-F21B: 20 31 F2        JSR     $F231               ; {hard.MMC1_3+1231} 4
+F21B: 20 31 F2        JSR     $F231               ; {} 4
 F21E: A9 01           LDA     #$01                ; 
 F220: 4C AC FF        JMP     $FFAC               ; {code.MMC_Bank}
-F223: 20 3C F2        JSR     $F23C               ; {hard.MMC1_3+123C}
-F226: 4C 1E F2        JMP     $F21E               ; {hard.MMC1_3+121E}
-F229: 20 31 F2        JSR     $F231               ; {hard.MMC1_3+1231}
+F223: 20 3C F2        JSR     $F23C               ; {}
+F226: 4C 1E F2        JMP     $F21E               ; {}
+F229: 20 31 F2        JSR     $F231               ; {}
 F22C: A9 04           LDA     #$04                ; 
 F22E: 4C AC FF        JMP     $FFAC               ; {code.MMC_Bank}
 F231: A9 06           LDA     #$06                ; 
 F233: 8D D0 03        STA     $03D0               ; {ram.03D0}
-F236: D0 04           BNE     $F23C               ; {hard.MMC1_3+123C}
+F236: D0 04           BNE     $F23C               ; {}
 F238: A5 10           LDA     <$10                ; {ram.0010}
-F23A: D0 C0           BNE     $F1FC               ; {hard.MMC1_3+11FC}
+F23A: D0 C0           BNE     $F1FC               ; {}
 F23C: AD 22 05        LDA     $0522               ; {ram.0522}
-F23F: D0 BB           BNE     $F1FC               ; {hard.MMC1_3+11FC}
+F23F: D0 BB           BNE     $F1FC               ; {}
 F241: AA              TAX                         ; 
 F242: A5 12           LDA     <$12                ; {ram.0012}
 F244: C9 06           CMP     #$06                ; 
-F246: F0 0D           BEQ     $F255               ; {hard.MMC1_3+1255}
+F246: F0 0D           BEQ     $F255               ; {}
 F248: C9 05           CMP     #$05                ; 
-F24A: 90 09           BCC     $F255               ; {hard.MMC1_3+1255}
+F24A: 90 09           BCC     $F255               ; {}
 F24C: AD 94 03        LDA     $0394               ; {ram.0394}
-F24F: F0 14           BEQ     $F265               ; {hard.MMC1_3+1265}
+F24F: F0 14           BEQ     $F265               ; {}
 F251: 29 07           AND     #$07                ; 
-F253: F0 03           BEQ     $F258               ; {hard.MMC1_3+1258}
-F255: 4C E3 F2        JMP     $F2E3               ; {hard.MMC1_3+12E3}
+F253: F0 03           BEQ     $F258               ; {}
+F255: 4C E3 F2        JMP     $F2E3               ; {}
 F258: A9 00           LDA     #$00                ; 
 F25A: 8D 94 03        STA     $0394               ; {ram.0394}
 F25D: A4 12           LDY     <$12                ; {ram.0012}
 F25F: C0 05           CPY     #$05                ; 
-F261: D0 F2           BNE     $F255               ; {hard.MMC1_3+1255}
+F261: D0 F2           BNE     $F255               ; {}
 F263: 85 5A           STA     <$5A                ; {ram.005A}
 F265: A5 12           LDA     <$12                ; {ram.0012}
 F267: C9 05           CMP     #$05                ; 
-F269: D0 EA           BNE     $F255               ; {hard.MMC1_3+1255}
+F269: D0 EA           BNE     $F255               ; {}
 F26B: A5 10           LDA     <$10                ; {ram.0010}
-F26D: D0 0E           BNE     $F27D               ; {hard.MMC1_3+127D}
+F26D: D0 0E           BNE     $F27D               ; {}
 F26F: A5 EB           LDA     <$EB                ; {ram.00EB}
 F271: A0 05           LDY     #$05                ; 
-F273: D9 0D F2        CMP     $F20D,Y             ; {hard.MMC1_3+120D}
-F276: F0 05           BEQ     $F27D               ; {hard.MMC1_3+127D}
+F273: D9 0D F2        CMP     $F20D,Y             ; {}
+F276: F0 05           BEQ     $F27D               ; {}
 F278: 88              DEY                         ; 
-F279: 10 F8           BPL     $F273               ; {hard.MMC1_3+1273}
-F27B: 30 66           BMI     $F2E3               ; {hard.MMC1_3+12E3}
+F279: 10 F8           BPL     $F273               ; {}
+F27B: 30 66           BMI     $F2E3               ; {}
 F27D: A5 53           LDA     <$53                ; {ram.0053}
-F27F: D0 62           BNE     $F2E3               ; {hard.MMC1_3+12E3}
+F27F: D0 62           BNE     $F2E3               ; {}
 F281: AD 63 06        LDA     $0663               ; {ram.0663}
-F284: F0 5D           BEQ     $F2E3               ; {hard.MMC1_3+12E3}
+F284: F0 5D           BEQ     $F2E3               ; {}
 F286: A5 AC           LDA     <$AC                ; {ram.00AC}
 F288: 29 C0           AND     #$C0                ; 
 F28A: C9 40           CMP     #$40                ; 
-F28C: F0 55           BEQ     $F2E3               ; {hard.MMC1_3+12E3}
+F28C: F0 55           BEQ     $F2E3               ; {}
 F28E: A5 64           LDA     <$64                ; {ram.0064}
-F290: D0 51           BNE     $F2E3               ; {hard.MMC1_3+12E3}
+F290: D0 51           BNE     $F2E3               ; {}
 F292: A2 00           LDX     #$00                ; 
 F294: A5 98           LDA     <$98                ; {ram.0098}
 F296: 85 0F           STA     <$0F                ; {ram.000F}
-F298: 20 FA ED        JSR     $EDFA               ; {hard.MMC1_2+2DFA}
+F298: 20 FA ED        JSR     $EDFA               ; {}
 F29B: A4 10           LDY     <$10                ; {ram.0010}
-F29D: F0 06           BEQ     $F2A5               ; {hard.MMC1_3+12A5}
+F29D: F0 06           BEQ     $F2A5               ; {}
 F29F: C9 F4           CMP     #$F4                ; 
-F2A1: F0 0A           BEQ     $F2AD               ; {hard.MMC1_3+12AD}
-F2A3: D0 3E           BNE     $F2E3               ; {hard.MMC1_3+12E3}
+F2A1: F0 0A           BEQ     $F2AD               ; {}
+F2A3: D0 3E           BNE     $F2E3               ; {}
 F2A5: C9 8D           CMP     #$8D                ; 
-F2A7: 90 3A           BCC     $F2E3               ; {hard.MMC1_3+12E3}
+F2A7: 90 3A           BCC     $F2E3               ; {}
 F2A9: C9 99           CMP     #$99                ; 
-F2AB: B0 36           BCS     $F2E3               ; {hard.MMC1_3+12E3}
-F2AD: 20 BB FE        JSR     $FEBB               ; {hard.MMC1_3+1EBB}
-F2B0: F0 31           BEQ     $F2E3               ; {hard.MMC1_3+12E3}
+F2AB: B0 36           BCS     $F2E3               ; {}
+F2AD: 20 BB FE        JSR     $FEBB               ; {}
+F2B0: F0 31           BEQ     $F2E3               ; {}
 F2B2: AD F8 03        LDA     $03F8               ; {ram.03F8}
-F2B5: F0 2C           BEQ     $F2E3               ; {hard.MMC1_3+12E3}
+F2B5: F0 2C           BEQ     $F2E3               ; {}
 F2B7: A6 59           LDX     <$59                ; {ram.0059}
 F2B9: C5 98           CMP     <$98                ; {ram.0098}
-F2BB: D0 26           BNE     $F2E3               ; {hard.MMC1_3+12E3}
+F2BB: D0 26           BNE     $F2E3               ; {}
 F2BD: 86 64           STX     <$64                ; {ram.0064}
 F2BF: 95 98           STA     $98,X               ; {ram.0098}
 F2C1: 20 13 70        JSR     $7013               ; {ram.7013}
 F2C4: A5 70           LDA     <$70                ; {ram.0070}
 F2C6: 18              CLC                         ; 
-F2C7: 79 FD F1        ADC     $F1FD,Y             ; {hard.MMC1_3+11FD}
+F2C7: 79 FD F1        ADC     $F1FD,Y             ; {}
 F2CA: 95 70           STA     $70,X               ; {ram.0070}
 F2CC: A5 84           LDA     <$84                ; {ram.0084}
 F2CE: 18              CLC                         ; 
-F2CF: 79 01 F2        ADC     $F201,Y             ; {hard.MMC1_3+1201}
+F2CF: 79 01 F2        ADC     $F201,Y             ; {}
 F2D2: 95 84           STA     $84,X               ; {ram.0084}
 F2D4: A9 5F           LDA     #$5F                ; 
 F2D6: 9D 4F 03        STA     $034F,X             ; {ram.034F}
-F2D9: 20 E4 EE        JSR     $EEE4               ; {hard.MMC1_2+2EE4}
+F2D9: 20 E4 EE        JSR     $EEE4               ; {}
 F2DC: 9D F0 04        STA     $04F0,X             ; {ram.04F0}
 F2DF: A9 01           LDA     #$01                ; 
 F2E1: 95 AC           STA     $AC,X               ; {ram.00AC}
 F2E3: A2 00           LDX     #$00                ; 
 F2E5: A5 12           LDA     <$12                ; {ram.0012}
 F2E7: C9 05           CMP     #$05                ; 
-F2E9: D0 12           BNE     $F2FD               ; {hard.MMC1_3+12FD}
+F2E9: D0 12           BNE     $F2FD               ; {}
 F2EB: AD 9E 04        LDA     $049E               ; {ram.049E}
 F2EE: 48              PHA                         ; 
 F2EF: A9 05           LDA     #$05                ; 
 F2F1: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-F2F4: 20 F4 B3        JSR     $B3F4               ; {hard.MMC1_1+13F4} 5
+F2F4: 20 F4 B3        JSR     $B3F4               ; 5
 F2F7: A2 00           LDX     #$00                ; 
 F2F9: 68              PLA                         ; 
 F2FA: 8D 9E 04        STA     $049E               ; {ram.049E}
-F2FD: 20 3C FA        JSR     $FA3C               ; {hard.MMC1_3+1A3C}
+F2FD: 20 3C FA        JSR     $FA3C               ; {}
 F300: A5 12           LDA     <$12                ; {ram.0012}
 F302: C9 09           CMP     #$09                ; 
-F304: F0 04           BEQ     $F30A               ; {hard.MMC1_3+130A}
+F304: F0 04           BEQ     $F30A               ; {}
 F306: A5 10           LDA     <$10                ; {ram.0010}
-F308: D0 04           BNE     $F30E               ; {hard.MMC1_3+130E}
+F308: D0 04           BNE     $F30E               ; {}
 F30A: E6 01           INC     <$01                ; {ram.GP_01}
 F30C: E6 01           INC     <$01                ; {ram.GP_01}
 F30E: A5 AC           LDA     <$AC                ; {ram.00AC}
 F310: 29 30           AND     #$30                ; 
 F312: C9 10           CMP     #$10                ; 
-F314: F0 04           BEQ     $F31A               ; {hard.MMC1_3+131A}
+F314: F0 04           BEQ     $F31A               ; {}
 F316: C9 20           CMP     #$20                ; 
-F318: D0 05           BNE     $F31F               ; {hard.MMC1_3+131F}
+F318: D0 05           BNE     $F31F               ; {}
 F31A: 98              TYA                         ; 
 F31B: 18              CLC                         ; 
 F31C: 69 04           ADC     #$04                ; 
@@ -2186,35 +2186,35 @@ F31F: 98              TYA                         ;
 F320: A0 00           LDY     #$00                ; 
 F322: 20 E7 77        JSR     $77E7               ; {ram.77E7}
 F325: AD 76 06        LDA     $0676               ; {ram.0676}
-F328: D0 16           BNE     $F340               ; {hard.MMC1_3+1340}
+F328: D0 16           BNE     $F340               ; {}
 F32A: A5 98           LDA     <$98                ; {ram.0098}
 F32C: C9 04           CMP     #$04                ; 
-F32E: D0 3A           BNE     $F36A               ; {hard.MMC1_3+136A}
+F32E: D0 3A           BNE     $F36A               ; {}
 F330: A2 01           LDX     #$01                ; 
 F332: BD 48 02        LDA     $0248,X             ; {ram.0248}
 F335: C9 0B           CMP     #$0B                ; 
-F337: B0 31           BCS     $F36A               ; {hard.MMC1_3+136A}
+F337: B0 31           BCS     $F36A               ; {}
 F339: 48              PHA                         ; 
 F33A: 18              CLC                         ; 
 F33B: 69 50           ADC     #$50                ; 
-F33D: 4C 5A F3        JMP     $F35A               ; {hard.MMC1_3+135A}
+F33D: 4C 5A F3        JMP     $F35A               ; {}
 F340: A2 01           LDX     #$01                ; 
 F342: A5 98           LDA     <$98                ; {ram.0098}
 F344: 4A              LSR     A                   ; 
-F345: 90 02           BCC     $F349               ; {hard.MMC1_3+1349}
+F345: 90 02           BCC     $F349               ; {}
 F347: A2 05           LDX     #$05                ; 
 F349: A0 04           LDY     #$04                ; 
 F34B: BD 48 02        LDA     $0248,X             ; {ram.0248}
 F34E: 48              PHA                         ; 
 F34F: 88              DEY                         ; 
-F350: 30 0B           BMI     $F35D               ; {hard.MMC1_3+135D}
-F352: D9 05 F2        CMP     $F205,Y             ; {hard.MMC1_3+1205}
-F355: D0 F8           BNE     $F34F               ; {hard.MMC1_3+134F}
-F357: B9 09 F2        LDA     $F209,Y             ; {hard.MMC1_3+1209}
+F350: 30 0B           BMI     $F35D               ; {}
+F352: D9 05 F2        CMP     $F205,Y             ; {}
+F355: D0 F8           BNE     $F34F               ; {}
+F357: B9 09 F2        LDA     $F209,Y             ; {}
 F35A: 9D 48 02        STA     $0248,X             ; {ram.0248}
 F35D: 68              PLA                         ; 
 F35E: C9 0A           CMP     #$0A                ; 
-F360: D0 08           BNE     $F36A               ; {hard.MMC1_3+136A}
+F360: D0 08           BNE     $F36A               ; {}
 F362: BD 49 02        LDA     $0249,X             ; {ram.0249}
 F365: 29 0F           AND     #$0F                ; 
 F367: 9D 49 02        STA     $0249,X             ; {ram.0249}
@@ -2223,25 +2223,25 @@ F36B: 40              RTI                         ;
 F36C: C0 80           CPY     #$80                ; 
 F36E: 00              BRK                         ; 
 F36F: B5 AC           LDA     $AC,X               ; {ram.00AC}
-F371: F0 F7           BEQ     $F36A               ; {hard.MMC1_3+136A}
+F371: F0 F7           BEQ     $F36A               ; {}
 F373: 4A              LSR     A                   ; 
-F374: 90 03           BCC     $F379               ; {hard.MMC1_3+1379}
-F376: 4C 1D F4        JMP     $F41D               ; {hard.MMC1_3+141D}
+F374: 90 03           BCC     $F379               ; {}
+F376: 4C 1D F4        JMP     $F41D               ; {}
 F379: BD 94 03        LDA     $0394,X             ; {ram.0394}
-F37C: D0 00           BNE     $F37E               ; {hard.MMC1_3+137E}
+F37C: D0 00           BNE     $F37E               ; {}
 F37E: B5 98           LDA     $98,X               ; {ram.0098}
 F380: 20 27 70        JSR     $7027               ; {ram.7027}
 F383: A5 0F           LDA     <$0F                ; {ram.000F}
-F385: F0 4D           BEQ     $F3D4               ; {hard.MMC1_3+13D4}
+F385: F0 4D           BEQ     $F3D4               ; {}
 F387: BD 94 03        LDA     $0394,X             ; {ram.0394}
 F38A: 29 07           AND     #$07                ; 
-F38C: D0 03           BNE     $F391               ; {hard.MMC1_3+1391}
+F38C: D0 03           BNE     $F391               ; {}
 F38E: 9D 94 03        STA     $0394,X             ; {ram.0394}
-F391: 20 93 FA        JSR     $FA93               ; {hard.MMC1_3+1A93}
+F391: 20 93 FA        JSR     $FA93               ; {}
 F394: B5 98           LDA     $98,X               ; {ram.0098}
 F396: 48              PHA                         ; 
 F397: 29 03           AND     #$03                ; 
-F399: F0 07           BEQ     $F3A2               ; {hard.MMC1_3+13A2}
+F399: F0 07           BEQ     $F3A2               ; {}
 F39B: A5 01           LDA     <$01                ; {ram.GP_01}
 F39D: 18              CLC                         ; 
 F39E: 69 03           ADC     #$03                ; 
@@ -2250,30 +2250,30 @@ F3A2: 68              PLA                         ;
 F3A3: 20 13 70        JSR     $7013               ; {ram.7013}
 F3A6: A5 15           LDA     <$15                ; {ram.0015}
 F3A8: 29 03           AND     #$03                ; 
-F3AA: 19 0D F5        ORA     $F50D,Y             ; {hard.MMC1_3+150D}
+F3AA: 19 0D F5        ORA     $F50D,Y             ; {}
 F3AD: 20 88 79        JSR     $7988               ; {ram.7988}
-F3B0: B9 09 F5        LDA     $F509,Y             ; {hard.MMC1_3+1509}
+F3B0: B9 09 F5        LDA     $F509,Y             ; {}
 F3B3: 85 0C           STA     <$0C                ; {ram.000C}
 F3B5: C0 02           CPY     #$02                ; 
-F3B7: D0 02           BNE     $F3BB               ; {hard.MMC1_3+13BB}
+F3B7: D0 02           BNE     $F3BB               ; {}
 F3B9: E6 0F           INC     <$0F                ; {ram.000F}
 F3BB: A0 22           LDY     #$22                ; 
 F3BD: E0 0D           CPX     #$0D                ; 
-F3BF: B0 09           BCS     $F3CA               ; {hard.MMC1_3+13CA}
+F3BF: B0 09           BCS     $F3CA               ; {}
 F3C1: BD 4F 03        LDA     $034F,X             ; {ram.034F}
 F3C4: C9 57           CMP     #$57                ; 
-F3C6: F0 09           BEQ     $F3D1               ; {hard.MMC1_3+13D1}
-F3C8: D0 05           BNE     $F3CF               ; {hard.MMC1_3+13CF}
+F3C6: F0 09           BEQ     $F3D1               ; {}
+F3C8: D0 05           BNE     $F3CF               ; {}
 F3CA: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F3CC: 0A              ASL     A                   ; 
-F3CD: 90 02           BCC     $F3D1               ; {hard.MMC1_3+13D1}
+F3CD: 90 02           BCC     $F3D1               ; {}
 F3CF: A0 23           LDY     #$23                ; 
 F3D1: 4C 15 79        JMP     $7915               ; {ram.7915}
 F3D4: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F3D6: 0A              ASL     A                   ; 
-F3D7: 90 3D           BCC     $F416               ; {hard.MMC1_3+1416}
+F3D7: 90 3D           BCC     $F416               ; {}
 F3D9: AD 61 06        LDA     $0661               ; {ram.0661}
-F3DC: F0 35           BEQ     $F413               ; {hard.MMC1_3+1413}
+F3DC: F0 35           BEQ     $F413               ; {}
 F3DE: A5 AC           LDA     <$AC                ; {ram.00AC}
 F3E0: 48              PHA                         ; 
 F3E1: AD 13 05        LDA     $0513               ; {ram.0513}
@@ -2287,7 +2287,7 @@ F3F1: 68              PLA                         ;
 F3F2: 85 AC           STA     <$AC                ; {ram.00AC}
 F3F4: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F3F6: C9 21           CMP     #$21                ; 
-F3F8: D0 17           BNE     $F411               ; {hard.MMC1_3+1411}
+F3F8: D0 17           BNE     $F411               ; {}
 F3FA: F6 AC           INC     $AC,X               ; {ram.00AC}
 F3FC: A0 0E           LDY     #$0E                ; 
 F3FE: B9 70 00        LDA     $0070,Y             ; {ram.0070}
@@ -2299,7 +2299,7 @@ F40B: 95 98           STA     $98,X               ; {ram.0098}
 F40D: A9 4F           LDA     #$4F                ; 
 F40F: 95 28           STA     $28,X               ; {ram.0028}
 F411: A2 0E           LDX     #$0E                ; 
-F413: 4C 55 F8        JMP     $F855               ; {hard.MMC1_3+1855}
+F413: 4C 55 F8        JMP     $F855               ; {}
 F416: F6 AC           INC     $AC,X               ; {ram.00AC}
 F418: A9 FE           LDA     #$FE                ; 
 F41A: 95 98           STA     $98,X               ; {ram.0098}
@@ -2318,34 +2318,34 @@ F42E: A5 03           LDA     <$03                ; {ram.GP_03}
 F430: 48              PHA                         ; 
 F431: A5 15           LDA     <$15                ; {ram.0015}
 F433: 29 03           AND     #$03                ; 
-F435: 19 6B F3        ORA     $F36B,Y             ; {hard.MMC1_3+136B}
+F435: 19 6B F3        ORA     $F36B,Y             ; {}
 F438: 20 88 79        JSR     $7988               ; {ram.7988}
 F43B: B5 70           LDA     $70,X               ; {ram.0070}
 F43D: 18              CLC                         ; 
 F43E: 65 02           ADC     <$02                ; {ram.GP_02}
 F440: 85 00           STA     <$00                ; {ram.GP_00}
 F442: D5 70           CMP     $70,X               ; {ram.0070}
-F444: 90 0A           BCC     $F450               ; {hard.MMC1_3+1450}
+F444: 90 0A           BCC     $F450               ; {}
 F446: C9 FC           CMP     #$FC                ; 
-F448: B0 2B           BCS     $F475               ; {hard.MMC1_3+1475}
+F448: B0 2B           BCS     $F475               ; {}
 F44A: 38              SEC                         ; 
 F44B: F5 70           SBC     $70,X               ; {ram.0070}
-F44D: 4C 55 F4        JMP     $F455               ; {hard.MMC1_3+1455}
+F44D: 4C 55 F4        JMP     $F455               ; {}
 F450: B5 70           LDA     $70,X               ; {ram.0070}
 F452: 38              SEC                         ; 
 F453: E5 00           SBC     <$00                ; {ram.GP_00}
 F455: C9 20           CMP     #$20                ; 
-F457: B0 1C           BCS     $F475               ; {hard.MMC1_3+1475}
+F457: B0 1C           BCS     $F475               ; {}
 F459: B5 84           LDA     $84,X               ; {ram.0084}
 F45B: 18              CLC                         ; 
 F45C: 65 03           ADC     <$03                ; {ram.GP_03}
 F45E: 85 01           STA     <$01                ; {ram.GP_01}
 F460: A4 10           LDY     <$10                ; {ram.0010}
-F462: F0 08           BEQ     $F46C               ; {hard.MMC1_3+146C}
+F462: F0 08           BEQ     $F46C               ; {}
 F464: C9 3E           CMP     #$3E                ; 
-F466: 90 0D           BCC     $F475               ; {hard.MMC1_3+1475}
+F466: 90 0D           BCC     $F475               ; {}
 F468: C9 E8           CMP     #$E8                ; 
-F46A: B0 09           BCS     $F475               ; {hard.MMC1_3+1475}
+F46A: B0 09           BCS     $F475               ; {}
 F46C: A9 02           LDA     #$02                ; 
 F46E: 85 0C           STA     <$0C                ; {ram.000C}
 F470: A0 23           LDY     #$23                ; 
@@ -2358,7 +2358,7 @@ F47B: 68              PLA                         ;
 F47C: 48              PHA                         ; 
 F47D: A8              TAY                         ; 
 F47E: C0 01           CPY     #$01                ; 
-F480: D0 02           BNE     $F484               ; {hard.MMC1_3+1484}
+F480: D0 02           BNE     $F484               ; {}
 F482: A0 03           LDY     #$03                ; 
 F484: B9 00 00        LDA     $0000,Y             ; {ram.GP_00}
 F487: 49 FF           EOR     #$FF                ; 
@@ -2368,46 +2368,46 @@ F48C: 99 00 00        STA     $0000,Y             ; {ram.GP_00}
 F48F: 68              PLA                         ; 
 F490: A8              TAY                         ; 
 F491: 88              DEY                         ; 
-F492: 10 95           BPL     $F429               ; {hard.MMC1_3+1429}
+F492: 10 95           BPL     $F429               ; {}
 F494: D6 98           DEC     $98,X               ; {ram.0098}
 F496: B5 98           LDA     $98,X               ; {ram.0098}
 F498: C9 E8           CMP     #$E8                ; 
-F49A: D0 03           BNE     $F49F               ; {hard.MMC1_3+149F}
-F49C: 4C 11 F4        JMP     $F411               ; {hard.MMC1_3+1411}
+F49A: D0 03           BNE     $F49F               ; {}
+F49C: 4C 11 F4        JMP     $F411               ; {}
 F49F: 60              RTS                         ; 
 F4A0: B5 AC           LDA     $AC,X               ; {ram.00AC}
-F4A2: F0 FB           BEQ     $F49F               ; {hard.MMC1_3+149F}
+F4A2: F0 FB           BEQ     $F49F               ; {}
 F4A4: 0A              ASL     A                   ; 
-F4A5: 90 72           BCC     $F519               ; {hard.MMC1_3+1519}
+F4A5: 90 72           BCC     $F519               ; {}
 F4A7: B5 28           LDA     $28,X               ; {ram.0028}
-F4A9: D0 0E           BNE     $F4B9               ; {hard.MMC1_3+14B9}
+F4A9: D0 0E           BNE     $F4B9               ; {}
 F4AB: F6 AC           INC     $AC,X               ; {ram.00AC}
 F4AD: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F4AF: 29 0F           AND     #$0F                ; 
 F4B1: C9 03           CMP     #$03                ; 
-F4B3: F0 2D           BEQ     $F4E2               ; {hard.MMC1_3+14E2}
+F4B3: F0 2D           BEQ     $F4E2               ; {}
 F4B5: A9 FF           LDA     #$FF                ; 
 F4B7: 95 28           STA     $28,X               ; {ram.0028}
 F4B9: AD 5F 03        LDA     $035F               ; {ram.035F}
 F4BC: C9 03           CMP     #$03                ; 
-F4BE: 90 18           BCC     $F4D8               ; {hard.MMC1_3+14D8}
+F4BE: 90 18           BCC     $F4D8               ; {}
 F4C0: C9 0B           CMP     #$0B                ; 
-F4C2: 90 0C           BCC     $F4D0               ; {hard.MMC1_3+14D0}
+F4C2: 90 0C           BCC     $F4D0               ; {}
 F4C4: C9 12           CMP     #$12                ; 
-F4C6: F0 08           BEQ     $F4D0               ; {hard.MMC1_3+14D0}
+F4C6: F0 08           BEQ     $F4D0               ; {}
 F4C8: C9 1B           CMP     #$1B                ; 
-F4CA: F0 04           BEQ     $F4D0               ; {hard.MMC1_3+14D0}
+F4CA: F0 04           BEQ     $F4D0               ; {}
 F4CC: C9 1C           CMP     #$1C                ; 
-F4CE: D0 08           BNE     $F4D8               ; {hard.MMC1_3+14D8}
+F4CE: D0 08           BNE     $F4D8               ; {}
 F4D0: B5 70           LDA     $70,X               ; {ram.0070}
 F4D2: 85 61           STA     <$61                ; {ram.0061}
 F4D4: B5 84           LDA     $84,X               ; {ram.0084}
 F4D6: 85 62           STA     <$62                ; {ram.0062}
-F4D8: 20 93 FA        JSR     $FA93               ; {hard.MMC1_3+1A93}
+F4D8: 20 93 FA        JSR     $FA93               ; {}
 F4DB: A9 02           LDA     #$02                ; 
 F4DD: A0 06           LDY     #$06                ; 
 F4DF: 4C 0C 79        JMP     $790C               ; {ram.790C}
-F4E2: 4C 55 F8        JMP     $F855               ; {hard.MMC1_3+1855}
+F4E2: 4C 55 F8        JMP     $F855               ; {}
 
 F4E5: 00 01 02 01 00 01 02 01 03 00 00 00
 F4F1: 40 40 C0 80 80 01 00 20 36 4C 60 68
@@ -2416,71 +2416,71 @@ F509: 00 00 01 01 00 80 00 00 FC FC 00 00
 F515: 00 00 03 03
 
 F519: B5 AC           LDA     $AC,X               ; {ram.00AC}
-F51B: F0 82           BEQ     $F49F               ; {hard.MMC1_3+149F}
+F51B: F0 82           BEQ     $F49F               ; {}
 F51D: A9 00           LDA     #$00                ; 
 F51F: 85 00           STA     <$00                ; {ram.GP_00}
 F521: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F523: 29 F0           AND     #$F0                ; 
 F525: C9 10           CMP     #$10                ; 
-F527: F0 03           BEQ     $F52C               ; {hard.MMC1_3+152C}
-F529: 4C B6 F5        JMP     $F5B6               ; {hard.MMC1_3+15B6}
+F527: F0 03           BEQ     $F52C               ; {}
+F529: 4C B6 F5        JMP     $F5B6               ; {}
 F52C: A9 00           LDA     #$00                ; 
 F52E: 85 0E           STA     <$0E                ; {ram.000E}
 F530: B5 98           LDA     $98,X               ; {ram.0098}
 F532: 29 03           AND     #$03                ; 
-F534: F0 05           BEQ     $F53B               ; {hard.MMC1_3+153B}
+F534: F0 05           BEQ     $F53B               ; {}
 F536: 20 27 70        JSR     $7027               ; {ram.7027}
 F539: E6 0E           INC     <$0E                ; {ram.000E}
 F53B: A5 0E           LDA     <$0E                ; {ram.000E}
 F53D: 0A              ASL     A                   ; 
-F53E: B0 35           BCS     $F575               ; {hard.MMC1_3+1575}
+F53E: B0 35           BCS     $F575               ; {}
 F540: B5 98           LDA     $98,X               ; {ram.0098}
 F542: 29 0C           AND     #$0C                ; 
-F544: F0 03           BEQ     $F549               ; {hard.MMC1_3+1549}
+F544: F0 03           BEQ     $F549               ; {}
 F546: 20 27 70        JSR     $7027               ; {ram.7027}
 F549: A5 0E           LDA     <$0E                ; {ram.000E}
 F54B: 0A              ASL     A                   ; 
-F54C: B0 27           BCS     $F575               ; {hard.MMC1_3+1575}
+F54C: B0 27           BCS     $F575               ; {}
 F54E: E0 0D           CPX     #$0D                ; 
-F550: B0 07           BCS     $F559               ; {hard.MMC1_3+1559}
+F550: B0 07           BCS     $F559               ; {}
 F552: BD 4F 03        LDA     $034F,X             ; {ram.034F}
 F555: C9 5B           CMP     #$5B                ; 
-F557: F0 22           BEQ     $F57B               ; {hard.MMC1_3+157B}
+F557: F0 22           BEQ     $F57B               ; {}
 F559: E0 12           CPX     #$12                ; 
-F55B: F0 1E           BEQ     $F57B               ; {hard.MMC1_3+157B}
+F55B: F0 1E           BEQ     $F57B               ; {}
 F55D: BD 94 03        LDA     $0394,X             ; {ram.0394}
-F560: 10 05           BPL     $F567               ; {hard.MMC1_3+1567}
+F560: 10 05           BPL     $F567               ; {}
 F562: 49 FF           EOR     #$FF                ; 
 F564: 18              CLC                         ; 
 F565: 69 01           ADC     #$01                ; 
 F567: DD 80 03        CMP     $0380,X             ; 
-F56A: 90 0C           BCC     $F578               ; {hard.MMC1_3+1578}
+F56A: 90 0C           BCC     $F578               ; {}
 F56C: A9 10           LDA     #$10                ; 
 F56E: 9D 80 03        STA     $0380,X             ; 
 F571: A9 20           LDA     #$20                ; 
 F573: 95 AC           STA     $AC,X               ; {ram.00AC}
-F575: 4C E1 F5        JMP     $F5E1               ; {hard.MMC1_3+15E1}
-F578: 4C B8 F6        JMP     $F6B8               ; {hard.MMC1_3+16B8}
+F575: 4C E1 F5        JMP     $F5E1               ; {}
+F578: 4C B8 F6        JMP     $F6B8               ; {}
 F57B: A9 00           LDA     #$00                ; 
 F57D: 85 0F           STA     <$0F                ; {ram.000F}
 F57F: B5 98           LDA     $98,X               ; {ram.0098}
 F581: C9 02           CMP     #$02                ; 
-F583: D0 02           BNE     $F587               ; {hard.MMC1_3+1587}
+F583: D0 02           BNE     $F587               ; {}
 F585: E6 0F           INC     <$0F                ; {ram.000F}
 F587: 20 13 70        JSR     $7013               ; {ram.7013}
-F58A: B9 09 F5        LDA     $F509,Y             ; {hard.MMC1_3+1509}
+F58A: B9 09 F5        LDA     $F509,Y             ; {}
 F58D: 85 0C           STA     <$0C                ; {ram.000C}
-F58F: B9 0D F5        LDA     $F50D,Y             ; {hard.MMC1_3+150D}
+F58F: B9 0D F5        LDA     $F50D,Y             ; {}
 F592: 85 04           STA     <$04                ; {ram.0004}
 F594: E0 0D           CPX     #$0D                ; 
-F596: B0 0E           BCS     $F5A6               ; {hard.MMC1_3+15A6}
+F596: B0 0E           BCS     $F5A6               ; {}
 F598: BD 4F 03        LDA     $034F,X             ; {ram.034F}
 F59B: C9 5B           CMP     #$5B                ; 
-F59D: D0 07           BNE     $F5A6               ; {hard.MMC1_3+15A6}
+F59D: D0 07           BNE     $F5A6               ; {}
 F59F: A5 04           LDA     <$04                ; {ram.0004}
 F5A1: 18              CLC                         ; 
 F5A2: 69 02           ADC     #$02                ; 
-F5A4: D0 07           BNE     $F5AD               ; {hard.MMC1_3+15AD}
+F5A4: D0 07           BNE     $F5AD               ; {}
 F5A6: 18              CLC                         ; 
 F5A7: 6D 59 06        ADC     $0659               ; {ram.0659}
 F5AA: 38              SEC                         ; 
@@ -2488,26 +2488,26 @@ F5AB: E9 01           SBC     #$01                ;
 F5AD: 85 04           STA     <$04                ; {ram.0004}
 F5AF: A5 04           LDA     <$04                ; {ram.0004}
 F5B1: 85 05           STA     <$05                ; {ram.0005}
-F5B3: 4C 14 F7        JMP     $F714               ; {hard.MMC1_3+1714}
+F5B3: 4C 14 F7        JMP     $F714               ; {}
 F5B6: C9 20           CMP     #$20                ; 
-F5B8: D0 57           BNE     $F611               ; {hard.MMC1_3+1611}
+F5B8: D0 57           BNE     $F611               ; {}
 F5BA: A9 28           LDA     #$28                ; 
 F5BC: 95 AC           STA     $AC,X               ; {ram.00AC}
 F5BE: DE D0 03        DEC     $03D0,X             ; {ram.03D0}
-F5C1: D0 2A           BNE     $F5ED               ; {hard.MMC1_3+15ED}
+F5C1: D0 2A           BNE     $F5ED               ; {}
 F5C3: A9 40           LDA     #$40                ; 
 F5C5: 95 AC           STA     $AC,X               ; {ram.00AC}
 F5C7: E0 0D           CPX     #$0D                ; 
-F5C9: B0 07           BCS     $F5D2               ; {hard.MMC1_3+15D2}
+F5C9: B0 07           BCS     $F5D2               ; {}
 F5CB: BD 4F 03        LDA     $034F,X             ; {ram.034F}
 F5CE: C9 5B           CMP     #$5B                ; 
-F5D0: F0 04           BEQ     $F5D6               ; {hard.MMC1_3+15D6}
+F5D0: F0 04           BEQ     $F5D6               ; {}
 F5D2: E0 12           CPX     #$12                ; 
-F5D4: D0 0B           BNE     $F5E1               ; {hard.MMC1_3+15E1}
-F5D6: 20 55 F8        JSR     $F855               ; {hard.MMC1_3+1855}
+F5D4: D0 0B           BNE     $F5E1               ; {}
+F5D6: 20 55 F8        JSR     $F855               ; {}
 F5D9: E0 0D           CPX     #$0D                ; 
-F5DB: B0 03           BCS     $F5E0               ; {hard.MMC1_3+15E0}
-F5DD: 20 46 83        JSR     $8346               ; {hard.MMC1_0+346}
+F5DB: B0 03           BCS     $F5E0               ; {}
+F5DD: 20 46 83        JSR     $8346               ; 
 F5E0: 60              RTS                         ; 
 F5E1: A9 03           LDA     #$03                ; 
 F5E3: 9D D0 03        STA     $03D0,X             ; {ram.03D0}
@@ -2516,13 +2516,13 @@ F5E8: 18              CLC                         ;
 F5E9: 69 10           ADC     #$10                ; 
 F5EB: 95 AC           STA     $AC,X               ; {ram.00AC}
 F5ED: E0 0D           CPX     #$0D                ; 
-F5EF: B0 07           BCS     $F5F8               ; {hard.MMC1_3+15F8}
+F5EF: B0 07           BCS     $F5F8               ; {}
 F5F1: BD 4F 03        LDA     $034F,X             ; {ram.034F}
 F5F4: C9 5B           CMP     #$5B                ; 
-F5F6: F0 07           BEQ     $F5FF               ; {hard.MMC1_3+15FF}
+F5F6: F0 07           BEQ     $F5FF               ; {}
 F5F8: E0 12           CPX     #$12                ; 
-F5FA: F0 03           BEQ     $F5FF               ; {hard.MMC1_3+15FF}
-F5FC: 4C D3 F6        JMP     $F6D3               ; {hard.MMC1_3+16D3}
+F5FA: F0 03           BEQ     $F5FF               ; {}
+F5FC: 4C D3 F6        JMP     $F6D3               ; {}
 F5FF: A9 02           LDA     #$02                ; 
 F601: 85 0C           STA     <$0C                ; {ram.000C}
 F603: A9 00           LDA     #$00                ; 
@@ -2530,9 +2530,9 @@ F605: 85 0F           STA     <$0F                ; {ram.000F}
 F607: B5 98           LDA     $98,X               ; {ram.0098}
 F609: 20 13 70        JSR     $7013               ; {ram.7013}
 F60C: A9 00           LDA     #$00                ; 
-F60E: 4C 92 F5        JMP     $F592               ; {hard.MMC1_3+1592}
+F60E: 4C 92 F5        JMP     $F592               ; {}
 F611: C9 30           CMP     #$30                ; 
-F613: D0 2C           BNE     $F641               ; {hard.MMC1_3+1641}
+F613: D0 2C           BNE     $F641               ; {}
 F615: A9 00           LDA     #$00                ; 
 F617: 9D 94 03        STA     $0394,X             ; {ram.0394}
 F61A: A9 40           LDA     #$40                ; 
@@ -2540,31 +2540,31 @@ F61C: 9D BC 03        STA     $03BC,X             ; {ram.03BC}
 F61F: B5 98           LDA     $98,X               ; {ram.0098}
 F621: 85 0F           STA     <$0F                ; {ram.000F}
 F623: 29 02           AND     #$02                ; 
-F625: F0 06           BEQ     $F62D               ; {hard.MMC1_3+162D}
+F625: F0 06           BEQ     $F62D               ; {}
 F627: B5 70           LDA     $70,X               ; {ram.0070}
 F629: C9 02           CMP     #$02                ; 
-F62B: 90 08           BCC     $F635               ; {hard.MMC1_3+1635}
-F62D: 20 8D F0        JSR     $F08D               ; {hard.MMC1_3+108D}
+F62B: 90 08           BCC     $F635               ; {}
+F62D: 20 8D F0        JSR     $F08D               ; {}
 F630: DE 80 03        DEC     $0380,X             ; 
-F633: D0 09           BNE     $F63E               ; {hard.MMC1_3+163E}
+F633: D0 09           BNE     $F63E               ; {}
 F635: A9 20           LDA     #$20                ; 
 F637: 9D 80 03        STA     $0380,X             ; 
 F63A: A9 40           LDA     #$40                ; 
 F63C: 95 AC           STA     $AC,X               ; {ram.00AC}
-F63E: 4C B8 F6        JMP     $F6B8               ; {hard.MMC1_3+16B8}
+F63E: 4C B8 F6        JMP     $F6B8               ; {}
 F641: A9 00           LDA     #$00                ; 
 F643: 9D 94 03        STA     $0394,X             ; {ram.0394}
 F646: E0 0D           CPX     #$0D                ; 
-F648: B0 03           BCS     $F64D               ; {hard.MMC1_3+164D}
+F648: B0 03           BCS     $F64D               ; {}
 F64A: BD 2C 04        LDA     $042C,X             ; {ram.!SplashMode}
 F64D: 20 4A 70        JSR     $704A               ; {ram.704A}
 F650: A5 00           LDA     <$00                ; {ram.GP_00}
 F652: C9 02           CMP     #$02                ; 
-F654: D0 3B           BNE     $F691               ; {hard.MMC1_3+1691}
+F654: D0 3B           BNE     $F691               ; {}
 F656: A9 00           LDA     #$00                ; 
 F658: 9D 80 03        STA     $0380,X             ; 
 F65B: E0 0D           CPX     #$0D                ; 
-F65D: 90 13           BCC     $F672               ; {hard.MMC1_3+1672}
+F65D: 90 13           BCC     $F672               ; {}
 F65F: A5 AC           LDA     <$AC                ; {ram.00AC}
 F661: 09 20           ORA     #$20                ; 
 F663: 85 AC           STA     <$AC                ; {ram.00AC}
@@ -2577,37 +2577,37 @@ F671: 60              RTS                         ;
 F672: A0 30           LDY     #$30                ; 
 F674: B5 18           LDA     $18,X               ; {ram.0018}
 F676: C9 30           CMP     #$30                ; 
-F678: 90 08           BCC     $F682               ; {hard.MMC1_3+1682}
+F678: 90 08           BCC     $F682               ; {}
 F67A: A0 50           LDY     #$50                ; 
 F67C: C9 70           CMP     #$70                ; 
-F67E: 90 02           BCC     $F682               ; {hard.MMC1_3+1682}
+F67E: 90 02           BCC     $F682               ; {}
 F680: A0 70           LDY     #$70                ; 
 F682: 98              TYA                         ; 
 F683: BC 2C 04        LDY     $042C,X             ; {ram.!SplashMode}
 F686: 99 28 00        STA     $0028,Y             ; {ram.0028}
 F689: A9 00           LDA     #$00                ; 
 F68B: 99 AC 00        STA     $00AC,Y             ; {ram.00AC}
-F68E: 4C 46 83        JMP     $8346               ; {hard.MMC1_0+346}
+F68E: 4C 46 83        JMP     $8346               ; 
 F691: A0 04           LDY     #$04                ; 
 F693: 20 6F 70        JSR     $706F               ; {ram.706F}
-F696: B9 F7 F4        LDA     $F4F7,Y             ; {hard.MMC1_3+14F7}
+F696: B9 F7 F4        LDA     $F4F7,Y             ; {}
 F699: 20 AB 70        JSR     $70AB               ; {ram.70AB}
 F69C: A5 0A           LDA     <$0A                ; {ram.000A}
 F69E: 85 0F           STA     <$0F                ; {ram.000F}
 F6A0: 95 98           STA     $98,X               ; {ram.0098}
 F6A2: 98              TYA                         ; 
 F6A3: 48              PHA                         ; 
-F6A4: 20 8D F0        JSR     $F08D               ; {hard.MMC1_3+108D}
+F6A4: 20 8D F0        JSR     $F08D               ; {}
 F6A7: 68              PLA                         ; 
 F6A8: A8              TAY                         ; 
-F6A9: B9 00 F5        LDA     $F500,Y             ; {hard.MMC1_3+1500}
+F6A9: B9 00 F5        LDA     $F500,Y             ; {}
 F6AC: 20 AB 70        JSR     $70AB               ; {ram.70AB}
 F6AF: A5 0B           LDA     <$0B                ; {ram.000B}
 F6B1: 85 0F           STA     <$0F                ; {ram.000F}
 F6B3: 95 98           STA     $98,X               ; {ram.0098}
-F6B5: 20 8D F0        JSR     $F08D               ; {hard.MMC1_3+108D}
+F6B5: 20 8D F0        JSR     $F08D               ; {}
 F6B8: DE D0 03        DEC     $03D0,X             ; {ram.03D0}
-F6BB: D0 16           BNE     $F6D3               ; {hard.MMC1_3+16D3}
+F6BB: D0 16           BNE     $F6D3               ; {}
 F6BD: A9 02           LDA     #$02                ; 
 F6BF: 9D D0 03        STA     $03D0,X             ; {ram.03D0}
 F6C2: F6 AC           INC     $AC,X               ; {ram.00AC}
@@ -2615,14 +2615,14 @@ F6C4: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F6C6: 29 77           AND     #$77                ; 
 F6C8: 95 AC           STA     $AC,X               ; {ram.00AC}
 F6CA: E0 0D           CPX     #$0D                ; 
-F6CC: 90 1A           BCC     $F6E8               ; {hard.MMC1_3+16E8}
+F6CC: 90 1A           BCC     $F6E8               ; {}
 F6CE: A0 02           LDY     #$02                ; 
 F6D0: 20 10 6E        JSR     $6E10               ; {ram.6E10}
 F6D3: E0 0D           CPX     #$0D                ; 
-F6D5: B0 11           BCS     $F6E8               ; {hard.MMC1_3+16E8}
+F6D5: B0 11           BCS     $F6E8               ; {}
 F6D7: 20 A7 7A        JSR     $7AA7               ; {ram.7AA7}
 F6DA: AD 4B 03        LDA     $034B               ; {ram.034B}
-F6DD: F0 09           BEQ     $F6E8               ; {hard.MMC1_3+16E8}
+F6DD: F0 09           BEQ     $F6E8               ; {}
 F6DF: A9 03           LDA     #$03                ; 
 F6E1: 9D D0 03        STA     $03D0,X             ; {ram.03D0}
 F6E4: A9 20           LDA     #$20                ; 
@@ -2634,24 +2634,24 @@ F6EE: 29 0F           AND     #$0F                ;
 F6F0: A8              TAY                         ; 
 F6F1: A9 00           LDA     #$00                ; 
 F6F3: 85 01           STA     <$01                ; {ram.GP_01}
-F6F5: B9 E5 F4        LDA     $F4E5,Y             ; {hard.MMC1_3+14E5}
+F6F5: B9 E5 F4        LDA     $F4E5,Y             ; {}
 F6F8: 85 0C           STA     <$0C                ; {ram.000C}
 F6FA: 98              TYA                         ; 
-F6FB: B9 EE F4        LDA     $F4EE,Y             ; {hard.MMC1_3+14EE}
+F6FB: B9 EE F4        LDA     $F4EE,Y             ; {}
 F6FE: 85 04           STA     <$04                ; {ram.0004}
 F700: A0 00           LDY     #$00                ; 
 F702: C9 08           CMP     #$08                ; 
-F704: F0 03           BEQ     $F709               ; {hard.MMC1_3+1709}
+F704: F0 03           BEQ     $F709               ; {}
 F706: AC 75 06        LDY     $0675               ; {ram.0675}
 F709: 98              TYA                         ; 
 F70A: 18              CLC                         ; 
 F70B: 65 04           ADC     <$04                ; {ram.0004}
 F70D: 85 04           STA     <$04                ; {ram.0004}
 F70F: A0 1D           LDY     #$1D                ; 
-F711: 4C 20 F7        JMP     $F720               ; {hard.MMC1_3+1720}
-F714: B9 11 F5        LDA     $F511,Y             ; {hard.MMC1_3+1511}
+F711: 4C 20 F7        JMP     $F720               ; {}
+F714: B9 11 F5        LDA     $F511,Y             ; {}
 F717: 85 00           STA     <$00                ; {ram.GP_00}
-F719: B9 15 F5        LDA     $F515,Y             ; {hard.MMC1_3+1515}
+F719: B9 15 F5        LDA     $F515,Y             ; {}
 F71C: 85 01           STA     <$01                ; {ram.GP_01}
 F71E: A0 02           LDY     #$02                ; 
 F720: B5 70           LDA     $70,X               ; {ram.0070}
@@ -2665,15 +2665,15 @@ F72C: 85 01           STA     <$01                ; {ram.GP_01}
 F72E: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F730: 29 F0           AND     #$F0                ; 
 F732: C9 20           CMP     #$20                ; 
-F734: D0 05           BNE     $F73B               ; {hard.MMC1_3+173B}
+F734: D0 05           BNE     $F73B               ; {}
 F736: A9 01           LDA     #$01                ; 
 F738: 20 88 79        JSR     $7988               ; {ram.7988}
 F73B: 4C 15 79        JMP     $7915               ; {ram.7915}
 F73E: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F740: 29 F0           AND     #$F0                ; 
 F742: C9 30           CMP     #$30                ; 
-F744: B0 23           BCS     $F769               ; {hard.MMC1_3+1769}
-F746: 4C 19 F5        JMP     $F519               ; {hard.MMC1_3+1519}
+F744: B0 23           BCS     $F769               ; {}
+F746: 4C 19 F5        JMP     $F519               ; {}
 
 F749: FF 01 00 F8 FF 01 F5 0B FF 01 F9 07
 F755: FF 01 FD 03 F7 F2 F5 F5 F6 0D 03 03
@@ -2681,15 +2681,15 @@ F761: F7 09 03 03 FF 05 03 03
                  ;
 F769: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F76B: 29 0F           AND     #$0F                ; 
-F76D: F0 24           BEQ     $F793               ; {hard.MMC1_3+1793}
+F76D: F0 24           BEQ     $F793               ; {}
 F76F: DE D0 03        DEC     $03D0,X             ; {ram.03D0}
-F772: D0 20           BNE     $F794               ; {hard.MMC1_3+1794}
+F772: D0 20           BNE     $F794               ; {}
 F774: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F776: 29 0F           AND     #$0F                ; 
 F778: A8              TAY                         ; 
 F779: A9 08           LDA     #$08                ; 
 F77B: 88              DEY                         ; 
-F77C: F0 02           BEQ     $F780               ; {hard.MMC1_3+1780}
+F77C: F0 02           BEQ     $F780               ; {}
 F77E: A9 01           LDA     #$01                ; 
 F780: 8D D0 03        STA     $03D0               ; {ram.03D0}
 F783: 9D D0 03        STA     $03D0,X             ; {ram.03D0}
@@ -2697,8 +2697,8 @@ F786: F6 AC           INC     $AC,X               ; {ram.00AC}
 F788: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F78A: 29 0F           AND     #$0F                ; 
 F78C: C9 06           CMP     #$06                ; 
-F78E: 90 04           BCC     $F794               ; {hard.MMC1_3+1794}
-F790: 20 55 F8        JSR     $F855               ; {hard.MMC1_3+1855}
+F78E: 90 04           BCC     $F794               ; {}
+F790: 20 55 F8        JSR     $F855               ; {}
 F793: 60              RTS                         ; 
 F794: A9 00           LDA     #$00                ; 
 F796: 85 0F           STA     <$0F                ; {ram.000F}
@@ -2707,11 +2707,11 @@ F79A: 29 0F           AND     #$0F                ;
 F79C: A8              TAY                         ; 
 F79D: A9 FC           LDA     #$FC                ; 
 F79F: C0 05           CPY     #$05                ; 
-F7A1: F0 F0           BEQ     $F793               ; {hard.MMC1_3+1793}
+F7A1: F0 F0           BEQ     $F793               ; {}
 F7A3: 18              CLC                         ; 
 F7A4: 69 04           ADC     #$04                ; 
 F7A6: 88              DEY                         ; 
-F7A7: D0 FA           BNE     $F7A3               ; {hard.MMC1_3+17A3}
+F7A7: D0 FA           BNE     $F7A3               ; {}
 F7A9: 85 00           STA     <$00                ; {ram.GP_00}
 F7AB: A5 98           LDA     <$98                ; {ram.0098}
 F7AD: 95 98           STA     $98,X               ; {ram.0098}
@@ -2722,12 +2722,12 @@ F7B4: 65 00           ADC     <$00                ; {ram.GP_00}
 F7B6: A8              TAY                         ; 
 F7B7: A5 70           LDA     <$70                ; {ram.0070}
 F7B9: 18              CLC                         ; 
-F7BA: 79 49 F7        ADC     $F749,Y             ; {hard.MMC1_3+1749}
+F7BA: 79 49 F7        ADC     $F749,Y             ; {}
 F7BD: 95 70           STA     $70,X               ; {ram.0070}
 F7BF: 85 00           STA     <$00                ; {ram.GP_00}
 F7C1: A5 84           LDA     <$84                ; {ram.0084}
 F7C3: 18              CLC                         ; 
-F7C4: 79 59 F7        ADC     $F759,Y             ; {hard.MMC1_3+1759}
+F7C4: 79 59 F7        ADC     $F759,Y             ; {}
 F7C7: 95 84           STA     $84,X               ; {ram.0084}
 F7C9: 85 01           STA     <$01                ; {ram.GP_01}
 F7CB: B5 AC           LDA     $AC,X               ; {ram.00AC}
@@ -2735,44 +2735,44 @@ F7CD: 29 0F           AND     #$0F                ;
 F7CF: A8              TAY                         ; 
 F7D0: A9 08           LDA     #$08                ; 
 F7D2: 88              DEY                         ; 
-F7D3: F0 02           BEQ     $F7D7               ; {hard.MMC1_3+17D7}
+F7D3: F0 02           BEQ     $F7D7               ; {}
 F7D5: B5 98           LDA     $98,X               ; {ram.0098}
 F7D7: 20 13 70        JSR     $7013               ; {ram.7013}
-F7DA: B9 09 F5        LDA     $F509,Y             ; {hard.MMC1_3+1509}
+F7DA: B9 09 F5        LDA     $F509,Y             ; {}
 F7DD: 85 0C           STA     <$0C                ; {ram.000C}
-F7DF: B9 0D F5        LDA     $F50D,Y             ; {hard.MMC1_3+150D}
+F7DF: B9 0D F5        LDA     $F50D,Y             ; {}
 F7E2: E0 0D           CPX     #$0D                ; 
-F7E4: F0 05           BEQ     $F7EB               ; {hard.MMC1_3+17EB}
+F7E4: F0 05           BEQ     $F7EB               ; {}
 F7E6: 09 01           ORA     #$01                ; 
-F7E8: 4C F2 F7        JMP     $F7F2               ; {hard.MMC1_3+17F2}
+F7E8: 4C F2 F7        JMP     $F7F2               ; {}
 F7EB: 18              CLC                         ; 
 F7EC: 6D 57 06        ADC     $0657               ; {ram.0657}
 F7EF: 38              SEC                         ; 
 F7F0: E9 01           SBC     #$01                ; 
 F7F2: 20 88 79        JSR     $7988               ; {ram.7988}
 F7F5: C0 02           CPY     #$02                ; 
-F7F7: D0 02           BNE     $F7FB               ; {hard.MMC1_3+17FB}
+F7F7: D0 02           BNE     $F7FB               ; {}
 F7F9: E6 0F           INC     <$0F                ; {ram.000F}
 F7FB: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F7FD: 29 0F           AND     #$0F                ; 
 F7FF: C9 01           CMP     #$01                ; 
-F801: F0 51           BEQ     $F854               ; {hard.MMC1_3+1854}
+F801: F0 51           BEQ     $F854               ; {}
 F803: A0 00           LDY     #$00                ; 
 F805: E0 0D           CPX     #$0D                ; 
-F807: F0 02           BEQ     $F80B               ; {hard.MMC1_3+180B}
+F807: F0 02           BEQ     $F80B               ; {}
 F809: A0 08           LDY     #$08                ; 
 F80B: 20 15 79        JSR     $7915               ; {ram.7915}
 F80E: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F810: 29 0F           AND     #$0F                ; 
 F812: C9 03           CMP     #$03                ; 
-F814: D0 3E           BNE     $F854               ; {hard.MMC1_3+1854}
+F814: D0 3E           BNE     $F854               ; {}
 F816: E0 12           CPX     #$12                ; 
-F818: D0 40           BNE     $F85A               ; {hard.MMC1_3+185A}
+F818: D0 40           BNE     $F85A               ; {}
 F81A: A2 0E           LDX     #$0E                ; 
 F81C: B5 AC           LDA     $AC,X               ; {ram.00AC}
-F81E: F0 03           BEQ     $F823               ; {hard.MMC1_3+1823}
+F81E: F0 03           BEQ     $F823               ; {}
 F820: 0A              ASL     A                   ; 
-F821: B0 31           BCS     $F854               ; {hard.MMC1_3+1854}
+F821: B0 31           BCS     $F854               ; {}
 F823: A9 04           LDA     #$04                ; 
 F825: 8D 04 06        STA     $0604               ; {ram.SND_Request}
 F828: A9 80           LDA     #$80                ; 
@@ -2781,16 +2781,16 @@ F82C: A9 10           LDA     #$10                ;
 F82E: 20 1F 71        JSR     $711F               ; {ram.711F}
 F831: B5 98           LDA     $98,X               ; {ram.0098}
 F833: 29 03           AND     #$03                ; 
-F835: F0 0A           BEQ     $F841               ; {hard.MMC1_3+1841}
+F835: F0 0A           BEQ     $F841               ; {}
 F837: B5 70           LDA     $70,X               ; {ram.0070}
 F839: C9 14           CMP     #$14                ; 
-F83B: 90 18           BCC     $F855               ; {hard.MMC1_3+1855}
+F83B: 90 18           BCC     $F855               ; {}
 F83D: C9 EC           CMP     #$EC                ; 
-F83F: B0 14           BCS     $F855               ; {hard.MMC1_3+1855}
+F83F: B0 14           BCS     $F855               ; {}
 F841: A0 C0           LDY     #$C0                ; 
 F843: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F845: 0A              ASL     A                   ; 
-F846: 90 02           BCC     $F84A               ; {hard.MMC1_3+184A}
+F846: 90 02           BCC     $F84A               ; {}
 F848: A0 A0           LDY     #$A0                ; 
 F84A: 98              TYA                         ; 
 F84B: 9D BC 03        STA     $03BC,X             ; {ram.03BC}
@@ -2802,9 +2802,9 @@ F857: 95 AC           STA     $AC,X               ; {ram.00AC}
 F859: 60              RTS                         ; 
 F85A: A2 0E           LDX     #$0E                ; 
 F85C: B5 AC           LDA     $AC,X               ; {ram.00AC}
-F85E: D0 F4           BNE     $F854               ; {hard.MMC1_3+1854}
+F85E: D0 F4           BNE     $F854               ; {}
 F860: AD 29 05        LDA     $0529               ; {ram.0529}
-F863: D0 18           BNE     $F87D               ; {hard.MMC1_3+187D}
+F863: D0 18           BNE     $F87D               ; {}
 F865: AD 6F 06        LDA     $066F               ; {ram.066F}
 F868: 48              PHA                         ; 
 F869: 29 0F           AND     #$0F                ; 
@@ -2815,67 +2815,67 @@ F86F: 4A              LSR     A                   ;
 F870: 4A              LSR     A                   ; 
 F871: 4A              LSR     A                   ; 
 F872: C5 00           CMP     <$00                ; {ram.GP_00}
-F874: D0 DE           BNE     $F854               ; {hard.MMC1_3+1854}
+F874: D0 DE           BNE     $F854               ; {}
 F876: AD 70 06        LDA     $0670               ; {ram.0670}
 F879: C9 80           CMP     #$80                ; 
-F87B: 90 D7           BCC     $F854               ; {hard.MMC1_3+1854}
+F87B: 90 D7           BCC     $F854               ; {}
 F87D: A9 01           LDA     #$01                ; 
 F87F: 20 7C 6D        JSR     $6D7C               ; {ram.6D7C}
 F882: A9 10           LDA     #$10                ; 
-F884: D0 A4           BNE     $F82A               ; {hard.MMC1_3+182A}
+F884: D0 A4           BNE     $F82A               ; {}
 F886: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F888: C9 21           CMP     #$21                ; 
-F88A: D0 25           BNE     $F8B1               ; {hard.MMC1_3+18B1}
+F88A: D0 25           BNE     $F8B1               ; {}
 F88C: BD 94 03        LDA     $0394,X             ; {ram.0394}
 F88F: 48              PHA                         ; 
 F890: A9 00           LDA     #$00                ; 
 F892: 9D 94 03        STA     $0394,X             ; {ram.0394}
 F895: B5 98           LDA     $98,X               ; {ram.0098}
 F897: 85 0F           STA     <$0F                ; {ram.000F}
-F899: 20 8D F0        JSR     $F08D               ; {hard.MMC1_3+108D}
+F899: 20 8D F0        JSR     $F08D               ; {}
 F89C: 68              PLA                         ; 
 F89D: 18              CLC                         ; 
 F89E: 7D 94 03        ADC     $0394,X             ; {ram.0394}
 F8A1: 9D 94 03        STA     $0394,X             ; {ram.0394}
 F8A4: 20 1F 70        JSR     $701F               ; {ram.701F}
 F8A7: C9 10           CMP     #$10                ; 
-F8A9: D0 1A           BNE     $F8C5               ; {hard.MMC1_3+18C5}
+F8A9: D0 1A           BNE     $F8C5               ; {}
 F8AB: A9 3F           LDA     #$3F                ; 
 F8AD: 95 28           STA     $28,X               ; {ram.0028}
 F8AF: F6 AC           INC     $AC,X               ; {ram.00AC}
 F8B1: B5 28           LDA     $28,X               ; {ram.0028}
-F8B3: F0 A0           BEQ     $F855               ; {hard.MMC1_3+1855}
+F8B3: F0 A0           BEQ     $F855               ; {}
 F8B5: A5 10           LDA     <$10                ; {ram.0010}
-F8B7: F0 0C           BEQ     $F8C5               ; {hard.MMC1_3+18C5}
+F8B7: F0 0C           BEQ     $F8C5               ; {}
 F8B9: 8A              TXA                         ; 
 F8BA: 48              PHA                         ; 
 F8BB: A9 04           LDA     #$04                ; 
 F8BD: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-F8C0: 20 BE B1        JSR     $B1BE               ; {hard.MMC1_1+11BE} 4
+F8C0: 20 BE B1        JSR     $B1BE               ; 4
 F8C3: 68              PLA                         ; 
 F8C4: AA              TAX                         ; 
 F8C5: A9 04           LDA     #$04                ; 
-F8C7: 20 89 FA        JSR     $FA89               ; {hard.MMC1_3+1A89}
-F8CA: 20 72 FA        JSR     $FA72               ; {hard.MMC1_3+1A72}
+F8C7: 20 89 FA        JSR     $FA89               ; {}
+F8CA: 20 72 FA        JSR     $FA72               ; {}
 F8CD: 20 86 79        JSR     $7986               ; {ram.7986}
 F8D0: A9 00           LDA     #$00                ; 
 F8D2: 85 0C           STA     <$0C                ; {ram.000C}
 F8D4: A0 40           LDY     #$40                ; 
 F8D6: 20 E6 77        JSR     $77E6               ; {ram.77E6}
 F8D9: AD F0 04        LDA     $04F0               ; {ram.04F0}
-F8DC: D0 3F           BNE     $F91D               ; {hard.MMC1_3+191D}
+F8DC: D0 3F           BNE     $F91D               ; {}
 F8DE: 86 00           STX     <$00                ; {ram.GP_00}
 F8E0: A2 00           LDX     #$00                ; 
 F8E2: A0 02           LDY     #$02                ; 
-F8E4: 20 0D F9        JSR     $F90D               ; {hard.MMC1_3+190D}
+F8E4: 20 0D F9        JSR     $F90D               ; {}
 F8E7: A6 00           LDX     <$00                ; {ram.GP_00}
 F8E9: A0 00           LDY     #$00                ; 
-F8EB: 20 0D F9        JSR     $F90D               ; {hard.MMC1_3+190D}
+F8EB: 20 0D F9        JSR     $F90D               ; {}
 F8EE: A4 00           LDY     <$00                ; {ram.GP_00}
 F8F0: A2 00           LDX     #$00                ; 
 F8F2: A9 0E           LDA     #$0E                ; 
 F8F4: 20 FB 7D        JSR     $7DFB               ; {ram.7DFB}
-F8F7: F0 24           BEQ     $F91D               ; {hard.MMC1_3+191D}
+F8F7: F0 24           BEQ     $F91D               ; {}
 F8F9: A6 00           LDX     <$00                ; {ram.GP_00}
 F8FB: A0 00           LDY     #$00                ; 
 F8FD: 84 00           STY     <$00                ; {ram.GP_00}
@@ -2898,76 +2898,76 @@ F91D: 60              RTS                         ;
 F91E: 30 18 0C 06 78 78 20 D0 5D BD 8D 8D
 
 F92A: B5 AC           LDA     $AC,X               ; {ram.00AC}
-F92C: F0 31           BEQ     $F95F               ; {hard.MMC1_3+195F}
+F92C: F0 31           BEQ     $F95F               ; {}
 F92E: 29 F0           AND     #$F0                ; 
 F930: C9 10           CMP     #$10                ; 
-F932: F0 03           BEQ     $F937               ; {hard.MMC1_3+1937}
-F934: 4C 86 F8        JMP     $F886               ; {hard.MMC1_3+1886}
+F932: F0 03           BEQ     $F937               ; {}
+F934: 4C 86 F8        JMP     $F886               ; {}
 F937: B5 28           LDA     $28,X               ; {ram.0028}
-F939: D0 73           BNE     $F9AE               ; {hard.MMC1_3+19AE}
+F939: D0 73           BNE     $F9AE               ; {}
 F93B: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F93D: 29 0F           AND     #$0F                ; 
 F93F: A8              TAY                         ; 
-F940: B9 1D F9        LDA     $F91D,Y             ; {hard.MMC1_3+191D}
+F940: B9 1D F9        LDA     $F91D,Y             ; {}
 F943: 95 28           STA     $28,X               ; {ram.0028}
 F945: F6 AC           INC     $AC,X               ; {ram.00AC}
 F947: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F949: 29 0F           AND     #$0F                ; 
 F94B: 48              PHA                         ; 
 F94C: C9 03           CMP     #$03                ; 
-F94E: D0 05           BNE     $F955               ; {hard.MMC1_3+1955}
+F94E: D0 05           BNE     $F955               ; {}
 F950: A9 10           LDA     #$10                ; 
 F952: 20 80 6D        JSR     $6D80               ; {ram.6D80}
 F955: 68              PLA                         ; 
 F956: C9 05           CMP     #$05                ; 
-F958: D0 06           BNE     $F960               ; {hard.MMC1_3+1960}
-F95A: 20 55 F8        JSR     $F855               ; {hard.MMC1_3+1855}
+F958: D0 06           BNE     $F960               ; {}
+F95A: 20 55 F8        JSR     $F855               ; {}
 F95D: 95 28           STA     $28,X               ; {ram.0028}
 F95F: 60              RTS                         ; 
 F960: C9 04           CMP     #$04                ; 
-F962: D0 4A           BNE     $F9AE               ; {hard.MMC1_3+19AE}
+F962: D0 4A           BNE     $F9AE               ; {}
 F964: A5 10           LDA     <$10                ; {ram.0010}
-F966: F0 46           BEQ     $F9AE               ; {hard.MMC1_3+19AE}
+F966: F0 46           BEQ     $F9AE               ; {}
 F968: A5 12           LDA     <$12                ; {ram.0012}
 F96A: C9 09           CMP     #$09                ; 
-F96C: F0 40           BEQ     $F9AE               ; {hard.MMC1_3+19AE}
+F96C: F0 40           BEQ     $F9AE               ; {}
 F96E: A0 04           LDY     #$04                ; 
 F970: 88              DEY                         ; 
-F971: 30 3B           BMI     $F9AE               ; {hard.MMC1_3+19AE}
-F973: B9 22 F9        LDA     $F922,Y             ; {hard.MMC1_3+1922}
+F971: 30 3B           BMI     $F9AE               ; {}
+F973: B9 22 F9        LDA     $F922,Y             ; {}
 F976: 38              SEC                         ; 
 F977: F5 70           SBC     $70,X               ; {ram.0070}
 F979: 20 1F 70        JSR     $701F               ; {ram.701F}
 F97C: C9 18           CMP     #$18                ; 
-F97E: B0 F0           BCS     $F970               ; {hard.MMC1_3+1970}
-F980: B9 26 F9        LDA     $F926,Y             ; {hard.MMC1_3+1926}
+F97E: B0 F0           BCS     $F970               ; {}
+F980: B9 26 F9        LDA     $F926,Y             ; {}
 F983: 38              SEC                         ; 
 F984: F5 84           SBC     $84,X               ; {ram.0084}
 F986: 20 1F 70        JSR     $701F               ; {ram.701F}
 F989: C9 18           CMP     #$18                ; 
-F98B: B0 E3           BCS     $F970               ; {hard.MMC1_3+1970}
+F98B: B0 E3           BCS     $F970               ; {}
 F98D: B9 C3 6D        LDA     $6DC3,Y             ; 
 F990: 85 02           STA     <$02                ; {ram.GP_02}
 F992: 25 EE           AND     <$EE                ; {ram.00EE}
-F994: D0 18           BNE     $F9AE               ; {hard.MMC1_3+19AE}
+F994: D0 18           BNE     $F9AE               ; {}
 F996: A5 54           LDA     <$54                ; {ram.0054}
-F998: D0 14           BNE     $F9AE               ; {hard.MMC1_3+19AE}
+F998: D0 14           BNE     $F9AE               ; {}
 F99A: A9 05           LDA     #$05                ; 
 F99C: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-F99F: 20 F6 A3        JSR     $A3F6               ; {hard.MMC1_1+3F6} 5
+F99F: 20 F6 A3        JSR     $A3F6               ; 5
 F9A2: C9 04           CMP     #$04                ; 
-F9A4: D0 08           BNE     $F9AE               ; {hard.MMC1_3+19AE}
+F9A4: D0 08           BNE     $F9AE               ; {}
 F9A6: A9 06           LDA     #$06                ; 
 F9A8: 85 54           STA     <$54                ; {ram.0054}
 F9AA: A5 02           LDA     <$02                ; {ram.GP_02}
 F9AC: 85 55           STA     <$55                ; {ram.0055}
-F9AE: 20 93 FA        JSR     $FA93               ; {hard.MMC1_3+1A93}
-F9B1: 20 BF F9        JSR     $F9BF               ; {hard.MMC1_3+19BF}
+F9AE: 20 93 FA        JSR     $FA93               ; {}
+F9B1: 20 BF F9        JSR     $F9BF               ; {}
 F9B4: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F9B6: 29 0F           AND     #$0F                ; 
 F9B8: C9 02           CMP     #$02                ; 
-F9BA: F0 A3           BEQ     $F95F               ; {hard.MMC1_3+195F}
-F9BC: 4C E5 F9        JMP     $F9E5               ; {hard.MMC1_3+19E5}
+F9BA: F0 A3           BEQ     $F95F               ; {}
+F9BC: 4C E5 F9        JMP     $F9E5               ; {}
 F9BF: 20 BB 71        JSR     $71BB               ; {ram.71BB}
 F9C2: B5 AC           LDA     $AC,X               ; {ram.00AC}
 F9C4: 29 0F           AND     #$0F                ; 
@@ -2989,87 +2989,87 @@ F9E7: 98              TYA                         ;
 F9E8: 48              PHA                         ; 
 F9E9: A5 15           LDA     <$15                ; {ram.0015}
 F9EB: 4A              LSR     A                   ; 
-F9EC: 90 05           BCC     $F9F3               ; {hard.MMC1_3+19F3}
+F9EC: 90 05           BCC     $F9F3               ; {}
 F9EE: 98              TYA                         ; 
 F9EF: 18              CLC                         ; 
 F9F0: 69 06           ADC     #$06                ; 
 F9F2: A8              TAY                         ; 
 F9F3: B5 84           LDA     $84,X               ; {ram.0084}
 F9F5: 18              CLC                         ; 
-F9F6: 79 D9 F9        ADC     $F9D9,Y             ; {hard.MMC1_3+19D9}
+F9F6: 79 D9 F9        ADC     $F9D9,Y             ; {}
 F9F9: 85 01           STA     <$01                ; {ram.GP_01}
 F9FB: B5 70           LDA     $70,X               ; {ram.0070}
 F9FD: 18              CLC                         ; 
-F9FE: 79 DC F9        ADC     $F9DC,Y             ; {hard.MMC1_3+19DC}
+F9FE: 79 DC F9        ADC     $F9DC,Y             ; {}
 FA01: 85 00           STA     <$00                ; {ram.GP_00}
-FA03: 20 C2 F9        JSR     $F9C2               ; {hard.MMC1_3+19C2}
+FA03: 20 C2 F9        JSR     $F9C2               ; {}
 FA06: 68              PLA                         ; 
 FA07: A8              TAY                         ; 
 FA08: 88              DEY                         ; 
-FA09: 10 DC           BPL     $F9E7               ; {hard.MMC1_3+19E7}
+FA09: 10 DC           BPL     $F9E7               ; {}
 FA0B: 60              RTS                         ; 
-FA0C: 20 93 FA        JSR     $FA93               ; {hard.MMC1_3+1A93}
+FA0C: 20 93 FA        JSR     $FA93               ; {}
 FA0F: BD 05 04        LDA     $0405,X             ; {ram.0405}
 FA12: C9 10           CMP     #$10                ; 
-FA14: B0 11           BCS     $FA27               ; {hard.MMC1_3+1A27}
+FA14: B0 11           BCS     $FA27               ; {}
 FA16: 29 0F           AND     #$0F                ; 
-FA18: 20 C9 F9        JSR     $F9C9               ; {hard.MMC1_3+19C9}
+FA18: 20 C9 F9        JSR     $F9C9               ; {}
 FA1B: B5 28           LDA     $28,X               ; {ram.0028}
-FA1D: D0 07           BNE     $FA26               ; {hard.MMC1_3+1A26}
+FA1D: D0 07           BNE     $FA26               ; {}
 FA1F: A9 06           LDA     #$06                ; 
 FA21: 95 28           STA     $28,X               ; {ram.0028}
 FA23: FE 05 04        INC     $0405,X             ; {ram.0405}
 FA26: 60              RTS                         ; 
 FA27: 29 0F           AND     #$0F                ; 
-FA29: F0 F4           BEQ     $FA1F               ; {hard.MMC1_3+1A1F}
+FA29: F0 F4           BEQ     $FA1F               ; {}
 FA2B: 29 01           AND     #$01                ; 
 FA2D: 85 0C           STA     <$0C                ; {ram.000C}
 FA2F: A9 01           LDA     #$01                ; 
 FA31: 20 88 79        JSR     $7988               ; {ram.7988}
 FA34: A0 24           LDY     #$24                ; 
 FA36: 20 15 79        JSR     $7915               ; {ram.7915}
-FA39: 4C 1B FA        JMP     $FA1B               ; {hard.MMC1_3+1A1B}
+FA39: 4C 1B FA        JMP     $FA1B               ; {}
 FA3C: A5 AC           LDA     <$AC                ; {ram.00AC}
-FA3E: D0 0F           BNE     $FA4F               ; {hard.MMC1_3+1A4F}
+FA3E: D0 0F           BNE     $FA4F               ; {}
 FA40: A5 12           LDA     <$12                ; {ram.0012}
 FA42: C9 04           CMP     #$04                ; 
-FA44: F0 09           BEQ     $FA4F               ; {hard.MMC1_3+1A4F}
+FA44: F0 09           BEQ     $FA4F               ; {}
 FA46: C9 10           CMP     #$10                ; 
-FA48: F0 05           BEQ     $FA4F               ; {hard.MMC1_3+1A4F}
+FA48: F0 05           BEQ     $FA4F               ; {}
 FA4A: AD F8 03        LDA     $03F8               ; {ram.03F8}
-FA4D: F0 13           BEQ     $FA62               ; {hard.MMC1_3+1A62}
+FA4D: F0 13           BEQ     $FA62               ; {}
 FA4F: DE D0 03        DEC     $03D0,X             ; {ram.03D0}
-FA52: D0 0E           BNE     $FA62               ; {hard.MMC1_3+1A62}
+FA52: D0 0E           BNE     $FA62               ; {}
 FA54: E0 00           CPX     #$00                ; 
-FA56: D0 03           BNE     $FA5B               ; {hard.MMC1_3+1A5B}
-FA58: 20 AE FA        JSR     $FAAE               ; {hard.MMC1_3+1AAE}
+FA56: D0 03           BNE     $FA5B               ; {}
+FA58: 20 AE FA        JSR     $FAAE               ; {}
 FA5B: A9 06           LDA     #$06                ; 
 FA5D: 85 00           STA     <$00                ; {ram.GP_00}
-FA5F: 20 A0 FA        JSR     $FAA0               ; {hard.MMC1_3+1AA0}
-FA62: 20 93 FA        JSR     $FA93               ; {hard.MMC1_3+1A93}
+FA5F: 20 A0 FA        JSR     $FAA0               ; {}
+FA62: 20 93 FA        JSR     $FA93               ; {}
 FA65: B5 98           LDA     $98,X               ; {ram.0098}
 FA67: 29 0C           AND     #$0C                ; 
-FA69: F0 0D           BEQ     $FA78               ; {hard.MMC1_3+1A78}
+FA69: F0 0D           BEQ     $FA78               ; {}
 FA6B: A0 03           LDY     #$03                ; 
 FA6D: 29 08           AND     #$08                ; 
-FA6F: D0 01           BNE     $FA72               ; {hard.MMC1_3+1A72}
+FA6F: D0 01           BNE     $FA72               ; {}
 FA71: 88              DEY                         ; 
 FA72: BD E4 03        LDA     $03E4,X             ; {ram.03E4}
 FA75: 85 0F           STA     <$0F                ; {ram.000F}
 FA77: 60              RTS                         ; 
 FA78: A0 00           LDY     #$00                ; 
 FA7A: BD E4 03        LDA     $03E4,X             ; {ram.03E4}
-FA7D: F0 01           BEQ     $FA80               ; {hard.MMC1_3+1A80}
+FA7D: F0 01           BEQ     $FA80               ; {}
 FA7F: C8              INY                         ; 
 FA80: B5 98           LDA     $98,X               ; {ram.0098}
 FA82: 29 01           AND     #$01                ; 
-FA84: D0 02           BNE     $FA88               ; {hard.MMC1_3+1A88}
+FA84: D0 02           BNE     $FA88               ; {}
 FA86: E6 0F           INC     <$0F                ; {ram.000F}
 FA88: 60              RTS                         ; 
 FA89: 85 00           STA     <$00                ; {ram.GP_00}
 FA8B: DE D0 03        DEC     $03D0,X             ; {ram.03D0}
-FA8E: D0 03           BNE     $FA93               ; {hard.MMC1_3+1A93}
-FA90: 20 A0 FA        JSR     $FAA0               ; {hard.MMC1_3+1AA0}
+FA8E: D0 03           BNE     $FA93               ; {}
+FA90: 20 A0 FA        JSR     $FAA0               ; {}
 FA93: B5 70           LDA     $70,X               ; {ram.0070}
 FA95: 85 00           STA     <$00                ; {ram.GP_00}
 FA97: B5 84           LDA     $84,X               ; {ram.0084}
@@ -3086,18 +3086,18 @@ FAAD: 60              RTS                         ;
 FAAE: A5 AC           LDA     <$AC                ; {ram.00AC}
 FAB0: 29 30           AND     #$30                ; 
 FAB2: C9 10           CMP     #$10                ; 
-FAB4: D0 08           BNE     $FABE               ; {hard.MMC1_3+1ABE}
+FAB4: D0 08           BNE     $FABE               ; {}
 FAB6: A5 AC           LDA     <$AC                ; {ram.00AC}
 FAB8: 29 0F           AND     #$0F                ; 
-FABA: D0 11           BNE     $FACD               ; {hard.MMC1_3+1ACD}
-FABC: F0 0A           BEQ     $FAC8               ; {hard.MMC1_3+1AC8}
+FABA: D0 11           BNE     $FACD               ; {}
+FABC: F0 0A           BEQ     $FAC8               ; {}
 FABE: C9 20           CMP     #$20                ; 
-FAC0: D0 17           BNE     $FAD9               ; {hard.MMC1_3+1AD9}
+FAC0: D0 17           BNE     $FAD9               ; {}
 FAC2: A5 AC           LDA     <$AC                ; {ram.00AC}
 FAC4: 29 0F           AND     #$0F                ; 
-FAC6: D0 05           BNE     $FACD               ; {hard.MMC1_3+1ACD}
+FAC6: D0 05           BNE     $FACD               ; {}
 FAC8: E6 AC           INC     <$AC                ; {ram.00AC}
-FACA: 4C D3 FA        JMP     $FAD3               ; {hard.MMC1_3+1AD3}
+FACA: 4C D3 FA        JMP     $FAD3               ; {}
 FACD: A5 AC           LDA     <$AC                ; {ram.00AC}
 FACF: 09 30           ORA     #$30                ; 
 FAD1: 85 AC           STA     <$AC                ; {ram.00AC}
@@ -3105,7 +3105,7 @@ FAD3: A9 01           LDA     #$01                ;
 FAD5: 8D E4 03        STA     $03E4               ; {ram.03E4}
 FAD8: 60              RTS                         ; 
 FAD9: C9 30           CMP     #$30                ; 
-FADB: D0 06           BNE     $FAE3               ; {hard.MMC1_3+1AE3}
+FADB: D0 06           BNE     $FAE3               ; {}
 FADD: A5 AC           LDA     <$AC                ; {ram.00AC}
 FADF: 29 C0           AND     #$C0                ; 
 FAE1: 85 AC           STA     <$AC                ; {ram.00AC}
@@ -3130,27 +3130,27 @@ FB77: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
 FB7A: 68              PLA                         ; 
 FB7B: BC 92 04        LDY     $0492,X             ; 
 FB7E: 84 0F           STY     <$0F                ; {ram.000F}
-FB80: F0 1B           BEQ     $FB9D               ; {hard.MMC1_3+1B9D}
+FB80: F0 1B           BEQ     $FB9D               ; {}
 FB82: BD 4F 03        LDA     $034F,X             ; {ram.034F}
 FB85: C9 1E           CMP     #$1E                ; 
-FB87: F0 0C           BEQ     $FB95               ; {hard.MMC1_3+1B95}
+FB87: F0 0C           BEQ     $FB95               ; {}
 FB89: C9 22           CMP     #$22                ; 
-FB8B: F0 08           BEQ     $FB95               ; {hard.MMC1_3+1B95}
+FB8B: F0 08           BEQ     $FB95               ; {}
 FB8D: C9 53           CMP     #$53                ; 
-FB8F: B0 04           BCS     $FB95               ; {hard.MMC1_3+1B95}
+FB8F: B0 04           BCS     $FB95               ; {}
 FB91: A9 07           LDA     #$07                ; 
 FB93: 95 28           STA     $28,X               ; {ram.0028}
 FB95: A9 00           LDA     #$00                ; 
 FB97: 9D 92 04        STA     $0492,X             ; 
-FB9A: 4C DA FC        JMP     $FCDA               ; {hard.MMC1_3+1CDA}
+FB9A: 4C DA FC        JMP     $FCDA               ; {}
 FB9D: BC 05 04        LDY     $0405,X             ; {ram.0405}
-FBA0: F0 03           BEQ     $FBA5               ; {hard.MMC1_3+1BA5}
-FBA2: 4C 88 FC        JMP     $FC88               ; {hard.MMC1_3+1C88}
+FBA0: F0 03           BEQ     $FBA5               ; {}
+FBA2: 4C 88 FC        JMP     $FC88               ; {}
 FBA5: C9 6A           CMP     #$6A                ; 
-FBA7: 90 08           BCC     $FBB1               ; {hard.MMC1_3+1BB1}
+FBA7: 90 08           BCC     $FBB1               ; {}
 FBA9: A9 01           LDA     #$01                ; 
 FBAB: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FBAE: 4C DB 86        JMP     $86DB               ; {hard.MMC1_0+6DB} 1
+FBAE: 4C DB 86        JMP     $86DB               ; 1
 FBB1: 20 E2 E5        JSR     $E5E2               ; {code.SwitchAJumpRet}
 
 FBB4: 94 FC        ; 00 FC94
@@ -3260,66 +3260,66 @@ FC82: EB 8E        ; 67 8EEB
 FC84: F7 81        ; 68 81F7
 FC86: 94 FC        ; 69 FC94
 
-FC88: 20 0C FA        JSR     $FA0C               ; {hard.MMC1_3+1A0C}
+FC88: 20 0C FA        JSR     $FA0C               ; {}
 FC8B: BD 05 04        LDA     $0405,X             ; {ram.0405}
 FC8E: 29 0F           AND     #$0F                ; 
 FC90: C9 04           CMP     #$04                ; 
-FC92: B0 01           BCS     $FC95               ; {hard.MMC1_3+1C95}
+FC92: B0 01           BCS     $FC95               ; {}
 FC94: 60              RTS                         ; 
 FC95: BD 05 04        LDA     $0405,X             ; {ram.0405}
 FC98: 29 10           AND     #$10                ; 
-FC9A: F0 3B           BEQ     $FCD7               ; {hard.MMC1_3+1CD7}
+FC9A: F0 3B           BEQ     $FCD7               ; {}
 FC9C: BD 4F 03        LDA     $034F,X             ; {ram.034F}
 FC9F: 9D 12 04        STA     $0412,X             ; {ram.0412}
 FCA2: C9 5D           CMP     #$5D                ; 
-FCA4: F0 21           BEQ     $FCC7               ; {hard.MMC1_3+1CC7}
+FCA4: F0 21           BEQ     $FCC7               ; {}
 FCA6: C9 14           CMP     #$14                ; 
-FCA8: F0 1D           BEQ     $FCC7               ; {hard.MMC1_3+1CC7}
+FCA8: F0 1D           BEQ     $FCC7               ; {}
 FCAA: C9 1C           CMP     #$1C                ; 
-FCAC: F0 19           BEQ     $FCC7               ; {hard.MMC1_3+1CC7}
+FCAC: F0 19           BEQ     $FCC7               ; {}
 FCAE: AD 2A 05        LDA     $052A               ; {ram.052A}
 FCB1: 18              CLC                         ; 
 FCB2: 69 01           ADC     #$01                ; 
 FCB4: C9 0A           CMP     #$0A                ; 
-FCB6: D0 02           BNE     $FCBA               ; {hard.MMC1_3+1CBA}
+FCB6: D0 02           BNE     $FCBA               ; {}
 FCB8: A9 00           LDA     #$00                ; 
 FCBA: 8D 2A 05        STA     $052A               ; {ram.052A}
 FCBD: BD 4F 03        LDA     $034F,X             ; {ram.034F}
 FCC0: C9 11           CMP     #$11                ; 
-FCC2: F0 03           BEQ     $FCC7               ; {hard.MMC1_3+1CC7}
+FCC2: F0 03           BEQ     $FCC7               ; {}
 FCC4: EE 4F 03        INC     $034F               ; {ram.034F}
 FCC7: A9 60           LDA     #$60                ; 
 FCC9: 9D 4F 03        STA     $034F,X             ; {ram.034F}
 FCCC: 9D 92 04        STA     $0492,X             ; 
 FCCF: A9 81           LDA     #$81                ; 
 FCD1: 9D BF 04        STA     $04BF,X             ; 
-FCD4: 20 6A B0        JSR     $B06A               ; {hard.MMC1_1+106A}
-FCD7: 4C DA FE        JMP     $FEDA               ; {hard.MMC1_3+1EDA}
+FCD4: 20 6A B0        JSR     $B06A               ; 
+FCD7: 4C DA FE        JMP     $FEDA               ; {}
 FCDA: AE 40 03        LDX     $0340               ; {ram.0340}
 FCDD: A5 10           LDA     <$10                ; {ram.0010}
-FCDF: D0 5B           BNE     $FD3C               ; {hard.MMC1_3+1D3C}
+FCDF: D0 5B           BNE     $FD3C               ; {}
 FCE1: AD CD 04        LDA     $04CD               ; {ram.04CD}
 FCE4: 29 08           AND     #$08                ; 
-FCE6: F0 54           BEQ     $FD3C               ; {hard.MMC1_3+1D3C}
+FCE6: F0 54           BEQ     $FD3C               ; {}
 FCE8: BD 4F 03        LDA     $034F,X             ; {ram.034F}
 FCEB: C9 11           CMP     #$11                ; 
-FCED: F0 4D           BEQ     $FD3C               ; {hard.MMC1_3+1D3C}
+FCED: F0 4D           BEQ     $FD3C               ; {}
 FCEF: C9 40           CMP     #$40                ; 
-FCF1: F0 49           BEQ     $FD3C               ; {hard.MMC1_3+1D3C}
+FCF1: F0 49           BEQ     $FD3C               ; {}
 FCF3: C9 1E           CMP     #$1E                ; 
-FCF5: F0 45           BEQ     $FD3C               ; {hard.MMC1_3+1D3C}
+FCF5: F0 45           BEQ     $FD3C               ; {}
 FCF7: C9 2E           CMP     #$2E                ; 
-FCF9: F0 41           BEQ     $FD3C               ; {hard.MMC1_3+1D3C}
+FCF9: F0 41           BEQ     $FD3C               ; {}
 FCFB: C9 53           CMP     #$53                ; 
-FCFD: B0 3D           BCS     $FD3C               ; {hard.MMC1_3+1D3C}
+FCFD: B0 3D           BCS     $FD3C               ; {}
 FCFF: A5 4B           LDA     <$4B                ; {ram.004B}
-FD01: F0 04           BEQ     $FD07               ; {hard.MMC1_3+1D07}
+FD01: F0 04           BEQ     $FD07               ; {}
 FD03: 9D 92 04        STA     $0492,X             ; 
 FD06: 60              RTS                         ; 
 FD07: AE 40 03        LDX     $0340               ; {ram.0340}
 FD0A: A9 05           LDA     #$05                ; 
 FD0C: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FD0F: 20 24 90        JSR     $9024               ; {hard.MMC1_0+1024} 5
+FD0F: 20 24 90        JSR     $9024               ; 5
 FD12: AD 25 05        LDA     $0525               ; {ram.0525}
 FD15: 48              PHA                         ; 
 FD16: 0A              ASL     A                   ; 
@@ -3339,8 +3339,8 @@ FD29: 69 02           ADC     #$02                ;
 FD2B: 85 4B           STA     <$4B                ; {ram.004B}
 FD2D: A9 05           LDA     #$05                ; 
 FD2F: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FD32: 20 13 8A        JSR     $8A13               ; {hard.MMC1_0+A13} 5
-FD35: B0 C8           BCS     $FCFF               ; {hard.MMC1_3+1CFF}
+FD32: 20 13 8A        JSR     $8A13               ; 5
+FD35: B0 C8           BCS     $FCFF               ; {}
 FD37: A9 00           LDA     #$00                ; 
 FD39: 9D 05 04        STA     $0405,X             ; {ram.0405}
 FD3C: A9 04           LDA     #$04                ; 
@@ -3348,31 +3348,31 @@ FD3E: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
 FD41: AE 40 03        LDX     $0340               ; {ram.0340}
 FD44: BC 4F 03        LDY     $034F,X             ; {ram.034F}
 FD47: C0 1E           CPY     #$1E                ; 
-FD49: F0 0B           BEQ     $FD56               ; {hard.MMC1_3+1D56}
+FD49: F0 0B           BEQ     $FD56               ; {}
 FD4B: C0 22           CPY     #$22                ; 
-FD4D: F0 07           BEQ     $FD56               ; {hard.MMC1_3+1D56}
+FD4D: F0 07           BEQ     $FD56               ; {}
 FD4F: C0 53           CPY     #$53                ; 
-FD51: B0 03           BCS     $FD56               ; {hard.MMC1_3+1D56}
+FD51: B0 03           BCS     $FD56               ; {}
 FD53: 8A              TXA                         ; 
 FD54: 95 28           STA     $28,X               ; {ram.0028}
-FD56: B9 EF FA        LDA     $FAEF,Y             ; {hard.MMC1_3+1AEF}
+FD56: B9 EF FA        LDA     $FAEF,Y             ; {}
 FD59: 9D BF 04        STA     $04BF,X             ; 
 FD5C: 98              TYA                         ; 
 FD5D: 85 00           STA     <$00                ; {ram.GP_00}
 FD5F: 4A              LSR     A                   ; 
 FD60: A8              TAY                         ; 
-FD61: B9 4E FB        LDA     $FB4E,Y             ; {hard.MMC1_3+1B4E}
-FD64: 20 00 B0        JSR     $B000               ; {hard.MMC1_1+1000}
+FD61: B9 4E FB        LDA     $FB4E,Y             ; {}
+FD64: 20 00 B0        JSR     $B000               ; 
 FD67: 9D 85 04        STA     $0485,X             ; 
 FD6A: A5 00           LDA     <$00                ; {ram.GP_00}
 FD6C: C9 6A           CMP     #$6A                ; 
-FD6E: 90 08           BCC     $FD78               ; {hard.MMC1_3+1D78}
+FD6E: 90 08           BCC     $FD78               ; {}
 FD70: A9 01           LDA     #$01                ; 
 FD72: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FD75: 4C D0 85        JMP     $85D0               ; {hard.MMC1_0+5D0} 1
+FD75: 4C D0 85        JMP     $85D0               ; 1
 FD78: C9 5F           CMP     #$5F                ; 
-FD7A: 90 03           BCC     $FD7F               ; {hard.MMC1_3+1D7F}
-FD7C: 4C CA FE        JMP     $FECA               ; {hard.MMC1_3+1ECA}
+FD7A: 90 03           BCC     $FD7F               ; {}
+FD7C: 4C CA FE        JMP     $FECA               ; {}
 FD7F: 20 E2 E5        JSR     $E5E2               ; {code.SwitchAJumpRet}
 FD82: 94 FC        ; 00 FC94
 FD84: 25 80        ; 01 8025
@@ -3473,42 +3473,42 @@ FE3E: D1 FE        ; 5E FED1
 
 FE40: A9 01           LDA     #$01                ; 
 FE42: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FE45: 4C 18 A0        JMP     $A018               ; {hard.MMC1_1+18} 1
+FE45: 4C 18 A0        JMP     $A018               ; 1
 FE48: A9 01           LDA     #$01                ; 
 FE4A: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FE4D: 4C E2 A2        JMP     $A2E2               ; {hard.MMC1_1+2E2} 1
+FE4D: 4C E2 A2        JMP     $A2E2               ; 1
 FE50: A9 01           LDA     #$01                ; 
 FE52: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FE55: 4C EE A3        JMP     $A3EE               ; {hard.MMC1_1+3EE} 1
+FE55: 4C EE A3        JMP     $A3EE               ; 1
 FE58: A9 01           LDA     #$01                ; 
 FE5A: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FE5D: 4C 1A A3        JMP     $A31A               ; {hard.MMC1_1+31A} 1
+FE5D: 4C 1A A3        JMP     $A31A               ; 1
 FE60: A9 01           LDA     #$01                ; 
 FE62: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FE65: 4C 4A A3        JMP     $A34A               ; {hard.MMC1_1+34A} 1
+FE65: 4C 4A A3        JMP     $A34A               ; 1
 FE68: A9 01           LDA     #$01                ; 
 FE6A: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FE6D: 4C FC 89        JMP     $89FC               ; {hard.MMC1_0+9FC} 1
+FE6D: 4C FC 89        JMP     $89FC               ; 1
 FE70: A9 01           LDA     #$01                ; 
 FE72: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FE75: 4C 40 8A        JMP     $8A40               ; {hard.MMC1_0+A40} 1
+FE75: 4C 40 8A        JMP     $8A40               ; 1
 FE78: A9 01           LDA     #$01                ; 
 FE7A: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FE7D: 4C B4 8A        JMP     $8AB4               ; {hard.MMC1_0+AB4} 1
+FE7D: 4C B4 8A        JMP     $8AB4               ; 1
 FE80: A9 01           LDA     #$01                ; 
 FE82: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FE85: 4C D9 8A        JMP     $8AD9               ; {hard.MMC1_0+AD9} 1
+FE85: 4C D9 8A        JMP     $8AD9               ; 1
 FE88: A9 01           LDA     #$01                ; 
 FE8A: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FE8D: 4C A6 8B        JMP     $8BA6               ; {hard.MMC1_0+BA6} 1
+FE8D: 4C A6 8B        JMP     $8BA6               ; 1
 FE90: A9 01           LDA     #$01                ; 
 FE92: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank}
-FE95: 4C 5A 8C        JMP     $8C5A               ; {hard.MMC1_0+C5A} 1
+FE95: 4C 5A 8C        JMP     $8C5A               ; 1
 FE98: BD F0 04        LDA     $04F0,X             ; {ram.04F0}
-FE9B: F0 08           BEQ     $FEA5               ; {hard.MMC1_3+1EA5}
+FE9B: F0 08           BEQ     $FEA5               ; {}
 FE9D: A5 15           LDA     <$15                ; {ram.0015}
 FE9F: 4A              LSR     A                   ; 
-FEA0: B0 03           BCS     $FEA5               ; {hard.MMC1_3+1EA5}
+FEA0: B0 03           BCS     $FEA5               ; {}
 FEA2: DE F0 04        DEC     $04F0,X             ; {ram.04F0}
 FEA5: 60              RTS                         ; 
 FEA6: A9 20           LDA     #$20                ; 
@@ -3522,15 +3522,15 @@ FEB6: A9 00           LDA     #$00                ;
 FEB8: 4C A5 71        JMP     $71A5               ; {ram.71A5}
 FEBB: A0 0C           LDY     #$0C                ; 
 FEBD: 88              DEY                         ; 
-FEBE: F0 07           BEQ     $FEC7               ; {hard.MMC1_3+1EC7}
+FEBE: F0 07           BEQ     $FEC7               ; {}
 FEC0: B9 4F 03        LDA     $034F,Y             ; {ram.034F}
-FEC3: D0 F8           BNE     $FEBD               ; {hard.MMC1_3+1EBD}
+FEC3: D0 F8           BNE     $FEBD               ; {}
 FEC5: 84 59           STY     <$59                ; {ram.0059}
 FEC7: C0 00           CPY     #$00                ; 
 FEC9: 60              RTS                         ; 
 FECA: A9 81           LDA     #$81                ; 
 FECC: 9D BF 04        STA     $04BF,X             ; 
-FECF: D0 05           BNE     $FED6               ; {hard.MMC1_3+1ED6}
+FECF: D0 05           BNE     $FED6               ; {}
 FED1: A9 01           LDA     #$01                ; 
 FED3: 8D 1A 05        STA     $051A               ; {ram.051A}
 FED6: A9 00           LDA     #$00                ; 
@@ -3544,27 +3544,27 @@ FEEC: 31 32 33 35 34 36 37 37
 
 FEF4: AC 1A 05        LDY     $051A               ; {ram.051A}
 FEF7: C0 0C           CPY     #$0C                ; 
-FEF9: B0 2D           BCS     $FF28               ; {hard.MMC1_3+1F28}
+FEF9: B0 2D           BCS     $FF28               ; {}
 FEFB: A5 15           LDA     <$15                ; {ram.0015}
 FEFD: 29 07           AND     #$07                ; 
 FEFF: C9 04           CMP     #$04                ; 
-FF01: D0 25           BNE     $FF28               ; {hard.MMC1_3+1F28}
+FF01: D0 25           BNE     $FF28               ; {}
 FF03: EE 1A 05        INC     $051A               ; {ram.051A}
 FF06: C0 0B           CPY     #$0B                ; 
-FF08: F0 1F           BEQ     $FF29               ; {hard.MMC1_3+1F29}
+FF08: F0 1F           BEQ     $FF29               ; {}
 FF0A: 98              TYA                         ; 
 FF0B: 48              PHA                         ; 
 FF0C: A0 07           LDY     #$07                ; 
-FF0E: B9 E0 FE        LDA     $FEE0,Y             ; {hard.MMC1_3+1EE0}
+FF0E: B9 E0 FE        LDA     $FEE0,Y             ; {}
 FF11: 99 02 03        STA     $0302,Y             ; {ram.0302}
 FF14: 88              DEY                         ; 
-FF15: 10 F7           BPL     $FF0E               ; {hard.MMC1_3+1F0E}
+FF15: 10 F7           BPL     $FF0E               ; {}
 FF17: 68              PLA                         ; 
 FF18: A8              TAY                         ; 
-FF19: B9 E8 FE        LDA     $FEE8,Y             ; {hard.MMC1_3+1EE8}
+FF19: B9 E8 FE        LDA     $FEE8,Y             ; {}
 FF1C: 8D 08 03        STA     $0308               ; {ram.0308}
 FF1F: C0 0A           CPY     #$0A                ; 
-FF21: D0 05           BNE     $FF28               ; {hard.MMC1_3+1F28}
+FF21: D0 05           BNE     $FF28               ; {}
 FF23: A9 99           LDA     #$99                ; 
 FF25: 8D 4A 03        STA     $034A               ; {ram.034A}
 FF28: 60              RTS                         ; 
@@ -3573,14 +3573,14 @@ FF29: A9 60           LDA     #$60                ;
 FF2B: 95 70           STA     $70,X               ; {ram.0070}
 FF2D: A9 90           LDA     #$90                ; 
 FF2F: 95 84           STA     $84,X               ; {ram.0084}
-FF31: 4C 32 8F        JMP     $8F32               ; {hard.MMC1_0+F32}
+FF31: 4C 32 8F        JMP     $8F32               ; 
 
 FF34: A5 15           LDA     <$15                ; {ram.0015}
 FF36: 29 04           AND     #$04                ; 
-FF38: F0 EE           BEQ     $FF28               ; {hard.MMC1_3+1F28}
+FF38: F0 EE           BEQ     $FF28               ; {}
 FF3A: CE 1A 05        DEC     $051A               ; {ram.051A}
 FF3D: AC 1A 05        LDY     $051A               ; {ram.051A}
-FF40: 4C 0A FF        JMP     $FF0A               ; {hard.MMC1_3+1F0A}
+FF40: 4C 0A FF        JMP     $FF0A               ; {}
 
 FF43: FF FF FF FF FF FF FF FF FF FF FF FF
 FF4F: FF
@@ -3604,27 +3604,27 @@ FF57: A2 FF           LDX     #$FF                ; Stack to ...
 FF59: 9A              TXS                         ; ... 01FF
 FF5A: AD 02 20        LDA     $2002               ; {hard.P_STATUS} Wait ...
 FF5D: 29 80           AND     #$80                ; ... for ...
-FF5F: F0 F9           BEQ     $FF5A               ; {hard.MMC1_3+1F5A} ... VBLANK
+FF5F: F0 F9           BEQ     $FF5A               ; {} ... VBLANK
 FF61: AD 02 20        LDA     $2002               ; {hard.P_STATUS} Wait ...
 FF64: 29 80           AND     #$80                ; ... for another ...
-FF66: F0 F9           BEQ     $FF61               ; {hard.MMC1_3+1F61} ... VBLANK (1st might have been a leftover flag)
+FF66: F0 F9           BEQ     $FF61               ; {} ... VBLANK (1st might have been a leftover flag)
 FF68: 09 FF           ORA     #$FF                ; Reset ...
-FF6A: 8D 00 80        STA     $8000               ; {hard.MMC1_0} ... ...
-FF6D: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ... all ...
-FF70: 8D 00 C0        STA     $C000               ; {hard.MMC1_2} ... four ...
-FF73: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} ... MMC1 registers
+FF6A: 8D 00 80        STA     $8000               ; ... ...
+FF6D: 8D 00 A0        STA     $A000               ; ... all ...
+FF70: 8D 00 C0        STA     $C000               ; {} ... four ...
+FF73: 8D 00 E0        STA     $E000               ; {} ... MMC1 registers
 FF76: A9 0F           LDA     #$0F                ; Set MMC control to 8K CHR ROM, fixed/bank 16K PRG pages, ...
 FF78: 20 98 FF        JSR     $FF98               ; {code.MMC_Control} ... and horizontal mirroring (vertical scrolling)
 FF7B: A9 00           LDA     #$00                ; Set MMC reg1 VROM bank
-FF7D: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} The cartridge doesn't ...
+FF7D: 8D 00 A0        STA     $A000               ; The cartridge doesn't ...
 FF80: 4A              LSR     A                   ; ... swap VROM pages. ...
-FF81: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ... Just ...
+FF81: 8D 00 A0        STA     $A000               ; ... Just ...
 FF84: 4A              LSR     A                   ; ... set ...
-FF85: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ... to ...
+FF85: 8D 00 A0        STA     $A000               ; ... to ...
 FF88: 4A              LSR     A                   ; ...
-FF89: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ...
+FF89: 8D 00 A0        STA     $A000               ; ...
 FF8C: 4A              LSR     A                   ; ...
-FF8D: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ... --00000
+FF8D: 8D 00 A0        STA     $A000               ; ... --00000
 FF90: A9 07           LDA     #$07                ; Interesting! Put bank 7 ...
 FF92: 20 AC FF        JSR     $FFAC               ; {code.MMC_Bank} ... in the low ROM bank
 FF95: 4C 40 E4        JMP     $E440               ; {code.Startup} Start of game
@@ -3648,15 +3648,15 @@ FF95: 4C 40 E4        JMP     $E440               ; {code.Startup} Start of game
 ```code
 MMC_Control: 
 ; Set the MMC Control register (0) to value in A
-FF98: 8D 00 80        STA     $8000               ; {hard.MMC1_0} MMC Register 0 (control): --edcba ...
+FF98: 8D 00 80        STA     $8000               ; MMC Register 0 (control): --edcba ...
 FF9B: 4A              LSR     A                   ; ... mirroring
-FF9C: 8D 00 80        STA     $8000               ; {hard.MMC1_0} ... mirroring
+FF9C: 8D 00 80        STA     $8000               ; ... mirroring
 FF9F: 4A              LSR     A                   ; ... switch: c=0 high ROM, C=1 low ROM
-FFA0: 8D 00 80        STA     $8000               ; {hard.MMC1_0} ... size: d=0 32K (full), D=1 16K (half)
+FFA0: 8D 00 80        STA     $8000               ; ... size: d=0 32K (full), D=1 16K (half)
 FFA3: 4A              LSR     A                   ; ... chrrom mode: e=0 8K banks, B=1 4K banks
-FFA4: 8D 00 80        STA     $8000               ; {hard.MMC1_0} The MMC is write-trigger (write to ROM ...
+FFA4: 8D 00 80        STA     $8000               ; The MMC is write-trigger (write to ROM ...
 FFA7: 4A              LSR     A                   ; .. has no affect anyway).
-FFA8: 8D 00 80        STA     $8000               ; {hard.MMC1_0} Bits are written from LSB to MSB ...
+FFA8: 8D 00 80        STA     $8000               ; Bits are written from LSB to MSB ...
 FFAB: 60              RTS                         ; ... only 5 bits
 ```
 
@@ -3665,15 +3665,15 @@ FFAB: 60              RTS                         ; ... only 5 bits
 ```code
 MMC_Bank: 
 ; Set the MMC Bank register (3) to value in A
-FFAC: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} MMC Register 3 (ROM page switching): --edcba ...
+FFAC: 8D 00 E0        STA     $E000               ; {} MMC Register 3 (ROM page switching): --edcba ...
 FFAF: 4A              LSR     A                   ; ...
-FFB0: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} ... Write the ...
+FFB0: 8D 00 E0        STA     $E000               ; {} ... Write the ...
 FFB3: 4A              LSR     A                   ; ... switching ...
-FFB4: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} ... page ...
+FFB4: 8D 00 E0        STA     $E000               ; {} ... page ...
 FFB7: 4A              LSR     A                   ; ... number
-FFB8: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} The MMC is write-trigger (write to ROM ...
+FFB8: 8D 00 E0        STA     $E000               ; {} The MMC is write-trigger (write to ROM ...
 FFBB: 4A              LSR     A                   ; .. has no affect anyway).
-FFBC: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} Bits are written from LSB to MSB ...
+FFBC: 8D 00 E0        STA     $E000               ; {} Bits are written from LSB to MSB ...
 FFBF: 60              RTS                         ; ... only 5 bits
 
 FFC0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF

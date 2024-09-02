@@ -325,11 +325,11 @@ F215: 29 08           AND     #$08
 F217: D0 04           BNE     $F21D               ; {}
 F219: A0 10           LDY     #$10                
 F21B: A2 0F           LDX     #$0F                
-F21D: 86 D2           STX     $D2                 ; {ram.mD2}
+F21D: 86 D2           STX     $D2                 ; {ram.scratch1}
 F21F: A2 03           LDX     #$03                
 F221: B9 5B F7        LDA     $F75B,Y             ; {}
 F224: 45 D1           EOR     $D1                 ; {ram.mD1}
-F226: 25 D2           AND     $D2                 ; {ram.mD2}
+F226: 25 D2           AND     $D2                 ; {ram.scratch1}
 F228: 95 06           STA     $06,X               ; {hard.COLUP0}
 F22A: 95 D6           STA     $D6,X               ; {ram.colorP0}
 F22C: 95 D8           STA     $D8,X               ; {ram.mD8}
@@ -340,21 +340,21 @@ F232: 60              RTS
 F233: A2 01           LDX     #$01                
 F235: B5 A1           LDA     $A1,X               ; {ram.scoreP1}
 F237: 29 0F           AND     #$0F                
-F239: 85 D2           STA     $D2                 ; {ram.mD2}
+F239: 85 D2           STA     $D2                 ; {ram.scratch1}
 F23B: 0A              ASL     A                   
 F23C: 0A              ASL     A                   
 F23D: 18              CLC                         
-F23E: 65 D2           ADC     $D2                 ; {ram.mD2}
+F23E: 65 D2           ADC     $D2                 ; {ram.scratch1}
 F240: 95 E0           STA     $E0,X               ; {ram.leftDigitLSD}
 F242: B5 A1           LDA     $A1,X               ; {ram.scoreP1}
 F244: 29 F0           AND     #$F0                
 F246: 4A              LSR     A                   
 F247: 4A              LSR     A                   
-F248: 85 D2           STA     $D2                 ; {ram.mD2}
+F248: 85 D2           STA     $D2                 ; {ram.scratch1}
 F24A: 4A              LSR     A                   
 F24B: 4A              LSR     A                   
 F24C: 18              CLC                         
-F24D: 65 D2           ADC     $D2                 ; {ram.mD2}
+F24D: 65 D2           ADC     $D2                 ; {ram.scratch1}
 F24F: 95 E2           STA     $E2,X               ; {ram.leftDigitMSD}
 F251: CA              DEX                         
 F252: 10 E1           BPL     $F235               ; {}
@@ -510,11 +510,11 @@ F359: 30 02           BMI     $F35D               ; {}
 F35B: A9 FF           LDA     #$FF                
 F35D: 49 FF           EOR     #$FF                
 F35F: 29 0F           AND     #$0F                
-F361: 85 D2           STA     $D2                 ; {ram.mD2}
+F361: 85 D2           STA     $D2                 ; {ram.scratch1}
 F363: A4 85           LDY     $85                 ; {ram.m85}
 F365: B9 05 F7        LDA     $F705,Y             ; {}
 F368: 18              CLC                         
-F369: 65 D2           ADC     $D2                 ; {ram.mD2}
+F369: 65 D2           ADC     $D2                 ; {ram.scratch1}
 F36B: A8              TAY                         
 F36C: B9 08 F7        LDA     $F708,Y             ; {}
 F36F: 29 0F           AND     #$0F                

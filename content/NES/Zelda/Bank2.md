@@ -42,27 +42,27 @@ InitVRAM:
 ; VRAM 1000-16FF Background (text)
 ; VRAM 1F00-1FFF Background (misc)
 ;
-8012: 20 25 E6        JSR     $E625               ; {hard.MMC1_2+2625} Turn off all video
+8012: 20 25 E6        JSR     $E625               ; Turn off all video
 8015: AD 02 20        LDA     $2002               ; {hard.P_STATUS} Clear address latch (and scroll)
 8018: AD 1D 05        LDA     $051D               ; {ram.!SetCount} Set pointer
 801B: 0A              ASL     A                   ; *2 bytes per structure per set
 801C: AA              TAX                         ; Index register
-801D: BD 00 80        LDA     $8000,X             ; {hard.MMC1_0} Read LSB of ...
+801D: BD 00 80        LDA     $8000,X             ; {} Read LSB of ...
 8020: 85 00           STA     <$00                ; {ram.GP_00} ... ROM pointer
-8022: BD 06 80        LDA     $8006,X             ; {hard.MMC1_0+6} Read MSB of ...
+8022: BD 06 80        LDA     $8006,X             ; {} Read MSB of ...
 8025: 85 02           STA     <$02                ; {ram.GP_02} ... count
-8027: BD 0C 80        LDA     $800C,X             ; {hard.MMC1_0+C} Read MSB of ...
+8027: BD 0C 80        LDA     $800C,X             ; {} Read MSB of ...
 802A: 8D 06 20        STA     $2006               ; {hard.P_VRAM_ADDR} ... VRAM address
 802D: E8              INX                         ; Next in 2 byte pointer
-802E: BD 00 80        LDA     $8000,X             ; {hard.MMC1_0} Read MSB of ...
+802E: BD 00 80        LDA     $8000,X             ; {} Read MSB of ...
 8031: 85 01           STA     <$01                ; {ram.GP_01} ... ROM pointer
-8033: BD 06 80        LDA     $8006,X             ; {hard.MMC1_0+6} Read LSB of ...
+8033: BD 06 80        LDA     $8006,X             ; {} Read LSB of ...
 8036: 85 03           STA     <$03                ; {ram.GP_03} ... count
-8038: BD 0C 80        LDA     $800C,X             ; {hard.MMC1_0+C} Read LSB of VRAM address
+8038: BD 0C 80        LDA     $800C,X             ; {} Read LSB of VRAM address
 803B: 20 4F 80        JSR     $804F               ; {code.CopyToVRAM} Do the copy (51D is incremented in routine)
 803E: AD 1D 05        LDA     $051D               ; {ram.!SetCount} Set count
 8041: C9 03           CMP     #$03                ; All done?
-8043: D0 D3           BNE     $8018               ; {hard.MMC1_0+18} No ... do all sets
+8043: D0 D3           BNE     $8018               ; {} No ... do all sets
 8045: A9 5A           LDA     #$5A                ; Make note that ...
 8047: 85 F5           STA     <$F5                ; {ram.TileFlagA} ... these tiles have been set
 8049: A9 00           LDA     #$00                ; Reset set ...
@@ -99,9 +99,9 @@ CopyToVRAM:
 8071: 85 02           STA     <$02                ; {ram.GP_02} ... 03
 ;
 8073: A5 02           LDA     <$02                ; {ram.GP_02} More to do?
-8075: D0 DD           BNE     $8054               ; {hard.MMC1_0+54} Yes ... go move all
+8075: D0 DD           BNE     $8054               ; {} Yes ... go move all
 8077: A5 03           LDA     <$03                ; {ram.GP_03} More to do?
-8079: D0 D9           BNE     $8054               ; {hard.MMC1_0+54} Yes ... go move all
+8079: D0 D9           BNE     $8054               ; {} Yes ... go move all
 807B: EE 1D 05        INC     $051D               ; {ram.!SetCount} Next set
 807E: 60              RTS                         ; Done
 ```
@@ -2201,37 +2201,37 @@ MiscImages:
 ;   042D=2 Treasure info scrolls up the screen
 ;   042D=3 End of treasure info steady for a moment
 
-9000: 20 25 E6        JSR     $E625               ; {hard.MMC1_2+2625} Disable the video
+9000: 20 25 E6        JSR     $E625               ; Disable the video
 9003: AD 2C 04        LDA     $042C               ; {ram.!SplashMode} Are we on the splash LOGO screen?
-9006: D0 0C           BNE     $9014               ; {hard.MMC1_0+1014} No ... handle the treasure info sequence
+9006: D0 0C           BNE     $9014               ; {} No ... handle the treasure info sequence
 ;
 9008: AD 2D 04        LDA     $042D               ; {ram.!SplashSeq} The splash sequence number
-900B: 20 E2 E5        JSR     $E5E2               ; {hard.MMC1_2+25E2} Do the LOGO screen sequence function
+900B: 20 E2 E5        JSR     $E5E2               ; Do the LOGO screen sequence function
 900E: E7 94        ; 94E7 if A=0
 9010: 12 95        ; 9512 if A=1
 9012: 45 95        ; 9545 if A=2              ; Start the main Zelda theme, ?MORE?
 
 9014: AD 2D 04        LDA     $042D               ; {ram.!SplashSeq} The splash sequence number
-9017: 20 E2 E5        JSR     $E5E2               ; {hard.MMC1_2+25E2} Do the TREASURE INFO screen sequence function
+9017: 20 E2 E5        JSR     $E5E2               ; Do the TREASURE INFO screen sequence function
 901A: E7 94        ; 94E7 if A=0
 901C: 73 95        ; 9573 if A=1
 901E: 9A 95        ; 959A if A=2
 
 9020: A5 13           LDA     <$13                ; {ram.0013}
-9022: D0 0C           BNE     $9030               ; {hard.MMC1_0+1030}
+9022: D0 0C           BNE     $9030               ; {}
 9024: AD 28 05        LDA     $0528               ; {ram.0528}
-9027: D0 07           BNE     $9030               ; {hard.MMC1_0+1030}
-9029: 20 CF 90        JSR     $90CF               ; {hard.MMC1_0+10CF}
+9027: D0 07           BNE     $9030               ; {}
+9029: 20 CF 90        JSR     $90CF               ; {}
 902C: A5 11           LDA     <$11                ; {ram.0011}
-902E: F0 2C           BEQ     $905C               ; {hard.MMC1_0+105C}
+902E: F0 2C           BEQ     $905C               ; {}
 9030: A5 13           LDA     <$13                ; {ram.0013}
-9032: 20 E2 E5        JSR     $E5E2               ; {hard.MMC1_2+25E2}
+9032: 20 E2 E5        JSR     $E5E2               ; 
 9035: 3B 90        ; 903B if A=0
 9037: A0 A2        ; A2A0 if A=1
 9039: 5D 90        ; 905D if A=2
 903B: A5 F8           LDA     <$F8                ; {ram.00F8}
 903D: 29 10           AND     #$10                ; 
-903F: F0 1B           BEQ     $905C               ; {hard.MMC1_0+105C}
+903F: F0 1B           BEQ     $905C               ; {}
 9041: 85 F6           STA     <$F6                ; {ram.TileFlagB}
 9043: A9 00           LDA     #$00                ; 
 9045: 8D 00 06        STA     $0600               ; {ram.SND_ReqMusic}
@@ -2239,25 +2239,25 @@ MiscImages:
 904B: A9 5A           LDA     #$5A                ; 
 904D: 8D 28 05        STA     $0528               ; {ram.0528}
 9050: E6 13           INC     <$13                ; {ram.0013}
-9052: 20 25 E6        JSR     $E625               ; {hard.MMC1_2+2625}
-9055: 20 F7 E5        JSR     $E5F7               ; {hard.MMC1_2+25F7}
+9052: 20 25 E6        JSR     $E625               ; 
+9055: 20 F7 E5        JSR     $E5F7               ; 
 9058: A9 12           LDA     #$12                ; 
 905A: 85 14           STA     <$14                ; {ram.0014}
 905C: 60              RTS                         ; 
 
-905D: 20 25 E6        JSR     $E625               ; {hard.MMC1_2+2625}
+905D: 20 25 E6        JSR     $E625               ; 
 9060: A9 00           LDA     #$00                ; 
 9062: 85 16           STA     <$16                ; {ram.0016}
 9064: 20 F1 6D        JSR     $6DF1               ; {ram.6DF1} (BAT-RAM)
 9067: A0 02           LDY     #$02                ; 
 9069: B1 06           LDA     ($06),Y             ; {ram.0006}
 906B: 99 33 06        STA     $0633,Y             ; 
-906E: D0 13           BNE     $9083               ; {hard.MMC1_0+1083}
+906E: D0 13           BNE     $9083               ; {}
 9070: 98              TYA                         ; 
 9071: 48              PHA                         ; 
 9072: 84 16           STY     <$16                ; {ram.0016}
 9074: 20 F1 6D        JSR     $6DF1               ; {ram.6DF1} (BAT-RAM)
-9077: 20 5D A3        JSR     $A35D               ; {hard.MMC1_1+35D}
+9077: 20 5D A3        JSR     $A35D               ; {}
 907A: A9 00           LDA     #$00                ; 
 907C: 85 16           STA     <$16                ; {ram.0016}
 907E: 20 F1 6D        JSR     $6DF1               ; {ram.6DF1} (BAT-RAM)
@@ -2268,14 +2268,14 @@ MiscImages:
 9088: B1 0C           LDA     ($0C),Y             ; {ram.000C}
 908A: 99 2D 06        STA     $062D,Y             ; 
 908D: 88              DEY                         ; 
-908E: 10 D9           BPL     $9069               ; {hard.MMC1_0+1069}
+908E: 10 D9           BPL     $9069               ; {}
 9090: A0 18           LDY     #$18                ; 
 9092: A2 00           LDX     #$00                ; 
 9094: B1 00           LDA     ($00),Y             ; {ram.GP_00}
 9096: 48              PHA                         ; 
 9097: 8A              TXA                         ; 
 9098: 4A              LSR     A                   ; 
-9099: B0 0C           BCS     $90A7               ; {hard.MMC1_0+10A7}
+9099: B0 0C           BCS     $90A7               ; {}
 909B: 68              PLA                         ; 
 909C: 29 F0           AND     #$F0                ; 
 909E: 85 0C           STA     <$0C                ; {ram.000C}
@@ -2290,19 +2290,19 @@ MiscImages:
 90AB: C8              INY                         ; 
 90AC: E8              INX                         ; 
 90AD: E0 06           CPX     #$06                ; 
-90AF: F0 0B           BEQ     $90BC               ; {hard.MMC1_0+10BC}
+90AF: F0 0B           BEQ     $90BC               ; {}
 90B1: 8A              TXA                         ; 
 90B2: 4A              LSR     A                   ; 
-90B3: B0 DF           BCS     $9094               ; {hard.MMC1_0+1094}
+90B3: B0 DF           BCS     $9094               ; {}
 90B5: 98              TYA                         ; 
 90B6: 69 26           ADC     #$26                ; 
 90B8: A8              TAY                         ; 
-90B9: 4C 94 90        JMP     $9094               ; {hard.MMC1_0+1094}
+90B9: 4C 94 90        JMP     $9094               ; {}
 90BC: A0 17           LDY     #$17                ; 
 90BE: B1 04           LDA     ($04),Y             ; {ram.0004}
 90C0: 99 38 06        STA     $0638,Y             ; 
 90C3: 88              DEY                         ; 
-90C4: 10 F8           BPL     $90BE               ; {hard.MMC1_0+10BE}
+90C4: 10 F8           BPL     $90BE               ; {}
 90C6: E6 12           INC     <$12                ; {ram.0012}
 90C8: A9 00           LDA     #$00                ; 
 90CA: 85 11           STA     <$11                ; {ram.0011}
@@ -2310,13 +2310,13 @@ MiscImages:
 90CE: 60              RTS                         ; 
 
 90CF: AD 2C 04        LDA     $042C               ; {ram.!SplashMode}
-90D2: D0 0A           BNE     $90DE               ; {hard.MMC1_0+10DE}
+90D2: D0 0A           BNE     $90DE               ; {}
 90D4: AD 2D 04        LDA     $042D               ; {ram.!SplashSeq}
-90D7: 20 E2 E5        JSR     $E5E2               ; {hard.MMC1_2+25E2}
+90D7: 20 E2 E5        JSR     $E5E2               ; 
 90DA: AC 95        ; 95AC if A=0
 90DC: 79 9B        ; 9B79 if A=1
 90DE: AD 2D 04        LDA     $042D               ; {ram.!SplashSeq}
-90E1: 20 E2 E5        JSR     $E5E2               ; {hard.MMC1_2+25E2}
+90E1: 20 E2 E5        JSR     $E5E2               ; 
 90E4: C1 95        ; 95C1 if A=0
 90E6: EC 95        ; 95EC if A=1
 90E8: 0C 96        ; 960C if A=2
@@ -2599,10 +2599,10 @@ MiscImages:
 924A: 06 12           ASL     <$12                ; {ram.0012}
 924C: 14                              ;
 924D: 0C                              ;
-924E: 10 19           BPL     $9269               ; {hard.MMC1_0+1269}
+924E: 10 19           BPL     $9269               ; {}
 9250: 17                              ;
 9251: 1B                              ;
-9252: 30 31           BMI     $9285               ; {hard.MMC1_0+1285}
+9252: 30 31           BMI     $9285               ; {}
 9254: 32                              ;
 9255: 33                              ;
 9256: 1A                              ;
@@ -2616,13 +2616,13 @@ MiscImages:
 9264: 11 0B           ORA     ($0B),Y             ; {ram.000B}
 9266: 16 1B           ASL     $1B,X               ; {ram.001B}
 9268: 44                              ;
-9269: AC E0 E2        LDY     $E2E0               ; {hard.MMC1_2+22E0}
-926C: EC EE F8        CPX     $F8EE               ; {hard.MMC1_3+18EE}
+9269: AC E0 E2        LDY     $E2E0               ; 
+926C: EC EE F8        CPX     $F8EE               ; 
 926F: FA                              ;
 9270: E4 E6           CPX     <$E6                ; {ram.00E6}
-9272: F0 F2           BEQ     $9266               ; {hard.MMC1_0+1266}
+9272: F0 F2           BEQ     $9266               ; {}
 9274: FC                              ;
-9275: FE E8 EA        INC     $EAE8,X             ; {hard.MMC1_2+2AE8}
+9275: FE E8 EA        INC     $EAE8,X             ; 
 9278: F4                              ;
 9279: F6 DC           INC     $DC,X               ; 
 927B: DE 00 00        DEC     $0000,X             ; {ram.GP_00}
@@ -2838,7 +2838,7 @@ TrInfoPtrs:
 94E3: 61 94 ;        MAP        COMPASS      ;
 94E5: 75 94 ;            TRIFORCE            ;
 
-94E7: 20 6D E4        JSR     $E46D               ; {hard.MMC1_2+246D} ??
+94E7: 20 6D E4        JSR     $E46D               ; ??
 94EA: EE 2D 04        INC     $042D               ; {ram.!SplashSeq} Next sequence routine
 94ED: 60              RTS                         ; Done
 
@@ -2848,7 +2848,7 @@ TrInfoPtrs:
 94EF: 00              BRK                         ; 
 94F0: 20 36 0F        JSR     $0F36               ; 
 94F3: 00              BRK                         ; 
-94F4: 10 36           BPL     $952C               ; {hard.MMC1_0+152C}
+94F4: 10 36           BPL     $952C               ; {}
 94F6: 17                              ;
 94F7: 27                              ;
 94F8: 0F                              ;
@@ -2876,10 +2876,10 @@ TrInfoPtrs:
 9512: A2 23           LDX     #$23                ; 
 9514: 8E 00 03        STX     $0300               ; {ram.0300}
 9517: 8E 01 03        STX     $0301               ; {ram.0301}
-951A: BD EE 94        LDA     $94EE,X             ; {hard.MMC1_0+14EE}
+951A: BD EE 94        LDA     $94EE,X             ; {}
 951D: 9D 02 03        STA     $0302,X             ; {ram.0302}
 9520: CA              DEX                         ; 
-9521: 10 F7           BPL     $951A               ; {hard.MMC1_0+151A}
+9521: 10 F7           BPL     $951A               ; {}
 ;
 9523: A2 0A           LDX     #$0A                ; 
 9525: A9 00           LDA     #$00                ; 
@@ -2889,31 +2889,31 @@ TrInfoPtrs:
 9530: 9D 1F 04        STA     $041F,X             ; {ram.041F}
 9533: 9D 37 04        STA     $0437,X             ; {ram.0437}
 9536: CA              DEX                         ; 
-9537: 10 F4           BPL     $952D               ; {hard.MMC1_0+152D}
+9537: 10 F4           BPL     $952D               ; {}
 ;
 9539: A2 0A           LDX     #$0A                ; 
 953B: A9 FF           LDA     #$FF                ; 
 953D: 95 AC           STA     $AC,X               ; {ram.00AC}
 953F: CA              DEX                         ; 
-9540: D0 F9           BNE     $953B               ; {hard.MMC1_0+153B}
-9542: 4C EA 94        JMP     $94EA               ; {hard.MMC1_0+14EA}
+9540: D0 F9           BNE     $953B               ; {}
+9542: 4C EA 94        JMP     $94EA               ; {}
 
 
 9545: A9 80           LDA     #$80                ; Start splash song ...
 9547: 8D 00 06        STA     $0600               ; {ram.SND_ReqMusic} ... (Zelda theme)
 954A: A9 10           LDA     #$10                ; 
-954C: 4C A2 95        JMP     $95A2               ; {hard.MMC1_0+15A2}
+954C: 4C A2 95        JMP     $95A2               ; {}
 
 
 954F: 3F                              ;
 9550: 00              BRK                         ; 
 9551: 20 0F 30        JSR     $300F               ; 
-9554: 30 30           BMI     $9586               ; {hard.MMC1_0+1586}
+9554: 30 30           BMI     $9586               ; {}
 9556: 0F                              ;
 9557: 21 30           AND     ($30,X)             ; {ram.0030}
-9559: 30 0F           BMI     $956A               ; {hard.MMC1_0+156A}
+9559: 30 0F           BMI     $956A               ; {}
 955B: 16 30           ASL     $30,X               ; {ram.0030}
-955D: 30 0F           BMI     $956E               ; {hard.MMC1_0+156E}
+955D: 30 0F           BMI     $956E               ; {}
 955F: 29 1A           AND     #$1A                ; 
 9561: 09 0F           ORA     #$0F                ; 
 9563: 29 37           AND     #$37                ; 
@@ -2921,9 +2921,9 @@ TrInfoPtrs:
 9566: 0F                              ;
 9567: 02                              ;
 9568: 22                              ;
-9569: 30 0F           BMI     $957A               ; {hard.MMC1_0+157A}
+9569: 30 0F           BMI     $957A               ; {}
 956B: 16 27           ASL     $27,X               ; {ram.0027}
-956D: 30 0F           BMI     $957E               ; {hard.MMC1_0+157E}
+956D: 30 0F           BMI     $957E               ; {}
 956F: 0B                              ;
 9570: 1B                              ;
 9571: 2B                              ;
@@ -2932,10 +2932,10 @@ TrInfoPtrs:
 9573: A2 23           LDX     #$23                ; ?? affects colors in splash info screen
 9575: 8E 00 03        STX     $0300               ; {ram.0300}
 9578: 8E 01 03        STX     $0301               ; {ram.0301}
-957B: BD 4F 95        LDA     $954F,X             ; {hard.MMC1_0+154F}
+957B: BD 4F 95        LDA     $954F,X             ; {}
 957E: 9D 02 03        STA     $0302,X             ; {ram.0302}
 9581: CA              DEX                         ; 
-9582: 10 F7           BPL     $957B               ; {hard.MMC1_0+157B}
+9582: 10 F7           BPL     $957B               ; {}
 9584: A2 0A           LDX     #$0A                ; 
 9586: A9 00           LDA     #$00                ; 
 9588: 9D 12 04        STA     $0412,X             ; {ram.0412}
@@ -2943,8 +2943,8 @@ TrInfoPtrs:
 958E: 9D 37 04        STA     $0437,X             ; {ram.0437}
 9591: 9D 44 04        STA     $0444,X             ; 
 9594: CA              DEX                         ; 
-9595: 10 F1           BPL     $9588               ; {hard.MMC1_0+1588}
-9597: 4C EA 94        JMP     $94EA               ; {hard.MMC1_0+14EA}
+9595: 10 F1           BPL     $9588               ; {}
+9597: 4C EA 94        JMP     $94EA               ; {}
 
 959A: E6 5C           INC     <$5C                ; {ram.!FlipFlag}
 959C: A9 10           LDA     #$10                ; 
@@ -2957,36 +2957,36 @@ TrInfoPtrs:
 95AB: 60              RTS                         ; 
 95AC: A5 15           LDA     <$15                ; {ram.0015}
 95AE: 29 01           AND     #$01                ; 
-95B0: F0 0B           BEQ     $95BD               ; {hard.MMC1_0+15BD}
+95B0: F0 0B           BEQ     $95BD               ; {}
 95B2: EE 1A 04        INC     $041A               ; {ram.!SeqCount}
 95B5: AD 1A 04        LDA     $041A               ; {ram.!SeqCount}
-95B8: D0 03           BNE     $95BD               ; {hard.MMC1_0+15BD}
-95BA: 4C EA 94        JMP     $94EA               ; {hard.MMC1_0+14EA}
-95BD: 20 6B 98        JSR     $986B               ; {hard.MMC1_0+186B}
+95B8: D0 03           BNE     $95BD               ; {}
+95BA: 4C EA 94        JMP     $94EA               ; {}
+95BD: 20 6B 98        JSR     $986B               ; {}
 95C0: 60              RTS                         ; 
 95C1: A5 15           LDA     <$15                ; {ram.0015}
 95C3: 29 01           AND     #$01                ; 
-95C5: F0 11           BEQ     $95D8               ; {hard.MMC1_0+15D8}
+95C5: F0 11           BEQ     $95D8               ; {}
 95C7: E6 FC           INC     <$FC                ; {ram.CUR_VScroll}
 95C9: A5 FC           LDA     <$FC                ; {ram.CUR_VScroll}
 95CB: C9 F0           CMP     #$F0                ; 
-95CD: D0 09           BNE     $95D8               ; {hard.MMC1_0+15D8}
+95CD: D0 09           BNE     $95D8               ; {}
 95CF: EE 15 04        INC     $0415               ; {ram.0415}
 95D2: A9 00           LDA     #$00                ; 
 95D4: 85 FC           STA     <$FC                ; {ram.CUR_VScroll}
 95D6: E6 5C           INC     <$5C                ; {ram.!FlipFlag}
 95D8: A5 FC           LDA     <$FC                ; {ram.CUR_VScroll}
 95DA: C9 08           CMP     #$08                ; 
-95DC: D0 0D           BNE     $95EB               ; {hard.MMC1_0+15EB}
+95DC: D0 0D           BNE     $95EB               ; {}
 95DE: AD 15 04        LDA     $0415               ; {ram.0415}
-95E1: F0 08           BEQ     $95EB               ; {hard.MMC1_0+15EB}
+95E1: F0 08           BEQ     $95EB               ; {}
 95E3: A9 00           LDA     #$00                ; 
 95E5: 8D 15 04        STA     $0415               ; {ram.0415}
 95E8: EE 2D 04        INC     $042D               ; {ram.!SplashSeq} Next sequence routine
 95EB: 60              RTS                         ; 
 95EC: EE 1A 04        INC     $041A               ; {ram.!SeqCount}
 95EF: AD 1A 04        LDA     $041A               ; {ram.!SeqCount}
-95F2: D0 03           BNE     $95F7               ; {hard.MMC1_0+15F7}
+95F2: D0 03           BNE     $95F7               ; {}
 95F4: EE 2D 04        INC     $042D               ; {ram.!SplashSeq} Next sequence routine
 95F7: A9 29           LDA     #$29                ; 
 95F9: 8D 1D 04        STA     $041D               ; {ram.041D}
@@ -2997,39 +2997,39 @@ TrInfoPtrs:
 9606: A9 E0           LDA     #$E0                ; 
 9608: 8D 17 04        STA     $0417               ; {ram.0417}
 960B: 60              RTS                         ; 
-960C: 20 F7 E5        JSR     $E5F7               ; {hard.MMC1_2+25F7}
-960F: 20 2A 97        JSR     $972A               ; {hard.MMC1_0+172A}
-9612: 20 9D 97        JSR     $979D               ; {hard.MMC1_0+179D}
+960C: 20 F7 E5        JSR     $E5F7               ; 
+960F: 20 2A 97        JSR     $972A               ; {}
+9612: 20 9D 97        JSR     $979D               ; {}
 9615: A5 15           LDA     <$15                ; {ram.0015}
 9617: 29 01           AND     #$01                ; 
-9619: F0 23           BEQ     $963E               ; {hard.MMC1_0+163E}
+9619: F0 23           BEQ     $963E               ; {}
 961B: A2 0A           LDX     #$0A                ; 
 961D: D6 84           DEC     $84,X               ; {ram.0084}
 961F: CA              DEX                         ; 
-9620: D0 FB           BNE     $961D               ; {hard.MMC1_0+161D}
+9620: D0 FB           BNE     $961D               ; {}
 9622: EE 1B 04        INC     $041B               ; {ram.041B}
 9625: AD 1B 04        LDA     $041B               ; {ram.041B}
-9628: D0 03           BNE     $962D               ; {hard.MMC1_0+162D}
+9628: D0 03           BNE     $962D               ; {}
 962A: EE 15 04        INC     $0415               ; {ram.0415}
 962D: AD 15 04        LDA     $0415               ; {ram.0415}
 9630: C9 05           CMP     #$05                ; 
-9632: D0 0B           BNE     $963F               ; {hard.MMC1_0+163F}
+9632: D0 0B           BNE     $963F               ; {}
 9634: AD 1B 04        LDA     $041B               ; {ram.041B}
 9637: C9 80           CMP     #$80                ; 
-9639: D0 04           BNE     $963F               ; {hard.MMC1_0+163F}
+9639: D0 04           BNE     $963F               ; {}
 963B: EE 2D 04        INC     $042D               ; {ram.!SplashSeq} Next sequence routine
 963E: 60              RTS                         ; 
 963F: E6 FC           INC     <$FC                ; {ram.CUR_VScroll}
 9641: A5 FC           LDA     <$FC                ; {ram.CUR_VScroll}
 9643: C9 F0           CMP     #$F0                ; 
-9645: D0 06           BNE     $964D               ; {hard.MMC1_0+164D}
+9645: D0 06           BNE     $964D               ; {}
 9647: E6 5C           INC     <$5C                ; {ram.!FlipFlag}
 9649: A9 00           LDA     #$00                ; 
 964B: 85 FC           STA     <$FC                ; {ram.CUR_VScroll}
 964D: AD 1B 04        LDA     $041B               ; {ram.041B}
 9650: 29 07           AND     #$07                ; 
-9652: D0 EA           BNE     $963E               ; {hard.MMC1_0+163E}
-9654: 20 3A 97        JSR     $973A               ; {hard.MMC1_0+173A}
+9652: D0 EA           BNE     $963E               ; {}
+9654: 20 3A 97        JSR     $973A               ; {}
 9657: A2 20           LDX     #$20                ; 32 bytes in buffer
 9659: A9 FF           LDA     #$FF                ; Terminator value
 965B: 9D 05 03        STA     $0305,X             ; {ram.!BckGndBuf} Terminate list
@@ -3037,7 +3037,7 @@ TrInfoPtrs:
 965F: A9 24           LDA     #$24                ; ??
 9661: 9D 05 03        STA     $0305,X             ; {ram.!BckGndBuf} Fill ...
 9664: CA              DEX                         ; ... list ...
-9665: 10 F8           BPL     $965F               ; {hard.MMC1_0+165F} ... with 24 (blank "space" tile)
+9665: 10 F8           BPL     $965F               ; {} ... with 24 (blank "space" tile)
 9667: A9 20           LDA     #$20                ; 
 9669: 8D 04 03        STA     $0304               ; {ram.0304}
 966C: AD 1D 04        LDA     $041D               ; {ram.041D}
@@ -3047,34 +3047,34 @@ TrInfoPtrs:
 9678: 18              CLC                         ; 
 9679: 69 20           ADC     #$20                ; 
 967B: 8D 1C 04        STA     $041C               ; {ram.041C}
-967E: D0 06           BNE     $9686               ; {hard.MMC1_0+1686}
+967E: D0 06           BNE     $9686               ; {}
 9680: EE 1D 04        INC     $041D               ; {ram.041D}
-9683: 4C A7 96        JMP     $96A7               ; {hard.MMC1_0+16A7}
+9683: 4C A7 96        JMP     $96A7               ; {}
 9686: C9 C0           CMP     #$C0                ; 
-9688: D0 1D           BNE     $96A7               ; {hard.MMC1_0+16A7}
+9688: D0 1D           BNE     $96A7               ; {}
 968A: AD 1D 04        LDA     $041D               ; {ram.041D}
 968D: C9 2B           CMP     #$2B                ; 
-968F: D0 08           BNE     $9699               ; {hard.MMC1_0+1699}
+968F: D0 08           BNE     $9699               ; {}
 9691: A9 20           LDA     #$20                ; 
 9693: 8D 1D 04        STA     $041D               ; {ram.041D}
-9696: 4C A2 96        JMP     $96A2               ; {hard.MMC1_0+16A2}
+9696: 4C A2 96        JMP     $96A2               ; {}
 9699: C9 23           CMP     #$23                ; 
-969B: D0 0A           BNE     $96A7               ; {hard.MMC1_0+16A7}
+969B: D0 0A           BNE     $96A7               ; {}
 969D: A9 28           LDA     #$28                ; 
 969F: 8D 1D 04        STA     $041D               ; {ram.041D}
 96A2: A9 00           LDA     #$00                ; 
 96A4: 8D 1C 04        STA     $041C               ; {ram.041C}
 96A7: AE 19 04        LDX     $0419               ; {ram.0419}
-96AA: BD 5E 91        LDA     $915E,X             ; {hard.MMC1_0+115E}
+96AA: BD 5E 91        LDA     $915E,X             ; {}
 96AD: 29 80           AND     #$80                ; 
-96AF: F0 25           BEQ     $96D6               ; {hard.MMC1_0+16D6}
+96AF: F0 25           BEQ     $96D6               ; {}
 96B1: AD 2E 04        LDA     $042E               ; {ram.042E}
 96B4: 0A              ASL     A                   ; 
 96B5: AA              TAX                         ; 
 96B6: A0 00           LDY     #$00                ; 
-96B8: BD AD 94        LDA     $94AD,X             ; {hard.MMC1_0+14AD} Get treasure info ...
+96B8: BD AD 94        LDA     $94AD,X             ; {code.TrInfoPtrs} Get treasure info ...
 96BB: 85 00           STA     <$00                ; {ram.GP_00} ... row ...
-96BD: BD AE 94        LDA     $94AE,X             ; {hard.MMC1_0+14AE} ... address ...
+96BD: BD AE 94        LDA     $94AE,X             ; {} ... address ...
 96C0: 85 01           STA     <$01                ; {ram.GP_01} ... to pointer
 96C2: B1 00           LDA     ($00),Y             ; {ram.GP_00} Get ...
 96C4: AA              TAX                         ; ... column start
@@ -3082,20 +3082,20 @@ TrInfoPtrs:
 96C5: C8              INY                         ; Next character ...
 96C6: B1 00           LDA     ($00),Y             ; {ram.GP_00} ... in string
 96C8: C9 FF           CMP     #$FF                ; End marker?
-96CA: F0 07           BEQ     $96D3               ; {hard.MMC1_0+16D3} Yes ... move on
+96CA: F0 07           BEQ     $96D3               ; {} Yes ... move on
 96CC: 9D 05 03        STA     $0305,X             ; {ram.!BckGndBuf} Store to screen buffer
 96CF: E8              INX                         ; Next in screen buffer
-96D0: 4C C5 96        JMP     $96C5               ; {hard.MMC1_0+16C5} Next character in string
+96D0: 4C C5 96        JMP     $96C5               ; {} Next character in string
 ;
 96D3: EE 2E 04        INC     $042E               ; {ram.042E}
-96D6: 20 DD 96        JSR     $96DD               ; {hard.MMC1_0+16DD}
+96D6: 20 DD 96        JSR     $96DD               ; {}
 96D9: EE 19 04        INC     $0419               ; {ram.0419}
 96DC: 60              RTS                         ; 
 
 96DD: AE 19 04        LDX     $0419               ; {ram.0419}
-96E0: BD 5E 91        LDA     $915E,X             ; {hard.MMC1_0+115E}
+96E0: BD 5E 91        LDA     $915E,X             ; {}
 96E3: 29 40           AND     #$40                ; 
-96E5: F0 42           BEQ     $9729               ; {hard.MMC1_0+1729}
+96E5: F0 42           BEQ     $9729               ; {}
 96E7: AD 18 04        LDA     $0418               ; {ram.0418}
 96EA: 8D 25 03        STA     $0325               ; {ram.0325}
 96ED: AD 17 04        LDA     $0417               ; {ram.0417}
@@ -3111,14 +3111,14 @@ TrInfoPtrs:
 9708: 18              CLC                         ; 
 9709: 69 08           ADC     #$08                ; 
 970B: 8D 17 04        STA     $0417               ; {ram.0417}
-970E: D0 19           BNE     $9729               ; {hard.MMC1_0+1729}
+970E: D0 19           BNE     $9729               ; {}
 
 9710: AD 18 04        LDA     $0418               ; {ram.0418} ?? Ensure color is right for text??
 9713: C9 23           CMP     #$23                ; 
-9715: D0 08           BNE     $971F               ; {hard.MMC1_0+171F}
+9715: D0 08           BNE     $971F               ; {}
 9717: A9 2B           LDA     #$2B                ; 
 9719: 8D 18 04        STA     $0418               ; {ram.0418}
-971C: 4C 24 97        JMP     $9724               ; {hard.MMC1_0+1724}
+971C: 4C 24 97        JMP     $9724               ; {}
 971F: A9 23           LDA     #$23                ; 
 9721: 8D 18 04        STA     $0418               ; {ram.0418}
 9724: A9 C0           LDA     #$C0                ; 
@@ -3128,47 +3128,47 @@ TrInfoPtrs:
 972A: A2 0A           LDX     #$0A                ; 
 972C: B5 84           LDA     $84,X               ; {ram.0084}
 972E: C9 F0           CMP     #$F0                ; 
-9730: D0 04           BNE     $9736               ; {hard.MMC1_0+1736}
+9730: D0 04           BNE     $9736               ; {}
 9732: A9 FF           LDA     #$FF                ; 
 9734: 95 AC           STA     $AC,X               ; {ram.00AC}
 9736: CA              DEX                         ; 
-9737: D0 F3           BNE     $972C               ; {hard.MMC1_0+172C}
+9737: D0 F3           BNE     $972C               ; {}
 9739: 60              RTS                         ; 
 
 973A: AC 19 04        LDY     $0419               ; {ram.0419}
-973D: B9 5E 91        LDA     $915E,Y             ; {hard.MMC1_0+115E}
+973D: B9 5E 91        LDA     $915E,Y             ; {}
 9740: 29 20           AND     #$20                ; 
-9742: D0 01           BNE     $9745               ; {hard.MMC1_0+1745}
+9742: D0 01           BNE     $9745               ; {}
 9744: 60              RTS                         ; 
 9745: A2 0A           LDX     #$0A                ; 
 9747: B5 AC           LDA     $AC,X               ; {ram.00AC}
-9749: D0 04           BNE     $974F               ; {hard.MMC1_0+174F}
+9749: D0 04           BNE     $974F               ; {}
 974B: CA              DEX                         ; 
-974C: 4C 47 97        JMP     $9747               ; {hard.MMC1_0+1747}
+974C: 4C 47 97        JMP     $9747               ; {}
 974F: AC 2F 04        LDY     $042F               ; {ram.042F}
-9752: B9 40 92        LDA     $9240,Y             ; {hard.MMC1_0+1240}
+9752: B9 40 92        LDA     $9240,Y             ; {}
 9755: 9D 44 04        STA     $0444,X             ; 
 9758: A9 EF           LDA     #$EF                ; 
 975A: 95 84           STA     $84,X               ; {ram.0084}
-975C: AD 68 92        LDA     $9268               ; {hard.MMC1_0+1268}
+975C: AD 68 92        LDA     $9268               ; {}
 975F: 95 70           STA     $70,X               ; {ram.0070}
 9761: A9 00           LDA     #$00                ; 
 9763: 95 AC           STA     $AC,X               ; {ram.00AC}
 9765: BD 44 04        LDA     $0444,X             ; 
 9768: C9 30           CMP     #$30                ; 
-976A: B0 2A           BCS     $9796               ; {hard.MMC1_0+1796}
+976A: B0 2A           BCS     $9796               ; {}
 976C: CA              DEX                         ; 
-976D: B9 56 92        LDA     $9256,Y             ; {hard.MMC1_0+1256}
+976D: B9 56 92        LDA     $9256,Y             ; {}
 9770: 9D 44 04        STA     $0444,X             ; 
 9773: A9 EF           LDA     #$EF                ; 
 9775: 95 84           STA     $84,X               ; {ram.0084}
-9777: AD 69 92        LDA     $9269               ; {hard.MMC1_0+1269}
+9777: AD 69 92        LDA     $9269               ; {}
 977A: 95 70           STA     $70,X               ; {ram.0070}
 977C: A9 00           LDA     #$00                ; 
 977E: 95 AC           STA     $AC,X               ; {ram.00AC}
-9780: B9 40 92        LDA     $9240,Y             ; {hard.MMC1_0+1240}
+9780: B9 40 92        LDA     $9240,Y             ; {}
 9783: C9 1B           CMP     #$1B                ; 
-9785: D0 0B           BNE     $9792               ; {hard.MMC1_0+1792}
+9785: D0 0B           BNE     $9792               ; {}
 9787: A9 78           LDA     #$78                ; 
 9789: 95 70           STA     $70,X               ; {ram.0070}
 978B: 95 71           STA     $71,X               ; {ram.0071}
@@ -3178,41 +3178,41 @@ TrInfoPtrs:
 9795: 60              RTS                         ; 
 9796: A9 68           LDA     #$68                ; 
 9798: 95 70           STA     $70,X               ; {ram.0070}
-979A: 4C 92 97        JMP     $9792               ; {hard.MMC1_0+1792}
+979A: 4C 92 97        JMP     $9792               ; {}
 
 979D: A2 0A           LDX     #$0A                ; ?? 10 sprites ??
 979F: B5 AC           LDA     $AC,X               ; {ram.00AC}
-97A1: D0 1E           BNE     $97C1               ; {hard.MMC1_0+17C1}
+97A1: D0 1E           BNE     $97C1               ; {}
 97A3: 8A              TXA                         ; 
 97A4: 48              PHA                         ; 
 97A5: BD 44 04        LDA     $0444,X             ; 
 97A8: C9 23           CMP     #$23                ; 
-97AA: D0 06           BNE     $97B2               ; {hard.MMC1_0+17B2}
-97AC: 20 D8 97        JSR     $97D8               ; {hard.MMC1_0+17D8}
-97AF: 4C BF 97        JMP     $97BF               ; {hard.MMC1_0+17BF}
+97AA: D0 06           BNE     $97B2               ; {}
+97AC: 20 D8 97        JSR     $97D8               ; {}
+97AF: 4C BF 97        JMP     $97BF               ; {}
 97B2: C9 30           CMP     #$30                ; 
-97B4: B0 06           BCS     $97BC               ; {hard.MMC1_0+17BC}
-97B6: 20 0E E7        JSR     $E70E               ; {hard.MMC1_2+270E}
-97B9: 4C BF 97        JMP     $97BF               ; {hard.MMC1_0+17BF}
-97BC: 20 EA 97        JSR     $97EA               ; {hard.MMC1_0+17EA}
+97B4: B0 06           BCS     $97BC               ; {}
+97B6: 20 0E E7        JSR     $E70E               ; 
+97B9: 4C BF 97        JMP     $97BF               ; {}
+97BC: 20 EA 97        JSR     $97EA               ; {}
 97BF: 68              PLA                         ; 
 97C0: AA              TAX                         ; 
 97C1: CA              DEX                         ; 
-97C2: D0 DB           BNE     $979F               ; {hard.MMC1_0+179F}
+97C2: D0 DB           BNE     $979F               ; {}
 97C4: 60              RTS                         ; 
 97C5: A2 04           LDX     #$04                ; 
 97C7: C9 14           CMP     #$14                ; 
-97C9: D0 02           BNE     $97CD               ; {hard.MMC1_0+17CD}
+97C9: D0 02           BNE     $97CD               ; {}
 97CB: A2 0C           LDX     #$0C                ; 
 97CD: DE 50 02        DEC     $0250,X             ; {ram.0250}
 97D0: AA              TAX                         ; 
 97D1: 38              SEC                         ; 
 97D2: E9 04           SBC     #$04                ; 
 97D4: AA              TAX                         ; 
-97D5: 10 F6           BPL     $97CD               ; {hard.MMC1_0+17CD}
+97D5: 10 F6           BPL     $97CD               ; {}
 97D7: 60              RTS                         ; 
 
-97D8: 20 93 FA        JSR     $FA93               ; {hard.MMC1_3+1A93}
+97D8: 20 93 FA        JSR     $FA93               ; 
 97DB: 20 86 79        JSR     $7986               ; {ram.7986}
 97DE: 0A              ASL     A                   ; 
 97DF: 25 15           AND     <$15                ; {ram.0015}
@@ -3239,12 +3239,12 @@ TrInfoPtrs:
 9804: 0A              ASL     A                   ; 
 9805: 0A              ASL     A                   ; 
 9806: AA              TAX                         ; 
-9807: B9 6A 92        LDA     $926A,Y             ; {hard.MMC1_0+126A}
-980A: F0 17           BEQ     $9823               ; {hard.MMC1_0+1823}
+9807: B9 6A 92        LDA     $926A,Y             ; {}
+980A: F0 17           BEQ     $9823               ; {}
 980C: 9D 01 02        STA     $0201,X             ; {ram.0201}
 980F: A5 00           LDA     <$00                ; {ram.GP_00}
 9811: 9D 00 02        STA     $0200,X             ; {ram.0200}
-9814: B9 82 92        LDA     $9282,Y             ; {hard.MMC1_0+1282}
+9814: B9 82 92        LDA     $9282,Y             ; {}
 9817: 9D 02 02        STA     $0202,X             ; {ram.0202}
 981A: A5 01           LDA     <$01                ; {ram.GP_01}
 981C: 9D 03 02        STA     $0203,X             ; 
@@ -3258,19 +3258,19 @@ TrInfoPtrs:
 9828: 85 01           STA     <$01                ; {ram.GP_01}
 982A: C8              INY                         ; 
 982B: C6 02           DEC     <$02                ; {ram.GP_02}
-982D: 10 D8           BPL     $9807               ; {hard.MMC1_0+1807}
+982D: 10 D8           BPL     $9807               ; {}
 982F: 60              RTS                         ; 
 
 9830: EE 1A 04        INC     $041A               ; {ram.!SeqCount} Increment the sequence count
 9833: AD 1A 04        LDA     $041A               ; {ram.!SeqCount} Has it rolled ...
-9836: D0 1C           BNE     $9854               ; {hard.MMC1_0+1854} ... to zero?
+9836: D0 1C           BNE     $9854               ; {} ... to zero?
 9838: EE 2D 04        INC     $042D               ; {ram.!SplashSeq} Yes ... next sequence routine
 983B: 60              RTS                         ; Done
 
 983C: EE 1A 04        INC     $041A               ; {ram.!SeqCount} Increment the sequence count
 983F: AD 1A 04        LDA     $041A               ; {ram.!SeqCount} Has the main song ...
 9842: C9 39           CMP     #$39                ; ... come to an end (based on known time)
-9844: D0 0E           BNE     $9854               ; {hard.MMC1_0+1854} No ... keep waiting
+9844: D0 0E           BNE     $9854               ; {} No ... keep waiting
 ;
 ; Transition from scrolling text to splash logo
 9846: A9 00           LDA     #$00                ; 
@@ -3280,8 +3280,8 @@ TrInfoPtrs:
 9850: 8D 2D 04        STA     $042D               ; {ram.!SplashSeq} First sequence routine
 9853: 60              RTS                         ; 
 
-9854: 20 F7 E5        JSR     $E5F7               ; {hard.MMC1_2+25F7}
-9857: 20 9D 97        JSR     $979D               ; {hard.MMC1_0+179D}
+9854: 20 F7 E5        JSR     $E5F7               ; 
+9857: 20 9D 97        JSR     $979D               ; {}
 985A: 60              RTS                         ; 
 
 
@@ -3303,27 +3303,27 @@ TrInfoPtrs:
 
 
 986B: A0 70           LDY     #$70                ; 
-986D: B9 ED 90        LDA     $90ED,Y             ; {hard.MMC1_0+10ED}
+986D: B9 ED 90        LDA     $90ED,Y             ; {}
 9870: 99 FF 01        STA     $01FF,Y             ; {ram.01FF}
 9873: 88              DEY                         ; 
-9874: D0 F7           BNE     $986D               ; {hard.MMC1_0+186D}
-9876: 20 C3 98        JSR     $98C3               ; {hard.MMC1_0+18C3}
+9874: D0 F7           BNE     $986D               ; {}
+9876: 20 C3 98        JSR     $98C3               ; {}
 9879: AD 12 04        LDA     $0412               ; {ram.0412}
-987C: D0 2D           BNE     $98AB               ; {hard.MMC1_0+18AB}
+987C: D0 2D           BNE     $98AB               ; {}
 987E: A0 07           LDY     #$07                ; 
-9880: B9 5B 98        LDA     $985B,Y             ; {hard.MMC1_0+185B}
+9880: B9 5B 98        LDA     $985B,Y             ; {}
 9883: 99 02 03        STA     $0302,Y             ; {ram.0302}
 9886: 88              DEY                         ; 
-9887: 10 F7           BPL     $9880               ; {hard.MMC1_0+1880}
+9887: 10 F7           BPL     $9880               ; {}
 9889: AC 13 04        LDY     $0413               ; {ram.0413}
-988C: B9 63 98        LDA     $9863,Y             ; {hard.MMC1_0+1863}
+988C: B9 63 98        LDA     $9863,Y             ; {}
 988F: 8D 07 03        STA     $0307               ; {ram.0307}
 9892: A9 06           LDA     #$06                ; 
 9894: 8D 12 04        STA     $0412               ; {ram.0412}
 9897: EE 13 04        INC     $0413               ; {ram.0413}
 989A: AD 13 04        LDA     $0413               ; {ram.0413}
 989D: C9 08           CMP     #$08                ; 
-989F: D0 0A           BNE     $98AB               ; {hard.MMC1_0+18AB}
+989F: D0 0A           BNE     $98AB               ; {}
 98A1: A9 10           LDA     #$10                ; 
 98A3: 8D 12 04        STA     $0412               ; {ram.0412}
 98A6: A9 00           LDA     #$00                ; 
@@ -3337,17 +3337,17 @@ TrInfoPtrs:
 98B2: B8              CLV                         ; 
 98B3: A2 A4           LDX     #$A4                ; 
 98B5: A6 A8           LDX     <$A8                ; {ram.00A8}
-98B7: 50 58           BVC     $9911               ; {hard.MMC1_0+1911}
+98B7: 50 58           BVC     $9911               ; {}
 98B9: 60              RTS                         ; 
 98BA: 68              PLA                         ; 
-98BB: 70 80           BVS     $983D               ; {hard.MMC1_0+183D}
-98BD: 90 A0           BCC     $985F               ; {hard.MMC1_0+185F}
-98BF: B0 C0           BCS     $9881               ; {hard.MMC1_0+1881}
-98C1: D0 E0           BNE     $98A3               ; {hard.MMC1_0+18A3}
+98BB: 70 80           BVS     $983D               ; {}
+98BD: 90 A0           BCC     $985F               ; {}
+98BF: B0 C0           BCS     $9881               ; {}
+98C1: D0 E0           BNE     $98A3               ; {}
 
 
 98C3: AD 1F 04        LDA     $041F               ; {ram.041F}
-98C6: D0 21           BNE     $98E9               ; {hard.MMC1_0+18E9}
+98C6: D0 21           BNE     $98E9               ; {}
 98C8: A9 B6           LDA     #$B6                ; 
 98CA: 8D 20 04        STA     $0420               ; {ram.0420}
 98CD: A9 C8           LDA     #$C8                ; 
@@ -3362,36 +3362,36 @@ TrInfoPtrs:
 98E3: 8D 25 04        STA     $0425               ; {ram.0425}
 98E6: EE 1F 04        INC     $041F               ; {ram.041F}
 98E9: A2 02           LDX     #$02                ; 
-98EB: 20 F5 98        JSR     $98F5               ; {hard.MMC1_0+18F5}
+98EB: 20 F5 98        JSR     $98F5               ; {}
 98EE: CA              DEX                         ; 
-98EF: 10 FA           BPL     $98EB               ; {hard.MMC1_0+18EB}
-98F1: 20 43 99        JSR     $9943               ; {hard.MMC1_0+1943}
+98EF: 10 FA           BPL     $98EB               ; {}
+98F1: 20 43 99        JSR     $9943               ; {}
 98F4: 60              RTS                         ; 
 98F5: FE 20 04        INC     $0420,X             ; {ram.0420}
 98F8: FE 20 04        INC     $0420,X             ; {ram.0420}
 98FB: BD 20 04        LDA     $0420,X             ; {ram.0420}
 98FE: C9 E3           CMP     #$E3                ; 
-9900: 90 05           BCC     $9907               ; {hard.MMC1_0+1907}
+9900: 90 05           BCC     $9907               ; {}
 9902: A9 B2           LDA     #$B2                ; 
 9904: 9D 20 04        STA     $0420,X             ; {ram.0420}
 9907: 85 05           STA     <$05                ; {ram.0005}
 9909: A8              TAY                         ; 
 990A: A9 10           LDA     #$10                ; 
 990C: C0 C2           CPY     #$C2                ; 
-990E: B0 07           BCS     $9917               ; {hard.MMC1_0+1917}
+990E: B0 07           BCS     $9917               ; {}
 9910: 4A              LSR     A                   ; 
 9911: C0 B9           CPY     #$B9                ; 
-9913: B0 02           BCS     $9917               ; {hard.MMC1_0+1917}
+9913: B0 02           BCS     $9917               ; {}
 9915: A9 00           LDA     #$00                ; 
 9917: 85 00           STA     <$00                ; {ram.GP_00}
 9919: 86 02           STX     <$02                ; {ram.GP_02}
-991B: BC BB 98        LDY     $98BB,X             ; {hard.MMC1_0+18BB}
+991B: BC BB 98        LDY     $98BB,X             ; {}
 991E: A2 03           LDX     #$03                ; 
-9920: BD AF 98        LDA     $98AF,X             ; {hard.MMC1_0+18AF}
+9920: BD AF 98        LDA     $98AF,X             ; {}
 9923: 18              CLC                         ; 
 9924: 65 00           ADC     <$00                ; {ram.GP_00}
 9926: 99 01 02        STA     $0201,Y             ; {ram.0201}
-9929: BD B7 98        LDA     $98B7,X             ; {hard.MMC1_0+18B7}
+9929: BD B7 98        LDA     $98B7,X             ; {}
 992C: 99 03 02        STA     $0203,Y             ; 
 992F: A5 05           LDA     <$05                ; {ram.0005}
 9931: 99 00 02        STA     $0200,Y             ; {ram.0200}
@@ -3402,18 +3402,18 @@ TrInfoPtrs:
 993B: C8              INY                         ; 
 993C: C8              INY                         ; 
 993D: CA              DEX                         ; 
-993E: 10 E0           BPL     $9920               ; {hard.MMC1_0+1920}
+993E: 10 E0           BPL     $9920               ; {}
 9940: A6 02           LDX     <$02                ; {ram.GP_02}
 9942: 60              RTS                         ; 
 9943: A2 03           LDX     #$03                ; 
 9945: A0 F0           LDY     #$F0                ; 
 9947: A5 15           LDA     <$15                ; {ram.0015}
 9949: 29 08           AND     #$08                ; 
-994B: 7D B3 98        ADC     $98B3,X             ; {hard.MMC1_0+18B3}
+994B: 7D B3 98        ADC     $98B3,X             ; {}
 994E: 99 01 02        STA     $0201,Y             ; {ram.0201}
 9951: A9 A8           LDA     #$A8                ; 
 9953: 99 00 02        STA     $0200,Y             ; {ram.0200}
-9956: BD B7 98        LDA     $98B7,X             ; {hard.MMC1_0+18B7}
+9956: BD B7 98        LDA     $98B7,X             ; {}
 9959: 99 03 02        STA     $0203,Y             ; 
 995C: A9 00           LDA     #$00                ; 
 995E: 99 02 02        STA     $0202,Y             ; {ram.0202}
@@ -3422,14 +3422,14 @@ TrInfoPtrs:
 9963: C8              INY                         ; 
 9964: C8              INY                         ; 
 9965: CA              DEX                         ; 
-9966: 10 DF           BPL     $9947               ; {hard.MMC1_0+1947}
+9966: 10 DF           BPL     $9947               ; {}
 9968: 60              RTS                         ; 
 
 
 
 9969: 36 0F           ROL     $0F,X               ; {ram.000F}
 996B: 00              BRK                         ; 
-996C: 10 36           BPL     $99A4               ; {hard.MMC1_0+19A4}
+996C: 10 36           BPL     $99A4               ; {}
 996E: 17                              ;
 996F: 27                              ;
 9970: 0F                              ;
@@ -3452,7 +3452,7 @@ TrInfoPtrs:
 9987: 3B                              ;
 9988: 22                              ;
 9989: 39 0F 00        AND     $000F,Y             ; {ram.000F}
-998C: 10 39           BPL     $99C7               ; {hard.MMC1_0+19C7}
+998C: 10 39           BPL     $99C7               ; {}
 998E: 17                              ;
 998F: 27                              ;
 9990: 0F                              ;
@@ -3471,7 +3471,7 @@ TrInfoPtrs:
 99A8: 22                              ;
 99A9: 31 0F           AND     ($0F),Y             ; {ram.000F}
 99AB: 00              BRK                         ; 
-99AC: 10 31           BPL     $99DF               ; {hard.MMC1_0+19DF}
+99AC: 10 31           BPL     $99DF               ; {}
 99AE: 17                              ;
 99AF: 27                              ;
 99B0: 0F                              ;
@@ -3496,7 +3496,7 @@ TrInfoPtrs:
 99C9: 3C                              ;
 99CA: 0F                              ;
 99CB: 00              BRK                         ; 
-99CC: 10 3C           BPL     $9A0A               ; {hard.MMC1_0+1A0A}
+99CC: 10 3C           BPL     $9A0A               ; {}
 99CE: 17                              ;
 99CF: 27                              ;
 99D0: 0F                              ;
@@ -3505,10 +3505,10 @@ TrInfoPtrs:
 99D3: 1A                              ;
 99D4: 28              PLP                         ; 
 99D5: 3C                              ;
-99D6: 30 3B           BMI     $9A13               ; {hard.MMC1_0+1A13}
+99D6: 30 3B           BMI     $9A13               ; {}
 99D8: 22                              ;
 99D9: 3C                              ;
-99DA: 30 3B           BMI     $9A17               ; {hard.MMC1_0+1A17}
+99DA: 30 3B           BMI     $9A17               ; {}
 99DC: 16 3C           ASL     $3C,X               ; {ram.003C}
 99DE: 17                              ;
 99DF: 27                              ;
@@ -3518,12 +3518,12 @@ TrInfoPtrs:
 99E3: 1A                              ;
 99E4: 28              PLP                         ; 
 99E5: 3C                              ;
-99E6: 30 3B           BMI     $9A23               ; {hard.MMC1_0+1A23}
+99E6: 30 3B           BMI     $9A23               ; {}
 99E8: 22                              ;
 99E9: 3B                              ;
 99EA: 0F                              ;
 99EB: 00              BRK                         ; 
-99EC: 10 3B           BPL     $9A29               ; {hard.MMC1_0+1A29}
+99EC: 10 3B           BPL     $9A29               ; {}
 99EE: 17                              ;
 99EF: 27                              ;
 99F0: 0F                              ;
@@ -3532,10 +3532,10 @@ TrInfoPtrs:
 99F3: 1A                              ;
 99F4: 28              PLP                         ; 
 99F5: 3B                              ;
-99F6: 10 3B           BPL     $9A33               ; {hard.MMC1_0+1A33}
+99F6: 10 3B           BPL     $9A33               ; {}
 99F8: 22                              ;
 99F9: 3B                              ;
-99FA: 10 3B           BPL     $9A37               ; {hard.MMC1_0+1A37}
+99FA: 10 3B           BPL     $9A37               ; {}
 99FC: 16 3B           ASL     $3B,X               ; {ram.003B}
 99FE: 17                              ;
 99FF: 27                              ;
@@ -3545,10 +3545,10 @@ TrInfoPtrs:
 9A03: 1A                              ;
 9A04: 28              PLP                         ; 
 9A05: 3B                              ;
-9A06: 10 3B           BPL     $9A43               ; {hard.MMC1_0+1A43}
+9A06: 10 3B           BPL     $9A43               ; {}
 9A08: 22                              ;
 9A09: 2C 0F 00        BIT     $000F               ; {ram.000F}
-9A0C: 10 2C           BPL     $9A3A               ; {hard.MMC1_0+1A3A}
+9A0C: 10 2C           BPL     $9A3A               ; {}
 9A0E: 17                              ;
 9A0F: 27                              ;
 9A10: 0F                              ;
@@ -3568,7 +3568,7 @@ TrInfoPtrs:
 9A29: 1C                              ;
 9A2A: 0F                              ;
 9A2B: 00              BRK                         ; 
-9A2C: 10 1C           BPL     $9A4A               ; {hard.MMC1_0+1A4A}
+9A2C: 10 1C           BPL     $9A4A               ; {}
 9A2E: 17                              ;
 9A2F: 27                              ;
 9A30: 0F                              ;
@@ -3577,10 +3577,10 @@ TrInfoPtrs:
 9A33: 1A                              ;
 9A34: 28              PLP                         ; 
 9A35: 1C                              ;
-9A36: 10 3B           BPL     $9A73               ; {hard.MMC1_0+1A73}
+9A36: 10 3B           BPL     $9A73               ; {}
 9A38: 22                              ;
 9A39: 1C                              ;
-9A3A: 10 3B           BPL     $9A77               ; {hard.MMC1_0+1A77}
+9A3A: 10 3B           BPL     $9A77               ; {}
 9A3C: 16 1C           ASL     $1C,X               ; {ram.001C}
 9A3E: 17                              ;
 9A3F: 27                              ;
@@ -3590,12 +3590,12 @@ TrInfoPtrs:
 9A43: 1A                              ;
 9A44: 28              PLP                         ; 
 9A45: 1C                              ;
-9A46: 10 3B           BPL     $9A83               ; {hard.MMC1_0+1A83}
+9A46: 10 3B           BPL     $9A83               ; {}
 9A48: 22                              ;
 9A49: 02                              ;
 9A4A: 0F                              ;
 9A4B: 00              BRK                         ; 
-9A4C: 10 02           BPL     $9A50               ; {hard.MMC1_0+1A50}
+9A4C: 10 02           BPL     $9A50               ; {}
 9A4E: 06 27           ASL     <$27                ; {ram.0027}
 9A50: 0F                              ;
 9A51: 02                              ;
@@ -3603,10 +3603,10 @@ TrInfoPtrs:
 9A53: 1A                              ;
 9A54: 18              CLC                         ; 
 9A55: 02                              ;
-9A56: 10 2B           BPL     $9A83               ; {hard.MMC1_0+1A83}
+9A56: 10 2B           BPL     $9A83               ; {}
 9A58: 12                              ;
 9A59: 02                              ;
-9A5A: 10 2B           BPL     $9A87               ; {hard.MMC1_0+1A87}
+9A5A: 10 2B           BPL     $9A87               ; {}
 9A5C: 06 02           ASL     <$02                ; {ram.GP_02}
 9A5E: 06 27           ASL     <$27                ; {ram.0027}
 9A60: 0F                              ;
@@ -3615,12 +3615,12 @@ TrInfoPtrs:
 9A63: 1A                              ;
 9A64: 18              CLC                         ; 
 9A65: 02                              ;
-9A66: 10 2B           BPL     $9A93               ; {hard.MMC1_0+1A93}
+9A66: 10 2B           BPL     $9A93               ; {}
 9A68: 12                              ;
 9A69: 0C                              ;
 9A6A: 0F                              ;
 9A6B: 00              BRK                         ; 
-9A6C: 10 0C           BPL     $9A7A               ; {hard.MMC1_0+1A7A}
+9A6C: 10 0C           BPL     $9A7A               ; {}
 9A6E: 03                              ;
 9A6F: 16 0F           ASL     $0F,X               ; {ram.000F}
 9A71: 0C                              ;
@@ -3868,7 +3868,7 @@ TrInfoPtrs:
 
 
 9B79: AD 38 04        LDA     $0438               ; {ram.0438}
-9B7C: D0 52           BNE     $9BD0               ; {hard.MMC1_0+1BD0}
+9B7C: D0 52           BNE     $9BD0               ; {}
 9B7E: A9 00           LDA     #$00                ; 
 9B80: 85 01           STA     <$01                ; {ram.GP_01}
 9B82: AD 37 04        LDA     $0437               ; {ram.0437}
@@ -3896,19 +3896,19 @@ TrInfoPtrs:
 9BAE: B1 00           LDA     ($00),Y             ; {ram.GP_00}
 9BB0: 99 05 03        STA     $0305,Y             ; {ram.!BckGndBuf}
 9BB3: 88              DEY                         ; 
-9BB4: 10 F8           BPL     $9BAE               ; {hard.MMC1_0+1BAE}
+9BB4: 10 F8           BPL     $9BAE               ; {}
 9BB6: EE 37 04        INC     $0437               ; {ram.0437}
 9BB9: AC 37 04        LDY     $0437               ; {ram.0437}
-9BBC: B9 68 9B        LDA     $9B68,Y             ; {hard.MMC1_0+1B68}
+9BBC: B9 68 9B        LDA     $9B68,Y             ; {}
 9BBF: 8D 38 04        STA     $0438               ; {ram.0438}
 9BC2: C0 0E           CPY     #$0E                ; 
-9BC4: 90 0A           BCC     $9BD0               ; {hard.MMC1_0+1BD0}
+9BC4: 90 0A           BCC     $9BD0               ; {}
 9BC6: EE 2C 04        INC     $042C               ; {ram.!SplashMode} Leaving logo mode ... do scrolling game text
 9BC9: A9 00           LDA     #$00                ; First sequence ...
 9BCB: 8D 2D 04        STA     $042D               ; {ram.!SplashSeq} ... in scrolling game text
 9BCE: 85 11           STA     <$11                ; {ram.0011}
 9BD0: CE 38 04        DEC     $0438               ; {ram.0438}
-9BD3: 20 C3 98        JSR     $98C3               ; {hard.MMC1_0+18C3}
+9BD3: 20 C3 98        JSR     $98C3               ; {}
 9BD6: 60              RTS                         ; 
 
 
@@ -4211,15 +4211,15 @@ TrInfoPtrs:
 9CFF: FF                              ;
 9D00: 98              TYA                         ; 
 9D01: 68              PLA                         ; 
-9D02: 10 69           BPL     $9D6D               ; {hard.MMC1_0+1D6D}
+9D02: 10 69           BPL     $9D6D               ; {}
 9D04: 80                              ;
 9D05: 68              PLA                         ; 
-9D06: 90 6D           BCC     $9D75               ; {hard.MMC1_0+1D75}
+9D06: 90 6D           BCC     $9D75               ; {}
 9D08: 93                              ;
 9D09: 6D 96 6D        ADC     $6D96               ; {ram.6D96}
-9D0C: 99 6D C0        STA     $C06D,Y             ; {hard.MMC1_2+6D}
+9D0C: 99 6D C0        STA     $C06D,Y             ; 
 9D0F: 68              PLA                         ; 
-9D10: 90 6A           BCC     $9D7C               ; {hard.MMC1_0+1D7C}
+9D10: 90 6A           BCC     $9D7C               ; {}
 9D12: 88              DEY                         ; 
 9D13: 68              PLA                         ; 
 9D14: 91 6D           STA     ($6D),Y             ; {ram.SND_MusEffBell}
@@ -4228,8 +4228,8 @@ TrInfoPtrs:
 9D19: 6D 9A 6D        ADC     $6D9A               ; {ram.6D9A}
 9D1C: E8              INX                         ; 
 9D1D: 68              PLA                         ; 
-9D1E: 10 6C           BPL     $9D8C               ; {hard.MMC1_0+1D8C}
-9D20: 90 68           BCC     $9D8A               ; {hard.MMC1_0+1D8A}
+9D1E: 10 6C           BPL     $9D8C               ; {}
+9D20: 90 68           BCC     $9D8A               ; {}
 9D22: 92                              ;
 9D23: 6D 95 6D        ADC     $6D95               ; {ram.6D95}
 9D26: 98              TYA                         ; 
@@ -4239,14 +4239,14 @@ TrInfoPtrs:
 9D2E: 18              CLC                         ; 
 9D2F: 69 0E           ADC     #$0E                ; 
 9D31: 88              DEY                         ; 
-9D32: 10 FA           BPL     $9D2E               ; {hard.MMC1_0+1D2E}
+9D32: 10 FA           BPL     $9D2E               ; {}
 9D34: A8              TAY                         ; 
 9D35: A2 0D           LDX     #$0D                ; 
-9D37: B9 00 9D        LDA     $9D00,Y             ; {hard.MMC1_0+1D00}
+9D37: B9 00 9D        LDA     $9D00,Y             ; {}
 9D3A: 95 C0           STA     $C0,X               ; {ram.00C0}
 9D3C: 88              DEY                         ; 
 9D3D: CA              DEX                         ; 
-9D3E: 10 F7           BPL     $9D37               ; {hard.MMC1_0+1D37}
+9D3E: 10 F7           BPL     $9D37               ; {}
 9D40: 60              RTS                         ; 
 9D41: 20 64 19        JSR     $1964               ; 
 9D44: 6A              ROR     A                   ; 
@@ -4319,7 +4319,7 @@ TrInfoPtrs:
 9DB4: 0B                              ;
 9DB5: 0C                              ;
 9DB6: 0D 0E 0F        ORA     $0F0E               ; 
-9DB9: 10 11           BPL     $9DCC               ; {hard.MMC1_0+1DCC}
+9DB9: 10 11           BPL     $9DCC               ; {}
 9DBB: 12                              ;
 9DBC: 13                              ;
 9DBD: 14                              ;
@@ -4361,61 +4361,61 @@ TrInfoPtrs:
 9DF9: 43                              ;
 9DFA: F8              SED                         ; 
 9DFB: 25 23           AND     <$23                ; {ram.0023}
-9DFD: 70 F8           BVS     $9DF7               ; {hard.MMC1_0+1DF7}
+9DFD: 70 F8           BVS     $9DF7               ; {}
 9DFF: 25 23           AND     <$23                ; {ram.0023}
-9E01: 30 10           BMI     $9E13               ; {hard.MMC1_0+1E13}
+9E01: 30 10           BMI     $9E13               ; {}
 9E03: C7                              ;
 9E04: 87                              ;
-9E05: F0 77           BEQ     $9E7E               ; {hard.MMC1_0+1E7E}
+9E05: F0 77           BEQ     $9E7E               ; {}
 9E07: B7                              ;
 9E08: 04                              ;
 9E09: 09 0E           ORA     #$0E                ; 
 9E0B: 00              BRK                         ; 
 9E0C: 08              PHP                         ; 
-9E0D: 10 02           BPL     $9E11               ; {hard.MMC1_0+1E11}
+9E0D: 10 02           BPL     $9E11               ; {}
 9E0F: 05 08           ORA     <$08                ; {ram.0008}
 
 
 9E11: A9 00           LDA     #$00                ; 
 9E13: 85 16           STA     <$16                ; {ram.0016}
-9E15: 20 DE 9F        JSR     $9FDE               ; {hard.MMC1_0+1FDE}
-9E18: 20 25 E6        JSR     $E625               ; {hard.MMC1_2+2625}
+9E15: 20 DE 9F        JSR     $9FDE               ; {}
+9E18: 20 25 E6        JSR     $E625               ; 
 9E1B: A5 13           LDA     <$13                ; {ram.0013}
-9E1D: D0 3B           BNE     $9E5A               ; {hard.MMC1_0+1E5A}
-9E1F: 20 6D E4        JSR     $E46D               ; {hard.MMC1_2+246D}
-9E22: 20 2A 9D        JSR     $9D2A               ; {hard.MMC1_0+1D2A}
-9E25: 20 37 A4        JSR     $A437               ; {hard.MMC1_1+437}
+9E1D: D0 3B           BNE     $9E5A               ; {}
+9E1F: 20 6D E4        JSR     $E46D               ; 
+9E22: 20 2A 9D        JSR     $9D2A               ; {}
+9E25: 20 37 A4        JSR     $A437               ; {}
 9E28: E6 16           INC     <$16                ; {ram.0016}
 9E2A: A5 16           LDA     <$16                ; {ram.0016}
 9E2C: C9 03           CMP     #$03                ; 
-9E2E: D0 F2           BNE     $9E22               ; {hard.MMC1_0+1E22}
+9E2E: D0 F2           BNE     $9E22               ; {}
 9E30: A9 00           LDA     #$00                ; 
 9E32: 85 16           STA     <$16                ; {ram.0016}
 9E34: A2 1C           LDX     #$1C                ; 
-9E36: BD 41 9D        LDA     $9D41,X             ; {hard.MMC1_0+1D41}
+9E36: BD 41 9D        LDA     $9D41,X             ; {}
 9E39: 9D 02 03        STA     $0302,X             ; {ram.0302}
 9E3C: CA              DEX                         ; 
-9E3D: 10 F7           BPL     $9E36               ; {hard.MMC1_0+1E36}
+9E3D: 10 F7           BPL     $9E36               ; {}
 9E3F: A5 12           LDA     <$12                ; {ram.0012}
 9E41: C9 0E           CMP     #$0E                ; 
-9E43: D0 0D           BNE     $9E52               ; {hard.MMC1_0+1E52}
+9E43: D0 0D           BNE     $9E52               ; {}
 9E45: A0 00           LDY     #$00                ; 
-9E47: B9 5E 9D        LDA     $9D5E,Y             ; {hard.MMC1_0+1D5E}
+9E47: B9 5E 9D        LDA     $9D5E,Y             ; {}
 9E4A: 99 09 03        STA     $0309,Y             ; 
 9E4D: C8              INY                         ; 
 9E4E: C0 12           CPY     #$12                ; 
-9E50: D0 F5           BNE     $9E47               ; {hard.MMC1_0+1E47}
+9E50: D0 F5           BNE     $9E47               ; {}
 9E52: A9 1D           LDA     #$1D                ; 
 9E54: 8D 01 03        STA     $0301               ; {ram.0301}
 9E57: E6 13           INC     <$13                ; {ram.0013}
 9E59: 60              RTS                         ; 
 9E5A: C9 01           CMP     #$01                ; 
-9E5C: D0 3B           BNE     $9E99               ; {hard.MMC1_0+1E99}
+9E5C: D0 3B           BNE     $9E99               ; {}
 9E5E: A2 33           LDX     #$33                ; 
-9E60: BD 7B 9D        LDA     $9D7B,X             ; {hard.MMC1_0+1D7B}
+9E60: BD 7B 9D        LDA     $9D7B,X             ; {}
 9E63: 9D 02 03        STA     $0302,X             ; {ram.0302}
 9E66: CA              DEX                         ; 
-9E67: 10 F7           BPL     $9E60               ; {hard.MMC1_0+1E60}
+9E67: 10 F7           BPL     $9E60               ; {}
 9E69: A2 00           LDX     #$00                ; 
 9E6B: A0 00           LDY     #$00                ; 
 9E6D: B9 38 06        LDA     $0638,Y             ; 
@@ -4424,56 +4424,56 @@ TrInfoPtrs:
 9E74: C8              INY                         ; 
 9E75: 98              TYA                         ; 
 9E76: 29 07           AND     #$07                ; 
-9E78: D0 F3           BNE     $9E6D               ; {hard.MMC1_0+1E6D}
+9E78: D0 F3           BNE     $9E6D               ; {}
 9E7A: E8              INX                         ; 
 9E7B: E8              INX                         ; 
 9E7C: E8              INX                         ; 
 9E7D: E0 21           CPX     #$21                ; 
-9E7F: D0 EC           BNE     $9E6D               ; {hard.MMC1_0+1E6D}
+9E7F: D0 EC           BNE     $9E6D               ; {}
 9E81: A5 12           LDA     <$12                ; {ram.0012}
 9E83: C9 0E           CMP     #$0E                ; 
-9E85: D0 0E           BNE     $9E95               ; {hard.MMC1_0+1E95}
+9E85: D0 0E           BNE     $9E95               ; {}
 9E87: A0 00           LDY     #$00                ; 
-9E89: B9 70 9D        LDA     $9D70,Y             ; {hard.MMC1_0+1D70}
+9E89: B9 70 9D        LDA     $9D70,Y             ; {}
 9E8C: 9D 05 03        STA     $0305,X             ; {ram.!BckGndBuf}
 9E8F: E8              INX                         ; 
 9E90: C8              INY                         ; 
 9E91: C0 0B           CPY     #$0B                ; 
-9E93: D0 F4           BNE     $9E89               ; {hard.MMC1_0+1E89}
+9E93: D0 F4           BNE     $9E89               ; {}
 9E95: A9 34           LDA     #$34                ; 
-9E97: D0 BB           BNE     $9E54               ; {hard.MMC1_0+1E54}
+9E97: D0 BB           BNE     $9E54               ; {}
 9E99: C9 02           CMP     #$02                ; 
-9E9B: D0 07           BNE     $9EA4               ; {hard.MMC1_0+1EA4}
+9E9B: D0 07           BNE     $9EA4               ; {}
 9E9D: A9 16           LDA     #$16                ; 
 9E9F: 85 14           STA     <$14                ; {ram.0014}
 9EA1: E6 13           INC     <$13                ; {ram.0013}
 9EA3: 60              RTS                         ; 
 9EA4: C9 03           CMP     #$03                ; 
-9EA6: D0 11           BNE     $9EB9               ; {hard.MMC1_0+1EB9}
+9EA6: D0 11           BNE     $9EB9               ; {}
 9EA8: A9 15           LDA     #$15                ; 
 9EAA: A4 12           LDY     <$12                ; {ram.0012}
 9EAC: C0 0F           CPY     #$0F                ; 
-9EAE: D0 02           BNE     $9EB2               ; {hard.MMC1_0+1EB2}
+9EAE: D0 02           BNE     $9EB2               ; {}
 9EB0: A9 30           LDA     #$30                ; 
 9EB2: 8D 10 68        STA     $6810               ; {ram.6810}
 9EB5: A9 12           LDA     #$12                ; 
-9EB7: D0 E6           BNE     $9E9F               ; {hard.MMC1_0+1E9F}
+9EB7: D0 E6           BNE     $9E9F               ; {}
 9EB9: A5 12           LDA     <$12                ; {ram.0012}
 9EBB: C9 0F           CMP     #$0F                ; 
-9EBD: F0 11           BEQ     $9ED0               ; {hard.MMC1_0+1ED0}
+9EBD: F0 11           BEQ     $9ED0               ; {}
 9EBF: A2 03           LDX     #$03                ; 
 9EC1: A0 FF           LDY     #$FF                ; 
 9EC3: 84 16           STY     <$16                ; {ram.0016}
 9EC5: C8              INY                         ; 
 9EC6: E6 16           INC     <$16                ; {ram.0016}
 9EC8: B9 33 06        LDA     $0633,Y             ; 
-9ECB: F0 03           BEQ     $9ED0               ; {hard.MMC1_0+1ED0}
+9ECB: F0 03           BEQ     $9ED0               ; {}
 9ECD: CA              DEX                         ; 
-9ECE: 10 F5           BPL     $9EC5               ; {hard.MMC1_0+1EC5}
-9ED0: 20 8E A1        JSR     $A18E               ; {hard.MMC1_1+18E}
+9ECE: 10 F5           BPL     $9EC5               ; {}
+9ED0: 20 8E A1        JSR     $A18E               ; {}
 9ED3: A5 16           LDA     <$16                ; {ram.0016}
 9ED5: C9 03           CMP     #$03                ; 
-9ED7: D0 05           BNE     $9EDE               ; {hard.MMC1_0+1EDE}
+9ED7: D0 05           BNE     $9EDE               ; {}
 9ED9: A9 F8           LDA     #$F8                ; 
 9EDB: 8D 08 02        STA     $0208               ; {ram.0208}
 9EDE: A9 50           LDA     #$50                ; 
@@ -4481,7 +4481,7 @@ TrInfoPtrs:
 9EE2: A9 30           LDA     #$30                ; 
 9EE4: 85 01           STA     <$01                ; {ram.GP_01}
 9EE6: E6 11           INC     <$11                ; {ram.0011}
-9EE8: 4C 38 A6        JMP     $A638               ; {hard.MMC1_1+638}
+9EE8: 4C 38 A6        JMP     $A638               ; {}
 
 
 9EEB: 23                              ;
@@ -4491,11 +4491,11 @@ TrInfoPtrs:
 
 9EF0: A5 F8           LDA     <$F8                ; {ram.00F8}
 9EF2: 29 10           AND     #$10                ; 
-9EF4: F0 06           BEQ     $9EFC               ; {hard.MMC1_0+1EFC}
+9EF4: F0 06           BEQ     $9EFC               ; {}
 9EF6: A5 16           LDA     <$16                ; {ram.0016}
 9EF8: C9 03           CMP     #$03                ; 
-9EFA: F0 03           BEQ     $9EFF               ; {hard.MMC1_0+1EFF}
-9EFC: 4C B0 9F        JMP     $9FB0               ; {hard.MMC1_0+1FB0}
+9EFA: F0 03           BEQ     $9EFF               ; {}
+9EFC: 4C B0 9F        JMP     $9FB0               ; {}
 9EFF: A9 00           LDA     #$00                ; 
 9F01: 8D 07 06        STA     $0607               ; {ram.SND_CurMusEff}
 9F04: 8D 25 04        STA     $0425               ; {ram.0425}
@@ -4515,7 +4515,7 @@ TrInfoPtrs:
 9F20: 99 9C 6D        STA     $6D9C,Y             ; 
 9F23: 8A              TXA                         ; 
 9F24: 48              PHA                         ; 
-9F25: 20 2A 9D        JSR     $9D2A               ; {hard.MMC1_0+1D2A}
+9F25: 20 2A 9D        JSR     $9D2A               ; {}
 9F28: 68              PLA                         ; 
 9F29: AA              TAX                         ; 
 9F2A: AC 23 04        LDY     $0423               ; {ram.0423}
@@ -4523,9 +4523,9 @@ TrInfoPtrs:
 9F30: AC 25 04        LDY     $0425               ; {ram.0425}
 9F33: 91 C4           STA     ($C4),Y             ; {ram.00C4}
 9F35: C9 24           CMP     #$24                ; 
-9F37: F0 40           BEQ     $9F79               ; {hard.MMC1_0+1F79}
+9F37: F0 40           BEQ     $9F79               ; {}
 9F39: BD 33 06        LDA     $0633,X             ; 
-9F3C: D0 3B           BNE     $9F79               ; {hard.MMC1_0+1F79}
+9F3C: D0 3B           BNE     $9F79               ; {}
 9F3E: A0 18           LDY     #$18                ; 
 9F40: A9 22           LDA     #$22                ; 
 9F42: 91 C0           STA     ($C0),Y             ; {ram.00C0}
@@ -4543,12 +4543,12 @@ TrInfoPtrs:
 9F54: A8              TAY                         ; 
 9F55: A2 00           LDX     #$00                ; 
 9F57: B9 38 06        LDA     $0638,Y             ; 
-9F5A: DD EB 9E        CMP     $9EEB,X             ; {hard.MMC1_0+1EEB}
-9F5D: D0 0F           BNE     $9F6E               ; {hard.MMC1_0+1F6E}
+9F5A: DD EB 9E        CMP     $9EEB,X             ; {}
+9F5D: D0 0F           BNE     $9F6E               ; {}
 9F5F: C8              INY                         ; 
 9F60: E8              INX                         ; 
 9F61: E0 05           CPX     #$05                ; 
-9F63: 90 F2           BCC     $9F57               ; {hard.MMC1_0+1F57}
+9F63: 90 F2           BCC     $9F57               ; {}
 9F65: 68              PLA                         ; 
 9F66: 48              PHA                         ; 
 9F67: AA              TAX                         ; 
@@ -4565,40 +4565,40 @@ TrInfoPtrs:
 9F7C: EE 25 04        INC     $0425               ; {ram.0425}
 9F7F: AD 25 04        LDA     $0425               ; {ram.0425}
 9F82: C9 08           CMP     #$08                ; 
-9F84: D0 A4           BNE     $9F2A               ; {hard.MMC1_0+1F2A}
+9F84: D0 A4           BNE     $9F2A               ; {}
 9F86: E8              INX                         ; 
 9F87: A9 00           LDA     #$00                ; 
 9F89: 8D 25 04        STA     $0425               ; {ram.0425}
 9F8C: AD 26 04        LDA     $0426               ; {ram.0426}
-9F8F: F0 03           BEQ     $9F94               ; {hard.MMC1_0+1F94}
-9F91: 20 C8 A3        JSR     $A3C8               ; {hard.MMC1_1+3C8}
+9F8F: F0 03           BEQ     $9F94               ; {}
+9F91: 20 C8 A3        JSR     $A3C8               ; {}
 9F94: E6 16           INC     <$16                ; {ram.0016}
 9F96: A5 16           LDA     <$16                ; {ram.0016}
 9F98: C9 03           CMP     #$03                ; 
-9F9A: F0 03           BEQ     $9F9F               ; {hard.MMC1_0+1F9F}
-9F9C: 4C 0D 9F        JMP     $9F0D               ; {hard.MMC1_0+1F0D}
+9F9A: F0 03           BEQ     $9F9F               ; {}
+9F9C: 4C 0D 9F        JMP     $9F0D               ; {}
 9F9F: A9 00           LDA     #$00                ; 
 9FA1: 8D 26 04        STA     $0426               ; {ram.0426}
 9FA4: 85 16           STA     <$16                ; {ram.0016}
-9FA6: 20 DE 9F        JSR     $9FDE               ; {hard.MMC1_0+1FDE}
+9FA6: 20 DE 9F        JSR     $9FDE               ; {}
 9FA9: A9 01           LDA     #$01                ; 
 9FAB: 85 11           STA     <$11                ; {ram.0011}
-9FAD: 4C 03 A8        JMP     $A803               ; {hard.MMC1_1+803}
+9FAD: 4C 03 A8        JMP     $A803               ; {}
 9FB0: A5 16           LDA     <$16                ; {ram.0016}
 9FB2: C9 03           CMP     #$03                ; 
-9FB4: F0 03           BEQ     $9FB9               ; {hard.MMC1_0+1FB9}
-9FB6: 20 11 A0        JSR     $A011               ; {hard.MMC1_1+11}
-9FB9: 20 04 A2        JSR     $A204               ; {hard.MMC1_1+204}
-9FBC: 20 C3 A1        JSR     $A1C3               ; {hard.MMC1_1+1C3}
-9FBF: 20 DD A1        JSR     $A1DD               ; {hard.MMC1_1+1DD}
-9FC2: 4C 0B A1        JMP     $A10B               ; {hard.MMC1_1+10B}
+9FB4: F0 03           BEQ     $9FB9               ; {}
+9FB6: 20 11 A0        JSR     $A011               ; {}
+9FB9: 20 04 A2        JSR     $A204               ; {}
+9FBC: 20 C3 A1        JSR     $A1C3               ; {}
+9FBF: 20 DD A1        JSR     $A1DD               ; {}
+9FC2: 4C 0B A1        JMP     $A10B               ; {}
 9FC5: A5 F8           LDA     <$F8                ; {ram.00F8}
 9FC7: C9 10           CMP     #$10                ; 
-9FC9: F0 03           BEQ     $9FCE               ; {hard.MMC1_0+1FCE}
-9FCB: 4C 04 A2        JMP     $A204               ; {hard.MMC1_1+204}
+9FC9: F0 03           BEQ     $9FCE               ; {}
+9FCB: 4C 04 A2        JMP     $A204               ; {}
 9FCE: A5 16           LDA     <$16                ; {ram.0016}
 9FD0: C9 03           CMP     #$03                ; 
-9FD2: D0 14           BNE     $9FE8               ; {hard.MMC1_0+1FE8}
+9FD2: D0 14           BNE     $9FE8               ; {}
 9FD4: A9 0E           LDA     #$0E                ; 
 9FD6: 85 12           STA     <$12                ; {ram.0012}
 9FD8: A9 00           LDA     #$00                ; 
@@ -4611,112 +4611,112 @@ TrInfoPtrs:
 9FE8: A9 08           LDA     #$08                ; 
 9FEA: 8D 01 06        STA     $0601               ; {ram.??SND_601??}
 9FED: A4 16           LDY     <$16                ; {ram.0016}
-9FEF: BE 08 9E        LDX     $9E08,Y             ; {hard.MMC1_0+1E08}
+9FEF: BE 08 9E        LDX     $9E08,Y             ; {}
 9FF2: A0 04           LDY     #$04                ; 
-9FF4: BD E8 9D        LDA     $9DE8,X             ; {hard.MMC1_0+1DE8}
+9FF4: BD E8 9D        LDA     $9DE8,X             ; {}
 9FF7: 99 02 03        STA     $0302,Y             ; {ram.0302}
 9FFA: CA              DEX                         ; 
 9FFB: 88              DEY                         ; 
-9FFC: 10 F6           BPL     $9FF4               ; {hard.MMC1_0+1FF4}
+9FFC: 10 F6           BPL     $9FF4               ; {}
 9FFE: 20 F1 6D        JSR     $6DF1               ; {ram.6DF1}
-A001: 20 5D A3        JSR     $A35D               ; {hard.MMC1_1+35D}
-A004: 20 0C A8        JSR     $A80C               ; {hard.MMC1_1+80C}
+A001: 20 5D A3        JSR     $A35D               ; {}
+A004: 20 0C A8        JSR     $A80C               ; {}
 A007: A0 07           LDY     #$07                ; 
 A009: A9 24           LDA     #$24                ; 
 A00B: 91 0C           STA     ($0C),Y             ; {ram.000C}
 A00D: 88              DEY                         ; 
-A00E: 10 F9           BPL     $A009               ; {hard.MMC1_1+9}
+A00E: 10 F9           BPL     $A009               ; {}
 A010: 60              RTS                         ; 
 A011: A5 FA           LDA     <$FA                ; {ram.00FA}
 A013: 29 0F           AND     #$0F                ; 
-A015: D0 0A           BNE     $A021               ; {hard.MMC1_1+21}
+A015: D0 0A           BNE     $A021               ; {}
 A017: 8D 26 04        STA     $0426               ; {ram.0426}
 A01A: 8D 28 04        STA     $0428               ; {ram.0428}
 A01D: 8D 29 04        STA     $0429               ; {ram.0429}
 A020: 60              RTS                         ; 
 A021: A8              TAY                         ; 
 A022: AD 26 04        LDA     $0426               ; {ram.0426}
-A025: D0 06           BNE     $A02D               ; {hard.MMC1_1+2D}
+A025: D0 06           BNE     $A02D               ; {}
 A027: 8C 27 04        STY     $0427               ; {ram.0427}
 A02A: EE 26 04        INC     $0426               ; {ram.0426}
 A02D: A5 FA           LDA     <$FA                ; {ram.00FA}
 A02F: 29 0F           AND     #$0F                ; 
 A031: CD 27 04        CMP     $0427               ; {ram.0427}
-A034: F0 05           BEQ     $A03B               ; {hard.MMC1_1+3B}
+A034: F0 05           BEQ     $A03B               ; {}
 A036: A9 00           LDA     #$00                ; 
-A038: 20 17 A0        JSR     $A017               ; {hard.MMC1_1+17}
+A038: 20 17 A0        JSR     $A017               ; {}
 A03B: AD 29 04        LDA     $0429               ; {ram.0429}
-A03E: F0 04           BEQ     $A044               ; {hard.MMC1_1+44}
+A03E: F0 04           BEQ     $A044               ; {}
 A040: CE 29 04        DEC     $0429               ; {ram.0429}
 A043: 60              RTS                         ; 
 A044: A0 08           LDY     #$08                ; 
 A046: AD 28 04        LDA     $0428               ; {ram.0428}
-A049: D0 02           BNE     $A04D               ; {hard.MMC1_1+4D}
+A049: D0 02           BNE     $A04D               ; {}
 A04B: A0 10           LDY     #$10                ; 
 A04D: 8C 29 04        STY     $0429               ; {ram.0429}
 A050: A5 FA           LDA     <$FA                ; {ram.00FA}
 A052: 29 0F           AND     #$0F                ; 
 A054: C9 01           CMP     #$01                ; 
-A056: D0 24           BNE     $A07C               ; {hard.MMC1_1+7C}
+A056: D0 24           BNE     $A07C               ; {}
 A058: EE 1F 04        INC     $041F               ; {ram.041F}
 A05B: A5 71           LDA     <$71                ; {ram.0071}
 A05D: 18              CLC                         ; 
 A05E: 69 10           ADC     #$10                ; 
 A060: 85 71           STA     <$71                ; {ram.0071}
 A062: C9 E0           CMP     #$E0                ; 
-A064: D0 13           BNE     $A079               ; {hard.MMC1_1+79}
+A064: D0 13           BNE     $A079               ; {}
 A066: A9 30           LDA     #$30                ; 
 A068: 85 71           STA     <$71                ; {ram.0071}
 A06A: A2 00           LDX     #$00                ; 
-A06C: 20 F0 A0        JSR     $A0F0               ; {hard.MMC1_1+F0}
+A06C: 20 F0 A0        JSR     $A0F0               ; {}
 A06F: AD 2A 04        LDA     $042A               ; {ram.042A}
-A072: F0 05           BEQ     $A079               ; {hard.MMC1_1+79}
+A072: F0 05           BEQ     $A079               ; {}
 A074: A9 00           LDA     #$00                ; 
 A076: 8D 1F 04        STA     $041F               ; {ram.041F}
-A079: 4C E7 A0        JMP     $A0E7               ; {hard.MMC1_1+E7}
+A079: 4C E7 A0        JMP     $A0E7               ; {}
 A07C: C9 02           CMP     #$02                ; 
-A07E: D0 24           BNE     $A0A4               ; {hard.MMC1_1+A4}
+A07E: D0 24           BNE     $A0A4               ; {}
 A080: CE 1F 04        DEC     $041F               ; {ram.041F}
 A083: A5 71           LDA     <$71                ; {ram.0071}
 A085: 38              SEC                         ; 
 A086: E9 10           SBC     #$10                ; 
 A088: 85 71           STA     <$71                ; {ram.0071}
 A08A: C9 20           CMP     #$20                ; 
-A08C: D0 13           BNE     $A0A1               ; {hard.MMC1_1+A1}
+A08C: D0 13           BNE     $A0A1               ; {}
 A08E: A9 D0           LDA     #$D0                ; 
 A090: 85 71           STA     <$71                ; {ram.0071}
 A092: A2 03           LDX     #$03                ; 
-A094: 20 F0 A0        JSR     $A0F0               ; {hard.MMC1_1+F0}
+A094: 20 F0 A0        JSR     $A0F0               ; {}
 A097: AD 2A 04        LDA     $042A               ; {ram.042A}
-A09A: F0 05           BEQ     $A0A1               ; {hard.MMC1_1+A1}
+A09A: F0 05           BEQ     $A0A1               ; {}
 A09C: A9 2B           LDA     #$2B                ; 
 A09E: 8D 1F 04        STA     $041F               ; {ram.041F}
-A0A1: 4C E7 A0        JMP     $A0E7               ; {hard.MMC1_1+E7}
+A0A1: 4C E7 A0        JMP     $A0E7               ; {}
 A0A4: C9 04           CMP     #$04                ; 
-A0A6: D0 1F           BNE     $A0C7               ; {hard.MMC1_1+C7}
+A0A6: D0 1F           BNE     $A0C7               ; {}
 A0A8: AD 1F 04        LDA     $041F               ; {ram.041F}
 A0AB: 18              CLC                         ; 
 A0AC: 69 0B           ADC     #$0B                ; 
 A0AE: 8D 1F 04        STA     $041F               ; {ram.041F}
 A0B1: A2 00           LDX     #$00                ; 
-A0B3: 20 F0 A0        JSR     $A0F0               ; {hard.MMC1_1+F0}
+A0B3: 20 F0 A0        JSR     $A0F0               ; {}
 A0B6: AD 2A 04        LDA     $042A               ; {ram.042A}
-A0B9: F0 09           BEQ     $A0C4               ; {hard.MMC1_1+C4}
+A0B9: F0 09           BEQ     $A0C4               ; {}
 A0BB: AD 1F 04        LDA     $041F               ; {ram.041F}
 A0BE: 38              SEC                         ; 
 A0BF: E9 2C           SBC     #$2C                ; 
 A0C1: 8D 1F 04        STA     $041F               ; {ram.041F}
-A0C4: 4C E7 A0        JMP     $A0E7               ; {hard.MMC1_1+E7}
+A0C4: 4C E7 A0        JMP     $A0E7               ; {}
 A0C7: C9 08           CMP     #$08                ; 
-A0C9: D0 24           BNE     $A0EF               ; {hard.MMC1_1+EF}
+A0C9: D0 24           BNE     $A0EF               ; {}
 A0CB: AD 1F 04        LDA     $041F               ; {ram.041F}
 A0CE: 38              SEC                         ; 
 A0CF: E9 0B           SBC     #$0B                ; 
 A0D1: 8D 1F 04        STA     $041F               ; {ram.041F}
 A0D4: A2 03           LDX     #$03                ; 
-A0D6: 20 F0 A0        JSR     $A0F0               ; {hard.MMC1_1+F0}
+A0D6: 20 F0 A0        JSR     $A0F0               ; {}
 A0D9: AD 2A 04        LDA     $042A               ; {ram.042A}
-A0DC: F0 09           BEQ     $A0E7               ; {hard.MMC1_1+E7}
+A0DC: F0 09           BEQ     $A0E7               ; {}
 A0DE: AD 1F 04        LDA     $041F               ; {ram.041F}
 A0E1: 18              CLC                         ; 
 A0E2: 69 2C           ADC     #$2C                ; 
@@ -4728,48 +4728,48 @@ A0EF: 60              RTS                         ;
 A0F0: A0 00           LDY     #$00                ; 
 A0F2: A5 85           LDA     <$85                ; {ram.0085}
 A0F4: 18              CLC                         ; 
-A0F5: 7D 02 9E        ADC     $9E02,X             ; {hard.MMC1_0+1E02}
+A0F5: 7D 02 9E        ADC     $9E02,X             ; {}
 A0F8: 85 85           STA     <$85                ; {ram.0085}
 A0FA: E8              INX                         ; 
-A0FB: DD 02 9E        CMP     $9E02,X             ; {hard.MMC1_0+1E02}
-A0FE: D0 07           BNE     $A107               ; {hard.MMC1_1+107}
+A0FB: DD 02 9E        CMP     $9E02,X             ; {}
+A0FE: D0 07           BNE     $A107               ; {}
 A100: E8              INX                         ; 
-A101: BD 02 9E        LDA     $9E02,X             ; {hard.MMC1_0+1E02}
+A101: BD 02 9E        LDA     $9E02,X             ; {}
 A104: 85 85           STA     <$85                ; {ram.0085}
 A106: C8              INY                         ; 
 A107: 8C 2A 04        STY     $042A               ; {ram.042A}
 A10A: 60              RTS                         ; 
 A10B: AD 20 04        LDA     $0420               ; {ram.0420}
-A10E: D0 1E           BNE     $A12E               ; {hard.MMC1_1+12E}
+A10E: D0 1E           BNE     $A12E               ; {}
 A110: A4 16           LDY     <$16                ; {ram.0016}
 A112: C0 03           CPY     #$03                ; 
-A114: F0 F4           BEQ     $A10A               ; {hard.MMC1_1+10A}
-A116: B9 0B 9E        LDA     $9E0B,Y             ; {hard.MMC1_0+1E0B}
+A114: F0 F4           BEQ     $A10A               ; {}
+A116: B9 0B 9E        LDA     $9E0B,Y             ; {}
 A119: 8D 21 04        STA     $0421               ; {ram.0421}
-A11C: BE 0E 9E        LDX     $9E0E,Y             ; {hard.MMC1_0+1E0E}
+A11C: BE 0E 9E        LDX     $9E0E,Y             ; {}
 A11F: A0 02           LDY     #$02                ; 
-A121: BD DF 9D        LDA     $9DDF,X             ; {hard.MMC1_0+1DDF}
+A121: BD DF 9D        LDA     $9DDF,X             ; {}
 A124: 99 22 04        STA     $0422,Y             ; {ram.0422}
 A127: CA              DEX                         ; 
 A128: 88              DEY                         ; 
-A129: 10 F6           BPL     $A121               ; {hard.MMC1_1+121}
+A129: 10 F6           BPL     $A121               ; {}
 A12B: EE 20 04        INC     $0420               ; {ram.0420}
 A12E: A5 F8           LDA     <$F8                ; {ram.00F8}
 A130: 29 C0           AND     #$C0                ; 
-A132: F0 57           BEQ     $A18B               ; {hard.MMC1_1+18B}
+A132: F0 57           BEQ     $A18B               ; {}
 A134: C9 80           CMP     #$80                ; 
-A136: D0 22           BNE     $A15A               ; {hard.MMC1_1+15A}
+A136: D0 22           BNE     $A15A               ; {}
 A138: A0 20           LDY     #$20                ; 
 A13A: 8C 04 06        STY     $0604               ; {ram.SND_Request}
 A13D: A0 02           LDY     #$02                ; 
 A13F: B9 22 04        LDA     $0422,Y             ; {ram.0422}
 A142: 99 02 03        STA     $0302,Y             ; {ram.0302}
 A145: 88              DEY                         ; 
-A146: 10 F7           BPL     $A13F               ; {hard.MMC1_1+13F}
+A146: 10 F7           BPL     $A13F               ; {}
 A148: 8C 06 03        STY     $0306               ; {ram.0306}
 A14B: AE 21 04        LDX     $0421               ; {ram.0421}
 A14E: AC 1F 04        LDY     $041F               ; {ram.041F}
-A151: B9 B3 9D        LDA     $9DB3,Y             ; {hard.MMC1_0+1DB3}
+A151: B9 B3 9D        LDA     $9DB3,Y             ; {}
 A154: 8D 05 03        STA     $0305               ; {ram.!BckGndBuf}
 A157: 9D 38 06        STA     $0638,X             ; 
 A15A: A5 70           LDA     <$70                ; {ram.0070}
@@ -4781,32 +4781,32 @@ A164: EE 23 04        INC     $0423               ; {ram.0423}
 A167: AD 23 04        LDA     $0423               ; {ram.0423}
 A16A: 29 0F           AND     #$0F                ; 
 A16C: C9 06           CMP     #$06                ; 
-A16E: D0 1B           BNE     $A18B               ; {hard.MMC1_1+18B}
+A16E: D0 1B           BNE     $A18B               ; {}
 A170: AD 23 04        LDA     $0423               ; {ram.0423}
 A173: 38              SEC                         ; 
 A174: E9 08           SBC     #$08                ; 
 A176: 8D 23 04        STA     $0423               ; {ram.0423}
 A179: A4 16           LDY     <$16                ; {ram.0016}
-A17B: B9 0B 9E        LDA     $9E0B,Y             ; {hard.MMC1_0+1E0B}
+A17B: B9 0B 9E        LDA     $9E0B,Y             ; {}
 A17E: 8D 21 04        STA     $0421               ; {ram.0421}
 A181: A5 70           LDA     <$70                ; {ram.0070}
 A183: C9 B0           CMP     #$B0                ; 
-A185: D0 04           BNE     $A18B               ; {hard.MMC1_1+18B}
+A185: D0 04           BNE     $A18B               ; {}
 A187: A9 70           LDA     #$70                ; 
 A189: 85 70           STA     <$70                ; {ram.0070}
-A18B: 4C D7 A1        JMP     $A1D7               ; {hard.MMC1_1+1D7}
+A18B: 4C D7 A1        JMP     $A1D7               ; {}
 A18E: A0 0A           LDY     #$0A                ; 
-A190: B9 F7 9D        LDA     $9DF7,Y             ; {hard.MMC1_0+1DF7}
+A190: B9 F7 9D        LDA     $9DF7,Y             ; {}
 A193: 99 01 02        STA     $0201,Y             ; {ram.0201}
 A196: 88              DEY                         ; 
-A197: 10 F7           BPL     $A190               ; {hard.MMC1_1+190}
+A197: 10 F7           BPL     $A190               ; {}
 A199: A4 16           LDY     <$16                ; {ram.0016}
-A19B: B9 AF 9D        LDA     $9DAF,Y             ; {hard.MMC1_0+1DAF}
+A19B: B9 AF 9D        LDA     $9DAF,Y             ; {}
 A19E: 85 84           STA     <$84                ; {ram.0084}
 A1A0: 8D 00 02        STA     $0200               ; {ram.0200}
 A1A3: A5 12           LDA     <$12                ; {ram.0012}
 A1A5: C9 0F           CMP     #$0F                ; 
-A1A7: F0 19           BEQ     $A1C2               ; {hard.MMC1_1+1C2}
+A1A7: F0 19           BEQ     $A1C2               ; {}
 A1A9: A9 F3           LDA     #$F3                ; 
 A1AB: 8D 01 02        STA     $0201               ; {ram.0201}
 A1AE: A5 84           LDA     <$84                ; {ram.0084}
@@ -4822,24 +4822,24 @@ A1C0: 85 71           STA     <$71                ; {ram.0071}
 A1C2: 60              RTS                         ; 
 A1C3: A5 84           LDA     <$84                ; {ram.0084}
 A1C5: C9 77           CMP     #$77                ; 
-A1C7: D0 06           BNE     $A1CF               ; {hard.MMC1_1+1CF}
+A1C7: D0 06           BNE     $A1CF               ; {}
 A1C9: A9 F8           LDA     #$F8                ; 
 A1CB: 8D 04 02        STA     $0204               ; {ram.0204}
 A1CE: 60              RTS                         ; 
 A1CF: A5 84           LDA     <$84                ; {ram.0084}
-A1D1: 20 F7 A1        JSR     $A1F7               ; {hard.MMC1_1+1F7}
+A1D1: 20 F7 A1        JSR     $A1F7               ; {}
 A1D4: 8C 04 02        STY     $0204               ; {ram.0204}
 A1D7: A5 70           LDA     <$70                ; {ram.0070}
 A1D9: 8D 07 02        STA     $0207               ; {ram.0207}
 A1DC: 60              RTS                         ; 
 A1DD: A5 84           LDA     <$84                ; {ram.0084}
 A1DF: C9 77           CMP     #$77                ; 
-A1E1: D0 06           BNE     $A1E9               ; {hard.MMC1_1+1E9}
+A1E1: D0 06           BNE     $A1E9               ; {}
 A1E3: A9 F8           LDA     #$F8                ; 
 A1E5: 8D 08 02        STA     $0208               ; {ram.0208}
 A1E8: 60              RTS                         ; 
 A1E9: A5 85           LDA     <$85                ; {ram.0085}
-A1EB: 20 F7 A1        JSR     $A1F7               ; {hard.MMC1_1+1F7}
+A1EB: 20 F7 A1        JSR     $A1F7               ; {}
 A1EE: 8C 08 02        STY     $0208               ; {ram.0208}
 A1F1: A5 71           LDA     <$71                ; {ram.0071}
 A1F3: 8D 0B 02        STA     $020B               ; {ram.020B}
@@ -4849,31 +4849,31 @@ A1F8: E9 08           SBC     #$08                ;
 A1FA: A8              TAY                         ; 
 A1FB: A5 15           LDA     <$15                ; {ram.0015}
 A1FD: 29 08           AND     #$08                ; 
-A1FF: D0 02           BNE     $A203               ; {hard.MMC1_1+203}
+A1FF: D0 02           BNE     $A203               ; {}
 A201: A0 F8           LDY     #$F8                ; 
 A203: 60              RTS                         ; 
 A204: A5 F8           LDA     <$F8                ; {ram.00F8}
 A206: 29 20           AND     #$20                ; 
-A208: F0 49           BEQ     $A253               ; {hard.MMC1_1+253}
+A208: F0 49           BEQ     $A253               ; {}
 A20A: A9 01           LDA     #$01                ; 
 A20C: 8D 02 06        STA     $0602               ; {ram.SND_ReqMusEff}
 A20F: E6 16           INC     <$16                ; {ram.0016}
 A211: A4 16           LDY     <$16                ; {ram.0016}
 A213: C0 04           CPY     #$04                ; 
-A215: D0 04           BNE     $A21B               ; {hard.MMC1_1+21B}
+A215: D0 04           BNE     $A21B               ; {}
 A217: A0 00           LDY     #$00                ; 
 A219: 84 16           STY     <$16                ; {ram.0016}
-A21B: B9 AF 9D        LDA     $9DAF,Y             ; {hard.MMC1_0+1DAF}
+A21B: B9 AF 9D        LDA     $9DAF,Y             ; {}
 A21E: 8D 00 02        STA     $0200               ; {ram.0200}
 A221: A5 12           LDA     <$12                ; {ram.0012}
 A223: C9 0F           CMP     #$0F                ; 
-A225: F0 2C           BEQ     $A253               ; {hard.MMC1_1+253}
+A225: F0 2C           BEQ     $A253               ; {}
 A227: A5 84           LDA     <$84                ; {ram.0084}
 A229: 18              CLC                         ; 
 A22A: 69 18           ADC     #$18                ; 
 A22C: 85 84           STA     <$84                ; {ram.0084}
 A22E: C9 8F           CMP     #$8F                ; 
-A230: D0 04           BNE     $A236               ; {hard.MMC1_1+236}
+A230: D0 04           BNE     $A236               ; {}
 A232: A9 2F           LDA     #$2F                ; 
 A234: 85 84           STA     <$84                ; {ram.0084}
 A236: 8D 00 02        STA     $0200               ; {ram.0200}
@@ -4885,9 +4885,9 @@ A242: 8D 20 04        STA     $0420               ; {ram.0420}
 A245: 8D 21 04        STA     $0421               ; {ram.0421}
 A248: A4 16           LDY     <$16                ; {ram.0016}
 A24A: C0 03           CPY     #$03                ; 
-A24C: F0 05           BEQ     $A253               ; {hard.MMC1_1+253}
+A24C: F0 05           BEQ     $A253               ; {}
 A24E: B9 33 06        LDA     $0633,Y             ; 
-A251: D0 B7           BNE     $A20A               ; {hard.MMC1_1+20A}
+A251: D0 B7           BNE     $A20A               ; {}
 A253: 60              RTS                         ; 
 
 
@@ -4930,7 +4930,7 @@ A287: 29 32           AND     #$32                ;
 A289: 16 20           ASL     $20,X               ; {ram.0020}
 A28B: 25 E6           AND     <$E6                ; {ram.00E6}
 A28D: A5 13           LDA     <$13                ; {ram.0013}
-A28F: 20 E2 E5        JSR     $E5E2               ; {hard.MMC1_2+25E2}
+A28F: 20 E2 E5        JSR     $E5E2               ; 
 A292: A0 A2           LDY     #$A2                ; 
 A294: 7F                              ;
 A295: A4 BD           LDY     <$BD                ; {ram.00BD}
@@ -4946,46 +4946,46 @@ A2A3: A9 00           LDA     #$00                ;
 A2A5: 85 16           STA     <$16                ; {ram.0016}
 A2A7: A4 16           LDY     <$16                ; {ram.0016}
 A2A9: B9 2A 65        LDA     $652A,Y             ; {ram.Q_SG1}
-A2AC: D0 1F           BNE     $A2CD               ; {hard.MMC1_1+2CD}
-A2AE: 20 2A 9D        JSR     $9D2A               ; {hard.MMC1_0+1D2A}
-A2B1: 20 E1 A3        JSR     $A3E1               ; {hard.MMC1_1+3E1}
+A2AC: D0 1F           BNE     $A2CD               ; {}
+A2AE: 20 2A 9D        JSR     $9D2A               ; {}
+A2B1: 20 E1 A3        JSR     $A3E1               ; {}
 A2B4: A5 16           LDA     <$16                ; {ram.0016}
 A2B6: 0A              ASL     A                   ; 
 A2B7: A8              TAY                         ; 
 A2B8: B9 9C 6D        LDA     $6D9C,Y             ; 
 A2BB: C5 CE           CMP     <$CE                ; {ram.00CE}
-A2BD: D0 0E           BNE     $A2CD               ; {hard.MMC1_1+2CD}
+A2BD: D0 0E           BNE     $A2CD               ; {}
 A2BF: C8              INY                         ; 
 A2C0: B9 9C 6D        LDA     $6D9C,Y             ; 
 A2C3: C5 CF           CMP     <$CF                ; {ram.00CF}
-A2C5: D0 06           BNE     $A2CD               ; {hard.MMC1_1+2CD}
-A2C7: 20 64 A7        JSR     $A764               ; {hard.MMC1_1+764}
-A2CA: 4C FC A2        JMP     $A2FC               ; {hard.MMC1_1+2FC}
+A2C5: D0 06           BNE     $A2CD               ; {}
+A2C7: 20 64 A7        JSR     $A764               ; {}
+A2CA: 4C FC A2        JMP     $A2FC               ; {}
 A2CD: 20 F1 6D        JSR     $6DF1               ; {ram.6DF1}
-A2D0: 20 07 A3        JSR     $A307               ; {hard.MMC1_1+307}
+A2D0: 20 07 A3        JSR     $A307               ; {}
 A2D3: A4 16           LDY     <$16                ; {ram.0016}
 A2D5: B9 1E 65        LDA     $651E,Y             ; 
 A2D8: C9 5A           CMP     #$5A                ; 
-A2DA: D0 1A           BNE     $A2F6               ; {hard.MMC1_1+2F6}
+A2DA: D0 1A           BNE     $A2F6               ; {}
 A2DC: B9 21 65        LDA     $6521,Y             ; 
 A2DF: C9 A5           CMP     #$A5                ; 
-A2E1: D0 13           BNE     $A2F6               ; {hard.MMC1_1+2F6}
+A2E1: D0 13           BNE     $A2F6               ; {}
 A2E3: A5 16           LDA     <$16                ; {ram.0016}
 A2E5: 0A              ASL     A                   ; 
 A2E6: A8              TAY                         ; 
 A2E7: B9 24 65        LDA     $6524,Y             ; 
 A2EA: C5 0E           CMP     <$0E                ; {ram.000E}
-A2EC: D0 08           BNE     $A2F6               ; {hard.MMC1_1+2F6}
+A2EC: D0 08           BNE     $A2F6               ; {}
 A2EE: C8              INY                         ; 
 A2EF: B9 24 65        LDA     $6524,Y             ; 
 A2F2: C5 0F           CMP     <$0F                ; {ram.000F}
-A2F4: F0 06           BEQ     $A2FC               ; {hard.MMC1_1+2FC}
+A2F4: F0 06           BEQ     $A2FC               ; {}
 A2F6: 20 F1 6D        JSR     $6DF1               ; {ram.6DF1}
-A2F9: 20 5D A3        JSR     $A35D               ; {hard.MMC1_1+35D}
+A2F9: 20 5D A3        JSR     $A35D               ; {}
 A2FC: E6 16           INC     <$16                ; {ram.0016}
 A2FE: A5 16           LDA     <$16                ; {ram.0016}
 A300: C9 03           CMP     #$03                ; 
-A302: D0 A3           BNE     $A2A7               ; {hard.MMC1_1+2A7}
+A302: D0 A3           BNE     $A2A7               ; {}
 A304: E6 13           INC     <$13                ; {ram.0013}
 A306: 60              RTS                         ; 
 A307: A9 00           LDA     #$00                ; 
@@ -4993,35 +4993,35 @@ A309: 85 0E           STA     <$0E                ; {ram.000E}
 A30B: 85 0F           STA     <$0F                ; {ram.000F}
 A30D: A0 07           LDY     #$07                ; 
 A30F: B1 04           LDA     ($04),Y             ; {ram.0004}
-A311: 20 51 A3        JSR     $A351               ; {hard.MMC1_1+351}
+A311: 20 51 A3        JSR     $A351               ; {}
 A314: 88              DEY                         ; 
-A315: 10 F8           BPL     $A30F               ; {hard.MMC1_1+30F}
+A315: 10 F8           BPL     $A30F               ; {}
 A317: A0 27           LDY     #$27                ; 
 A319: B1 00           LDA     ($00),Y             ; {ram.GP_00}
-A31B: 20 51 A3        JSR     $A351               ; {hard.MMC1_1+351}
+A31B: 20 51 A3        JSR     $A351               ; {}
 A31E: 88              DEY                         ; 
-A31F: 10 F8           BPL     $A319               ; {hard.MMC1_1+319}
+A31F: 10 F8           BPL     $A319               ; {}
 A321: A9 80           LDA     #$80                ; 
 A323: 85 01           STA     <$01                ; {ram.GP_01}
 A325: A9 01           LDA     #$01                ; 
 A327: 85 00           STA     <$00                ; {ram.GP_00}
 A329: A0 00           LDY     #$00                ; 
 A32B: B1 02           LDA     ($02),Y             ; {ram.GP_02}
-A32D: 20 51 A3        JSR     $A351               ; {hard.MMC1_1+351}
+A32D: 20 51 A3        JSR     $A351               ; {}
 A330: E6 02           INC     <$02                ; {ram.GP_02}
-A332: D0 02           BNE     $A336               ; {hard.MMC1_1+336}
+A332: D0 02           BNE     $A336               ; {}
 A334: E6 03           INC     <$03                ; {ram.GP_03}
 A336: C6 01           DEC     <$01                ; {ram.GP_01}
-A338: D0 F1           BNE     $A32B               ; {hard.MMC1_1+32B}
+A338: D0 F1           BNE     $A32B               ; {}
 A33A: C6 00           DEC     <$00                ; {ram.GP_00}
 A33C: A5 00           LDA     <$00                ; {ram.GP_00}
-A33E: 10 EB           BPL     $A32B               ; {hard.MMC1_1+32B}
+A33E: 10 EB           BPL     $A32B               ; {}
 A340: B1 06           LDA     ($06),Y             ; {ram.0006}
-A342: 20 51 A3        JSR     $A351               ; {hard.MMC1_1+351}
+A342: 20 51 A3        JSR     $A351               ; {}
 A345: B1 08           LDA     ($08),Y             ; {ram.0008}
-A347: 20 51 A3        JSR     $A351               ; {hard.MMC1_1+351}
+A347: 20 51 A3        JSR     $A351               ; {}
 A34A: B1 0A           LDA     ($0A),Y             ; {ram.000A}
-A34C: 20 51 A3        JSR     $A351               ; {hard.MMC1_1+351}
+A34C: 20 51 A3        JSR     $A351               ; {}
 A34F: B1 0C           LDA     ($0C),Y             ; {ram.000C}
 A351: 18              CLC                         ; 
 A352: 65 0F           ADC     <$0F                ; {ram.000F}
@@ -5034,12 +5034,12 @@ A35D: A0 07           LDY     #$07                ;
 A35F: A9 24           LDA     #$24                ; 
 A361: 91 04           STA     ($04),Y             ; {ram.0004}
 A363: 88              DEY                         ; 
-A364: 10 FB           BPL     $A361               ; {hard.MMC1_1+361}
+A364: 10 FB           BPL     $A361               ; {}
 A366: A0 27           LDY     #$27                ; 
 A368: A9 00           LDA     #$00                ; 
 A36A: 91 00           STA     ($00),Y             ; {ram.GP_00}
 A36C: 88              DEY                         ; 
-A36D: 10 FB           BPL     $A36A               ; {hard.MMC1_1+36A}
+A36D: 10 FB           BPL     $A36A               ; {}
 A36F: A9 80           LDA     #$80                ; 
 A371: 85 01           STA     <$01                ; {ram.GP_01}
 A373: A9 01           LDA     #$01                ; 
@@ -5048,20 +5048,20 @@ A377: A0 00           LDY     #$00                ;
 A379: A9 00           LDA     #$00                ; 
 A37B: 91 02           STA     ($02),Y             ; {ram.GP_02}
 A37D: E6 02           INC     <$02                ; {ram.GP_02}
-A37F: D0 02           BNE     $A383               ; {hard.MMC1_1+383}
+A37F: D0 02           BNE     $A383               ; {}
 A381: E6 03           INC     <$03                ; {ram.GP_03}
 A383: C6 01           DEC     <$01                ; {ram.GP_01}
-A385: D0 F2           BNE     $A379               ; {hard.MMC1_1+379}
+A385: D0 F2           BNE     $A379               ; {}
 A387: C6 00           DEC     <$00                ; {ram.GP_00}
 A389: A5 00           LDA     <$00                ; {ram.GP_00}
-A38B: 10 EC           BPL     $A379               ; {hard.MMC1_1+379}
+A38B: 10 EC           BPL     $A379               ; {}
 A38D: A9 00           LDA     #$00                ; 
 A38F: 91 06           STA     ($06),Y             ; {ram.0006}
 A391: 91 08           STA     ($08),Y             ; {ram.0008}
 A393: 91 0A           STA     ($0A),Y             ; {ram.000A}
 A395: 91 0C           STA     ($0C),Y             ; {ram.000C}
 A397: 20 F1 6D        JSR     $6DF1               ; {ram.6DF1}
-A39A: 20 07 A3        JSR     $A307               ; {hard.MMC1_1+307}
+A39A: 20 07 A3        JSR     $A307               ; {}
 A39D: A4 16           LDY     <$16                ; {ram.0016}
 A39F: A9 00           LDA     #$00                ; 
 A3A1: 99 33 06        STA     $0633,Y             ; 
@@ -5082,7 +5082,7 @@ A3C1: C8              INY                         ;
 A3C2: A5 0F           LDA     <$0F                ; {ram.000F}
 A3C4: 99 24 65        STA     $6524,Y             ; 
 A3C7: 60              RTS                         ; 
-A3C8: 20 E1 A3        JSR     $A3E1               ; {hard.MMC1_1+3E1}
+A3C8: 20 E1 A3        JSR     $A3E1               ; {}
 A3CB: A4 16           LDY     <$16                ; {ram.0016}
 A3CD: A9 00           LDA     #$00                ; 
 A3CF: 99 2A 65        STA     $652A,Y             ; {ram.Q_SG1}
@@ -5100,35 +5100,35 @@ A3E3: 85 CE           STA     <$CE                ; {ram.00CE}
 A3E5: 85 CF           STA     <$CF                ; {ram.00CF}
 A3E7: A0 07           LDY     #$07                ; 
 A3E9: B1 C4           LDA     ($C4),Y             ; {ram.00C4}
-A3EB: 20 2B A4        JSR     $A42B               ; {hard.MMC1_1+42B}
+A3EB: 20 2B A4        JSR     $A42B               ; {}
 A3EE: 88              DEY                         ; 
-A3EF: 10 F8           BPL     $A3E9               ; {hard.MMC1_1+3E9}
+A3EF: 10 F8           BPL     $A3E9               ; {}
 A3F1: A0 27           LDY     #$27                ; 
 A3F3: B1 C0           LDA     ($C0),Y             ; {ram.00C0}
-A3F5: 20 2B A4        JSR     $A42B               ; {hard.MMC1_1+42B}
+A3F5: 20 2B A4        JSR     $A42B               ; {}
 A3F8: 88              DEY                         ; 
-A3F9: 10 F8           BPL     $A3F3               ; {hard.MMC1_1+3F3}
+A3F9: 10 F8           BPL     $A3F3               ; {}
 A3FB: A9 80           LDA     #$80                ; 
 A3FD: 85 C1           STA     <$C1                ; {ram.00C1}
 A3FF: A9 01           LDA     #$01                ; 
 A401: 85 C0           STA     <$C0                ; {ram.00C0}
 A403: A0 00           LDY     #$00                ; 
 A405: B1 C2           LDA     ($C2),Y             ; {ram.00C2}
-A407: 20 2B A4        JSR     $A42B               ; {hard.MMC1_1+42B}
+A407: 20 2B A4        JSR     $A42B               ; {}
 A40A: E6 C2           INC     <$C2                ; {ram.00C2}
-A40C: D0 02           BNE     $A410               ; {hard.MMC1_1+410}
+A40C: D0 02           BNE     $A410               ; {}
 A40E: E6 C3           INC     <$C3                ; {ram.00C3}
 A410: C6 C1           DEC     <$C1                ; {ram.00C1}
-A412: D0 F1           BNE     $A405               ; {hard.MMC1_1+405}
+A412: D0 F1           BNE     $A405               ; {}
 A414: C6 C0           DEC     <$C0                ; {ram.00C0}
 A416: A5 C0           LDA     <$C0                ; {ram.00C0}
-A418: 10 EB           BPL     $A405               ; {hard.MMC1_1+405}
+A418: 10 EB           BPL     $A405               ; {}
 A41A: B1 C6           LDA     ($C6),Y             ; {ram.00C6}
-A41C: 20 2B A4        JSR     $A42B               ; {hard.MMC1_1+42B}
+A41C: 20 2B A4        JSR     $A42B               ; {}
 A41F: B1 C8           LDA     ($C8),Y             ; {ram.00C8}
-A421: 20 2B A4        JSR     $A42B               ; {hard.MMC1_1+42B}
+A421: 20 2B A4        JSR     $A42B               ; {}
 A424: B1 CA           LDA     ($CA),Y             ; {ram.00CA}
-A426: 20 2B A4        JSR     $A42B               ; {hard.MMC1_1+42B}
+A426: 20 2B A4        JSR     $A42B               ; {}
 A429: B1 CC           LDA     ($CC),Y             ; {ram.00CC}
 A42B: 18              CLC                         ; 
 A42C: 65 CF           ADC     <$CF                ; {ram.00CF}
@@ -5141,12 +5141,12 @@ A437: A0 07           LDY     #$07                ;
 A439: A9 24           LDA     #$24                ; 
 A43B: 91 C4           STA     ($C4),Y             ; {ram.00C4}
 A43D: 88              DEY                         ; 
-A43E: 10 FB           BPL     $A43B               ; {hard.MMC1_1+43B}
+A43E: 10 FB           BPL     $A43B               ; {}
 A440: A0 27           LDY     #$27                ; 
 A442: A9 00           LDA     #$00                ; 
 A444: 91 C0           STA     ($C0),Y             ; {ram.00C0}
 A446: 88              DEY                         ; 
-A447: 10 FB           BPL     $A444               ; {hard.MMC1_1+444}
+A447: 10 FB           BPL     $A444               ; {}
 A449: A9 80           LDA     #$80                ; 
 A44B: 85 C1           STA     <$C1                ; {ram.00C1}
 A44D: A9 01           LDA     #$01                ; 
@@ -5155,20 +5155,20 @@ A451: A0 00           LDY     #$00                ;
 A453: A9 00           LDA     #$00                ; 
 A455: 91 C2           STA     ($C2),Y             ; {ram.00C2}
 A457: E6 C2           INC     <$C2                ; {ram.00C2}
-A459: D0 02           BNE     $A45D               ; {hard.MMC1_1+45D}
+A459: D0 02           BNE     $A45D               ; {}
 A45B: E6 C3           INC     <$C3                ; {ram.00C3}
 A45D: C6 C1           DEC     <$C1                ; {ram.00C1}
-A45F: D0 F2           BNE     $A453               ; {hard.MMC1_1+453}
+A45F: D0 F2           BNE     $A453               ; {}
 A461: C6 C0           DEC     <$C0                ; {ram.00C0}
 A463: A5 C0           LDA     <$C0                ; {ram.00C0}
-A465: 10 EC           BPL     $A453               ; {hard.MMC1_1+453}
+A465: 10 EC           BPL     $A453               ; {}
 A467: A9 00           LDA     #$00                ; 
 A469: 91 C6           STA     ($C6),Y             ; {ram.00C6}
 A46B: 91 C8           STA     ($C8),Y             ; {ram.00C8}
 A46D: 91 CA           STA     ($CA),Y             ; {ram.00CA}
 A46F: 91 CC           STA     ($CC),Y             ; {ram.00CC}
-A471: 20 2A 9D        JSR     $9D2A               ; {hard.MMC1_0+1D2A}
-A474: 20 E1 A3        JSR     $A3E1               ; {hard.MMC1_1+3E1}
+A471: 20 2A 9D        JSR     $9D2A               ; {}
+A474: 20 E1 A3        JSR     $A3E1               ; {}
 A477: A9 FF           LDA     #$FF                ; 
 A479: A4 16           LDY     <$16                ; {ram.0016}
 A47B: 99 2A 65        STA     $652A,Y             ; {ram.Q_SG1}
@@ -5182,7 +5182,7 @@ A48A: 98              TYA                         ;
 A48B: 48              PHA                         ; 
 A48C: B1 00           LDA     ($00),Y             ; {ram.GP_00}
 A48E: A8              TAY                         ; 
-A48F: B9 87 A2        LDA     $A287,Y             ; {hard.MMC1_1+287}
+A48F: B9 87 A2        LDA     $A287,Y             ; {}
 A492: 9D 04 68        STA     $6804,X             ; 
 A495: 68              PLA                         ; 
 A496: 18              CLC                         ; 
@@ -5193,28 +5193,28 @@ A49B: 18              CLC                         ;
 A49C: 69 04           ADC     #$04                ; 
 A49E: AA              TAX                         ; 
 A49F: E0 0C           CPX     #$0C                ; 
-A4A1: 90 E7           BCC     $A48A               ; {hard.MMC1_1+48A}
+A4A1: 90 E7           BCC     $A48A               ; {}
 A4A3: 20 B7 6D        JSR     $6DB7               ; {ram.6DB7}
 A4A6: A9 12           LDA     #$12                ; 
 A4A8: 85 14           STA     <$14                ; {ram.0014}
 A4AA: E6 13           INC     <$13                ; {ram.0013}
-A4AC: 20 6D E4        JSR     $E46D               ; {hard.MMC1_2+246D}
+A4AC: 20 6D E4        JSR     $E46D               ; 
 A4AF: A0 04           LDY     #$04                ; 
 A4B1: A9 00           LDA     #$00                ; 
 A4B3: 8D 29 05        STA     $0529               ; {ram.0529}
 A4B6: 99 21 06        STA     $0621,Y             ; 
 A4B9: 88              DEY                         ; 
-A4BA: 10 FA           BPL     $A4B6               ; {hard.MMC1_1+4B6}
+A4BA: 10 FA           BPL     $A4B6               ; {}
 A4BC: 60              RTS                         ; 
 A4BD: A9 14           LDA     #$14                ; 
 A4BF: 85 14           STA     <$14                ; {ram.0014}
 A4C1: E6 13           INC     <$13                ; {ram.0013}
 A4C3: 60              RTS                         ; 
 A4C4: A0 1F           LDY     #$1F                ; 
-A4C6: B9 54 A2        LDA     $A254,Y             ; {hard.MMC1_1+254}
+A4C6: B9 54 A2        LDA     $A254,Y             ; {}
 A4C9: 99 02 03        STA     $0302,Y             ; {ram.0302}
 A4CC: 88              DEY                         ; 
-A4CD: 10 F7           BPL     $A4C6               ; {hard.MMC1_1+4C6}
+A4CD: 10 F7           BPL     $A4C6               ; {}
 A4CF: A4 16           LDY     <$16                ; {ram.0016}
 A4D1: AD 03 03        LDA     $0303               ; {ram.0303}
 A4D4: 18              CLC                         ; 
@@ -5229,7 +5229,7 @@ A4E6: 69 00           ADC     #$00                ;
 A4E8: 8D 02 03        STA     $0302               ; {ram.0302}
 A4EB: 8D 16 03        STA     $0316               ; {ram.0316}
 A4EE: 88              DEY                         ; 
-A4EF: 10 E0           BPL     $A4D1               ; {hard.MMC1_1+4D1}
+A4EF: 10 E0           BPL     $A4D1               ; {}
 A4F1: A5 16           LDA     <$16                ; {ram.0016}
 A4F3: 0A              ASL     A                   ; 
 A4F4: 0A              ASL     A                   ; 
@@ -5241,7 +5241,7 @@ A4FC: 99 02 03        STA     $0302,Y             ; {ram.0302}
 A4FF: E8              INX                         ; 
 A500: C8              INY                         ; 
 A501: C0 0B           CPY     #$0B                ; 
-A503: D0 F4           BNE     $A4F9               ; {hard.MMC1_1+4F9}
+A503: D0 F4           BNE     $A4F9               ; {}
 A505: A5 16           LDA     <$16                ; {ram.0016}
 A507: 0A              ASL     A                   ; 
 A508: A8              TAY                         ; 
@@ -5256,10 +5256,10 @@ A519: E6 16           INC     <$16                ; {ram.0016}
 A51B: E6 13           INC     <$13                ; {ram.0013}
 A51D: 60              RTS                         ; 
 A51E: A0 12           LDY     #$12                ; 
-A520: B9 74 A2        LDA     $A274,Y             ; {hard.MMC1_1+274}
+A520: B9 74 A2        LDA     $A274,Y             ; {}
 A523: 99 02 03        STA     $0302,Y             ; {ram.0302}
 A526: 88              DEY                         ; 
-A527: 10 F7           BPL     $A520               ; {hard.MMC1_1+520}
+A527: 10 F7           BPL     $A520               ; {}
 A529: A9 00           LDA     #$00                ; 
 A52B: 85 0A           STA     <$0A                ; {ram.000A}
 A52D: A9 03           LDA     #$03                ; 
@@ -5273,18 +5273,18 @@ A53D: 9D 02 03        STA     $0302,X             ; {ram.0302}
 A540: A5 02           LDA     <$02                ; {ram.GP_02}
 A542: 9D 03 03        STA     $0303,X             ; {ram.0303}
 A545: A5 03           LDA     <$03                ; {ram.GP_03}
-A547: D0 19           BNE     $A562               ; {hard.MMC1_1+562}
+A547: D0 19           BNE     $A562               ; {}
 A549: A5 01           LDA     <$01                ; {ram.GP_01}
 A54B: C9 24           CMP     #$24                ; 
-A54D: D0 11           BNE     $A560               ; {hard.MMC1_1+560}
+A54D: D0 11           BNE     $A560               ; {}
 A54F: A5 02           LDA     <$02                ; {ram.GP_02}
 A551: C9 24           CMP     #$24                ; 
-A553: D0 0B           BNE     $A560               ; {hard.MMC1_1+560}
+A553: D0 0B           BNE     $A560               ; {}
 A555: A4 0A           LDY     <$0A                ; {ram.000A}
 A557: B9 33 06        LDA     $0633,Y             ; 
-A55A: D0 04           BNE     $A560               ; {hard.MMC1_1+560}
+A55A: D0 04           BNE     $A560               ; {}
 A55C: A9 24           LDA     #$24                ; 
-A55E: D0 02           BNE     $A562               ; {hard.MMC1_1+562}
+A55E: D0 02           BNE     $A562               ; {}
 A560: A9 00           LDA     #$00                ; 
 A562: 9D 04 03        STA     $0304,X             ; {ram.0304}
 A565: 8A              TXA                         ; 
@@ -5294,14 +5294,14 @@ A569: 85 0B           STA     <$0B                ; {ram.000B}
 A56B: E6 0A           INC     <$0A                ; {ram.000A}
 A56D: A5 0A           LDA     <$0A                ; {ram.000A}
 A56F: C9 03           CMP     #$03                ; 
-A571: D0 BE           BNE     $A531               ; {hard.MMC1_1+531}
+A571: D0 BE           BNE     $A531               ; {}
 A573: A0 FF           LDY     #$FF                ; 
 A575: 84 16           STY     <$16                ; {ram.0016}
 A577: 8C 26 05        STY     $0526               ; {ram.0526}
 A57A: C8              INY                         ; 
 A57B: E6 16           INC     <$16                ; {ram.0016}
 A57D: B9 33 06        LDA     $0633,Y             ; 
-A580: F0 F8           BEQ     $A57A               ; {hard.MMC1_1+57A}
+A580: F0 F8           BEQ     $A57A               ; {}
 A582: A9 00           LDA     #$00                ; 
 A584: 85 13           STA     <$13                ; {ram.0013}
 A586: E6 11           INC     <$11                ; {ram.0011}
@@ -5313,44 +5313,44 @@ A58A: 03                              ;
 A58B: 28              PLP                         ; 
 A58C: 5C                              ;
 A58D: 74                              ;
-A58E: 8C A8 B8        STY     $B8A8               ; {hard.MMC1_1+18A8}
+A58E: 8C A8 B8        STY     $B8A8               ; {}
 
 
 A591: A5 13           LDA     <$13                ; {ram.0013}
-A593: 20 E2 E5        JSR     $E5E2               ; {hard.MMC1_2+25E2}
+A593: 20 E2 E5        JSR     $E5E2               ; 
 A596: 9A              TXS                         ; 
 A597: A5 DF           LDA     <$DF                ; {ram.00DF}
 A599: A5 A5           LDA     <$A5                ; {ram.00A5}
 A59B: F8              SED                         ; 
 A59C: 29 10           AND     #$10                ; 
-A59E: D0 3C           BNE     $A5DC               ; {hard.MMC1_1+5DC}
+A59E: D0 3C           BNE     $A5DC               ; {}
 A5A0: A5 F8           LDA     <$F8                ; {ram.00F8}
 A5A2: 29 20           AND     #$20                ; 
-A5A4: F0 11           BEQ     $A5B7               ; {hard.MMC1_1+5B7}
+A5A4: F0 11           BEQ     $A5B7               ; {}
 A5A6: A9 01           LDA     #$01                ; 
 A5A8: 8D 02 06        STA     $0602               ; {ram.SND_ReqMusEff}
 A5AB: E6 16           INC     <$16                ; {ram.0016}
 A5AD: A5 16           LDA     <$16                ; {ram.0016}
 A5AF: C9 05           CMP     #$05                ; 
-A5B1: D0 04           BNE     $A5B7               ; {hard.MMC1_1+5B7}
+A5B1: D0 04           BNE     $A5B7               ; {}
 A5B3: A9 00           LDA     #$00                ; 
 A5B5: 85 16           STA     <$16                ; {ram.0016}
 A5B7: A4 16           LDY     <$16                ; {ram.0016}
 A5B9: B9 33 06        LDA     $0633,Y             ; 
-A5BC: F0 E8           BEQ     $A5A6               ; {hard.MMC1_1+5A6}
+A5BC: F0 E8           BEQ     $A5A6               ; {}
 A5BE: A0 02           LDY     #$02                ; 
-A5C0: B9 89 A5        LDA     $A589,Y             ; {hard.MMC1_1+589}
+A5C0: B9 89 A5        LDA     $A589,Y             ; {}
 A5C3: 99 01 02        STA     $0201,Y             ; {ram.0201}
 A5C6: 88              DEY                         ; 
-A5C7: 10 F7           BPL     $A5C0               ; {hard.MMC1_1+5C0}
+A5C7: 10 F7           BPL     $A5C0               ; {}
 A5C9: A4 16           LDY     <$16                ; {ram.0016}
-A5CB: B9 8C A5        LDA     $A58C,Y             ; {hard.MMC1_1+58C}
+A5CB: B9 8C A5        LDA     $A58C,Y             ; {}
 A5CE: 8D 00 02        STA     $0200               ; {ram.0200}
 A5D1: A9 58           LDA     #$58                ; 
 A5D3: 85 01           STA     <$01                ; {ram.GP_01}
 A5D5: A9 30           LDA     #$30                ; 
 A5D7: 85 00           STA     <$00                ; {ram.GP_00}
-A5D9: 4C 38 A6        JMP     $A638               ; {hard.MMC1_1+638}
+A5D9: 4C 38 A6        JMP     $A638               ; {}
 A5DC: E6 13           INC     <$13                ; {ram.0013}
 A5DE: 60              RTS                         ; 
 A5DF: A9 00           LDA     #$00                ; 
@@ -5358,22 +5358,22 @@ A5E1: 8D 07 06        STA     $0607               ; {ram.SND_CurMusEff}
 A5E4: A9 00           LDA     #$00                ; 
 A5E6: 85 10           STA     <$10                ; {ram.0010}
 A5E8: 8D 56 06        STA     $0656               ; {ram.0656}
-A5EB: 20 25 E6        JSR     $E625               ; {hard.MMC1_2+2625}
+A5EB: 20 25 E6        JSR     $E625               ; 
 A5EE: A5 16           LDA     <$16                ; {ram.0016}
 A5F0: C9 03           CMP     #$03                ; 
-A5F2: 90 0A           BCC     $A5FE               ; {hard.MMC1_1+5FE}
+A5F2: 90 0A           BCC     $A5FE               ; {}
 A5F4: A5 16           LDA     <$16                ; {ram.0016}
 A5F6: 18              CLC                         ; 
 A5F7: 69 0B           ADC     #$0B                ; 
 A5F9: 85 12           STA     <$12                ; {ram.0012}
-A5FB: 4C A3 EB        JMP     $EBA3               ; {hard.MMC1_2+2BA3}
-A5FE: 20 25 E6        JSR     $E625               ; {hard.MMC1_2+2625}
+A5FB: 4C A3 EB        JMP     $EBA3               ; 
+A5FE: 20 25 E6        JSR     $E625               ; 
 A601: 20 F1 6D        JSR     $6DF1               ; {ram.6DF1}
 A604: A0 27           LDY     #$27                ; 
 A606: B1 00           LDA     ($00),Y             ; {ram.GP_00}
 A608: 99 57 06        STA     $0657,Y             ; {ram.0657}
 A60B: 88              DEY                         ; 
-A60C: 10 F8           BPL     $A606               ; {hard.MMC1_1+606}
+A60C: 10 F8           BPL     $A606               ; {}
 A60E: A9 00           LDA     #$00                ; 
 A610: 8D 2E 05        STA     $052E               ; {ram.052E}
 A613: 85 AC           STA     <$AC                ; {ram.00AC}
@@ -5382,18 +5382,18 @@ A618: A8              TAY                         ;
 A619: B1 02           LDA     ($02),Y             ; {ram.GP_02}
 A61B: 91 0E           STA     ($0E),Y             ; {ram.000E}
 A61D: E6 02           INC     <$02                ; {ram.GP_02}
-A61F: D0 02           BNE     $A623               ; {hard.MMC1_1+623}
+A61F: D0 02           BNE     $A623               ; {}
 A621: E6 03           INC     <$03                ; {ram.GP_03}
 A623: E6 0E           INC     <$0E                ; {ram.000E}
-A625: D0 02           BNE     $A629               ; {hard.MMC1_1+629}
+A625: D0 02           BNE     $A629               ; {}
 A627: E6 0F           INC     <$0F                ; {ram.000F}
 A629: A5 0E           LDA     <$0E                ; {ram.000E}
 A62B: C9 FF           CMP     #$FF                ; 
-A62D: D0 EA           BNE     $A619               ; {hard.MMC1_1+619}
+A62D: D0 EA           BNE     $A619               ; {}
 A62F: A5 0F           LDA     <$0F                ; {ram.000F}
 A631: C9 07           CMP     #$07                ; 
-A633: D0 E4           BNE     $A619               ; {hard.MMC1_1+619}
-A635: 4C A1 EB        JMP     $EBA1               ; {hard.MMC1_2+2BA1}
+A633: D0 E4           BNE     $A619               ; {}
+A635: 4C A1 EB        JMP     $EBA1               ; 
 A638: A9 08           LDA     #$08                ; 
 A63A: 85 02           STA     <$02                ; {ram.GP_02}
 A63C: A9 0A           LDA     #$0A                ; 
@@ -5421,7 +5421,7 @@ A668: 68              PLA                         ;
 A669: 85 00           STA     <$00                ; {ram.GP_00}
 A66B: A4 04           LDY     <$04                ; {ram.0004}
 A66D: B9 2D 06        LDA     $062D,Y             ; 
-A670: F0 1D           BEQ     $A68F               ; {hard.MMC1_1+68F}
+A670: F0 1D           BEQ     $A68F               ; {}
 A672: AC 43 03        LDY     $0343               ; {ram.0343}
 A675: A5 01           LDA     <$01                ; {ram.GP_01}
 A677: 38              SEC                         ; 
@@ -5443,11 +5443,11 @@ A696: E6 04           INC     <$04                ; {ram.0004}
 A698: E6 05           INC     <$05                ; {ram.0005}
 A69A: A5 04           LDA     <$04                ; {ram.0004}
 A69C: C9 03           CMP     #$03                ; 
-A69E: D0 AA           BNE     $A64A               ; {hard.MMC1_1+64A}
+A69E: D0 AA           BNE     $A64A               ; {}
 A6A0: 60              RTS                         ; 
 
 
-A6A1: 50 52           BVC     $A6F5               ; {hard.MMC1_1+6F5}
+A6A1: 50 52           BVC     $A6F5               ; {}
 A6A3: 54                              ;
 A6A4: 06 06           ASL     <$06                ; {ram.0006}
 A6A6: 06 38           ASL     <$38                ; {ram.0038}
@@ -5456,7 +5456,7 @@ A6A9: 48              PHA                         ;
 A6AA: 06 06           ASL     <$06                ; {ram.0006}
 A6AC: 06 A5           ASL     <$A5                ; {ram.00A5}
 A6AE: 13                              ;
-A6AF: 20 E2 E5        JSR     $E5E2               ; {hard.MMC1_2+25E2}
+A6AF: 20 E2 E5        JSR     $E5E2               ; 
 A6B2: B8              CLV                         ; 
 A6B3: A6 34           LDX     <$34                ; {ram.0034}
 A6B5: A7                              ;
@@ -5464,15 +5464,15 @@ A6B6: 03                              ;
 A6B7: A8              TAY                         ; 
 
 
-A6B8: 20 2A 9D        JSR     $9D2A               ; {hard.MMC1_0+1D2A}
-A6BB: 20 37 A4        JSR     $A437               ; {hard.MMC1_1+437}
-A6BE: 20 2A 9D        JSR     $9D2A               ; {hard.MMC1_0+1D2A}
+A6B8: 20 2A 9D        JSR     $9D2A               ; {}
+A6BB: 20 37 A4        JSR     $A437               ; {}
+A6BE: 20 2A 9D        JSR     $9D2A               ; {}
 A6C1: 20 F1 6D        JSR     $6DF1               ; {ram.6DF1}
 A6C4: A0 27           LDY     #$27                ; 
 A6C6: B9 57 06        LDA     $0657,Y             ; {ram.0657}
 A6C9: 91 C0           STA     ($C0),Y             ; {ram.00C0}
 A6CB: 88              DEY                         ; 
-A6CC: 10 F8           BPL     $A6C6               ; {hard.MMC1_1+6C6}
+A6CC: 10 F8           BPL     $A6C6               ; {}
 A6CE: A4 16           LDY     <$16                ; {ram.0016}
 A6D0: B9 30 06        LDA     $0630,Y             ; 
 A6D3: A0 00           LDY     #$00                ; 
@@ -5484,12 +5484,12 @@ A6DD: 99 33 06        STA     $0633,Y             ;
 A6E0: B9 2D 06        LDA     $062D,Y             ; 
 A6E3: A0 00           LDY     #$00                ; 
 A6E5: 91 CC           STA     ($CC),Y             ; {ram.00CC}
-A6E7: 20 0C A8        JSR     $A80C               ; {hard.MMC1_1+80C}
+A6E7: 20 0C A8        JSR     $A80C               ; {}
 A6EA: A0 07           LDY     #$07                ; 
 A6EC: B1 0C           LDA     ($0C),Y             ; {ram.000C}
 A6EE: 91 C4           STA     ($C4),Y             ; {ram.00C4}
 A6F0: 88              DEY                         ; 
-A6F1: 10 F9           BPL     $A6EC               ; {hard.MMC1_1+6EC}
+A6F1: 10 F9           BPL     $A6EC               ; {}
 A6F3: AD 6F 06        LDA     $066F               ; {ram.066F}
 A6F6: 29 F0           AND     #$F0                ; 
 A6F8: 48              PHA                         ; 
@@ -5503,42 +5503,42 @@ A700: 05 0A           ORA     <$0A                ; {ram.000A}
 A702: 8D 6F 06        STA     $066F               ; {ram.066F}
 A705: A9 FF           LDA     #$FF                ; 
 A707: 8D 70 06        STA     $0670               ; {ram.0670}
-A70A: 20 19 A8        JSR     $A819               ; {hard.MMC1_1+819}
+A70A: 20 19 A8        JSR     $A819               ; {}
 A70D: A0 00           LDY     #$00                ; 
 A70F: B1 0E           LDA     ($0E),Y             ; {ram.000E}
 A711: 91 C2           STA     ($C2),Y             ; {ram.00C2}
 A713: E6 C2           INC     <$C2                ; {ram.00C2}
-A715: D0 02           BNE     $A719               ; {hard.MMC1_1+719}
+A715: D0 02           BNE     $A719               ; {}
 A717: E6 C3           INC     <$C3                ; {ram.00C3}
 A719: E6 0E           INC     <$0E                ; {ram.000E}
-A71B: D0 02           BNE     $A71F               ; {hard.MMC1_1+71F}
+A71B: D0 02           BNE     $A71F               ; {}
 A71D: E6 0F           INC     <$0F                ; {ram.000F}
 A71F: A5 0E           LDA     <$0E                ; {ram.000E}
 A721: C9 FF           CMP     #$FF                ; 
-A723: D0 EA           BNE     $A70F               ; {hard.MMC1_1+70F}
+A723: D0 EA           BNE     $A70F               ; {}
 A725: A5 0F           LDA     <$0F                ; {ram.000F}
 A727: C9 07           CMP     #$07                ; 
-A729: D0 E4           BNE     $A70F               ; {hard.MMC1_1+70F}
-A72B: 20 2A 9D        JSR     $9D2A               ; {hard.MMC1_0+1D2A}
-A72E: 20 C8 A3        JSR     $A3C8               ; {hard.MMC1_1+3C8}
+A729: D0 E4           BNE     $A70F               ; {}
+A72B: 20 2A 9D        JSR     $9D2A               ; {}
+A72E: 20 C8 A3        JSR     $A3C8               ; {}
 A731: E6 13           INC     <$13                ; {ram.0013}
 A733: 60              RTS                         ; 
 A734: A4 16           LDY     <$16                ; {ram.0016}
 A736: B9 2A 65        LDA     $652A,Y             ; {ram.Q_SG1}
-A739: D0 1C           BNE     $A757               ; {hard.MMC1_1+757}
-A73B: 20 2A 9D        JSR     $9D2A               ; {hard.MMC1_0+1D2A}
-A73E: 20 E1 A3        JSR     $A3E1               ; {hard.MMC1_1+3E1}
+A739: D0 1C           BNE     $A757               ; {}
+A73B: 20 2A 9D        JSR     $9D2A               ; {}
+A73E: 20 E1 A3        JSR     $A3E1               ; {}
 A741: A5 16           LDA     <$16                ; {ram.0016}
 A743: 0A              ASL     A                   ; 
 A744: A8              TAY                         ; 
 A745: B9 9C 6D        LDA     $6D9C,Y             ; 
 A748: C5 CE           CMP     <$CE                ; {ram.00CE}
-A74A: D0 0E           BNE     $A75A               ; {hard.MMC1_1+75A}
+A74A: D0 0E           BNE     $A75A               ; {}
 A74C: C8              INY                         ; 
 A74D: B9 9C 6D        LDA     $6D9C,Y             ; 
 A750: C5 CF           CMP     <$CF                ; {ram.00CF}
-A752: D0 06           BNE     $A75A               ; {hard.MMC1_1+75A}
-A754: 20 64 A7        JSR     $A764               ; {hard.MMC1_1+764}
+A752: D0 06           BNE     $A75A               ; {}
+A754: 20 64 A7        JSR     $A764               ; {}
 A757: E6 13           INC     <$13                ; {ram.0013}
 A759: 60              RTS                         ; 
 A75A: A4 16           LDY     <$16                ; {ram.0016}
@@ -5557,13 +5557,13 @@ A771: A9 00           LDA     #$00                ;
 A773: 99 24 65        STA     $6524,Y             ; 
 A776: C8              INY                         ; 
 A777: 99 24 65        STA     $6524,Y             ; 
-A77A: 20 2A 9D        JSR     $9D2A               ; {hard.MMC1_0+1D2A}
+A77A: 20 2A 9D        JSR     $9D2A               ; {}
 A77D: 20 F1 6D        JSR     $6DF1               ; {ram.6DF1}
 A780: A0 27           LDY     #$27                ; 
 A782: B1 C0           LDA     ($C0),Y             ; {ram.00C0}
 A784: 91 00           STA     ($00),Y             ; {ram.GP_00}
 A786: 88              DEY                         ; 
-A787: 10 F9           BPL     $A782               ; {hard.MMC1_1+782}
+A787: 10 F9           BPL     $A782               ; {}
 A789: A0 00           LDY     #$00                ; 
 A78B: B1 C6           LDA     ($C6),Y             ; {ram.00C6}
 A78D: 91 06           STA     ($06),Y             ; {ram.0006}
@@ -5590,25 +5590,25 @@ A7B2: A0 07           LDY     #$07                ;
 A7B4: B1 C4           LDA     ($C4),Y             ; {ram.00C4}
 A7B6: 91 04           STA     ($04),Y             ; {ram.0004}
 A7B8: 88              DEY                         ; 
-A7B9: 10 F9           BPL     $A7B4               ; {hard.MMC1_1+7B4}
+A7B9: 10 F9           BPL     $A7B4               ; {}
 A7BB: A0 00           LDY     #$00                ; 
 A7BD: B1 C2           LDA     ($C2),Y             ; {ram.00C2}
 A7BF: 91 02           STA     ($02),Y             ; {ram.GP_02}
 A7C1: E6 02           INC     <$02                ; {ram.GP_02}
-A7C3: D0 02           BNE     $A7C7               ; {hard.MMC1_1+7C7}
+A7C3: D0 02           BNE     $A7C7               ; {}
 A7C5: E6 03           INC     <$03                ; {ram.GP_03}
 A7C7: E6 C2           INC     <$C2                ; {ram.00C2}
-A7C9: D0 02           BNE     $A7CD               ; {hard.MMC1_1+7CD}
+A7C9: D0 02           BNE     $A7CD               ; {}
 A7CB: E6 C3           INC     <$C3                ; {ram.00C3}
 A7CD: E6 0E           INC     <$0E                ; {ram.000E}
-A7CF: D0 02           BNE     $A7D3               ; {hard.MMC1_1+7D3}
+A7CF: D0 02           BNE     $A7D3               ; {}
 A7D1: E6 0F           INC     <$0F                ; {ram.000F}
 A7D3: A5 0E           LDA     <$0E                ; {ram.000E}
 A7D5: C9 FF           CMP     #$FF                ; 
-A7D7: D0 E4           BNE     $A7BD               ; {hard.MMC1_1+7BD}
+A7D7: D0 E4           BNE     $A7BD               ; {}
 A7D9: A5 0F           LDA     <$0F                ; {ram.000F}
 A7DB: C9 07           CMP     #$07                ; 
-A7DD: D0 DE           BNE     $A7BD               ; {hard.MMC1_1+7BD}
+A7DD: D0 DE           BNE     $A7BD               ; {}
 A7DF: A4 16           LDY     <$16                ; {ram.0016}
 A7E1: A9 5A           LDA     #$5A                ; 
 A7E3: 99 1E 65        STA     $651E,Y             ; 
@@ -5632,21 +5632,21 @@ A807: A9 01           LDA     #$01                ;
 A809: 85 13           STA     <$13                ; {ram.0013}
 A80B: 60              RTS                         ; 
 A80C: A4 16           LDY     <$16                ; {ram.0016}
-A80E: B9 A7 A6        LDA     $A6A7,Y             ; {hard.MMC1_1+6A7}
+A80E: B9 A7 A6        LDA     $A6A7,Y             ; {}
 A811: 85 0C           STA     <$0C                ; {ram.000C}
-A813: B9 AA A6        LDA     $A6AA,Y             ; {hard.MMC1_1+6AA}
+A813: B9 AA A6        LDA     $A6AA,Y             ; {}
 A816: 85 0D           STA     <$0D                ; {ram.000D}
 A818: 60              RTS                         ; 
 A819: A4 16           LDY     <$16                ; {ram.0016}
-A81B: B9 A1 A6        LDA     $A6A1,Y             ; {hard.MMC1_1+6A1}
+A81B: B9 A1 A6        LDA     $A6A1,Y             ; {}
 A81E: 85 0C           STA     <$0C                ; {ram.000C}
-A820: B9 A4 A6        LDA     $A6A4,Y             ; {hard.MMC1_1+6A4}
+A820: B9 A4 A6        LDA     $A6A4,Y             ; {}
 A823: 85 0D           STA     <$0D                ; {ram.000D}
 A825: A0 01           LDY     #$01                ; 
 A827: B9 6F 06        LDA     $066F,Y             ; {ram.066F}
 A82A: 91 0C           STA     ($0C),Y             ; {ram.000C}
 A82C: 88              DEY                         ; 
-A82D: 10 F8           BPL     $A827               ; {hard.MMC1_1+827}
+A82D: 10 F8           BPL     $A827               ; {}
 A82F: 60              RTS                         ; 
 
 
@@ -5859,7 +5859,7 @@ A8FD: FF                              ;
 A8FE: FF                              ;
 A8FF: FF                              ;
 A900: A5 13           LDA     <$13                ; {ram.0013}
-A902: 20 E2 E5        JSR     $E5E2               ; {hard.MMC1_2+25E2}
+A902: 20 E2 E5        JSR     $E5E2               ; 
 A905: 0F                              ;
 A906: A9 3F           LDA     #$3F                ; 
 A908: A9 7F           LDA     #$7F                ; 
@@ -5868,19 +5868,19 @@ A90C: A9 FF           LDA     #$FF                ;
 A90E: A9 20           LDA     #$20                ; 
 A910: 21 A9           AND     ($A9,X)             ; {ram.00A9}
 A912: A5 13           LDA     <$13                ; {ram.0013}
-A914: F0 42           BEQ     $A958               ; {hard.MMC1_1+958}
-A916: 20 F7 E5        JSR     $E5F7               ; {hard.MMC1_2+25F7}
-A919: 20 31 F2        JSR     $F231               ; {hard.MMC1_3+1231}
+A914: F0 42           BEQ     $A958               ; {}
+A916: 20 F7 E5        JSR     $E5F7               ; 
+A919: 20 31 F2        JSR     $F231               ; 
 A91C: A2 01           LDX     #$01                ; 
 A91E: 4C CA 79        JMP     $79CA               ; {ram.79CA}
 A921: A5 28           LDA     <$28                ; {ram.0028}
-A923: D0 14           BNE     $A939               ; {hard.MMC1_1+939}
+A923: D0 14           BNE     $A939               ; {}
 A925: AD 09 06        LDA     $0609               ; {ram.SND_CurSong}
-A928: D0 0F           BNE     $A939               ; {hard.MMC1_1+939}
+A928: D0 0F           BNE     $A939               ; {}
 A92A: 20 40 72        JSR     $7240               ; {ram.7240}
 A92D: A5 7C           LDA     <$7C                ; {ram.007C}
 A92F: C9 11           CMP     #$11                ; 
-A931: B0 06           BCS     $A939               ; {hard.MMC1_1+939}
+A931: B0 06           BCS     $A939               ; {}
 A933: A9 80           LDA     #$80                ; 
 A935: 85 28           STA     <$28                ; {ram.0028}
 A937: E6 13           INC     <$13                ; {ram.0013}
@@ -5893,10 +5893,10 @@ A93C: 68              PLA                         ;
 A93D: 00              BRK                         ; 
 A93E: FF                              ;
 A93F: A0 04           LDY     #$04                ; 
-A941: B9 3A A9        LDA     $A93A,Y             ; {hard.MMC1_1+93A}
+A941: B9 3A A9        LDA     $A93A,Y             ; {}
 A944: 99 02 03        STA     $0302,Y             ; {ram.0302}
 A947: 88              DEY                         ; 
-A948: 10 F7           BPL     $A941               ; {hard.MMC1_1+941}
+A948: 10 F7           BPL     $A941               ; {}
 A94A: A9 A4           LDA     #$A4                ; 
 A94C: 8D 5F 04        STA     $045F               ; {ram.045F}
 A94F: A9 00           LDA     #$00                ; 
@@ -5928,7 +5928,7 @@ A977: 24 11           BIT     <$11                ; {ram.0011}
 A979: 22                              ;
 A97A: 1B                              ;
 A97B: 1E 15 0E        ASL     $0E15,X             ; 
-A97E: EC 20 95        CPX     $9520               ; {hard.MMC1_0+1520}
+A97E: EC 20 95        CPX     $9520               ; {}
 A981: A9 A5           LDA     #$A5                ; 
 A983: AD F0 06        LDA     $06F0               ; {ram.06F0}
 A986: A9 50           LDA     #$50                ; 
@@ -5942,14 +5942,14 @@ A992: C4 E4           CPY     <$E4                ; {ram.00E4}
 A994: A4 20           LDY     <$20                ; {ram.0020}
 A996: 31 F2           AND     ($F2),Y             ; 
 A998: A5 29           LDA     <$29                ; {ram.0029}
-A99A: D0 58           BNE     $A9F4               ; {hard.MMC1_1+9F4}
+A99A: D0 58           BNE     $A9F4               ; {}
 A99C: A9 06           LDA     #$06                ; 
 A99E: 85 29           STA     <$29                ; {ram.0029}
 A9A0: A0 04           LDY     #$04                ; 
-A9A2: B9 8D A9        LDA     $A98D,Y             ; {hard.MMC1_1+98D}
+A9A2: B9 8D A9        LDA     $A98D,Y             ; {}
 A9A5: 99 02 03        STA     $0302,Y             ; {ram.0302}
 A9A8: 88              DEY                         ; 
-A9A9: 10 F7           BPL     $A9A2               ; {hard.MMC1_1+9A2}
+A9A9: 10 F7           BPL     $A9A2               ; {}
 A9AB: AD 5F 04        LDA     $045F               ; {ram.045F}
 A9AE: 8D 03 03        STA     $0303               ; {ram.0303}
 A9B1: EE 5F 04        INC     $045F               ; {ram.045F}
@@ -5962,30 +5962,30 @@ A9BF: EE 16 04        INC     $0416               ; {ram.0416}
 A9C2: B1 00           LDA     ($00),Y             ; {ram.GP_00}
 A9C4: 29 3F           AND     #$3F                ; 
 A9C6: C9 25           CMP     #$25                ; 
-A9C8: F0 E1           BEQ     $A9AB               ; {hard.MMC1_1+9AB}
+A9C8: F0 E1           BEQ     $A9AB               ; {}
 A9CA: 8D 05 03        STA     $0305               ; {ram.!BckGndBuf}
 A9CD: A9 10           LDA     #$10                ; 
 A9CF: 8D 04 06        STA     $0604               ; {ram.SND_Request}
 A9D2: B1 00           LDA     ($00),Y             ; {ram.GP_00}
 A9D4: 29 C0           AND     #$C0                ; 
-A9D6: F0 1C           BEQ     $A9F4               ; {hard.MMC1_1+9F4}
+A9D6: F0 1C           BEQ     $A9F4               ; {}
 A9D8: A0 02           LDY     #$02                ; 
 A9DA: C9 C0           CMP     #$C0                ; 
-A9DC: F0 06           BEQ     $A9E4               ; {hard.MMC1_1+9E4}
+A9DC: F0 06           BEQ     $A9E4               ; {}
 A9DE: 88              DEY                         ; 
 A9DF: C9 40           CMP     #$40                ; 
-A9E1: F0 01           BEQ     $A9E4               ; {hard.MMC1_1+9E4}
+A9E1: F0 01           BEQ     $A9E4               ; {}
 A9E3: 88              DEY                         ; 
-A9E4: B9 92 A9        LDA     $A992,Y             ; {hard.MMC1_1+992}
+A9E4: B9 92 A9        LDA     $A992,Y             ; {}
 A9E7: 8D 5F 04        STA     $045F               ; {ram.045F}
 A9EA: C0 02           CPY     #$02                ; 
-A9EC: D0 06           BNE     $A9F4               ; {hard.MMC1_1+9F4}
+A9EC: D0 06           BNE     $A9F4               ; {}
 A9EE: E6 AD           INC     <$AD                ; {ram.00AD}
 A9F0: A9 00           LDA     #$00                ; 
 A9F2: 85 AC           STA     <$AC                ; {ram.00AC}
 A9F4: 60              RTS                         ; 
 A9F5: A5 29           LDA     <$29                ; {ram.0029}
-A9F7: D0 FB           BNE     $A9F4               ; {hard.MMC1_1+9F4}
+A9F7: D0 FB           BNE     $A9F4               ; {}
 A9F9: 20 E9 6E        JSR     $6EE9               ; {ram.6EE9}
 A9FC: E6 13           INC     <$13                ; {ram.0013}
 A9FE: 60              RTS                         ; 
@@ -5994,9 +5994,9 @@ AA01: 8D 0B 05        STA     $050B               ; {ram.050B}
 AA04: 20 90 6C        JSR     $6C90               ; {ram.6C90}
 AA07: 8D 12 04        STA     $0412               ; {ram.0412}
 AA0A: 8D 13 04        STA     $0413               ; {ram.0413}
-AA0D: 4C F7 E5        JMP     $E5F7               ; {hard.MMC1_2+25F7}
+AA0D: 4C F7 E5        JMP     $E5F7               ; 
 AA10: A5 13           LDA     <$13                ; {ram.0013}
-AA12: 20 E2 E5        JSR     $E5E2               ; {hard.MMC1_2+25E2}
+AA12: 20 E2 E5        JSR     $E5E2               ; 
 AA15: 23                              ;
 AA16: AA              TAX                         ; 
 AA17: A9 AA           LDA     #$AA                ; 
@@ -6007,24 +6007,24 @@ AA1E: AB                              ;
 AA1F: 0F                              ;
 AA20: 12                              ;
 AA21: 16 2A           ASL     $2A,X               ; {ram.002A}
-AA23: 20 F7 E5        JSR     $E5F7               ; {hard.MMC1_2+25F7}
+AA23: 20 F7 E5        JSR     $E5F7               ; 
 AA26: EE 06 05        INC     $0506               ; {ram.0506}
 AA29: AD 06 05        LDA     $0506               ; {ram.0506}
 AA2C: C9 C0           CMP     #$C0                ; 
-AA2E: F0 20           BEQ     $AA50               ; {hard.MMC1_1+A50}
-AA30: 20 62 AA        JSR     $AA62               ; {hard.MMC1_1+A62}
+AA2E: F0 20           BEQ     $AA50               ; {}
+AA30: 20 62 AA        JSR     $AA62               ; {}
 AA33: AE 06 05        LDX     $0506               ; {ram.0506}
 AA36: E0 40           CPX     #$40                ; 
-AA38: 90 15           BCC     $AA4F               ; {hard.MMC1_1+A4F}
+AA38: 90 15           BCC     $AA4F               ; {}
 AA3A: A0 23           LDY     #$23                ; 
 AA3C: B9 7E 6B        LDA     $6B7E,Y             ; 
 AA3F: 99 02 03        STA     $0302,Y             ; {ram.0302}
 AA42: 88              DEY                         ; 
-AA43: 10 F7           BPL     $AA3C               ; {hard.MMC1_1+A3C}
+AA43: 10 F7           BPL     $AA3C               ; {}
 AA45: 8A              TXA                         ; 
 AA46: 29 03           AND     #$03                ; 
 AA48: AA              TAX                         ; 
-AA49: BD 1F AA        LDA     $AA1F,X             ; {hard.MMC1_1+A1F}
+AA49: BD 1F AA        LDA     $AA1F,X             ; {}
 AA4C: 8D 15 03        STA     $0315               ; {ram.0315}
 AA4F: 60              RTS                         ; 
 AA50: A9 10           LDA     #$10                ; 
@@ -6034,7 +6034,7 @@ AA57: 85 28           STA     <$28                ; {ram.0028}
 AA59: A9 40           LDA     #$40                ; 
 AA5B: 85 4D           STA     <$4D                ; {ram.004D}
 AA5D: E6 13           INC     <$13                ; {ram.0013}
-AA5F: 4C 33 AA        JMP     $AA33               ; {hard.MMC1_1+A33}
+AA5F: 4C 33 AA        JMP     $AA33               ; {}
 AA62: A5 70           LDA     <$70                ; {ram.0070}
 AA64: 85 83           STA     <$83                ; {ram.0083}
 AA66: A5 84           LDA     <$84                ; {ram.0084}
@@ -6042,7 +6042,7 @@ AA68: 38              SEC                         ;
 AA69: E9 10           SBC     #$10                ; 
 AA6B: 85 97           STA     <$97                ; {ram.0097}
 AA6D: A2 00           LDX     #$00                ; 
-AA6F: 20 93 FA        JSR     $FA93               ; {hard.MMC1_3+1A93}
+AA6F: 20 93 FA        JSR     $FA93               ; 
 AA72: 20 88 79        JSR     $7988               ; {ram.7988}
 AA75: 85 0C           STA     <$0C                ; {ram.000C}
 AA77: A9 48           LDA     #$48                ; 
@@ -6053,9 +6053,9 @@ AA81: A0 21           LDY     #$21                ;
 AA83: 20 2C 79        JSR     $792C               ; {ram.792C}
 AA86: A9 1B           LDA     #$1B                ; 
 AA88: A2 13           LDX     #$13                ; 
-AA8A: 20 0E E7        JSR     $E70E               ; {hard.MMC1_2+270E}
+AA8A: 20 0E E7        JSR     $E70E               ; 
 AA8D: A2 01           LDX     #$01                ; 
-AA8F: 20 93 FA        JSR     $FA93               ; {hard.MMC1_3+1A93}
+AA8F: 20 93 FA        JSR     $FA93               ; 
 AA92: 8A              TXA                         ; 
 AA93: 20 DB 77        JSR     $77DB               ; {ram.77DB}
 AA96: A5 71           LDA     <$71                ; {ram.0071}
@@ -6066,21 +6066,21 @@ AA9D: E9 10           SBC     #$10                ;
 AA9F: 85 86           STA     <$86                ; {ram.0086}
 AAA1: A2 02           LDX     #$02                ; 
 AAA3: A9 1B           LDA     #$1B                ; 
-AAA5: 20 0E E7        JSR     $E70E               ; {hard.MMC1_2+270E}
+AAA5: 20 0E E7        JSR     $E70E               ; 
 AAA8: 60              RTS                         ; 
 AAA9: A5 4D           LDA     <$4D                ; {ram.004D}
-AAAB: F0 1A           BEQ     $AAC7               ; {hard.MMC1_1+AC7}
-AAAD: 20 F7 E5        JSR     $E5F7               ; {hard.MMC1_2+25F7}
+AAAB: F0 1A           BEQ     $AAC7               ; {}
+AAAD: 20 F7 E5        JSR     $E5F7               ; 
 AAB0: A5 4D           LDA     <$4D                ; {ram.004D}
 AAB2: C9 04           CMP     #$04                ; 
-AAB4: 90 10           BCC     $AAC6               ; {hard.MMC1_1+AC6}
-AAB6: 20 62 AA        JSR     $AA62               ; {hard.MMC1_1+A62}
+AAB4: 90 10           BCC     $AAC6               ; {}
+AAB6: 20 62 AA        JSR     $AA62               ; {}
 AAB9: A5 13           LDA     <$13                ; {ram.0013}
 AABB: C9 01           CMP     #$01                ; 
-AABD: D0 07           BNE     $AAC6               ; {hard.MMC1_1+AC6}
+AABD: D0 07           BNE     $AAC6               ; {}
 AABF: A5 28           LDA     <$28                ; {ram.0028}
-AAC1: D0 03           BNE     $AAC6               ; {hard.MMC1_1+AC6}
-AAC3: 20 3C AB        JSR     $AB3C               ; {hard.MMC1_1+B3C}
+AAC1: D0 03           BNE     $AAC6               ; {}
+AAC3: 20 3C AB        JSR     $AB3C               ; {}
 AAC6: 60              RTS                         ; 
 AAC7: A9 6A           LDA     #$6A                ; 
 AAC9: 85 14           STA     <$14                ; {ram.0014}
@@ -6089,9 +6089,9 @@ AACD: 60              RTS                         ;
 AACE: 22                              ;
 AACF: A4 01           LDY     <$01                ; {ram.GP_01}
 AAD1: 24 FF           BIT     <$FF                ; {ram.CUR_2000}
-AAD3: AC AD AE        LDY     $AEAD               ; {hard.MMC1_1+EAD}
+AAD3: AC AD AE        LDY     $AEAD               ; {}
 AAD6: AF                              ;
-AAD7: B0 B1           BCS     $AA8A               ; {hard.MMC1_1+A8A}
+AAD7: B0 B1           BCS     $AA8A               ; {}
 AAD9: B2                              ;
 AADA: B3                              ;
 AADB: E4 E5           CPX     <$E5                ; {ram.00E5}
@@ -6099,23 +6099,23 @@ AADD: E6 E7           INC     <$E7                ; {ram.00E7}
 AADF: E8              INX                         ; 
 AAE0: E9 EA           SBC     #$EA                ; 
 AAE2: EB                              ;
-AAE3: EC ED EE        CPX     $EEED               ; {hard.MMC1_2+2EED}
+AAE3: EC ED EE        CPX     $EEED               ; 
 AAE6: EF                              ;
-AAE7: F0 F1           BEQ     $AADA               ; {hard.MMC1_1+ADA}
+AAE7: F0 F1           BEQ     $AADA               ; {}
 AAE9: F2                              ;
 AAEA: F3                              ;
 AAEB: F4                              ;
 AAEC: F5 F6           SBC     $F6,X               ; {ram.TileFlagB}
 AAEE: F7                              ;
 AAEF: F8              SED                         ; 
-AAF0: F9 FA FB        SBC     $FBFA,Y             ; {hard.MMC1_3+1BFA}
+AAF0: F9 FA FB        SBC     $FBFA,Y             ; 
 AAF3: 46 47           LSR     <$47                ; {ram.0047}
 AAF5: 48              PHA                         ; 
 AAF6: 49 4A           EOR     #$4A                ; 
 AAF8: 4B                              ;
 AAF9: 4C 4D 4E        JMP     $4E4D               ; 
 AAFC: 4F                              ;
-AAFD: 50 51           BVC     $AB50               ; {hard.MMC1_1+B50}
+AAFD: 50 51           BVC     $AB50               ; {}
 AAFF: 52                              ;
 AB00: 53                              ;
 AB01: 54                              ;
@@ -6162,56 +6162,56 @@ AB3E: 04                              ;
 AB3F: AD 12 04        LDA     $0412               ; {ram.0412}
 AB42: 29 07           AND     #$07                ; 
 AB44: C9 04           CMP     #$04                ; 
-AB46: D0 33           BNE     $AB7B               ; {hard.MMC1_1+B7B}
+AB46: D0 33           BNE     $AB7B               ; {}
 AB48: A0 04           LDY     #$04                ; 
-AB4A: B9 CE AA        LDA     $AACE,Y             ; {hard.MMC1_1+ACE}
+AB4A: B9 CE AA        LDA     $AACE,Y             ; {}
 AB4D: 99 02 03        STA     $0302,Y             ; {ram.0302}
 AB50: 88              DEY                         ; 
-AB51: 10 F7           BPL     $AB4A               ; {hard.MMC1_1+B4A}
+AB51: 10 F7           BPL     $AB4A               ; {}
 AB53: AC 13 04        LDY     $0413               ; {ram.0413}
-AB56: B9 07 AB        LDA     $AB07,Y             ; {hard.MMC1_1+B07}
+AB56: B9 07 AB        LDA     $AB07,Y             ; {}
 AB59: C9 FF           CMP     #$FF                ; 
-AB5B: F0 1F           BEQ     $AB7C               ; {hard.MMC1_1+B7C}
+AB5B: F0 1F           BEQ     $AB7C               ; {}
 AB5D: 8D 05 03        STA     $0305               ; {ram.!BckGndBuf}
 AB60: C9 24           CMP     #$24                ; 
-AB62: F0 05           BEQ     $AB69               ; {hard.MMC1_1+B69}
+AB62: F0 05           BEQ     $AB69               ; {}
 AB64: A9 10           LDA     #$10                ; 
 AB66: 8D 04 06        STA     $0604               ; {ram.SND_Request}
 AB69: EE 13 04        INC     $0413               ; {ram.0413}
-AB6C: B9 D3 AA        LDA     $AAD3,Y             ; {hard.MMC1_1+AD3}
+AB6C: B9 D3 AA        LDA     $AAD3,Y             ; {}
 AB6F: 8D 03 03        STA     $0303               ; {ram.0303}
 AB72: C9 A0           CMP     #$A0                ; 
-AB74: B0 05           BCS     $AB7B               ; {hard.MMC1_1+B7B}
+AB74: B0 05           BCS     $AB7B               ; {}
 AB76: A9 23           LDA     #$23                ; 
 AB78: 8D 02 03        STA     $0302               ; {ram.0302}
 AB7B: 60              RTS                         ; 
 AB7C: E6 13           INC     <$13                ; {ram.0013}
 AB7E: 60              RTS                         ; 
-AB7F: 20 F7 E5        JSR     $E5F7               ; {hard.MMC1_2+25F7}
+AB7F: 20 F7 E5        JSR     $E5F7               ; 
 AB82: A2 02           LDX     #$02                ; 
 AB84: A9 78           LDA     #$78                ; 
 AB86: 95 70           STA     $70,X               ; {ram.0070}
 AB88: A9 88           LDA     #$88                ; 
 AB8A: 95 84           STA     $84,X               ; {ram.0084}
 AB8C: A9 0E           LDA     #$0E                ; 
-AB8E: 20 0E E7        JSR     $E70E               ; {hard.MMC1_2+270E}
+AB8E: 20 0E E7        JSR     $E70E               ; 
 AB91: A2 02           LDX     #$02                ; 
 AB93: A9 3E           LDA     #$3E                ; 
 AB95: 9D 4F 03        STA     $034F,X             ; {ram.034F}
-AB98: 20 B8 AB        JSR     $ABB8               ; {hard.MMC1_1+BB8}
+AB98: 20 B8 AB        JSR     $ABB8               ; {}
 AB9B: A5 28           LDA     <$28                ; {ram.0028}
-AB9D: D0 DF           BNE     $AB7E               ; {hard.MMC1_1+B7E}
+AB9D: D0 DF           BNE     $AB7E               ; {}
 AB9F: A5 F8           LDA     <$F8                ; {ram.00F8}
 ABA1: 29 10           AND     #$10                ; 
-ABA3: F0 D9           BEQ     $AB7E               ; {hard.MMC1_1+B7E}
-ABA5: 20 A3 EB        JSR     $EBA3               ; {hard.MMC1_2+2BA3}
+ABA3: F0 D9           BEQ     $AB7E               ; {}
+ABA5: 20 A3 EB        JSR     $EBA3               ; 
 ABA8: A9 0D           LDA     #$0D                ; 
 ABAA: 85 12           STA     <$12                ; {ram.0012}
-ABAC: 20 25 E6        JSR     $E625               ; {hard.MMC1_2+2625}
-ABAF: 20 6D E4        JSR     $E46D               ; {hard.MMC1_2+246D}
+ABAC: 20 25 E6        JSR     $E625               ; 
+ABAF: 20 6D E4        JSR     $E46D               ; 
 ABB2: 20 E9 6E        JSR     $6EE9               ; {ram.6EE9}
-ABB5: 4C 5A AF        JMP     $AF5A               ; {hard.MMC1_1+F5A}
-ABB8: 20 93 FA        JSR     $FA93               ; {hard.MMC1_3+1A93}
+ABB5: 4C 5A AF        JMP     $AF5A               ; {}
+ABB8: 20 93 FA        JSR     $FA93               ; 
 ABBB: A9 0B           LDA     #$0B                ; 
 ABBD: 4C DF 77        JMP     $77DF               ; {ram.77DF}
 ABC0: 02                              ;
@@ -6220,23 +6220,23 @@ ABC2: 78              SEI                         ;
 ABC3: 00              BRK                         ; 
 ABC4: AD 0B 05        LDA     $050B               ; {ram.050B}
 ABC7: C9 08           CMP     #$08                ; 
-ABC9: 30 0B           BMI     $ABD6               ; {hard.MMC1_1+BD6}
+ABC9: 30 0B           BMI     $ABD6               ; {}
 ABCB: AD 0B 05        LDA     $050B               ; {ram.050B}
 ABCE: E9 08           SBC     #$08                ; 
 ABD0: 8D 0B 05        STA     $050B               ; {ram.050B}
-ABD3: 20 13 AE        JSR     $AE13               ; {hard.MMC1_1+E13}
+ABD3: 20 13 AE        JSR     $AE13               ; {}
 ABD6: A5 58           LDA     <$58                ; {ram.0058}
 ABD8: 18              CLC                         ; 
 ABD9: 69 80           ADC     #$80                ; 
 ABDB: 85 58           STA     <$58                ; {ram.0058}
-ABDD: 90 03           BCC     $ABE2               ; {hard.MMC1_1+BE2}
+ABDD: 90 03           BCC     $ABE2               ; {}
 ABDF: EE 0B 05        INC     $050B               ; {ram.050B}
 ABE2: A5 FC           LDA     <$FC                ; {ram.CUR_VScroll}
 ABE4: 69 00           ADC     #$00                ; 
 ABE6: 85 FC           STA     <$FC                ; {ram.CUR_VScroll}
 ABE8: C9 F0           CMP     #$F0                ; 
 ABEA: A9 00           LDA     #$00                ; 
-ABEC: 90 05           BCC     $ABF3               ; {hard.MMC1_1+BF3}
+ABEC: 90 05           BCC     $ABF3               ; {}
 ABEE: 85 FC           STA     <$FC                ; {ram.CUR_VScroll}
 ABF0: EE E2 00        INC     $00E2               ; {ram.00E2}
 ABF3: 2A              ROL     A                   ; 
@@ -6244,14 +6244,14 @@ ABF4: 85 5C           STA     <$5C                ; {ram.!FlipFlag}
 ABF6: A0 00           LDY     #$00                ; 
 ABF8: A6 16           LDX     <$16                ; {ram.0016}
 ABFA: BD 2D 06        LDA     $062D,X             ; 
-ABFD: F0 01           BEQ     $AC00               ; {hard.MMC1_1+C00}
+ABFD: F0 01           BEQ     $AC00               ; {}
 ABFF: C8              INY                         ; 
 AC00: AD E2 00        LDA     $00E2               ; {ram.00E2}
-AC03: D9 C0 AB        CMP     $ABC0,Y             ; {hard.MMC1_1+BC0}
-AC06: 90 0D           BCC     $AC15               ; {hard.MMC1_1+C15}
+AC03: D9 C0 AB        CMP     $ABC0,Y             ; {}
+AC06: 90 0D           BCC     $AC15               ; {}
 AC08: A5 FC           LDA     <$FC                ; {ram.CUR_VScroll}
-AC0A: D9 C2 AB        CMP     $ABC2,Y             ; {hard.MMC1_1+BC2}
-AC0D: 90 06           BCC     $AC15               ; {hard.MMC1_1+C15}
+AC0A: D9 C2 AB        CMP     $ABC2,Y             ; {}
+AC0D: 90 06           BCC     $AC15               ; {}
 AC0F: E6 13           INC     <$13                ; {ram.0013}
 AC11: A9 40           LDA     #$40                ; 
 AC13: 85 28           STA     <$28                ; {ram.0028}
@@ -6266,7 +6266,7 @@ AC1E: 28              PLP                         ;
 AC1F: 29 2A           AND     #$2A                ; 
 AC21: 2B                              ;
 AC22: 46 10           LSR     <$10                ; {ram.0010}
-AC24: 90 84           BCC     $ABAA               ; {hard.MMC1_1+BAA}
+AC24: 90 84           BCC     $ABAA               ; {}
 AC26: 24 30           BIT     <$30                ; {ram.0030}
 AC28: 01 48           ORA     ($48,X)             ; {ram.0048}
 AC2A: 03                              ;
@@ -6287,13 +6287,13 @@ AC3F: 92                              ;
 AC40: A1 B6           LDA     ($B6,X)             ; {ram.00B6}
 AC42: C9 D1           CMP     #$D1                ; 
 AC44: EA              NOP                         ; 
-AC45: AC AC AC        LDY     $ACAC               ; {hard.MMC1_1+CAC}
-AC48: AC AC AC        LDY     $ACAC               ; {hard.MMC1_1+CAC}
-AC4B: AC AC AC        LDY     $ACAC               ; {hard.MMC1_1+CAC}
-AC4E: AD AD AD        LDA     $ADAD               ; {hard.MMC1_1+DAD}
-AC51: AD AD AD        LDA     $ADAD               ; {hard.MMC1_1+DAD}
-AC54: AD AD AD        LDA     $ADAD               ; {hard.MMC1_1+DAD}
-AC57: AD AD AD        LDA     $ADAD               ; {hard.MMC1_1+DAD}
+AC45: AC AC AC        LDY     $ACAC               ; {}
+AC48: AC AC AC        LDY     $ACAC               ; {}
+AC4B: AC AC AC        LDY     $ACAC               ; {}
+AC4E: AD AD AD        LDA     $ADAD               ; {}
+AC51: AD AD AD        LDA     $ADAD               ; {}
+AC54: AD AD AD        LDA     $ADAD               ; {}
+AC57: AD AD AD        LDA     $ADAD               ; {}
 AC5A: AD AD 
 
 AC5C: 07 0D 24 1C 1D 0A 0F 0F 24 09 05 0E                       ; "7D STAFF 95EXECUTIVEM5PRODUCERZZZ
@@ -6353,7 +6353,7 @@ AE08: 00              BRK                         ;
 AE09: 00              BRK                         ; 
 AE0A: 00              BRK                         ; 
 AE0B: 00              BRK                         ; 
-AE0C: 50 00           BVC     $AE0E               ; {hard.MMC1_1+E0E}
+AE0C: 50 00           BVC     $AE0E               ; {}
 AE0E: 00              BRK                         ; 
 AE0F: 00              BRK                         ; 
 AE10: AA              TAX                         ; 
@@ -6366,19 +6366,19 @@ AE13: A0 1F           LDY     #$1F                ;
 AE15: A9 24           LDA     #$24                ; 
 AE17: 99 05 03        STA     $0305,Y             ; {ram.!BckGndBuf}
 AE1A: 88              DEY                         ; 
-AE1B: 10 FA           BPL     $AE17               ; {hard.MMC1_1+E17}
+AE1B: 10 FA           BPL     $AE17               ; {}
 AE1D: AD 0A 05        LDA     $050A               ; {ram.050A}
-AE20: F0 1C           BEQ     $AE3E               ; {hard.MMC1_1+E3E}
+AE20: F0 1C           BEQ     $AE3E               ; {}
 AE22: C9 01           CMP     #$01                ; 
-AE24: F0 06           BEQ     $AE2C               ; {hard.MMC1_1+E2C}
+AE24: F0 06           BEQ     $AE2C               ; {}
 AE26: C9 2E           CMP     #$2E                ; 
-AE28: 90 0C           BCC     $AE36               ; {hard.MMC1_1+E36}
-AE2A: D0 12           BNE     $AE3E               ; {hard.MMC1_1+E3E}
+AE28: 90 0C           BCC     $AE36               ; {}
+AE2A: D0 12           BNE     $AE3E               ; {}
 AE2C: A0 19           LDY     #$19                ; 
 AE2E: A9 FA           LDA     #$FA                ; 
 AE30: 99 08 03        STA     $0308,Y             ; {ram.0308}
 AE33: 88              DEY                         ; 
-AE34: 10 FA           BPL     $AE30               ; {hard.MMC1_1+E30}
+AE34: 10 FA           BPL     $AE30               ; {}
 AE36: A9 FA           LDA     #$FA                ; 
 AE38: 8D 08 03        STA     $0308               ; {ram.0308}
 AE3B: 8D 21 03        STA     $0321               ; {ram.0321}
@@ -6388,7 +6388,7 @@ AE43: 8D 30 03        STA     $0330               ; {ram.0330}
 AE46: A9 20           LDA     #$20                ; 
 AE48: 8D 04 03        STA     $0304               ; {ram.0304}
 AE4B: AE 0C 05        LDX     $050C               ; {ram.050C}
-AE4E: BD 16 AC        LDA     $AC16,X             ; {hard.MMC1_1+C16}
+AE4E: BD 16 AC        LDA     $AC16,X             ; {}
 AE51: 8D 02 03        STA     $0302               ; {ram.0302}
 AE54: AD 0D 05        LDA     $050D               ; {ram.050D}
 AE57: A8              TAY                         ; 
@@ -6398,29 +6398,29 @@ AE5A: 0A              ASL     A                   ;
 AE5B: 0A              ASL     A                   ; 
 AE5C: 0A              ASL     A                   ; 
 AE5D: 8D 03 03        STA     $0303               ; {ram.0303}
-AE60: BD 22 AC        LDA     $AC22,X             ; {hard.MMC1_1+C22}
+AE60: BD 22 AC        LDA     $AC22,X             ; {}
 AE63: 0A              ASL     A                   ; 
 AE64: 88              DEY                         ; 
-AE65: 10 FC           BPL     $AE63               ; {hard.MMC1_1+E63}
-AE67: 90 79           BCC     $AEE2               ; {hard.MMC1_1+EE2}
+AE65: 10 FC           BPL     $AE63               ; {}
+AE67: 90 79           BCC     $AEE2               ; {}
 AE69: AC 0E 05        LDY     $050E               ; {ram.050E}
 AE6C: C0 17           CPY     #$17                ; 
-AE6E: B0 72           BCS     $AEE2               ; {hard.MMC1_1+EE2}
+AE6E: B0 72           BCS     $AEE2               ; {}
 AE70: A6 16           LDX     <$16                ; {ram.0016}
 AE72: BD 2D 06        LDA     $062D,X             ; 
-AE75: D0 04           BNE     $AE7B               ; {hard.MMC1_1+E7B}
+AE75: D0 04           BNE     $AE7B               ; {}
 AE77: C0 10           CPY     #$10                ; 
-AE79: B0 64           BCS     $AEDF               ; {hard.MMC1_1+EDF}
+AE79: B0 64           BCS     $AEDF               ; {}
 AE7B: A6 16           LDX     <$16                ; {ram.0016}
 AE7D: BD 2D 06        LDA     $062D,X             ; 
-AE80: F0 08           BEQ     $AE8A               ; {hard.MMC1_1+E8A}
+AE80: F0 08           BEQ     $AE8A               ; {}
 AE82: C0 0C           CPY     #$0C                ; 
-AE84: 90 04           BCC     $AE8A               ; {hard.MMC1_1+E8A}
+AE84: 90 04           BCC     $AE8A               ; {}
 AE86: C0 10           CPY     #$10                ; 
-AE88: 90 55           BCC     $AEDF               ; {hard.MMC1_1+EDF}
-AE8A: B9 2E AC        LDA     $AC2E,Y             ; {hard.MMC1_1+C2E}
+AE88: 90 55           BCC     $AEDF               ; {}
+AE8A: B9 2E AC        LDA     $AC2E,Y             ; {}
 AE8D: 85 00           STA     <$00                ; {ram.GP_00}
-AE8F: B9 45 AC        LDA     $AC45,Y             ; {hard.MMC1_1+C45}
+AE8F: B9 45 AC        LDA     $AC45,Y             ; {}
 AE92: 85 01           STA     <$01                ; {ram.GP_01}
 AE94: A0 00           LDY     #$00                ; 
 AE96: B1 00           LDA     ($00),Y             ; {ram.GP_00}
@@ -6434,12 +6434,12 @@ AEA1: 9D 05 03        STA     $0305,X             ; {ram.!BckGndBuf}
 AEA4: C8              INY                         ; 
 AEA5: E8              INX                         ; 
 AEA6: C6 02           DEC     <$02                ; {ram.GP_02}
-AEA8: D0 F5           BNE     $AE9F               ; {hard.MMC1_1+E9F}
+AEA8: D0 F5           BNE     $AE9F               ; {}
 AEAA: AC 0E 05        LDY     $050E               ; {ram.050E}
 AEAD: C0 0C           CPY     #$0C                ; 
-AEAF: 90 2E           BCC     $AEDF               ; {hard.MMC1_1+EDF}
+AEAF: 90 2E           BCC     $AEDF               ; {}
 AEB1: C0 11           CPY     #$11                ; 
-AEB3: D0 2A           BNE     $AEDF               ; {hard.MMC1_1+EDF}
+AEB3: D0 2A           BNE     $AEDF               ; {}
 AEB5: A5 16           LDA     <$16                ; {ram.0016}
 AEB7: 0A              ASL     A                   ; 
 AEB8: 0A              ASL     A                   ; 
@@ -6451,7 +6451,7 @@ AEC0: 9D 0E 03        STA     $030E,X             ;
 AEC3: C8              INY                         ; 
 AEC4: E8              INX                         ; 
 AEC5: E0 08           CPX     #$08                ; 
-AEC7: 90 F4           BCC     $AEBD               ; {hard.MMC1_1+EBD}
+AEC7: 90 F4           BCC     $AEBD               ; {}
 AEC9: AC 16 00        LDY     $0016               ; {ram.0016}
 AECC: B9 30 06        LDA     $0630,Y             ; 
 AECF: 20 55 6E        JSR     $6E55               ; {ram.6E55}
@@ -6459,7 +6459,7 @@ AED2: A2 02           LDX     #$02                ;
 AED4: B5 01           LDA     $01,X               ; {ram.GP_01}
 AED6: 9D 18 03        STA     $0318,X             ; 
 AED9: CA              DEX                         ; 
-AEDA: 10 F8           BPL     $AED4               ; {hard.MMC1_1+ED4}
+AEDA: 10 F8           BPL     $AED4               ; {}
 AEDC: AC 0E 05        LDY     $050E               ; {ram.050E}
 AEDF: EE 0E 05        INC     $050E               ; {ram.050E}
 AEE2: EE 0D 05        INC     $050D               ; {ram.050D}
@@ -6467,36 +6467,36 @@ AEE5: AD 0C 05        LDA     $050C               ; {ram.050C}
 AEE8: 29 03           AND     #$03                ; 
 AEEA: C9 03           CMP     #$03                ; 
 AEEC: A9 08           LDA     #$08                ; 
-AEEE: 90 02           BCC     $AEF2               ; {hard.MMC1_1+EF2}
+AEEE: 90 02           BCC     $AEF2               ; {}
 AEF0: A9 06           LDA     #$06                ; 
 AEF2: CD 0D 05        CMP     $050D               ; {ram.050D}
-AEF5: D0 11           BNE     $AF08               ; {hard.MMC1_1+F08}
+AEF5: D0 11           BNE     $AF08               ; {}
 AEF7: A9 00           LDA     #$00                ; 
 AEF9: 8D 0D 05        STA     $050D               ; {ram.050D}
 AEFC: AC 0C 05        LDY     $050C               ; {ram.050C}
 AEFF: C8              INY                         ; 
 AF00: C0 0C           CPY     #$0C                ; 
-AF02: 90 01           BCC     $AF05               ; {hard.MMC1_1+F05}
+AF02: 90 01           BCC     $AF05               ; {}
 AF04: A8              TAY                         ; 
 AF05: 8C 0C 05        STY     $050C               ; {ram.050C}
 AF08: AD 0A 05        LDA     $050A               ; {ram.050A}
 AF0B: 4A              LSR     A                   ; 
-AF0C: B0 35           BCS     $AF43               ; {hard.MMC1_1+F43}
+AF0C: B0 35           BCS     $AF43               ; {}
 AF0E: 4A              LSR     A                   ; 
-AF0F: B0 32           BCS     $AF43               ; {hard.MMC1_1+F43}
+AF0F: B0 32           BCS     $AF43               ; {}
 AF11: A2 00           LDX     #$00                ; 
 AF13: 8E 28 03        STX     $0328               ; {ram.0328}
 AF16: 8E 2F 03        STX     $032F               ; {ram.032F}
 AF19: A8              TAY                         ; 
-AF1A: B9 FA AD        LDA     $ADFA,Y             ; {hard.MMC1_1+DFA}
+AF1A: B9 FA AD        LDA     $ADFA,Y             ; {}
 AF1D: A0 05           LDY     #$05                ; 
 AF1F: 99 29 03        STA     $0329,Y             ; {ram.0329}
 AF22: 88              DEY                         ; 
-AF23: 10 FA           BPL     $AF1F               ; {hard.MMC1_1+F1F}
+AF23: 10 FA           BPL     $AF1F               ; {}
 AF25: A0 23           LDY     #$23                ; 
 AF27: AD 02 03        LDA     $0302               ; {ram.0302}
 AF2A: 29 08           AND     #$08                ; 
-AF2C: F0 02           BEQ     $AF30               ; {hard.MMC1_1+F30}
+AF2C: F0 02           BEQ     $AF30               ; {}
 AF2E: A0 2B           LDY     #$2B                ; 
 AF30: 8C 25 03        STY     $0325               ; {ram.0325}
 AF33: AD 0A 05        LDA     $050A               ; {ram.050A}
@@ -6511,7 +6511,7 @@ AF46: C8              INY                         ;
 AF47: 98              TYA                         ; 
 AF48: 29 1F           AND     #$1F                ; 
 AF4A: C9 1E           CMP     #$1E                ; 
-AF4C: 90 02           BCC     $AF50               ; {hard.MMC1_1+F50}
+AF4C: 90 02           BCC     $AF50               ; {}
 AF4E: C8              INY                         ; 
 AF4F: C8              INY                         ; 
 AF50: 8C 0A 05        STY     $050A               ; {ram.050A}
@@ -6522,22 +6522,22 @@ AF56: FF 06
 AF58: 7F 07 
 
 AF5A: A2 04           LDX     #$04                ; 
-AF5C: BD 54 AF        LDA     $AF54,X             ; {hard.MMC1_1+F54}
+AF5C: BD 54 AF        LDA     $AF54,X             ; {}
 AF5F: 85 00           STA     <$00                ; {ram.GP_00}
-AF61: BD 55 AF        LDA     $AF55,X             ; {hard.MMC1_1+F55}
+AF61: BD 55 AF        LDA     $AF55,X             ; {}
 AF64: 85 01           STA     <$01                ; {ram.GP_01}
 AF66: A0 7F           LDY     #$7F                ; 
 AF68: A9 00           LDA     #$00                ; 
 AF6A: 91 00           STA     ($00),Y             ; {ram.GP_00}
 AF6C: 88              DEY                         ; 
-AF6D: 10 FB           BPL     $AF6A               ; {hard.MMC1_1+F6A}
+AF6D: 10 FB           BPL     $AF6A               ; {}
 AF6F: CA              DEX                         ; 
 AF70: CA              DEX                         ; 
-AF71: 10 E9           BPL     $AF5C               ; {hard.MMC1_1+F5C}
+AF71: 10 E9           BPL     $AF5C               ; {}
 AF73: A0 27           LDY     #$27                ; 
 AF75: 99 57 06        STA     $0657,Y             ; {ram.0657}
 AF78: 88              DEY                         ; 
-AF79: 10 FA           BPL     $AF75               ; {hard.MMC1_1+F75}
+AF79: 10 FA           BPL     $AF75               ; {}
 AF7B: A9 22           LDA     #$22                ; 
 AF7D: 8D 6F 06        STA     $066F               ; {ram.066F}
 AF80: CE 70 06        DEC     $0670               ; {ram.0670}
@@ -6696,30 +6696,30 @@ BF57: A2 FF           LDX     #$FF                ; Stack to ...
 BF59: 9A              TXS                         ; ... 01FF
 BF5A: AD 02 20        LDA     $2002               ; {hard.P_STATUS} Wait ...
 BF5D: 29 80           AND     #$80                ; ... for ...
-BF5F: F0 F9           BEQ     $BF5A               ; {hard.MMC1_1+1F5A} ... VBLANK
+BF5F: F0 F9           BEQ     $BF5A               ; {} ... VBLANK
 BF61: AD 02 20        LDA     $2002               ; {hard.P_STATUS} Wait ...
 BF64: 29 80           AND     #$80                ; ... for another ...
-BF66: F0 F9           BEQ     $BF61               ; {hard.MMC1_1+1F61} ... VBLANK (1st might have been a leftover flag)
+BF66: F0 F9           BEQ     $BF61               ; {} ... VBLANK (1st might have been a leftover flag)
 BF68: 09 FF           ORA     #$FF                ; Reset ...
-BF6A: 8D 00 80        STA     $8000               ; {hard.MMC1_0} ... ...
-BF6D: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ... all ...
-BF70: 8D 00 C0        STA     $C000               ; {hard.MMC1_2} ... four ...
-BF73: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} ... MMC1 registers
+BF6A: 8D 00 80        STA     $8000               ; {} ... ...
+BF6D: 8D 00 A0        STA     $A000               ; {} ... all ...
+BF70: 8D 00 C0        STA     $C000               ; ... four ...
+BF73: 8D 00 E0        STA     $E000               ; ... MMC1 registers
 BF76: A9 0F           LDA     #$0F                ; Set MMC control to 8K CHR ROM, fixed/bank 16K PRG pages, ...
 BF78: 20 98 BF        JSR     $BF98               ; {code.MMC_Control} ... and horizontal mirroring (vertical scrolling)
 BF7B: A9 00           LDA     #$00                ; Set MMC reg1 VROM bank
-BF7D: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} The cartridge doesn't ...
+BF7D: 8D 00 A0        STA     $A000               ; {} The cartridge doesn't ...
 BF80: 4A              LSR     A                   ; ... swap VROM pages. ...
-BF81: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ... Just ...
+BF81: 8D 00 A0        STA     $A000               ; {} ... Just ...
 BF84: 4A              LSR     A                   ; ... set ...
-BF85: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ... to ...
+BF85: 8D 00 A0        STA     $A000               ; {} ... to ...
 BF88: 4A              LSR     A                   ; ...
-BF89: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ...
+BF89: 8D 00 A0        STA     $A000               ; {} ...
 BF8C: 4A              LSR     A                   ; ...
-BF8D: 8D 00 A0        STA     $A000               ; {hard.MMC1_1} ... --00000
+BF8D: 8D 00 A0        STA     $A000               ; {} ... --00000
 BF90: A9 07           LDA     #$07                ; Interesting! Put bank 7 ...
 BF92: 20 AC BF        JSR     $BFAC               ; {code.MMC_Bank} ... in the low ROM bank
-BF95: 4C 40 E4        JMP     $E440               ; {hard.MMC1_2+2440} Start of game
+BF95: 4C 40 E4        JMP     $E440               ; Start of game
 
 ; MMC1 Info
 ; R0 - Control ***CPPMM
@@ -6740,15 +6740,15 @@ BF95: 4C 40 E4        JMP     $E440               ; {hard.MMC1_2+2440} Start of 
 ```code
 MMC_Control: 
 ; Set the MMC Control register (0) to value in A
-BF98: 8D 00 80        STA     $8000               ; {hard.MMC1_0} MMC Register 0 (control): --edcba ...
+BF98: 8D 00 80        STA     $8000               ; {} MMC Register 0 (control): --edcba ...
 BF9B: 4A              LSR     A                   ; ... mirroring
-BF9C: 8D 00 80        STA     $8000               ; {hard.MMC1_0} ... mirroring
+BF9C: 8D 00 80        STA     $8000               ; {} ... mirroring
 BF9F: 4A              LSR     A                   ; ... switch: c=0 high ROM, C=1 low ROM
-BFA0: 8D 00 80        STA     $8000               ; {hard.MMC1_0} ... size: d=0 32K (full), D=1 16K (half)
+BFA0: 8D 00 80        STA     $8000               ; {} ... size: d=0 32K (full), D=1 16K (half)
 BFA3: 4A              LSR     A                   ; ... chrrom mode: e=0 8K banks, B=1 4K banks
-BFA4: 8D 00 80        STA     $8000               ; {hard.MMC1_0} The MMC is write-trigger (write to ROM ...
+BFA4: 8D 00 80        STA     $8000               ; {} The MMC is write-trigger (write to ROM ...
 BFA7: 4A              LSR     A                   ; .. has no affect anyway).
-BFA8: 8D 00 80        STA     $8000               ; {hard.MMC1_0} Bits are written from LSB to MSB ...
+BFA8: 8D 00 80        STA     $8000               ; {} Bits are written from LSB to MSB ...
 BFAB: 60              RTS                         ; ... only 5 bits
 ```
 
@@ -6757,15 +6757,15 @@ BFAB: 60              RTS                         ; ... only 5 bits
 ```code
 MMC_Bank: 
 ; Set the MMC Bank register (3) to value in A
-BFAC: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} MMC Register 3 (ROM page switching): --edcba ...
+BFAC: 8D 00 E0        STA     $E000               ; MMC Register 3 (ROM page switching): --edcba ...
 BFAF: 4A              LSR     A                   ; ...
-BFB0: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} ... Write the ...
+BFB0: 8D 00 E0        STA     $E000               ; ... Write the ...
 BFB3: 4A              LSR     A                   ; ... switching ...
-BFB4: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} ... page ...
+BFB4: 8D 00 E0        STA     $E000               ; ... page ...
 BFB7: 4A              LSR     A                   ; ... number
-BFB8: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} The MMC is write-trigger (write to ROM ...
+BFB8: 8D 00 E0        STA     $E000               ; The MMC is write-trigger (write to ROM ...
 BFBB: 4A              LSR     A                   ; .. has no affect anyway).
-BFBC: 8D 00 E0        STA     $E000               ; {hard.MMC1_2+2000} Bits are written from LSB to MSB ...
+BFBC: 8D 00 E0        STA     $E000               ; Bits are written from LSB to MSB ...
 BFBF: 60              RTS                         ; ... only 5 bits
 
 BFC0: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF

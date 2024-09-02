@@ -431,21 +431,21 @@ ScoreGraphics:
 F1F2: A2 01           LDX     #$01                ; Loop over 1 and 0 ... score for each player
 F1F4: B5 A1           LDA     $A1,X               ; {ram.scoreP1} Get score
 F1F6: 29 0F           AND     #$0F                ; Just the lower digit
-F1F8: 85 D2           STA     $D2                 ; {ram.mD2} We will add this back to make 5
+F1F8: 85 D2           STA     $D2                 ; {ram.scratch1} We will add this back to make 5
 F1FA: 0A              ASL     A                   ; Digit * 2
 F1FB: 0A              ASL     A                   ; Digit * 4
 F1FC: 18              CLC                         ; No carry
-F1FD: 65 D2           ADC     $D2                 ; {ram.mD2} Digit * 5
+F1FD: 65 D2           ADC     $D2                 ; {ram.scratch1} Digit * 5
 F1FF: 95 E0           STA     $E0,X               ; {ram.leftDigitLSD} Store offset
 F201: B5 A1           LDA     $A1,X               ; {ram.scoreP1} Get score again
 F203: 29 F0           AND     #$F0                ; Upper digit this time
 F205: 4A              LSR     A                   ; Digit*16 / 2 = Digit*8
 F206: 4A              LSR     A                   ; Digit*4
-F207: 85 D2           STA     $D2                 ; {ram.mD2} Hold Digit*4
+F207: 85 D2           STA     $D2                 ; {ram.scratch1} Hold Digit*4
 F209: 4A              LSR     A                   ; Digit*2
 F20A: 4A              LSR     A                   ; Digit*1
 F20B: 18              CLC                         ; No carry
-F20C: 65 D2           ADC     $D2                 ; {ram.mD2} Now Digit*5
+F20C: 65 D2           ADC     $D2                 ; {ram.scratch1} Now Digit*5
 F20E: 95 E2           STA     $E2,X               ; {ram.leftDigitMSD} Store offset
 F210: CA              DEX                         ; Loop back for ...
 F211: 10 E1           BPL     $F1F4               ; {} ... players 1 and 0
@@ -608,11 +608,11 @@ F318: 30 02           BMI     $F31C               ; {}
 F31A: A9 FF           LDA     #$FF                
 F31C: 49 FF           EOR     #$FF                
 F31E: 29 0F           AND     #$0F                
-F320: 85 D2           STA     $D2                 ; {ram.mD2}
+F320: 85 D2           STA     $D2                 ; {ram.scratch1}
 F322: A4 85           LDY     $85                 ; {ram.m85}
 F324: B9 0F F7        LDA     $F70F,Y             ; {}
 F327: 18              CLC                         
-F328: 65 D2           ADC     $D2                 ; {ram.mD2}
+F328: 65 D2           ADC     $D2                 ; {ram.scratch1}
 F32A: A8              TAY                         
 F32B: B9 12 F7        LDA     $F712,Y             ; {}
 F32E: 29 0F           AND     #$0F                
@@ -881,9 +881,9 @@ F522: 95 D6           STA     $D6,X               ; {ram.colorP0}
 F524: 60              RTS                         
 
 F525: A6 85           LDX     $85                 ; {ram.m85} Player type (0=tank, 1=jet, 2=plane)
-F527: BD C6 F7        LDA     $F7C6,X             ; {} Get picture ...
+F527: BD C6 F7        LDA     $F7C6,X             ; {code.PlayerPicLSB} Get picture ...
 F52A: 85 BB           STA     $BB                 ; {ram.mBB} ... pointer LSB
-F52C: BD C9 F7        LDA     $F7C9,X             ; {} Get picture ...
+F52C: BD C9 F7        LDA     $F7C9,X             ; {code.PlayerPicMSB} Get picture ...
 F52F: 85 BC           STA     $BC                 ; {ram.mBC} ... pointer MSB
 
 F531: A5 A3           LDA     $A3                 ; {ram.mA3}
@@ -950,11 +950,11 @@ F59F: 29 08           AND     #$08
 F5A1: D0 04           BNE     $F5A7               ; {}
 F5A3: A0 10           LDY     #$10                
 F5A5: A2 0F           LDX     #$0F                
-F5A7: 86 D2           STX     $D2                 ; {ram.mD2}
+F5A7: 86 D2           STX     $D2                 ; {ram.scratch1}
 F5A9: A2 03           LDX     #$03                
 F5AB: B9 65 F7        LDA     $F765,Y             ; {}
 F5AE: 45 D1           EOR     $D1                 ; {ram.mD1}
-F5B0: 25 D2           AND     $D2                 ; {ram.mD2}
+F5B0: 25 D2           AND     $D2                 ; {ram.scratch1}
 F5B2: 95 06           STA     $06,X               ; {hard.COLUP0}
 F5B4: 95 D6           STA     $D6,X               ; {ram.colorP0}
 F5B6: 95 D8           STA     $D8,X               ; {ram.mD8}
