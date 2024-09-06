@@ -62,8 +62,14 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 436E      | M436E                | ? |
 | 436F      | M436F                | ? |
 | 4370      | M4370                | ? |
+| 4371      | M4371                | ? |
+| 4372      | M4372                | ? |
+| 4373      | M4373                | ? |
 | 4374      | M4374                | ? |
-| 4378      | M4378                | ? |
+| 4378      | M4378                | Animation counter for the bonus explosion |
+| 4379      | M4379                | First two digits of BCD score value for the bonus explosion (last digit is ever 0) |
+| 437A      | M437A                | ? |
+| 437B      | M437B                | ? |
 | 437C      | M437C                | ? |
 | 4380      | M4380                | Ever set to 0 (prevents overflow) |
 | 4381      | Score1high           | Player 1 score BCD (high) |
@@ -93,10 +99,10 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 439A:439B | Counter16            | 16 bit counter (MSB:LSB) and.. |
 | 439B      | M439B                | Next index for slow print at intro splash |
 | 439C      | M439C                | ? |
-| 439D      | M439D                | ? |
+| 439D      | M439D                | Fist two digits of BCD score value for mothership explosion |
 | 439E      | M439E                | ? |
 | 439F      | M439F                | ? |
-| 43A0      | IN0Current           | Current value of IN0     |
+| 43A0      | IN0Current           | Current value of IN0: bit0='coin', bit1='1 player', bit2='2 players', bit4='fire', bit5='right', bit6='left', bit7='shield' |
 | 43A1      | IN0Previous          | Previous value of IN0    |
 | 43A2      | GameOrAttract        | Attract mode=0, One player game mode=1, Two players game mode=2 |
 | 43A3      | GameAndDemoOrSplash  | Game and demo for player 1=0, Game for player 2=1, Intro splash=2 |
@@ -130,16 +136,16 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | --- | --- | --- |
 | 43C0      | M43C0                | 32 byte data structure (43C0:43DF) for player ship and shields ? |
 | 43C1      | M43C1                |  ? |
-| 43C2      | M43C2                |  ? |
-| 43C3      | M43C3                |  ? |
+| 43C2      | M43C2                |  player ship coordinate X|
+| 43C3      | M43C3                |  player ship coordinate Y|
 | 43C4      | M43C4                |  ? |
 | 43C5      | M43C5                |  ? |
-| 43C6      | M43C6                |  ? |
-| 43C7      | M43C7                |  ? |
+| 43C6      | M43C6                |  player ship max pos. left X ? |
+| 43C7      | M43C7                |  player ship max pos. left Y ? |
 | 43C8      | M43C8                |  ? |
 | 43C9      | M43C9                |  ? |
-| 43CA      | M43CA                |  ? |
-| 43CB      | M43CB                |  ? |
+| 43CA      | M43CA                |  player ship max pos. left X ? |
+| 43CB      | M43CB                |  player ship max pos. left Y ? |
 | 43CC      | M43CC                |  ? |
 | 43CD      | M43CD                |  ? |
 | 43CE      | M43CE                |  ? |
@@ -163,16 +169,16 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | --- | --- | --- |
 | 43E0      | M43E0                | 32 byte data structure (43E0:43FF) for player ship and shields ? |
 | 43E1      | M43E1                |  ? |
-| 43E2      | PlayerCoordMSB       |  The X,Y in screen memory (doesn't include bit offset) |
-| 43E3      | PlayerCoordLSB       |  The X,Y in screen memory (doesn't include bit offset) |
+| 43E2      | PlayerScreenRamMSB   |  MSB screen ram adress player ship |
+| 43E3      | PlayerScreenRamLSB   |  LSB screen ram adress player ship |
 | 43E4      | M43E4                |  ? |
 | 43E5      | M43E5                |  ? |
-| 43E6      | M43E6                |  ? |
-| 43E7      | M43E7                |  ? |
+| 43E6      | M43E6                |  MSB screen ram adress player ship max pos. left ? |
+| 43E7      | M43E7                |  LSB screen ram adress player ship max pos. left ? |
 | 43E8      | M43E8                |  ? |
 | 43E9      | M43E9                |  ? |
-| 43EA      | M43EA                |  ? |
-| 43EB      | M43EB                |  ? |
+| 43EA      | M43EA                |  MSB screen ram adress player ship max pos. left ? |
+| 43EB      | M43EB                |  LSB screen ram adress player ship max pos. left ? |
 | 43EC      | M43EC                |  ? |
 | 43ED      | M43ED                |  ? |
 | 43EE      | M43EE                |  ? |
@@ -264,14 +270,69 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 4BAF      | M4BAF                |  alienF screen coordinate Y |
 | --- | --- | --- |
 | 4BB0      | M4BB0                | ? |
-| 4BB3      | M4BB3                | ? |
+| 4BB1      | M4BB1                | ? |
+| 4BB2      | M4BB2                | MSB screen ram adress alien0 |
+| 4BB3      | M4BB3                | LSB screen ram adress alien0 |
+| 4BB4      | M4BB4                | ? |
+| 4BB5      | M4BB5                | ? |
+| 4BB6      | M4BB6                | MSB screen ram adress alien1 |
+| 4BB7      | M4BB7                | LSB screen ram adress alien1 |
+| 4BB8      | M4BB8                | ? |
+| 4BB9      | M4BB9                | ? |
+| 4BBA      | M4BBA                | MSB screen ram adress alien2 |
+| 4BBB      | M4BBB                | LSB screen ram adress alien2 |
+| 4BBC      | M4BBC                | ? |
+| 4BBD      | M4BBD                | ? |
+| 4BBE      | M4BBE                | MSB screen ram adress alien3 |
+| 4BBF      | M4BBF                | LSB screen ram adress alien3 |
 | 4BC0      | M4BC0                | ? |
+| 4BC1      | M4BC1                | ? |
+| 4BC2      | M4BC2                | MSB screen ram adress alien4 |
+| 4BC3      | M4BC3                | LSB screen ram adress alien4 |
+| 4BC4      | M4BC4                | ? |
+| 4BC5      | M4BC5                | ? |
+| 4BC6      | M4BC6                | MSB screen ram adress alien5 |
+| 4BC7      | M4BC7                | LSB screen ram adress alien5 |
+| 4BC8      | M4BC8                | ? |
+| 4BC9      | M4BC9                | ? |
+| 4BCA      | M4BCA                | MSB screen ram adress alien6 |
+| 4BCB      | M4BCB                | LSB screen ram adress alien6 |
+| 4BCC      | M4BCC                | ? |
+| 4BCD      | M4BCD                | ? |
+| 4BCE      | M4BCE                | MSB screen ram adress alien7 |
+| 4BCF      | M4BCF                | LSB screen ram adress alien7 |
+| 4BD0      | M4BD0                | ? |
 | 4BD1      | M4BD1                | ? |
-| 4BD2      | M4BD2                | ? |
-| 4BD3      | M4BD3                | ? |
+| 4BD2      | M4BD2                | MSB screen ram adress alien8 |
+| 4BD3      | M4BD3                | LSB screen ram adress alien8 |
+| 4BD4      | M4BD4                | ? |
 | 4BD5      | M4BD5                | ? |
-| 4BD6      | M4BD6                | ? |
-| 4BD7      | M4BD7                | ? |
+| 4BD6      | M4BD6                | MSB screen ram adress alien9 |
+| 4BD7      | M4BD7                | LSB screen ram adress alien9 |
+| 4BD8      | M4BD8                | ? |
+| 4BD9      | M4BD9                | ? |
+| 4BDA      | M4BDA                | MSB screen ram adress alienA |
+| 4BDB      | M4BDB                | LSB screen ram adress alienA |
+| 4BDC      | M4BDC                | ? |
+| 4BDD      | M4BDD                | ? |
+| 4BDE      | M4BDE                | MSB screen ram adress alienB |
+| 4BDF      | M4BDF                | LSB screen ram adress alienB |
+| 4BE0      | M4BE0                | ? |
+| 4BE1      | M4BE1                | ? |
+| 4BE2      | M4BE2                | MSB screen ram adress alienC |
+| 4BE3      | M4BE3                | LSB screen ram adress alienC |
+| 4BE4      | M4BE4                | ? |
+| 4BE5      | M4BE5                | ? |
+| 4BE6      | M4BE6                | MSB screen ram adress alienD |
+| 4BE7      | M4BE7                | LSB screen ram adress alienD |
+| 4BE8      | M4BE8                | ? |
+| 4BE9      | M4BE9                | ? |
+| 4BEA      | M4BEA                | MSB screen ram adress alienE |
+| 4BEB      | M4BEB                | LSB screen ram adress alienE |
+| 4BEC      | M4BEC                | ? |
+| 4BED      | M4BED                | ? |
+| 4BEE      | M4BEE                | MSB screen ram adress alienF |
+| 4BEF      | M4BEF                | LSB screen ram adress alienF |
 | --- | --- | --- |
-| 4BD8:4BFF | Stack                | Stack space |
+| 4BF0:4BFF | Stack                | Stack space |
 | --- | --- | --- |

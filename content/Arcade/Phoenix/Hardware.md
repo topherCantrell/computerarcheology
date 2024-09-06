@@ -88,8 +88,8 @@ M: Cabinet mode
 |    |     |     |
 | -------- | ------- | ----------------- |
 | 5000  | videoRegister  | Lower bit selects the RAM bank |
-|	5800  | scrollRegister | Screen scrolling |
-|	6000  | soundControlA  | Sound control A |
-|	6800  | soundControlB  | Sound control B |
-|	7000  | IN0            | Player inputs |
-|	7800  | DSW0           | DIP switch settings|  
+| 5800  | scrollRegister | Screen scrolling |
+| 6000  | soundControlA  | Sound control A |
+| 6800  | soundControlB  | Sound control B |
+| 7000  | IN0            | Player inputs |
+| 7800  | DSW0           | DIP switch settings|  
