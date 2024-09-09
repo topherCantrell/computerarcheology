@@ -966,7 +966,7 @@ CopyMemoryBank:
 051B: 36 03           LD      (HL),$03            ; ... is 3 (normal game play)
 051D: CD 80 05        CALL    $0580               ; {code.InitGlobalLevelData}
 0520: CD 47 05        CALL    $0547               ; {code.InitPlayerDataStructure}
-0523: CD A0 09        CALL    $09A0               ; {} get screen ram adress for player ship position 
+0523: CD A0 09        CALL    $09A0               ; {} get screen ram adress for player ship position
 0526: CD 32 05        CALL    $0532               ; {} init alien data for a new level and round
 0529: CD 6C 0A        CALL    $0A6C               ; {} get screen ram adress for all aliens
 052C: CD 06 05        CALL    $0506               ; {} clear 4392 to 4397, init 4394
@@ -1575,7 +1575,7 @@ T0814:
 0876: CD 00 07        CALL    $0700               ; {}
 0879: CD 86 08        CALL    $0886               ; {}
 087C: CD A0 08        CALL    $08A0               ; {}
-087F: CD A0 09        CALL    $09A0               ; {} get screen ram adress for player ship position 
+087F: CD A0 09        CALL    $09A0               ; {} get screen ram adress for player ship position
 0882: CD 7A 09        CALL    $097A               ; {}
 0885: C9              RET                         
 ;
@@ -4887,7 +4887,7 @@ EraseMothership:
 ; not used
 2550: 32 80
 ; 
-2552: 2E A4           LD      L,$A4               ;
+2552: 2E A4           LD      L,$A4               ; 
 2554: 36 07           LD      (HL),$07            
 2556: 2C              INC     L                   
 2557: 36 40           LD      (HL),$40            
@@ -6087,10 +6087,10 @@ T3018:
 ; Input HL is the data structur of one bird object.
 ; (For the 8 birds: $4B70, $4B78, $4B80, $4B88, $4B90, $4B98, $4BA0, $4BA8)
 DrawBirdObject:
-34C0: 7E              LD      A,(HL)              ; HL=$4B70 (or $4B78,...) 
+34C0: 7E              LD      A,(HL)              ; HL=$4B70 (or $4B78,...)
 34C1: A7              AND     A                   ; updates the zero flag
 34C2: C8              RET     Z                   ; if 0
-34C3: 47              LD      B,A                 ; save it 
+34C3: 47              LD      B,A                 ; save it
 34C4: C6 C0           ADD     $C0                 ; add to base for table T3EC0
 34C6: 5F              LD      E,A                 ; save it
 34C7: 16 3E           LD      D,$3E               ; MSB for T3EC0
@@ -6687,7 +6687,7 @@ Draw1x2:
 37C0: 12              LD      (DE),A              ; write to screen ram (upper left corner of object 17D6)
 37C1: CD 10 02        CALL    $0210               ; {code.LeftOneColumn}
 37C4: 06 02           LD      B,$02               ; for the left two digits
-37C6: C3 C4 00        JP      $00C4               ; {code.PrintNumber} score value for bonus explosion 
+37C6: C3 C4 00        JP      $00C4               ; {code.PrintNumber} score value for bonus explosion
 ; 
 37C9: FF FF FF
 ; 
@@ -7047,7 +7047,7 @@ Draw1x2:
 3A1C: C9              RET                         ; 
 ;
 3A1D: 21 69 43        LD      HL,$4369            ; {+ram.M4369}
-3A20: 7E              LD      A,(HL)              ;
+3A20: 7E              LD      A,(HL)              ; 
 3A21: A7              AND     A                   ; updates the zero flag
 3A22: CA 40 3A        JP      Z,$3A40             ; {} if $4369 is 0.
 3A25: FE 20           CP      $20                 
