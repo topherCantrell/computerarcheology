@@ -8362,15 +8362,15 @@ BF95: 4C 40 E4        JMP     $E440               ; Start of game
 
 ; MMC1 Info
 ; R0 - Control ***CPPMM
-;  C CHR ROM bank mode. Zelda uses 0: 8KB at a time
+;  C CHR ROM bank mode. Zelda uses 0: 8KB at a time (one single 8K RAM bank)
 ;  PP Program ROM switch mode. Zelda uses 3: 16K fixed, 16K switched banks
-;  MM Name table mirroring. Zelda uses 2 or 3: vertical or horizontal
+;  MM Name table mirroring. Zelda switches between 2 and 3: vertical or horizontal
 ; R1 - CHR bank size ***CCCCC
 ;  Ignored in Zelda since R0.C is 0
 ; R2 - CHR bank select ***CCCCC
-;  Ignored in Zelda since R0.C is 0
+;  Zelda sets bank 0 -- the only bank (one single 8K RAM bank)
 ; R3 - PRG bank select ***RPPPP
-;  R PRG RAM enabled. Zelda sends 0, but battery-backed RAM is always enabled.
+;  R PRG RAM enabled. Zelda sends 0 which means it DOES have battery backed RAM.
 ;  PPPP bank select. Zelda switches banks 0-6.
 ```
 
