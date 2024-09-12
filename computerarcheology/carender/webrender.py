@@ -235,8 +235,8 @@ def _render_code_line(line, code_anchors, tables):
             j += 1
         # Find the replacement in the comment
         k = second_part.find('}')
-        rep = second_part[3:k]
-        if rep.startswith('+'):
+        rep = second_part[3:k]        
+        if rep.startswith('+') or rep.startswith('!'):            
             rep = rep[1:]
         # Remove the tag from the comment
         second_part = '; ' + second_part[k + 1:].strip()
