@@ -239,7 +239,7 @@ def update_names_in_code(directory, filename, check_binary=True,extract_binary=F
             comment = comment.strip()
             if comment.startswith('{!'):
                 # Explicitly given ... don't change it
-                _rebuild_text(line, parts, spacing, cpu_name)
+                #_rebuild_text(line, parts, spacing, cpu_name)
                 continue
             elif comment.startswith('{-}'):
                 # Explicitly ignore any memory reference
