@@ -6,6 +6,7 @@
 >>>   +Gameboy.jpg<br>
 >>>   Hardware.md<br>
 >>>   Zelda:Link's Awakening 1%<br>
+>>>   Tetris:Tetris 1%<br>
 
 # Disassemblies
 
