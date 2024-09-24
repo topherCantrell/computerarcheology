@@ -2,4 +2,8 @@
 
 # RAM Usage
 
-TODO
+>>> memory
+
+| | | |
+| --- | --- | --- |
+| 83D9      | soundCtrl         | Current value written to sound control register |
