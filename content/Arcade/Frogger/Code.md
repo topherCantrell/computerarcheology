@@ -164,7 +164,7 @@ InterruptService:
 00C8: 20 04           JR      NZ,$CE              ; {}
 00CA: AF              XOR     A                   
 00CB: 32 18 B8        LD      ($B818),A           ; {hard.COINCNT0}
-00CE: 3A 04 E0        LD      A,($E004)           ; {hard.PPI8255+2004}
+00CE: 3A 04 E0        LD      A,($E004)           ; {hard.INPUTS_C}
 00D1: E6 08           AND     $08                 
 00D3: CA FC 00        JP      Z,$00FC             ; {}
 00D6: 3A FE 83        LD      A,($83FE)           
@@ -402,13 +402,13 @@ Initialize:
 02C2: 71              LD      (HL),C              
 02C3: 2C              INC     L                   
 02C4: 10 FC           DJNZ    $2C2                ; {}
-02C6: 3A 02 E0        LD      A,($E002)           ; {hard.PPI8255+2002}
+02C6: 3A 02 E0        LD      A,($E002)           ; {hard.INPUTS_B}
 02C9: 16 2E           LD      D,$2E               
 02CB: E6 03           AND     $03                 
 02CD: 5F              LD      E,A                 
 02CE: 1A              LD      A,(DE)              
 02CF: 32 E4 83        LD      ($83E4),A           
-02D2: 3A 04 E0        LD      A,($E004)           ; {hard.PPI8255+2004}
+02D2: 3A 04 E0        LD      A,($E004)           ; {hard.INPUTS_C}
 02D5: 67              LD      H,A                 
 02D6: CB 5C           BIT     3,H                 
 02D8: 28 05           JR      Z,$2DF              ; {}
@@ -438,21 +438,21 @@ Initialize:
 0313: 11 00 84        LD      DE,$8400            
 0316: 01 20 00        LD      BC,$0020            
 0319: ED B0           LDIR                        
-031B: 21 06 E0        LD      HL,$E006            
-031E: 36 9B           LD      (HL),$9B            
-0320: 21 06 D0        LD      HL,$D006            
-0323: 36 88           LD      (HL),$88            
-0325: 3E 18           LD      A,$18               
-0327: 32 D9 83        LD      ($83D9),A           
-032A: 32 02 D0        LD      ($D002),A           ; {hard.PPI8255+1002}
-032D: AF              XOR     A                   
-032E: CD 94 07        CALL    $0794               ; {}
-0331: 3A D9 83        LD      A,($83D9)           
-0334: E6 EF           AND     $EF                 
-0336: 32 D9 83        LD      ($83D9),A           
-0339: 32 02 D0        LD      ($D002),A           ; {hard.PPI8255+1002}
-033C: 3E FF           LD      A,$FF               
-033E: CD 94 07        CALL    $0794               ; {}
+031B: 21 06 E0        LD      HL,$E006            ; {+hard.8255_1_CTRL}
+031E: 36 9B           LD      (HL),$9B            ; 1_00_1_1_0_1_1 : IO, A mode 1, A input, Cu input, B mode 0, B input, Cl input
+0320: 21 06 D0        LD      HL,$D006            ; {+hard.8255_0_CTRL}
+0323: 36 88           LD      (HL),$88            ; 1_00_0_1_0_0_0 : IO, A mode 1, A output, Cu input, B mode 0, B output, Cl output
+0325: 3E 18           LD      A,$18               ; Initial value ...
+0327: 32 D9 83        LD      ($83D9),A           ; {ram.soundCtrl} ... of sound control
+032A: 32 02 D0        LD      ($D002),A           ; {hard.SOUND_CTRL} De-assert interrupt, set amp AM/PM bit
+032D: AF              XOR     A                   ; Send turn-off-all-sounds to ...
+032E: CD 94 07        CALL    $0794               ; {code.SendSoundCmd} ... the sound board
+0331: 3A D9 83        LD      A,($83D9)           ; {ram.soundCtrl} Clear ...
+0334: E6 EF           AND     $EF                 ; ... Amplifier AM/PM ...
+0336: 32 D9 83        LD      ($83D9),A           ; {ram.soundCtrl} ... bit
+0339: 32 02 D0        LD      ($D002),A           ; {hard.SOUND_CTRL} Set new value
+033C: 3E FF           LD      A,$FF               ; Send reset command to ...
+033E: CD 94 07        CALL    $0794               ; {code.SendSoundCmd} ... the sound board
 0341: 3A D6 83        LD      A,($83D6)           
 0344: FE 02           CP      $02                 
 0346: D4 11 0D        CALL    NC,$0D11            ; {}
@@ -486,7 +486,7 @@ Initialize:
 0377: 3A B3 83        LD      A,($83B3)           
 037A: B7              OR      A                   
 037B: 20 C4           JR      NZ,$341             ; {}
-037D: 3A 02 E0        LD      A,($E002)           ; {hard.PPI8255+2002}
+037D: 3A 02 E0        LD      A,($E002)           ; {hard.INPUTS_B}
 0380: 07              RLCA                        
 0381: 30 07           JR      NC,$38A             ; {}
 0383: 07              RLCA                        
@@ -950,18 +950,21 @@ Initialize:
 0790: 15              DEC     D                   
 0791: 20 F6           JR      NZ,$789             ; {}
 0793: C9              RET                         
-0794: 32 00 D0        LD      ($D000),A           ; {hard.PPI8255+1000}
-0797: 3A D9 83        LD      A,($83D9)           
-079A: E6 F7           AND     $F7                 
-079C: 32 02 D0        LD      ($D002),A           ; {hard.PPI8255+1002}
-079F: 00              NOP                         
-07A0: 00              NOP                         
-07A1: 00              NOP                         
-07A2: 00              NOP                         
-07A3: 3A D9 83        LD      A,($83D9)           
-07A6: F6 08           OR      $08                 
-07A8: 32 02 D0        LD      ($D002),A           ; {hard.PPI8255+1002}
-07AB: C9              RET                         
+
+SendSoundCmd:
+0794: 32 00 D0        LD      ($D000),A           ; {hard.SOUND_CMD} Write sound command
+0797: 3A D9 83        LD      A,($83D9)           ; {ram.soundCtrl} State of port B
+079A: E6 F7           AND     $F7                 ; Lower the ...
+079C: 32 02 D0        LD      ($D002),A           ; {hard.SOUND_CTRL} ... sound interrupt bit
+079F: 00              NOP                         ; Brief ..
+07A0: 00              NOP                         ; ...
+07A1: 00              NOP                         ; ...
+07A2: 00              NOP                         ; ... Pause
+07A3: 3A D9 83        LD      A,($83D9)           ; {ram.soundCtrl} State of port B
+07A6: F6 08           OR      $08                 ; Raise the ...
+07A8: 32 02 D0        LD      ($D002),A           ; {hard.SOUND_CTRL} ... sound interrupt bit
+07AB: C9              RET                         ; Done
+
 07AC: 21 00 83        LD      HL,$8300            
 07AF: 7E              LD      A,(HL)              
 07B0: B7              OR      A                   
@@ -970,13 +973,14 @@ Initialize:
 07B3: 4F              LD      C,A                 
 07B4: 2C              INC     L                   
 07B5: 7E              LD      A,(HL)              
-07B6: CD 94 07        CALL    $0794               ; {}
+07B6: CD 94 07        CALL    $0794               ; {code.SendSoundCmd} Send command to the sound board
 07B9: 54              LD      D,H                 
 07BA: 5D              LD      E,L                 
 07BB: 2C              INC     L                   
 07BC: 06 00           LD      B,$00               
 07BE: ED B0           LDIR                        
 07C0: C9              RET                         
+
 07C1: 3A FD 83        LD      A,($83FD)           
 07C4: 3D              DEC     A                   
 07C5: CA CE 07        JP      Z,$07CE             ; {}
@@ -989,12 +993,14 @@ Initialize:
 07D3: 3E 01           LD      A,$01               
 07D5: 32 5B 82        LD      ($825B),A           
 07D8: C9              RET                         
+
 07D9: 21 00 83        LD      HL,$8300            
 07DC: 11 01 83        LD      DE,$8301            
 07DF: 01 2F 00        LD      BC,$002F            
 07E2: 70              LD      (HL),B              
 07E3: ED B0           LDIR                        
 07E5: C9              RET                         
+
 07E6: 3A FE 83        LD      A,($83FE)           
 07E9: 3D              DEC     A                   
 07EA: C8              RET     Z                   
@@ -2620,8 +2626,8 @@ Initialize:
 1415: 10 10           DJNZ    $1427               ; {}
 1417: D0              RET     NC                  
 1418: D1              POP     DE                  
-1419: D2 D3 CC        JP      NC,$CCD3            ; {hard.PPI8255+CD3}
-141C: CD CE CF        CALL    $CFCE               ; {hard.PPI8255+FCE}
+1419: D2 D3 CC        JP      NC,$CCD3            ; 
+141C: CD CE CF        CALL    $CFCE               ; 
 141F: C8              RET     Z                   
 1420: C9              RET                         
 1421: CA CB 34        JP      Z,$34CB             
@@ -3539,25 +3545,25 @@ Initialize:
 1AE2: C0              RET     NZ                  
 1AE3: 21 44 80        LD      HL,$8044            
 1AE6: 11 47 80        LD      DE,$8047            
-1AE9: 3A 04 E0        LD      A,($E004)           ; {hard.PPI8255+2004}
-1AEC: CB 5F           BIT     3,A                 
+1AE9: 3A 04 E0        LD      A,($E004)           ; {hard.INPUTS_C}
+1AEC: CB 5F           BIT     3,A                 ; ?? DSW 3
 1AEE: 28 07           JR      Z,$1AF7             ; {}
 1AF0: 3A FD 83        LD      A,($83FD)           
 1AF3: 3D              DEC     A                   
 1AF4: C2 74 1B        JP      NZ,$1B74            ; {}
-1AF7: 3A 00 E0        LD      A,($E000)           ; {hard.PPI8255+2000}
+1AF7: 3A 00 E0        LD      A,($E000)           ; {hard.INPUTS_A}
 1AFA: 4F              LD      C,A                 
 1AFB: 3A 48 82        LD      A,($8248)           
 1AFE: A7              AND     A                   
 1AFF: C2 BA 1B        JP      NZ,$1BBA            ; {}
-1B02: 3A 04 E0        LD      A,($E004)           ; {hard.PPI8255+2004}
-1B05: CB 5F           BIT     3,A                 
+1B02: 3A 04 E0        LD      A,($E004)           ; {hard.INPUTS_C}
+1B05: CB 5F           BIT     3,A                 ; ?? DSW3
 1B07: 28 07           JR      Z,$1B10             ; {}
 1B09: 3A FD 83        LD      A,($83FD)           
 1B0C: 3D              DEC     A                   
 1B0D: C2 7B 1B        JP      NZ,$1B7B            ; {}
-1B10: 3A 04 E0        LD      A,($E004)           ; {hard.PPI8255+2004}
-1B13: CB 77           BIT     6,A                 
+1B10: 3A 04 E0        LD      A,($E004)           ; {hard.INPUTS_C}
+1B13: CB 77           BIT     6,A                 ; ?? 1P Down
 1B15: CA 8B 1B        JP      Z,$1B8B             ; {}
 1B18: AF              XOR     A                   
 1B19: 32 4C 82        LD      ($824C),A           
@@ -3570,13 +3576,13 @@ Initialize:
 1B2A: 3A 4B 82        LD      A,($824B)           
 1B2D: 80              ADD     A,B                 
 1B2E: 20 1D           JR      NZ,$1B4D            ; {}
-1B30: 3A 04 E0        LD      A,($E004)           ; {hard.PPI8255+2004}
+1B30: 3A 04 E0        LD      A,($E004)           ; {hard.INPUTS_C}
 1B33: CB 5F           BIT     3,A                 
 1B35: 28 07           JR      Z,$1B3E             ; {}
 1B37: 3A FD 83        LD      A,($83FD)           
 1B3A: 3D              DEC     A                   
 1B3B: C2 83 1B        JP      NZ,$1B83            ; {}
-1B3E: 3A 04 E0        LD      A,($E004)           ; {hard.PPI8255+2004}
+1B3E: 3A 04 E0        LD      A,($E004)           ; {hard.INPUTS_C}
 1B41: CB 67           BIT     4,A                 
 1B43: CA E4 1B        JP      Z,$1BE4             ; {}
 1B46: AF              XOR     A                   
@@ -3599,15 +3605,19 @@ Initialize:
 1B6D: 32 4F 82        LD      ($824F),A           
 1B70: 32 53 82        LD      ($8253),A           
 1B73: C9              RET                         
-1B74: 3A 02 E0        LD      A,($E002)           ; {hard.PPI8255+2002}
+
+1B74: 3A 02 E0        LD      A,($E002)           ; {hard.INPUTS_B}
 1B77: 4F              LD      C,A                 
 1B78: C3 FB 1A        JP      $1AFB               ; {}
-1B7B: 3A 04 E0        LD      A,($E004)           ; {hard.PPI8255+2004}
-1B7E: CB 47           BIT     0,A                 
+
+1B7B: 3A 04 E0        LD      A,($E004)           ; {hard.INPUTS_C}
+1B7E: CB 47           BIT     0,A                 ; ?? 2P Down
 1B80: C3 15 1B        JP      $1B15               ; {}
-1B83: 3A 00 E0        LD      A,($E000)           ; {hard.PPI8255+2000}
-1B86: CB 47           BIT     0,A                 
+
+1B83: 3A 00 E0        LD      A,($E000)           ; {hard.INPUTS_A}
+1B86: CB 47           BIT     0,A                 ; ?? 2P Up
 1B88: C3 43 1B        JP      $1B43               ; {}
+
 1B8B: 3A 47 80        LD      A,($8047)           
 1B8E: FE F0           CP      $F0                 
 1B90: D0              RET     NC                  
@@ -5217,11 +5227,11 @@ Initialize:
 279E: C9              RET                         
 279F: 00              NOP                         
 27A0: EE EC           XOR     $EC                 
-27A2: EA E8 E6        JP      PE,$E6E8            ; {hard.PPI8255+26E8}
-27A5: E4 E2 E0        CALL    PO,$E0E2            ; {hard.PPI8255+20E2}
+27A2: EA E8 E6        JP      PE,$E6E8            ; 
+27A5: E4 E2 E0        CALL    PO,$E0E2            ; 
 27A8: 01 DE DC        LD      BC,$DCDE            
-27AB: DA D8 D6        JP      C,$D6D8             ; {hard.PPI8255+16D8}
-27AE: D4 D2 D0        CALL    NC,$D0D2            ; {hard.PPI8255+10D2}
+27AB: DA D8 D6        JP      C,$D6D8             ; 
+27AE: D4 D2 D0        CALL    NC,$D0D2            ; 
 27B1: 00              NOP                         
 27B2: D0              RET     NC                  
 27B3: 3A 35 81        LD      A,($8135)           
@@ -5924,16 +5934,18 @@ Initialize:
 2CF0: 21 E2 83        LD      HL,$83E2            
 2CF3: 7E              LD      A,(HL)              
 2CF4: B7              OR      A                   
-2CF5: 3A 00 E0        LD      A,($E000)           ; {hard.PPI8255+2000}
-2CF8: 2F              CPL                         
-2CF9: 20 04           JR      NZ,$2CFF            ; {}
+
+2CF5: 3A 00 E0        LD      A,($E000)           ; {hard.INPUTS_A} Coins and Service Mode
+2CF8: 2F              CPL                         ; (leave Z flag alone)
+2CF9: 20 04           JR      NZ,$2CFF            ; {} Something is pressed ... go handle
 2CFB: E6 C4           AND     $C4                 
 2CFD: 77              LD      (HL),A              
 2CFE: C9              RET                         
-2CFF: E6 C4           AND     $C4                 
-2D01: C0              RET     NZ                  
-2D02: 3C              INC     A                   
-2D03: CD 94 07        CALL    $0794               ; {}
+;
+2CFF: E6 C4           AND     $C4                 ; Keep coins and service
+2D01: C0              RET     NZ                  ; Nothing to do ... out
+2D02: 3C              INC     A                   ; Sound 1 -- coin-inserted
+2D03: CD 94 07        CALL    $0794               ; {code.SendSoundCmd} Send coin-inserted to sound board
 2D06: AF              XOR     A                   
 2D07: ED 5B D4 83     LD      DE,($83D4)          
 2D0B: CB 76           BIT     6,(HL)              

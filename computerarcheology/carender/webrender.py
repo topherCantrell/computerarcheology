@@ -236,6 +236,8 @@ def _render_code_line(line, code_anchors, tables):
         # Find the replacement in the comment
         k = second_part.find('}')
         rep = second_part[3:k]        
+        if rep.startswith('!+'):
+            rep = rep[2:]
         if rep.startswith('+') or rep.startswith('!'):            
             rep = rep[1:]
         # Remove the tag from the comment
@@ -262,7 +264,7 @@ def _render_code_line(line, code_anchors, tables):
                 if table_name == 'code':
                     html_name = ''
                     target = ''                    
-                else:
+                else:                    
                     html_name = tables[table_name][0]
                     target = f' target="{table_name}"'
 

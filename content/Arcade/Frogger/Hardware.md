@@ -48,8 +48,46 @@ Sound CPU is a Z80 running at 1.78975MHz.
 | B810      | FLIPX            | |
 | B818      | COINCNT0         | |
 | B81C      | COINCNT1         | |
-| C000:FFFF | PPI8255          | A0 and A1 ... two ports |
+| D000      | SOUND_CMD        | Port A: Sound command byte |
+| D002      | SOUND_CTRL       | Port B: Sound control (interrupt) |
+| D004      | 8255_0_C         | Port C: not used |
+| D006      | 8255_0_CTRL      | Control register |
+| E000      | INPUTS_A         | Port A: Inputs |
+| E002      | INPUTS_B         | Port B: Inputs |
+| E004      | INPUTS_C         | Port C: Inputs|
+| E006      | 8255_1_CTRL      | Control register |
 
+```
+Inputs A:
+0 2P UP
+1 1P Shoot-2
+2 SERVICE
+3 1P Shoot-1
+4 1P Right
+5 1P Left
+6 Coin-1
+7 Coin-2
+
+Inputs B:
+0 DSW-2
+1 DSW-1
+2 2P Shoot-2
+3 2P Shoot-1
+4 2P Right
+5 2P Left
+6 2P Start
+7 1P Start
+
+Inputs C:
+0 2P Down
+1 DSW-5
+2 DSW-4
+3 DSW-3
+4 1P UP
+5 nc
+6 1P Down
+7 nc
+```
 
 ```
 /* the 2nd gfx ROM has data lines D0 and D1 swapped */

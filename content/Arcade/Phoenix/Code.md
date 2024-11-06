@@ -7343,7 +7343,7 @@ Draw1x2:
 3AC1: 4F              LD      C,A                 
 3AC2: 21 8C 43        LD      HL,$438C            ; {+ram.SoundControlA}
 3AC5: 7E              LD      A,(HL)              
-3AC6: E6 C0           AND     $C0                 ; mask out 1100_0000 
+3AC6: E6 C0           AND     $C0                 ; mask out 1100_0000
 3AC8: B1              OR      C                   
 3AC9: 77              LD      (HL),A              ; trigger sound control A
 3ACA: C9              RET                         
