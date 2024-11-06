@@ -3,12 +3,12 @@
 >>> deploy:<br>
 >>>   +Phoenix.jpg<br>
 >>>   +Phoenix.js<br>
->>>   +sketch1.jpg<br>
->>>   +sketch2.jpg<br>
->>>   +sketch3.jpg<br>
->>>   +sketch4.jpg<br>
->>>   +sketch5.jpg<br>
->>>   +sketch6.jpg<br>
+>>>   +sketch1s.jpg<br>
+>>>   +sketch2s.jpg<br>
+>>>   +sketch3s.jpg<br>
+>>>   +sketch4s.jpg<br>
+>>>   +sketch5s.jpg<br>
+>>>   +sketch6s.jpg<br>
 >>>   Hardware.md<br>
 >>>   RAMUse.md<br>
 >>>   %Code.md<br>
@@ -41,9 +41,9 @@ I had to manually copy all graphics from the screen.
 
 ```html
 <p>
-<img src="sketch1.jpg" height="800"></img>
+<img src="sketch1s.jpg" height="800"></img>
 </p><p>
-<img src="sketch3.jpg" height="500"></img>
+<img src="sketch3s.jpg" height="500"></img>
 </p>
 <hr>
 ```
@@ -56,7 +56,7 @@ I still need to find that data in the code of the arcade version....
 
 ```html
 <p>
-<img src="sketch2.jpg" height="500"></img>
+<img src="sketch2s.jpg" height="500"></img>
 </p>
 <hr>
 ```
@@ -67,7 +67,7 @@ On the right you can see the result of a conversion from 32x26 screen size to 40
 
 ```html
 <p>
-<img src="sketch4.jpg" height="800"></img>
+<img src="sketch4s.jpg" height="800"></img>
 </p>
 <hr>
 ```
@@ -76,7 +76,7 @@ The 10 animation frames of the 'bonus explosion' shown below.
 
 ```html
 <p>
-<img src="sketch5.jpg" height="800"></img>
+<img src="sketch5s.jpg" height="800"></img>
 </p>
 <hr>
 ```
@@ -88,7 +88,7 @@ Because there will be fixed trigger points used later when the movement starts.
 
 ```html
 <p>
-<img src="sketch6.jpg" height="800"></img>
+<img src="sketch6s.jpg" height="800"></img>
 </p>
 <hr>
 ```

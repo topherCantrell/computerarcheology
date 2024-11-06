@@ -57,9 +57,9 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 4357      | M4357                | ? |
 | 4358      | M4358                | ? |
 | 435F      | M435F                | ? |
-| 4360      | M4360                | ? |
-| 4361      | M4361                | ? |
-| 4362      | M4362                | ? |
+| 4360      | PlayerMoved          | Flag for: 'player moved' ($FF) |
+| 4361      | BulletTriggered      | Flag for: 'bullet triggered' ($30) and counter ? |
+| 4362      | M4362                | Player shield animation counter ? |
 | 4363      | M4363                | ? |
 | 4364      | M4364                | ? |
 | 4366      | M4366                | ? |
@@ -109,8 +109,8 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 439B      | M439B                | Next index for slow print at intro splash |
 | 439C      | M439C                | ? |
 | 439D      | M439D                | Fist two digits of BCD score value for mothership explosion |
-| 439E      | M439E                | ? |
-| 439F      | M439F                | ? |
+| 439E      | M439E                | Mapped player ship position, left part: ($09 to $C0) |
+| 439F      | M439F                | Mapped player ship position, right part: ($17 to $C8) |
 | 43A0      | IN0Current           | Current value of IN0: bit0='coin', bit1='1 player', bit2='2 players', bit4='fire', bit5='right', bit6='left', bit7='shield' |
 | 43A1      | IN0Previous          | Previous value of IN0    |
 | 43A2      | GameOrAttract        | Attract mode=0, One player game mode=1, Two players game mode=2 |
@@ -118,110 +118,126 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 43A4      | GameState            | Game state=0 - 7 |
 | 43A5      | Counter8             | 8 bit counter (score flash time) |
 | 43A6      | ShieldCount          | Counts shield time and controls shield picture. Shields end at C0. |
-| 43A7      | AnimationCounter     | for mothership's antenna and the alien pilot animation |
-| 43A8      | M43A8                | temporary storage (MSB of pointer to table $1860) |
-| 43A9      | M43A9                | temporary storage (LSB of pointer to table $1860) |
+| 43A7      | AnimationCounter     | For mothership's antenna and the alien pilot animation |
+| 43A8      | M43A8                | Temporary storage (MSB of pointer to table $1860) |
+| 43A9      | M43A9                | Temporary storage (LSB of pointer to table $1860) |
 | 43AA      | M43AA                | ? |
-| 43AB      | M43AB                | ? |
+| 43AB      | M43AB                | Counter value for (2x2) planets |
 | 43AC      | M43AC                | ? |
 | 43AD      | M43AD                | ? |
 | 43AE      | M43AE                | ? |
 | 43AF      | M43AF                | ? |
 | 43B0      | M43B0                | ? |
 | 43B1      | M43B1                | ? |
-| 43B2      | M43B2                | ? |
-| 43B3      | M43B3                | ? |
+| 43B2      | M43B2                | MSB of pointer to table T1C00 or T1D00 or T1F00 |
+| 43B3      | M43B3                | LSB of pointer to table T1C00 or T1D00 or T1F00 |
 | 43B4      | B4Counter            | 8 bit counter (stars scrolling down, aliens fade in time) |
 | 43B5      | M43B5                | ? |
 | 43B6      | M43B6                | ? |
-| 43B8      | LevelAndRound        | bit0 - 3: game level, bit4 - 7: game round |
-| 43B9      | M43B9                | free running 8 bit backwards counter |
-| 43BA      | AliensLeft           | number of aliens left in wave (16 at new) |
-| 43BB      | BirdsLeft            | number of birds left in wave (8 at new) |
+| 43B8      | LevelAndRound        | Bit0 - 3: game level, bit4 - 7: game round |
+| 43B9      | B9Counter            | 8 bit backwards counter |
+| 43BA      | AliensLeft           | Number of aliens left in wave (16 at new) |
+| 43BB      | BirdsLeft            | Number of birds left in wave (8 at new) |
 | 43BC      | M43BC                | ? |
 | 43BD      | M43BD                | ? |
 | 43BE      | BonusLivesAt         | Bonus lives (at 30K, 40K, 50K or 60K) from DIP switch settings |
 | 43BF      | M43BF                | ? |
 
 
-## Player data structure (grid)
+## Player and player bullets, data structure (grid)
 
 >>> memory
 
 |    |     |     |
 | -------- | ------- | ----------------- |
-| 43C0      | M43C0                | ? |
-| 43C1      | M43C1                | ? |
-| 43C2      | M43C2                | player ship coordinate X|
-| 43C3      | M43C3                | player ship coordinate Y|
-| 43C4      | M43C4                | ? |
-| 43C5      | M43C5                | ? |
-| 43C6      | M43C6                | player ship max pos. left X ? |
-| 43C7      | M43C7                | player ship max pos. left Y ? |
-| 43C8      | M43C8                | ? |
-| 43C9      | M43C9                | ? |
-| 43CA      | M43CA                | player ship max pos. left X ? |
-| 43CB      | M43CB                | player ship max pos. left Y ? |
-| 43CC      | M43CC                | ? |
-| 43CD      | M43CD                | ? |
-| 43CE      | M43CE                | ? |
-| 43CF      | M43CF                | ? |
-| 43D0      | M43D0                | ? |
-| 43D1      | M43D1                | ? |
-| 43D2      | M43D2                | ? |
-| 43D3      | M43D3                | ? |
-| 43D4      | M43D4                | ? |
-| 43D5      | M43D5                | ? |
-| 43D6      | M43D6                | ? |
-| 43D7      | M43D7                | ? |
-| 43D8      | M43D8                | ? |
-| 43D9      | M43D9                | ? |
-| 43DA      | M43DA                | ? |
-| 43DB      | M43DB                | ? |
-| 43DC      | M43DC                | ? |
-| 43DD      | M43DD                | ? |
-| 43DE      | M43DE                | ? |
-| 43DF      | M43DF                | ? |
+| 43C0      | PlayerState            | Player ship control state register |
+| 43C1      | PlayerShape            | LSB for T1400 player ship character block shapes table |
+| 43C2      | PlayerShipX            | Player ship, coordinate X ($0C=min.left, $64=default, $C0=max.right) |
+| 43C3      | PlayerShipY            | Player ship, coordinate Y ($D8) |
+| 43C4      | PlayerBulletState      | Player bullet, control state register |
+| 43C5      | PlayerBulletShape      | Player bullet, character code ($50 to $57) |
+| 43C6      | PlayerBulletX          | Player bullet, coordinate X |
+| 43C7      | PlayerBulletY          | Player bullet, coordinate Y |
+| 43C8      | AbovePlayerBulletState | One position above player bullet, control state register |
+| 43C9      | AbovePlayerBulletShape | One position above player bullet, character code ($50 to $57) |
+| 43CA      | AbovePlayerBulletX     | One position above player bullet, coordinate X |
+| 43CB      | AbovePlayerBulletY     | One position above player bullet, coordinate Y |
 
 
-## Player data structure (screen ram)
+## Alien bullets, data structure (grid)
 
 >>> memory
 
 |    |     |     |
 | -------- | ------- | ----------------- |
-| 43E0      | M43E0                | ? |
-| 43E1      | M43E1                | ? |
-| 43E2      | PlayerScreenRamMSB   | MSB screen ram adress player ship |
-| 43E3      | PlayerScreenRamLSB   | LSB screen ram adress player ship |
-| 43E4      | M43E4                | ? |
-| 43E5      | M43E5                | ? |
-| 43E6      | M43E6                | MSB screen ram adress player ship max pos. left ? |
-| 43E7      | M43E7                | LSB screen ram adress player ship max pos. left ? |
-| 43E8      | M43E8                | ? |
-| 43E9      | M43E9                | ? |
-| 43EA      | M43EA                | MSB screen ram adress player ship max pos. left ? |
-| 43EB      | M43EB                | LSB screen ram adress player ship max pos. left ? |
-| 43EC      | M43EC                | ? |
-| 43ED      | M43ED                | ? |
-| 43EE      | M43EE                | ? |
-| 43EF      | M43EF                | ? |
-| 43F0      | M43F0                | ? |
-| 43F1      | M43F1                | ? |
-| 43F2      | M43F2                | ? |
-| 43F3      | M43F3                | ? |
-| 43F4      | M43F4                | ? |
-| 43F5      | M43F5                | ? |
-| 43F6      | M43F6                | ? |
-| 43F7      | M43F7                | ? |
-| 43F8      | M43F8                | ? |
-| 43F9      | M43F9                | ? |
-| 43FA      | M43FA                | ? |
-| 43FB      | M43FB                | ? |
-| 43FC      | M43FC                | ? |
-| 43FD      | M43FD                | ? |
-| 43FE      | M43FE                | ? |
-| 43FF      | M43FF                | ? |
+| 43CC      | AlienBullet0State      | Alien bullet 0, control state register |
+| 43CD      | AlienBullet0Shape      | Alien bullet 0, character code ($58 to $5F) |
+| 43CE      | AlienBullet0X          | Alien bullet 0, coordinate X |
+| 43CF      | AlienBullet0Y          | Alien bullet 0, coordinate Y |
+| 43D0      | AlienBullet1State      | Alien bullet 1, control state register |
+| 43D1      | AlienBullet1Shape      | Alien bullet 1, character code ($58 to $5F) |
+| 43D2      | AlienBullet1X          | Alien bullet 1, coordinate X |
+| 43D3      | AlienBullet1Y          | Alien bullet 1, coordinate Y |
+| 43D4      | AlienBullet2State      | Alien bullet 2, control state register |
+| 43D5      | AlienBullet2Shape      | Alien bullet 2, character code ($58 to $5F) |
+| 43D6      | AlienBullet2X          | Alien bullet 2, coordinate X |
+| 43D7      | AlienBullet2Y          | Alien bullet 2, coordinate Y |
+| 43D8      | AlienBullet3State      | Alien bullet 3, control state register |
+| 43D9      | AlienBullet3Shape      | Alien bullet 3, character code ($58 to $5F) |
+| 43DA      | AlienBullet3X          | Alien bullet 3, coordinate X |
+| 43DB      | AlienBullet3Y          | Alien bullet 3, coordinate Y |
+| 43DC      | AlienBullet4State      | Alien bullet 4, control state register |
+| 43DD      | AlienBullet4Shape      | Alien bullet 4, character code ($58 to $5F) |
+| 43DE      | AlienBullet4X          | Alien bullet 4, coordinate X |
+| 43DF      | AlienBullet4Y          | Alien bullet 4, coordinate Y |
+
+
+## Player and player bullets, data structure (screen ram)
+
+>>> memory
+
+|    |     |     |
+| -------- | ------- | ----------------- |
+| 43E0      | OldPlayerShipMSB        | Old MSB screen ram: Upper left character of player ship |
+| 43E1      | OldPlayerShipLSB        | Old LSB screen ram: Upper left character player ship |
+| 43E2      | PlayerShipMSB           | MSB screen ram: Upper left character of player ship |
+| 43E3      | PlayerShipLSB           | LSB screen ram: Upper left character player ship |
+| 43E4      | PlayerBulletMSB         | MSB screen ram: Player bullet |
+| 43E5      | PlayerBulletLSB         | LSB screen ram: Player bullet |
+| 43E6      | AbovePlayerBulletMSB    | MSB screen ram: One character above player bullet |
+| 43E7      | AbovePlayerBulletLSB    | LSB screen ram: One character above player bullet |
+| 43E8      | M43E8                   | ? |
+| 43E9      | M43E9                   | ? |
+| 43EA      | M43EA                   | ? |
+| 43EB      | M43EB                   | ? |
+
+
+## Alien bullets, data structure (screen ram)
+
+>>> memory
+
+|    |     |     |
+| -------- | ------- | ----------------- |
+| 43EC      | OldAlienBullet0MSB      | Old MSB screen ram: Alien bullet 0 |
+| 43ED      | OldAlienBullet0LSB      | Old LSB screen ram: Alien bullet 0 |
+| 43EE      | AlienBullet0MSB         | MSB screen ram: Alien bullet 0 |
+| 43EF      | AlienBullet0LSB         | LSB screen ram: Alien bullet 0 |
+| 43F0      | OldAlienBullet1MSB      | Old MSB screen ram: Alien bullet 1 |
+| 43F1      | OldAlienBullet1LSB      | Old LSB screen ram: Alien bullet 1 |
+| 43F2      | AlienBullet1MSB         | MSB screen ram: Alien bullet 1 |
+| 43F3      | AlienBullet1LSB         | LSB screen ram: Alien bullet 1 |
+| 43F4      | OldAlienBullet2MSB      | Old MSB screen ram: Alien bullet 2 |
+| 43F5      | OldAlienBullet2LSB      | Old LSB screen ram: Alien bullet 2 |
+| 43F6      | AlienBullet2MSB         | MSB screen ram: Alien bullet 2 |
+| 43F7      | AlienBullet2LSB         | LSB screen ram: Alien bullet 2 |
+| 43F8      | OldAlienBullet3MSB      | Old MSB screen ram: Alien bullet 3 |
+| 43F9      | OldAlienBullet3LSB      | Old LSB screen ram: Alien bullet 3 |
+| 43FA      | AlienBullet3MSB         | MSB screen ram: Alien bullet 3 |
+| 43FB      | AlienBullet3LSB         | LSB screen ram: Alien bullet 3 |
+| 43FC      | OldAlienBullet4MSB      | Old MSB screen ram: Alien bullet 4 |
+| 43FD      | OldAlienBullet4LSB      | Old LSB screen ram: Alien bullet 4 |
+| 43FE      | AlienBullet4MSB         | MSB screen ram: Alien bullet 4 |
+| 43FF      | AlienBullet4LSB         | LSB screen ram: Alien bullet 4 |
 
 
 ## Background screen 
@@ -239,82 +255,83 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 
 |    |     |     |
 | -------- | ------- | ----------------- |
-| 4B50:4B6F | M4B50                | data structure for 16 aliens ? |
+| 4B50:4B6F | M4B50                | Data structure for 16 aliens ? |
 
 
 ## Alien data structure (grid)
 
 Used for all levels with the 16 aliens.
 Level: 1, 2, 5 (with mothership), 6, 7, 10(with mothership).
+During 'fade in' phase, the alien control state B is holding the character code!
 
 >>> memory
 
 |    |     |     |
 | -------- | ------- | ----------------- |
-| 4B70      | M4B70                | alien0 control state A ?   |
-| 4B71      | M4B71                | alien0 control state B ?   |
-| 4B72      | M4B72                | alien0 screen coordinate X |
-| 4B73      | M4B73                | alien0 screen coordinate Y |
-| 4B74      | M4B74                | alien1 control state A ?   |
-| 4B75      | M4B75                | alien1 control state B ?   |
-| 4B76      | M4B76                | alien1 screen coordinate X |
-| 4B77      | M4B77                | alien1 screen coordinate Y |
-| 4B78      | M4B78                | alien2 control state A ?   |
-| 4B79      | M4B79                | alien2 control state B ?   |
-| 4B7A      | M4B7A                | alien2 screen coordinate X |
-| 4B7B      | M4B7B                | alien2 screen coordinate Y |
-| 4B7C      | M4B7C                | alien3 control state A ?   |
-| 4B7D      | M4B7D                | alien3 control state B ?   |
-| 4B7E      | M4B7E                | alien3 screen coordinate X |
-| 4B7F      | M4B7F                | alien3 screen coordinate Y |
-| 4B80      | M4B80                | alien4 control state A ?   |
-| 4B81      | M4B81                | alien4 control state B ?   |
-| 4B82      | M4B82                | alien4 screen coordinate X |
-| 4B83      | M4B83                | alien4 screen coordinate Y |
-| 4B84      | M4B84                | alien5 control state A ?   |
-| 4B85      | M4B85                | alien5 control state B ?   |
-| 4B86      | M4B86                | alien5 screen coordinate X |
-| 4B87      | M4B87                | alien5 screen coordinate Y |
-| 4B88      | M4B88                | alien6 control state A ?   |
-| 4B89      | M4B89                | alien6 control state B ?   |
-| 4B8A      | M4B8A                | alien6 screen coordinate X |
-| 4B8B      | M4B8B                | alien6 screen coordinate Y |
-| 4B8C      | M4B8C                | alien7 control state A ?   |
-| 4B8D      | M4B8D                | alien7 control state B ?   |
-| 4B8E      | M4B8E                | alien7 screen coordinate X |
-| 4B8F      | M4B8F                | alien7 screen coordinate Y |
-| 4B90      | M4B90                | alien8 control state A ?   |
-| 4B91      | M4B91                | alien8 control state B ?   |
-| 4B92      | M4B92                | alien8 screen coordinate X |
-| 4B93      | M4B93                | alien8 screen coordinate Y |
-| 4B94      | M4B94                | alien9 control state A ?   |
-| 4B95      | M4B95                | alien9 control state B ?   |
-| 4B96      | M4B96                | alien9 screen coordinate X |
-| 4B97      | M4B97                | alien9 screen coordinate Y |
-| 4B98      | M4B98                | alienA control state A ?   |
-| 4B99      | M4B99                | alienA control state B ?   |
-| 4B9A      | M4B9A                | alienA screen coordinate X |
-| 4B9B      | M4B9B                | alienA screen coordinate Y |
-| 4B9C      | M4B9C                | alienB control state A ?   |
-| 4B9D      | M4B9D                | alienB control state B ?   |
-| 4B9E      | M4B9E                | alienB screen coordinate X |
-| 4B9F      | M4B9F                | alienB screen coordinate Y |
-| 4BA0      | M4BA0                | alienC control state A ?   |
-| 4BA1      | M4BA1                | alienC control state B ?   |
-| 4BA2      | M4BA2                | alienC screen coordinate X |
-| 4BA3      | M4BA3                | alienC screen coordinate Y |
-| 4BA4      | M4BA4                | alienD control state A ?   |
-| 4BA5      | M4BA5                | alienD control state B ?   |
-| 4BA6      | M4BA6                | alienD screen coordinate X |
-| 4BA7      | M4BA7                | alienD screen coordinate Y |
-| 4BA8      | M4BA8                | alienE control state A ?   |
-| 4BA9      | M4BA9                | alienE control state B ?   |
-| 4BAA      | M4BAA                | alienE screen coordinate X |
-| 4BAB      | M4BAB                | alienE screen coordinate Y |
-| 4BAC      | M4BAC                | alienF control state A ?   |
-| 4BAD      | M4BAD                | alienF control state B ?   |
-| 4BAE      | M4BAE                | alienF screen coordinate X |
-| 4BAF      | M4BAF                | alienF screen coordinate Y |
+| 4B70      | M4B70                | Alien0 control state A     |
+| 4B71      | M4B71                | Alien0 control state B (LSB for T14xx) |
+| 4B72      | M4B72                | Alien0 screen coordinate X |
+| 4B73      | M4B73                | Alien0 screen coordinate Y |
+| 4B74      | M4B74                | Alien1 control state A     |
+| 4B75      | M4B75                | Alien1 control state B (LSB for T14xx) |
+| 4B76      | M4B76                | Alien1 screen coordinate X |
+| 4B77      | M4B77                | Alien1 screen coordinate Y |
+| 4B78      | M4B78                | Alien2 control state A     |
+| 4B79      | M4B79                | Alien2 control state B (LSB for T14xx) |
+| 4B7A      | M4B7A                | Alien2 screen coordinate X |
+| 4B7B      | M4B7B                | Alien2 screen coordinate Y |
+| 4B7C      | M4B7C                | Alien3 control state A     |
+| 4B7D      | M4B7D                | Alien3 control state B (LSB for T14xx) |
+| 4B7E      | M4B7E                | Alien3 screen coordinate X |
+| 4B7F      | M4B7F                | Alien3 screen coordinate Y |
+| 4B80      | M4B80                | Alien4 control state A     |
+| 4B81      | M4B81                | Alien4 control state B (LSB for T14xx) |
+| 4B82      | M4B82                | Alien4 screen coordinate X |
+| 4B83      | M4B83                | Alien4 screen coordinate Y |
+| 4B84      | M4B84                | Alien5 control state A     |
+| 4B85      | M4B85                | Alien5 control state B (LSB for T14xx) |
+| 4B86      | M4B86                | Alien5 screen coordinate X |
+| 4B87      | M4B87                | Alien5 screen coordinate Y |
+| 4B88      | M4B88                | Alien6 control state A     |
+| 4B89      | M4B89                | Alien6 control state B (LSB for T14xx) |
+| 4B8A      | M4B8A                | Alien6 screen coordinate X |
+| 4B8B      | M4B8B                | Alien6 screen coordinate Y |
+| 4B8C      | M4B8C                | Alien7 control state A     |
+| 4B8D      | M4B8D                | Alien7 control state B (LSB for T14xx) |
+| 4B8E      | M4B8E                | Alien7 screen coordinate X |
+| 4B8F      | M4B8F                | Alien7 screen coordinate Y |
+| 4B90      | M4B90                | Alien8 control state A     |
+| 4B91      | M4B91                | Alien8 control state B (LSB for T14xx) |
+| 4B92      | M4B92                | Alien8 screen coordinate X |
+| 4B93      | M4B93                | Alien8 screen coordinate Y |
+| 4B94      | M4B94                | Alien9 control state A     |
+| 4B95      | M4B95                | Alien9 control state B (LSB for T14xx) |
+| 4B96      | M4B96                | Alien9 screen coordinate X |
+| 4B97      | M4B97                | Alien9 screen coordinate Y |
+| 4B98      | M4B98                | AlienA control state A     |
+| 4B99      | M4B99                | AlienA control state B (LSB for T14xx) |
+| 4B9A      | M4B9A                | AlienA screen coordinate X |
+| 4B9B      | M4B9B                | AlienA screen coordinate Y |
+| 4B9C      | M4B9C                | AlienB control state A     |
+| 4B9D      | M4B9D                | AlienB control state B (LSB for T14xx) |
+| 4B9E      | M4B9E                | AlienB screen coordinate X |
+| 4B9F      | M4B9F                | AlienB screen coordinate Y |
+| 4BA0      | M4BA0                | AlienC control state A     |
+| 4BA1      | M4BA1                | AlienC control state B (LSB for T14xx) |
+| 4BA2      | M4BA2                | AlienC screen coordinate X |
+| 4BA3      | M4BA3                | AlienC screen coordinate Y |
+| 4BA4      | M4BA4                | AlienD control state A     |
+| 4BA5      | M4BA5                | AlienD control state B (LSB for T14xx) |
+| 4BA6      | M4BA6                | AlienD screen coordinate X |
+| 4BA7      | M4BA7                | AlienD screen coordinate Y |
+| 4BA8      | M4BA8                | AlienE control state A     |
+| 4BA9      | M4BA9                | AlienE control state B (LSB for T14xx) |
+| 4BAA      | M4BAA                | AlienE screen coordinate X |
+| 4BAB      | M4BAB                | AlienE screen coordinate Y |
+| 4BAC      | M4BAC                | AlienF control state A     |
+| 4BAD      | M4BAD                | AlienF control state B (LSB for T14xx) |
+| 4BAE      | M4BAE                | AlienF screen coordinate X |
+| 4BAF      | M4BAF                | AlienF screen coordinate Y |
 
 ## Bird data structure 
 
@@ -326,70 +343,70 @@ For the bird animation during intro splash, bird0 memory is used.
 
 |    |     |     |
 | -------- | ------- | ----------------- |
-| 4B70      | M4B70                | bird0 index character block shape ? |
-| 4B71      | M4B71                | bird0 MSB initial screen address ?  |
-| 4B72      | M4B72                | bird0 LSB initial screen address ?  |
-| 4B73      | M4B73                | bird0 ?                             |
-| 4B74      | M4B74                | bird0 ?                             |
-| 4B75      | M4B75                | bird0 grid coordinate X ?           |
-| 4B76      | M4B76                | bird0 ?                             |
-| 4B77      | M4B77                | bird0 grid coordinate Y ?           |
-| 4B78      | M4B78                | bird1 index character block shape ? |
-| 4B79      | M4B79                | bird1 MSB initial screen address ?  |
-| 4B7A      | M4B7A                | bird1 LSB initial screen address ?  |
-| 4B7B      | M4B7B                | bird1 ?                             |
-| 4B7C      | M4B7C                | bird1 ?                             |
-| 4B7D      | M4B7D                | bird1 grid coordinate X ?           |
-| 4B7E      | M4B7E                | bird1 ?                             |
-| 4B7F      | M4B7F                | bird1 grid coordinate Y ?           |
-| 4B80      | M4B80                | bird2 index character block shape ? |
-| 4B81      | M4B81                | bird2 MSB initial screen address ?  |
-| 4B82      | M4B82                | bird2 LSB initial screen address ?  |
-| 4B83      | M4B83                | bird2 ?                             |
-| 4B84      | M4B84                | bird2 ?                             |
-| 4B85      | M4B85                | bird2 grid coordinate X ?           |
-| 4B86      | M4B86                | bird2 ?                             |
-| 4B87      | M4B87                | bird2 grid coordinate Y ?           |
-| 4B88      | M4B88                | bird3 index character block shape ? |
-| 4B89      | M4B89                | bird3 MSB initial screen address ?  |
-| 4B8A      | M4B8A                | bird3 LSB initial screen address ?  |
-| 4B8B      | M4B8B                | bird3 ?                             |
-| 4B8C      | M4B8C                | bird3 ?                             |
-| 4B8D      | M4B8D                | bird3 grid coordinate X ?           |
-| 4B8E      | M4B8E                | bird3 ?                             |
-| 4B8F      | M4B8F                | bird3 grid coordinate Y ?           |
-| 4B90      | M4B90                | bird4 index character block shape ? |
-| 4B91      | M4B91                | bird4 MSB initial screen address ?  |
-| 4B92      | M4B92                | bird4 LSB initial screen address ?  |
-| 4B93      | M4B93                | bird4 ?                             |
-| 4B94      | M4B94                | bird4 ?                             |
-| 4B95      | M4B95                | bird4 grid coordinate X ?           |
-| 4B96      | M4B96                | bird4 ?                             |
-| 4B97      | M4B97                | bird4 grid coordinate Y ?           |
-| 4B98      | M4B98                | bird5 index character block shape ? |
-| 4B99      | M4B99                | bird5 MSB initial screen address ?  |
-| 4B9A      | M4B9A                | bird5 LSB initial screen address ?  |
-| 4B9B      | M4B9B                | bird5 ?                             |
-| 4B9C      | M4B9C                | bird5 ?                             |
-| 4B9D      | M4B9D                | bird5 grid coordinate X ?           |
-| 4B9E      | M4B9E                | bird5 ?                             |
-| 4B9F      | M4B9F                | bird5 grid coordinate Y ?           |
-| 4BA0      | M4BA0                | bird6 index character block shape ? |
-| 4BA1      | M4BA1                | bird6 MSB initial screen address ?  |
-| 4BA2      | M4BA2                | bird6 LSB initial screen address ?  |
-| 4BA3      | M4BA3                | bird6 ?                             |
-| 4BA4      | M4BA4                | bird6 ?                             |
-| 4BA5      | M4BA5                | bird6 grid coordinate X ?           |
-| 4BA6      | M4BA6                | bird6 ?                             |
-| 4BA7      | M4BA7                | bird6 grid coordinate Y ?           |
-| 4BA8      | M4BA8                | bird7 index character block shape ? |
-| 4BA9      | M4BA9                | bird7 MSB initial screen address ?  |
-| 4BAA      | M4BAA                | bird7 LSB initial screen address ?  |
-| 4BAB      | M4BAB                | bird7 ?                             |
-| 4BAC      | M4BAC                | bird7 ?                             |
-| 4BAD      | M4BAD                | bird7 grid coordinate X ?           |
-| 4BAE      | M4BAE                | bird7 ?                             |
-| 4BAF      | M4BAF                | bird7 grid coordinate Y ?           |
+| 4B70      | B4B70                | Bird0 index character block shape ? |
+| 4B71      | B4B71                | Bird0 MSB initial screen address ?  |
+| 4B72      | B4B72                | Bird0 LSB initial screen address ?  |
+| 4B73      | B4B73                | Bird0 ?                             |
+| 4B74      | B4B74                | Bird0 ?                             |
+| 4B75      | B4B75                | Bird0 grid coordinate X ?           |
+| 4B76      | B4B76                | Bird0 ?                             |
+| 4B77      | B4B77                | Bird0 grid coordinate Y ?           |
+| 4B78      | B4B78                | Bird1 index character block shape ? |
+| 4B79      | B4B79                | Bird1 MSB initial screen address ?  |
+| 4B7A      | B4B7A                | Bird1 LSB initial screen address ?  |
+| 4B7B      | B4B7B                | Bird1 ?                             |
+| 4B7C      | B4B7C                | Bird1 ?                             |
+| 4B7D      | B4B7D                | Bird1 grid coordinate X ?           |
+| 4B7E      | B4B7E                | Bird1 ?                             |
+| 4B7F      | B4B7F                | Bird1 grid coordinate Y ?           |
+| 4B80      | B4B80                | Bird2 index character block shape ? |
+| 4B81      | B4B81                | Bird2 MSB initial screen address ?  |
+| 4B82      | B4B82                | Bird2 LSB initial screen address ?  |
+| 4B83      | B4B83                | Bird2 ?                             |
+| 4B84      | B4B84                | Bird2 ?                             |
+| 4B85      | B4B85                | Bird2 grid coordinate X ?           |
+| 4B86      | B4B86                | Bird2 ?                             |
+| 4B87      | B4B87                | Bird2 grid coordinate Y ?           |
+| 4B88      | B4B88                | Bird3 index character block shape ? |
+| 4B89      | B4B89                | Bird3 MSB initial screen address ?  |
+| 4B8A      | B4B8A                | Bird3 LSB initial screen address ?  |
+| 4B8B      | B4B8B                | Bird3 ?                             |
+| 4B8C      | B4B8C                | Bird3 ?                             |
+| 4B8D      | B4B8D                | Bird3 grid coordinate X ?           |
+| 4B8E      | B4B8E                | Bird3 ?                             |
+| 4B8F      | B4B8F                | Bird3 grid coordinate Y ?           |
+| 4B90      | B4B90                | Bird4 index character block shape ? |
+| 4B91      | B4B91                | Bird4 MSB initial screen address ?  |
+| 4B92      | B4B92                | Bird4 LSB initial screen address ?  |
+| 4B93      | B4B93                | Bird4 ?                             |
+| 4B94      | B4B94                | Bird4 ?                             |
+| 4B95      | B4B95                | Bird4 grid coordinate X ?           |
+| 4B96      | B4B96                | Bird4 ?                             |
+| 4B97      | B4B97                | Bird4 grid coordinate Y ?           |
+| 4B98      | B4B98                | Bird5 index character block shape ? |
+| 4B99      | B4B99                | Bird5 MSB initial screen address ?  |
+| 4B9A      | B4B9A                | Bird5 LSB initial screen address ?  |
+| 4B9B      | B4B9B                | Bird5 ?                             |
+| 4B9C      | B4B9C                | Bird5 ?                             |
+| 4B9D      | B4B9D                | Bird5 grid coordinate X ?           |
+| 4B9E      | B4B9E                | Bird5 ?                             |
+| 4B9F      | B4B9F                | Bird5 grid coordinate Y ?           |
+| 4BA0      | B4BA0                | Bird6 index character block shape ? |
+| 4BA1      | B4BA1                | Bird6 MSB initial screen address ?  |
+| 4BA2      | B4BA2                | Bird6 LSB initial screen address ?  |
+| 4BA3      | B4BA3                | Bird6 ?                             |
+| 4BA4      | B4BA4                | Bird6 ?                             |
+| 4BA5      | B4BA5                | Bird6 grid coordinate X ?           |
+| 4BA6      | B4BA6                | Bird6 ?                             |
+| 4BA7      | B4BA7                | Bird6 grid coordinate Y ?           |
+| 4BA8      | B4BA8                | Bird7 index character block shape ? |
+| 4BA9      | B4BA9                | Bird7 MSB initial screen address ?  |
+| 4BAA      | B4BAA                | Bird7 LSB initial screen address ?  |
+| 4BAB      | B4BAB                | Bird7 ?                             |
+| 4BAC      | B4BAC                | Bird7 ?                             |
+| 4BAD      | B4BAD                | Bird7 grid coordinate X ?           |
+| 4BAE      | B4BAE                | Bird7 ?                             |
+| 4BAF      | B4BAF                | Bird7 grid coordinate Y ?           |
 
 
 ## Alien data structure (screen ram)
