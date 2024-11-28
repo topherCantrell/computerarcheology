@@ -281,7 +281,22 @@ FindCommand:
 ```code
 MainLoop:
 ; Use the upper nibble of chip 0 port B as a counter. When it reaches 0,
-; then process all the voices. This is happens at approximately 175Hz.
+; then process all the voices. This is happens at 350Hz.
+
+; The hardware clock chain begins with a 14.318MHz crystal. This is divided by 8 for both the 
+; Z80 CPU and the timing reference clock for the AY38910. That's 14.318Mz / 8 = 1.78975MHz.
+;
+; The clock chain provides four divisions of the 14MHz crystal. These four are wired to
+; the AY38910's Port B as follows:
+;   - Bit 7: 14.318 / 16 / 16 / 16 / 10 = 350Hz (Scramble uses this)
+;   - Bit 6: 14.318 / 16 / 16 / 16 / 5  = 700Hz (narrow pulses) 
+;   - Bit 5: 14.318 / 16 / 16 / 16 / 5  = 700Hz (Frogger uses this)
+;   - Bit 4: 14.318 / 16 / 16 / 16      = 3495.6Hz
+;
+; The code watches for all four of these clocks to be zero at the same time. This happens for a
+; very narrow window at 350Hz. Frogger use one AY chip. It manages 3 voices instead of 6 and
+; runs the main loop twice as fast -- at 700Hz.
+
 00BF: FB              EI                          ; Enable interrupts
 00C0: 3E 0F           LD      A,$0F               ; Port B
 00C2: CF              RST     $08                 ; Read CHIP0 Port B

@@ -277,9 +277,21 @@ GetComPriority:
 ; the flag. Otherwise the continuation command is called each pass until a return of not-0
 ; marks the end of the command. Then the structure is cleared.
 ;
-; Through experimentation and MAME code it appears bit 4 changes with the master clock divided
-; by 1280. Thus 1789750 / 1280 = 1398.24 Hz. The main loop divides that by two. Yielding
-; a sound tick of 700Hz.
+; The hardware clock chain begins with a 14.318MHz crystal. This is divided by 8 for both the 
+; Z80 CPU and the timing reference clock for the AY38910. That's 14.318Mz / 8 = 1.78975MHz.
+;
+; The clock chain provides four divisions of the 14MHz crystal. These four are wired to
+; the AY38910's Port B as follows:
+;   - Bit 7: 14.318 / 16 / 16 / 16 / 10 = 350Hz (Scramble uses this)
+;   - Bit 6: 14.318 / 16 / 16 / 16 / 5  = 700Hz (narrow pulses) 
+;   - Bit 5: Not connected in Frogger (in Time Pilot, bit 3 below is wired here instead)
+;   - Bit 4: 14.318 / 16 / 16 / 16      = 3495.6Hz
+;   - Bit 3: 14.318 / 16 / 16 / 16 / 5  = 700Hz
+;
+; The code below watches for a low-to-high transition on bit 3. The main loop runs at 700Hz.
+; The Scramble code uses bit 7. Scramble has two AY38910s and needs twice as long to
+; process 6 voices. It's main loop runs at 350Hz. Time Pilot watches for all four clocks
+; to be zero at the same time. This happens for a very narrow window at 350Hz.
 
 MainLoop: 
 
