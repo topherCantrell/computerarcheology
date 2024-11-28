@@ -15,6 +15,7 @@
 >>>    SpaceInvaders:Space Invaders<br>
 >>>    TimePilot:Time Pilot (Sound)<br>
 >>>    SeaWolf:Sea Wolf 1%<br>
+>>>    Scramble:Scramble 1%<br>
 
 [https://en.wikipedia.org/wiki/Arcade_game](https://en.wikipedia.org/wiki/Arcade_game)
 
@@ -33,3 +34,4 @@
   * [Space Invaders](SpaceInvaders)
   * [Time Pilot](TimePilot)
   * [Sea Wolf](SeaWolf)
+  * [Scramble](Scramble)

@@ -289,9 +289,8 @@ GetComPriority:
 ;   - Bit 3: 14.318 / 16 / 16 / 16 / 5  = 700Hz
 ;
 ; The code below watches for a low-to-high transition on bit 3. The main loop runs at 700Hz.
-; The Scramble code uses bit 7. Scramble has two AY38910s and needs twice as long to
-; process 6 voices. It's main loop runs at 350Hz. Time Pilot watches for all four clocks
-; to be zero at the same time. This happens for a very narrow window at 350Hz.
+; The Scramble code uses bit 7. Time Pilot watches for all four clocks to be zero at the same 
+; time. This happens for a very narrow window at 350Hz (twice as long for 3 extra voices).
 
 MainLoop: 
 
