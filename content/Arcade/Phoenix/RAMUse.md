@@ -52,15 +52,20 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 4351      | M4351                | ? |
 | 4352      | M4352                | ? |
 | 4353      | M4353                | ? |
-| 4354      | M4354                | ? |
+| 4354      | M4354                | LSB of pointer to ? |
+| 4355      | M4355                | ? |
 | 4356      | M4356                | ? |
 | 4357      | M4357                | ? |
 | 4358      | M4358                | ? |
-| 435F      | M435F                | ? |
+| 4359      | M4359                | ? |
+| 435A      | M435A                | ? |
+| 435B      | M435B                | ? |
+| 435E      | M435E                | ? |
+| 435F      | M435F                | 8 bit counter for alien movement |
 | 4360      | PlayerMoved          | Flag for: 'player moved' ($FF) |
 | 4361      | BulletTriggered      | Flag for: 'bullet triggered' ($30) and counter ? |
 | 4362      | M4362                | Player shield animation counter ? |
-| 4363      | M4363                | ? |
+| 4363      | PlayerWasHit         | Flag for: 'player ship was hit by alien' ($10) and counter ? |
 | 4364      | M4364                | ? |
 | 4366      | M4366                | ? |
 | 4368      | M4368                | ? |
@@ -95,7 +100,7 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 438C      | SoundControlA        | RAM copy of sound device control register A (0x6000) |
 | 438D      | SoundControlB        | RAM copy of sound device control register B (0x6800) |
 | 438E      | M438E                | ? |
-| 438F      | CoinCount            | Number of coins inserted (max counted is 9) |
+| 438F      | CoinCount            | Number of coins inserted (max is 9) |
 | 4390      | Player1Lives         | Player 1 number of lives |
 | 4391      | Player2Lives         | Player 2 number of lives |
 | 4392      | M4392                | ? |
@@ -157,7 +162,7 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 43C4      | PlayerBulletState      | Player bullet, control state register |
 | 43C5      | PlayerBulletShape      | Player bullet, character code ($50 to $57) |
 | 43C6      | PlayerBulletX          | Player bullet, coordinate X |
-| 43C7      | PlayerBulletY          | Player bullet, coordinate Y |
+| 43C7      | PlayerBulletY          | Player bullet, coordinate Y ($D0=min.bottom, $18=max.top) |
 | 43C8      | AbovePlayerBulletState | One position above player bullet, control state register |
 | 43C9      | AbovePlayerBulletShape | One position above player bullet, character code ($50 to $57) |
 | 43CA      | AbovePlayerBulletX     | One position above player bullet, coordinate X |
@@ -199,9 +204,9 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 |    |     |     |
 | -------- | ------- | ----------------- |
 | 43E0      | OldPlayerShipMSB        | Old MSB screen ram: Upper left character of player ship |
-| 43E1      | OldPlayerShipLSB        | Old LSB screen ram: Upper left character player ship |
+| 43E1      | OldPlayerShipLSB        | Old LSB screen ram: Upper left character of player ship |
 | 43E2      | PlayerShipMSB           | MSB screen ram: Upper left character of player ship |
-| 43E3      | PlayerShipLSB           | LSB screen ram: Upper left character player ship |
+| 43E3      | PlayerShipLSB           | LSB screen ram: Upper left character of player ship |
 | 43E4      | PlayerBulletMSB         | MSB screen ram: Player bullet |
 | 43E5      | PlayerBulletLSB         | LSB screen ram: Player bullet |
 | 43E6      | AbovePlayerBulletMSB    | MSB screen ram: One character above player bullet |
@@ -249,13 +254,46 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 4800:4B3F | BackgroundScreen     | 32*26 bytes for the background screen |
 
 
-## 32 byte data structure 
+## Pointer to alien movement pattern
+
+Default values (all: $10,$00 pointing to T1000) are defined at table: T1520.
 
 >>> memory
 
 |    |     |     |
 | -------- | ------- | ----------------- |
-| 4B50:4B6F | M4B50                | Data structure for 16 aliens ? |
+| 4B50      | M4B50                | Alien0 movement pattern table MSB |
+| 4B51      | M4B51                | Alien0 movement pattern table LSB |
+| 4B52      | M4B52                | Alien1 movement pattern table MSB |
+| 4B53      | M4B53                | Alien1 movement pattern table LSB |
+| 4B54      | M4B54                | Alien2 movement pattern table MSB |
+| 4B55      | M4B55                | Alien2 movement pattern table LSB |
+| 4B56      | M4B56                | Alien3 movement pattern table MSB |
+| 4B57      | M4B57                | Alien3 movement pattern table LSB |
+| 4B58      | M4B58                | Alien4 movement pattern table MSB |
+| 4B59      | M4B59                | Alien4 movement pattern table LSB |
+| 4B5A      | M4B5A                | Alien5 movement pattern table MSB |
+| 4B5B      | M4B5B                | Alien5 movement pattern table LSB |
+| 4B5C      | M4B5C                | Alien6 movement pattern table MSB |
+| 4B5D      | M4B5D                | Alien6 movement pattern table LSB |
+| 4B5E      | M4B5E                | Alien7 movement pattern table MSB |
+| 4B5F      | M4B5F                | Alien7 movement pattern table LSB |
+| 4B60      | M4B60                | Alien8 movement pattern table MSB |
+| 4B61      | M4B61                | Alien8 movement pattern table LSB |
+| 4B62      | M4B62                | Alien9 movement pattern table MSB |
+| 4B63      | M4B63                | Alien9 movement pattern table LSB |
+| 4B64      | M4B64                | AlienA movement pattern table MSB |
+| 4B65      | M4B65                | AlienA movement pattern table LSB |
+| 4B66      | M4B66                | AlienB movement pattern table MSB |
+| 4B67      | M4B67                | AlienB movement pattern table LSB |
+| 4B68      | M4B68                | AlienC movement pattern table MSB |
+| 4B69      | M4B69                | AlienC movement pattern table LSB |
+| 4B6A      | M4B6A                | AlienD movement pattern table MSB |
+| 4B6B      | M4B6B                | AlienD movement pattern table LSB |
+| 4B6C      | M4B6C                | AlienE movement pattern table MSB |
+| 4B6D      | M4B6D                | AlienE movement pattern table LSB |
+| 4B6E      | M4B6E                | AlienF movement pattern table MSB |
+| 4B6F      | M4B6F                | AlienF movement pattern table LSB |
 
 
 ## Alien data structure (grid)
@@ -415,68 +453,68 @@ For the bird animation during intro splash, bird0 memory is used.
 
 |    |     |     |
 | -------- | ------- | ----------------- |
-| 4BB0      | M4BB0                | ? |
-| 4BB1      | M4BB1                | ? |
+| 4BB0      | M4BB0                | Old MSB screen ram adress alien0 |
+| 4BB1      | M4BB1                | Old LSB screen ram adress alien0 |
 | 4BB2      | M4BB2                | MSB screen ram adress alien0 |
 | 4BB3      | M4BB3                | LSB screen ram adress alien0 |
-| 4BB4      | M4BB4                | ? |
-| 4BB5      | M4BB5                | ? |
+| 4BB4      | M4BB4                | Old MSB screen ram adress alien1 |
+| 4BB5      | M4BB5                | Old LSB screen ram adress alien1 |
 | 4BB6      | M4BB6                | MSB screen ram adress alien1 |
 | 4BB7      | M4BB7                | LSB screen ram adress alien1 |
-| 4BB8      | M4BB8                | ? |
-| 4BB9      | M4BB9                | ? |
+| 4BB8      | M4BB8                | Old MSB screen ram adress alien2 |
+| 4BB9      | M4BB9                | Old LSB screen ram adress alien2 |
 | 4BBA      | M4BBA                | MSB screen ram adress alien2 |
 | 4BBB      | M4BBB                | LSB screen ram adress alien2 |
-| 4BBC      | M4BBC                | ? |
-| 4BBD      | M4BBD                | ? |
+| 4BBC      | M4BBC                | Old MSB screen ram adress alien3 |
+| 4BBD      | M4BBD                | Old LSB screen ram adress alien3 |
 | 4BBE      | M4BBE                | MSB screen ram adress alien3 |
 | 4BBF      | M4BBF                | LSB screen ram adress alien3 |
-| 4BC0      | M4BC0                | ? |
-| 4BC1      | M4BC1                | ? |
+| 4BC0      | M4BC0                | Old MSB screen ram adress alien4 |
+| 4BC1      | M4BC1                | Old LSB screen ram adress alien4 |
 | 4BC2      | M4BC2                | MSB screen ram adress alien4 |
 | 4BC3      | M4BC3                | LSB screen ram adress alien4 |
-| 4BC4      | M4BC4                | ? |
-| 4BC5      | M4BC5                | ? |
+| 4BC4      | M4BC4                | Old MSB screen ram adress alien5 |
+| 4BC5      | M4BC5                | Old LSB screen ram adress alien5 |
 | 4BC6      | M4BC6                | MSB screen ram adress alien5 |
 | 4BC7      | M4BC7                | LSB screen ram adress alien5 |
-| 4BC8      | M4BC8                | ? |
-| 4BC9      | M4BC9                | ? |
+| 4BC8      | M4BC8                | Old MSB screen ram adress alien6 |
+| 4BC9      | M4BC9                | Old LSB screen ram adress alien6 |
 | 4BCA      | M4BCA                | MSB screen ram adress alien6 |
 | 4BCB      | M4BCB                | LSB screen ram adress alien6 |
-| 4BCC      | M4BCC                | ? |
-| 4BCD      | M4BCD                | ? |
+| 4BCC      | M4BCC                | Old MSB screen ram adress alien7 |
+| 4BCD      | M4BCD                | Old LSB screen ram adress alien7 |
 | 4BCE      | M4BCE                | MSB screen ram adress alien7 |
 | 4BCF      | M4BCF                | LSB screen ram adress alien7 |
-| 4BD0      | M4BD0                | ? |
-| 4BD1      | M4BD1                | ? |
+| 4BD0      | M4BD0                | Old MSB screen ram adress alien8 |
+| 4BD1      | M4BD1                | Old LSB screen ram adress alien8 |
 | 4BD2      | M4BD2                | MSB screen ram adress alien8 |
 | 4BD3      | M4BD3                | LSB screen ram adress alien8 |
-| 4BD4      | M4BD4                | ? |
-| 4BD5      | M4BD5                | ? |
+| 4BD4      | M4BD4                | Old MSB screen ram adress alien9 |
+| 4BD5      | M4BD5                | Old LSB screen ram adress alien9 |
 | 4BD6      | M4BD6                | MSB screen ram adress alien9 |
 | 4BD7      | M4BD7                | LSB screen ram adress alien9 |
-| 4BD8      | M4BD8                | ? |
-| 4BD9      | M4BD9                | ? |
+| 4BD8      | M4BD8                | Old MSB screen ram adress alienA |
+| 4BD9      | M4BD9                | Old LSB screen ram adress alienA |
 | 4BDA      | M4BDA                | MSB screen ram adress alienA |
 | 4BDB      | M4BDB                | LSB screen ram adress alienA |
-| 4BDC      | M4BDC                | ? |
-| 4BDD      | M4BDD                | ? |
+| 4BDC      | M4BDC                | Old MSB screen ram adress alienB |
+| 4BDD      | M4BDD                | Old LSB screen ram adress alienB |
 | 4BDE      | M4BDE                | MSB screen ram adress alienB |
 | 4BDF      | M4BDF                | LSB screen ram adress alienB |
-| 4BE0      | M4BE0                | ? |
-| 4BE1      | M4BE1                | ? |
+| 4BE0      | M4BE0                | Old MSB screen ram adress alienC |
+| 4BE1      | M4BE1                | Old LSB screen ram adress alienC |
 | 4BE2      | M4BE2                | MSB screen ram adress alienC |
 | 4BE3      | M4BE3                | LSB screen ram adress alienC |
-| 4BE4      | M4BE4                | ? |
-| 4BE5      | M4BE5                | ? |
+| 4BE4      | M4BE4                | Old MSB screen ram adress alienD |
+| 4BE5      | M4BE5                | Old LSB screen ram adress alienD |
 | 4BE6      | M4BE6                | MSB screen ram adress alienD |
 | 4BE7      | M4BE7                | LSB screen ram adress alienD |
-| 4BE8      | M4BE8                | ? |
-| 4BE9      | M4BE9                | ? |
+| 4BE8      | M4BE8                | Old MSB screen ram adress alienE |
+| 4BE9      | M4BE9                | Old LSB screen ram adress alienE |
 | 4BEA      | M4BEA                | MSB screen ram adress alienE |
 | 4BEB      | M4BEB                | LSB screen ram adress alienE |
-| 4BEC      | M4BEC                | ? |
-| 4BED      | M4BED                | ? |
+| 4BEC      | M4BEC                | Old MSB screen ram adress alienF |
+| 4BED      | M4BED                | Old LSB screen ram adress alienF |
 | 4BEE      | M4BEE                | MSB screen ram adress alienF |
 | 4BEF      | M4BEF                | LSB screen ram adress alienF |
 
