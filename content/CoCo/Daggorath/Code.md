@@ -357,7 +357,7 @@ There are seven different lists that a task can be placed on:
 - Hours tasks. Timed down once an hour.
 - Ready to run. Tasks are moved here to be run by the game loop and then moved back to the other lists.
 
-There are five game tasks that run manage game play the level. And each monster gets a "handler task". There
+There are five game tasks that manage general game play. And each monster gets a "handler task". There
 are 32 maximum monsters on a level (usually less) plus the 5 game tasks means a max of 37 task structures.
 The pool has room for 38. It is nicely sized.
 
@@ -393,7 +393,7 @@ every minute.
 ### T4: Make Creature
 
 This task runs on the minute list -- once every 5 minutes. Every time it runs, the task creates
-a random creature that will appear on the CURRENT level when/if the user returns to this level.
+a random creature that will appear on the CURRENT level when/if the player returns to this level.
 This is your punishment for climbing up to previous levels. The longer you hang out on a level,
 the more creatures will be waiting for you next time you come.
 

@@ -28,7 +28,7 @@
 0038: 08              EX      AF,AF'              ; Swap ...
 0039: D9              EXX                         ; ... registers
 003A: 3E 0E           LD      A,$0E               
-003C: D3 40           OUT     ($40),A             ; {}
+003C: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 003E: DB 80           IN      A,($80)             ; {}
 0040: B7              OR      A                   
 0041: 28 13           JR      Z,$56               ; {}
@@ -365,10 +365,10 @@ Initialize:
 0286: 22 0C 80        LD      ($800C),HL          
 0289: 77              LD      (HL),A              
 028A: 3E 07           LD      A,$07               
-028C: D3 40           OUT     ($40),A             ; {}
+028C: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 028E: 3E 3F           LD      A,$3F               
 0290: 32 0E 80        LD      ($800E),A           
-0293: D3 80           OUT     ($80),A             ; {}
+0293: D3 80           OUT     ($80),A             ; {hard.AY_ADDR}
 0295: 3E 07           LD      A,$07               
 0297: D3 10           OUT     ($10),A             ; {}
 0299: 3E 3F           LD      A,$3F               
@@ -388,117 +388,117 @@ Initialize:
 ; Wait for 0-to-1 transition on 350Hz clock
 02B2: FB              EI                          
 02B3: 3E 0F           LD      A,$0F               ; AY3 IO Port B
-02B5: D3 40           OUT     ($40),A             ; {} Latch address
+02B5: D3 40           OUT     ($40),A             ; {hard.AY_DATA} Latch address
 02B7: DB 80           IN      A,($80)             ; {} Read value
 02B9: E6 80           AND     $80                 ; Upper bit (350Hz)
 02BB: 20 F6           JR      NZ,$2B3             ; {} Wait for the 0
 02BD: 3E 0F           LD      A,$0F               ; AY3 IO Port B
-02BF: D3 40           OUT     ($40),A             ; {} Latch address
+02BF: D3 40           OUT     ($40),A             ; {hard.AY_DATA} Latch address
 02C1: DB 80           IN      A,($80)             ; {} Read value
 02C3: E6 80           AND     $80                 ; Upper bit (350Hz)
 02C5: 28 F6           JR      Z,$2BD              ; {} Wait for the 1
-
+;
 02C7: F3              DI                          
 02C8: 3E 01           LD      A,$01               ; Voice 1
-02CA: 32 10 80        LD      ($8010),A           
+02CA: 32 10 80        LD      ($8010),A           ; {ram.curVoice}
 02CD: 3A 01 80        LD      A,($8001)           
 02D0: B7              OR      A                   
 02D1: CA 4B 03        JP      Z,$034B             ; {}
 02D4: 3A 00 80        LD      A,($8000)           
 02D7: CD 04 08        CALL    $0804               ; {}
-
+;
 02DA: FB              EI                          
 02DB: 00              NOP                         
 02DC: 00              NOP                         
 02DD: F3              DI                          
-
+;
 02DE: 3E 02           LD      A,$02               ; Voice 2
-02E0: 32 10 80        LD      ($8010),A           
+02E0: 32 10 80        LD      ($8010),A           ; {ram.curVoice}
 02E3: 3A 03 80        LD      A,($8003)           
 02E6: B7              OR      A                   
 02E7: CA 54 03        JP      Z,$0354             ; {}
 02EA: 3A 02 80        LD      A,($8002)           
 02ED: CD 04 08        CALL    $0804               ; {}
-
+;
 02F0: FB              EI                          
 02F1: 00              NOP                         
 02F2: 00              NOP                         
 02F3: F3              DI                          
-
-02F4: 3E 03           LD      A,$03               
-02F6: 32 10 80        LD      ($8010),A           
+;
+02F4: 3E 03           LD      A,$03               ; Voice 3
+02F6: 32 10 80        LD      ($8010),A           ; {ram.curVoice}
 02F9: 3A 05 80        LD      A,($8005)           
 02FC: B7              OR      A                   
 02FD: CA 5D 03        JP      Z,$035D             ; {}
 0300: 3A 04 80        LD      A,($8004)           
 0303: CD 04 08        CALL    $0804               ; {}
-
+;
 0306: FB              EI                          
 0307: 00              NOP                         
 0308: 00              NOP                         
 0309: F3              DI                          
-
-030A: 3E 04           LD      A,$04               
-030C: 32 10 80        LD      ($8010),A           
+;
+030A: 3E 04           LD      A,$04               ; Voice 4
+030C: 32 10 80        LD      ($8010),A           ; {ram.curVoice}
 030F: 3A 07 80        LD      A,($8007)           
 0312: B7              OR      A                   
 0313: CA 66 03        JP      Z,$0366             ; {}
 0316: 3A 06 80        LD      A,($8006)           
 0319: CD 04 08        CALL    $0804               ; {}
-
+;
 031C: FB              EI                          
 031D: 00              NOP                         
 031E: 00              NOP                         
 031F: F3              DI                          
-
-0320: 3E 05           LD      A,$05               
-0322: 32 10 80        LD      ($8010),A           
+;
+0320: 3E 05           LD      A,$05               ; Voice 5
+0322: 32 10 80        LD      ($8010),A           ; {ram.curVoice}
 0325: 3A 09 80        LD      A,($8009)           
 0328: B7              OR      A                   
 0329: CA 6F 03        JP      Z,$036F             ; {}
 032C: 3A 08 80        LD      A,($8008)           
 032F: CD 04 08        CALL    $0804               ; {}
-
+;
 0332: FB              EI                          
 0333: 00              NOP                         
 0334: 00              NOP                         
 0335: F3              DI                          
-
-0336: 3E 06           LD      A,$06               
-0338: 32 10 80        LD      ($8010),A           
+;
+0336: 3E 06           LD      A,$06               ; Voice 6
+0338: 32 10 80        LD      ($8010),A           ; {ram.curVoice}
 033B: 3A 0B 80        LD      A,($800B)           
 033E: B7              OR      A                   
 033F: CA 78 03        JP      Z,$0378             ; {}
 0342: 3A 0A 80        LD      A,($800A)           
 0345: CD 04 08        CALL    $0804               ; {}
 0348: C3 B2 02        JP      $02B2               ; {} Back to top of main loop
-
+;
 034B: 3A 00 80        LD      A,($8000)           
 034E: CD 81 03        CALL    $0381               ; {}
 0351: C3 DA 02        JP      $02DA               ; {} Back to main loop voice 2
-
+;
 0354: 3A 02 80        LD      A,($8002)           
 0357: CD 81 03        CALL    $0381               ; {}
 035A: C3 F0 02        JP      $02F0               ; {} Back to main loop voice 3
-
+;
 035D: 3A 04 80        LD      A,($8004)           
 0360: CD 81 03        CALL    $0381               ; {}
 0363: C3 06 03        JP      $0306               ; {} Back to main loop voice 4
-
+;
 0366: 3A 06 80        LD      A,($8006)           
 0369: CD 81 03        CALL    $0381               ; {}
 036C: C3 1C 03        JP      $031C               ; {} Back to main loop voice 5
-
+;
 036F: 3A 08 80        LD      A,($8008)           
 0372: CD 81 03        CALL    $0381               ; {}
 0375: C3 32 03        JP      $0332               ; {} Back to main loop voice 6
-
+;
 0378: 3A 0A 80        LD      A,($800A)           
 037B: CD 81 03        CALL    $0381               ; {}
 037E: C3 B2 02        JP      $02B2               ; {} Back to top of loop voice 1
-
-0381: 21 92 03        LD      HL,$0392            
-0384: E5              PUSH    HL                  
+;
+0381: 21 92 03        LD      HL,$0392            ; Retrun to ...
+0384: E5              PUSH    HL                  ; ... 0392
 0385: 87              ADD     A,A                 
 0386: 5F              LD      E,A                 
 0387: 16 00           LD      D,$00               
@@ -508,8 +508,8 @@ Initialize:
 038E: 23              INC     HL                  
 038F: 56              LD      D,(HL)              
 0390: EB              EX      DE,HL               
-0391: E9              JP      (HL)                
-0392: 3A 10 80        LD      A,($8010)           
+0391: E9              JP      (HL)                ; Call the function (returns to next line)
+0392: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 0395: FE 01           CP      $01                 
 0397: 28 16           JR      Z,$3AF              ; {}
 0399: FE 02           CP      $02                 
@@ -520,24 +520,31 @@ Initialize:
 03A3: 28 1C           JR      Z,$3C1              ; {}
 03A5: FE 05           CP      $05                 
 03A7: 28 1E           JR      Z,$3C7              ; {}
+;
 03A9: 3E 01           LD      A,$01               
 03AB: 32 0B 80        LD      ($800B),A           
 03AE: C9              RET                         
+;
 03AF: 3E 01           LD      A,$01               
 03B1: 32 01 80        LD      ($8001),A           
 03B4: C9              RET                         
+;
 03B5: 3E 01           LD      A,$01               
 03B7: 32 03 80        LD      ($8003),A           
 03BA: C9              RET                         
+;
 03BB: 3E 01           LD      A,$01               
 03BD: 32 05 80        LD      ($8005),A           
 03C0: C9              RET                         
+;
 03C1: 3E 01           LD      A,$01               
 03C3: 32 07 80        LD      ($8007),A           
 03C6: C9              RET                         
+;
 03C7: 3E 01           LD      A,$01               
 03C9: 32 09 80        LD      ($8009),A           
 03CC: C9              RET                         
+
 03CD: 5D              LD      E,L                 
 03CE: 04              INC     B                   
 03CF: C0              RET     NZ                  
@@ -626,19 +633,19 @@ Initialize:
 042B: 00              NOP                         
 042C: 00              NOP                         
 042D: 3E 08           LD      A,$08               
-042F: D3 40           OUT     ($40),A             ; {}
+042F: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 0431: AF              XOR     A                   
-0432: D3 80           OUT     ($80),A             ; {}
+0432: D3 80           OUT     ($80),A             ; {hard.AY_ADDR}
 0434: C9              RET                         
 0435: 3E 09           LD      A,$09               
-0437: D3 40           OUT     ($40),A             ; {}
+0437: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 0439: AF              XOR     A                   
-043A: D3 80           OUT     ($80),A             ; {}
+043A: D3 80           OUT     ($80),A             ; {hard.AY_ADDR}
 043C: C9              RET                         
 043D: 3E 0A           LD      A,$0A               
-043F: D3 40           OUT     ($40),A             ; {}
+043F: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 0441: AF              XOR     A                   
-0442: D3 80           OUT     ($80),A             ; {}
+0442: D3 80           OUT     ($80),A             ; {hard.AY_ADDR}
 0444: C9              RET                         
 0445: 3E 08           LD      A,$08               
 0447: D3 10           OUT     ($10),A             ; {}
@@ -655,7 +662,7 @@ Initialize:
 0459: AF              XOR     A                   
 045A: D3 20           OUT     ($20),A             ; {}
 045C: C9              RET                         
-045D: 3A 10 80        LD      A,($8010)           
+045D: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 0460: FE 01           CP      $01                 
 0462: 28 19           JR      Z,$47D              ; {}
 0464: FE 02           CP      $02                 
@@ -691,11 +698,11 @@ Initialize:
 04A6: CD 4D 04        CALL    $044D               ; {}
 04A9: C9              RET                         
 04AA: 3E 07           LD      A,$07               
-04AC: D3 40           OUT     ($40),A             ; {}
+04AC: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 04AE: 3A 0E 80        LD      A,($800E)           
 04B1: B0              OR      B                   
 04B2: 32 0E 80        LD      ($800E),A           
-04B5: D3 80           OUT     ($80),A             ; {}
+04B5: D3 80           OUT     ($80),A             ; {hard.AY_ADDR}
 04B7: C9              RET                         
 04B8: 3E 07           LD      A,$07               
 04BA: D3 10           OUT     ($10),A             ; {}
@@ -704,7 +711,7 @@ Initialize:
 04C0: 32 0F 80        LD      ($800F),A           
 04C3: D3 20           OUT     ($20),A             ; {}
 04C5: C9              RET                         
-04C6: 3A 10 80        LD      A,($8010)           
+04C6: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 04C9: FE 01           CP      $01                 
 04CB: 28 20           JR      Z,$4ED              ; {}
 04CD: FE 02           CP      $02                 
@@ -728,14 +735,14 @@ Initialize:
 04EC: C9              RET                         
 04ED: 06 00           LD      B,$00               
 04EF: 78              LD      A,B                 
-04F0: D3 40           OUT     ($40),A             ; {}
+04F0: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 04F2: 7D              LD      A,L                 
-04F3: D3 80           OUT     ($80),A             ; {}
+04F3: D3 80           OUT     ($80),A             ; {hard.AY_ADDR}
 04F5: 04              INC     B                   
 04F6: 78              LD      A,B                 
-04F7: D3 40           OUT     ($40),A             ; {}
+04F7: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 04F9: 7C              LD      A,H                 
-04FA: D3 80           OUT     ($80),A             ; {}
+04FA: D3 80           OUT     ($80),A             ; {hard.AY_ADDR}
 04FC: C9              RET                         
 04FD: 06 02           LD      B,$02               
 04FF: 18 EE           JR      $4EF                ; {}
@@ -745,7 +752,7 @@ Initialize:
 0507: 18 D6           JR      $4DF                ; {}
 0509: 06 02           LD      B,$02               
 050B: 18 D2           JR      $4DF                ; {}
-050D: 3A 10 80        LD      A,($8010)           
+050D: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 0510: FE 01           CP      $01                 
 0512: 28 18           JR      Z,$52C              ; {}
 0514: FE 02           CP      $02                 
@@ -776,7 +783,7 @@ Initialize:
 0546: 16 FD           LD      D,$FD               
 0548: 1E 10           LD      E,$10               
 054A: 18 DC           JR      $528                ; {}
-054C: 3A 10 80        LD      A,($8010)           
+054C: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 054F: FE 04           CP      $04                 
 0551: FA 5B 05        JP      M,$055B             ; {}
 0554: 7A              LD      A,D                 
@@ -785,17 +792,17 @@ Initialize:
 0558: D3 20           OUT     ($20),A             ; {}
 055A: C9              RET                         
 055B: 7A              LD      A,D                 
-055C: D3 40           OUT     ($40),A             ; {}
+055C: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 055E: 7B              LD      A,E                 
-055F: D3 80           OUT     ($80),A             ; {}
+055F: D3 80           OUT     ($80),A             ; {hard.AY_ADDR}
 0561: C9              RET                         
 0562: 3E 07           LD      A,$07               
-0564: D3 40           OUT     ($40),A             ; {}
+0564: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 0566: 3A 0E 80        LD      A,($800E)           
 0569: A2              AND     D                   
 056A: B3              OR      E                   
 056B: 32 0E 80        LD      ($800E),A           
-056E: D3 80           OUT     ($80),A             ; {}
+056E: D3 80           OUT     ($80),A             ; {hard.AY_ADDR}
 0570: C9              RET                         
 0571: 3E 07           LD      A,$07               
 0573: D3 10           OUT     ($10),A             ; {}
@@ -805,7 +812,7 @@ Initialize:
 057A: 32 0F 80        LD      ($800F),A           
 057D: D3 20           OUT     ($20),A             ; {}
 057F: C9              RET                         
-0580: 3A 10 80        LD      A,($8010)           
+0580: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 0583: FE 01           CP      $01                 
 0585: 28 18           JR      Z,$59F              ; {}
 0587: FE 02           CP      $02                 
@@ -836,7 +843,7 @@ Initialize:
 05B9: 16 EF           LD      D,$EF               
 05BB: 1E 02           LD      E,$02               
 05BD: 18 DC           JR      $59B                ; {}
-05BF: 3A 10 80        LD      A,($8010)           
+05BF: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 05C2: FE 01           CP      $01                 
 05C4: 28 18           JR      Z,$5DE              ; {}
 05C6: FE 02           CP      $02                 
@@ -867,7 +874,7 @@ Initialize:
 05F8: 16 ED           LD      D,$ED               
 05FA: 1E 00           LD      E,$00               
 05FC: 18 DC           JR      $5DA                ; {}
-05FE: 3A 10 80        LD      A,($8010)           
+05FE: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 0601: FE 01           CP      $01                 
 0603: 28 18           JR      Z,$61D              ; {}
 0605: FE 02           CP      $02                 
@@ -884,9 +891,9 @@ Initialize:
 061A: D3 20           OUT     ($20),A             ; {}
 061C: C9              RET                         
 061D: 3E 08           LD      A,$08               
-061F: D3 40           OUT     ($40),A             ; {}
+061F: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 0621: 78              LD      A,B                 
-0622: D3 80           OUT     ($80),A             ; {}
+0622: D3 80           OUT     ($80),A             ; {hard.AY_ADDR}
 0624: C9              RET                         
 0625: 3E 09           LD      A,$09               
 0627: 18 F6           JR      $61F                ; {}
@@ -896,7 +903,7 @@ Initialize:
 062F: 18 E6           JR      $617                ; {}
 0631: 3E 09           LD      A,$09               
 0633: 18 E2           JR      $617                ; {}
-0635: 3A 10 80        LD      A,($8010)           
+0635: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 0638: FE 04           CP      $04                 
 063A: FA 44 06        JP      M,$0644             ; {}
 063D: 7A              LD      A,D                 
@@ -905,11 +912,11 @@ Initialize:
 0642: 5F              LD      E,A                 
 0643: C9              RET                         
 0644: 7A              LD      A,D                 
-0645: D3 40           OUT     ($40),A             ; {}
+0645: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 0647: DB 80           IN      A,($80)             ; {}
 0649: 5F              LD      E,A                 
 064A: C9              RET                         
-064B: 3A 10 80        LD      A,($8010)           
+064B: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 064E: FE 01           CP      $01                 
 0650: 28 17           JR      Z,$669              ; {}
 0652: FE 02           CP      $02                 
@@ -925,7 +932,7 @@ Initialize:
 0666: DB 20           IN      A,($20)             ; {}
 0668: C9              RET                         
 0669: 3E 08           LD      A,$08               
-066B: D3 40           OUT     ($40),A             ; {}
+066B: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 066D: DB 80           IN      A,($80)             ; {}
 066F: C9              RET                         
 0670: 3E 09           LD      A,$09               
@@ -936,7 +943,7 @@ Initialize:
 067A: 18 E8           JR      $664                ; {}
 067C: 3E 09           LD      A,$09               
 067E: 18 E4           JR      $664                ; {}
-0680: 3A 10 80        LD      A,($8010)           
+0680: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 0683: FE 01           CP      $01                 
 0685: 28 20           JR      Z,$6A7              ; {}
 0687: FE 02           CP      $02                 
@@ -960,12 +967,12 @@ Initialize:
 06A6: C9              RET                         
 06A7: 06 00           LD      B,$00               
 06A9: 78              LD      A,B                 
-06AA: D3 40           OUT     ($40),A             ; {}
+06AA: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 06AC: DB 80           IN      A,($80)             ; {}
 06AE: 6F              LD      L,A                 
 06AF: 04              INC     B                   
 06B0: 78              LD      A,B                 
-06B1: D3 40           OUT     ($40),A             ; {}
+06B1: D3 40           OUT     ($40),A             ; {hard.AY_DATA}
 06B3: DB 80           IN      A,($80)             ; {}
 06B5: 67              LD      H,A                 
 06B6: C9              RET                         
@@ -977,7 +984,7 @@ Initialize:
 06C1: 18 D6           JR      $699                ; {}
 06C3: 06 02           LD      B,$02               
 06C5: 18 D2           JR      $699                ; {}
-06C7: 3A 10 80        LD      A,($8010)           
+06C7: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 06CA: FE 04           CP      $04                 
 06CC: 28 21           JR      Z,$6EF              ; {}
 06CE: FE 05           CP      $05                 
@@ -1009,7 +1016,7 @@ Initialize:
 0701: 18 DE           JR      $6E1                ; {}
 0703: 11 FF FC        LD      DE,$FCFF            
 0706: 18 D9           JR      $6E1                ; {}
-0708: 3A 10 80        LD      A,($8010)           
+0708: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 070B: FE 04           CP      $04                 
 070D: 28 20           JR      Z,$72F              ; {}
 070F: FE 05           CP      $05                 
@@ -1041,7 +1048,7 @@ Initialize:
 0743: 11 FF FC        LD      DE,$FCFF            
 0746: 18 DA           JR      $722                ; {}
 0748: CD 08 07        CALL    $0708               ; {}
-074B: 3A 10 80        LD      A,($8010)           
+074B: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 074E: FE 04           CP      $04                 
 0750: 28 17           JR      Z,$769              ; {}
 0752: FE 05           CP      $05                 
@@ -1066,7 +1073,7 @@ Initialize:
 077D: 11 00 02        LD      DE,$0200            
 0780: 18 E3           JR      $765                ; {}
 0782: CD 08 07        CALL    $0708               ; {}
-0785: 3A 10 80        LD      A,($8010)           
+0785: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 0788: FE 04           CP      $04                 
 078A: 28 17           JR      Z,$7A3              ; {}
 078C: FE 05           CP      $05                 
@@ -1091,7 +1098,7 @@ Initialize:
 07B7: 11 00 01        LD      DE,$0100            
 07BA: 18 E3           JR      $79F                ; {}
 07BC: CD 08 07        CALL    $0708               ; {}
-07BF: 3A 10 80        LD      A,($8010)           
+07BF: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 07C2: FE 04           CP      $04                 
 07C4: 28 17           JR      Z,$7DD              ; {}
 07C6: FE 05           CP      $05                 
@@ -1125,6 +1132,7 @@ Initialize:
 07FF: 22 0C 80        LD      ($800C),HL          
 0802: 77              LD      (HL),A              
 0803: C9              RET                         
+
 0804: B7              OR      A                   
 0805: C8              RET     Z                   
 0806: 21 17 08        LD      HL,$0817            
@@ -1141,7 +1149,7 @@ Initialize:
 0816: E9              JP      (HL)                
 0817: B7              OR      A                   
 0818: C8              RET     Z                   
-0819: 3A 10 80        LD      A,($8010)           
+0819: 3A 10 80        LD      A,($8010)           ; {ram.curVoice}
 081C: FE 01           CP      $01                 
 081E: 28 18           JR      Z,$838              ; {}
 0820: FE 02           CP      $02                 
