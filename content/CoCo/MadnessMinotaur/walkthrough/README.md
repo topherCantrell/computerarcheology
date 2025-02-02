@@ -178,8 +178,8 @@ QUIET ; Saved as "after_1.txt"
 ```
 
 SAVE GAME: 
-  * [after_1.txt](after_start.txt) (Emulator here) 
-  * [after_1.cas](after_start.cas) (JS Mocha)
+  * [after_1.txt](after_1.txt) (Emulator here) 
+  * [after_1.cas](after_1.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_1.txt)
 
 ## Task 2: Learn MITRA
@@ -221,8 +221,8 @@ QUIET ; save as "after_1.cas"
 ```
 
 SAVE GAME: 
-  * [after_2.txt](after_start.txt) (Emulator here) 
-  * [after_2.cas](after_start.cas) (JS Mocha)
+  * [after_2.txt](after_2.txt) (Emulator here) 
+  * [after_2.cas](after_2.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_2.txt)
 
 ## Task 3: Learn OKKAN
@@ -257,8 +257,8 @@ QUIET ; save as "after_3.txt"
 ```
 
 SAVE GAME: 
-  * [after_3.txt](after_start.txt) (Emulator here) 
-  * [after_3.cas](after_start.cas) (JS Mocha)
+  * [after_3.txt](after_3.txt) (Emulator here) 
+  * [after_3.cas](after_3.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_3.txt)
   
 ## Task 4: Learn AKHIROM
@@ -291,8 +291,8 @@ QUIET ; save as "after_4.txt"
 ```
 
 SAVE GAME: 
-  * [after_4.txt](after_start.txt) (Emulator here) 
-  * [after_4.cas](after_start.cas) (JS Mocha)
+  * [after_4.txt](after_4.txt) (Emulator here) 
+  * [after_4.cas](after_4.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_4.txt)
 
 ## Task 5: Learn NERGAL
@@ -348,8 +348,8 @@ QUIET ; save as "after_5.txt"
 ```
 
 SAVE GAME: 
-  * [after_5.txt](after_start.txt) (Emulator here) 
-  * [after_5.cas](after_start.cas) (JS Mocha)
+  * [after_5.txt](after_5.txt) (Emulator here) 
+  * [after_5.cas](after_5.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_5.txt)
   
 ## Task 6: Learn BELROG
@@ -377,8 +377,8 @@ QUIET ; save as "after_6.txt"
 ```
 
 SAVE GAME: 
-  * [after_6.txt](after_start.txt) (Emulator here) 
-  * [after_6.cas](after_start.cas) (JS Mocha)
+  * [after_6.txt](after_6.txt) (Emulator here) 
+  * [after_6.cas](after_6.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_6.txt)
   
 ## Task 7: Learn CROM
@@ -401,8 +401,8 @@ QUIET ; save as "after_7.txt"
 ```
 
 SAVE GAME: 
-  * [after_7.txt](after_start.txt) (Emulator here) 
-  * [after_7.cas](after_start.cas) (JS Mocha)
+  * [after_7.txt](after_7.txt) (Emulator here) 
+  * [after_7.cas](after_7.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_7.txt)
   
 ## Task 8: Learn ISHTAR
@@ -458,8 +458,8 @@ QUIET ; save to "after_8.txt"
 ```
 
 SAVE GAME: 
-  * [after_8.txt](after_start.txt) (Emulator here) 
-  * [after_8.cas](after_start.cas) (JS Mocha)
+  * [after_8.txt](after_8.txt) (Emulator here) 
+  * [after_8.cas](after_8.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_8.txt)
   
 ## Task 9: Kill the SPRITE
@@ -490,8 +490,8 @@ QUIET ; save to "after_9.txt"
 ```
 
 SAVE GAME: 
-  * [after_9.txt](after_start.txt) (Emulator here) 
-  * [after_9.cas](after_start.cas) (JS Mocha)
+  * [after_9.txt](after_9.txt) (Emulator here) 
+  * [after_9.cas](after_9.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_9.txt)
   
 ## Task Order
@@ -563,8 +563,8 @@ QUIET ; after_10.txt
 ```
 
 SAVE GAME: 
-  * [after_10.txt](after_start.txt) (Emulator here) 
-  * [after_10.cas](after_start.cas) (JS Mocha)
+  * [after_10.txt](after_10.txt) (Emulator here) 
+  * [after_10.cas](after_10.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_10.txt)
   
 ## Task 11: Score SAPPHIRE
@@ -608,8 +608,8 @@ QUIET ; save as after_11.txt
 ```
 
 SAVE GAME: 
-  * [after_11.txt](after_start.txt) (Emulator here) 
-  * [after_11.cas](after_start.cas) (JS Mocha)
+  * [after_11.txt](after_11.txt) (Emulator here) 
+  * [after_11.cas](after_11.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_11.txt)
   
 ## Task 12: Score AMULET
@@ -637,8 +637,8 @@ QUIET ; save as after_12.txt
 ```
 
 SAVE GAME: 
-  * [after_12.txt](after_start.txt) (Emulator here) 
-  * [after_12.cas](after_start.cas) (JS Mocha)
+  * [after_12.txt](after_12.txt) (Emulator here) 
+  * [after_12.cas](after_12.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_12.txt)
   
 ## Task 13 : Score LIGHTRING
@@ -708,8 +708,8 @@ QUIET ; save as after_13.txt
 ```
 
 SAVE GAME: 
-  * [after_13.txt](after_start.txt) (Emulator here) 
-  * [after_13.cas](after_start.cas) (JS Mocha)
+  * [after_13.txt](after_13.txt) (Emulator here) 
+  * [after_13.cas](after_13.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_13.txt)
   
 ## Task 14: Score TRUTHRING
@@ -734,8 +734,8 @@ QUIET ; save as after_14.txt
 ```
 
 SAVE GAME: 
-  * [after_14.txt](after_start.txt) (Emulator here) 
-  * [after_14.cas](after_start.cas) (JS Mocha)
+  * [after_14.txt](after_14.txt) (Emulator here) 
+  * [after_14.cas](after_14.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_14.txt)
 
 ## Task 15: Score SPELLBOOK
@@ -766,8 +766,8 @@ QUIET ; save as after_15.txt
 ```
 
 SAVE GAME: 
-  * [after_15.txt](after_start.txt) (Emulator here) 
-  * [after_15.cas](after_start.cas) (JS Mocha)
+  * [after_15.txt](after_15.txt) (Emulator here) 
+  * [after_15.cas](after_15.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_15.txt)
   
 ## Task 16: Score the POWDER
@@ -796,8 +796,8 @@ QUIET ; save as after_16.txt
 ```
 
 SAVE GAME: 
-  * [after_16.txt](after_start.txt) (Emulator here) 
-  * [after_16.cas](after_start.cas) (JS Mocha)
+  * [after_16.txt](after_16.txt) (Emulator here) 
+  * [after_16.cas](after_16.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_16.txt)
   
 ## Task 17: Score RUBY
@@ -842,8 +842,8 @@ QUIET ; save as after_17.txt
 ```
 
 SAVE GAME: 
-  * [after_17.txt](after_start.txt) (Emulator here) 
-  * [after_17.cas](after_start.cas) (JS Mocha)
+  * [after_17.txt](after_17.txt) (Emulator here) 
+  * [after_17.cas](after_17.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_17.txt)
 
 ## Task 18: Score OPAL
@@ -911,8 +911,8 @@ QUIET ; save as after_18.txt
 ```
 
 SAVE GAME: 
-  * [after_18.txt](after_start.txt) (Emulator here) 
-  * [after_18.cas](after_start.cas) (JS Mocha)
+  * [after_18.txt](after_18.txt) (Emulator here) 
+  * [after_18.cas](after_18.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_18.txt)
 
 ## Task 19: Score FLEECE
@@ -963,8 +963,8 @@ QUIET ; save as after_19.txt
 ```
 
 SAVE GAME: 
-  * [after_19.txt](after_start.txt) (Emulator here) 
-  * [after_19.cas](after_start.cas) (JS Mocha)
+  * [after_19.txt](after_19.txt) (Emulator here) 
+  * [after_19.cas](after_19.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_19.txt)
 
 ## Task 20: Score SILVER
@@ -994,8 +994,8 @@ QUIET ; save as after_20.txt
 ```
 
 SAVE GAME: 
-  * [after_20.txt](after_start.txt) (Emulator here) 
-  * [after_20.cas](after_start.cas) (JS Mocha)
+  * [after_20.txt](after_20.txt) (Emulator here) 
+  * [after_20.cas](after_20.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_20.txt)
 
 ## Task 21: Score GOLD
@@ -1027,8 +1027,8 @@ QUIET ; save as after_21.txt
 ```
 
 SAVE GAME: 
-  * [after_21.txt](after_start.txt) (Emulator here) 
-  * [after_21.cas](after_start.cas) (JS Mocha)
+  * [after_21.txt](after_21.txt) (Emulator here) 
+  * [after_21.cas](after_21.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_21.txt)
   
 ## Task 22: Score TIARA
@@ -1057,8 +1057,8 @@ QUIET ; save as after_22.txt
 ```
 
 SAVE GAME: 
-  * [after_22.txt](after_start.txt) (Emulator here) 
-  * [after_22.cas](after_start.cas) (JS Mocha)
+  * [after_22.txt](after_22.txt) (Emulator here) 
+  * [after_22.cas](after_22.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_22.txt)
 
 ## Task 23: Score CROWN
@@ -1090,8 +1090,8 @@ QUIET ; save as after_23.txt
 ```
 
 SAVE GAME: 
-  * [after_23.txt](after_start.txt) (Emulator here) 
-  * [after_23.cas](after_start.cas) (JS Mocha)
+  * [after_23.txt](after_23.txt) (Emulator here) 
+  * [after_23.cas](after_23.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_23.txt)
   
 ## Task 24: Score 
@@ -1125,8 +1125,8 @@ QUIET ; save as after_24.txt
 ```
 
 SAVE GAME: 
-  * [after_24.txt](after_start.txt) (Emulator here) 
-  * [after_24.cas](after_start.cas) (JS Mocha)
+  * [after_24.txt](after_24.txt) (Emulator here) 
+  * [after_24.cas](after_24.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_24.txt)
 
 ## Task 25: Score POTION
@@ -1154,8 +1154,8 @@ DROP POTION
 ```
 
 SAVE GAME: 
-  * [after_25.txt](after_start.txt) (Emulator here) 
-  * [after_25.cas](after_start.cas) (JS Mocha)
+  * [after_25.txt](after_25.txt) (Emulator here) 
+  * [after_25.cas](after_25.cas) (JS Mocha)
   * [Load in the Save-Game-Viewer](../SaveGameViewer.html?walkthrough/after_25.txt)
 
 And the reward:

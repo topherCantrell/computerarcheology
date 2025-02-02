@@ -52,3 +52,7 @@ disassemblies of the CoCo ROMs! Here are those awesome PDFs:
   * [Extended Basic Unravelled](extended-basic-unravelled.pdf)
   * [Disk Basic Unravelled](disk-basic-unravelled.pdf)
   * [Super Extended Basic Unravelled](super-extended-basic-unravelled.pdf)
+
+# Corrections
+
+Thanks, Anthony Hope, for pointing out that the save-game links in the walkthrough were broken.

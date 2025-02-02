@@ -2,6 +2,11 @@
 
 # Journal
 
+## 2/2/2025
+
+Fixed the data representation at the bottom of the save-game viewer. I pointed the main text to the save-game
+viewer for the map.
+
 ## 5/1/2019
 
 Move my walkthrough to a separate page. That way it can be open next to the emulator.

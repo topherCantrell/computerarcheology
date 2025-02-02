@@ -810,6 +810,7 @@ function viewSaveFile(data) {
 		// Protection lists
 		g = rawt.pop(); 
 		rawt.pop(); // The placeholder address 3FB8:
+		rawt.pop(); // The placeholder address 3FB8:
 		
 		p = 0x3FB8;		
 		for(x=0;x<14;++x) {
@@ -818,8 +819,7 @@ function viewSaveFile(data) {
 			u = u + hexPad(b,2);
 			while(u.length<22) u = u +' ';			
 			ob = PROTECTIONS[b];
-			u = u + '; '+ob.name;
-			if(x==0) u = '<span class="sg_value">'+ u;
+			u = u + '; '+ob.name;			
 			rawt.push(u);
 			s = '';
 			u = hexPad(p,4)+': ';
@@ -844,13 +844,13 @@ function viewSaveFile(data) {
 		rawt.push(hexPad(p++,4)+': FF')
 		
 		if(p!=0x4000) {
+			rawt.push(' ');
 			rawt.push('; Unused');
 			u = hexPad(p,4)+':';
 			while(p<0x4000) u = u + ' ' + hexPad(readBinaryData(p++),2);
 			rawt.push(u);
 		}
-		
-		rawt.push('<\span>');
+				
 		rawt.push(g);
 		
 		// Write the data
@@ -1028,6 +1028,13 @@ $(function() {
 	var loc = window.location.toString();
 	var i = loc.indexOf('?');
 	if(i<0) return; // Nothing to load
+
+	if (loc.indexOf('BLANK')>=0) {
+		$('#cocoTape').val('');
+		viewSaveFile('');
+		$('#rawData').show();
+		return;
+	}
 	
 	loc = loc.substring(i+1);
 	$.get(loc,function(data) {

@@ -2193,7 +2193,7 @@ DrawScoreAverageTableTiles:
 ; 
 0C40: 21 FF 43        LD      HL,$43FF            ; {+ram.AlienBullet4LSB}
 0C43: 06 05           LD      B,$05               
-0C45: CD 8B 08        CALL    $088B               ; {}
+0C45: CD 8B 08        CALL    $088B               ; {code.L088B}
 0C48: CD 56 0C        CALL    $0C56               ; {}
 0C4B: CD 6B 0C        CALL    $0C6B               ; {}
 0C4E: CD D8 0C        CALL    $0CD8               ; {} ?
@@ -2681,7 +2681,7 @@ L0D5E:
 0F0C: 2C              INC     L                   ; 
 0F0D: 5E              LD      E,(HL)              ; get $43E3 PlayerShipLSB
 0F0E: 01 02 02        LD      BC,$0202            
-0F11: CD 56 0F        CALL    $0F56               ; {} 'alien with player' collision check
+0F11: CD 56 0F        CALL    $0F56               ; {code.L0F56} 'alien with player' collision check
 0F14: C8              RET     Z                   ; if no collision
 0F15: 00              NOP                         
 0F16: 00              NOP                         
@@ -2747,7 +2747,7 @@ L0F63:
 0F6A: CD 17 02        CALL    $0217               ; {code.RightOneColumn} for lower part of player ship
 0F6D: 0D              DEC     C                   ; 
 0F6E: C2 56 0F        JP      NZ,$0F56            ; {code.L0F56}
-0F71: C9              RET                         ;
+0F71: C9              RET                         ; 
 ; 
 0F72: FF FF
 ;
@@ -2759,7 +2759,7 @@ L0F74:
 0F79: CD 17 02        CALL    $0217               ; {code.RightOneColumn}
 0F7C: 1B              DEC     DE                  
 0F7D: 01 04 04        LD      BC,$0404            
-0F80: CD 56 0F        CALL    $0F56               ; {}
+0F80: CD 56 0F        CALL    $0F56               ; {code.L0F56}
 0F83: C8              RET     Z                   
 0F84: 00              NOP                         
 0F85: 00              NOP                         
@@ -4415,12 +4415,12 @@ L211C:
 L2130:
 2130: 78              LD      A,B                 ; get masked counter
 2131: A7              AND     A                   ; updates the zero flag
-2132: CA 50 21        JP      Z,$2150             ; {} if = 0
+2132: CA 50 21        JP      Z,$2150             ; {code.L2150} if = 0
 2135: FE 01           CP      $01                 ; 
-2137: CA 60 21        JP      Z,$2160             ; {} if = 1
+2137: CA 60 21        JP      Z,$2160             ; {code.L2160} if = 1
 213A: FE 02           CP      $02                 ; 
-213C: CA 70 21        JP      Z,$2170             ; {} if = 2
-213F: C3 80 21        JP      $2180               ; {} counter = 3
+213C: CA 70 21        JP      Z,$2170             ; {code.L2170} if = 2
+213F: C3 80 21        JP      $2180               ; {code.L2180} counter = 3
 
 ; not used 
 2142: 90              SUB     B                   
@@ -4898,7 +4898,7 @@ L23C0:
 241F: 7E              LD      A,(HL)              
 2420: 11 00 2A        LD      DE,$2A00            ; {+code.T2A00} get the foreground tiles of the mothership particles explosion
 2423: 21 00 2B        LD      HL,$2B00            ; {+code.T2B00} get the control data
-2426: C3 85 20        JP      $2085               ; {}
+2426: C3 85 20        JP      $2085               ; {code.L2085}
 
 2429: FF FF FF
 ; 

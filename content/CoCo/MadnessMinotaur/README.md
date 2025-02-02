@@ -133,10 +133,10 @@ to 255. Room 0 is the upper left of the first floor and room 255 is the lower ri
 room number. WEST subtracts one. NORTH subtracts 8. SOUTH adds 8. UP subtracts 64. DOWN adds 64. If the room number becomes less 
 than 0 or greater than 255 it "wraps around".
 
-There is a table in the game that defines the "natural" passages between rooms. Most of these passages are two way, but some are one way. 
-The map below shows the natural passages as a line between the rooms. If the line touches the room with a "+" then the passage can be 
-entered from the room. If there is no "+" then the passage is one way from the adjoining room. For instance, you can take the passage 
-from room 7 to 6 but not from 6 to 7. This map is NOT randomized between games. The natural passages are the same for all games.
+There is a table in the game that defines the "natural" passages between rooms. Most of these passages are two way, but some are one way.
+The best way to visualize the large map is with the [save-game viewer](SaveGameViewer.html?BLANK). The lines between the rooms represent directions you can move. 
+A line that touches two rooms is a two way passage between the rooms. A broken line between rooms is a one way passage. For instance, 
+you can take the passage from room 7 to 6 but not from 6 to 7. This map is NOT randomized between games. The natural passages are the same for all games.
 
 Every room has a single one-sentence description (see the code). There are eight different messages to describe a passage leading from 
 a room in any one direction. The game builds the description of passages by selecting a random description for each open direction. Thus 
