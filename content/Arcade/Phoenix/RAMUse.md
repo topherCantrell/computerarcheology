@@ -69,7 +69,7 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 4364      | M4364                | ? |
 | 4366      | M4366                | ? |
 | 4368      | M4368                | ? |
-| 4369      | M4369                | ? |
+| 4369      | M4369                | Flag for:'bonus explosion' ($FF) ? |
 | 436A      | M436A                | ? |
 | 436B      | M436B                | ? |
 | 436D      | M436D                | ? |
@@ -150,6 +150,8 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 
 
 ## Player and player bullets, data structure (grid)
+
+MAME cheat code "Infinite Shields": set $84 (%1000_0100) at $43C0
 
 >>> memory
 
