@@ -1011,7 +1011,7 @@ L04AC:
 04C2: 36 00           LD      (HL),$00            ; LSB
 04C4: E6 08           AND     $08                 ; 0000_1000
 04C6: C2 E6 04        JP      NZ,$04E6            ; {code.L04E6}
-04C9: CD E8 06        CALL    $06E8               ; {cpde.L06E8}
+04C9: CD E8 06        CALL    $06E8               ; {code.L06E8}
 04CC: 00              NOP                         ; 
 04CD: 21 A3 43        LD      HL,$43A3            ; {+ram.GameAndDemoOrSplash}
 04D0: 7E              LD      A,(HL)              ; 
@@ -2392,7 +2392,7 @@ DrawScoreAverageTableTiles:
 0BD3: 23              INC     HL                  ; 
 0BD4: 36 65           LD      (HL),$65            ; right part of alien shape #3
 0BD6: 21 F2 42        LD      HL,$42F2            ; screen ram position for
-0BD9: 11 40 0A        LD      DE,$0A40            ; T0A40 alien shape #37 and alien shape #34 
+0BD9: 11 40 0A        LD      DE,$0A40            ; T0A40 alien shape #37 and alien shape #34
 0BDC: CD 38 35        CALL    $3538               ; {code.Draw4x2}
 0BDF: 21 15 4B        LD      HL,$4B15            ; screen ram position for
 0BE2: 11 00 3C        LD      DE,$3C00            ; bird shape #24 (Object 3C00)
@@ -5051,7 +5051,7 @@ L22FA:
 22FD: 06 12           LD      B,$12               
 22FF: 3A 8A 48        LD      A,($488A)           ; {ram.BackgroundScreen+8A}
 2302: 4F              LD      C,A                 
-L2303::
+L2303:
 2303: 79              LD      A,C                 
 2304: E6 03           AND     $03                 
 2306: 07              RLCA                        ; Multiply by 4 ..
@@ -5070,7 +5070,7 @@ L2303::
 2316: 6F              LD      L,A                 
 2317: D2 1B 23        JP      NC,$231B            ; {code.L231B}
 231A: 25              DEC     H                   
-L231B::
+L231B:
 231B: 05              DEC     B                   
 231C: C2 03 23        JP      NZ,$2303            ; {code.L2303}
 231F: C9              RET                         
@@ -5325,7 +5325,7 @@ L2476:
 ; not used.
 2494: 1F              RRA                         
 ; 
-L2495::
+L2495:
 2495: 80              ADD     A,B                 
 2496: 0D              DEC     C                   
 2497: C8              RET     Z                   
@@ -7214,7 +7214,7 @@ L3680:
 3693: D8 FE 
 ;
 L3695:
-3695: 2C              INC     L
+3695: 2C              INC     L                   
 3696: 2C              INC     L                   
 3697: 46              LD      B,(HL)              
 3698: 2C              INC     L                   
