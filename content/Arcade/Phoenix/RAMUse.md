@@ -63,15 +63,16 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 435E      | M435E                | ? |
 | 435F      | M435F                | 8 bit counter for alien movement |
 | 4360      | PlayerMoved          | Flag for: 'player moved' ($FF) |
-| 4361      | BulletTriggered      | Flag for: 'bullet triggered' ($30) and counter ? |
+| 4361      | BulletTriggered      | Flag for: 'bullet triggered' ($30) and counter |
 | 4362      | M4362                | Player shield animation counter ? |
-| 4363      | PlayerWasHit         | Flag for: 'player ship was hit by alien' ($10) and counter ? |
+| 4363      | ParticleExplosion    | Flag for: 'particle explosion start' and animation counter |
 | 4364      | M4364                | ? |
 | 4366      | M4366                | ? |
+| 4367      | M4367                | Flag for: 'Mothership partially faded in' ($FF) |
 | 4368      | M4368                | ? |
-| 4369      | M4369                | Flag for:'bonus explosion' ($FF) ? |
+| 4369      | M4369                | Flag for:'bonus explosion' ($FF) |
 | 436A      | M436A                | ? |
-| 436B      | M436B                | ? |
+| 436B      | M436B                | Flag for: 'mother ship score display' ($FF) and counter|
 | 436D      | M436D                | ? |
 | 436E      | M436E                | ? |
 | 436F      | M436F                | ? |
@@ -103,14 +104,14 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 438F      | CoinCount            | Number of coins inserted (max is 9) |
 | 4390      | Player1Lives         | Player 1 number of lives |
 | 4391      | Player2Lives         | Player 2 number of lives |
-| 4392      | M4392                | ? |
-| 4393      | M4393                | ? |
-| 4394      | M4394                | ? |
-| 4395      | M4395                | ? |
+| 4392      | M4392                | Ever set to 0 ? |
+| 4393      | Counter93            | Free running counter during playtime at game level 3 |
+| 4394      | M4394                | Temporary storage MSB T1000 or 0 |
+| 4395      | M4395                | Counter for alien movement ? |
 | 4396      | M4396                | ? |
 | 4397      | M4397                | ? |
-| 4398:4399 | M4398                | 16 bit counter (MSB:LSB) actual index for slow print at intro splash |
-| 439A:439B | Counter16            | 16 bit counter (MSB:LSB) and.. |
+| 4398:4399 | Counter98            | 16 bit counter (MSB:LSB) actual index for slow print at intro splash |
+| 439A:439B | Counter9A            | 16 bit counter (MSB:LSB) and.. |
 | 439B      | M439B                | Next index for slow print at intro splash |
 | 439C      | M439C                | ? |
 | 439D      | M439D                | Fist two digits of BCD score value for mothership explosion |
@@ -121,7 +122,7 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 43A2      | GameOrAttract        | Attract mode=0, One player game mode=1, Two players game mode=2 |
 | 43A3      | GameAndDemoOrSplash  | Game and demo for player 1=0, Game for player 2=1, Intro splash=2 |
 | 43A4      | GameState            | Game state=0 - 7 |
-| 43A5      | Counter8             | 8 bit counter (score flash time) |
+| 43A5      | CounterA5            | 8 bit counter (e.g.: score flash time) |
 | 43A6      | ShieldCount          | Counts shield time and controls shield picture. Shields end at C0. |
 | 43A7      | AnimationCounter     | For mothership's antenna and the alien pilot animation |
 | 43A8      | M43A8                | Temporary storage (MSB of pointer to table $1860) |
@@ -136,11 +137,11 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 43B1      | M43B1                | ? |
 | 43B2      | M43B2                | MSB of pointer to table T1C00 or T1D00 or T1F00 |
 | 43B3      | M43B3                | LSB of pointer to table T1C00 or T1D00 or T1F00 |
-| 43B4      | B4Counter            | 8 bit counter (stars scrolling down, aliens fade in time) |
+| 43B4      | CounterB4            | 8 bit counter (stars scrolling down, aliens fade in time) |
 | 43B5      | M43B5                | ? |
 | 43B6      | M43B6                | ? |
 | 43B8      | LevelAndRound        | Bit0 - 3: game level, bit4 - 7: game round |
-| 43B9      | B9Counter            | 8 bit backwards counter |
+| 43B9      | CounterB9            | 8 bit backwards counter |
 | 43BA      | AliensLeft           | Number of aliens left in wave (16 at new) |
 | 43BB      | BirdsLeft            | Number of birds left in wave (8 at new) |
 | 43BC      | M43BC                | ? |
@@ -171,32 +172,32 @@ MAME cheat code "Infinite Shields": set $84 (%1000_0100) at $43C0
 | 43CB      | AbovePlayerBulletY     | One position above player bullet, coordinate Y |
 
 
-## Alien bullets, data structure (grid)
+## Alien and bird bullets, data structure (grid)
 
 >>> memory
 
 |    |     |     |
 | -------- | ------- | ----------------- |
-| 43CC      | AlienBullet0State      | Alien bullet 0, control state register |
-| 43CD      | AlienBullet0Shape      | Alien bullet 0, character code ($58 to $5F) |
-| 43CE      | AlienBullet0X          | Alien bullet 0, coordinate X |
-| 43CF      | AlienBullet0Y          | Alien bullet 0, coordinate Y |
-| 43D0      | AlienBullet1State      | Alien bullet 1, control state register |
-| 43D1      | AlienBullet1Shape      | Alien bullet 1, character code ($58 to $5F) |
-| 43D2      | AlienBullet1X          | Alien bullet 1, coordinate X |
-| 43D3      | AlienBullet1Y          | Alien bullet 1, coordinate Y |
-| 43D4      | AlienBullet2State      | Alien bullet 2, control state register |
-| 43D5      | AlienBullet2Shape      | Alien bullet 2, character code ($58 to $5F) |
-| 43D6      | AlienBullet2X          | Alien bullet 2, coordinate X |
-| 43D7      | AlienBullet2Y          | Alien bullet 2, coordinate Y |
-| 43D8      | AlienBullet3State      | Alien bullet 3, control state register |
-| 43D9      | AlienBullet3Shape      | Alien bullet 3, character code ($58 to $5F) |
-| 43DA      | AlienBullet3X          | Alien bullet 3, coordinate X |
-| 43DB      | AlienBullet3Y          | Alien bullet 3, coordinate Y |
-| 43DC      | AlienBullet4State      | Alien bullet 4, control state register |
-| 43DD      | AlienBullet4Shape      | Alien bullet 4, character code ($58 to $5F) |
-| 43DE      | AlienBullet4X          | Alien bullet 4, coordinate X |
-| 43DF      | AlienBullet4Y          | Alien bullet 4, coordinate Y |
+| 43CC      | EnemyBullet0State      | Enemy bullet 0, control state register |
+| 43CD      | EnemyBullet0Shape      | Enemy bullet 0, character code ($58 to $5F) |
+| 43CE      | EnemyBullet0X          | Enemy bullet 0, coordinate X |
+| 43CF      | EnemyBullet0Y          | Enemy bullet 0, coordinate Y |
+| 43D0      | EnemyBullet1State      | Enemy bullet 1, control state register |
+| 43D1      | EnemyBullet1Shape      | Enemy bullet 1, character code ($58 to $5F) |
+| 43D2      | EnemyBullet1X          | Enemy bullet 1, coordinate X |
+| 43D3      | EnemyBullet1Y          | Enemy bullet 1, coordinate Y |
+| 43D4      | EnemyBullet2State      | Enemy bullet 2, control state register |
+| 43D5      | EnemyBullet2Shape      | Enemy bullet 2, character code ($58 to $5F) |
+| 43D6      | EnemyBullet2X          | Enemy bullet 2, coordinate X |
+| 43D7      | EnemyBullet2Y          | Enemy bullet 2, coordinate Y |
+| 43D8      | EnemyBullet3State      | Enemy bullet 3, control state register |
+| 43D9      | EnemyBullet3Shape      | Enemy bullet 3, character code ($58 to $5F) |
+| 43DA      | EnemyBullet3X          | Enemy bullet 3, coordinate X |
+| 43DB      | EnemyBullet3Y          | Enemy bullet 3, coordinate Y |
+| 43DC      | EnemyBullet4State      | Enemy bullet 4, control state register |
+| 43DD      | EnemyBullet4Shape      | Enemy bullet 4, character code ($58 to $5F) |
+| 43DE      | EnemyBullet4X          | Enemy bullet 4, coordinate X |
+| 43DF      | EnemyBullet4Y          | Enemy bullet 4, coordinate Y |
 
 
 ## Player and player bullets, data structure (screen ram)
@@ -219,32 +220,32 @@ MAME cheat code "Infinite Shields": set $84 (%1000_0100) at $43C0
 | 43EB      | M43EB                   | ? |
 
 
-## Alien bullets, data structure (screen ram)
+## Alien and bird bullets, data structure (screen ram)
 
 >>> memory
 
 |    |     |     |
 | -------- | ------- | ----------------- |
-| 43EC      | OldAlienBullet0MSB      | Old MSB screen ram: Alien bullet 0 |
-| 43ED      | OldAlienBullet0LSB      | Old LSB screen ram: Alien bullet 0 |
-| 43EE      | AlienBullet0MSB         | MSB screen ram: Alien bullet 0 |
-| 43EF      | AlienBullet0LSB         | LSB screen ram: Alien bullet 0 |
-| 43F0      | OldAlienBullet1MSB      | Old MSB screen ram: Alien bullet 1 |
-| 43F1      | OldAlienBullet1LSB      | Old LSB screen ram: Alien bullet 1 |
-| 43F2      | AlienBullet1MSB         | MSB screen ram: Alien bullet 1 |
-| 43F3      | AlienBullet1LSB         | LSB screen ram: Alien bullet 1 |
-| 43F4      | OldAlienBullet2MSB      | Old MSB screen ram: Alien bullet 2 |
-| 43F5      | OldAlienBullet2LSB      | Old LSB screen ram: Alien bullet 2 |
-| 43F6      | AlienBullet2MSB         | MSB screen ram: Alien bullet 2 |
-| 43F7      | AlienBullet2LSB         | LSB screen ram: Alien bullet 2 |
-| 43F8      | OldAlienBullet3MSB      | Old MSB screen ram: Alien bullet 3 |
-| 43F9      | OldAlienBullet3LSB      | Old LSB screen ram: Alien bullet 3 |
-| 43FA      | AlienBullet3MSB         | MSB screen ram: Alien bullet 3 |
-| 43FB      | AlienBullet3LSB         | LSB screen ram: Alien bullet 3 |
-| 43FC      | OldAlienBullet4MSB      | Old MSB screen ram: Alien bullet 4 |
-| 43FD      | OldAlienBullet4LSB      | Old LSB screen ram: Alien bullet 4 |
-| 43FE      | AlienBullet4MSB         | MSB screen ram: Alien bullet 4 |
-| 43FF      | AlienBullet4LSB         | LSB screen ram: Alien bullet 4 |
+| 43EC      | OldEnemyBullet0MSB      | Old MSB screen ram: Enemy bullet 0 |
+| 43ED      | OldEnemyBullet0LSB      | Old LSB screen ram: Enemy bullet 0 |
+| 43EE      | EnemyBullet0MSB         | MSB screen ram: Enemy bullet 0 |
+| 43EF      | EnemyBullet0LSB         | LSB screen ram: Enemy bullet 0 |
+| 43F0      | OldEnemyBullet1MSB      | Old MSB screen ram: Enemy bullet 1 |
+| 43F1      | OldEnemyBullet1LSB      | Old LSB screen ram: Enemy bullet 1 |
+| 43F2      | EnemyBullet1MSB         | MSB screen ram: Enemy bullet 1 |
+| 43F3      | EnemyBullet1LSB         | LSB screen ram: Enemy bullet 1 |
+| 43F4      | OldEnemyBullet2MSB      | Old MSB screen ram: Enemy bullet 2 |
+| 43F5      | OldEnemyBullet2LSB      | Old LSB screen ram: Enemy bullet 2 |
+| 43F6      | EnemyBullet2MSB         | MSB screen ram: Enemy bullet 2 |
+| 43F7      | EnemyBullet2LSB         | LSB screen ram: Enemy bullet 2 |
+| 43F8      | OldEnemyBullet3MSB      | Old MSB screen ram: Enemy bullet 3 |
+| 43F9      | OldEnemyBullet3LSB      | Old LSB screen ram: Enemy bullet 3 |
+| 43FA      | EnemyBullet3MSB         | MSB screen ram: Enemy bullet 3 |
+| 43FB      | EnemyBullet3LSB         | LSB screen ram: Enemy bullet 3 |
+| 43FC      | OldEnemyBullet4MSB      | Old MSB screen ram: Enemy bullet 4 |
+| 43FD      | OldEnemyBullet4LSB      | Old LSB screen ram: Enemy bullet 4 |
+| 43FE      | EnemyBullet4MSB         | MSB screen ram: Enemy bullet 4 |
+| 43FF      | EnemyBullet4LSB         | LSB screen ram: Enemy bullet 4 |
 
 
 ## Background screen 
@@ -519,6 +520,32 @@ For the bird animation during intro splash, bird0 memory is used.
 | 4BED      | M4BED                | Old LSB screen ram adress alienF |
 | 4BEE      | M4BEE                | MSB screen ram adress alienF |
 | 4BEF      | M4BEF                | LSB screen ram adress alienF |
+
+
+## Bird extended storage 
+
+Used for all levels with the 8 birds.
+
+>>> memory
+
+|    |     |     |
+| -------- | ------- | ----------------- |
+| 4BC0      | B4BC0                | ? |
+| 4BC1      | B4BC1                | ? |
+| 4BC2      | B4BC2                | ? |
+| 4BC3      | B4BC3                | ? |
+| 4BC4      | B4BC4                | ? |
+| 4BC5      | B4BC5                | ? |
+| 4BD1      | B4BD1                | ? |
+| 4BD2      | B4BD2                | ? |
+| 4BD3      | B4BD3                | ? |
+| 4BD4      | B4BD4                | ? |
+| 4BD5      | B4BD5                | ? |
+| 4BD6      | B4BD6                | ? |
+| 4BD7      | B4BD7                | ? |
+| 4BED      | B4BED                | ? |
+| 4BEE      | B4BEE                | ? |
+| 4BEF      | B4BEF                | ? |
 
 
 ## Stack 
