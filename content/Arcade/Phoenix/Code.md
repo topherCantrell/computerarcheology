@@ -5322,7 +5322,7 @@ L2476:
 248C: 7E              LD      A,(HL)              
 248D: E6 1E           AND     $1E                 ; 0001_1110
 248F: 80              ADD     A,B                 
-2490: 32 D1 4B        LD      ($4BD1),A           ; {ram.B4BD1}
+2490: 32 D1 4B        LD      ($4BD1),A           ; {ram.M4BD1}
 2493: C9              RET                         
 
 ; not used.
@@ -5604,13 +5604,13 @@ L2600:
 260A: 0F              RRCA                        
 260B: 0F              RRCA                        
 260C: E6 1F           AND     $1F                 
-260E: 21 D2 4B        LD      HL,$4BD2            ; {+ram.B4BD2}
+260E: 21 D2 4B        LD      HL,$4BD2            ; {+ram.M4BD2}
 2611: 77              LD      (HL),A              
 2612: 2C              INC     L                   
-2613: 3A D1 4B        LD      A,($4BD1)           ; {ram.B4BD1}
+2613: 3A D1 4B        LD      A,($4BD1)           ; {ram.M4BD1}
 2616: BE              CP      (HL)                
 2617: DA 50 26        JP      C,$2650             ; {code.L2650}
-261A: 3A D5 4B        LD      A,($4BD5)           ; {ram.B4BD5}
+261A: 3A D5 4B        LD      A,($4BD5)           ; {ram.M4BD5}
 261D: 57              LD      D,A                 
 261E: E6 03           AND     $03                 
 2620: 5F              LD      E,A                 
@@ -5676,7 +5676,7 @@ L267C:
 2681: D2 85 26        JP      NC,$2685            ; {code.L2685} if >= $03
 2684: 04              INC     B                   
 L2685:
-2685: 3A D6 4B        LD      A,($4BD6)           ; {ram.B4BD6}
+2685: 3A D6 4B        LD      A,($4BD6)           ; {ram.M4BD6}
 2688: C6 E0           ADD     $E0                 
 268A: 6F              LD      L,A                 
 268B: 26 3E           LD      H,$3E               
@@ -5696,13 +5696,13 @@ L269D:
 26A2: 14              INC     D                   
 L26A3:
 26A3: 7A              LD      A,D                 
-26A4: 32 D5 4B        LD      ($4BD5),A           ; {ram.B4BD5}
+26A4: 32 D5 4B        LD      ($4BD5),A           ; {ram.M4BD5}
 26A7: C9              RET                         
 ; not used
 26A8: 00              NOP                         
 26A9: 58              LD      E,B                 
 L26AA:
-26AA: 21 D3 4B        LD      HL,$4BD3            ; {+ram.B4BD3}
+26AA: 21 D3 4B        LD      HL,$4BD3            ; {+ram.M4BD3}
 26AD: 7E              LD      A,(HL)              
 L26AE:
 26AE: 35              DEC     (HL)                
@@ -5752,14 +5752,14 @@ L26E5:
 26E8: 6F              LD      L,A                 
 26E9: FE 68           CP      $68                 
 26EB: C2 D9 26        JP      NZ,$26D9            ; {code.L26D9}
-26EE: 3A D2 4B        LD      A,($4BD2)           ; {ram.B4BD2}
+26EE: 3A D2 4B        LD      A,($4BD2)           ; {ram.M4BD2}
 26F1: 82              ADD     A,D                 
 26F2: 83              ADD     A,E                 
 26F3: E6 1F           AND     $1F                 
-26F5: 32 D6 4B        LD      ($4BD6),A           ; {ram.B4BD6}
+26F5: 32 D6 4B        LD      ($4BD6),A           ; {ram.M4BD6}
 26F8: 7B              LD      A,E                 
 26F9: 92              SUB     D                   
-26FA: 32 D7 4B        LD      ($4BD7),A           ; {ram.B4BD7}
+26FA: 32 D7 4B        LD      ($4BD7),A           ; {ram.M4BD7}
 26FD: C9              RET                         
 
 26FE: FF FF
@@ -7499,7 +7499,7 @@ L3800:
 3806: 3A E6 43        LD      A,($43E6)           ; {ram.AbovePlayerBulletMSB}
 3809: C6 08           ADD     $08                 
 380B: 57              LD      D,A                 
-380C: 3A D2 4B        LD      A,($4BD2)           ; {ram.B4BD2}
+380C: 3A D2 4B        LD      A,($4BD2)           ; {ram.M4BD2}
 380F: 5F              LD      E,A                 
 3810: 3A E7 43        LD      A,($43E7)           ; {ram.AbovePlayerBulletLSB}
 3813: E6 E0           AND     $E0                 
@@ -7705,7 +7705,7 @@ L3923:
 392F: FF
 ; 
 L3930:
-3930: 3A D2 4B        LD      A,($4BD2)           ; {ram.B4BD2}
+3930: 3A D2 4B        LD      A,($4BD2)           ; {ram.M4BD2}
 3933: E6 1E           AND     $1E                 
 3935: C6 C0           ADD     $C0                 ; LSB of table T3DC0
 3937: 6F              LD      L,A                 
@@ -7751,7 +7751,7 @@ L395C:
 396C: 2D              DEC     L                   
 396D: 2D              DEC     L                   
 396E: 2D              DEC     L                   
-396F: 3A D2 4B        LD      A,($4BD2)           ; {ram.B4BD2}
+396F: 3A D2 4B        LD      A,($4BD2)           ; {ram.M4BD2}
 3972: 86              ADD     A,(HL)              
 3973: E6 1F           AND     $1F                 
 3975: 07              RLCA                        ; Multiply by 8 ..
@@ -7764,13 +7764,13 @@ L395C:
 397E: FF FF
 ; 
 L3980:
-3980: 3A D2 4B        LD      A,($4BD2)           ; {ram.B4BD2}
+3980: 3A D2 4B        LD      A,($4BD2)           ; {ram.M4BD2}
 3983: D6 0C           SUB     $0C                 
 3985: D8              RET     C                   
 3986: FE 10           CP      $10                 
 3988: D0              RET     NC                  
 3989: 21 C4 43        LD      HL,$43C4            ; {+ram.PlayerBulletState}
-398C: 11 C0 4B        LD      DE,$4BC0            ; {+ram.B4BC0}
+398C: 11 C0 4B        LD      DE,$4BC0            ; {+ram.M4BC0}
 398F: 06 04           LD      B,$04               
 3991: CD E0 05        CALL    $05E0               ; {code.CopyBbytesHLtoDE}
 3994: 2E E6           LD      L,$E6               ; AbovePlayerBulletMSB
@@ -7999,7 +7999,7 @@ L3AD0:
 3AE4: 34              INC     (HL)                
 3AE5: A7              AND     A                   ; updates the zero flag
 3AE6: CA F8 3A        JP      Z,$3AF8             ; {code.L3AF8}
-3AE9: 3A D6 4B        LD      A,($4BD6)           ; {ram.B4BD6}
+3AE9: 3A D6 4B        LD      A,($4BD6)           ; {ram.M4BD6}
 3AEC: C6 E0           ADD     $E0                 ; LSB of table T3DE0
 3AEE: 5F              LD      E,A                 
 3AEF: 16 3D           LD      D,$3D               ; MSB of table T3DE0
