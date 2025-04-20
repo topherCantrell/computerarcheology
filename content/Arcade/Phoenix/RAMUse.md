@@ -106,8 +106,8 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 4391      | Player2Lives         | Player 2 number of lives |
 | 4392      | M4392                | Ever set to 0 ? |
 | 4393      | Counter93            | Free running counter during playtime at game level 3 |
-| 4394      | M4394                | Temporary storage MSB T1000 or 0 |
-| 4395      | M4395                | Counter for alien movement ? |
+| 4394      | M4394                | Start value list pointer for alien movement MSB |
+| 4395      | M4395                | Start value list pointer for alien movement LSB |
 | 4396      | M4396                | ? |
 | 4397      | M4397                | ? |
 | 4398:4399 | Counter98            | 16 bit counter (MSB:LSB) actual index for slow print at intro splash |
