@@ -1,0 +1,4351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScappleDocument Version="1.2" ID="4F41762A-562A-4A37-8D21-83B4ABFE4BAA">
+  <Notes>
+    <Note ID="403" FontSize="12.0" Position="1194.3,102.3" Width="100.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0050
+005b: call $006b
+0063: call $006b 
+006a</String>
+      <ConnectedNoteIDs>404,973,1157</ConnectedNoteIDs>
+    </Note>
+    <Note ID="404" FontSize="12.0" Position="1292.5,167.6" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>006b
+0077</String>
+      <ConnectedNoteIDs>403,1158</ConnectedNoteIDs>
+    </Note>
+    <Note ID="406" FontSize="12.0" Position="1169.8,1473.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>00bb
+00c3</String>
+      <ConnectedNoteIDs>628,726,940,1160</ConnectedNoteIDs>
+    </Note>
+    <Note ID="409" FontSize="12.0" Position="219.5,307.6" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0140: call $03a0
+0143: call $0080
+0146: call $0380
+0158: call $05d8
+016F: call $0080
+0172</String>
+      <ConnectedNoteIDs>425,434,443,570,577,820,940,1162</ConnectedNoteIDs>
+    </Note>
+    <Note ID="410" FontSize="12.0" Position="1491.4,545.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0173
+0194</String>
+      <ConnectedNoteIDs>590,1165</ConnectedNoteIDs>
+    </Note>
+    <Note ID="411" FontSize="12.0" Position="13.2,276.6" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0196
+01AB: call $0206
+01C1: call $0217
+01ca</String>
+      <ConnectedNoteIDs>416,418,546,971,1167</ConnectedNoteIDs>
+    </Note>
+    <Note ID="412" FontSize="12.0" Position="77.4,467.2" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>01d0
+01D9: call $01ed
+01e0</String>
+      <ConnectedNoteIDs>414,425,570,777,827,973,1226</ConnectedNoteIDs>
+    </Note>
+    <Note ID="414" FontSize="12.0" Position="231.1,149.0" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>01ed
+01F0: call $0217
+01f7</String>
+      <ConnectedNoteIDs>412,418,1173</ConnectedNoteIDs>
+    </Note>
+    <Note ID="416" FontSize="12.0" Position="102.5,362.8" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0206
+020e</String>
+      <ConnectedNoteIDs>411,1168</ConnectedNoteIDs>
+    </Note>
+    <Note ID="418" FontSize="12.0" Position="550.3,131.2" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0217
+021d</String>
+      <ConnectedNoteIDs>411,414,704,772,796,797,832,921,962,963,966,969,1169</ConnectedNoteIDs>
+    </Note>
+    <Note ID="421" FontSize="12.0" Position="1498.2,436.6" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0258
+025f</String>
+      <ConnectedNoteIDs>590,971,1179</ConnectedNoteIDs>
+    </Note>
+    <Note ID="422" FontSize="12.0" Position="1212.3,459.6" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0260: call $0270
+0264: call $0277
+0267</String>
+      <ConnectedNoteIDs>423,424,971,1177</ConnectedNoteIDs>
+    </Note>
+    <Note ID="423" FontSize="12.0" Position="1261.3,554.9" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0270
+0276</String>
+      <ConnectedNoteIDs>422,590,1184</ConnectedNoteIDs>
+    </Note>
+    <Note ID="424" FontSize="12.0" Position="1157.1,503.1" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0277
+027d</String>
+      <ConnectedNoteIDs>422,1185</ConnectedNoteIDs>
+    </Note>
+    <Note ID="425" FontSize="12.0" Position="769.3,172.4" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0288: call $0140
+0290: call $01d0
+02ac</String>
+      <ConnectedNoteIDs>409,412,976,1155</ConnectedNoteIDs>
+    </Note>
+    <Note ID="426" FontSize="12.0" Position="567.9,529.0" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>02cb
+02DF: call $0236
+02E9: call $00c4
+02ec</String>
+      <ConnectedNoteIDs>577,816,939,1183</ConnectedNoteIDs>
+    </Note>
+    <Note ID="427" FontSize="12.0" Position="573.5,626.1" Width="109.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>02f0
+02F6: call $0314
+02f9: (cnc 0320)
+0300: call $0314
+0303: (cnc 0320)
+030D: call $00c4
+0310</String>
+      <ConnectedNoteIDs>428,577,819,939,1187</ConnectedNoteIDs>
+    </Note>
+    <Note ID="428" FontSize="12.0" Position="600.3,739.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0314
+031e</String>
+      <ConnectedNoteIDs>427,875</ConnectedNoteIDs>
+    </Note>
+    <Note ID="429" FontSize="12.0" Position="631.7,821.9" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>032e
+0341: call $00c4
+034B: call $00c4
+034e</String>
+      <ConnectedNoteIDs>577,939,1189</ConnectedNoteIDs>
+    </Note>
+    <Note ID="430" FontSize="12.0" Position="745.7,712.3" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0350
+0367
+0376</String>
+      <ConnectedNoteIDs>577,774,876,1003,1190,1191</ConnectedNoteIDs>
+    </Note>
+    <Note ID="434" FontSize="12.0" Position="499.7,1207.1" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>03a0
+03af</String>
+      <ConnectedNoteIDs>409,859,1035,1163</ConnectedNoteIDs>
+    </Note>
+    <Note ID="436" FontSize="12.0" Position="441.0,1338.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>041e
+042d</String>
+      <ConnectedNoteIDs>709,956,1192</ConnectedNoteIDs>
+    </Note>
+    <Note ID="437" FontSize="12.0" Position="110.0,978.8" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0460
+049d</String>
+      <ConnectedNoteIDs>776,824,949,1196</ConnectedNoteIDs>
+    </Note>
+    <Note ID="440" FontSize="12.0" Position="249.7,1383.9" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0532
+0537: call $05d8
+053A: call $05ec
+053D: call $0650
+0540: call $0610
+0543</String>
+      <ConnectedNoteIDs>443,445,447,448,956,1199</ConnectedNoteIDs>
+    </Note>
+    <Note ID="441" FontSize="12.0" Position="65.0,1475.4" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0547
+054F: call $05e0
+0557: call $05d8
+055a</String>
+      <ConnectedNoteIDs>443,444,956,1200</ConnectedNoteIDs>
+    </Note>
+    <Note ID="442" FontSize="12.0" Position="12.0,1578.4" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0580
+0592: call $05e0
+0595</String>
+      <ConnectedNoteIDs>444,956,1180</ConnectedNoteIDs>
+    </Note>
+    <Note ID="443" FontSize="12.0" Position="201.4,1623.8" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>05d8
+05df</String>
+      <ConnectedNoteIDs>409,440,441,601,891,1166</ConnectedNoteIDs>
+    </Note>
+    <Note ID="444" FontSize="12.0" Position="97.6,1667.8" Width="55.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>05e0
+05e8</String>
+      <ConnectedNoteIDs>441,442,894,1201</ConnectedNoteIDs>
+    </Note>
+    <Note ID="445" FontSize="12.0" Position="341.1,1630.5" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>05ec
+05fa
+060d</String>
+      <ConnectedNoteIDs>440,711,1202</ConnectedNoteIDs>
+    </Note>
+    <Note ID="447" FontSize="12.0" Position="258.6,1717.7" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0610
+0638</String>
+      <ConnectedNoteIDs>440,1203</ConnectedNoteIDs>
+    </Note>
+    <Note ID="448" FontSize="12.0" Position="373.8,1552.7" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0650
+066f</String>
+      <ConnectedNoteIDs>440,1205</ConnectedNoteIDs>
+    </Note>
+    <Note ID="449" FontSize="12.0" Position="450.1,1725.1" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>067a
+06ac</String>
+      <ConnectedNoteIDs>617,858,1204</ConnectedNoteIDs>
+    </Note>
+    <Note ID="546" FontSize="12.0" Position="101.2,207.7" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0078: call $0196
+007b: (jmp 06f0)</String>
+      <ConnectedNoteIDs>411,617,971,1159</ConnectedNoteIDs>
+      <PointsToNoteIDs>617</PointsToNoteIDs>
+    </Note>
+    <Note ID="570" FontSize="12.0" Position="147.4,583.8" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>01E1: call $0140
+01e4
+01e9: (jmp 01d0)</String>
+      <ConnectedNoteIDs>409,412,778,971,1178</ConnectedNoteIDs>
+      <PointsToNoteIDs>412</PointsToNoteIDs>
+    </Note>
+    <Note ID="577" FontSize="12.0" Position="713.7,497.9" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>02AD: call $02cb
+02B0: call $02f0
+02B3: call $032e
+02B6: call $0350
+02B9: call $0140
+02C0: call $0140
+02c7</String>
+      <ConnectedNoteIDs>409,426,427,429,430,1186</ConnectedNoteIDs>
+    </Note>
+    <Note ID="590" FontSize="12.0" Position="1352.7,468.9" Width="100.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>03b0
+03B3: call $0270
+03B9: call $0258
+03bc: (jz 03eb)
+03C2: call $0270
+03C8: call $0258
+03cb: (jz 03e2)
+03CE: call $0173
+03d9: (jmp 0400)
+03dc: (jmp 0400)</String>
+      <ConnectedNoteIDs>410,421,423,821,822,944,971,1181</ConnectedNoteIDs>
+      <PointsToNoteIDs>944</PointsToNoteIDs>
+    </Note>
+    <Note ID="599" FontSize="12.0" Position="25.7,1173.5" Width="94.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>04e6
+04F6: call $04fb
+04f9</String>
+      <ConnectedNoteIDs>600,953</ConnectedNoteIDs>
+    </Note>
+    <Note ID="600" FontSize="12.0" Position="54.4,1235.7" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>04fb
+04FE: call $0210
+0505</String>
+      <ConnectedNoteIDs>599</ConnectedNoteIDs>
+    </Note>
+    <Note ID="601" FontSize="12.0" Position="121.3,1323.4" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0506
+050B: call $05d8
+0514</String>
+      <ConnectedNoteIDs>443,956</ConnectedNoteIDs>
+    </Note>
+    <Note ID="616" FontSize="12.0" Position="775.0,1601.0" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>06b0
+06E4: call $07dc
+06e7</String>
+      <ConnectedNoteIDs>617,969</ConnectedNoteIDs>
+    </Note>
+    <Note ID="617" FontSize="12.0" Position="632.2,1861.1" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.0 0.0 0.0</TextColor>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>06F0: call $067a
+06F3: call $2040
+06f6: (jmp 06b0)</String>
+      <ConnectedNoteIDs>449,546,616,711,750,1146,1231</ConnectedNoteIDs>
+      <PointsToNoteIDs>616</PointsToNoteIDs>
+    </Note>
+    <Note ID="623" FontSize="12.0" Position="194.0,1954.3" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>085a
+0871</String>
+      <ConnectedNoteIDs>711,1229</ConnectedNoteIDs>
+    </Note>
+    <Note ID="625" FontSize="12.0" Position="1387.0,1354.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0886
+088b
+0897</String>
+      <ConnectedNoteIDs>714,733,1233</ConnectedNoteIDs>
+    </Note>
+    <Note ID="628" FontSize="12.0" Position="1332.0,1662.0" Width="102.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>08c4
+08CA: jz   $0aa0
+08D6: call $00bb
+08ED: call $0900
+08F3: jmp  $0926</String>
+      <ConnectedNoteIDs>406,719,724,725,985,1232</ConnectedNoteIDs>
+      <PointsToNoteIDs>725</PointsToNoteIDs>
+    </Note>
+    <Note ID="672" FontSize="12.0" Position="1331.6,3863.8" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3074
+30A1: call $30aa
+30A8</String>
+      <ConnectedNoteIDs>673,883,1078</ConnectedNoteIDs>
+    </Note>
+    <Note ID="673" FontSize="12.0" Position="1207.9,3875.1" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>30aa
+30b8</String>
+      <ConnectedNoteIDs>672,866,887,890,919,1119</ConnectedNoteIDs>
+    </Note>
+    <Note ID="674" FontSize="12.0" Position="1509.2,3487.6" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>30da
+30df</String>
+      <ConnectedNoteIDs>1077</ConnectedNoteIDs>
+    </Note>
+    <Note ID="675" FontSize="12.0" Position="1581.7,3780.7" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3112
+3122</String>
+      <ConnectedNoteIDs>883</ConnectedNoteIDs>
+    </Note>
+    <Note ID="678" FontSize="12.0" Position="614.5,3655.4" Width="96.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3474:
+3478: call $34c0
+3485</String>
+      <ConnectedNoteIDs>682,1067,1069</ConnectedNoteIDs>
+    </Note>
+    <Note ID="681" FontSize="12.0" Position="886.7,3827.1" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>34AA
+34AE: call $35b0
+34BB</String>
+      <ConnectedNoteIDs>688,1067,1070</ConnectedNoteIDs>
+    </Note>
+    <Note ID="682" FontSize="12.0" Position="495.0,3812.0" Width="43.6" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>34C0
+34DE
+3519</String>
+      <ConnectedNoteIDs>678,857,916,1081,1245</ConnectedNoteIDs>
+    </Note>
+    <Note ID="688" FontSize="12.0" Position="914.8,3520.0" Width="39.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>35B0
+35DB</String>
+      <ConnectedNoteIDs>681,917</ConnectedNoteIDs>
+    </Note>
+    <Note ID="689" FontSize="12.0" Position="1500.1,3236.2" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3758:  
+375C: jz   $37cc 
+3777: call $3796 
+3792: jmp  $3540</String>
+      <ConnectedNoteIDs>690,748,801,1013</ConnectedNoteIDs>
+      <PointsToNoteIDs>1013</PointsToNoteIDs>
+    </Note>
+    <Note ID="690" FontSize="12.0" Position="1540.0,3143.4" Width="104.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3796
+37AA: jmp  $3540</String>
+      <ConnectedNoteIDs>689,1013</ConnectedNoteIDs>
+      <PointsToNoteIDs>1013</PointsToNoteIDs>
+    </Note>
+    <Note ID="691" FontSize="12.0" Position="870.0,4030.7" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3800
+3841: jmp  $391c</String>
+      <ConnectedNoteIDs>695,1067,1127</ConnectedNoteIDs>
+      <PointsToNoteIDs>1127</PointsToNoteIDs>
+    </Note>
+    <Note ID="693" FontSize="12.0" Position="637.9,3755.3" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3930
+393F: call $3a00
+394D: call $395c
+3959</String>
+      <ConnectedNoteIDs>694,696,1067,1069</ConnectedNoteIDs>
+    </Note>
+    <Note ID="694" FontSize="12.0" Position="494.9,3659.1" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>395C
+397B: jmp  $25b7</String>
+      <ConnectedNoteIDs>693,1054</ConnectedNoteIDs>
+      <PointsToNoteIDs>1054</PointsToNoteIDs>
+    </Note>
+    <Note ID="695" FontSize="12.0" Position="821.1,4105.8" Width="108.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3980:
+3991: call $05e0
+3998: call $05e0
+39A2: call $05e0
+39C3: call $3800
+339E3: call $05e0 
+39EA:  jmp  $05e0</String>
+      <ConnectedNoteIDs>691,1062,1063,1067</ConnectedNoteIDs>
+      <PointsToNoteIDs>1063</PointsToNoteIDs>
+    </Note>
+    <Note ID="696" FontSize="12.0" Position="688.7,3833.4" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3A00
+3A0F</String>
+      <ConnectedNoteIDs>693</ConnectedNoteIDs>
+    </Note>
+    <Note ID="699" FontSize="12.0" Position="258.2,4596.9" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3B02
+3B19</String>
+      <ConnectedNoteIDs>860</ConnectedNoteIDs>
+    </Note>
+    <Note ID="700" FontSize="12.0" Position="289.2,4246.6" Width="38.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3B1B
+3B31</String>
+      <ConnectedNoteIDs>1092</ConnectedNoteIDs>
+    </Note>
+    <Note ID="704" FontSize="12.0" Position="597.1,27.1" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0780: call $0217
+0786</String>
+      <ConnectedNoteIDs>418</ConnectedNoteIDs>
+    </Note>
+    <Note ID="709" FontSize="12.0" Position="354.7,1224.6" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>07f0
+07F6: call $0380
+07f9: (jmp 041e)</String>
+      <ConnectedNoteIDs>436,820,953,1224</ConnectedNoteIDs>
+      <PointsToNoteIDs>436</PointsToNoteIDs>
+    </Note>
+    <Note ID="711" FontSize="12.0" Position="309.0,1929.0" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0834: call $06f0
+083F: call $085a
+0842: call $05fa
+0845: call $0a50
+0848
+0855:</String>
+      <ConnectedNoteIDs>445,617,623,730,1137,1230</ConnectedNoteIDs>
+    </Note>
+    <Note ID="714" FontSize="12.0" Position="1200.5,1195.3" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0876: call $0700
+0879: call $0886
+087C: call $08a0
+087F: call $09a0
+0882: call $097a</String>
+      <ConnectedNoteIDs>625,719,727,728,948,1227</ConnectedNoteIDs>
+    </Note>
+    <Note ID="719" FontSize="12.0" Position="1325.7,1523.8" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>08A0: call $08c4
+08A6: call $0930
+08B4: call $0930
+08b7</String>
+      <ConnectedNoteIDs>628,714,726</ConnectedNoteIDs>
+    </Note>
+    <Note ID="724" FontSize="12.0" Position="1398.9,1766.1" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0900
+0916
+0921</String>
+      <ConnectedNoteIDs>628</ConnectedNoteIDs>
+    </Note>
+    <Note ID="725" FontSize="12.0" Position="1198.1,1796.7" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0926
+092e</String>
+      <ConnectedNoteIDs>628,726</ConnectedNoteIDs>
+    </Note>
+    <Note ID="726" FontSize="12.0" Position="1105.6,1665.0" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0930
+0939: call $00bb
+0959: call $0926
+0961</String>
+      <ConnectedNoteIDs>406,719,725,1228</ConnectedNoteIDs>
+    </Note>
+    <Note ID="727" FontSize="12.0" Position="1350.3,1241.4" Width="45.4" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>097a
+0991</String>
+      <ConnectedNoteIDs>714</ConnectedNoteIDs>
+    </Note>
+    <Note ID="728" FontSize="12.0" Position="1204.4,1881.7" Width="104.9" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>$09a0
+09A6: call $09ba
+09b5</String>
+      <ConnectedNoteIDs>714,729,956,1237</ConnectedNoteIDs>
+    </Note>
+    <Note ID="729" FontSize="12.0" Position="1186.3,1988.2" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>09ba
+09d1</String>
+      <ConnectedNoteIDs>728,731,735,1234</ConnectedNoteIDs>
+    </Note>
+    <Note ID="730" FontSize="12.0" Position="159.2,2030.8" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0a50
+0A57: call $0718
+0a67</String>
+      <ConnectedNoteIDs>711,837,1000,1049,1235</ConnectedNoteIDs>
+    </Note>
+    <Note ID="731" FontSize="12.0" Position="819.9,1915.5" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0a6c
+0A87: call $09ba
+0a99</String>
+      <ConnectedNoteIDs>729,845,852,956,1238</ConnectedNoteIDs>
+    </Note>
+    <Note ID="733" FontSize="12.0" Position="259.6,2252.0" Width="99.6" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0C40
+0C45: call $088b 
+0C48: call $0c56
+0C4B: call $0c6b
+0C4E: call $0cd8
+0C51</String>
+      <ConnectedNoteIDs>625,735,739,844,854,913,997,1045,1047</ConnectedNoteIDs>
+    </Note>
+    <Note ID="735" FontSize="12.0" Position="569.4,2198.3" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0C6B:
+0C71: call $09ba
+0C80</String>
+      <ConnectedNoteIDs>729,733</ConnectedNoteIDs>
+    </Note>
+    <Note ID="736" FontSize="12.0" Position="711.8,2282.1" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0C84
+0C97: jnc  $096e 
+0C9B: call $0cb4
+0CAC: jnc  $096e
+0CAF</String>
+      <ConnectedNoteIDs>737,997,998</ConnectedNoteIDs>
+    </Note>
+    <Note ID="737" FontSize="12.0" Position="861.4,2379.8" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0cb4
+0cc3</String>
+      <ConnectedNoteIDs>736</ConnectedNoteIDs>
+    </Note>
+    <Note ID="738" FontSize="12.0" Position="619.3,2416.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0cc4
+0cd3</String>
+      <ConnectedNoteIDs>795</ConnectedNoteIDs>
+    </Note>
+    <Note ID="739" FontSize="12.0" Position="130.8,2363.6" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0CD8
+0CDF: call $0718
+0CEF</String>
+      <ConnectedNoteIDs>733,999</ConnectedNoteIDs>
+    </Note>
+    <Note ID="743" FontSize="12.0" Position="791.8,2498.3" Width="105.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0D86
+0D91: cz   $0dde
+0DA8: jc   $0dbb
+0DAC: jc   $0dcc
+0DB5: jmp  $0dd2</String>
+      <ConnectedNoteIDs>791,1018,1019,1025</ConnectedNoteIDs>
+      <PointsToNoteIDs>1019</PointsToNoteIDs>
+    </Note>
+    <Note ID="744" FontSize="12.0" Position="570.6,2662.3" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0DF0
+0DF6: call $0e10</String>
+      <ConnectedNoteIDs>745,834</ConnectedNoteIDs>
+    </Note>
+    <Note ID="745" FontSize="12.0" Position="1030.1,2651.6" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0E10  
+0E20: jnc  $0e39
+0E36: jmp  $0e70</String>
+      <ConnectedNoteIDs>744,793,1021</ConnectedNoteIDs>
+      <PointsToNoteIDs>1021</PointsToNoteIDs>
+    </Note>
+    <Note ID="746" FontSize="12.0" Position="1530.7,2454.0" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0F00:
+0F11: call $0f56
+0F28: cnz  $0f38
+0F33</String>
+      <ConnectedNoteIDs>747,795,1044,1045</ConnectedNoteIDs>
+    </Note>
+    <Note ID="747" FontSize="12.0" Position="1451.8,2625.9" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0f56
+0F60: jc   $0cf4
+0F6A: call $0217
+0F71</String>
+      <ConnectedNoteIDs>746,798,1005,1017</ConnectedNoteIDs>
+    </Note>
+    <Note ID="748" FontSize="12.0" Position="1289.8,2992.3" Width="104.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0FC0
+0FC3: call $0fd8
+0FC9: call $0fd8
+0FCF: call $3758
+0FD5: jmp  $3758</String>
+      <ConnectedNoteIDs>689,749,801,839,843,850,854,1011</ConnectedNoteIDs>
+      <PointsToNoteIDs>689</PointsToNoteIDs>
+    </Note>
+    <Note ID="749" FontSize="12.0" Position="1454.3,2947.1" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0FD8
+0FE3: call $0210
+0FF4: jmp  $3540</String>
+      <ConnectedNoteIDs>748,1013,1020</ConnectedNoteIDs>
+      <PointsToNoteIDs>1013</PointsToNoteIDs>
+    </Note>
+    <Note ID="750" FontSize="12.0" Position="684.8,2083.9" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2040
+206d</String>
+      <ConnectedNoteIDs>617,1243</ConnectedNoteIDs>
+    </Note>
+    <Note ID="751" FontSize="12.0" Position="1558.3,2346.1" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>211C
+212C</String>
+      <ConnectedNoteIDs>1038</ConnectedNoteIDs>
+    </Note>
+    <Note ID="752" FontSize="12.0" Position="395.3,3012.4" Width="91.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2351
+2377: jz  $2398
+237A</String>
+      <ConnectedNoteIDs>755,864,1029</ConnectedNoteIDs>
+    </Note>
+    <Note ID="754" FontSize="12.0" Position="430.1,3715.7" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2495
+249f</String>
+      <ConnectedNoteIDs>862</ConnectedNoteIDs>
+    </Note>
+    <Note ID="755" FontSize="12.0" Position="378.1,2942.2" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>24A0:
+24AE: call $2351
+24B9: jmp  $24f2</String>
+      <ConnectedNoteIDs>752,834,1117</ConnectedNoteIDs>
+      <PointsToNoteIDs>1117</PointsToNoteIDs>
+    </Note>
+    <Note ID="756" FontSize="12.0" Position="1121.5,3124.6" Width="113.8" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>24C4
+24CB: jc   $06f0
+24CE: call $24e0
+24D8: jz   $22fa
+24DB: jmp  $2322</String>
+      <ConnectedNoteIDs>757,839,843,850,854,1052,1145</ConnectedNoteIDs>
+    </Note>
+    <Note ID="757" FontSize="12.0" Position="1069.7,3231.5" Width="105.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>24E0              
+24EC: jmp  $067a</String>
+      <ConnectedNoteIDs>756,1064</ConnectedNoteIDs>
+      <PointsToNoteIDs>1064</PointsToNoteIDs>
+    </Note>
+    <Note ID="758" FontSize="12.0" Position="585.2,3173.8" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2560:
+2589: call $2596
+2592: jnz  $2588
+2595</String>
+      <ConnectedNoteIDs>842,1045,1054</ConnectedNoteIDs>
+    </Note>
+    <Note ID="760" FontSize="12.0" Position="334.5,3490.4" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2600
+2617: jc   $2650
+2639
+2643: jnc  $26d0
+2646: call $2668
+2649: jmp  $26aa</String>
+      <ConnectedNoteIDs>761,1065,1067,1074-1076</ConnectedNoteIDs>
+      <PointsToNoteIDs>1065</PointsToNoteIDs>
+    </Note>
+    <Note ID="761" FontSize="12.0" Position="450.3,3472.5" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2668
+26a7</String>
+      <ConnectedNoteIDs>760</ConnectedNoteIDs>
+    </Note>
+    <Note ID="763" FontSize="12.0" Position="155.9,3615.3" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2748
+275C: call $0220
+2764</String>
+      <ConnectedNoteIDs>1071,1073</ConnectedNoteIDs>
+    </Note>
+    <Note ID="771" FontSize="12.0" Position="150.5,19.0" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0AA5: call $0210</String>
+      <ConnectedNoteIDs>941</ConnectedNoteIDs>
+    </Note>
+    <Note ID="772" FontSize="12.0" Position="463.6,78.8" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0AE2: call $0217</String>
+      <ConnectedNoteIDs>418</ConnectedNoteIDs>
+    </Note>
+    <Note ID="773" FontSize="12.0" Position="22.5,62.4" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0AF9: call $0210</String>
+      <ConnectedNoteIDs>941</ConnectedNoteIDs>
+    </Note>
+    <Note ID="774" FontSize="12.0" Position="744.0,801.1" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0B22: call $0367</String>
+      <ConnectedNoteIDs>430</ConnectedNoteIDs>
+    </Note>
+    <Note ID="775" FontSize="12.0" Position="1301.8,2115.6" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0B48 call $0ad6 
+0B5A</String>
+      <ConnectedNoteIDs>983,985,1241</ConnectedNoteIDs>
+    </Note>
+    <Note ID="776" FontSize="12.0" Position="4.9,985.2" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0B91: call $0460</String>
+      <ConnectedNoteIDs>437</ConnectedNoteIDs>
+    </Note>
+    <Note ID="777" FontSize="12.0" Position="21.0,425.0" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0B95: call $01d0</String>
+      <ConnectedNoteIDs>412</ConnectedNoteIDs>
+    </Note>
+    <Note ID="778" FontSize="12.0" Position="22.2,729.8" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0B98: call $01e4</String>
+      <ConnectedNoteIDs>570</ConnectedNoteIDs>
+    </Note>
+    <Note ID="779" FontSize="12.0" Position="1540.6,3049.7" Width="102.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0BDC: call $3538</String>
+      <ConnectedNoteIDs>1013</ConnectedNoteIDs>
+    </Note>
+    <Note ID="780" FontSize="12.0" Position="1544.4,3088.9" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0BE5: call $3528</String>
+      <ConnectedNoteIDs>1013</ConnectedNoteIDs>
+    </Note>
+    <Note ID="781" FontSize="12.0" Position="1540.1,3013.4" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0BEE: call $3548</String>
+      <ConnectedNoteIDs>1013</ConnectedNoteIDs>
+    </Note>
+    <Note ID="790" FontSize="12.0" Position="137.6,2634.4" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0D1C
+0D22: call $0d30
+0D2E</String>
+      <ConnectedNoteIDs>839,850,1148</ConnectedNoteIDs>
+    </Note>
+    <Note ID="791" FontSize="12.0" Position="650.6,2524.8" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0D70:
+0D76: call $0d86
+0D83</String>
+      <ConnectedNoteIDs>743,842,850</ConnectedNoteIDs>
+    </Note>
+    <Note ID="793" FontSize="12.0" Position="1010.0,2544.2" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0E02
+0E08: call $0e10
+0E0B</String>
+      <ConnectedNoteIDs>745,1023</ConnectedNoteIDs>
+    </Note>
+    <Note ID="795" FontSize="12.0" Position="493.8,2456.7" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0F38
+0F46: call $0cc4
+0F4E: jmp  $0ead</String>
+      <ConnectedNoteIDs>738,746,1022</ConnectedNoteIDs>
+      <PointsToNoteIDs>1022</PointsToNoteIDs>
+    </Note>
+    <Note ID="796" FontSize="12.0" Position="689.7,81.5" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0F6A: call $0217</String>
+      <ConnectedNoteIDs>418</ConnectedNoteIDs>
+    </Note>
+    <Note ID="797" FontSize="12.0" Position="359.0,104.8" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0F79: call $0217</String>
+      <ConnectedNoteIDs>418</ConnectedNoteIDs>
+    </Note>
+    <Note ID="798" FontSize="12.0" Position="1279.1,2509.2" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0F74
+0F79: call $0217
+0F80: call $0f56
+0F97: cnz  $0fa6
+0FA2</String>
+      <ConnectedNoteIDs>747,1026,1027</ConnectedNoteIDs>
+    </Note>
+    <Note ID="801" FontSize="12.0" Position="1462.5,3211.5" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>3758</String>
+      <ConnectedNoteIDs>689,748</ConnectedNoteIDs>
+    </Note>
+    <Note ID="802" FontSize="12.0" Position="26.5,27.1" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0FE3: call $0210</String>
+      <ConnectedNoteIDs>941</ConnectedNoteIDs>
+    </Note>
+    <Note ID="809" FontSize="12.0" Position="1546.0,167.0" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0bca
+0bdc: call $3538
+0be5: call $3528
+0bee: call $3548
+0bf1</String>
+      <ConnectedNoteIDs>971,1014-1016,1176</ConnectedNoteIDs>
+    </Note>
+    <Note ID="816" FontSize="12.0" Position="497.6,546.8" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0236
+0252</String>
+      <ConnectedNoteIDs>426</ConnectedNoteIDs>
+    </Note>
+    <Note ID="819" FontSize="12.0" Position="649.4,750.9" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0320
+032a</String>
+      <ConnectedNoteIDs>427</ConnectedNoteIDs>
+    </Note>
+    <Note ID="820" FontSize="12.0" Position="786.1,1291.9" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0380
+039d</String>
+      <ConnectedNoteIDs>409,709,867,987,1123,1124,1164</ConnectedNoteIDs>
+    </Note>
+    <Note ID="821" FontSize="12.0" Position="1446.6,642.0" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>03e2
+03e8: (jmp 03f1) </String>
+      <ConnectedNoteIDs>590,822,1194</ConnectedNoteIDs>
+      <PointsToNoteIDs>822</PointsToNoteIDs>
+    </Note>
+    <Note ID="822" FontSize="12.0" Position="1374.8,666.4" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>03eb
+03f1
+03fd</String>
+      <ConnectedNoteIDs>590,821</ConnectedNoteIDs>
+    </Note>
+    <Note ID="824" FontSize="12.0" Position="11.5,1103.0" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>04a0
+04A7: call $0460
+04aa</String>
+      <ConnectedNoteIDs>437,949,1225</ConnectedNoteIDs>
+    </Note>
+    <Note ID="825" FontSize="12.0" Position="411.3,1575.3" Width="45.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0670 ?</String>
+    </Note>
+    <Note ID="827" FontSize="12.0" Position="21.2,587.6" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>06e8
+06ed: (jmp 01d0)</String>
+      <ConnectedNoteIDs>412</ConnectedNoteIDs>
+      <PointsToNoteIDs>412</PointsToNoteIDs>
+    </Note>
+    <Note ID="832" FontSize="12.0" Position="688.4,111.0" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>1EE9: call $0217</String>
+      <ConnectedNoteIDs>418</ConnectedNoteIDs>
+    </Note>
+    <Note ID="834" FontSize="12.0" Position="542.2,2977.1" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2000: call $0876
+2003: call $0df0
+2006: call $24a0
+201A: jnc  $2130 
+2027: jz   $2130 
+202A: jmp  $2146</String>
+      <ConnectedNoteIDs>744,755,993,1042,1043,1144</ConnectedNoteIDs>
+      <PointsToNoteIDs>1043</PointsToNoteIDs>
+    </Note>
+    <Note ID="837" FontSize="12.0" Position="40.6,2007.6" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2150: call $0a50</String>
+      <ConnectedNoteIDs>730</ConnectedNoteIDs>
+    </Note>
+    <Note ID="839" FontSize="12.0" Position="1041.5,3002.5" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2160: call $24c4
+2163: call $0c40
+2166: call $0d1c
+2169: jmp  $0fc0</String>
+      <ConnectedNoteIDs>748,756,790,1042,1046</ConnectedNoteIDs>
+      <PointsToNoteIDs>748</PointsToNoteIDs>
+    </Note>
+    <Note ID="842" FontSize="12.0" Position="750.0,3081.4" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2170: call $0d70
+2173: jmp  $2560</String>
+      <ConnectedNoteIDs>758,791,1042</ConnectedNoteIDs>
+      <PointsToNoteIDs>758</PointsToNoteIDs>
+    </Note>
+    <Note ID="843" FontSize="12.0" Position="1245.8,3250.2" Width="109.7" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2180: call $24c4
+2183: call $0c40
+2186: call $0a6c
+2189: jmp  $0fc0</String>
+      <ConnectedNoteIDs>748,756,1042,1053</ConnectedNoteIDs>
+      <PointsToNoteIDs>748</PointsToNoteIDs>
+    </Note>
+    <Note ID="844" FontSize="12.0" Position="87.4,2221.8" Width="96.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2183: call $0c40</String>
+      <ConnectedNoteIDs>733</ConnectedNoteIDs>
+    </Note>
+    <Note ID="845" FontSize="12.0" Position="737.5,1976.0" Width="96.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2186: call $0a6c</String>
+      <ConnectedNoteIDs>731</ConnectedNoteIDs>
+    </Note>
+    <Note ID="850" FontSize="12.0" Position="346.0,2627.6" Width="102.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>21A5: call $0d1c
+21A8: call $0d70
+21AB: call $0a6c
+21AE: call $0fc0
+21B1: jmp  $24c4</String>
+      <ConnectedNoteIDs>748,756,790,791,1043,1050,1051</ConnectedNoteIDs>
+      <PointsToNoteIDs>756,1051</PointsToNoteIDs>
+    </Note>
+    <Note ID="852" FontSize="12.0" Position="812.9,2007.7" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>21AB: call $0a6c</String>
+      <ConnectedNoteIDs>731</ConnectedNoteIDs>
+    </Note>
+    <Note ID="854" FontSize="12.0" Position="163.4,2763.8" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>21BA
+21BC: jnc  $2204
+21BF: call $0c40
+21C2: call $0fc0
+21C5: call $24c4
+21CF: jc   $2204 
+21D7: jmp  $0526</String>
+      <ConnectedNoteIDs>733,748,756,1149</ConnectedNoteIDs>
+      <PointsToNoteIDs>1149</PointsToNoteIDs>
+    </Note>
+    <Note ID="857" FontSize="12.0" Position="325.8,3785.8" Width="104.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>21DC
+21F9: call $34c0
+21FC: jmp  $1ee0</String>
+      <ConnectedNoteIDs>682,1082,1083</ConnectedNoteIDs>
+      <PointsToNoteIDs>1083</PointsToNoteIDs>
+    </Note>
+    <Note ID="858" FontSize="12.0" Position="403.1,1797.6" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>22B4: call $067a</String>
+      <ConnectedNoteIDs>449</ConnectedNoteIDs>
+    </Note>
+    <Note ID="859" FontSize="12.0" Position="544.8,1204.8" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>22F0: call $03a0</String>
+      <ConnectedNoteIDs>434</ConnectedNoteIDs>
+    </Note>
+    <Note ID="860" FontSize="12.0" Position="105.2,4484.7" Width="103.1" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>23D6
+23DE: jz   $3a98
+23E3: jz   $3a98
+23E8: jz   $3ad0
+23ED: jz   $3ad0
+23F5: jc   $3b02
+23F8: call $3b02
+23FB: jmp  $3a98</String>
+      <ConnectedNoteIDs>699,1088-1090,1092</ConnectedNoteIDs>
+      <PointsToNoteIDs>1089</PointsToNoteIDs>
+    </Note>
+    <Note ID="861" FontSize="12.0" Position="630.8,4387.9" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2400: call $242c
+2403: jz   $2552
+2408: jc   $246a
+240B: jz   $2520
+2412: jnc  $20e8
+2426: jmp  $2085</String>
+      <ConnectedNoteIDs>995,1060</ConnectedNoteIDs>
+    </Note>
+    <Note ID="862" FontSize="12.0" Position="322.6,3673.8" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2476
+2478: call $2495
+2493</String>
+      <ConnectedNoteIDs>754,1065</ConnectedNoteIDs>
+    </Note>
+    <Note ID="864" FontSize="12.0" Position="420.4,3104.7" Width="100.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>24BC: call $2351
+24BF</String>
+      <ConnectedNoteIDs>752,1031</ConnectedNoteIDs>
+    </Note>
+    <Note ID="866" FontSize="12.0" Position="1393.8,4001.2" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>24F2: call $30aa
+251A: jmp  $25b7</String>
+      <ConnectedNoteIDs>673,1116,1118</ConnectedNoteIDs>
+      <PointsToNoteIDs>1116</PointsToNoteIDs>
+    </Note>
+    <Note ID="867" FontSize="12.0" Position="834.5,1291.9" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2521: call $0380</String>
+      <ConnectedNoteIDs>820</ConnectedNoteIDs>
+    </Note>
+    <Note ID="872" FontSize="12.0" Position="204.7,3523.8" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>27a8
+27ba</String>
+      <ConnectedNoteIDs>1071</ConnectedNoteIDs>
+    </Note>
+    <Note ID="874" FontSize="12.0" Position="419.1,612.9" Width="96.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2778: call $00c4</String>
+      <ConnectedNoteIDs>939</ConnectedNoteIDs>
+    </Note>
+    <Note ID="875" FontSize="12.0" Position="506.1,796.0" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2786: call $0314</String>
+      <ConnectedNoteIDs>428</ConnectedNoteIDs>
+    </Note>
+    <Note ID="876" FontSize="12.0" Position="791.4,776.4" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2791: call $0367</String>
+      <ConnectedNoteIDs>430</ConnectedNoteIDs>
+    </Note>
+    <Note ID="883" FontSize="12.0" Position="1453.4,3786.1" Width="107.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>30E4: call $3074
+30FC: call $3112  
+30FF: call $3112   
+3102: call $3112   
+310F</String>
+      <ConnectedNoteIDs>672,675,1077</ConnectedNoteIDs>
+    </Note>
+    <Note ID="887" FontSize="12.0" Position="1302.2,3608.6" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>315A
+3161: call $30aa
+3179: call $3192
+318E</String>
+      <ConnectedNoteIDs>673,1007,1126</ConnectedNoteIDs>
+    </Note>
+    <Note ID="890" FontSize="12.0" Position="1204.9,3375.2" Width="100.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>31B4
+31ED: call $3210
+31F8: call $30aa
+320D</String>
+      <ConnectedNoteIDs>673,1007,1125</ConnectedNoteIDs>
+    </Note>
+    <Note ID="891" FontSize="12.0" Position="90.0,1782.0" Width="172.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>32B5, 32BC, 32CD: call $05d8</String>
+      <ConnectedNoteIDs>443</ConnectedNoteIDs>
+    </Note>
+    <Note ID="894" FontSize="12.0" Position="24.8,1749.8" Width="100.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>32ED: call $05e0</String>
+      <ConnectedNoteIDs>444</ConnectedNoteIDs>
+    </Note>
+    <Note ID="913" FontSize="12.0" Position="104.3,2272.8" Width="96.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>3467: call $0c40</String>
+      <ConnectedNoteIDs>733</ConnectedNoteIDs>
+    </Note>
+    <Note ID="916" FontSize="12.0" Position="734.8,3965.9" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3486
+348A: call $34c0
+3494: jnz  $3489
+3497</String>
+      <ConnectedNoteIDs>682,1067,1070,1246</ConnectedNoteIDs>
+    </Note>
+    <Note ID="917" FontSize="12.0" Position="853.3,3461.1" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3498
+349C: call $35b0
+34A9</String>
+      <ConnectedNoteIDs>688,1067</ConnectedNoteIDs>
+    </Note>
+    <Note ID="919" FontSize="12.0" Position="1083.6,3835.2" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3560: call $30aa
+35A2</String>
+      <ConnectedNoteIDs>673,1067,1069,1070</ConnectedNoteIDs>
+    </Note>
+    <Note ID="921" FontSize="12.0" Position="628.0,147.1" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>37BB: call $0217</String>
+      <ConnectedNoteIDs>418</ConnectedNoteIDs>
+    </Note>
+    <Note ID="922" FontSize="12.0" Position="252.5,49.5" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>37C1: call $0210</String>
+      <ConnectedNoteIDs>941</ConnectedNoteIDs>
+    </Note>
+    <Note ID="923" FontSize="12.0" Position="431.0,3975.0" Width="100.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3844
+384C: call $38a1
+385F: jc   $3894
+3871: jz   $38fb
+387E: jz   $38fb
+3887: jnc  $38fb
+388D: jmp  $38fb</String>
+      <ConnectedNoteIDs>1081,1085-1087</ConnectedNoteIDs>
+      <PointsToNoteIDs>1086</PointsToNoteIDs>
+    </Note>
+    <Note ID="925" FontSize="12.0" Position="300.0,3966.0" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>38BC
+38C4: call $38a1
+38F1: jmp  $38f8</String>
+      <ConnectedNoteIDs>1081,1086</ConnectedNoteIDs>
+      <PointsToNoteIDs>1086</PointsToNoteIDs>
+    </Note>
+    <Note ID="939" FontSize="12.0" Position="473.1,663.8" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>00c4
+00e1</String>
+      <ConnectedNoteIDs>426,427,429,874,1161</ConnectedNoteIDs>
+    </Note>
+    <Note ID="940" FontSize="12.0" Position="1028.3,511.9" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="2">0.3649995327 0.2079935074 0.2389980555</Border>
+        <Fill>0.9530029893 0.9119818211 0.8199945688</Fill>
+      </Appearance>
+      <String>0080
+009A call $0200 
+009F call $00bb
+00b7</String>
+      <ConnectedNoteIDs>406,409,973,975,1150</ConnectedNoteIDs>
+    </Note>
+    <Note ID="941" FontSize="12.0" Position="199.0,79.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0210
+0216</String>
+      <ConnectedNoteIDs>771,773,802,922,1171</ConnectedNoteIDs>
+    </Note>
+    <Note ID="943" FontSize="12.0" Position="986.7,1001.6" Width="42.0">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1" Style="Square">0.8000027537 0.8159844279 0.4469983578</Border>
+        <Fill>0.9250035286 0.9219828248 0.6939957738</Fill>
+      </Appearance>
+      <String>JT4
+$0800
+$080f</String>
+      <ConnectedNoteIDs>944,957,1213</ConnectedNoteIDs>
+      <PointsToNoteIDs>957</PointsToNoteIDs>
+    </Note>
+    <Note ID="944" FontSize="12.0" Position="872.0,857.0" Width="42.0">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1" Style="Square">0.8000027537 0.8159844279 0.4469983578</Border>
+        <Fill>0.9250035286 0.9219828248 0.6939957738</Fill>
+      </Appearance>
+      <String>JT1
+$0400
+$040d</String>
+      <ConnectedNoteIDs>590,943,949,953,956,958,973,987,1151</ConnectedNoteIDs>
+      <PointsToNoteIDs>943,949,953,956,958,987</PointsToNoteIDs>
+    </Note>
+    <Note ID="945" FontSize="12.0" Position="1483.1,981.7" Width="42.0">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1" Style="Square">0.8000027537 0.8159844279 0.4469983578</Border>
+        <Fill>0.9250035286 0.9219828248 0.6939957738</Fill>
+      </Appearance>
+      <String>JT2
+$0720
+$0734</String>
+      <ConnectedNoteIDs>947,961,962,966,968,1209,1215,1222</ConnectedNoteIDs>
+      <PointsToNoteIDs>961,962,966,968,1215,1222</PointsToNoteIDs>
+    </Note>
+    <Note ID="947" FontSize="12.0" Position="1454.0,914.0" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0718 call $0720
+071b: jmp $0740</String>
+      <ConnectedNoteIDs>945,948,960,1001,1002,1208</ConnectedNoteIDs>
+      <PointsToNoteIDs>960</PointsToNoteIDs>
+    </Note>
+    <Note ID="948" FontSize="12.0" Position="1326.9,800.8" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0700: 
+0706: call $0718
+0716</String>
+      <ConnectedNoteIDs>714,947,1207</ConnectedNoteIDs>
+    </Note>
+    <Note ID="949" FontSize="12.0" Position="257.5,1010.9" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0430
+0449:  jz   $04a0
+0458: call $0460
+045b</String>
+      <ConnectedNoteIDs>437,824,944,1195</ConnectedNoteIDs>
+    </Note>
+    <Note ID="950" FontSize="12.0" Position="398.0,34.5" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0220
+0232</String>
+      <ConnectedNoteIDs>951,952,1172</ConnectedNoteIDs>
+    </Note>
+    <Note ID="951" FontSize="12.0" Position="457.4,9.2" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>272D: call $0220</String>
+      <ConnectedNoteIDs>950</ConnectedNoteIDs>
+    </Note>
+    <Note ID="952" FontSize="12.0" Position="464.4,38.3" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>275C: call $0220</String>
+      <ConnectedNoteIDs>950</ConnectedNoteIDs>
+    </Note>
+    <Note ID="953" FontSize="12.0" Position="252.0,1103.0" Width="109.1" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>04ac
+04BA:  jz   $07f0
+04C6:  jnz  $04e6
+04E1: call $00c4
+04e4</String>
+      <ConnectedNoteIDs>599,709,944,1197</ConnectedNoteIDs>
+    </Note>
+    <Note ID="956" FontSize="12.0" Position="643.0,1384.0" Width="102.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0515: call $041e
+051D: call $0580
+0520: call $0547
+0523: call $09a0
+0526: call $0532
+0529: call $0a6c
+052C: call $0506
+052F: jmp  $32b0</String>
+      <ConnectedNoteIDs>436,440-442,601,728,731,944,970,1056,1198</ConnectedNoteIDs>
+      <PointsToNoteIDs>970</PointsToNoteIDs>
+      <Formatting>
+        <FormatRange Bold="Yes">68,4</FormatRange>
+      </Formatting>
+    </Note>
+    <Note ID="957" FontSize="12.0" Position="941.3,1072.1" Width="138.3" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>Gamelevels &amp; Rounds:
+0834,2000,
+2230,224c,
+22b4,224c,
+3400</String>
+      <ConnectedNoteIDs>943</ConnectedNoteIDs>
+      <Formatting>
+        <FormatRange Underline="Yes">0,21</FormatRange>
+      </Formatting>
+    </Note>
+    <Note ID="958" FontSize="12.0" Position="935.0,876.0" Width="148.1" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0430, 04AC, 0515, 0800, 
+0AEA, 0B60, 2400, 244C</String>
+      <ConnectedNoteIDs>944</ConnectedNoteIDs>
+    </Note>
+    <Note ID="960" FontSize="12.0" Position="1369.0,1060.8" Width="42.0">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1" Style="Square">0.8000027537 0.8159844279 0.4469983578</Border>
+        <Fill>0.9250035286 0.9219828248 0.6939957738</Fill>
+      </Appearance>
+      <String>JT3
+$0740$0758</String>
+      <ConnectedNoteIDs>947,963,964,967,969,1210,1214,1220</ConnectedNoteIDs>
+      <PointsToNoteIDs>963,964,967,969,1214,1220</PointsToNoteIDs>
+    </Note>
+    <Note ID="961" FontSize="12.0" Position="1546.8,1064.4" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0763
+076b</String>
+      <ConnectedNoteIDs>945,1212</ConnectedNoteIDs>
+    </Note>
+    <Note ID="962" FontSize="12.0" Position="1197.9,776.2" Width="98.5" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0779
+0780 call $0217
+076b</String>
+      <ConnectedNoteIDs>418,945</ConnectedNoteIDs>
+    </Note>
+    <Note ID="963" FontSize="12.0" Position="1165.0,924.4" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0788
+0795: call $0217
+079b</String>
+      <ConnectedNoteIDs>418,960</ConnectedNoteIDs>
+    </Note>
+    <Note ID="964" FontSize="12.0" Position="1417.8,1128.7" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>07aa
+07bb</String>
+      <ConnectedNoteIDs>960,1218</ConnectedNoteIDs>
+    </Note>
+    <Note ID="966" FontSize="12.0" Position="1188.1,849.7" Width="96.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>07be
+07c7: call $0217
+07cf</String>
+      <ConnectedNoteIDs>418,945</ConnectedNoteIDs>
+    </Note>
+    <Note ID="967" FontSize="12.0" Position="1367.2,1131.1" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>076d
+0776</String>
+      <ConnectedNoteIDs>960,1211</ConnectedNoteIDs>
+    </Note>
+    <Note ID="968" FontSize="12.0" Position="1590.0,1062.9" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>079e
+07a8</String>
+      <ConnectedNoteIDs>945,1219</ConnectedNoteIDs>
+    </Note>
+    <Note ID="969" FontSize="12.0" Position="1143.1,989.3" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>07d2
+07dc
+07e4: call $0217
+07ee</String>
+      <ConnectedNoteIDs>418,616,960</ConnectedNoteIDs>
+    </Note>
+    <Note ID="970" FontSize="12.0" Position="619.9,1530.9" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>32b0</String>
+      <ConnectedNoteIDs>956</ConnectedNoteIDs>
+    </Note>
+    <Note ID="971" FontSize="12.0" Position="1383.0,126.0" Width="110.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>00E3
+00E6:  call $0200
+00EC: call $0258   
+00EF:  jz   $01e1   
+00F8:  call $0260
+00FB:  jnc  $0196
+0101:   call $0258  
+0104:   jz   $0bca 
+0109:  call $0258  
+010C:  jz   $01e1 
+0111:   call $0258 
+0114:  jz   $0580 
+011C:  call $0260
+011F:  jnc  $0078 
+0128:  call $0260
+012B:  jnc  $21dc 
+0134:  call $0260
+0137:  jnc  $03b0 
+013A </String>
+      <ConnectedNoteIDs>411,421,422,546,570,590,809,972,975,980,981,1156</ConnectedNoteIDs>
+    </Note>
+    <Note ID="972" FontSize="12.0" Position="1273.4,23.7" Width="121.2" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0046: call $00e3
+0049: jmp  $001a </String>
+      <ConnectedNoteIDs>971,976,992</ConnectedNoteIDs>
+    </Note>
+    <Note ID="973" FontSize="12.0" Position="1019.6,95.5" Width="106.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="3"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0000
+000F: call $0050
+0017: call $01d0
+001A: call $0080
+0021:  jz  $002d 
+0024: call $0400
+0027: call $2700 
+002A:  jmp  $001a </String>
+      <ConnectedNoteIDs>403,412,940,944,974,976,991,992,1174</ConnectedNoteIDs>
+      <Formatting>
+        <FormatRange Bold="Yes">0,4</FormatRange>
+        <FormatRange Bold="Yes">39,4</FormatRange>
+        <FormatRange Bold="Yes">122,4</FormatRange>
+      </Formatting>
+    </Note>
+    <Note ID="974" FontSize="12.0" Position="1160.0,174.4" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2700</String>
+      <ConnectedNoteIDs>973</ConnectedNoteIDs>
+    </Note>
+    <Note ID="975" FontSize="12.0" Position="1168.6,431.4" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0200
+0205</String>
+      <ConnectedNoteIDs>940,971,1182</ConnectedNoteIDs>
+    </Note>
+    <Note ID="976" FontSize="12.0" Position="880.2,5.5" Width="103.8" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>002D
+0035: call $0377
+003D:   jz $0046
+0040: call $0288 
+0043: jmp  $001a</String>
+      <ConnectedNoteIDs>425,972,973,977,991,1170</ConnectedNoteIDs>
+      <PointsToNoteIDs>973</PointsToNoteIDs>
+    </Note>
+    <Note ID="977" FontSize="12.0" Position="880.5,110.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0377
+037d</String>
+      <ConnectedNoteIDs>976,1154</ConnectedNoteIDs>
+    </Note>
+    <Note ID="980" FontSize="12.0" Position="1525.9,311.3" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0580</String>
+      <ConnectedNoteIDs>971</ConnectedNoteIDs>
+    </Note>
+    <Note ID="981" FontSize="12.0" Position="1528.8,355.1" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>21dc</String>
+      <ConnectedNoteIDs>971</ConnectedNoteIDs>
+    </Note>
+    <Note ID="983" FontSize="12.0" Position="1416.5,2178.0" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0ad6
+0ae2: call $0217
+0ae9</String>
+      <ConnectedNoteIDs>775,984,985,1038,1239</ConnectedNoteIDs>
+    </Note>
+    <Note ID="984" FontSize="12.0" Position="1533.7,2192.9" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0217</String>
+      <ConnectedNoteIDs>983</ConnectedNoteIDs>
+    </Note>
+    <Note ID="985" FontSize="12.0" Position="1330.8,1997.2" Width="115.6" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0AA0
+0AA5: call $0210
+0AB5: jz   $0b48
+0AC1: jmp  $0ad6 </String>
+      <ConnectedNoteIDs>628,775,983,986,1236</ConnectedNoteIDs>
+      <PointsToNoteIDs>775,983,986</PointsToNoteIDs>
+    </Note>
+    <Note ID="986" FontSize="12.0" Position="1466.6,2024.4" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0210</String>
+      <ConnectedNoteIDs>985</ConnectedNoteIDs>
+    </Note>
+    <Note ID="987" FontSize="12.0" Position="1008.9,2121.3" Width="112.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0AEA
+0AF9: call $0210
+0B02: jz   $0b15
+0B07: jc   $0ba0
+0B0A: jz   $0380
+0B0D: jmp  $0bba</String>
+      <ConnectedNoteIDs>820,944,988,989,1034,1035,1240</ConnectedNoteIDs>
+      <PointsToNoteIDs>1034</PointsToNoteIDs>
+    </Note>
+    <Note ID="988" FontSize="12.0" Position="1140.6,2158.9" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0210</String>
+      <ConnectedNoteIDs>987</ConnectedNoteIDs>
+    </Note>
+    <Note ID="989" FontSize="12.0" Position="1039.9,2252.0" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0B15:
+0B22: call $0367
+0B2D</String>
+      <ConnectedNoteIDs>987,990</ConnectedNoteIDs>
+    </Note>
+    <Note ID="990" FontSize="12.0" Position="1152.8,2266.7" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0367</String>
+      <ConnectedNoteIDs>989</ConnectedNoteIDs>
+    </Note>
+    <Note ID="991" FontSize="12.0" Position="1020.5,57.7" Width="87.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0021: jz $002d</String>
+      <ConnectedNoteIDs>973,976</ConnectedNoteIDs>
+    </Note>
+    <Note ID="992" FontSize="12.0" Position="1131.7,57.0" Width="105.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0049: jmp  $001a </String>
+      <ConnectedNoteIDs>972,973</ConnectedNoteIDs>
+      <PointsToNoteIDs>973</PointsToNoteIDs>
+    </Note>
+    <Note ID="993" FontSize="12.0" Position="680.0,2930.0" Width="42.0">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1" Style="Square">0.8000027537 0.8159844279 0.4469983578</Border>
+        <Fill>0.9250035286 0.9219828248 0.6939957738</Fill>
+      </Appearance>
+      <String>JT4
+$0800
+$080f</String>
+      <ConnectedNoteIDs>834,994,1067,1099,1136,1137</ConnectedNoteIDs>
+      <PointsToNoteIDs>834,1067,1099,1136,1137</PointsToNoteIDs>
+    </Note>
+    <Note ID="994" FontSize="12.0" Position="771.8,2859.9" Width="108.5" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2000, 2230,224c, 22b4, 3400</String>
+      <ConnectedNoteIDs>993</ConnectedNoteIDs>
+    </Note>
+    <Note ID="995" FontSize="12.0" Position="804.0,4420.2" Width="42.0">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1" Style="Square">0.8000027537 0.8159844279 0.4469983578</Border>
+        <Fill>0.9250035286 0.9219828248 0.6939957738</Fill>
+      </Appearance>
+      <String>$0400
+$040d</String>
+      <ConnectedNoteIDs>861,996,1120</ConnectedNoteIDs>
+      <PointsToNoteIDs>861,1120</PointsToNoteIDs>
+    </Note>
+    <Note ID="996" FontSize="12.0" Position="833.2,4370.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2400
+244c</String>
+      <ConnectedNoteIDs>995</ConnectedNoteIDs>
+    </Note>
+    <Note ID="997" FontSize="12.0" Position="568.7,2275.0" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0C56
+0C5A: call $0c84
+0C67  </String>
+      <ConnectedNoteIDs>733,736</ConnectedNoteIDs>
+    </Note>
+    <Note ID="998" FontSize="12.0" Position="859.8,2314.7" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0964
+096e
+0975</String>
+      <ConnectedNoteIDs>736</ConnectedNoteIDs>
+    </Note>
+    <Note ID="999" FontSize="12.0" Position="120.6,2438.5" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0718</String>
+      <ConnectedNoteIDs>739</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1000" FontSize="12.0" Position="232.2,2091.7" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0718</String>
+      <ConnectedNoteIDs>730</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1001" FontSize="12.0" Position="1563.4,867.6" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0CDF: call $0718</String>
+      <ConnectedNoteIDs>947</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1002" FontSize="12.0" Position="1512.7,837.6" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0A57: call $0718</String>
+      <ConnectedNoteIDs>947</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1003" FontSize="12.0" Position="810.8,748.1" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0B22: call $0367</String>
+      <ConnectedNoteIDs>430</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1005" FontSize="12.0" Position="1503.9,2716.0" Width="38.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0CF4
+0CF6</String>
+      <ConnectedNoteIDs>747</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1007" FontSize="12.0" Position="896.2,3409.6" Width="42.0">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1" Style="Square">0.8000027537 0.8159844279 0.4469983578</Border>
+        <Fill>0.9250035286 0.9219828248 0.6939957738</Fill>
+      </Appearance>
+      <String>$3000
+$3012</String>
+      <ConnectedNoteIDs>887,890,1008,1044,1045,1077,1079,1119,1131,1134</ConnectedNoteIDs>
+      <PointsToNoteIDs>887,890,1077,1079,1119,1131,1134</PointsToNoteIDs>
+    </Note>
+    <Note ID="1008" FontSize="12.0" Position="924.5,3289.3" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>3264, 30BA
+315a, 322c 
+3028, 3124 
+31b4, 3012=RET </String>
+      <ConnectedNoteIDs>1007</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1011" FontSize="12.0" Position="1449.4,3346.3" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3462:
+3467: call $0c40
+346A: call $0fc0
+346D: jmp  $2204</String>
+      <ConnectedNoteIDs>748,1053</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1013" FontSize="12.0" Position="1463.6,3027.6" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3520
+3528
+3530
+3538
+3540
+3548
+355d</String>
+      <ConnectedNoteIDs>689,690,749,779-781</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1014" FontSize="12.0" Position="1532.1,266.8" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>3528</String>
+      <ConnectedNoteIDs>809</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1015" FontSize="12.0" Position="1576.3,267.5" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>3538</String>
+      <ConnectedNoteIDs>809</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1016" FontSize="12.0" Position="1622.9,267.6" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>3548</String>
+      <ConnectedNoteIDs>809</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1017" FontSize="12.0" Position="1571.1,2647.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0217</String>
+      <ConnectedNoteIDs>747</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1018" FontSize="12.0" Position="747.4,2609.4" Width="105.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0dbb
+0DC6: jmp  $0dd2</String>
+      <ConnectedNoteIDs>743,1019</ConnectedNoteIDs>
+      <PointsToNoteIDs>1019</PointsToNoteIDs>
+    </Note>
+    <Note ID="1019" FontSize="12.0" Position="879.6,2604.2" Width="39.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0dcc
+0DD20dda</String>
+      <ConnectedNoteIDs>743,1018</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1020" FontSize="12.0" Position="1558.5,2911.4" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0210</String>
+      <ConnectedNoteIDs>749</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1021" FontSize="12.0" Position="1128.8,2545.1" Width="102.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0E70 
+0E83: cnz  $0e90
+0E8E</String>
+      <ConnectedNoteIDs>745</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1022" FontSize="12.0" Position="783.0,2721.6" Width="40.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1" Style="Square"/>
+      </Appearance>
+      <String>0EAD
+0EE5</String>
+      <ConnectedNoteIDs>795,1027,1138</ConnectedNoteIDs>
+      <PointsToNoteIDs>1138</PointsToNoteIDs>
+    </Note>
+    <Note ID="1023" FontSize="12.0" Position="953.2,2511.5" Width="74.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>called from?</String>
+      <ConnectedNoteIDs>793</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1025" FontSize="12.0" Position="939.2,2593.5" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0dde
+0ded</String>
+      <ConnectedNoteIDs>743</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1026" FontSize="12.0" Position="1394.5,2537.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0217</String>
+      <ConnectedNoteIDs>798</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1027" FontSize="12.0" Position="1275.8,2711.8" Width="106.3" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0FA6
+0FB9: jmp  $0ead</String>
+      <ConnectedNoteIDs>798,1022</ConnectedNoteIDs>
+      <PointsToNoteIDs>1022</PointsToNoteIDs>
+    </Note>
+    <Note ID="1029" FontSize="12.0" Position="166.8,2977.5" Width="102.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2398
+23A2:  jnz  $2030
+23AC: jz   $23c0
+23BB</String>
+      <ConnectedNoteIDs>752,1030,1032,1033</ConnectedNoteIDs>
+      <Formatting>
+        <FormatRange Bold="Yes">23,4</FormatRange>
+      </Formatting>
+    </Note>
+    <Note ID="1030" FontSize="12.0" Position="113.8,3049.5" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>23c0
+23D3</String>
+      <ConnectedNoteIDs>1029</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1031" FontSize="12.0" Position="335.0,3111.6" Width="74.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>called from?</String>
+      <ConnectedNoteIDs>864</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1032" FontSize="12.0" Position="22.7,2997.4" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2030
+2037: jmp  $23ac</String>
+      <ConnectedNoteIDs>1029,1033</ConnectedNoteIDs>
+      <PointsToNoteIDs>1029</PointsToNoteIDs>
+    </Note>
+    <Note ID="1033" FontSize="12.0" Position="24.4,2968.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2030</String>
+      <ConnectedNoteIDs>1029,1032</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1034" FontSize="12.0" Position="1279.9,2279.3" Width="111.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0BBA
+0BC1: jc   $2070 
+0BC4: jmp  $20e8</String>
+      <ConnectedNoteIDs>987,1037,1038</ConnectedNoteIDs>
+      <PointsToNoteIDs>1038</PointsToNoteIDs>
+    </Note>
+    <Note ID="1035" FontSize="12.0" Position="478.6,2012.1" Width="104.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0BA0
+0BB2: jmp  $03a0</String>
+      <ConnectedNoteIDs>434,987</ConnectedNoteIDs>
+      <PointsToNoteIDs>434</PointsToNoteIDs>
+    </Note>
+    <Note ID="1037" FontSize="12.0" Position="1213.0,2397.8" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2070
+2081: jmp  $2085</String>
+      <ConnectedNoteIDs>1034,1039</ConnectedNoteIDs>
+      <PointsToNoteIDs>1039</PointsToNoteIDs>
+    </Note>
+    <Note ID="1038" FontSize="12.0" Position="1436.0,2299.6" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>20E8
+20ED: call $211c
+210D: jmp  $0ad6</String>
+      <ConnectedNoteIDs>751,983,1034</ConnectedNoteIDs>
+      <PointsToNoteIDs>983</PointsToNoteIDs>
+    </Note>
+    <Note ID="1039" FontSize="12.0" Position="1350.2,2385.6" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2085
+2091 (intern)
+2097: jnc  $20b0 
+20A8: jmp  $2091</String>
+      <ConnectedNoteIDs>1037,1040</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1040" FontSize="12.0" Position="1476.7,2415.5" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>20B0
+20E2</String>
+      <ConnectedNoteIDs>1039,1244</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1042" FontSize="12.0" Position="792.9,3244.1" Width="102.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2130
+2132: jz   $2150
+2137: jz   $2160
+213C: jz   $2170
+213F: jmp  $2180</String>
+      <ConnectedNoteIDs>834,839,842,843,1044</ConnectedNoteIDs>
+      <PointsToNoteIDs>843</PointsToNoteIDs>
+    </Note>
+    <Note ID="1043" FontSize="12.0" Position="344.8,2778.3" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2146
+2148: jnc  $2190
+214B: jmp $21a5</String>
+      <ConnectedNoteIDs>834,850,1045</ConnectedNoteIDs>
+      <PointsToNoteIDs>850</PointsToNoteIDs>
+    </Note>
+    <Note ID="1044" FontSize="12.0" Position="877.4,2799.7" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2150: call $0a50
+2153: call $3000
+2156: jmp  $0f00</String>
+      <ConnectedNoteIDs>746,1007,1042,1059</ConnectedNoteIDs>
+      <PointsToNoteIDs>746</PointsToNoteIDs>
+    </Note>
+    <Note ID="1045" FontSize="12.0" Position="238.5,3269.7" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2190: call $0a50
+2193: call $3000
+2196: call $0f00
+2199: call $2560
+219C: jmp $0c40</String>
+      <ConnectedNoteIDs>733,746,758,1007,1043,1059</ConnectedNoteIDs>
+      <PointsToNoteIDs>733</PointsToNoteIDs>
+    </Note>
+    <Note ID="1046" FontSize="12.0" Position="1147.5,3053.9" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0c40</String>
+      <ConnectedNoteIDs>839</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1047" FontSize="12.0" Position="101.3,2175.6" Width="96.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2163: call $0c40</String>
+      <ConnectedNoteIDs>733</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1049" FontSize="12.0" Position="37.3,2055.9" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2190: call $0a50</String>
+      <ConnectedNoteIDs>730</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1050" FontSize="12.0" Position="318.6,2583.5" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0a6c</String>
+      <ConnectedNoteIDs>850</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1051" FontSize="12.0" Position="367.0,2580.9" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>24c4</String>
+      <ConnectedNoteIDs>850</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1052" FontSize="12.0" Position="980.6,3164.8" Width="102.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>21B1: jmp  $24c4</String>
+      <ConnectedNoteIDs>756</ConnectedNoteIDs>
+      <PointsToNoteIDs>756</PointsToNoteIDs>
+    </Note>
+    <Note ID="1053" FontSize="12.0" Position="1367.0,3264.1" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0c40</String>
+      <ConnectedNoteIDs>843,1011</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1054" FontSize="12.0" Position="597.9,3254.9" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2596
+25B7
+25D0: jz   $25e0 
+25DD</String>
+      <ConnectedNoteIDs>694,758,1055,1115</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1055" FontSize="12.0" Position="695.5,3327.8" Width="38.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>25E0
+25FD</String>
+      <ConnectedNoteIDs>1054</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1056" FontSize="12.0" Position="629.0,1593.0" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>21D7: jmp  $0526</String>
+      <ConnectedNoteIDs>956</ConnectedNoteIDs>
+      <PointsToNoteIDs>956</PointsToNoteIDs>
+    </Note>
+    <Note ID="1057" FontSize="12.0" Position="1282.8,2828.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0718</String>
+      <ConnectedNoteIDs>1059</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1059" FontSize="12.0" Position="1156.8,2820.9" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0A50:    
+0A57: call $0718 
+0A670</String>
+      <ConnectedNoteIDs>1044,1045,1057</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1060" FontSize="12.0" Position="753.0,4367.5" Width="43.4" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>242C
+244B</String>
+      <ConnectedNoteIDs>861</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1062" FontSize="12.0" Position="972.8,4141.3" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>05e0</String>
+      <ConnectedNoteIDs>695</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1063" FontSize="12.0" Position="974.5,4171.6" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>05e0</String>
+      <ConnectedNoteIDs>695</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1064" FontSize="12.0" Position="1183.0,3235.2" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>067a</String>
+      <ConnectedNoteIDs>757</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1065" FontSize="12.0" Position="318.3,3612.8" Width="105.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>26AA
+26CC: jmp  $2476</String>
+      <ConnectedNoteIDs>760,862</ConnectedNoteIDs>
+      <PointsToNoteIDs>862</PointsToNoteIDs>
+    </Note>
+    <Note ID="1066" FontSize="12.0" Position="972.3,3761.5" Width="31.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0fc0</String>
+      <ConnectedNoteIDs>1067,1070</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1067" FontSize="12.0" Position="723.2,3418.9" Width="118.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3400: call $0876
+3403: call $3800
+3406: call $2600
+3409: call $3800
+340C: call $3980
+3413: jz   $3462
+3418: jnc  $3438
+341B: call $3474
+341E: call $3486
+3421: call $3560
+3424: call $3498
+3427: call $34aa
+342E: jc   $0fc0
+3431: call $3930
+3434: jmp  $0c40</String>
+      <ConnectedNoteIDs>678,681,691,693,695,760,916,917,919,993,1066,1069,1080,1144</ConnectedNoteIDs>
+      <PointsToNoteIDs>1080</PointsToNoteIDs>
+    </Note>
+    <Note ID="1069" FontSize="12.0" Position="984.7,3600.8" Width="126.6" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3438
+343C: jc   $3452
+343F: call $3474
+3442: call $3560
+3445: call $3498
+3448: call $3930
+344B: jmp  $0c40</String>
+      <ConnectedNoteIDs>678,693,919,1067,1070,1080</ConnectedNoteIDs>
+      <PointsToNoteIDs>1080</PointsToNoteIDs>
+    </Note>
+    <Note ID="1070" FontSize="12.0" Position="976.5,3952.9" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3452: call $3486
+3455: call $3560
+3458: call $34aa
+345B: jmp  $0fc0</String>
+      <ConnectedNoteIDs>681,916,919,1066,1069</ConnectedNoteIDs>
+      <PointsToNoteIDs>1066</PointsToNoteIDs>
+    </Note>
+    <Note ID="1071" FontSize="12.0" Position="46.0,3449.3" Width="108.4" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2700:
+2717: call $2748
+272D: call $0220
+2739: cz   $2768
+273C: call $27a8
+273F: jmp  $3a10</String>
+      <ConnectedNoteIDs>763,872,1072,1073,1093,1095,1153</ConnectedNoteIDs>
+      <PointsToNoteIDs>1093</PointsToNoteIDs>
+    </Note>
+    <Note ID="1072" FontSize="12.0" Position="177.1,3473.9" Width="100.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0027: call $2700 </String>
+      <ConnectedNoteIDs>1071</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1073" FontSize="12.0" Position="203.6,3571.4" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0220</String>
+      <ConnectedNoteIDs>763,1071</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1074" FontSize="12.0" Position="455.2,3555.3" Width="43.5" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>26D0
+26FD</String>
+      <ConnectedNoteIDs>760</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1075" FontSize="12.0" Position="282.6,3400.5" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2650
+2662: jmp  $2639</String>
+      <ConnectedNoteIDs>760,1076</ConnectedNoteIDs>
+      <PointsToNoteIDs>1076</PointsToNoteIDs>
+    </Note>
+    <Note ID="1076" FontSize="12.0" Position="296.1,3505.3" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2639</String>
+      <ConnectedNoteIDs>760,1075</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1077" FontSize="12.0" Position="1381.7,3455.1" Width="100.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>30BA
+30BD: call $30da
+30C0: call $30da
+30C3: call $30da
+30CF: jz   $30e4
+30D8</String>
+      <ConnectedNoteIDs>674,883,1007</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1078" FontSize="12.0" Position="1374.8,3734.7" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>305C: call $3074
+306D</String>
+      <ConnectedNoteIDs>672,1079</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1079" FontSize="12.0" Position="1488.5,3615.8" Width="93.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3028
+3039: jz   $305c
+3059</String>
+      <ConnectedNoteIDs>1007,1078</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1080" FontSize="12.0" Position="954.6,3575.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0c40</String>
+      <ConnectedNoteIDs>1067,1069</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1081" FontSize="12.0" Position="422.0,3900.0" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>38A1
+38B1: call $34de
+38B5</String>
+      <ConnectedNoteIDs>682,923,925</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1082" FontSize="12.0" Position="197.4,3772.2" Width="105.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>012B:  jnc  $21dc </String>
+      <ConnectedNoteIDs>857</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1083" FontSize="12.0" Position="206.6,3848.7" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>1EE0 
+1EE9: call $0217
+1EF9</String>
+      <ConnectedNoteIDs>857,1084</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1084" FontSize="12.0" Position="319.4,3865.6" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0217</String>
+      <ConnectedNoteIDs>1083</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1085" FontSize="12.0" Position="438.6,4108.5" Width="100.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3894:
+389C: jmp  $38f8</String>
+      <ConnectedNoteIDs>923,1086</ConnectedNoteIDs>
+      <PointsToNoteIDs>1086</PointsToNoteIDs>
+    </Note>
+    <Note ID="1086" FontSize="12.0" Position="342.0,4141.9" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>38F8
+38FB
+391B</String>
+      <ConnectedNoteIDs>923,925,1085,1087,1128</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1087" FontSize="12.0" Position="365.8,4099.4" Width="32.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>38fb</String>
+      <ConnectedNoteIDs>923,1086</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1088" FontSize="12.0" Position="291.6,4470.2" Width="44.2" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3A98
+3ACA</String>
+      <ConnectedNoteIDs>860,1089</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1089" FontSize="12.0" Position="210.7,4459.7" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>3a98</String>
+      <ConnectedNoteIDs>860,1088</ConnectedNoteIDs>
+      <PointsToNoteIDs>1088</PointsToNoteIDs>
+    </Note>
+    <Note ID="1090" FontSize="12.0" Position="264.3,4526.8" Width="93.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3AD0
+3AE6: jz   $3af8
+3AF6</String>
+      <ConnectedNoteIDs>860,1091</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1091" FontSize="12.0" Position="383.2,4535.2" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3AF8
+3B00</String>
+      <ConnectedNoteIDs>1090</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1092" FontSize="12.0" Position="107.1,4288.8" Width="111.9" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3B43:
+3B49: cz   $23d6
+3B4C: call $3b33
+3B4F: call $3b1b
+3B52: call $3a1d
+3B55: call $27bd
+3B58: call $3a82
+3B5B: jmp  $3a90</String>
+      <ConnectedNoteIDs>700,860,1093,1108-1110,1112,1140</ConnectedNoteIDs>
+      <PointsToNoteIDs>1109</PointsToNoteIDs>
+    </Note>
+    <Note ID="1093" FontSize="12.0" Position="108.9,4196.4" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3A10
+3A15: jnz  $3b43
+3A1C</String>
+      <ConnectedNoteIDs>1071,1092</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1095" FontSize="12.0" Position="113.8,3311.6" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2768:
+2778: call $00c4
+2786: call $0314
+2791: call $0367
+27A4</String>
+      <ConnectedNoteIDs>1071,1096-1098</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1096" FontSize="12.0" Position="62.5,3303.4" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>00c4</String>
+      <ConnectedNoteIDs>1095</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1097" FontSize="12.0" Position="54.3,3339.3" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0314</String>
+      <ConnectedNoteIDs>1095</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1098" FontSize="12.0" Position="61.0,3379.8" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0367</String>
+      <ConnectedNoteIDs>1095</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1099" FontSize="12.0" Position="1282.4,2865.8" Width="109.3" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2230
+223B:    jz   $2292
+2240:    jc   $2260
+2249:    jnz  $2260
+224C
+2254</String>
+      <ConnectedNoteIDs>993,1101,1102,1136</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1101" FontSize="12.0" Position="1415.8,2889.9" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2260
+2291</String>
+      <ConnectedNoteIDs>1099</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1102" FontSize="12.0" Position="1370.6,2769.7" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>2292
+2298: jz   $22f0
+22B0: jmp  $22e0</String>
+      <ConnectedNoteIDs>1099,1103</ConnectedNoteIDs>
+      <PointsToNoteIDs>1103</PointsToNoteIDs>
+    </Note>
+    <Note ID="1103" FontSize="12.0" Position="1494.1,2823.4" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>22E0
+22E2
+22E8</String>
+      <ConnectedNoteIDs>1102,1105</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1105" FontSize="12.0" Position="1528.2,2770.5" Width="102.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>22F0: call $03a0
+22F4: jmp  $22e2</String>
+      <ConnectedNoteIDs>1103,1106</ConnectedNoteIDs>
+      <PointsToNoteIDs>1103</PointsToNoteIDs>
+    </Note>
+    <Note ID="1106" FontSize="12.0" Position="1588.9,2828.4" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>03a0</String>
+      <ConnectedNoteIDs>1105</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1108" FontSize="12.0" Position="318.9,4289.5" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3B33
+3B41</String>
+      <ConnectedNoteIDs>1092</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1109" FontSize="12.0" Position="224.8,4411.5" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3A90
+3A95: jmp  $3923</String>
+      <ConnectedNoteIDs>1092,1139</ConnectedNoteIDs>
+      <PointsToNoteIDs>1139</PointsToNoteIDs>
+    </Note>
+    <Note ID="1110" FontSize="12.0" Position="250.1,4219.3" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3A82
+3A8F</String>
+      <ConnectedNoteIDs>1092</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1112" FontSize="12.0" Position="381.6,4319.6" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>27BD
+27C2: jnz  $27e2
+27CC: jnc  $27d8
+27D6</String>
+      <ConnectedNoteIDs>1092,1113,1114</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1113" FontSize="12.0" Position="515.0,4316.0" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>27D8
+27E0</String>
+      <ConnectedNoteIDs>1112</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1114" FontSize="12.0" Position="517.0,4366.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>27e2
+27ee</String>
+      <ConnectedNoteIDs>1112</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1115" FontSize="12.0" Position="458.8,3286.6" Width="103.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>251A: jmp  $25b7</String>
+      <ConnectedNoteIDs>1054</ConnectedNoteIDs>
+      <PointsToNoteIDs>1054</PointsToNoteIDs>
+    </Note>
+    <Note ID="1116" FontSize="12.0" Position="1524.2,4042.2" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>25b7</String>
+      <ConnectedNoteIDs>866</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1117" FontSize="12.0" Position="311.6,2945.7" Width="32.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>24f2</String>
+      <ConnectedNoteIDs>755</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1118" FontSize="12.0" Position="1493.9,3954.8" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>24B9: jmp  $24f2</String>
+      <ConnectedNoteIDs>866</ConnectedNoteIDs>
+      <PointsToNoteIDs>866</PointsToNoteIDs>
+    </Note>
+    <Note ID="1119" FontSize="12.0" Position="1138.1,3598.7" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3124
+3141: call $30aa
+314E</String>
+      <ConnectedNoteIDs>673,1007</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1120" FontSize="12.0" Position="902.0,4498.0" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>244C
+2452: jc   $06f0 
+2466: jmp  $0380</String>
+      <ConnectedNoteIDs>995,1121,1122</ConnectedNoteIDs>
+      <PointsToNoteIDs>1122</PointsToNoteIDs>
+    </Note>
+    <Note ID="1121" FontSize="12.0" Position="1037.8,4522.2" Width="32.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>06f0</String>
+      <ConnectedNoteIDs>1120</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1122" FontSize="12.0" Position="1040.3,4480.2" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0380</String>
+      <ConnectedNoteIDs>1120</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1123" FontSize="12.0" Position="836.4,1263.1" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0B0A: jz   $0380</String>
+      <ConnectedNoteIDs>820</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1124" FontSize="12.0" Position="780.0,1235.0" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2466: jmp  $0380</String>
+      <ConnectedNoteIDs>820</ConnectedNoteIDs>
+      <PointsToNoteIDs>820</PointsToNoteIDs>
+    </Note>
+    <Note ID="1125" FontSize="12.0" Position="1323.6,3390.4" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3210
+3228</String>
+      <ConnectedNoteIDs>890</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1126" FontSize="12.0" Position="1396.3,3674.7" Width="42.6" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3192
+31AD</String>
+      <ConnectedNoteIDs>887</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1127" FontSize="12.0" Position="1065.1,4115.8" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>391C
+391F: jnc  $38bc
+3922</String>
+      <ConnectedNoteIDs>691,1128</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1128" FontSize="12.0" Position="963.4,4227.1" Width="113.2" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>38BC
+38C4: call $38a1
+38F1: jmp  $38f8</String>
+      <ConnectedNoteIDs>1086,1127</ConnectedNoteIDs>
+      <PointsToNoteIDs>1086</PointsToNoteIDs>
+    </Note>
+    <Note ID="1131" FontSize="12.0" Position="1038.2,3331.1" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3264
+32AF</String>
+      <ConnectedNoteIDs>1007</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1134" FontSize="12.0" Position="1090.0,3363.0" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>322c
+325E</String>
+      <ConnectedNoteIDs>1007</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1136" FontSize="12.0" Position="1236.3,2927.6" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>224c</String>
+      <ConnectedNoteIDs>993,1099</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1137" FontSize="12.0" Position="342.7,2459.8" Width="112.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>22B4: call $067a
+22BE: jnz  $0848
+22C5</String>
+      <ConnectedNoteIDs>711,993</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1138" FontSize="12.0" Position="830.6,2762.1" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0027,0049,0DF9</String>
+      <ConnectedNoteIDs>1022</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1139" FontSize="12.0" Position="376.0,4431.0" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3923
+392D</String>
+      <ConnectedNoteIDs>1109</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1140" FontSize="12.0" Position="456.0,4431.9" Width="95.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3A1D
+3A22: jz   $3a40
+3A3F:   </String>
+      <ConnectedNoteIDs>1092,1141</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1141" FontSize="12.0" Position="508.0,4530.0" Width="95.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3A40
+3A44: jz   $3a62
+3A5F: </String>
+      <ConnectedNoteIDs>1140,1143</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1143" FontSize="12.0" Position="504.0,4601.0" Width="37.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>3A62
+3A81</String>
+      <ConnectedNoteIDs>1141</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1144" FontSize="12.0" Position="698.9,3178.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0876</String>
+      <ConnectedNoteIDs>834,1067</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1145" FontSize="12.0" Position="1254.0,3107.0" Width="32.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>06f0</String>
+      <ConnectedNoteIDs>756</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1146" FontSize="12.0" Position="551.0,1943.0" Width="127.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>2452, 24CB: jc   $06f0</String>
+      <ConnectedNoteIDs>617</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1147" FontSize="12.0" Position="77.0,2743.0" Width="41.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0D5E
+0D67</String>
+      <ConnectedNoteIDs>1148</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1148" FontSize="12.0" Position="36.4,2669.9" Width="89.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0d30
+0D48: jz $0d5e
+0d5a</String>
+      <ConnectedNoteIDs>790,1147</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1149" FontSize="12.0" Position="194.0,2888.0" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Border Weight="1"/>
+      </Appearance>
+      <String>0526</String>
+      <ConnectedNoteIDs>854</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1150" FontSize="12.0" Position="990.4,486.0" Width="95.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>WaitVBlankCoin</String>
+      <ConnectedNoteIDs>940</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1151" FontSize="12.0" Position="755.6,857.3" Width="115.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>GameStateMachine</String>
+      <ConnectedNoteIDs>944</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1153" FontSize="12.0" Position="11.8,3424.0" Width="141.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>UpdateScoresAndSound</String>
+      <ConnectedNoteIDs>1071</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1154" FontSize="12.0" Position="856.1,146.3" Width="147.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>UpdateSoundControlRAM</String>
+      <ConnectedNoteIDs>977</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1155" FontSize="12.0" Position="640.3,181.9" Width="123.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>PromptForStartGame</String>
+      <ConnectedNoteIDs>425</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1156" FontSize="12.0" Position="1402.8,101.6" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>SplashAndDemo</String>
+      <ConnectedNoteIDs>971</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1157" FontSize="12.0" Position="1240.4,77.9" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>InitSoundScreen</String>
+      <ConnectedNoteIDs>403</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1158" FontSize="12.0" Position="1269.3,206.2" Width="91.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>ClearRAMBank</String>
+      <ConnectedNoteIDs>404</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1159" FontSize="12.0" Position="44.8,170.1" Width="122.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>SlowPrint
+ScrollRegisterUpdate</String>
+      <ConnectedNoteIDs>546</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1160" FontSize="12.0" Position="1078.3,1479.3" Width="89.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>CheckInputBits</String>
+      <ConnectedNoteIDs>406</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1161" FontSize="12.0" Position="391.5,665.0" Width="76.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>PrintNumber</String>
+      <ConnectedNoteIDs>939</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1162" FontSize="12.0" Position="240.4,274.9" Width="147.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>ClearForeAndBackground</String>
+      <ConnectedNoteIDs>409</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1163" FontSize="12.0" Position="469.8,1182.0" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>ClearBackground</String>
+      <ConnectedNoteIDs>434</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1164" FontSize="12.0" Position="782.7,1328.4" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>ClearForeground</String>
+      <ConnectedNoteIDs>820</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1165" FontSize="12.0" Position="1527.6,550.1" Width="145.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>GetPlayerInputsForDemo</String>
+      <ConnectedNoteIDs>410</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1166" FontSize="12.0" Position="169.9,1662.4" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>ClearBbytesAtHL</String>
+      <ConnectedNoteIDs>443</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1167" FontSize="12.0" Position="1.5,252.0" Width="164.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>SlowPrintScoreAverageTable</String>
+      <ConnectedNoteIDs>411</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1168" FontSize="12.0" Position="14.5,365.7" Width="83.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>AddBCtoMem</String>
+      <ConnectedNoteIDs>416</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1169" FontSize="12.0" Position="515.4,106.9" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>RightOneColumn</String>
+      <ConnectedNoteIDs>418</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1170" FontSize="12.0" Position="800.5,7.6" Width="77.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>Attract mode</String>
+      <ConnectedNoteIDs>976</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1171" FontSize="12.0" Position="101.8,95.3" Width="93.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>LeftOneColumn</String>
+      <ConnectedNoteIDs>941</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1172" FontSize="12.0" Position="371.6,10.1" Width="74.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>AddToScore</String>
+      <ConnectedNoteIDs>950</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1173" FontSize="12.0" Position="228.8,125.7" Width="61.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>DrawRow</String>
+      <ConnectedNoteIDs>414</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1174" FontSize="12.0" Position="1083.0,223.0" Width="68.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>Main Loop</String>
+      <ConnectedNoteIDs>973</ConnectedNoteIDs>
+      <Formatting>
+        <FormatRange Bold="Yes">0,9</FormatRange>
+      </Formatting>
+    </Note>
+    <Note ID="1176" FontSize="12.0" Position="1504.0,137.0" Width="172.5" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>DrawScoreAverageTableTiles</String>
+      <ConnectedNoteIDs>809</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1177" FontSize="12.0" Position="1218.3,436.0" Width="101.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>SubtractIfEnough</String>
+      <ConnectedNoteIDs>422</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1178" FontSize="12.0" Position="163.9,638.8" Width="85.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>PrintCopyright</String>
+      <ConnectedNoteIDs>570</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1179" FontSize="12.0" Position="1537.8,441.7" Width="121.4" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>CompareBCtoMem</String>
+      <ConnectedNoteIDs>421</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1180" FontSize="12.0" Position="8.2,1551.3" Width="113.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>InitGlobalLevelData</String>
+      <ConnectedNoteIDs>442</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1181" FontSize="12.0" Position="1357.9,440.8" Width="73.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>GameDemo</String>
+      <ConnectedNoteIDs>590</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1182" FontSize="12.0" Position="1116.7,408.6" Width="92.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>AddOneToMem</String>
+      <ConnectedNoteIDs>975</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1183" FontSize="12.0" Position="564.8,500.9" Width="98.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>DecrementCoins</String>
+      <ConnectedNoteIDs>426</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1184" FontSize="12.0" Position="1173.9,589.6" Width="127.4" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>SubtractFromMemory</String>
+      <ConnectedNoteIDs>423</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1185" FontSize="12.0" Position="1139.8,539.9" Width="109.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>SubtractToMemory</String>
+      <ConnectedNoteIDs>424</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1186" FontSize="12.0" Position="702.4,476.3" Width="89.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>GameOrAttract</String>
+      <ConnectedNoteIDs>577</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1187" FontSize="12.0" Position="572.0,604.3" Width="90.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>UpdateHiScore</String>
+      <ConnectedNoteIDs>427</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1189" FontSize="12.0" Position="609.6,885.8" Width="121.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>ClearAndPrintScores</String>
+      <ConnectedNoteIDs>429</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1190" FontSize="12.0" Position="728.7,681.1" Width="136.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>GetPlayerLivesFromDip</String>
+      <ConnectedNoteIDs>430</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1191" FontSize="12.0" Position="781.3,721.1" Width="136.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>UpdateLivesScreen</String>
+      <ConnectedNoteIDs>430</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1192" FontSize="12.0" Position="315.2,1327.3" Width="125.6" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>SetBitsVideoRegister</String>
+      <ConnectedNoteIDs>436</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1193" FontSize="12.0" Position="1346.0,718.0" Width="94.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>DemoNextLevel</String>
+    </Note>
+    <Note ID="1194" FontSize="12.0" Position="1551.0,649.0" Width="111.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>DemoStartLevel</String>
+      <ConnectedNoteIDs>821</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1195" FontSize="12.0" Position="248.3,990.5" Width="93.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>New game start</String>
+      <ConnectedNoteIDs>949</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1196" FontSize="12.0" Position="75.3,953.7" Width="107.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>CopyMemoryBank</String>
+      <ConnectedNoteIDs>437</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1197" FontSize="12.0" Position="153.2,1118.9" Width="100.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>Flashing of score</String>
+      <ConnectedNoteIDs>953</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1198" FontSize="12.0" Position="588.9,1344.3" Width="124.2" Shadow="Yes">
+      <Appearance>
+        <Alignment>Center</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>Initialization of game 
+and level data</String>
+      <ConnectedNoteIDs>956</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1199" FontSize="12.0" Position="346.8,1393.2" Width="113.8" Shadow="Yes">
+      <Appearance>
+        <Alignment>Center</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>Init alien data 
+new level/round</String>
+      <ConnectedNoteIDs>440</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1200" FontSize="12.0" Position="10.5,1438.8" Width="133.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>InitPlayerDataStructure</String>
+      <ConnectedNoteIDs>441</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1201" FontSize="12.0" Position="37.4,1705.4" Width="115.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>CopyBbytesHLtoDE</String>
+      <ConnectedNoteIDs>444</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1202" FontSize="12.0" Position="304.3,1609.7" Width="124.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>InitAlienControlStates</String>
+      <ConnectedNoteIDs>445</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1203" FontSize="12.0" Position="232.1,1697.8" Width="100.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>InitAlienPositions</String>
+      <ConnectedNoteIDs>447</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1204" FontSize="12.0" Position="414.0,1703.1" Width="97.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>StarsScrollDown</String>
+      <ConnectedNoteIDs>449</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1205" FontSize="12.0" Position="381.0,1530.0" Width="147.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>smallbirds romlist pointers</String>
+      <ConnectedNoteIDs>448</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1206" FontSize="12.0" Position="769.2,1576.9" Width="147.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>AddPlanetsToBackground</String>
+    </Note>
+    <Note ID="1207" FontSize="12.0" Position="1320.0,777.3" Width="120.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>PlayerDataController</String>
+      <ConnectedNoteIDs>948</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1208" FontSize="12.0" Position="1555.6,917.1" Width="137.3" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>UpdateScreenObjects</String>
+      <ConnectedNoteIDs>947</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1209" FontSize="12.0" Position="1533.3,980.3" Width="98.5" Shadow="Yes">
+      <Appearance>
+        <Alignment>Center</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>Bit4Controller
+(hide obj)</String>
+      <ConnectedNoteIDs>945</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1210" FontSize="12.0" Position="1263.4,1079.2" Width="98.5" Shadow="Yes">
+      <Appearance>
+        <Alignment>Center</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>Bit3Controller
+(show obj)</String>
+      <ConnectedNoteIDs>960</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1211" FontSize="12.0" Position="1364.8,1170.3" Width="27.5" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>1x1</String>
+      <ConnectedNoteIDs>967</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1212" FontSize="12.0" Position="1549.1,1103.3" Width="27.5" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>1x1</String>
+      <ConnectedNoteIDs>961</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1213" FontSize="12.0" Position="991.9,978.0" Width="106.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>Normal game play</String>
+      <ConnectedNoteIDs>943</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1214" FontSize="12.0" Position="1513.5,1126.7" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>07d2
+07ee</String>
+      <ConnectedNoteIDs>960,1217</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1215" FontSize="12.0" Position="1676.7,1052.2" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>07be
+07cf</String>
+      <ConnectedNoteIDs>945,1216</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1216" FontSize="12.0" Position="1681.2,1090.0" Width="33.5" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>2x2</String>
+      <ConnectedNoteIDs>1215</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1217" FontSize="12.0" Position="1518.6,1170.0" Width="33.5" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>2x2</String>
+      <ConnectedNoteIDs>1214</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1218" FontSize="12.0" Position="1424.5,1169.9" Width="28.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>1x2</String>
+      <ConnectedNoteIDs>964</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1219" FontSize="12.0" Position="1592.8,1102.7" Width="28.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>1x2</String>
+      <ConnectedNoteIDs>968</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1220" FontSize="12.0" Position="1464.0,1131.3" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0788
+079b</String>
+      <ConnectedNoteIDs>960,1221</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1221" FontSize="12.0" Position="1469.0,1173.0" Width="28.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>2x1</String>
+      <ConnectedNoteIDs>1220</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1222" FontSize="12.0" Position="1632.0,1059.6" Width="35.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <Fill>0.940019 0.892907 0.779716</Fill>
+      </Appearance>
+      <String>0779
+0786</String>
+      <ConnectedNoteIDs>945,1223</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1223" FontSize="12.0" Position="1634.1,1099.8" Width="31.4" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>2x1</String>
+      <ConnectedNoteIDs>1222</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1224" FontSize="12.0" Position="345.6,1198.0" Width="105.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>update videoscroll</String>
+      <ConnectedNoteIDs>709</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1225" FontSize="12.0" Position="9.7,1079.0" Width="164.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>set GameAndDemoOrSplash</String>
+      <ConnectedNoteIDs>824</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1226" FontSize="12.0" Position="12.9,518.0" Width="84.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>PrintTextLines</String>
+      <ConnectedNoteIDs>412</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1227" FontSize="12.0" Position="1176.3,1167.9" Width="81.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>PlayerUpdate</String>
+      <ConnectedNoteIDs>714</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1228" FontSize="12.0" Position="1095.1,1642.0" Width="56.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>bullet tile</String>
+      <ConnectedNoteIDs>726</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1229" FontSize="12.0" Position="164.8,1927.3" Width="107.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>GetAnimationChrs</String>
+      <ConnectedNoteIDs>623</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1230" FontSize="12.0" Position="304.6,1886.1" Width="124.7" Shadow="Yes">
+      <Appearance>
+        <Alignment>Center</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>Stars scrolling down
+aliens fade in</String>
+      <ConnectedNoteIDs>711</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1231" FontSize="12.0" Position="683.5,1821.1" Width="124.7" Shadow="Yes">
+      <Appearance>
+        <Alignment>Center</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>Update scroll register and fill background</String>
+      <ConnectedNoteIDs>617</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1232" FontSize="12.0" Position="1353.4,1636.1" Width="72.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>MovePlayer</String>
+      <ConnectedNoteIDs>628</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1233" FontSize="12.0" Position="1326.7,1328.0" Width="173.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>Copy current player data to old</String>
+      <ConnectedNoteIDs>625</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1234" FontSize="12.0" Position="1141.7,2029.6" Width="135.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>GetScreenRamAddress</String>
+      <ConnectedNoteIDs>729</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1235" FontSize="12.0" Position="151.5,2003.4" Width="113.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>AlienDataController</String>
+      <ConnectedNoteIDs>730</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1236" FontSize="12.0" Position="1324.6,1970.9" Width="76.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>DrawShields</String>
+      <ConnectedNoteIDs>985</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1237" FontSize="12.0" Position="1073.6,1885.7" Width="124.7" Shadow="Yes">
+      <Appearance>
+        <Alignment>Center</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>ram adress for player and bullet positions</String>
+      <ConnectedNoteIDs>728</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1238" FontSize="12.0" Position="811.3,1876.2" Width="124.7" Shadow="Yes">
+      <Appearance>
+        <Alignment>Center</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>screen ram address 
+all aliens</String>
+      <ConnectedNoteIDs>731</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1239" FontSize="12.0" Position="1319.1,2189.6" Width="99.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>DrawImageCbyB</String>
+      <ConnectedNoteIDs>983</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1240" FontSize="12.0" Position="1066.4,2090.3" Width="135.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Center</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>Player ship particle explosion</String>
+      <ConnectedNoteIDs>987</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1241" FontSize="12.0" Position="1265.3,2091.8" Width="89.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>ShieldsExpired</String>
+      <ConnectedNoteIDs>775</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1243" FontSize="12.0" Position="624.7,2119.2" Width="153.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>AddGalaxiesToBackground</String>
+      <ConnectedNoteIDs>750</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1244" FontSize="12.0" Position="1511.6,2413.7" Width="170.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>Player ship particles explosion</String>
+      <ConnectedNoteIDs>1040</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1245" FontSize="12.0" Position="447.9,3791.3" Width="93.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>DrawBirdObject</String>
+      <ConnectedNoteIDs>682</ConnectedNoteIDs>
+    </Note>
+    <Note ID="1246" FontSize="12.0" Position="700.9,4035.0" Width="146.0" Shadow="Yes">
+      <Appearance>
+        <Alignment>Left</Alignment>
+        <TextColor>0.01680417731 0.1983509958 1.0</TextColor>
+      </Appearance>
+      <String>DrawSecond4BirdObjects</String>
+      <ConnectedNoteIDs>916</ConnectedNoteIDs>
+    </Note>
+  </Notes>
+  <BackgroundShapes/>
+  <AutoFit>403,404,406,409-412,414,416,418,421-426,428-430,434,436,437,440-443,445,447-449,546,570,577,590,599-601,616,617,623,625,628,672-675,678,681,688-691,693-696,699,700,704,709,711,714,719,724-726,729-731,735-739,743-752,754,755,757,758,760,761,763,771-781,790,791,793,795-798,801,802,809,816,819,820,822,824,825,827,832,834,837,839,842,844,845,850,852,854,857-862,864,866,867,872,874-876,883,887,890,891,894,913,916,917,919,921-923,925,939,941,943-945,947-952,956,961,963,964,966-971,973-975,977,980,981,983,984,986,988-993,995-1003,1005,1007,1008,1011,1013-1018,1020-1023,1025,1026,1029-1033,1035,1037-1040,1042-1047,1049-1057,1059,1062-1066,1070,1072,1073,1075-1087,1089-1091,1093,1095-1098,1101-1103,1105,1106,1108-1110,1112-1119,1121-1125,1127,1131,1134,1136,1138-1141,1143-1146,1148-1151,1153-1174,1177,1178,1180-1183,1185-1187,1189,1190,1193,1195-1197,1200-1207,1213-1215,1218-1222,1224-1229,1232-1236,1239,1241,1243-1246</AutoFit>
+  <NoteStyles>
+    <Style Name="Blue Bubble" ID="07ECC7B0-F478-4053-9334-2CEA62F54A85" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+      <BorderThickness>1</BorderThickness>
+      <BorderColor>0.477193 0.557066 0.76433</BorderColor>
+      <FillColor>0.840969 0.866828 0.925903</FillColor>
+    </Style>
+    <Style Name="Brown Bubble" ID="C69E468C-2919-4E8C-B0A3-59479C4FFE7B" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+      <BorderThickness>1</BorderThickness>
+      <BorderColor>0.290055 0.1523 0.182215</BorderColor>
+      <FillColor>0.940019 0.892907 0.779716</FillColor>
+    </Style>
+    <Style Name="Green Bubble" ID="121E2E16-FF01-4D20-8312-FACB205170A8" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+      <BorderThickness>1</BorderThickness>
+      <BorderColor>0.331867 0.609932 0.356197</BorderColor>
+      <FillColor>0.790123 0.882327 0.80198</FillColor>
+    </Style>
+    <Style Name="Pink Bubble" ID="3B957D8D-E7D4-4E25-A58D-BB353F2D2218" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+      <BorderThickness>1</BorderThickness>
+      <BorderColor>0.747881 0.366532 0.542813</BorderColor>
+      <FillColor>0.918452 0.807302 0.863467</FillColor>
+    </Style>
+    <Style Name="Red Text" ID="8F736AD8-69F8-46E5-911C-F45623DADCA1" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="Yes" AffectNoteBody="No" AffectFade="No">
+      <TextColor>1.0 0.0 0.0</TextColor>
+    </Style>
+    <Style Name="Title Text" ID="8E3E04C6-B3AE-4EAE-8138-FF517D63BCC0" AffectFontStyle="Yes" AffectAlignment="Yes" AffectTextColor="No" AffectNoteBody="No" AffectFade="No">
+      <FontSize>28.0</FontSize>
+      <IsBold>Yes</IsBold>
+    </Style>
+    <Style Name="Yellow Bubble" ID="C82EED05-B518-4E00-85EB-6302A2520CC8" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+      <BorderThickness>1</BorderThickness>
+      <BorderColor>0.756763 0.785592 0.373258</BorderColor>
+      <FillColor>0.906773 0.910625 0.634363</FillColor>
+    </Style>
+  </NoteStyles>
+  <UISettings>
+    <BackgroundColor>0.999737 0.986332 0.931298</BackgroundColor>
+    <DefaultFont>Helvetica</DefaultFont>
+    <DefaultTextColor>0.0 0.0 0.0</DefaultTextColor>
+    <NoteXPadding>4.0</NoteXPadding>
+  </UISettings>
+  <PrintSettings PaperSize="595.0,842.0" LeftMargin="72.0" RightMargin="72.0" TopMargin="90.0" BottomMargin="90.0" PaperType="iso-a4" Orientation="Portrait" HorizontalPagination="Clip" VerticalPagination="Auto" ScaleFactor="1.0" HorizontallyCentered="Yes" VerticallyCentered="Yes" Collates="Yes" PagesAcross="1" PagesDown="1"/>
+</ScappleDocument>
