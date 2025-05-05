@@ -3200,7 +3200,7 @@ L0FD8:
 ; This is the default movement pattern for the alien formation:
 ; Right, right, right, right, left, left, left, left, 
 ; left, left, left, left, right, right, right, right, 
-; end mark.
+; end mark. Used at phase 0, 1, 2 and 3.
 T1000:
 1000: 01 01 01 01 02 02 02 02 02 02 02 02 01 01 01 01
 1010: 00
@@ -3209,7 +3209,8 @@ T1000:
 1011: FF FF FF FF FF FF FF FF
 1019: FF FF FF FF FF FF FF
 
-; Closed loops pattern table for single or multiple aliens:
+; Closed loop pattern table part 1:
+; Used for single or multiple aliens, depending on the game round.
 ; Pattern 1
 T1020:
 1020: 10 11 12 13 10 1D 0D 0E 0B 0C 0D 0E 0B 0C 06 06
@@ -3227,7 +3228,7 @@ T1064:
 1094: 05 05 05 1C 1D 1E 1F 05 05 05 05 05 05 05 18 1F
 10A4: 00
 10A5: FF FF FF
-; Pattern 3
+; Pattern 3 (phase 3)
 T10A8:
 10A8: 10 04 04 1D 0D 0E 0B 0C 0D 0E 01 01 01 01 01 01
 10B8: 01 01 05 05 05 05 05 1C 04 04 1D 06 06 1E 03 03
@@ -4491,7 +4492,7 @@ L2146:
 ; masked counter = 0
 L2150:
 2150: CD 50 0A        CALL    $0A50               ; {code.AlienDataController} draw or delete alien
-2153: CD 00 30        CALL    $3000               ; {code.L3000}
+2153: CD 00 30        CALL    $3000               ; {code.AlienBehaviorUpdate}
 2156: C3 00 0F        JP      $0F00               ; {code.L0F00} 'alien with player' collision check
 ; 
 2159: FF FF FF FF FF FF FF
@@ -4523,7 +4524,7 @@ L2180:
 ; 
 L2190:
 2190: CD 50 0A        CALL    $0A50               ; {code.AlienDataController} draw or delete alien
-2193: CD 00 30        CALL    $3000               ; {code.L3000}
+2193: CD 00 30        CALL    $3000               ; {code.AlienBehaviorUpdate}
 2196: CD 00 0F        CALL    $0F00               ; {code.L0F00} 'alien with player' collision check
 2199: CD 60 25        CALL    $2560               ; {code.L2560}
 219C: C3 40 0C        JP      $0C40               ; {code.EnemyBulletUpdate}
@@ -5737,7 +5738,8 @@ T2B00:
 2BE0: 00 00 20 00 84 20 00 08 00 00 00 00 00 20 01 00
 2BF0: 04 80 00 00 00 00 00 10 40 00 04 01 00 00 80 00
 
-; movement pattern table for aliens
+; Closed loop pattern table part 2:
+; Used for single or multiple aliens, depending on the game round.
 ; Pattern 18
 T2C00:
 2C00: 0B 0C 0D 0E 0B 0C 0A 0A 0A 0A 0A 0A 0A 06 06 1E
@@ -5752,13 +5754,13 @@ T2C34:
 2C60: 04 1D 0A 06 1E 03 1F 05 1C 04 1D 06 1E 03 03 03
 2C70: 03 15 16 17 01 01 05 05 01 01 05 05 01 01 05 05
 2C80: 01 01 05 05 02 02 18 07 07 07 00 FF FF FF FF FF
-; Pattern 20
+; Pattern 20 (phase 3)
 T2C90:
 2C90: 1C 04 04 04 04 04 04 04 04 04 04 04 04 04 04 1D
 2CA0: 06 06 06 06 06 06 06 1E 03 03 03 03 03 03 1F 05
 2CB0: 05 05 05 1C 04 04 1D 06 09 09 09 1E 03 07 07 08
 2CC0: 08 07 07 08 07 00 FF FF
-; Pattern 21
+; Pattern 21 (phase 3)
 T2CC8:
 2CC8: 05 05 05 05 1C 04 04 04
 2CD0: 04 04 04 04 04 04 04 04 04 04 04 1D 09 09 09 09
@@ -5771,41 +5773,47 @@ T2D00:
 2D20: 04 04 04 04 1D 06 06 1E 03 03 03 03 03 03 1F 05
 2D30: 05 05 05 05 1C 04 04 04 04 04 04 04 04 04 04 1B
 2D40: 00 FF FF FF
-; Pattern 23
+; Pattern 23 (phase 3)
 T2D44:
 2D44: 05 05 05 18 03 03 03 03 03 03 03 03
 2D50: 03 19 06 06 1A 04 04 1B 05 05 18 03 03 03 03 03
 2D60: 03 03 19 06 06 06 06 06 06 06 06 06 06 1A 04 04
 2D70: 1B 05 05 1C 04 04 1D 06 06 1A 04 04 1B 05 05 05
 2D80: 05 05 05 05 00 FF FF FF
-; Pattern 24
+; Pattern 24 (phase 3)
 T2D88:
 2D88: 1C 04 04 1D 06 06 09 0A
 2D90: 0A 09 09 09 16 17 14 03 03 03 1F 05 05 1C 04 04
 2DA0: 1D 06 06 1E 03 03 03 03 07 07 08 08 07 07 05 05
 2DB0: 1C 04 04 04 04 04 04 04 1D 1A 04 1B 00 FF FF FF
-; Pattern 25
+; Pattern 25 (phase 3)
 T2DC0:
 2DC0: 14 03 03 19 06 0A 0A 09 09 09 0A 12 13 10 11 12
 2DD0: 13 10 11 12 13 10 04 04 04 04 1B 05 18 03 19 06
 2DE0: 1A 04 1B 05 18 07 07 07 08 08 07 07 07 03 03 19
 2DF0: 0D 0E 00 FF FF FF FF FF FF FF FF FF FF FF FF FF
 ; Pattern 26
+; Used for all aliens.
+; This is the 'Angry movement pattern A'.
+; At the end of that sequence, the alien formation is further down 
+; and the 'phase' is increased by 1.
 T2E00:
 2E00: 0B 0C 0D 0E 02 02 02 02 0B 0C 0D 0E 01 01 14 15
 2E10: 16 17 01 01 05 05 05 05 02 02 02 02 00 FF FF FF
-; Pattern 27
+; Pattern 27 (phase 3)
 T2E20:
 2E20: 0B 0C 0D 0E 0B 0C 0D 0E 02 02 02 02 02 02 02 02
 2E30: 05 05 01 05 05 01 05 05 01 05 05 01 00 FF FF FF
 ; Pattern 28
-; This is the 'Angry movement pattern'.
-; At the end of that sequence, the alien formation is further down.
+; Used for all aliens.
+; This is the 'Angry movement pattern B'.
+; At the end of that sequence, the alien formation is further down 
+; and the 'phase' is increased by 1.
 T2E40:
 2E40: 0B 0C 0D 0E 01 01 01 18 03 19 06 06 1A 04 1B 05
 2E50: 18 03 19 06 06 1A 04 04 04 04 04 04 04 04 04 1B
 2E60: 05 05 05 01 01 01 01 01 00 FF FF FF
-; Pattern 29
+; Pattern 29 (phase 3)
 T2E6C:
 2E6C: 0B 0C 0D 0E
 2E70: 01 01 0B 0C 0D 0E 01 01 05 05 05 05 01 01 0B 0C
@@ -5849,8 +5857,10 @@ T2FA0:
 2FE0: 03 19 06 06 1A 11 12 13 02 02 02 05 05 02 02 02
 2FF0: 05 05 02 02 02 05 1C 08 08 07 07 08 08 08 00 FF
 
-;
-L3000:
+;*****************************************************************************
+;* AlienBehaviorUpdate
+;*****************************************************************************
+AlienBehaviorUpdate:
 3000: 21 93 43        LD      HL,$4393            ; {+ram.Counter93}
 3003: 7E              LD      A,(HL)              ; load and save ram value
 3004: 34              INC     (HL)                ; increment Counter93
@@ -5883,36 +5893,36 @@ T3018:
 ; from jump table T3018 if Counter93 is 1
 L3028:
 3028: 21 57 43        LD      HL,$4357            ; {+ram.M4357}
-302B: 7E              LD      A,(HL)              
-302C: FE 03           CP      $03                 
+302B: 7E              LD      A,(HL)              ; 
+302C: FE 03           CP      $03                 ; 
 302E: D0              RET     NC                  ; if >= 3
-302F: 2E 50           LD      L,$50               
-3031: 7E              LD      A,(HL)              ; get $4350
-3032: FE 04           CP      $04                 
+302F: 2E 50           LD      L,$50               ; 
+3031: 7E              LD      A,(HL)              ; get $4350 Alien behavior state
+3032: FE 04           CP      $04                 ; 
 3034: D0              RET     NC                  ; if >= 4
-3035: 2E 58           LD      L,$58               
+3035: 2E 58           LD      L,$58               ; 
 3037: 7E              LD      A,(HL)              ; get $4358
 3038: A7              AND     A                   ; updates the zero flag
 3039: CA 5C 30        JP      Z,$305C             ; {code.L305C}
 303C: 35              DEC     (HL)                ; $4358
-303D: C0              RET     NZ                  
-303E: 2D              DEC     L                   
+303D: C0              RET     NZ                  ; 
+303E: 2D              DEC     L                   ; 
 303F: 34              INC     (HL)                ; $4357
-3040: 2E 50           LD      L,$50               
-3042: 36 04           LD      (HL),$04            ; set $4350
-3044: 2E 53           LD      L,$53               
-3046: 36 10           LD      (HL),$10            ; set $4353
-3048: 2C              INC     L                   
+3040: 2E 50           LD      L,$50               ; 
+3042: 36 04           LD      (HL),$04            ; set $4350 next alien behavior state to 4
+3044: 2E 53           LD      L,$53               ; 
+3046: 36 10           LD      (HL),$10            ; set $4353 Number of aliens doing the closed loop pattern
+3048: 2C              INC     L                   ; 
 3049: 36 50           LD      (HL),$50            ; set $4354
-304B: 2E 51           LD      L,$51               
-304D: 36 2E           LD      (HL),$2E            ; set $4351
-304F: 2C              INC     L                   
-3050: 36 00           LD      (HL),$00            ; clear $4352
+304B: 2E 51           LD      L,$51               ; 
+304D: 36 2E           LD      (HL),$2E            ; set $4351 for T2Exx
+304F: 2C              INC     L                   ; 
+3050: 36 00           LD      (HL),$00            ; set $4352 for T2E00
 3052: 3A C2 43        LD      A,($43C2)           ; {ram.PlayerShipX}
-3055: 0F              RRCA                        
-3056: D8              RET     C                   
-3057: 36 40           LD      (HL),$40            ; set $4352
-3059: C9              RET                         
+3055: 0F              RRCA                        ; 
+3056: D8              RET     C                   ; if result is odd number
+3057: 36 40           LD      (HL),$40            ; set $4352 for T2E40
+3059: C9              RET                         ; 
 ; 
 305A: FF FF
 ; 
@@ -5965,7 +5975,7 @@ L309F:
 309F: 81              ADD     A,C                 
 30A0: 4F              LD      C,A                 
 30A1: CD AA 30        CALL    $30AA               ; {code.GetRandomNumber}
-30A4: E6 07           AND     $07                 ; 0000_0111
+30A4: E6 07           AND     $07                 ; 0000_0111  for 0 to 7
 30A6: 81              ADD     A,C                 
 30A7: 4F              LD      C,A                 
 30A8: C9              RET                         
@@ -5999,7 +6009,7 @@ L30BA:
 30C0: CD DA 30        CALL    $30DA               ; {code.L30DA} for $435A
 30C3: CD DA 30        CALL    $30DA               ; {code.L30DA} for $435B
 30C6: 2E 50           LD      L,$50               ; 
-30C8: 7E              LD      A,(HL)              ; get $4350
+30C8: 7E              LD      A,(HL)              ; get $4350 Alien behavior state
 30C9: A7              AND     A                   ; updates the zero flag
 30CA: C0              RET     NZ                  ; if <> 0
 30CB: 2E 55           LD      L,$55               ; 
@@ -6008,7 +6018,7 @@ L30BA:
 30CF: CA E4 30        JP      Z,$30E4             ; {code.L30E4} if 0
 30D2: 35              DEC     (HL)                
 30D3: C0              RET     NZ                  
-30D4: 2E 50           LD      L,$50               ; $4350
+30D4: 2E 50           LD      L,$50               ; $4350 next alien behavior state to 1
 30D6: 36 01           LD      (HL),$01            ; 
 30D8: C9              RET                         ; 
 
@@ -6082,33 +6092,33 @@ L3112:
 
 ; from jump table T3018 if Counter93 is 3
 L3124:
-3124: 21 50 43        LD      HL,$4350            ; {+ram.M4350}
-3127: 7E              LD      A,(HL)              
-3128: FE 01           CP      $01                 
-312A: C0              RET     NZ                  ; if <> 1
-312B: 36 02           LD      (HL),$02            ; set $4350
-312D: 2E B8           LD      L,$B8               
+3124: 21 50 43        LD      HL,$4350            ; {+ram.M4350} 
+3127: 7E              LD      A,(HL)              ; get alien behavior state
+3128: FE 01           CP      $01                 ; 
+312A: C0              RET     NZ                  ; if $4350 <> 1
+312B: 36 02           LD      (HL),$02            ; set $4350 next alien behavior state to 2
+312D: 2E B8           LD      L,$B8               ; 
 312F: 7E              LD      A,(HL)              ; get LevelAndRound
-3130: 0F              RRCA                        
-3131: 0F              RRCA                        
-3132: E6 0F           AND     $0F                 ; 0000_1111
-3134: C6 05           ADD     $05                 
-3136: FE 11           CP      $11                 
-3138: DA 3D 31        JP      C,$313D             ; {code.L313D}
-313B: 3E 05           LD      A,$05               
+3130: 0F              RRCA                        ; 
+3131: 0F              RRCA                        ; 
+3132: E6 0F           AND     $0F                 ; 0000_1111 (bit 0,1 game round / bit 2,3 game level)
+3134: C6 05           ADD     $05                 ; 
+3136: FE 11           CP      $11                 ; 
+3138: DA 3D 31        JP      C,$313D             ; {code.L313D} if game round < 4
+313B: 3E 05           LD      A,$05               ; 
 L313D:
 313D: 2E 57           LD      L,$57               ; $4357
-313F: 96              SUB     (HL)                
-3140: 47              LD      B,A                 
+313F: 96              SUB     (HL)                ; 
+3140: 47              LD      B,A                 ; 
 3141: CD AA 30        CALL    $30AA               ; {code.GetRandomNumber}
-3144: 3C              INC     A                   
-3145: B8              CP      B                   
+3144: 3C              INC     A                   ; 
+3145: B8              CP      B                   ; 
 3146: DA 4B 31        JP      C,$314B             ; {code.L314B}
-3149: 3E 01           LD      A,$01               
+3149: 3E 01           LD      A,$01               ; only one alien
 L314B:
 314B: 2E 53           LD      L,$53               ; $4353
-314D: 77              LD      (HL),A              
-314E: C9              RET                         
+314D: 77              LD      (HL),A              ; set $4353 Number of aliens doing the closed loop pattern
+314E: C9              RET                         ; 
 
 ; not used 
 314F: 0A 0C 0B 0C 0B 0E 0F 0E 0F FF FF
@@ -6116,7 +6126,7 @@ L314B:
 ; from jump table T3018 if Counter93 is 4
 L315A:
 315A: 21 50 43        LD      HL,$4350            ; {+ram.M4350}
-315D: 7E              LD      A,(HL)              
+315D: 7E              LD      A,(HL)              ; get alien behavior state
 315E: FE 02           CP      $02                 
 3160: C0              RET     NZ                  ; if <> 2
 3161: CD AA 30        CALL    $30AA               ; {code.GetRandomNumber}
@@ -6125,14 +6135,14 @@ L315A:
 3166: 07              RLCA                        ; Multiply by 2
 3167: C6 50           ADD     $50                 
 3169: 6F              LD      L,A                 
-316A: 26 4B           LD      H,$4B               
+316A: 26 4B           LD      H,$4B               ; $4B50
 316C: 78              LD      A,B                 
 316D: 07              RLCA                        ; Multiply by 4 ..
 316E: 07              RLCA                        ; 
 316F: C6 70           ADD     $70                 
 3171: 5F              LD      E,A                 
-3172: 16 4B           LD      D,$4B               
-3174: 0E 10           LD      C,$10               
+3172: 16 4B           LD      D,$4B               ; $4B70
+3174: 0E 10           LD      C,$10               ; for all 16 aliens
 3176: 79              LD      A,C                 
 3177: 90              SUB     B                   
 3178: 47              LD      B,A                 
@@ -6150,7 +6160,7 @@ L3179:
 3188: 2E 50           LD      L,$50               ; $4350
 L318A:
 318A: 0D              DEC     C                   
-318B: C2 79 31        JP      NZ,$3179            ; {code.L3179}
+318B: C2 79 31        JP      NZ,$3179            ; {code.L3179} loop for all 16 aliens
 318E: C9              RET                         
 ; 
 318F: FF FF FF
@@ -6171,7 +6181,7 @@ L3192:
 31A3: 7D              LD      A,L                 
 31A4: 32 54 43        LD      ($4354),A           ; {ram.M4354}
 31A7: 3E 03           LD      A,$03               
-31A9: 32 50 43        LD      ($4350),A           ; {ram.M4350}
+31A9: 32 50 43        LD      ($4350),A           ; {ram.M4350} set next alien behavior state to 3
 31AC: E1              POP     HL                  
 31AD: C9              RET                         
 ; 
@@ -6179,67 +6189,67 @@ L3192:
 
 ; from jump table T3018 if Counter93 is 5
 L31B4:
-31B4: 3A 50 43        LD      A,($4350)           ; {ram.M4350}
-31B7: FE 03           CP      $03                 
+31B4: 3A 50 43        LD      A,($4350)           ; {ram.M4350} get alien behavior state
+31B7: FE 03           CP      $03                 ; 
 31B9: C0              RET     NZ                  ; if <> 3
 31BA: 3A 54 43        LD      A,($4354)           ; {ram.M4354}
-31BD: D6 50           SUB     $50                 
-31BF: 07              RLCA                        ; Multiply by 2
-31C0: C6 72           ADD     $72                 
-31C2: 6F              LD      L,A                 
-31C3: 26 4B           LD      H,$4B               
-31C5: 46              LD      B,(HL)              
-31C6: 2C              INC     L                   
-31C7: 56              LD      D,(HL)              
+31BD: D6 50           SUB     $50                 ; 
+31BF: 07              RLCA                        ; Multiply by 2 to get 2 byte offset
+31C0: C6 72           ADD     $72                 ; base for alien data structure (grid)
+31C2: 6F              LD      L,A                 ; 
+31C3: 26 4B           LD      H,$4B               ; 
+31C5: 46              LD      B,(HL)              ; get alien screen coordinate X
+31C6: 2C              INC     L                   ; 
+31C7: 56              LD      D,(HL)              ; get alien screen coordinate Y
 31C8: 3A C2 43        LD      A,($43C2)           ; {ram.PlayerShipX}
-31CB: 0E 04           LD      C,$04               
-31CD: B8              CP      B                   
-31CE: D2 D6 31        JP      NC,$31D6            ; {code.L31D6}
-31D1: 4F              LD      C,A                 
-31D2: 78              LD      A,B                 
-31D3: 41              LD      B,C                 
-31D4: 0E 00           LD      C,$00               
+31CB: 0E 04           LD      C,$04               ; 
+31CD: B8              CP      B                   ; 
+31CE: D2 D6 31        JP      NC,$31D6            ; {code.L31D6} if PlayerShipX > alien screen coordinate X
+31D1: 4F              LD      C,A                 ; 
+31D2: 78              LD      A,B                 ; 
+31D3: 41              LD      B,C                 ; 
+31D4: 0E 00           LD      C,$00               ; 
 L31D6:
-31D6: 90              SUB     B                   
+31D6: 90              SUB     B                   ; 
 31D7: 07              RLCA                        ; Multiply by 8 ..
 31D8: 07              RLCA                        ; ..
 31D9: 07              RLCA                        ; ..
 31DA: E6 07           AND     $07                 ; 0000_0111
 31DC: C6 00           ADD     $00                 ; LSB for table T3300
-31DE: 6F              LD      L,A                 
+31DE: 6F              LD      L,A                 ; 
 31DF: 26 33           LD      H,$33               ; get MSB for table T3300
-31E1: 7E              LD      A,(HL)              
-31E2: 81              ADD     A,C                 
+31E1: 7E              LD      A,(HL)              ; get data from T3300
+31E2: 81              ADD     A,C                 ; 
 31E3: 07              RLCA                        ; Multiply by 4 ..
 31E4: 07              RLCA                        ; ..
-31E5: 4F              LD      C,A                 
-31E6: 00              NOP                         
-31E7: 00              NOP                         
-31E8: 00              NOP                         
+31E5: 4F              LD      C,A                 ; 
+31E6: 00              NOP                         ; 
+31E7: 00              NOP                         ; 
+31E8: 00              NOP                         ; 
 31E9: 3A 57 43        LD      A,($4357)           ; {ram.M4357}
-31EC: 47              LD      B,A                 
+31EC: 47              LD      B,A                 ; 
 31ED: CD 10 32        CALL    $3210               ; {code.L3210}
-31F0: 79              LD      A,C                 
-31F1: 80              ADD     A,B                 
+31F0: 79              LD      A,C                 ; 
+31F1: 80              ADD     A,B                 ; 
 31F2: C6 10           ADD     $10                 ; LSB for table T3310
-31F4: 6F              LD      L,A                 
+31F4: 6F              LD      L,A                 ; 
 31F5: 26 33           LD      H,$33               ; get MSB for table T3310
-31F7: 4E              LD      C,(HL)              
+31F7: 4E              LD      C,(HL)              ; get data from T3310
 31F8: CD AA 30        CALL    $30AA               ; {code.GetRandomNumber}
-31FB: E6 06           AND     $06                 ; 0000_0110
-31FD: 81              ADD     A,C                 
-31FE: 6F              LD      L,A                 
-31FF: 26 33           LD      H,$33               ; get MSB for table T3330 (base adresses of closed loops pattern tables for aliens)
-3201: 7E              LD      A,(HL)              
-3202: 2C              INC     L                   
-3203: 46              LD      B,(HL)              
+31FB: E6 06           AND     $06                 ; 0000_0110 (0, 2, 4 or 6)
+31FD: 81              ADD     A,C                 ; 
+31FE: 6F              LD      L,A                 ; 
+31FF: 26 33           LD      H,$33               ; get MSB for table T3330 (base adresses of closed loop pattern tables for aliens)
+3201: 7E              LD      A,(HL)              ; 
+3202: 2C              INC     L                   ; 
+3203: 46              LD      B,(HL)              ; 
 3204: 21 50 43        LD      HL,$4350            ; {+ram.M4350}
-3207: 36 05           LD      (HL),$05            
-3209: 2C              INC     L                   
-320A: 77              LD      (HL),A              
-320B: 2C              INC     L                   
-320C: 70              LD      (HL),B              
-320D: C9              RET                         
+3207: 36 05           LD      (HL),$05            ; set $4350 next alien behavior state to 5
+3209: 2C              INC     L                   ; 
+320A: 77              LD      (HL),A              ; set MSB of next closed loop pattern at $4351
+320B: 2C              INC     L                   ; 
+320C: 70              LD      (HL),B              ; set LSB of next closed loop pattern at $4352
+320D: C9              RET                         ;
 
 ; not used 
 320E: 81              ADD     A,C                 
@@ -6247,28 +6257,28 @@ L31D6:
 
 ; 
 L3210:
-3210: 3A 53 43        LD      A,($4353)           ; {ram.M4353}
-3213: FE 01           CP      $01                 
-3215: C0              RET     NZ                  ; if <> 1
-3216: 7A              LD      A,D                 
-3217: 06 00           LD      B,$00               
-3219: FE 58           CP      $58                 
-321B: D8              RET     C                   
-321C: 06 01           LD      B,$01               
-321E: FE 78           CP      $78                 
-3220: D8              RET     C                   
-3221: 06 02           LD      B,$02               
-3223: FE 98           CP      $98                 
-3225: D8              RET     C                   
-3226: 06 03           LD      B,$03               
-3228: C9              RET                         
+3210: 3A 53 43        LD      A,($4353)           ; {ram.M4353} Number of aliens doing the closed loop pattern
+3213: FE 01           CP      $01                 ; 
+3215: C0              RET     NZ                  ; if $4353 <> 1
+3216: 7A              LD      A,D                 ; alien screen coordinate Y
+3217: 06 00           LD      B,$00               ; return B = 0
+3219: FE 58           CP      $58                 ; 
+321B: D8              RET     C                   ; if alien screen coordinate Y < $58
+321C: 06 01           LD      B,$01               ; return B = 1
+321E: FE 78           CP      $78                 ; 
+3220: D8              RET     C                   ; if alien screen coordinate Y < $78
+3221: 06 02           LD      B,$02               ; return B = 2
+3223: FE 98           CP      $98                 ; 
+3225: D8              RET     C                   ; if alien screen coordinate Y < $98
+3226: 06 03           LD      B,$03               ; return B = 3
+3228: C9              RET                         ; 
 
 ; not used 
 3229: C0 21 50                                    
 
 ; from jump table T3018 if Counter93 is 6
 L322C:
-322C: 3A 50 43        LD      A,($4350)           ; {ram.M4350}
+322C: 3A 50 43        LD      A,($4350)           ; {ram.M4350} get alien behavior state
 322F: FE 04           CP      $04                 
 3231: C0              RET     NZ                  ; if <> 4
 3232: 21 50 4B        LD      HL,$4B50            ; {+ram.M4B50} Pointer to alien movement pattern
@@ -6298,7 +6308,7 @@ L324E:
 3254: FE B0           CP      $B0                 
 3256: C2 40 32        JP      NZ,$3240            ; {code.L3240}
 3259: 3E 06           LD      A,$06               
-325B: 32 50 43        LD      ($4350),A           ; {ram.M4350}
+325B: 32 50 43        LD      ($4350),A           ; {ram.M4350} set next alien behavior state to 6
 325E: C9              RET                         
 
 ; not used 
@@ -6313,12 +6323,12 @@ L3264:
 326C: E6 0F           AND     $0F                 ; 0000_1111
 326E: 77              LD      (HL),A              
 326F: 2E 50           LD      L,$50               
-3271: 7E              LD      A,(HL)              ; get $4350
+3271: 7E              LD      A,(HL)              ; get $4350 Alien behavior state
 3272: FE 05           CP      $05                 
 3274: D8              RET     C                   ; if < 5
-3275: 36 00           LD      (HL),$00            ; clear $4350
+3275: 36 00           LD      (HL),$00            ; set $4350 next alien behavior state to 0
 3277: 2E 53           LD      L,$53               
-3279: 4E              LD      C,(HL)              ; get $4353
+3279: 4E              LD      C,(HL)              ; get $4353 Number of aliens doing the closed loop pattern
 327A: 2C              INC     L                   
 327B: 6E              LD      L,(HL)              ; get $4354
 327C: 26 4B           LD      H,$4B               
@@ -6342,10 +6352,10 @@ L328F:
 3296: BA              CP      D                   
 3297: C2 A4 32        JP      NZ,$32A4            ; {code.L32A4}
 329A: 2D              DEC     L                   
-329B: 3A 51 43        LD      A,($4351)           ; {ram.M4351}
+329B: 3A 51 43        LD      A,($4351)           ; {ram.M4351} get MSB of next closed loop pattern
 329E: 77              LD      (HL),A              
 329F: 2C              INC     L                   
-32A0: 3A 52 43        LD      A,($4352)           ; {ram.M4352}
+32A0: 3A 52 43        LD      A,($4352)           ; {ram.M4352} get LSB of next closed loop pattern
 32A3: 77              LD      (HL),A              
 L32A4:
 32A4: 2C              INC     L                   
@@ -6354,7 +6364,7 @@ L32A4:
 32A9: 2E 50           LD      L,$50               ; $4350
 L32AB:
 32AB: 0D              DEC     C                   
-32AC: C2 8F 32        JP      NZ,$328F            ; {code.L328F}
+32AC: C2 8F 32        JP      NZ,$328F            ; {code.L328F} loop for Number of aliens doing the closed loop pattern
 32AF: C9              RET                         
 
 ; 
@@ -6399,16 +6409,28 @@ L32B0:
 ; 
 32F3: FF FF FF FF FF FF FF FF FF FF FF FF FF
 
-;?
+; Mapping table for T3310.
 T3300:
 3300: 00 01 02 02 03 03 03 03
+; not used
 3308: FF FF FF FF FF FF FF FF
-;?
-T3310:
-3310: 88 90 98 A0 68 70 78 80 48 50 58 60 48 30 38 40
-3320: 88 90 98 A0 A8 B0 B8 C0 C8 D0 D8 E0 C8 E8 F0 F8
 
-; Base adresses of closed loops pattern tables for aliens.
+; Pointer table for T3330.
+; T1160, T1020, T1020, T10A8
+; T1160, T1020, T1020, T2C90...
+; The random values (0, 2, 4 or 6) are added in order to
+; address the rest of T3330.
+T3310:
+3310: 88 90 98 A0
+3314: 68 70 78 80
+3318: 48 50 58 60
+331C: 48 30 38 40
+3320: 88 90 98 A0
+3324: A8 B0 B8 C0
+3328: C8 D0 D8 E0
+332C: C8 E8 F0 F8
+
+; Base adresses of closed loop pattern tables for aliens.
 ; T1130, T2C00, T2FA0...
 T3330:
 3330: 11 30 2C 00 2F A0 2C 00 2E C4 2F A0 2F 34 2F A0
