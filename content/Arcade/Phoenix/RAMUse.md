@@ -48,10 +48,10 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 
 |    |     |     |
 | -------- | ------- | ----------------- |
-| 4350      | M4350                | ? |
-| 4351      | M4351                | ? |
-| 4352      | M4352                | ? |
-| 4353      | M4353                | ? |
+| 4350      | M4350                | Alien behavior state (0, 1, 2, 3, 4, 5, 6) |
+| 4351      | M4351                | MSB of next closed loop pattern |
+| 4352      | M4352                | LSB of next closed loop pattern |
+| 4353      | M4353                | Number of aliens doing the closed loop pattern |
 | 4354      | M4354                | LSB of pointer to ? |
 | 4355      | M4355                | ? |
 | 4356      | M4356                | ? |
