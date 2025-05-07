@@ -2543,10 +2543,10 @@ L0C84:
 0C97: D2 6E 09        JP      NC,$096E            ; {code.L096E} if bottom of screen reached
 0C9A: 2D              DEC     L                   ; enemy bullet coordinate X
 0C9B: CD B4 0C        CALL    $0CB4               ; {code.L0CB4}
-0C9E: 54              LD      D,H                 ;
-0C9F: 7D              LD      A,L                 ;
+0C9E: 54              LD      D,H                 ; 
+0C9F: 7D              LD      A,L                 ; 
 0CA0: C6 20           ADD     $20                 ; move to EnemyBullet(x)MSB
-0CA2: 5F              LD      E,A                 ;
+0CA2: 5F              LD      E,A                 ; 
 0CA3: EB              EX      DE,HL               ; 
 0CA4: 46              LD      B,(HL)              ; get EnemyBullet(x)MSB
 0CA5: 23              INC     HL                  ; 
@@ -2697,7 +2697,7 @@ L0D5E:
 0D5E: 2B              DEC     HL                  ; value for X movement
 0D5F: 0A              LD      A,(BC)              ; get Alien screen coordinate X
 0D60: 86              ADD     A,(HL)              ; add both
-0D61: 02              LD      (BC),A              ; save 
+0D61: 02              LD      (BC),A              ; save
 0D62: E6 07           AND     $07                 ; 0000_0111
 0D64: EB              EX      DE,HL               ; 
 0D65: C0              RET     NZ                  ; if grid border not reached
@@ -2793,8 +2793,8 @@ L0DD2:
 0DD6: 0B              DEC     BC                  ; 
 0DD7: 02              LD      (BC),A              ; set alien control state B (LSB for T14xx)
 0DD8: 0B              DEC     BC                  ; alien control state A
-0DD9: EB              EX      DE,HL               ;
-0DDA: C9              RET                         ;
+0DD9: EB              EX      DE,HL               ; 
+0DDA: C9              RET                         ; 
 ; 
 0DDB: FF FF FF
 ; End of movement list reached
@@ -6092,7 +6092,7 @@ L3112:
 
 ; from jump table T3018 if Counter93 is 3
 L3124:
-3124: 21 50 43        LD      HL,$4350            ; {+ram.M4350} 
+3124: 21 50 43        LD      HL,$4350            ; {+ram.M4350}
 3127: 7E              LD      A,(HL)              ; get alien behavior state
 3128: FE 01           CP      $01                 ; 
 312A: C0              RET     NZ                  ; if $4350 <> 1
@@ -6249,7 +6249,7 @@ L31D6:
 320A: 77              LD      (HL),A              ; set MSB of next closed loop pattern at $4351
 320B: 2C              INC     L                   ; 
 320C: 70              LD      (HL),B              ; set LSB of next closed loop pattern at $4352
-320D: C9              RET                         ;
+320D: C9              RET                         ; 
 
 ; not used 
 320E: 81              ADD     A,C                 
