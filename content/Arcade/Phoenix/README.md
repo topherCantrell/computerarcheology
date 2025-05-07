@@ -20,7 +20,17 @@
 
 # Phoenix
 
-This disassembly is Peter Martinides' hard work (https://github.com/Sorbas2020).
+The CPU used for this game was a INTEL 8085 and variants (P8085AH-2).
+
+The Z80 microprocessor from ZILOG is a further development of the 8080 microprocessor,
+which was launched at about the same time as the 8080's successor, the 8085 from INTEL.
+
+The 8-bit Z80 processor uses the register block and instruction set of the 8085 as a subset,
+but features some extensions in its structure and instruction set.
+
+This disassembly is using the Z80 instruction set, due to greater popularity. (Created by Sorbas2020)
+
+For the sake of completeness, there is also a link to a 8085 one. (Created by HHi)
 
 # Code Links
 
@@ -30,6 +40,7 @@ This disassembly is Peter Martinides' hard work (https://github.com/Sorbas2020).
 * [Background Tiles](bgtiles.md)
 * [Foreground Tiles](fgtiles.md)
 * [Color PROM](proms.md)
+* [Intel 8085 variant dump](hhi 8085 dump/readme.md)
 
 https://github.com/mamedev/mame/blob/master/src/mame/phoenix/phoenix.cpp
 
