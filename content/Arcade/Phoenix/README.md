@@ -40,7 +40,7 @@ For the sake of completeness, there is also a link to a 8085 one. (Created by HH
 * [Background Tiles](bgtiles.md)
 * [Foreground Tiles](fgtiles.md)
 * [Color PROM](proms.md)
-* [Intel 8085 variant dump](/content/Arcade/Phoenix/hhi-8085-dump/README.md)
+* [Intel 8085 variant dump](hhi 8085 dump/readme.md)
 
 https://github.com/mamedev/mame/blob/master/src/mame/phoenix/phoenix.cpp
 
