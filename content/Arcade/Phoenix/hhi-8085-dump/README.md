@@ -1,9 +1,19 @@
+![Phoenix](PhoenixHHi.jpg)
+
+>>> deploy:<br>
+>>>   +PhoenixHHi.jpg<br>
+>>>   +phoenixj-rom<br>
+>>>   phoenixj-func-main2.pdf<br>
+>>>   phoenixj-func-main2.scap<br>
+>>>   phoenixj.asm-may2025.txt<br>
+>>>   phoenixj.asm-may2025.txt.pdf<br>
+
 This directory contains the Intel 8085 variant dump of Phoenix taito (phoenixj) version. 
 
-- [i8085 dump annotated text file](./phoenixj.asm-may2025.txt)
-- [i8085 dump PDF](./phoenixj.asm-may2025.txt.pdf)
-- [flow visualization - PDF](./phoenixj-func-main2.pdf)
-- [flow visualization - Scapple source](./phoenixj-func-main2.scap)
+  - [i8085 dump annotated text file](./phoenixj.asm-may2025.txt)<br>
+  - [i8085 dump PDF](./phoenixj.asm-may2025.txt.pdf)<br>
+  - [flow visualization - PDF](./phoenixj-func-main2.pdf)<br>
+  - [flow visualization - Scapple source](./phoenixj-func-main2.scap)<br>
 
 Created by HHi - a long time ago ;-
 
@@ -12,7 +22,7 @@ I have merged named PC locations from @topherCantrell's [dump](../Code.md) into 
 
 # debugging 101
 brew install mame
-#mame -rompath . -debug [phoenixj](./phoenixj%20rom/phoenixj.zip)
+#mame -rompath . -debug [phoenixj](./phoenixj-rom/phoenixj.zip)
 
 Learning by debugging within mame:
 
