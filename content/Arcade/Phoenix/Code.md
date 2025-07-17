@@ -3002,7 +3002,7 @@ L0ED5:
 0EDA: 2C              INC     L                   
 0EDB: 71              LD      (HL),C              
 0EDC: 2E 64           LD      L,$64               
-0EDE: 36 FF           LD      (HL),$FF            
+0EDE: 36 FF           LD      (HL),$FF            ; set flag for 
 0EE0: 2E BA           LD      L,$BA               ; AliensLeft
 0EE2: 35              DEC     (HL)                ; decrement it
 0EE3: E1              POP     HL                  
@@ -4261,7 +4261,7 @@ L2000:
 201E: 78              LD      A,B                 ; get masked counter
 201F: A7              AND     A                   ; updates the zero flag
 2020: C2 25 20        JP      NZ,$2025            ; {code.L2025} if masked counter <> 0
-2023: 36 FF           LD      (HL),$FF            ; set all bits at $435E
+2023: 36 FF           LD      (HL),$FF            ; set $435E Flag for: 'AliensLeft < 5'
 L2025:
 2025: 7E              LD      A,(HL)              ; get $435E
 2026: A7              AND     A                   ; updates the zero flag
@@ -4861,12 +4861,13 @@ L2351:
 2377: CA 98 23        JP      Z,$2398             ; {code.L2398}
 237A: C9              RET                         
 ; 
+; The mothership's protective shield was hit by a player bullet.
 L237B:
 237B: 1A              LD      A,(DE)              
 237C: E6 F7           AND     $F7                 ; 1111_0111
 237E: 12              LD      (DE),A              
-237F: 3E FF           LD      A,$FF               
-2381: 32 66 43        LD      ($4366),A           ; {ram.M4366}
+237F: 3E FF           LD      A,$FF               ; set flag for
+2381: 32 66 43        LD      ($4366),A           ; {ram.M4366} 'Mothership hit detected'
 2384: 78              LD      A,B                 
 2385: 3D              DEC     A                   
 2386: 77              LD      (HL),A              
@@ -4897,24 +4898,25 @@ L2398:
 23A9: 11 40 1B        LD      DE,$1B40            
 L23AC:
 23AC: CA C0 23        JP      Z,$23C0             ; {code.L23C0}
-23AF: 78              LD      A,B                 
+23AF: 78              LD      A,B                 ; the purple conveyor belt was hit
 23B0: E6 0F           AND     $0F                 ; 0000_1111
 23B2: 83              ADD     A,E                 
 23B3: 5F              LD      E,A                 
 23B4: 1A              LD      A,(DE)              
 23B5: 77              LD      (HL),A              
-23B6: 3E FF           LD      A,$FF               
-23B8: 32 66 43        LD      ($4366),A           ; {ram.M4366}
+23B6: 3E FF           LD      A,$FF               ; set flag for
+23B8: 32 66 43        LD      ($4366),A           ; {ram.M4366} 'Mothership hit detected'
 23BB: C9              RET                         
 
 23BC: FF FF FF FF
 
+; The mothership will be destroyed if an alien pilot is hit.
 L23C0:
 23C0: 2D              DEC     L                   
 23C1: 7E              LD      A,(HL)              
 23C2: E6 F0           AND     $F0                 ; 1111_0000
-23C4: FE 70           CP      $70                 
-23C6: C0              RET     NZ                  
+23C4: FE 70           CP      $70                 ; background tiles code of alien pilot
+23C6: C0              RET     NZ                  ; if not the alien pilot
 23C7: 21 A4 43        LD      HL,$43A4            ; {+ram.GameState} Next interval game state ...
 23CA: 36 06           LD      (HL),$06            ; ... is 6 (mother ship partikel explosion)
 23CC: 2C              INC     L                   ; CounterA5
@@ -4924,7 +4926,10 @@ L23C0:
 23D3: C9              RET                         ; 
 ; 
 23D4: FF FF
-; 
+
+;*****************************************************************************
+;* Background sound update.
+;*****************************************************************************
 L23D6:
 23D6: 21 B8 43        LD      HL,$43B8            ; {+ram.LevelAndRound}
 23D9: 7E              LD      A,(HL)              ; 
@@ -4941,8 +4946,8 @@ L23D6:
 23F2: D8              RET     C                   ; if game level is 9 (mothership 'fade in')
 23F3: FE 0B           CP      $0B                 ; 
 23F5: DA 02 3B        JP      C,$3B02             ; {code.L3B02} if game level is B (mothership)
-23F8: CD 02 3B        CALL    $3B02               ; {code.L3B02}
-23FB: C3 98 3A        JP      $3A98               ; {code.L3A98}
+23F8: CD 02 3B        CALL    $3B02               ; {code.L3B02} Background sound for level B (mothership).
+23FB: C3 98 3A        JP      $3A98               ; {code.L3A98} Background sound for the alien waves.
 ; 
 23FE: FF FF
 
@@ -5533,7 +5538,7 @@ L2739:
 273C: A7              AND     A                   ; updates the zero flag
 273D: CC 68 27        CALL    Z,$2768             ; {code.L2768} if $4397 is 0.
 2740: CD A8 27        CALL    $27A8               ; {code.UpdateSoundControlHW}
-2743: C3 10 3A        JP      $3A10               ; {code.L3A10}
+2743: C3 10 3A        JP      $3A10               ; {code.UpdateSounds}
 
 2746: FF FF
 ; Add score values for enemies hit.
@@ -5588,8 +5593,8 @@ L2768:
 278F: 6F              LD      L,A                 
 2790: 34              INC     (HL)                
 2791: CD 67 03        CALL    $0367               ; {code.UpdateLivesScreen}
-2794: 3E FF           LD      A,$FF               
-2796: 32 6A 43        LD      ($436A),A           ; {ram.M436A}
+2794: 3E FF           LD      A,$FF               ; set flag for
+2796: 32 6A 43        LD      ($436A),A           ; {ram.M436A} 'Bonus live added'
 2799: 2E BE           LD      L,$BE               ; BonusLivesAt
 279B: 7E              LD      A,(HL)              
 279C: 36 00           LD      (HL),$00            
@@ -5604,7 +5609,7 @@ L2768:
 27A5: FF FF FF
 
 ;*****************************************************************************
-;* Update the sound control hardware registers
+;* Update the sound control hardware registers.
 ;*****************************************************************************
 UpdateSoundControlHW:
 27A8: 21 8C 43        LD      HL,$438C            ; {+ram.SoundControlA} ..
@@ -5616,40 +5621,46 @@ UpdateSoundControlHW:
 27B4: F6 0F           OR      $0F                 ; 0000_1111
 27B6: 77              LD      (HL),A              ; 
 27B7: 2D              DEC     L                   ; 
-27B8: 36 0F           LD      (HL),$0F            ; 
+27B8: 36 0F           LD      (HL),$0F            ; 0000_1111
 27BA: C9              RET                         ; 
 
 27BB: FF FF
-; 
+
+;*****************************************************************************
+;* Sound for player bullet or ship explosion.
+;*****************************************************************************
 L27BD:
 27BD: 21 63 43        LD      HL,$4363            ; {+ram.ParticleExplosion}
 27C0: 7E              LD      A,(HL)              ; 
 27C1: A7              AND     A                   ; updates the zero flag
 27C2: C2 E2 27        JP      NZ,$27E2            ; {code.L27E2} if player ship was hit.
 27C5: 2E 61           LD      L,$61               ; BulletTriggered
-27C7: 7E              LD      A,(HL)              
+27C7: 7E              LD      A,(HL)              ; 
 27C8: A7              AND     A                   ; updates the zero flag
-27C9: C8              RET     Z                   
-27CA: FE 19           CP      $19                 
+27C9: C8              RET     Z                   ; 
+27CA: FE 19           CP      $19                 ; 
 27CC: D2 D8 27        JP      NC,$27D8            ; {code.L27D8} if >= $19
-27CF: 35              DEC     (HL)                
+27CF: 35              DEC     (HL)                ; 
 27D0: 2E 8C           LD      L,$8C               ; SoundControlA
-27D2: 7E              LD      A,(HL)              
+27D2: 7E              LD      A,(HL)              ; 
 27D3: F6 40           OR      $40                 ; 0100_0000
-27D5: 77              LD      (HL),A              
-27D6: C9              RET                         
+27D5: 77              LD      (HL),A              ; set noise generator
+27D6: C9              RET                         ; 
 ; not used
 27D7: 77              LD      (HL),A              
 L27D8:
-27D8: 36 18           LD      (HL),$18            
+27D8: 36 18           LD      (HL),$18            ; 0001_1000 frequency divider and sound variation speed
 27DA: 2E 8C           LD      L,$8C               ; SoundControlA
-27DC: 7E              LD      A,(HL)              
+27DC: 7E              LD      A,(HL)              ; 
 27DD: E6 BF           AND     $BF                 ; 1011_1111
-27DF: 77              LD      (HL),A              
-27E0: C9              RET                         
+27DF: 77              LD      (HL),A              ; clear noise generator
+27E0: C9              RET                         ; 
 ; not used 
 27E1: 36
 
+;*****************************************************************************
+;* Sound for player ship explosion.
+;*****************************************************************************
 L27E2:
 27E2: FE 40           CP      $40                 
 27E4: DA E9 27        JP      C,$27E9             ; {code.L27E9}
@@ -5657,8 +5668,8 @@ L27E2:
 L27E9:
 27E9: 35              DEC     (HL)                
 27EA: 2E 8C           LD      L,$8C               ; SoundControlA
-27EC: 36 8F           LD      (HL),$8F            ; 1000_1111
-27EE: C9              RET                         
+27EC: 36 8F           LD      (HL),$8F            ; 1000_1111 frequency divider and noise generator
+27EE: C9              RET                         ; 
 
 27EF: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
 
@@ -5858,7 +5869,12 @@ T2FA0:
 2FF0: 05 05 02 02 02 05 1C 08 08 07 07 08 08 08 00 FF
 
 ;*****************************************************************************
-;* AlienBehaviorUpdate
+;* AlienBehaviorUpdate.
+;* This is the 'core of the matter'!
+;* It handles all attack patterns of the aliens 
+;* and the randomization of selection.
+;* The selected patterns do always fit on the screen, 
+;* even if the alien formation is further down. (phase 1, 2, 3)
 ;*****************************************************************************
 AlienBehaviorUpdate:
 3000: 21 93 43        LD      HL,$4393            ; {+ram.Counter93}
@@ -5882,15 +5898,17 @@ L3012:
 ; 
 T3018:
 3018: 32 64 ; if Counter93 is 0
-301A: 30 28 ; if Counter93 is 1
+301A: 30 28 ; if Counter93 is 1 - do the 'Angry movement pattern A/B' (pattern 26/28)
 301C: 30 BA ; if Counter93 is 2
-301E: 31 24 ; if Counter93 is 3
+301E: 31 24 ; if Counter93 is 3 - calculate the number of aliens in formation flying
 3020: 31 5A ; if Counter93 is 4
-3022: 31 B4 ; if Counter93 is 5
+3022: 31 B4 ; if Counter93 is 5 - get the next closed loop pattern.
 3024: 32 2C ; if Counter93 is 6
-3026: 30 12 ; if Counter93 is 7
+3026: 30 12 ; if Counter93 is 7 - do nothing
 
-; from jump table T3018 if Counter93 is 1
+; from jump table T3018 if Counter93 is 1.
+; Do the 'Angry movement pattern A/B' (pattern 26/28).
+; After that, the alien formation is further down on the screen.
 L3028:
 3028: 21 57 43        LD      HL,$4357            ; {+ram.M4357}
 302B: 7E              LD      A,(HL)              ; 
@@ -5926,6 +5944,7 @@ L3028:
 ; 
 305A: FF FF
 ; 
+; End of movement pattern reached. Get the next start pointer.
 L305C:
 305C: CD 74 30        CALL    $3074               ; {code.L3074}
 305F: 21 57 43        LD      HL,$4357            ; {+ram.M4357}
@@ -6091,6 +6110,7 @@ L3112:
 3123: 47              LD      B,A                 
 
 ; from jump table T3018 if Counter93 is 3
+; Calculate the number of aliens in formation flying.
 L3124:
 3124: 21 50 43        LD      HL,$4350            ; {+ram.M4350}
 3127: 7E              LD      A,(HL)              ; get alien behavior state
@@ -6111,7 +6131,7 @@ L313D:
 313F: 96              SUB     (HL)                ; 
 3140: 47              LD      B,A                 ; 
 3141: CD AA 30        CALL    $30AA               ; {code.GetRandomNumber}
-3144: 3C              INC     A                   ; 
+3144: 3C              INC     A                   ; from $01 to $10
 3145: B8              CP      B                   ; 
 3146: DA 4B 31        JP      C,$314B             ; {code.L314B}
 3149: 3E 01           LD      A,$01               ; only one alien
@@ -6188,6 +6208,7 @@ L3192:
 31AE: FF FF FF FF FF FF
 
 ; from jump table T3018 if Counter93 is 5
+; Get the next closed loop pattern.
 L31B4:
 31B4: 3A 50 43        LD      A,($4350)           ; {ram.M4350} get alien behavior state
 31B7: FE 03           CP      $03                 ; 
@@ -6228,7 +6249,7 @@ L31D6:
 31E8: 00              NOP                         ; 
 31E9: 3A 57 43        LD      A,($4357)           ; {ram.M4357}
 31EC: 47              LD      B,A                 ; 
-31ED: CD 10 32        CALL    $3210               ; {code.L3210}
+31ED: CD 10 32        CALL    $3210               ; {code.L3210} get the attack phase at B
 31F0: 79              LD      A,C                 ; 
 31F1: 80              ADD     A,B                 ; 
 31F2: C6 10           ADD     $10                 ; LSB for table T3310
@@ -6255,7 +6276,8 @@ L31D6:
 320E: 81              ADD     A,C                 
 320F: 6F              LD      L,A                 
 
-; 
+; Get the attack phase at B. 
+; Depending on alien screen coordinate Y.
 L3210:
 3210: 3A 53 43        LD      A,($4353)           ; {ram.M4353} Number of aliens doing the closed loop pattern
 3213: FE 01           CP      $01                 ; 
@@ -6306,7 +6328,7 @@ L324E:
 3251: C6 04           ADD     $04                 
 3253: 5F              LD      E,A                 
 3254: FE B0           CP      $B0                 
-3256: C2 40 32        JP      NZ,$3240            ; {code.L3240}
+3256: C2 40 32        JP      NZ,$3240            ; {code.L3240} loop over alien data structure
 3259: 3E 06           LD      A,$06               
 325B: 32 50 43        LD      ($4350),A           ; {ram.M4350} set next alien behavior state to 6
 325E: C9              RET                         
@@ -7338,7 +7360,7 @@ L3844:
 L3894:
 3894: 01 05 0D        LD      BC,$0D05            
 3897: 3E FF           LD      A,$FF               
-3899: 32 64 43        LD      ($4364),A           ; {ram.M4364}
+3899: 32 64 43        LD      ($4364),A           ; {ram.M4364} Flag for: 'enemy hit detected'
 389C: C3 F8 38        JP      $38F8               ; {code.L38F8}
 
 389F: FF FF
@@ -7399,9 +7421,10 @@ L38BC:
 38E5: 26 3D           LD      H,$3D               
 38E7: 7E              LD      A,(HL)              
 38E8: 12              LD      (DE),A              
+; A bird's wing was hit
 L38E9:
-38E9: 3E FF           LD      A,$FF               
-38EB: 32 66 43        LD      ($4366),A           ; {ram.M4366}
+38E9: 3E FF           LD      A,$FF               ; set the flag for
+38EB: 32 66 43        LD      ($4366),A           ; {ram.M4366} bird wing hit detected
 38EE: 01 02 07        LD      BC,$0702            
 38F1: C3 F8 38        JP      $38F8               ; {code.L38F8}
 
@@ -7439,15 +7462,17 @@ L391C:
 391D: FE 20           CP      $20                 
 391F: D2 BC 38        JP      NC,$38BC            ; {code.L38BC} if >= $20
 3922: C9              RET                         
-; 
+
+; Trigger the melody chip for 'Elise',
+; if flag for: 'mother ship score display' is set.
 L3923:
-3923: C8              RET     Z                   
+3923: C8              RET     Z                   ; 
 3924: 35              DEC     (HL)                ; decrement $436B Counter for: 'mother ship score display'
 3925: 2E 8D           LD      L,$8D               ; SoundControlB
 3927: 7E              LD      A,(HL)              ; 
 3928: E6 3F           AND     $3F                 ; 0011_1111
 392A: F6 80           OR      $80                 ; 1000_0000
-392C: 77              LD      (HL),A              ; 
+392C: 77              LD      (HL),A              ; triggers tune2 -- 'FÜR ELISE' (Beethoven)
 392D: C9              RET                         ; 
 ; not used 
 392E: C9              RET                         
@@ -7594,12 +7619,15 @@ L3A00:
 3A0D: D8              RET     C                   
 3A0E: E1              POP     HL                  
 3A0F: C9              RET                         
-;
-L3A10:
+
+;*****************************************************************************
+;* Update all synth sounds and melody trigger data.
+;*****************************************************************************
+UpdateSounds:
 3A10: 21 B8 43        LD      HL,$43B8            ; {+ram.LevelAndRound}
 3A13: 7E              LD      A,(HL)              ; get it
 3A14: A7              AND     A                   ; updates the zero flag
-3A15: C2 43 3B        JP      NZ,$3B43            ; {code.L3B43} if LevelAndRound is not 0.
+3A15: C2 43 3B        JP      NZ,$3B43            ; {code.L3B43} if LevelAndRound is not 0, update synth sounds
 3A18: 2E 8D           LD      L,$8D               ; set SoundControlB for...
 3A1A: 36 CF           LD      (HL),$CF            ; ... 1100_1111 triggers Tune3 -- ESTUDIO (Phoenix theme song)
 3A1C: C9              RET                         ; 
@@ -7625,42 +7653,48 @@ L3A2C:
 3A37: 2E 68           LD      L,$68               ; $4368
 3A39: 36 00           LD      (HL),$00            
 3A3B: 2E 66           LD      L,$66               ; $4366
-3A3D: 36 00           LD      (HL),$00            
+3A3D: 36 00           LD      (HL),$00            ; reset the flag for: 'Mothership hit'
 3A3F: C9              RET                         
 ; 
+;*****************************************************************************
+;* Enemy hit sound during explosion animation.
+;*****************************************************************************
 L3A40:
-3A40: 2E 64           LD      L,$64               ; $4364
-3A42: 7E              LD      A,(HL)              
+3A40: 2E 64           LD      L,$64               ; $4364 Flag for: 'enemy hit detected' ($FF) and counter
+3A42: 7E              LD      A,(HL)              ; 
 3A43: A7              AND     A                   ; updates the zero flag
 3A44: CA 62 3A        JP      Z,$3A62             ; {code.L3A62}
-3A47: FE 10           CP      $10                 
+3A47: FE 10           CP      $10                 ; 
 3A49: DA 4E 3A        JP      C,$3A4E             ; {code.L3A4E}
-3A4C: 36 10           LD      (HL),$10            
+3A4C: 36 10           LD      (HL),$10            ; start value for animation counter
 L3A4E:
-3A4E: 35              DEC     (HL)                
-3A4F: 7E              LD      A,(HL)              
-3A50: 0F              RRCA                        
-3A51: 00              NOP                         
-3A52: 00              NOP                         
-3A53: 2F              CPL                         
+3A4E: 35              DEC     (HL)                ; 
+3A4F: 7E              LD      A,(HL)              ; 
+3A50: 0F              RRCA                        ; 
+3A51: 00              NOP                         ; 
+3A52: 00              NOP                         ; 
+3A53: 2F              CPL                         ; 
 3A54: E6 07           AND     $07                 ; 0000_0111
-3A56: F6 10           OR      $10                 ; 0001_0000
+3A56: F6 10           OR      $10                 ; 0001_0000 sound variation speed
 3A58: 2E 8C           LD      L,$8C               ; SoundControlA
-3A5A: 77              LD      (HL),A              
+3A5A: 77              LD      (HL),A              ; enemy hit sound
 3A5B: 2E 66           LD      L,$66               ; $4366
-3A5D: 36 00           LD      (HL),$00            
-3A5F: C9              RET                         
+3A5D: 36 00           LD      (HL),$00            ; reset the flag for: 'Mothership hit'
+3A5F: C9              RET                         ; 
 
 ; not used 
 3A60: 0F              RRCA                        
 3A61: 00              NOP                         
 
-;
+; 
+;*****************************************************************************
+;* Bird wing hit sound.
+;*****************************************************************************
 L3A62:
 3A62: 2E 66           LD      L,$66               ; $4366
-3A64: 7E              LD      A,(HL)              
+3A64: 7E              LD      A,(HL)              ; get flag 'bird wing hit detected'
 3A65: A7              AND     A                   ; updates the zero flag
-3A66: C8              RET     Z                   
+3A66: C8              RET     Z                   ; if not set.
 3A67: FE 10           CP      $10                 
 3A69: DA 78 3A        JP      C,$3A78             ; {code.L3A78}
 3A6C: 36 10           LD      (HL),$10            
@@ -7669,13 +7703,13 @@ L3A62:
 3A73: CA 78 3A        JP      Z,$3A78             ; {code.L3A78}
 3A76: 36 05           LD      (HL),$05            
 L3A78:
-3A78: 35              DEC     (HL)                
+3A78: 35              DEC     (HL)                ; 
 3A79: 2E 8C           LD      L,$8C               ; SoundControlA
-3A7B: 7E              LD      A,(HL)              
+3A7B: 7E              LD      A,(HL)              ; 
 3A7C: E6 08           AND     $08                 ; 0000_1000
 3A7E: F6 04           OR      $04                 ; 0000_0100
-3A80: 77              LD      (HL),A              
-3A81: C9              RET                         
+3A80: 77              LD      (HL),A              ; bird wing hit sound
+3A81: C9              RET                         ; 
 ; 
 L3A82:
 3A82: 21 9A 43        LD      HL,$439A            ; {+ram.Counter9A}
@@ -7685,52 +7719,61 @@ L3A82:
 3A89: 2E 8D           LD      L,$8D               ; SoundControlB
 3A8B: 7E              LD      A,(HL)              
 3A8C: E6 3F           AND     $3F                 ; 0011_1111
-3A8E: 77              LD      (HL),A              
+3A8E: 77              LD      (HL),A              ; stop melody
 3A8F: C9              RET                         
 ; 
 L3A90:
-3A90: 21 6B 43        LD      HL,$436B            ; {+ram.M436B}
-3A93: 7E              LD      A,(HL)              
+3A90: 21 6B 43        LD      HL,$436B            ; {+ram.M436B} Flag for: 'mother ship score display' ($FF) and counter
+3A93: 7E              LD      A,(HL)              ; 
 3A94: A7              AND     A                   ; updates the zero flag
-3A95: C3 23 39        JP      $3923               ; {code.L3923}
-; 
+3A95: C3 23 39        JP      $3923               ; {code.L3923} 
+
+;*****************************************************************************
+;* Background sound for the alien waves.
+;* At least one of the aliens is doing a closed loop pattern.
+;* Sound data is derived from alien control state B.
+;*****************************************************************************
 L3A98:
-3A98: 21 70 4B        LD      HL,$4B70            ; {+ram.M4B70}
-3A9B: 01 00 08        LD      BC,$0800            
-3A9E: 11 B0 03        LD      DE,$03B0            
+3A98: 21 70 4B        LD      HL,$4B70            ; {+ram.M4B70} Alien control state A
+3A9B: 01 00 08        LD      BC,$0800            ; bit3 mask, loop index
+3A9E: 11 B0 03        LD      DE,$03B0            ; offset to next alien control state A, LSB for end of alien data structure (grid)
 L3AA1:
-3AA1: 7E              LD      A,(HL)              
-3AA2: 2C              INC     L                   
-3AA3: A0              AND     B                   
+3AA1: 7E              LD      A,(HL)              ; 
+3AA2: 2C              INC     L                   ; 
+3AA3: A0              AND     B                   ; 0000_1000
 3AA4: CA AE 3A        JP      Z,$3AAE             ; {code.L3AAE}
-3AA7: 7E              LD      A,(HL)              
-3AA8: FE 28           CP      $28                 
+3AA7: 7E              LD      A,(HL)              ; get Alien control state B
+3AA8: FE 28           CP      $28                 ; 
 3AAA: DA AE 3A        JP      C,$3AAE             ; {code.L3AAE}
-3AAD: 0C              INC     C                   
+3AAD: 0C              INC     C                   ; 
 L3AAE:
-3AAE: 7D              LD      A,L                 
-3AAF: 82              ADD     A,D                 
-3AB0: 6F              LD      L,A                 
-3AB1: BB              CP      E                   
-3AB2: C2 A1 3A        JP      NZ,$3AA1            ; {code.L3AA1}
-3AB5: 79              LD      A,C                 
+3AAE: 7D              LD      A,L                 ; 
+3AAF: 82              ADD     A,D                 ; 
+3AB0: 6F              LD      L,A                 ; 
+3AB1: BB              CP      E                   ; 
+3AB2: C2 A1 3A        JP      NZ,$3AA1            ; {code.L3AA1} loop over alien data structure (grid)
+3AB5: 79              LD      A,C                 ; 
 3AB6: A7              AND     A                   ; updates the zero flag
-3AB7: C8              RET     Z                   
-3AB8: FE 08           CP      $08                 
+3AB7: C8              RET     Z                   ; 
+3AB8: FE 08           CP      $08                 ; 
 3ABA: DA BF 3A        JP      C,$3ABF             ; {code.L3ABF}
-3ABD: 3E 08           LD      A,$08               
+3ABD: 3E 08           LD      A,$08               ; 0000_1000
 L3ABF:
-3ABF: C6 25           ADD     $25                 
-3AC1: 4F              LD      C,A                 
+3ABF: C6 25           ADD     $25                 ; 0010_0101
+3AC1: 4F              LD      C,A                 ; 
 3AC2: 21 8C 43        LD      HL,$438C            ; {+ram.SoundControlA}
-3AC5: 7E              LD      A,(HL)              
+3AC5: 7E              LD      A,(HL)              ; get
 3AC6: E6 C0           AND     $C0                 ; mask out 1100_0000
-3AC8: B1              OR      C                   
-3AC9: 77              LD      (HL),A              ; trigger sound control A
-3ACA: C9              RET                         
+3AC8: B1              OR      C                   ; set e.g. 0010_1101 the terrible sound of an alien attack
+3AC9: 77              LD      (HL),A              ; at SoundControlA
+3ACA: C9              RET                         ; 
 ; 
 3ACB: FF FF FF FF FF
-; 
+
+;*****************************************************************************
+;* Background sound for the bird waves.
+;* Sound data from T3DE0.
+;*****************************************************************************
 L3AD0:
 3AD0: 21 8E 43        LD      HL,$438E            ; {+ram.M438E}
 3AD3: 7E              LD      A,(HL)              
@@ -7740,19 +7783,19 @@ L3AD0:
 3AD8: F6 20           OR      $20                 ; 0010_0000
 3ADA: 47              LD      B,A                 
 3ADB: 2D              DEC     L                   
-3ADC: 7E              LD      A,(HL)              
+3ADC: 7E              LD      A,(HL)              ; $438D SoundControlB
 3ADD: E6 C0           AND     $C0                 ; 1100_0000
-3ADF: B0              OR      B                   
-3AE0: 77              LD      (HL),A              
+3ADF: B0              OR      B                   ; set bits
+3AE0: 77              LD      (HL),A              ; at SoundControlB
 3AE1: 2E 96           LD      L,$96               ; $4396
 3AE3: 7E              LD      A,(HL)              
 3AE4: 34              INC     (HL)                
 3AE5: A7              AND     A                   ; updates the zero flag
 3AE6: CA F8 3A        JP      Z,$3AF8             ; {code.L3AF8}
 3AE9: 3A D6 4B        LD      A,($4BD6)           ; {!ram.B4BD6}
-3AEC: C6 E0           ADD     $E0                 ; LSB of table T3DE0
+3AEC: C6 E0           ADD     $E0                 ; LSB of table T3DE0 Background sound data for the bird waves.
 3AEE: 5F              LD      E,A                 
-3AEF: 16 3D           LD      D,$3D               ; MSB of table T3DE0
+3AEF: 16 3D           LD      D,$3D               ; MSB of table T3DE0 Background sound data for the bird waves.
 3AF1: 1A              LD      A,(DE)              
 3AF2: BE              CP      (HL)                
 3AF3: D0              RET     NC                  
@@ -7768,86 +7811,94 @@ L3AF8:
 3AFA: 34              INC     (HL)                
 3AFB: 2D              DEC     L                   ; SoundControlB
 3AFC: 7E              LD      A,(HL)              ; 
-3AFD: F6 10           OR      $10                 ; 0001_0000
-3AFF: 77              LD      (HL),A              ; 
+3AFD: F6 10           OR      $10                 ; set 0001_0000
+3AFF: 77              LD      (HL),A              ; at SoundControlB
 3B00: C9              RET                         ; 
 
 ; not used 
 3B01: 8E              ADC     A,(HL)              
 
-; 
+;*****************************************************************************
+;* Background sound for level B (mothership).
+;* Sound data is derived from Counter9A+1.
+;*****************************************************************************
 L3B02:
 3B02: 21 9A 43        LD      HL,$439A            ; {+ram.Counter9A}
-3B05: 7E              LD      A,(HL)              
-3B06: FE 02           CP      $02                 
-3B08: D0              RET     NC                  
-3B09: 2C              INC     L                   
-3B0A: 7E              LD      A,(HL)              
-3B0B: 47              LD      B,A                 
+3B05: 7E              LD      A,(HL)              ; 
+3B06: FE 02           CP      $02                 ; 
+3B08: D0              RET     NC                  ; 
+3B09: 2C              INC     L                   ; 
+3B0A: 7E              LD      A,(HL)              ; get Counter9A+1
+3B0B: 47              LD      B,A                 ; 
 3B0C: E6 60           AND     $60                 ; 0110_0000
 3B0E: 2E 8D           LD      L,$8D               ; SoundControlB
-3B10: 36 0A           LD      (HL),$0A            ; 0000_1010
-3B12: C0              RET     NZ                  
-3B13: 78              LD      A,B                 
-3B14: E6 02           AND     $02                 ; 0000_0010
-3B16: C6 1C           ADD     $1C                 
-3B18: 77              LD      (HL),A              
-3B19: C9              RET                         
+3B10: 36 0A           LD      (HL),$0A            ; set  0000_1010
+3B12: C0              RET     NZ                  ; 
+3B13: 78              LD      A,B                 ; 
+3B14: E6 02           AND     $02                 ; mask 0000_0010
+3B16: C6 1C           ADD     $1C                 ; set  0001_1100
+3B18: 77              LD      (HL),A              ; at SoundControlB
+3B19: C9              RET                         ; 
 
 ; not used 
 3B1A: 78              LD      A,B                 
 
-; 
+;*****************************************************************************
+;* Ringtone sound for the player shield.
+;* Sound data is derived from player shield animation counter.
+;*****************************************************************************
 L3B1B:
-3B1B: 21 62 43        LD      HL,$4362            ; {+ram.M4362}
-3B1E: 7E              LD      A,(HL)              
+3B1B: 21 62 43        LD      HL,$4362            ; {+ram.M4362} Player shield animation counter
+3B1E: 7E              LD      A,(HL)              ; 
 3B1F: A7              AND     A                   ; updates the zero flag
 3B20: C8              RET     Z                   ; if $4362 is 0.
-3B21: FE 40           CP      $40                 
+3B21: FE 40           CP      $40                 ; 
 3B23: DA 28 3B        JP      C,$3B28             ; {code.L3B28}
-3B26: 36 40           LD      (HL),$40            
+3B26: 36 40           LD      (HL),$40            ; 
 L3B28:
-3B28: 35              DEC     (HL)                
-3B29: 7E              LD      A,(HL)              
+3B28: 35              DEC     (HL)                ; 
+3B29: 7E              LD      A,(HL)              ; 
 3B2A: E6 06           AND     $06                 ; 0000_0110
 3B2C: 07              RLCA                        ; Multiply by 2
-3B2D: 00              NOP                         
+3B2D: 00              NOP                         ; 
 3B2E: 2E 8D           LD      L,$8D               ; SoundControlB
-3B30: 77              LD      (HL),A              
-3B31: C9              RET                         
+3B30: 77              LD      (HL),A              ; set
+3B31: C9              RET                         ; 
 
 3B32: FF
-; 
+
+; Play the sound for 'Bonus live added'.
 L3B33:
-3B33: 21 6A 43        LD      HL,$436A            ; {+ram.M436A}
-3B36: 7E              LD      A,(HL)              
+3B33: 21 6A 43        LD      HL,$436A            ; {+ram.M436A} get flag for: 'Bonus live added'
+3B36: 7E              LD      A,(HL)              ; 
 3B37: A7              AND     A                   ; updates the zero flag
-3B38: C8              RET     Z                   ; if $436A is 0.
-3B39: 35              DEC     (HL)                
+3B38: C8              RET     Z                   ; if flag not set.
+3B39: 35              DEC     (HL)                ; 
 3B3A: E6 08           AND     $08                 ; 0000_1000
 3B3C: F6 07           OR      $07                 ; 0000_0111
 3B3E: 2E 8D           LD      L,$8D               ; SoundControlB
-3B40: 77              LD      (HL),A              
-3B41: C9              RET                         
+3B40: 77              LD      (HL),A              ; set
+3B41: C9              RET                         ; 
 
 ; not used 
 3B42: 8D              ADC     A,L                 
-;
+
+; Update all synth sounds and melody triggers.
 L3B43:
 3B43: 21 A4 43        LD      HL,$43A4            ; {+ram.GameState}
 3B46: 7E              LD      A,(HL)              ; 
 3B47: FE 03           CP      $03                 ; 
 3B49: CC D6 23        CALL    Z,$23D6             ; {code.L23D6} if GameState is 'normal game play'
 3B4C: CD 33 3B        CALL    $3B33               ; {code.L3B33}
-3B4F: CD 1B 3B        CALL    $3B1B               ; {code.L3B1B}
+3B4F: CD 1B 3B        CALL    $3B1B               ; {code.L3B1B} Ringtone sound for the player shield.
 3B52: CD 1D 3A        CALL    $3A1D               ; {code.L3A1D}
-3B55: CD BD 27        CALL    $27BD               ; {code.L27BD}
+3B55: CD BD 27        CALL    $27BD               ; {code.L27BD} Sound for player bullet or ship explosion.
 3B58: CD 82 3A        CALL    $3A82               ; {code.L3A82}
-3B5B: C3 90 3A        JP      $3A90               ; {code.L3A90}
+3B5B: C3 90 3A        JP      $3A90               ; {code.L3A90} Trigger melody
 ;
 3B5E: FF FF
 ;
-;?
+;? used at $3844
 T3B60:
 3B60: 1F 7C F0 01 C0
 3B65: 07 7F FC F0 07 C0 1F FF FC 03 F0
@@ -7931,7 +7982,8 @@ T3DC0:
 3DDC: 04 70
 3DDE: 05 70
 
-; sinus motion like, y pos table used by big birds ?
+; Background sound data for the bird waves.
+; Slowly ascending and descending tones.
 T3DE0:
 3DE0: 40 40 40 40 40 40 40 34 2C 26 20 1C 18 14 12 0F
 3DF0: 0D 0B 09 08 07 06 05 04 03 02 02 02 02 02 02 02

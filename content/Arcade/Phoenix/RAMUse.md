@@ -60,19 +60,19 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 4359      | M4359                | ? |
 | 435A      | M435A                | ? |
 | 435B      | M435B                | ? |
-| 435E      | M435E                | ? |
+| 435E      | M435E                | Flag for: 'AliensLeft < 5' ($FF) |
 | 435F      | M435F                | 8 bit counter for alien movement |
-| 4360      | PlayerMoved          | Flag for: 'player moved' ($FF) |
-| 4361      | BulletTriggered      | Flag for: 'bullet triggered' ($30) and counter |
-| 4362      | M4362                | Player shield animation counter ? |
-| 4363      | ParticleExplosion    | Flag for: 'particle explosion start' and animation counter |
-| 4364      | M4364                | ? |
-| 4366      | M4366                | ? |
+| 4360      | PlayerMoved          | Flag for: 'Player moved' ($FF) |
+| 4361      | BulletTriggered      | Flag for: 'Bullet triggered' ($30) and counter |
+| 4362      | M4362                | Flag for: 'Player shield active' and animation counter |
+| 4363      | ParticleExplosion    | Flag for: 'Particle explosion start' and animation counter |
+| 4364      | M4364                | Flag for: 'Enemy hit detected' ($FF) and counter |
+| 4366      | M4366                | Flag for: 'Mothership or bird wing hit detected' ($FF) |
 | 4367      | M4367                | Flag for: 'Mothership partially faded in' ($FF) |
 | 4368      | M4368                | ? |
-| 4369      | M4369                | Flag for:'bonus explosion' ($FF) |
-| 436A      | M436A                | ? |
-| 436B      | M436B                | Flag for: 'mother ship score display' ($FF) and counter|
+| 4369      | M4369                | Flag for: 'Bonus explosion' ($FF) |
+| 436A      | M436A                | Flag for: 'Bonus live added' ($FF) and counter |
+| 436B      | M436B                | Flag for: 'Mother ship score display' ($FF) and counter|
 | 436D      | M436D                | ? |
 | 436E      | M436E                | ? |
 | 436F      | M436F                | ? |
