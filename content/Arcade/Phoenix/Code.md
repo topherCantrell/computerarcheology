@@ -2815,7 +2815,7 @@ L0DDE:
 0DEE: FF FF
 
 ;*****************************************************************************
-;* Enemy bullet to player ship, collission detection.
+;* Player bullet to alien, collission detection.
 ;*****************************************************************************
 L0DF0:
 0DF0: 01 C4 43        LD      BC,$43C4            ; {+ram.PlayerBulletState}
@@ -2834,32 +2834,32 @@ L0DF0:
 0E0C: FF FF FF FF
 ; 
 L0E10:
-0E10: 0A              LD      A,(BC)              ; ?
+0E10: 0A              LD      A,(BC)              ; get player bullet state
 0E11: E6 08           AND     $08                 ; mask out 0000_1000
-0E13: C8              RET     Z                   ; if bit3 not set
+0E13: C8              RET     Z                   ; if no bullet triggered
 0E14: 56              LD      D,(HL)              ; get MSB screen ram adress
 0E15: 2C              INC     L                   ; 
 0E16: 5E              LD      E,(HL)              ; get LSB screen ram adress
 0E17: 1A              LD      A,(DE)              ; get character
-0E18: FE C0           CP      $C0                 ; bullets and alien ($50 - $BF)
-0E1A: D0              RET     NC                  ; 
-0E1B: FE 60           CP      $60                 ; alien ($60 - $BF)
-0E1D: D8              RET     C                   ; if no character
-0E1E: FE 68           CP      $68                 ; alien
-0E20: D2 39 0E        JP      NC,$0E39            ; {code.L0E39} if >= $68 (fgtiles aliens out of formation)
+0E18: FE C0           CP      $C0                 ; is explosion parts ($C0 - $E3) ?
+0E1A: D0              RET     NC                  ; ignore them.
+0E1B: FE 60           CP      $60                 ; is alien in base formation ($60 - $BF) ?
+0E1D: D8              RET     C                   ; if no character.
+0E1E: FE 68           CP      $68                 ; is alien out of formation ($68 - $BF) ?
+0E20: D2 39 0E        JP      NC,$0E39            ; {code.L0E39} if yes
 0E23: E6 07           AND     $07                 ; mask out 0000_0111
 0E25: 07              RLCA                        ; Multiply by 4 ..
-0E26: 07              RLCA                        ; ..
+0E26: 07              RLCA                        ; ..to get a 4 byte offset
 0E27: C6 40           ADD     $40                 ; 
 0E29: 6F              LD      L,A                 ; 
 0E2A: 26 17           LD      H,$17               ; T1740
 0E2C: 03              INC     BC                  ; 
 0E2D: 03              INC     BC                  ; 
-0E2E: 0A              LD      A,(BC)              ; 
+0E2E: 0A              LD      A,(BC)              ; get player bullet, coordinate X
 0E2F: E6 07           AND     $07                 ; 0000_0111
 0E31: BE              CP      (HL)                ; 
 0E32: D0              RET     NC                  ; 
-0E33: 23              INC     HL                  ; 
+0E33: 23              INC     HL                  ; 2nd byte at T1740
 0E34: BE              CP      (HL)                ; 
 0E35: D8              RET     C                   ; 
 0E36: C3 70 0E        JP      $0E70               ; {code.L0E70}
@@ -2912,76 +2912,76 @@ L0E58:
 0E6E: FF FF
 ; 
 L0E70:
-0E70: 23              INC     HL                  
-0E71: 0A              LD      A,(BC)              
+0E70: 23              INC     HL                  ; 3nd byte at T1740
+0E71: 0A              LD      A,(BC)              ; get player bullet, coordinate X
 0E72: E6 F8           AND     $F8                 ; 1111_1000
-0E74: 86              ADD     A,(HL)              
-0E75: 57              LD      D,A                 
-0E76: 03              INC     BC                  
-0E77: 0A              LD      A,(BC)              
+0E74: 86              ADD     A,(HL)              ; 
+0E75: 57              LD      D,A                 ; save it in D
+0E76: 03              INC     BC                  ; 
+0E77: 0A              LD      A,(BC)              ; get player bullet, coordinate Y
 0E78: E6 F8           AND     $F8                 ; 1111_1000
-0E7A: 5F              LD      E,A                 
+0E7A: 5F              LD      E,A                 ; save it in E
 0E7B: 21 70 4B        LD      HL,$4B70            ; {+ram.M4B70}
 L0E7E:
-0E7E: 7E              LD      A,(HL)              
-0E7F: 23              INC     HL                  
-0E80: 23              INC     HL                  
+0E7E: 7E              LD      A,(HL)              ; get alien control state A
+0E7F: 23              INC     HL                  ; 
+0E80: 23              INC     HL                  ; 
 0E81: E6 08           AND     $08                 ; 0000_1000
-0E83: C4 90 0E        CALL    NZ,$0E90            ; {code.L0E90}
-0E86: 23              INC     HL                  
-0E87: 23              INC     HL                  
-0E88: 3E B0           LD      A,$B0               
-0E8A: BD              CP      L                   
-0E8B: C2 7E 0E        JP      NZ,$0E7E            ; {code.L0E7E}
+0E83: C4 90 0E        CALL    NZ,$0E90            ; {code.L0E90} if bit3 is set
+0E86: 23              INC     HL                  ; 
+0E87: 23              INC     HL                  ; 
+0E88: 3E B0           LD      A,$B0               ; 
+0E8A: BD              CP      L                   ; 
+0E8B: C2 7E 0E        JP      NZ,$0E7E            ; {code.L0E7E} loop over alien data structure.
 0E8E: C9              RET                         
 ; 
 0E8F: FF
 ; 
 L0E90:
-0E90: 7E              LD      A,(HL)              
-0E91: C6 02           ADD     $02                 
-0E93: BA              CP      D                   
-0E94: D8              RET     C                   
-0E95: D6 05           SUB     $05                 
-0E97: BA              CP      D                   
-0E98: D0              RET     NC                  
-0E99: 23              INC     HL                  
-0E9A: 7E              LD      A,(HL)              
-0E9B: 2B              DEC     HL                  
+0E90: 7E              LD      A,(HL)              ; get alien screen coordinate X
+0E91: C6 02           ADD     $02                 ; 
+0E93: BA              CP      D                   ; with masked player bullet, coordinate X
+0E94: D8              RET     C                   ; 
+0E95: D6 05           SUB     $05                 ; 
+0E97: BA              CP      D                   ; 
+0E98: D0              RET     NC                  ; 
+0E99: 23              INC     HL                  ; 
+0E9A: 7E              LD      A,(HL)              ; get alien screen coordinate Y
+0E9B: 2B              DEC     HL                  ; move to alien screen coordinate X
 0E9C: E6 F8           AND     $F8                 ; 1111_1000
-0E9E: BB              CP      E                   
-0E9F: C0              RET     NZ                  
-0EA0: 11 02 0C        LD      DE,$0C02            ; E reg. set to: 'bonus explosion score 020'.
-0EA3: 00              NOP                         
+0E9E: BB              CP      E                   ; with masked player bullet, coordinate Y
+0E9F: C0              RET     NZ                  ; if not equal
+0EA0: 11 02 0C        LD      DE,$0C02            ; animation index / bonus explosion score 020.
+0EA3: 00              NOP                         ; 
 ; 
 L0EA4:
-0EA4: 2B              DEC     HL                  
-0EA5: 2B              DEC     HL                  ; move to alien X control state A
-0EA6: 0B              DEC     BC                  
-0EA7: 0B              DEC     BC                  
-0EA8: 0B              DEC     BC                  ; move to PlayerBulletState
-0EA9: 0A              LD      A,(BC)              
+0EA4: 2B              DEC     HL                  ; 
+0EA5: 2B              DEC     HL                  ; 
+0EA6: 0B              DEC     BC                  ; 
+0EA7: 0B              DEC     BC                  ; 
+0EA8: 0B              DEC     BC                  ; 
+0EA9: 0A              LD      A,(BC)              ; get player bullet, control state
 0EAA: E6 F7           AND     $F7                 ; 1111_0111
-0EAC: 02              LD      (BC),A              
+0EAC: 02              LD      (BC),A              ; clear bit3
 L0EAD:
-0EAD: 7E              LD      A,(HL)              
+0EAD: 7E              LD      A,(HL)              ; get alien control state A
 0EAE: E6 F7           AND     $F7                 ; 1111_0111
-0EB0: 77              LD      (HL),A              
-0EB1: 7D              LD      A,L                 
-0EB2: C6 42           ADD     $42                 ; move to MSB screen ram adress alien X
-0EB4: 6F              LD      L,A                 
-0EB5: 46              LD      B,(HL)              ; get MSB screen ram adress alien X
-0EB6: 23              INC     HL                  
-0EB7: 4E              LD      C,(HL)              ; get LSB screen ram adress alien X
+0EB0: 77              LD      (HL),A              ; clear bit3
+0EB1: 7D              LD      A,L                 ; 
+0EB2: C6 42           ADD     $42                 ; move to MSB screen ram adress alien
+0EB4: 6F              LD      L,A                 ; 
+0EB5: 46              LD      B,(HL)              ; get MSB screen ram adress alien
+0EB6: 23              INC     HL                  ; 
+0EB7: 4E              LD      C,(HL)              ; get LSB screen ram adress alien
 0EB8: 21 78 43        LD      HL,$4378            ; {+ram.M4378} Animation counter for the bonus explosion
-0EBB: 7A              LD      A,D                 
-0EBC: FE 10           CP      $10                 
+0EBB: 7A              LD      A,D                 ; 
+0EBC: FE 10           CP      $10                 ; 
 0EBE: CA C3 0E        JP      Z,$0EC3             ; {code.L0EC3}
-0EC1: 2E 70           LD      L,$70               
+0EC1: 2E 70           LD      L,$70               ; 
 L0EC3:
-0EC3: 7E              LD      A,(HL)              
+0EC3: 7E              LD      A,(HL)              ; get explosion slot0 animation index
 0EC4: A7              AND     A                   ; updates the zero flag
-0EC5: CA D5 0E        JP      Z,$0ED5             ; {code.L0ED5}
+0EC5: CA D5 0E        JP      Z,$0ED5             ; {code.L0ED5} if explosion slot0 is free.
 0EC8: 2C              INC     L                   
 0EC9: 2C              INC     L                   
 0ECA: 2C              INC     L                   
@@ -2994,19 +2994,19 @@ L0EC3:
 0ED3: 2C              INC     L                   
 0ED4: 2C              INC     L                   
 L0ED5:
-0ED5: 72              LD      (HL),D              
-0ED6: 2C              INC     L                   
-0ED7: 73              LD      (HL),E              ; set $4379 (bonus explosion score)
-0ED8: 2C              INC     L                   
-0ED9: 70              LD      (HL),B              
-0EDA: 2C              INC     L                   
-0EDB: 71              LD      (HL),C              
-0EDC: 2E 64           LD      L,$64               
-0EDE: 36 FF           LD      (HL),$FF            ; set flag for 
+0ED5: 72              LD      (HL),D              ; set explosion animation index
+0ED6: 2C              INC     L                   ; 
+0ED7: 73              LD      (HL),E              ; set BCD score value
+0ED8: 2C              INC     L                   ; 
+0ED9: 70              LD      (HL),B              ; set explosion MSB screen ram
+0EDA: 2C              INC     L                   ; 
+0EDB: 71              LD      (HL),C              ; set explosion LSB screen ram
+0EDC: 2E 64           LD      L,$64               ; 
+0EDE: 36 FF           LD      (HL),$FF            ; set flag for: 'Enemy hit detected'
 0EE0: 2E BA           LD      L,$BA               ; AliensLeft
 0EE2: 35              DEC     (HL)                ; decrement it
-0EE3: E1              POP     HL                  
-0EE4: E1              POP     HL                  
+0EE3: E1              POP     HL                  ; 
+0EE4: E1              POP     HL                  ; 
 0EE5: E9              JP      (HL)                ; to: $0DF9, $0027, $2199, $2006
 ; 
 0EE6: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
@@ -3824,8 +3824,14 @@ T1700:
 
 ;?
 T1740:
-1740: 08 00 00 FF 01 00 F8 FF 08 01 02 FF 04 00 FA FF ;
-1750: 08 01 04 FF 08 00 FC FF 08 05 06 FF 08 00 FE FF ;
+1740: 08 00 00 FF ; 
+1744: 01 00 F8 FF ; 
+1748: 08 01 02 FF ; 
+174C: 04 00 FA FF ; 
+1750: 08 01 04 FF ; 
+1754: 08 00 FC FF ; 
+1758: 08 05 06 FF ; 
+175C: 08 00 FE FF ; 
 
 ; Parity table and initial number of aliens/birds for levels:
 ; odd, odd, even (P), even (P), odd, odd, odd, odd
@@ -4245,7 +4251,7 @@ T1F00:
 ;*****************************************************************************
 L2000:
 2000: CD 76 08        CALL    $0876               ; {code.PlayerUpdate} Updates the player ship, player bullet and the shield.
-2003: CD F0 0D        CALL    $0DF0               ; {code.L0DF0} alien bullet to player, collission detection ?
+2003: CD F0 0D        CALL    $0DF0               ; {code.L0DF0} Player bullet to alien, collission detection.
 2006: CD A0 24        CALL    $24A0               ; {code.L24A0}
 2009: 21 5F 43        LD      HL,$435F            ; {+ram.M435F} 8 bit counter for alien movement
 200C: 7E              LD      A,(HL)              ; get value
@@ -7056,7 +7062,7 @@ L36D2:
 36DB: 2D              DEC     L                   
 36DC: 2D              DEC     L                   
 36DD: 72              LD      (HL),D              
-36DE: 3A 68 43        LD      A,($4368)           ; {ram.M4368}
+36DE: 3A 68 43        LD      A,($4368)           ; {ram.M4368} maturity of the birds
 36E1: F6 01           OR      $01                 ; 0000_0001
 36E3: 32 68 43        LD      ($4368),A           ; {ram.M4368}
 36E6: C9              RET                         
@@ -7083,7 +7089,7 @@ L36EA:
 36FB: 2D              DEC     L                   
 36FC: 2D              DEC     L                   
 36FD: 72              LD      (HL),D              
-36FE: 3A 68 43        LD      A,($4368)           ; {ram.M4368}
+36FE: 3A 68 43        LD      A,($4368)           ; {ram.M4368} maturity of the birds
 3701: F6 02           OR      $02                 ; 0000_0010
 3703: 32 68 43        LD      ($4368),A           ; {ram.M4368}
 3706: C9              RET                         
@@ -7110,7 +7116,7 @@ L370A:
 371B: 2D              DEC     L                   
 371C: 2D              DEC     L                   
 371D: 72              LD      (HL),D              
-371E: 3A 68 43        LD      A,($4368)           ; {ram.M4368}
+371E: 3A 68 43        LD      A,($4368)           ; {ram.M4368} maturity of the birds
 3721: F6 04           OR      $04                 ; 0000_0100
 3723: 32 68 43        LD      ($4368),A           ; {ram.M4368}
 3726: 3A 6F 43        LD      A,($436F)           ; {ram.M436F}
@@ -7125,7 +7131,7 @@ L370A:
 3733: 2C              INC     L                   
 3734: 2C              INC     L                   
 3735: 71              LD      (HL),C              
-3736: 3A 68 43        LD      A,($4368)           ; {ram.M4368}
+3736: 3A 68 43        LD      A,($4368)           ; {ram.M4368} maturity of the birds
 3739: F6 08           OR      $08                 ; 0000_1000
 373B: 32 68 43        LD      ($4368),A           ; {ram.M4368}
 373E: C9              RET                         
@@ -7651,7 +7657,7 @@ L3A2C:
 3A34: 2E 8D           LD      L,$8D               ; SoundControlB
 3A36: 77              LD      (HL),A              
 3A37: 2E 68           LD      L,$68               ; $4368
-3A39: 36 00           LD      (HL),$00            
+3A39: 36 00           LD      (HL),$00            ; reset 'maturity of the birds'
 3A3B: 2E 66           LD      L,$66               ; $4366
 3A3D: 36 00           LD      (HL),$00            ; reset the flag for: 'Mothership hit'
 3A3F: C9              RET                         
@@ -7887,9 +7893,9 @@ L3B33:
 L3B43:
 3B43: 21 A4 43        LD      HL,$43A4            ; {+ram.GameState}
 3B46: 7E              LD      A,(HL)              ; 
-3B47: FE 03           CP      $03                 ; 
-3B49: CC D6 23        CALL    Z,$23D6             ; {code.L23D6} if GameState is 'normal game play'
-3B4C: CD 33 3B        CALL    $3B33               ; {code.L3B33}
+3B47: FE 03           CP      $03                 ; is 'normal game play' ?
+3B49: CC D6 23        CALL    Z,$23D6             ; {code.L23D6} if yes, do the background sound.
+3B4C: CD 33 3B        CALL    $3B33               ; {code.L3B33} Sound for 'Bonus live added'.
 3B4F: CD 1B 3B        CALL    $3B1B               ; {code.L3B1B} Ringtone sound for the player shield.
 3B52: CD 1D 3A        CALL    $3A1D               ; {code.L3A1D}
 3B55: CD BD 27        CALL    $27BD               ; {code.L27BD} Sound for player bullet or ship explosion.
