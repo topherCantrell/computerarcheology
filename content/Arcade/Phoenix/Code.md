@@ -7732,7 +7732,7 @@ L3A90:
 3A90: 21 6B 43        LD      HL,$436B            ; {+ram.M436B} Flag for: 'mother ship score display' ($FF) and counter
 3A93: 7E              LD      A,(HL)              ; 
 3A94: A7              AND     A                   ; updates the zero flag
-3A95: C3 23 39        JP      $3923               ; {code.L3923} 
+3A95: C3 23 39        JP      $3923               ; {code.L3923}
 
 ;*****************************************************************************
 ;* Background sound for the alien waves.
