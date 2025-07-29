@@ -69,23 +69,29 @@ The values below are kept in bank 0. ?? TODO see how/if the 2nd bank is used? Ma
 | 4364      | M4364                | Flag for: 'Enemy hit detected' ($FF) and counter |
 | 4366      | M4366                | Flag for: 'Mothership or bird wing hit detected' ($FF) |
 | 4367      | M4367                | Flag for: 'Mothership partially faded in' ($FF) |
-| 4368      | M4368                | ? |
+| 4368      | M4368                | Maturity of the birds. From 'egg' over 'no wings' to 'adult' ($01 to $0F) |
 | 4369      | M4369                | Flag for: 'Bonus explosion' ($FF) |
 | 436A      | M436A                | Flag for: 'Bonus live added' ($FF) and counter |
 | 436B      | M436B                | Flag for: 'Mother ship score display' ($FF) and counter|
 | 436D      | M436D                | ? |
 | 436E      | M436E                | ? |
 | 436F      | M436F                | ? |
-| 4370      | M4370                | ? |
-| 4371      | M4371                | ? |
-| 4372      | M4372                | ? |
-| 4373      | M4373                | ? |
-| 4374      | M4374                | ? |
-| 4378      | M4378                | Animation counter for the bonus explosion |
-| 4379      | M4379                | First two digits of BCD score value for the bonus explosion (last digit is ever 0) |
-| 437A      | M437A                | ? |
-| 437B      | M437B                | ? |
-| 437C      | M437C                | ? |
+| 4370      | M4370                | Explosion slot0 animation index |
+| 4371      | M4371                | Explosion slot0 BCD score value (last digit is ever 0) |
+| 4372      | M4372                | Explosion slot0 MSB screen ram |
+| 4373      | M4373                | Explosion slot0 LSB screen ram |
+| 4374      | M4374                | Explosion slot1 animation index |
+| 4375      | M4375                | Explosion slot1 BCD score value (last digit is ever 0) |
+| 4376      | M4376                | Explosion slot1 MSB screen ram |
+| 4377      | M4377                | Explosion slot1 LSB screen ram |
+| 4378      | M4378                | Bonus explosion slot0 animation index |
+| 4379      | M4379                | Bonus explosion slot0 BCD score value (last digit is ever 0) |
+| 437A      | M437A                | Bonus explosion slot0 MSB screen ram |
+| 437B      | M437B                | Bonus explosion slot0 LSB screen ram |
+| 437C      | M437C                | Bonus explosion slot1 animation index |
+| 437D      | M437D                | Bonus explosion slot1 BCD score value (last digit is ever 0) |
+| 437E      | M437E                | Bonus explosion slot1 MSB screen ram |
+| 437F      | M437F                | Bonus explosion slot1 LSB screen ram |
 | 4380      | M4380                | Ever set to 0 (prevents overflow) |
 | 4381      | Score1high           | Player 1 score BCD (high) |
 | 4382      | Score1mid            | Player 1 score BCD (mid) |
@@ -216,8 +222,8 @@ MAME cheat code "Infinite Shields": set $84 (%1000_0100) at $43C0
 | 43E7      | AbovePlayerBulletLSB    | LSB screen ram: One character above player bullet |
 | 43E8      | M43E8                   | ? |
 | 43E9      | M43E9                   | ? |
-| 43EA      | M43EA                   | ? |
-| 43EB      | M43EB                   | ? |
+| 43EA      | M43EA                   | MSB screen ram: Left screen edge, one character above player ship |
+| 43EB      | M43EB                   | LSB screen ram: Left screen edge, one character above player ship |
 
 
 ## Alien and bird bullets, data structure (screen ram)
