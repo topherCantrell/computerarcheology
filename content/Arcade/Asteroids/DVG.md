@@ -49,13 +49,13 @@ as two-bytes words. The bytes are read little-endian -- least significant byte f
 For instance, the main CPU writes four bytes to the shared RAM as follows:
 
 ```
-8000: BF 36 BF 06
+1000: BF 36 BF 06
 ```
 
 The DVG would fetch these bytes as two words LSB first:
 
 ```
-8000: 36BF 06BF
+0800: 36BF 06BF
 ```
 
 # Screen Geometry
@@ -134,7 +134,7 @@ The upper nibble of the first word is the command.
 
 ```
 0 - 9 : VEC  -- a full vector command
-    A : CUR  -- set the current (x,y) and global scale-factor
+    A : LABS -- set the current (x,y) and global scale-factor
     B : HALT -- end of commands
     C : JSR  -- jump to a vector program subroutine
     D : RTS  -- return from a vector program subroutine
@@ -159,7 +159,7 @@ VEC  scale=08(/2)    bri=07  x=1022    y=-1022  (511.00, -511.00)
   
 ```
 
-## CUR
+## LABS
 
 Set the current (x,y) and global scale-factor.
 
@@ -200,9 +200,9 @@ CAE4         ; 1100 1010 1110 0100
   
 In this case:
   a = 0AE4
-  Conversion to byte address: (0AE4-0800)*2 + 0800 = 0DC8
+  Multipy by two to get the word address: 0AE4 * 2 = 15C8
   
-JSR  $0DC8
+JSR  $0AE4 ($15C8) ; Disassembly shows word and byte address
 
 ```
  
@@ -231,9 +231,9 @@ EA0A         ; 1110 1010 0000 1010
 
 In this case:
   a = 0A0A
-  Conversion to byte address: (0A0A-0800)*2 + 0800 = 0C14
+  Multipy by two to get the word address: 0A0A * 2 = 1414
   
-JMP  $0C14
+JSR  $0A0A ($1414) ; Disassembly shows word and byte address  
 
 ```
 

@@ -13,9 +13,13 @@ map to the ROM space at 7FFA. The ROM was assembled with 6000-7FFF addresses
 and not E000-FFFF.
 
 The DVG and CPU share the memory space from 4000-5FFF (8K bytes). 
-The DVG reads this as 4K words. The address mapping is shown above.
+The DVG reads this as 4K words.
 Only half of the RAM/ROM space is actually populated. There is room
 for expansion.
+
+Main memory 4000-4FFF is byte address 0000-0FFF RAM in DVG (word address 0000-07FF).
+
+Main memory 5000-5FFF is byte address 1000-1FFF ROM in DVG (word address 1000-17FF).
 
 ## IN0 
 
@@ -24,7 +28,7 @@ for expansion.
 |    |     |     |
 | -------- | ------- | ----------------- |
 | 2001      | CLCK3KHZ  | 3 KHz  Clock      |
-| 2002      | HALT      | HALT Switch       |
+| 2002      | HALT      | HALT fla from DVG |
 | 2003      | SWHYPER   | Hyperspace Switch |
 | 2004      | SWFIRE    | Fire Switch       |
 | 2005      | SWDIAGST  | Diagnostic Step   |

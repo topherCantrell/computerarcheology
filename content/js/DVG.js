@@ -116,17 +116,15 @@ var DVG = (function() {
     				} else if(op==12) { // JSRL
     					callStack.push(dataCursor);
     					b = ((b&15)<<8)+a;
-    					b = b - origin;
-    					dataCursor = b*2+origin;    					
+    					dataCursor = b*2;    					
     				} else if(op==13) { // RTSL
     					if(callStack.length===0) { 
     						break;
     					}
     					dataCursor = callStack.pop();    					
     				} else if(op==14) { // JMPL
-    					b = ((b&15)<<8)+a;
-    					b = b - origin;
-    					dataCursor = b*2+origin;    					
+    					b = ((b&15)<<8)+a;    					
+    					dataCursor = b*2;    					
     				} else { // SVEC
     					
     					context.beginPath();
