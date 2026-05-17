@@ -683,7 +683,7 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 4823: 36 8F           LD      (HL),$8F            
 4825: C9              RET                         
 4826: CD 31 4F        CALL    $4F31               ; {code.Com_2B_generate_random}
-4829: CD 2B 00        CALL    $002B               
+4829: CD 2B 00        CALL    $002B               ; {hard.ScanKeyboard}
 482C: A7              AND     A                   
 482D: CA 26 48        JP      Z,$4826             ; {}
 4830: C9              RET                         
@@ -5270,6 +5270,7 @@ HelperCommands:
 7E0D: 00              NOP                         
 7E0E: FF              RST     0X38                
 7E0F: 00              NOP                         
+
 7E10: 00              NOP                         
 7E11: 00              NOP                         
 7E12: FF              RST     0X38                

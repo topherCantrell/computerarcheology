@@ -86,8 +86,8 @@ ScriptCommand17:
 ; First Floor starts here (the second floor loads here too)
 
 435E: 31 B8 46        LD      SP,$46B8            ; Small stack space
-4361: 3E 0E           LD      A,$0E               ; ??? Maybe ...
-4363: CD 33 00        CALL    $0033               ; {hard.PrintChar} ... ??? clear the screen?
+4361: 3E 0E           LD      A,$0E               ; Turn on ...
+4363: CD 33 00        CALL    $0033               ; {hard.PrintChar} ... the cursor
 4366: 21 83 46        LD      HL,$4683            ; "HAUNTED HOUSE!!"
 4369: CD D0 45        CALL    $45D0               ; {code.PrintMessage} Print welcome message
 436C: CD EE 45        CALL    $45EE               ; {code.WaitForKey} Wait for the user to press a key
@@ -561,7 +561,7 @@ WaitForKey:
 45EF: 3A 7E 46        LD      A,($467E)           ; {ram.InputEntroy} Bump ...
 45F2: 3C              INC     A                   ; ... some ...
 45F3: 32 7E 46        LD      ($467E),A           ; {ram.InputEntroy} ... ??? counter
-45F6: CD 2B 00        CALL    $002B               ; Get a key
+45F6: CD 2B 00        CALL    $002B               ; {hard.ScanKeyboard} Get a key
 45F9: A7              AND     A                   ; Keep waiting ...
 45FA: CA EF 45        JP      Z,$45EF             ; {} ... if nothing pressed
 45FD: D1              POP     DE                  ; Restore DE
@@ -639,9 +639,7 @@ PromptAndReadLine:
 ; Input buffer (with some uninitialized leftover data!)
 InputBuffer: 
 ; 32 bytes
-;     -- F  6  -- -- E  _  I  P  _  S  I  G  N  -- --
-465A: 15 46 36 00 C9 45 20 49 50 20 53 49 47 4E 00 00
-;     G  -- -- (  &  -- <  _  -- -- -- /  /  -- -- .         
+465A: 15 46 36 00 C9 45 20 49 50 20 53 49 47 4E 00 00    
 466A: 47 FE 78 28 26 FE 3C 20 F5 CD 82 47 47 CD 9C 46
         
 467A: 00

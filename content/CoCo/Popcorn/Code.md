@@ -15,34 +15,45 @@
 [Hardware Info](../Hardware.md)
 
 ```code
-C000: 7E C3 76        JMP     $C376               ; {}
+C000: 7E C3 76        JMP     $C376               ; {code.START}
 
-C003: 34 04           PSHS    B                   
-C005: C6 20           LDB     #$20                
-C007: 3D              MUL                         
-C008: 8B 04           ADDA    #$04                
-C00A: 1F 01           TFR     D,X                 
-C00C: E6 E4           LDB     ,S                  
-C00E: 54              LSRB                        
-C00F: 54              LSRB                        
-C010: 3A              ABX                         
-C011: E6 E0           LDB     ,S+                 
-C013: C4 03           ANDB    #$03                
-C015: 10 8E C0 1C     LDY     #$C01C              
-C019: E6 A5           LDB     B,Y                 
-C01B: 39              RTS                         
+XYtoScreen:
+; Convert screen X,Y coordinates to a memory pointer and a mask
+; A=Y
+; B=X
+; Return X=pointer and B=mask
+C003: 34 04           PSHS    B                   ; Preserve B
+C005: C6 20           LDB     #$20                ; 32 bytes per screen row
+C007: 3D              MUL                         ; A * 32
+C008: 8B 04           ADDA    #$04                ; 0400 to D ... offset to screen
+C00A: 1F 01           TFR     D,X                 ; Return screen pointer in X
+C00C: E6 E4           LDB     ,S                  ; Get the X coordinate
+C00E: 54              LSRB                        ; Divide by 4 ...
+C00F: 54              LSRB                        ; ... (4 pixels per byte)
+C010: 3A              ABX                         ; Offset memory pointer
+C011: E6 E0           LDB     ,S+                 ; Pop the X coordinate
+C013: C4 03           ANDB    #$03                ; Pixel number
+C015: 10 8E C0 1C     LDY     #$C01C              ; Look up ...
+C019: E6 A5           LDB     B,Y                 ; ... the bit pattern
+C01B: 39              RTS                         ; Done
 
-C01C: C0 30           SUBB    #$30                
-C01E: 0C 03           INC     $03                 
-C020: 34 40           PSHS    U                   
-C022: CE C5 B7        LDU     #$C5B7              
-C025: C6 07           LDB     #$07                
-C027: 3D              MUL                         
-C028: 33 CB           LEAU    D,U                 
-C02A: DC EA           LDD     $EA                 
-C02C: 8D D5           BSR     $C003               ; {}
-C02E: 86 07           LDA     #$07                
-C030: 97 FE           STA     $FE                 
+TwoBitMasks:
+C01C: C0 ; 11000000
+C01D: 30 ; 00110000
+C01E: 0C ; 00001100
+C01F: 03 ; 00000011
+
+PrintChar:
+; Print character in A to screen at X,Y = ($EA),($EB)
+C020: 34 40           PSHS    U                   ; Preserve U
+C022: CE C5 B7        LDU     #$C5B7              ; Alphanumeric graphics pictures
+C025: C6 07           LDB     #$07                ; 7 bytes each
+C027: 3D              MUL                         ; Offses to ...
+C028: 33 CB           LEAU    D,U                 ; ... letter picture
+C02A: DC EA           LDD     $EA                 ; Screen coordinates
+C02C: 8D D5           BSR     $C003               ; {code.XYtoScreen} Convert to screen pointer and mask
+C02E: 86 07           LDA     #$07                ; 7 rows (bytes) per character
+C030: 97 FE           STA     $FE                 ; Row counter temporary
 C032: A6 C0           LDA     ,U+                 
 C034: 34 16           PSHS    X,B,A               
 C036: D7 FC           STB     $FC                 
@@ -66,10 +77,11 @@ C057: 97 FC           STA     $FC
 C059: 5A              DECB                        
 C05A: 26 DE           BNE     $C03A               ; {}
 C05C: 35 16           PULS    A,B,X               
-C05E: 30 88 20        LEAX    $20,X               
-C061: 0A FE           DEC     $FE                 
-C063: 26 CD           BNE     $C032               ; {}
-C065: 35 C0           PULS    U,PC                
+C05E: 30 88 20        LEAX    $20,X               ; Next row
+C061: 0A FE           DEC     $FE                 ; All 7 rows done?
+C063: 26 CD           BNE     $C032               ; {} No ... go back for all
+C065: 35 C0           PULS    U,PC                ; Restore U and out
+
 C067: D6 DD           LDB     $DD                 
 C069: 8E 03 64        LDX     #$0364              
 C06C: AE 85           LDX     B,X                 
@@ -103,16 +115,17 @@ C0A0: D7 EB           STB     $EB
 C0A2: 39              RTS                         
 C0A3: 8B 1C           ADDA    #$1C                
 C0A5: 0D FD           TST     $FD                 
-C0A7: 10 26 FF 75     LBNE    $C020               ; {}
+C0A7: 10 26 FF 75     LBNE    $C020               ; {code.PrintChar} Print character
 C0AB: 97 FD           STA     $FD                 
 C0AD: 81 1C           CMPA    #$1C                
-C0AF: 10 26 FF 6D     LBNE    $C020               ; {}
+C0AF: 10 26 FF 6D     LBNE    $C020               ; {code.PrintChar} Print character
 C0B3: 86 1A           LDA     #$1A                
 C0B5: 0F FD           CLR     $FD                 
-C0B7: 7E C0 20        JMP     $C020               ; {}
+C0B7: 7E C0 20        JMP     $C020               ; {code.PrintChar} Print character
 C0BA: 0F DC           CLR     $DC                 
 C0BC: 03 DC           COM     $DC                 
 C0BE: 20 02           BRA     $C0C2               ; {}
+
 C0C0: 0F DC           CLR     $DC                 
 C0C2: A6 80           LDA     ,X+                 
 C0C4: 84 7F           ANDA    #$7F                
@@ -136,7 +149,7 @@ C0E6: 80 41           SUBA    #$41
 C0E8: 81 1A           CMPA    #$1A                
 C0EA: 24 15           BHS     $C101               ; {}
 C0EC: 34 10           PSHS    X                   
-C0EE: BD C0 20        JSR     $C020               ; {}
+C0EE: BD C0 20        JSR     $C020               ; {code.PrintChar} Print character
 C0F1: 35 10           PULS    X                   
 C0F3: 96 EB           LDA     $EB                 
 C0F5: 8B 06           ADDA    #$06                
@@ -429,21 +442,23 @@ C336: ED C3           STD     ,--U
 C338: 30 1F           LEAX    -1,X                
 C33A: 26 FA           BNE     $C336               ; {}
 C33C: 39              RTS                         
-C33D: 53              COMB                        
-C33E: 43              COMA                        
-C33F: 4F              CLRA                        
-C340: 52 ; ????
-C341: 45 ; ????
-C342: 00 48           NEG     $48                 
-C344: 49              ROLA                        
-C345: 47              ASRA                        
-C346: 48              ASLA                        
-C347: 00 4C           NEG     $4C                 
-C349: 45 ; ????
-C34A: 56              RORB                        
-C34B: 45 ; ????
-C34C: 4C              INCA                        
-C34D: 20 00           BRA     $C34F               ; {}
+
+C33D: 53                        
+C33E: 43                       
+C33F: 4F                       
+C340: 52
+C341: 45
+C342: 00 48                 
+C344: 49                      
+C345: 47                       
+C346: 48                     
+C347: 00 4C               
+C349: 45 
+C34A: 56                           
+C34B: 45 
+C34C: 4C                          
+C34D: 20 00 
+
 C34F: 96 E9           LDA     $E9                 
 C351: D6 FE           LDB     $FE                 
 C353: 34 06           PSHS    B,A                 
@@ -456,18 +471,20 @@ C361: BD C0 C0        JSR     $C0C0               ; {}
 C364: 96 DD           LDA     $DD                 
 C366: 44              LSRA                        
 C367: 8B 1D           ADDA    #$1D                
-C369: BD C0 20        JSR     $C020               ; {}
+C369: BD C0 20        JSR     $C020               ; {code.PrintChar} Print character
 C36C: BD C0 67        JSR     $C067               ; {}
 C36F: 35 06           PULS    A,B                 
 C371: D7 FE           STB     $FE                 
 C373: 97 E9           STA     $E9                 
 C375: 39              RTS                         
-C376: 10 CE 02 FE     LDS     #$02FE              
-C37A: BD C6 D7        JSR     $C6D7               ; {}
+
+START:
+C376: 10 CE 02 FE     LDS     #$02FE              ; Initialize the stack
+C37A: BD C6 D7        JSR     $C6D7               ; {code.RollTextScreen} Show the credits with rolling border
 C37D: 12              NOP                         
-C37E: 1A 50           ORCC    #$50                
-C380: 8E C5 54        LDX     #$C554              
-C383: BF 01 0D        STX     $010D               
+C37E: 1A 50           ORCC    #$50                ; Turn interrupts off
+C380: 8E C5 54        LDX     #$C554              ; Replace interrupt vector ...
+C383: BF 01 0D        STX     $010D               ; ... with our own
 C386: 86 E0           LDA     #$E0                
 C388: 97 F3           STA     $F3                 
 C38A: 86 34           LDA     #$34                
@@ -480,16 +497,18 @@ C399: 8E C3 7D        LDX     #$C37D
 C39C: 9F 72           STX     $72                 
 C39E: 86 55           LDA     #$55                
 C3A0: 97 71           STA     $71                 
-C3A2: 1C EF           ANDCC   #$EF                
+C3A2: 1C EF           ANDCC   #$EF                ; Turn interrupts back on
+
 C3A4: 86 35           LDA     #$35                
 C3A6: B7 FF 03        STA     $FF03               ; {hard.PIA0_CB}
 C3A9: 86 FF           LDA     #$FF                
 C3AB: B7 FF 22        STA     $FF22               ; {hard.PIA1_DB}
-C3AE: 8E 04 00        LDX     #$0400              
-C3B1: 10 CE 02 FE     LDS     #$02FE              
-C3B5: 6F 80           CLR     ,X+                 
-C3B7: 8C 10 00        CMPX    #$1000              
-C3BA: 25 F9           BCS     $C3B5               ; {}
+
+C3AE: 8E 04 00        LDX     #$0400              ; Top of screen
+C3B1: 10 CE 02 FE     LDS     #$02FE              ; Reset stack back to 02FE
+C3B5: 6F 80           CLR     ,X+                 ; Clear 3K screen from ...
+C3B7: 8C 10 00        CMPX    #$1000              ; ... 4000 to 1000 ...
+C3BA: 25 F9           BCS     $C3B5               ; {} Do all of screen
 C3BC: B7 FF C0        STA     $FFC0               ; {hard.dispMode}
 C3BF: B7 FF C2        STA     $FFC2               ; {hard.dispMode+2}
 C3C2: B7 FF C5        STA     $FFC5               ; {hard.dispMode+5}
@@ -516,8 +535,8 @@ C3EF: 5A              DECB
 C3F0: 26 FB           BNE     $C3ED               ; {}
 C3F2: 0F DD           CLR     $DD                 
 C3F4: BD C0 67        JSR     $C067               ; {}
-C3F7: 86 1C           LDA     #$1C                
-C3F9: BD C0 20        JSR     $C020               ; {}
+C3F7: 86 1C           LDA     #$1C                ; The "0" in the character graphics
+C3F9: BD C0 20        JSR     $C020               ; {code.PrintChar} Print "0" character
 C3FC: 0F DD           CLR     $DD                 
 C3FE: 10 CE 02 FE     LDS     #$02FE              
 C402: D6 DD           LDB     $DD                 
@@ -566,8 +585,8 @@ C45F: BD C2 F1        JSR     $C2F1               ; {}
 C462: 8E 00 00        LDX     #$0000              
 C465: 9F EF           STX     $EF                 
 C467: BD C0 73        JSR     $C073               ; {}
-C46A: 86 1C           LDA     #$1C                
-C46C: BD C0 20        JSR     $C020               ; {}
+C46A: 86 1C           LDA     #$1C                ; The "0" character graphics
+C46C: BD C0 20        JSR     $C020               ; {code.PrintChar} Print "0"
 C46F: BD C0 67        JSR     $C067               ; {}
 C472: 86 03           LDA     #$03                
 C474: 97 EC           STA     $EC                 
@@ -679,6 +698,8 @@ C54B: 6F 1F           CLR     -1,X
 C54D: 0A FB           DEC     $FB                 
 C54F: 0C FA           INC     $FA                 
 C551: 7E C4 BD        JMP     $C4BD               ; {}
+
+InterruptService:
 C554: 96 F3           LDA     $F3                 
 C556: 1F 89           TFR     A,B                 
 C558: 56              RORB                        
@@ -714,9 +735,10 @@ C58C: 35 02           PULS    A
 C58E: 30 88 20        LEAX    $20,X               
 C591: 4A              DECA                        
 C592: 26 E4           BNE     $C578               ; {}
-C594: B6 FF 02        LDA     $FF02               ; {hard.PIA0_DB}
-C597: B6 FF 03        LDA     $FF03               ; {hard.PIA0_CB}
-C59A: 3B              RTI                         
+C594: B6 FF 02        LDA     $FF02               ; {hard.PIA0_DB} Clear ...
+C597: B6 FF 03        LDA     $FF03               ; {hard.PIA0_CB} ... interrupt flags
+C59A: 3B              RTI                         ; Return from interrupt
+
 C59B: 00 00           NEG     $00                 
 C59D: 00 FF           NEG     $FF                 
 C59F: FF FF 55        STU     $FF55               
@@ -736,376 +758,436 @@ C5B1: 20 4F           BRA     $C602               ; {}
 C5B3: 56              RORB                        
 C5B4: 45 ; ????
 C5B5: 52 ; ????
-C5B6: 00 04           NEG     $04                 
-C5B8: 0A 11           DEC     $11                 
-C5BA: 11 ; ????
-C5BB: 1F 11           TFR     X,X                 
-C5BD: 11 ; ????
-C5BE: 0F 12           CLR     $12                 
-C5C0: 12              NOP                         
-C5C1: 0E 12           JMP     $12                 
-C5C3: 12              NOP                         
-C5C4: 0F 0E           CLR     $0E                 
-C5C6: 11 ; ????
-C5C7: 01 ; ????
-C5C8: 01 ; ????
-C5C9: 01 ; ????
-C5CA: 11 ; ????
-C5CB: 0E 0F           JMP     $0F                 
-C5CD: 12              NOP                         
-C5CE: 12              NOP                         
-C5CF: 12              NOP                         
-C5D0: 12              NOP                         
-C5D1: 12              NOP                         
-C5D2: 0F 1F           CLR     $1F                 
-C5D4: 01 ; ????
-C5D5: 01 ; ????
-C5D6: 0F 01           CLR     $01                 
-C5D8: 01 ; ????
-C5D9: 1F 1F           TFR     X,?                 
-C5DB: 01 ; ????
-C5DC: 01 ; ????
-C5DD: 07 01           ASR     $01                 
-C5DF: 01 ; ????
-C5E0: 01 ; ????
-C5E1: 0E 11           JMP     $11                 
-C5E3: 01 ; ????
-C5E4: 19              DAA                         
-C5E5: 11 ; ????
-C5E6: 11 ; ????
-C5E7: 0E 11           JMP     $11                 
-C5E9: 11 ; ????
-C5EA: 11 ; ????
-C5EB: 1F 11           TFR     X,X                 
-C5ED: 11 ; ????
-C5EE: 11 ; ????
-C5EF: 0E 04           JMP     $04                 
-C5F1: 04 04           LSR     $04                 
-C5F3: 04 04           LSR     $04                 
-C5F5: 0E 1C           JMP     $1C                 
-C5F7: 08 08           LSL     $08                 
-C5F9: 08 09           LSL     $09                 
-C5FB: 09 06           ROL     $06                 
-C5FD: 11 ; ????
-C5FE: 09 05           ROL     $05                 
-C600: 03 05           COM     $05                 
-C602: 09 11           ROL     $11                 
-C604: 01 ; ????
-C605: 01 ; ????
-C606: 01 ; ????
-C607: 01 ; ????
-C608: 01 ; ????
-C609: 01 ; ????
-C60A: 1F 11           TFR     X,X                 
-C60C: 1B ; ????
-C60D: 15 ; ????
-C60E: 15 ; ????
-C60F: 11 ; ????
-C610: 11 ; ????
-C611: 11 ; ????
-C612: 11 ; ????
-C613: 13              SYNC                        
-C614: 15 ; ????
-C615: 19              DAA                         
-C616: 11 ; ????
-C617: 11 ; ????
-C618: 11 ; ????
-C619: 0E 11           JMP     $11                 
-C61B: 11 ; ????
-C61C: 11 ; ????
-C61D: 11 ; ????
-C61E: 11 ; ????
-C61F: 0E 0F           JMP     $0F                 
-C621: 11 ; ????
-C622: 11 ; ????
-C623: 0F 01           CLR     $01                 
-C625: 01 ; ????
-C626: 01 ; ????
-C627: 0E 11           JMP     $11                 
-C629: 11 ; ????
-C62A: 11 ; ????
-C62B: 15 ; ????
-C62C: 09 16           ROL     $16                 
-C62E: 0F 11           CLR     $11                 
-C630: 11 ; ????
-C631: 0F 05           CLR     $05                 
-C633: 09 11           ROL     $11                 
-C635: 0E 11           JMP     $11                 
-C637: 01 ; ????
-C638: 0E 10           JMP     $10                 
-C63A: 11 ; ????
-C63B: 0E 1F           JMP     $1F                 
-C63D: 15 ; ????
-C63E: 04 04           LSR     $04                 
-C640: 04 04           LSR     $04                 
-C642: 0E 11           JMP     $11                 
-C644: 11 ; ????
-C645: 11 ; ????
-C646: 11 ; ????
-C647: 11 ; ????
-C648: 11 ; ????
-C649: 0E 11           JMP     $11                 
-C64B: 11 ; ????
-C64C: 11 ; ????
-C64D: 0A 0A           DEC     $0A                 
-C64F: 04 04           LSR     $04                 
-C651: 11 ; ????
-C652: 11 ; ????
-C653: 11 ; ????
-C654: 11 ; ????
-C655: 15 ; ????
-C656: 15 ; ????
-C657: 0A 11           DEC     $11                 
-C659: 11 ; ????
-C65A: 0A 04           DEC     $04                 
-C65C: 0A 11           DEC     $11                 
-C65E: 11 ; ????
-C65F: 11 ; ????
-C660: 11 ; ????
-C661: 0A 04           DEC     $04                 
-C663: 04 04           LSR     $04                 
-C665: 04 1F           LSR     $1F                 
-C667: 11 ; ????
-C668: 08 04           LSL     $04                 
-C66A: 02 ; ????
-C66B: 11 ; ????
-C66C: 1F 00           TFR     D,D                 
-C66E: 00 00           NEG     $00                 
-C670: 00 00           NEG     $00                 
-C672: 00 00           NEG     $00                 
-C674: 04 04           LSR     $04                 
-C676: 04 04           LSR     $04                 
-C678: 04 00           LSR     $00                 
-C67A: 04 0E           LSR     $0E                 
-C67C: 11 ; ????
-C67D: 19              DAA                         
-C67E: 15 ; ????
-C67F: 13              SYNC                        
-C680: 11 ; ????
-C681: 0E 04           JMP     $04                 
-C683: 06 04           ROR     $04                 
-C685: 04 04           LSR     $04                 
-C687: 04 0E           LSR     $0E                 
-C689: 0E 11           JMP     $11                 
-C68B: 10 ; ????
-C68C: 0E 01           JMP     $01                 
-C68E: 01 ; ????
-C68F: 1F 0E           TFR     D,?                 
-C691: 11 ; ????
-C692: 10 ; ????
-C693: 0C 10           INC     $10                 
-C695: 11 ; ????
-C696: 0E 08           JMP     $08                 
-C698: 0C 0A           INC     $0A                 
-C69A: 1F 08           TFR     D,A                 
-C69C: 08 08           LSL     $08                 
-C69E: 1F 01           TFR     D,X                 
-C6A0: 01 ; ????
-C6A1: 0F 10           CLR     $10                 
-C6A3: 10 ; ????
-C6A4: 0F 0C           CLR     $0C                 
-C6A6: 02 ; ????
-C6A7: 01 ; ????
-C6A8: 0F 11           CLR     $11                 
-C6AA: 11 ; ????
-C6AB: 0E 1F           JMP     $1F                 
-C6AD: 10 ; ????
-C6AE: 08 04           LSL     $04                 
-C6B0: 02 ; ????
-C6B1: 01 ; ????
-C6B2: 01 ; ????
-C6B3: 0E 11           JMP     $11                 
-C6B5: 11 ; ????
-C6B6: 0E 11           JMP     $11                 
-C6B8: 11 ; ????
-C6B9: 0E 0E           JMP     $0E                 
-C6BB: 11 ; ????
-C6BC: 11 ; ????
-C6BD: 1E 10           EXG     X,D                 
-C6BF: 08 06           LSL     $06                 
-C6C1: AE E1           LDX     ,S++                
-C6C3: A6 80           LDA     ,X+                 
-C6C5: 27 05           BEQ     $C6CC               ; {}
-C6C7: 17 DC 40        LBSR    $A30A               ; {hard.PRINTCHAR}
-C6CA: 20 F7           BRA     $C6C3               ; {}
-C6CC: 6E 84           JMP     ,X                  
-C6CE: 8B 10           ADDA    #$10                
-C6D0: 8A 8F           ORA     #$8F                
-C6D2: 81 8F           CMPA    #$8F                
-C6D4: 27 F8           BEQ     $C6CE               ; {}
-C6D6: 39              RTS                         
-C6D7: 86 39           LDA     #$39                
-C6D9: B7 01 67        STA     $0167               
-C6DC: 17 E2 49        LBSR    $A928               ; {hard.CLRSCREEN}
-C6DF: 86 0D           LDA     #$0D                
-C6E1: B7 FF 22        STA     $FF22               ; {hard.PIA1_DB}
-C6E4: BD C6 C1        JSR     $C6C1               ; {}
-C6E7: 0D 0D           TST     $0D                 
-C6E9: 0D 20           TST     $20                 
-C6EB: 20 20           BRA     $C70D               ; {}
-C6ED: 20 20           BRA     $C70F               ; {}
-C6EF: 20 20           BRA     $C711               ; {}
-C6F1: 20 20           BRA     $C713               ; {}
-C6F3: 20 20           BRA     $C715               ; {}
-C6F5: 20 50           BRA     $C747               ; {}
-C6F7: 4F              CLRA                        
-C6F8: 50              NEGB                        
-C6F9: 43              COMA                        
-C6FA: 4F              CLRA                        
-C6FB: 52 ; ????
-C6FC: 4E ; ????
-C6FD: 0D 0D           TST     $0D                 
-C6FF: 20 20           BRA     $C721               ; {}
-C701: 20 20           BRA     $C723               ; {}
-C703: 20 20           BRA     $C725               ; {}
-C705: 20 20           BRA     $C727               ; {}
-C707: 20 20           BRA     $C729               ; {}
-C709: 20 20           BRA     $C72B               ; {}
-C70B: 20 20           BRA     $C72D               ; {}
-C70D: 20 42           BRA     $C751               ; {}
-C70F: 59              ROLB                        
-C710: 0D 20           TST     $20                 
-C712: 20 20           BRA     $C734               ; {}
-C714: 20 20           BRA     $C736               ; {}
-C716: 20 20           BRA     $C738               ; {}
-C718: 20 20           BRA     $C73A               ; {}
-C71A: 20 53           BRA     $C76F               ; {}
-C71C: 54              LSRB                        
-C71D: 45 ; ????
-C71E: 56              RORB                        
-C71F: 45 ; ????
-C720: 20 42           BRA     $C764               ; {}
-C722: 4A              DECA                        
-C723: 4F              CLRA                        
-C724: 52 ; ????
-C725: 4B ; ????
-C726: 0D 0D           TST     $0D                 
-C728: 20 20           BRA     $C74A               ; {}
-C72A: 20 20           BRA     $C74C               ; {}
-C72C: 20 20           BRA     $C74E               ; {}
-C72E: 43              COMA                        
-C72F: 4F              CLRA                        
-C730: 50              NEGB                        
-C731: 59              ROLB                        
-C732: 52 ; ????
-C733: 49              ROLA                        
-C734: 47              ASRA                        
-C735: 48              ASLA                        
-C736: 54              LSRB                        
-C737: 20 28           BRA     $C761               ; {}
-C739: 43              COMA                        
-C73A: 29 20           BVS     $C75C               ; {}
-C73C: 31 39           LEAY    -7,Y                
-C73E: 38 ; ????
-C73F: 31 0D           LEAY    13,X                
-C741: 20 20           BRA     $C763               ; {}
-C743: 20 20           BRA     $C765               ; {}
-C745: 20 20           BRA     $C767               ; {}
-C747: 20 20           BRA     $C769               ; {}
-C749: 20 44           BRA     $C78F               ; {}
-C74B: 41 ; ????
-C74C: 54              LSRB                        
-C74D: 41 ; ????
-C74E: 53              COMB                        
-C74F: 4F              CLRA                        
-C750: 46              RORA                        
-C751: 54              LSRB                        
-C752: 20 49           BRA     $C79D               ; {}
-C754: 4E ; ????
-C755: 43              COMA                        
-C756: 2E 0D           BGT     $C765               ; {}
-C758: 0D 0D           TST     $0D                 
-C75A: 20 20           BRA     $C77C               ; {}
-C75C: 20 20           BRA     $C77E               ; {}
-C75E: 20 4C           BRA     $C7AC               ; {}
-C760: 49              ROLA                        
-C761: 43              COMA                        
-C762: 45 ; ????
-C763: 4E ; ????
-C764: 53              COMB                        
-C765: 45 ; ????
-C766: 44              LSRA                        
-C767: 20 54           BRA     $C7BD               ; {}
-C769: 4F              CLRA                        
-C76A: 20 54           BRA     $C7C0               ; {}
-C76C: 41 ; ????
-C76D: 4E ; ????
-C76E: 44              LSRA                        
-C76F: 59              ROLB                        
-C770: 20 43           BRA     $C7B5               ; {}
-C772: 4F              CLRA                        
-C773: 52 ; ????
-C774: 50              NEGB                        
-C775: 2E 00           BGT     $C777               ; {}
-C777: CC 9F 10        LDD     #$9F10              
-C77A: 8E 04 00        LDX     #$0400              
-C77D: A7 80           STA     ,X+                 
-C77F: A7 80           STA     ,X+                 
-C781: BD C6 CE        JSR     $C6CE               ; {}
-C784: 5A              DECB                        
-C785: 26 F6           BNE     $C77D               ; {}
-C787: C6 0E           LDB     #$0E                
-C789: 30 88 1F        LEAX    $1F,X               
-C78C: A7 00           STA     0,X                 
-C78E: A7 1F           STA     -1,X                
-C790: 30 88 20        LEAX    $20,X               
-C793: BD C6 CE        JSR     $C6CE               ; {}
-C796: 5A              DECB                        
-C797: 26 F3           BNE     $C78C               ; {}
-C799: C6 10           LDB     #$10                
-C79B: A7 84           STA     ,X                  
-C79D: A7 1F           STA     -1,X                
-C79F: 30 1E           LEAX    -2,X                
-C7A1: BD C6 CE        JSR     $C6CE               ; {}
-C7A4: 5A              DECB                        
-C7A5: 26 F4           BNE     $C79B               ; {}
-C7A7: 30 88 E1        LEAX    $E1,X               
-C7AA: C6 0E           LDB     #$0E                
-C7AC: A7 84           STA     ,X                  
-C7AE: A7 01           STA     1,X                 
-C7B0: 30 88 E0        LEAX    $E0,X               
-C7B3: BD C6 CE        JSR     $C6CE               ; {}
-C7B6: 5A              DECB                        
-C7B7: 26 F3           BNE     $C7AC               ; {}
-C7B9: 5F              CLRB                        
-C7BA: 86 09           LDA     #$09                
-C7BC: 7D FF 03        TST     $FF03               ; {hard.PIA0_CB}
-C7BF: 2A FB           BPL     $C7BC               ; {}
-C7C1: 7D FF 02        TST     $FF02               ; {hard.PIA0_DB}
-C7C4: 4A              DECA                        
-C7C5: 26 F5           BNE     $C7BC               ; {}
-C7C7: 8E 04 00        LDX     #$0400              
-C7CA: A6 80           LDA     ,X+                 
-C7CC: 2A 0A           BPL     $C7D8               ; {}
-C7CE: 80 10           SUBA    #$10                
-C7D0: 8A 8F           ORA     #$8F                
-C7D2: 81 8F           CMPA    #$8F                
-C7D4: 27 F8           BEQ     $C7CE               ; {}
-C7D6: A7 1F           STA     -1,X                
-C7D8: 8C 06 00        CMPX    #$0600              
-C7DB: 26 ED           BNE     $C7CA               ; {}
-C7DD: 17 D9 E1        LBSR    $A1C1               ; {hard.GETKEY}
-C7E0: 84 7F           ANDA    #$7F                
-C7E2: 26 03           BNE     $C7E7               ; {}
-C7E4: 5A              DECB                        
-C7E5: 26 D3           BNE     $C7BA               ; {}
-C7E7: 39              RTS                         
-C7E8: 20 20           BRA     $C80A               
-C7EA: 48              ASLA                        
-C7EB: 49              ROLA                        
-C7EC: 20 46           BRA     $C834               
-C7EE: 52 ; ????
-C7EF: 4F              CLRA                        
-C7F0: 4D              TSTA                        
-C7F1: 20 53           BRA     $C846               
-C7F3: 54              LSRB                        
-C7F4: 45 ; ????
-C7F5: 56              RORB                        
-C7F6: 45 ; ????
-C7F7: 20 20           BRA     $C819               
-C7F9: 20 00           BRA     $C7FB               ; {}
-C7FB: 00 00           NEG     $00                 
-C7FD: 00 00           NEG     $00                 
-C7FF: 00 
+C5B6: 00 
+
+LetterGraphics:
+; These are shown with bits flipped from left to right. The code
+; flips them as it draws.
+
+C5B7: 04 ;  ..1..... ; A
+C5B8: 0A ;  .1.1....
+C5B9: 11 ;  1...1...
+C5BA: 11 ;  1...1...
+C5BB: 1F ;  11111...
+C5BC: 11 ;  1...1...
+C5BD: 11 ;  1...1...
+
+C5BE: 0F ;  1111.... ; B
+C5BF: 12 ;  .1..1...
+C5C0: 12 ;  .1..1...
+C5C1: 0E ;  .111....
+C5C2: 12 ;  .1..1...
+C5C3: 12 ;  .1..1...
+C5C4: 0F ;  1111....
+
+C5C5: 0E ;  .111.... ; C
+C5C6: 11 ;  1...1...
+C5C7: 01 ;  1.......
+C5C8: 01 ;  1.......
+C5C9: 01 ;  1.......
+C5CA: 11 ;  1...1...
+C5CB: 0E ;  .111....
+
+C5CC: 0F ;  1111.... ; D
+C5CD: 12 ;  .1..1...
+C5CE: 12 ;  .1..1...
+C5CF: 12 ;  .1..1...
+C5D0: 12 ;  .1..1...
+C5D1: 12 ;  .1..1...
+C5D2: 0F ;  1111....
+
+C5D3: 1F ;  11111... ; E
+C5D4: 01 ;  1.......
+C5D5: 01 ;  1.......
+C5D6: 0F ;  1111....
+C5D7: 01 ;  1.......
+C5D8: 01 ;  1.......
+C5D9: 1F ;  11111...
+
+C5DA: 1F ;  11111... ; F
+C5DB: 01 ;  1.......
+C5DC: 01 ;  1.......
+C5DD: 07 ;  111.....
+C5DE: 01 ;  1.......
+C5DF: 01 ;  1.......
+C5E0: 01 ;  1.......
+
+C5E1: 0E ;  .111.... ; G
+C5E2: 11 ;  1...1...
+C5E3: 01 ;  1.......
+C5E4: 19 ;  1..11...
+C5E5: 11 ;  1...1...
+C5E6: 11 ;  1...1...
+C5E7: 0E ;  .111....
+
+C5E8: 11 ;  1...1... ; H
+C5E9: 11 ;  1...1...
+C5EA: 11 ;  1...1...
+C5EB: 1F ;  11111...
+C5EC: 11 ;  1...1...
+C5ED: 11 ;  1...1...
+C5EE: 11 ;  1...1...
+
+C5EF: 0E ;  .111.... ; I
+C5F0: 04 ;  ..1.....
+C5F1: 04 ;  ..1.....
+C5F2: 04 ;  ..1.....
+C5F3: 04 ;  ..1.....
+C5F4: 04 ;  ..1.....
+C5F5: 0E ;  .111....
+
+C5F6: 1C ;  ..111... ; J
+C5F7: 08 ;  ...1....
+C5F8: 08 ;  ...1....
+C5F9: 08 ;  ...1....
+C5FA: 09 ;  1..1....
+C5FB: 09 ;  1..1....
+C5FC: 06 ;  .11.....
+
+C5FD: 11 ;  1...1... ; K
+C5FE: 09 ;  1..1....
+C5FF: 05 ;  1.1.....
+C600: 03 ;  11......
+C601: 05 ;  1.1.....
+C602: 09 ;  1..1....
+C603: 11 ;  1...1...
+
+C604: 01 ;  1....... ; L
+C605: 01 ;  1.......
+C606: 01 ;  1.......
+C607: 01 ;  1.......
+C608: 01 ;  1.......
+C609: 01 ;  1.......
+C60A: 1F ;  11111...
+
+C60B: 11 ;  1...1... ; M
+C60C: 1B ;  11.11...
+C60D: 15 ;  1.1.1...
+C60E: 15 ;  1.1.1...
+C60F: 11 ;  1...1...
+C610: 11 ;  1...1...
+C611: 11 ;  1...1...
+
+C612: 11 ;  1...1... ; N
+C613: 13 ;  11..1...
+C614: 15 ;  1.1.1...
+C615: 19 ;  1..11...
+C616: 11 ;  1...1...
+C617: 11 ;  1...1...
+C618: 11 ;  1...1...
+
+C619: 0E ;  .111.... ; O
+C61A: 11 ;  1...1...
+C61B: 11 ;  1...1...
+C61C: 11 ;  1...1...
+C61D: 11 ;  1...1...
+C61E: 11 ;  1...1...
+C61F: 0E ;  .111....
+
+C620: 0F ;  1111.... ; P
+C621: 11 ;  1...1...
+C622: 11 ;  1...1...
+C623: 0F ;  1111....
+C624: 01 ;  1.......
+C625: 01 ;  1.......
+C626: 01 ;  1.......
+
+C627: 0E ;  .111.... ; Q
+C628: 11 ;  1...1...
+C629: 11 ;  1...1...
+C62A: 11 ;  1...1...
+C62B: 15 ;  1.1.1...
+C62C: 09 ;  1..1....
+C62D: 16 ;  .11.1...
+
+C62E: 0F ;  1111.... ; R
+C62F: 11 ;  1...1...
+C630: 11 ;  1...1...
+C631: 0F ;  1111....
+C632: 05 ;  1.1.....
+C633: 09 ;  1..1....
+C634: 11 ;  1...1...
+
+C635: 0E ;  .111.... ; S
+C636: 11 ;  1...1...
+C637: 01 ;  1.......
+C638: 0E ;  .111....
+C639: 10 ;  ....1...
+C63A: 11 ;  1...1...
+C63B: 0E ;  .111....
+
+C63C: 1F ;  11111... ; T
+C63D: 15 ;  1.1.1...
+C63E: 04 ;  ..1.....
+C63F: 04 ;  ..1.....
+C640: 04 ;  ..1.....
+C641: 04 ;  ..1.....
+C642: 0E ;  .111....
+
+C643: 11 ;  1...1... ; U
+C644: 11 ;  1...1...
+C645: 11 ;  1...1...
+C646: 11 ;  1...1...
+C647: 11 ;  1...1...
+C648: 11 ;  1...1...
+C649: 0E ;  .111....
+
+C64A: 11 ;  1...1... ; V
+C64B: 11 ;  1...1...
+C64C: 11 ;  1...1...
+C64D: 0A ;  .1.1....
+C64E: 0A ;  .1.1....
+C64F: 04 ;  ..1.....
+C650: 04 ;  ..1.....
+
+C651: 11 ;  1...1... ; W
+C652: 11 ;  1...1...
+C653: 11 ;  1...1...
+C654: 11 ;  1...1...
+C655: 15 ;  1.1.1...
+C656: 15 ;  1.1.1...
+C657: 0A ;  .1.1....
+
+C658: 11 ;  1...1... ; X
+C659: 11 ;  1...1...
+C65A: 0A ;  .1.1....
+C65B: 04 ;  ..1.....
+C65C: 0A ;  .1.1....
+C65D: 11 ;  1...1...
+C65E: 11 ;  1...1...
+
+C65F: 11 ;  1...1... ; Y
+C660: 11 ;  1...1...
+C661: 0A ;  .1.1....
+C662: 04 ;  ..1.....
+C663: 04 ;  ..1.....
+C664: 04 ;  ..1.....
+C665: 04 ;  ..1.....
+
+C666: 1F ;  11111... ; Z
+C667: 11 ;  1...1...
+C668: 08 ;  ...1....
+C669: 04 ;  ..1.....
+C66A: 02 ;  .1......
+C66B: 11 ;  1...1...
+C66C: 1F ;  11111...
+
+C66D: 00 ;  ........ ; SPACE
+C66E: 00 ;  ........
+C66F: 00 ;  ........
+C670: 00 ;  ........
+C671: 00 ;  ........
+C672: 00 ;  ........
+C673: 00 ;  ........
+
+C674: 04 ;  ..1..... ; !
+C675: 04 ;  ..1.....
+C676: 04 ;  ..1.....
+C677: 04 ;  ..1.....
+C678: 04 ;  ..1.....
+C679: 00 ;  ........
+C67A: 04 ;  ..1.....
+
+NumberGraphics:
+; Drawn here reversed left to right as the the code does when
+; rendering.
+
+C67B: 0E ;  .111.... ; 0
+C67C: 11 ;  1...1...
+C67D: 19 ;  1..11...
+C67E: 15 ;  1.1.1...
+C67F: 13 ;  11..1...
+C680: 11 ;  1...1...
+C681: 0E ;  .111....
+
+C682: 04 ;  ..1..... ; 1
+C683: 06 ;  .11.....
+C684: 04 ;  ..1.....
+C685: 04 ;  ..1.....
+C686: 04 ;  ..1.....
+C687: 04 ;  ..1.....
+C688: 0E ;  .111....
+
+C689: 0E ;  .111.... ; 2
+C68A: 11 ;  1...1...
+C68B: 10 ;  ....1...
+C68C: 0E ;  .111....
+C68D: 01 ;  1.......
+C68E: 01 ;  1.......
+C68F: 1F ;  11111...
+
+C690: 0E ;  .111.... ; 3
+C691: 11 ;  1...1...
+C692: 10 ;  ....1...
+C693: 0C ;  ..11....
+C694: 10 ;  ....1...
+C695: 11 ;  1...1...
+C696: 0E ;  .111....
+
+C697: 08 ;  ...1.... ; 4
+C698: 0C ;  ..11....
+C699: 0A ;  .1.1....
+C69A: 1F ;  11111...
+C69B: 08 ;  ...1....
+C69C: 08 ;  ...1....
+C69D: 08 ;  ...1....
+
+C69E: 1F ;  11111... ; 5
+C69F: 01 ;  1.......
+C6A0: 01 ;  1.......
+C6A1: 0F ;  1111....
+C6A2: 10 ;  ....1...
+C6A3: 10 ;  ....1...
+C6A4: 0F ;  1111....
+
+C6A5: 0C ;  ..11.... ; 6
+C6A6: 02 ;  .1......
+C6A7: 01 ;  1.......
+C6A8: 0F ;  1111....
+C6A9: 11 ;  1...1...
+C6AA: 11 ;  1...1...
+C6AB: 0E ;  .111....
+
+C6AC: 1F ;  11111... ; 7
+C6AD: 10 ;  ....1...
+C6AE: 08 ;  ...1....
+C6AF: 04 ;  ..1.....
+C6B0: 02 ;  .1......
+C6B1: 01 ;  1.......
+C6B2: 01 ;  1.......
+
+C6B3: 0E ;  .111.... ; 8
+C6B4: 11 ;  1...1...
+C6B5: 11 ;  1...1...
+C6B6: 0E ;  .111....
+C6B7: 11 ;  1...1...
+C6B8: 11 ;  1...1...
+C6B9: 0E ;  .111....
+
+C6BA: 0E ;  .111.... ; 9
+C6BB: 11 ;  1...1...
+C6BC: 11 ;  1...1...
+C6BD: 1E ;  .1111...
+C6BE: 10 ;  ....1...
+C6BF: 08 ;  ...1....
+C6C0: 06 ;  .11.....               
+
+PrintScreen:
+C6C1: AE E1           LDX     ,S++                ; Return address (data follows)
+C6C3: A6 80           LDA     ,X+                 ; Get next character
+C6C5: 27 05           BEQ     $C6CC               ; {} Printed all ... return to 1st past data
+C6C7: 17 DC 40        LBSR    $A30A               ; {hard.PRINTCHAR} Print the character
+C6CA: 20 F7           BRA     $C6C3               ; {} Do all the characters
+C6CC: 6E 84           JMP     ,X                  ; Return 1 past data terminator (C777)
+
+RollBorder:
+C6CE: 8B 10           ADDA    #$10                ; Next color
+C6D0: 8A 8F           ORA     #$8F                ; Be sure it is a color block
+C6D2: 81 8F           CMPA    #$8F                ; Blank color?
+C6D4: 27 F8           BEQ     $C6CE               ; {code.RollBorder} Yes ... skip that one
+C6D6: 39              RTS                         ; Return new color in A
+
+; Text screen with rolling border. Return when a key is pressed or the wait
+; time has passed (allows the game demo).
+RollTextScreen:
+C6D7: 86 39           LDA     #$39                ; ??
+C6D9: B7 01 67        STA     $0167               ; ??
+C6DC: 17 E2 49        LBSR    $A928               ; {hard.CLRSCREEN} Clear the screen
+C6DF: 86 0D           LDA     #$0D                ; 0000_1101 Alphanumeric graphics with ...
+C6E1: B7 FF 22        STA     $FF22               ; {hard.PIA1_DB} ... pink background ???
+C6E4: BD C6 C1        JSR     $C6C1               ; {code.PrintScreen} Print the text and return to C777
+;
+; "<cr>"
+; "<cr>"
+; "<cr>"
+; "            POPCORN<cr>"
+; "<cr>"
+; "               BY<cr>"
+; "          STEVE BJORK<cr>"
+; "<cr>"
+; "      COPYRIGHT (C) 1981<cr>"
+; "         DATASOFT INC.<cr>"
+; "<cr>"
+; "<cr>"
+; "     LICENSED TO TANDY CORP.<cr>"
+; ""
+; ""
+; ""
+;
+C6E7: 0D 0D 0D 20 20 20 20 20 20 20 20 20
+C6F3: 20 20 20 50 4F 50 43 4F 52 4E 0D 0D         
+C6FF: 20 20 20 20 20 20 20 20 20 20 20 20
+C70B: 20 20 20 42 59 0D 20 20 20 20 20 20 
+C717: 20 20 20 20 53 54 45 56 45 20 42 4A                      
+C723: 4F 52 4B 0D 0D 20 20 20 20 20 20 43            
+C72F: 4F 50 59 52 49 47 48 54 20 28 43 29 
+C73B: 20 31 39 38 31 0D 20 20 20 20 20 20
+C747: 20 20 20 44 41 54 41 53 4F 46 54 20 
+C753: 49 4E 43 2E 0D 0D 0D 20 20 20 20 20 
+C75F: 4C 49 43 45 4E 53 45 44 20 54 4F 20 
+C76B: 54 41 4E 44 59 20 43 4F 52 50 2E 00
+
+C777: CC 9F 10        LDD     #$9F10              ; Screen value 9F and 16 double blocks
+C77A: 8E 04 00        LDX     #$0400              ; Start of screen
+C77D: A7 80           STA     ,X+                 ; Double color block ...
+C77F: A7 80           STA     ,X+                 ; ... along top
+C781: BD C6 CE        JSR     $C6CE               ; {code.RollBorder} Change color
+C784: 5A              DECB                        ; All done across top?
+C785: 26 F6           BNE     $C77D               ; {} No ... go back for all
+C787: C6 0E           LDB     #$0E                ; 14 rows down the right side
+C789: 30 88 1F        LEAX    $1F,X               ; One block down from upper right corner
+C78C: A7 00           STA     0,X                 ; Double color block ...
+C78E: A7 1F           STA     -1,X                ; ... along right of screen
+C790: 30 88 20        LEAX    $20,X               ; Next row down
+C793: BD C6 CE        JSR     $C6CE               ; {code.RollBorder} Change color
+C796: 5A              DECB                        ; All done down right side?
+C797: 26 F3           BNE     $C78C               ; {} No ... go back for all
+C799: C6 10           LDB     #$10                ; 16 double blocks along bottom
+C79B: A7 84           STA     ,X                  ; Double color block ...
+C79D: A7 1F           STA     -1,X                ; ... along bottom
+C79F: 30 1E           LEAX    -2,X                ; Back up one block along bottom
+C7A1: BD C6 CE        JSR     $C6CE               ; {code.RollBorder} Change color
+C7A4: 5A              DECB                        ; All done across bottom?
+C7A5: 26 F4           BNE     $C79B               ; {} No ... go back for all
+C7A7: 30 88 E1        LEAX    $E1,X               ; One block up from lower right corner
+C7AA: C6 0E           LDB     #$0E                ; 14 rows up left side
+C7AC: A7 84           STA     ,X                  ; Double color block ...
+C7AE: A7 01           STA     1,X                 ; ... along left side
+C7B0: 30 88 E0        LEAX    $E0,X               ; One row up
+C7B3: BD C6 CE        JSR     $C6CE               ; {code.RollBorder} Change color
+C7B6: 5A              DECB                        ; All done up the left side?
+C7B7: 26 F3           BNE     $C7AC               ; {} No ... go back for all
+
+C7B9: 5F              CLRB                        ; 256 passes through rolling border before game demo
+C7BA: 86 09           LDA     #$09                ; Wait 9 60Hz interrupts
+C7BC: 7D FF 03        TST     $FF03               ; {hard.PIA0_CB} Vertical retrace?
+C7BF: 2A FB           BPL     $C7BC               ; {} No ... wait for it
+C7C1: 7D FF 02        TST     $FF02               ; {hard.PIA0_DB} Clear the interrupt bit
+C7C4: 4A              DECA                        ; All waits done?
+C7C5: 26 F5           BNE     $C7BC               ; {} No ... go back for all
+
+C7C7: 8E 04 00        LDX     #$0400              ; Top of screen
+C7CA: A6 80           LDA     ,X+                 ; Next character
+C7CC: 2A 0A           BPL     $C7D8               ; {} Skip it if it is not a graphics block
+C7CE: 80 10           SUBA    #$10                ; Change ...
+C7D0: 8A 8F           ORA     #$8F                ; ... the color
+C7D2: 81 8F           CMPA    #$8F                ; Skip the empty ...
+C7D4: 27 F8           BEQ     $C7CE               ; {} ... color block
+C7D6: A7 1F           STA     -1,X                ; Replace the old block with a new
+C7D8: 8C 06 00        CMPX    #$0600              ; The entire screen done?
+C7DB: 26 ED           BNE     $C7CA               ; {} No ... go back for the whole screen
+
+C7DD: 17 D9 E1        LBSR    $A1C1               ; {hard.GETKEY} Is a key ...
+C7E0: 84 7F           ANDA    #$7F                ; ... pressed?
+C7E2: 26 03           BNE     $C7E7               ; {} Yes ... exit
+C7E4: 5A              DECB                        ; All loops of "roll border" done?
+C7E5: 26 D3           BNE     $C7BA               ; {} No ... go back for all
+C7E7: 39              RTS                         ; Done with text screen and rolling border
+
+; Just a note in the code -- never used by the game.
+
+; "__HI_FROM_STEVE___"
+C7E8: 20 20 48 49 20 46 52 4F 4D 20 53 54 45 56 45 20
+C7F8: 20 20 00 00 00 00 00 00 
 ```
 

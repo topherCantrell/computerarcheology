@@ -2,8 +2,6 @@
 
 # RAM Use
 
->>> memory
-
 | | | |
 | --- | --- | --- |
 | 503F      | CurrentRoom           | Current Room Number                          |

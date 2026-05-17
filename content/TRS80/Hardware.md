@@ -24,3 +24,6 @@ Start of user RAM for program storage: 42E9
 | | | |
 | --- | --- | --- |
 | 0033 | PrintChar | Print a character to the screen |
+| 002B | ScanKeyboard | Return typed char in A or 0 for none |
+
+Level 1 and 2 ROM had DIFFERENT ENTRIES. We need 2 files for this table.

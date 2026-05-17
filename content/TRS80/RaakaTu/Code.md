@@ -708,7 +708,7 @@ GetInputLine:
 
 GetKey:
 47D6: CD D3 4F        CALL    $4FD3               ; {code.GetRandom}  Get random number ever key stroke
-47D9: CD 2B 00        CALL    $002B               ; Read the keyboard
+47D9: CD 2B 00        CALL    $002B               ; {hard.ScanKeyboard} Read the keyboard
 47DC: A7              AND     A                   ; Did we get one?
 47DD: CA D6 47        JP      Z,$47D6             ; {code.GetKey} No ... keep waiting
 47E0: C9              RET                         ; Return the key
