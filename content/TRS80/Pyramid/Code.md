@@ -18,10 +18,10 @@
 
 ```code
 Start:
-4300: 31 BF 47        LD      SP,$47BF            ; Small stack space
-4303: 3E 0E           LD      A,$0E               ; Clear ....
-4305: CD 33 00        CALL    $0033               ; {hard.PrintChar} ... the screen
-4308: 21 82 47        LD      HL,$4782            ; "WELCOME TO PYRAMID!!"
+4300: 31 BF 47        LD      SP,$47BF            ; {+code.TopOfStack} Small stack space
+4303: 3E 0E           LD      A,$0E               ; Turn on ....
+4305: CD 33 00        CALL    $0033               ; {hard.PrintChar} ... the cursor
+4308: 21 82 47        LD      HL,$4782            ; {+code.WelcomeMsg} "WELCOME TO PYRAMID!!"
 430B: CD D0 45        CALL    $45D0               ; {code.PrintPlain} Print the message
 430E: CD EE 45        CALL    $45EE               ; {code.WaitForKey} Wait for a key
 
@@ -36,7 +36,7 @@ GameLoop:
 4320: 32 7D 46        LD      ($467D),A           ; {code.grammar} Grammar type (verb, verb+nounInReach, verb+nounInPack)
 4323: CD CF 43        CALL    $43CF               ; {code.ParseUserInput} Get user input line and parse
 4326: 3A 3F 50        LD      A,($503F)           ; {code.currentRoom} Room number
-4329: 21 88 48        LD      HL,$4888            ; Room descriptors
+4329: 21 88 48        LD      HL,$4888            ; {+code.RoomTable} Room descriptors
 432C: CD 6B 43        CALL    $436B               ; {code.TableOffsetFourBytes} Get 4 bytes for room
 432F: 23              INC     HL                  ; Skip over ...
 4330: 23              INC     HL                  ; ... to room's script pointer
@@ -46,10 +46,10 @@ GameLoop:
 4334: 6F              LD      L,A                 ; ... HL
 4335: CD 7D 43        CALL    $437D               ; {code.ProcessRoomScript} Process the room script
 4338: C2 4A 43        JP      NZ,$434A            ; {} ZF clear ... script was successful. Move on.
-433B: 21 B0 59        LD      HL,$59B0            ; General script
+433B: 21 B0 59        LD      HL,$59B0            ; {+code.GeneralCommandHandler} General script
 433E: CD 7D 43        CALL    $437D               ; {code.ProcessRoomScript} Process the script
 4341: C2 4A 43        JP      NZ,$434A            ; {} Process the script
-4344: 21 71 74        LD      HL,$7471            ; General fail message (one of 4 that changes)
+4344: 21 71 74        LD      HL,$7471            ; {+code.PS_7F} General fail message (one of 4 that changes)
 4347: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print message
 434A: CD D9 50        CALL    $50D9               ; {code.AfterEveryStep} After every turn
 434D: C3 19 43        JP      $4319               ; {code.GameLoop} Back to get user input
@@ -242,13 +242,13 @@ ParseUserInput:
 43D5: 2A AA 45        LD      HL,($45AA)          ; {code.nounPointer} Pointer to the noun word
 43D8: 3A A8 45        LD      A,($45A8)           ; {code.numBytesWordData} Number of bytes ...
 43DB: 47              LD      B,A                 ; ... in word data
-43DC: 3A 7D 46        LD      A,($467D)           ; {code.grammar} Word grammar
-43DF: FE 03           CP      $03                 ; Value 3 means nothing in buffer
-43E1: CA CF 43        JP      Z,$43CF             ; {code.ParseUserInput} Nothing in the buffer, input again
+43DC: 3A 7D 46        LD      A,($467D)           ; {code.grammar} Verb grammar
+43DF: FE 03           CP      $03                 ; Value 3 means stand alone verb
+43E1: CA CF 43        JP      Z,$43CF             ; {code.ParseUserInput} We needed a noun before but didn't get one. Get it now.
 43E4: 3A 7B 46        LD      A,($467B)           ; {code.noun} Do we have ..
 43E7: A7              AND     A                   ; ... a noun?
 43E8: C2 1C 44        JP      NZ,$441C            ; {} Yes, go check it
-43EB: 3A 7C 46        LD      A,($467C)           ; {code.verb} Do we have ...
+43EB: 3A 7C 46        LD      A,($467C)           ; {code.verb} Otherwise, do we have ...
 43EE: A7              AND     A                   ; ... a verb?
 43EF: C2 0D 44        JP      NZ,$440D            ; {} Yes, go handle it
 ;
@@ -278,7 +278,7 @@ ParseUserInput:
 ;
 ; Validate noun
 441C: 22 AA 45        LD      ($45AA),HL          ; {code.nounPointer} Save pointer to noun word data
-441F: 3A A1 44        LD      A,($44A1)           ; {code.loneObject} Was the last input an object and ...
+441F: 3A A1 44        LD      A,($44A1)           ; {code.isLoneObject} Was the last input an object and ...
 4422: A7              AND     A                   ; ...  we then asked for a verb?
 4423: C2 8E 44        JP      NZ,$448E            ; {} Yes, skip checking the noun (use what we have)
 4426: 7E              LD      A,(HL)              ; Get the object number
@@ -309,17 +309,17 @@ ParseUserInput:
 4455: 3A 7D 46        LD      A,($467D)           ; {code.grammar} Grammar type
 4458: FE 40           CP      $40                 ; 01_000_000 means noun-in-pack
 445A: C2 63 44        JP      NZ,$4463            ; {} Error ... can't find noun in room
-445D: 21 98 46        LD      HL,$4698            ; {+} "YOU_AREN'T_CARRYING_IT.[CR]"
+445D: 21 98 46        LD      HL,$4698            ; {+code.MsgNotCarrying} "YOU_AREN'T_CARRYING_IT.[CR]"
 4460: C3 7C 44        JP      $447C               ; {} Print error and back to try again
-4463: 21 87 46        LD      HL,$4687            ; {+} "I_SEE_NO_"
+4463: 21 87 46        LD      HL,$4687            ; {+code.MsgISeeNo} "I_SEE_NO_"
 4466: CD D0 45        CALL    $45D0               ; {code.PrintPlain} First fragment
 4469: 3E 01           LD      A,$01               ; Replace '?' with ...
-446B: 32 FB 46        LD      ($46FB),A           ; {code.UnknownNounPunctuation} ... no-CR terminator.
+446B: 32 FB 46        LD      ($46FB),A           ; {code.unknownNounPunct} ... no-CR terminator.
 446E: 21 D3 46        LD      HL,$46D3            ; {+code.unknownNoun} Buffer for unknown word
 4471: CD D0 45        CALL    $45D0               ; {code.PrintPlain} Print unknown word
 4474: 3E 3F           LD      A,$3F               ; Restore the ...
-4476: 32 FB 46        LD      ($46FB),A           ; {code.UnknownNounPunctuation} ... question mark character
-4479: 21 91 46        LD      HL,$4691            ; {+} "_HERE."
+4476: 32 FB 46        LD      ($46FB),A           ; {code.unknownNounPunct} ... question mark character
+4479: 21 91 46        LD      HL,$4691            ; {+code.MsgHere} "_HERE."
 447C: CD D0 45        CALL    $45D0               ; {code.PrintPlain} Print the last fragment of error
 447F: 97              SUB     A                   ; Clear ...
 4480: 32 7B 46        LD      ($467B),A           ; {code.noun} ... the unknown noun
@@ -333,156 +333,177 @@ ParseUserInput:
 448E: 3A 7C 46        LD      A,($467C)           ; {code.verb} Get the verb
 4491: A7              AND     A                   ; Noun and verb?
 4492: C0              RET     NZ                  ; Yes, done
-4493: 21 B0 46        LD      HL,$46B0            ; {+} "WHAT_DO_YOU_WANT_ME_TO_DO_WITH_THE_"+noun+"?"
+4493: 21 B0 46        LD      HL,$46B0            ; {+code.MsgWhatDoWith} "WHAT_DO_YOU_WANT_ME_TO_DO_WITH_THE_"+noun+"?"
 4496: CD D0 45        CALL    $45D0               ; {code.PrintPlain} Print first fragment
 4499: 3E 01           LD      A,$01               ; Flag that we ...
-449B: 32 A1 44        LD      ($44A1),A           ; {code.loneObject} ... are prompting for a verb only
+449B: 32 A1 44        LD      ($44A1),A           ; {code.isLoneObject} ... are prompting for a verb only
 449E: C3 CF 43        JP      $43CF               ; {code.ParseUserInput} Back to get user input
 
-loneObject:
+isLoneObject:
 44A1: 00 ; 1 if there was a lone object given last input
+```
 
+# Tokenize the input
+
+Parse the input into words.
+
+```code
 ParseInputString:
-44A2: 21 5A 46        LD      HL,$465A            ; {+code.InputBuffer}
+44A2: 21 5A 46        LD      HL,$465A            ; {+code.inputBuffer} Start of user input buffer
 44A5: 97              SUB     A                   ; Clear the ...
 44A6: 32 A9 45        LD      ($45A9),A           ; {code.bufferHasSomething} ... buffer-has-something flag
 44A9: 32 7D 46        LD      ($467D),A           ; {code.grammar} ... and the grammar
-44AC: 11 CE 56        LD      DE,$56CE            ; {+code.wordTable}
-44AF: EB              EX      DE,HL               
-44B0: 22 79 47        LD      ($4779),HL          ; {}
-44B3: EB              EX      DE,HL               
-44B4: 7E              LD      A,(HL)              
-44B5: FE 20           CP      $20                 
-44B7: C2 BE 44        JP      NZ,$44BE            ; {}
-44BA: 23              INC     HL                  
-44BB: C3 B4 44        JP      $44B4               ; {}
-44BE: 22 7B 47        LD      ($477B),HL          ; {}
-44C1: A7              AND     A                   
-44C2: CA 5C 45        JP      Z,$455C             ; {}
-44C5: 3E 01           LD      A,$01               
-44C7: 32 A9 45        LD      ($45A9),A           ; {code.bufferHasSomething}
-44CA: E5              PUSH    HL                  
-44CB: 1A              LD      A,(DE)              
-44CC: A7              AND     A                   
-44CD: CA 67 45        JP      Z,$4567             ; {}
-44D0: 32 81 47        LD      ($4781),A           ; {}
-44D3: E6 07           AND     $07                 
-44D5: 4F              LD      C,A                 
-44D6: 32 7D 47        LD      ($477D),A           ; {}
-44D9: 3A 81 47        LD      A,($4781)           ; {}
-44DC: E6 38           AND     $38                 
-44DE: 0F              RRCA                        
-44DF: 0F              RRCA                        
-44E0: 0F              RRCA                        
-44E1: 47              LD      B,A                 
-44E2: EB              EX      DE,HL               
-44E3: 22 79 47        LD      ($4779),HL          ; {}
-44E6: EB              EX      DE,HL               
-44E7: 13              INC     DE                  
-44E8: 1A              LD      A,(DE)              
-44E9: BE              CP      (HL)                
-44EA: C2 4E 45        JP      NZ,$454E            ; {}
-44ED: 23              INC     HL                  
-44EE: 13              INC     DE                  
-44EF: 0D              DEC     C                   
-44F0: C2 E8 44        JP      NZ,$44E8            ; {}
-44F3: 3A 7D 47        LD      A,($477D)           ; {}
-44F6: FE 06           CP      $06                 
-44F8: CA 05 45        JP      Z,$4505             ; {}
-44FB: 7E              LD      A,(HL)              
-44FC: FE 20           CP      $20                 
-44FE: CA 13 45        JP      Z,$4513             ; {}
-4501: A7              AND     A                   
-4502: C2 53 45        JP      NZ,$4553            ; {}
-4505: 7E              LD      A,(HL)              
-4506: FE 20           CP      $20                 
-4508: CA 13 45        JP      Z,$4513             ; {}
-450B: A7              AND     A                   
-450C: CA 13 45        JP      Z,$4513             ; {}
-450F: 23              INC     HL                  
-4510: C3 05 45        JP      $4505               ; {}
-4513: 3A 81 47        LD      A,($4781)           ; {}
-4516: E6 C0           AND     $C0                 
-4518: CA 2D 45        JP      Z,$452D             ; {}
-451B: 32 7D 46        LD      ($467D),A           ; {code.grammar}
-451E: 1A              LD      A,(DE)              
-451F: 32 7C 46        LD      ($467C),A           ; {code.verb}
-4522: E5              PUSH    HL                  
-4523: 21 FD 46        LD      HL,$46FD            
-4526: CD 85 45        CALL    $4585               ; {}
-4529: E1              POP     HL                  
-452A: C3 46 45        JP      $4546               ; {}
-452D: 1A              LD      A,(DE)              
-452E: 32 7B 46        LD      ($467B),A           ; {code.noun}
-4531: EB              EX      DE,HL               
-4532: 22 AA 45        LD      ($45AA),HL          ; {code.nounPointer}
-4535: EB              EX      DE,HL               
-4536: 78              LD      A,B                 
-4537: 32 A8 45        LD      ($45A8),A           ; {code.numBytesWordData}
-453A: 97              SUB     A                   
-453B: 32 A1 44        LD      ($44A1),A           ; {code.loneObject}
-453E: E5              PUSH    HL                  
-453F: 21 D3 46        LD      HL,$46D3            
-4542: CD 85 45        CALL    $4585               ; {}
-4545: E1              POP     HL                  
-4546: 7E              LD      A,(HL)              
-4547: FE 20           CP      $20                 
-4549: D1              POP     DE                  
-454A: CA AC 44        JP      Z,$44AC             ; {}
-454D: C9              RET                         
-454E: 13              INC     DE                  
-454F: 0D              DEC     C                   
-4550: C2 4E 45        JP      NZ,$454E            ; {}
-4553: 13              INC     DE                  
-4554: 05              DEC     B                   
-4555: C2 53 45        JP      NZ,$4553            ; {}
-4558: E1              POP     HL                  
-4559: C3 B4 44        JP      $44B4               ; {}
-455C: 3A A9 45        LD      A,($45A9)           ; {code.bufferHasSomething}
-455F: A7              AND     A                   
-4560: C0              RET     NZ                  
-4561: 3E 03           LD      A,$03               
-4563: 32 7D 46        LD      ($467D),A           ; {code.grammar}
-4566: C9              RET                         
-4567: E1              POP     HL                  
-4568: 97              SUB     A                   
-4569: 32 7C 46        LD      ($467C),A           ; {code.verb}
-456C: 32 7B 46        LD      ($467B),A           ; {code.noun}
-456F: 7E              LD      A,(HL)              
-4570: FE 20           CP      $20                 
-4572: C2 79 45        JP      NZ,$4579            ; {}
-4575: 23              INC     HL                  
-4576: C3 6F 45        JP      $456F               ; {}
-4579: 7E              LD      A,(HL)              
-457A: A7              AND     A                   
-457B: C8              RET     Z                   
-457C: FE 20           CP      $20                 
-457E: CA AC 44        JP      Z,$44AC             ; {}
-4581: 23              INC     HL                  
-4582: C3 79 45        JP      $4579               ; {}
-4585: EB              EX      DE,HL               
-4586: 2A 7B 47        LD      HL,($477B)          ; {}
-4589: 06 28           LD      B,$28               
-458B: 7E              LD      A,(HL)              
-458C: A7              AND     A                   
-458D: CA 9F 45        JP      Z,$459F             ; {}
-4590: FE 20           CP      $20                 
-4592: CA 9F 45        JP      Z,$459F             ; {}
-4595: 12              LD      (DE),A              
-4596: 23              INC     HL                  
-4597: 13              INC     DE                  
-4598: 05              DEC     B                   
-4599: 78              LD      A,B                 
-459A: FE 01           CP      $01                 
-459C: C2 8B 45        JP      NZ,$458B            ; {}
-459F: 3E 40           LD      A,$40               
-45A1: 12              LD      (DE),A              
-45A2: 13              INC     DE                  
-45A3: 05              DEC     B                   
-45A4: C2 9F 45        JP      NZ,$459F            ; {}
-45A7: C9              RET                         
+;
+44AC: 11 CE 56        LD      DE,$56CE            ; {+code.wordTable} Pointer to all the words we know
+44AF: EB              EX      DE,HL               ; Now HL=words we know, DE=where we are in the input
+44B0: 22 79 47        LD      ($4779),HL          ; {code.currentParsePtr} Hold our current spot in the word table
+44B3: EB              EX      DE,HL               ; Now HL=where we are in input, DE=where we are in words
+44B4: 7E              LD      A,(HL)              ; Ignore ...
+44B5: FE 20           CP      $20                 ; ... all ...
+44B7: C2 BE 44        JP      NZ,$44BE            ; {} ... leading ...
+44BA: 23              INC     HL                  ; ... blank ...
+44BB: C3 B4 44        JP      $44B4               ; {} ... spaces
+44BE: 22 7B 47        LD      ($477B),HL          ; {code.startOfWord} start of this word
+44C1: A7              AND     A                   ; Nothing but spaces?
+44C2: CA 5C 45        JP      Z,$455C             ; {} Yes, we are done parsing
+44C5: 3E 01           LD      A,$01               ; There is SOMETHING ...
+44C7: 32 A9 45        LD      ($45A9),A           ; {code.bufferHasSomething} ... in the buffer
+44CA: E5              PUSH    HL                  ; Hold the pointer
+44CB: 1A              LD      A,(DE)              ; First byte of word table
+44CC: A7              AND     A                   ; Reached the end of the table?
+44CD: CA 67 45        JP      Z,$4567             ; {} Done tokenizing ... now have a look at the words
+44D0: 32 81 47        LD      ($4781),A           ; {code.wordBeingTested} Hold 1st byte of word being tested
+44D3: E6 07           AND     $07                 ; Number of bytes ...
+44D5: 4F              LD      C,A                 ; ... in ...
+44D6: 32 7D 47        LD      ($477D),A           ; {code.charsInWord} ... current word text
+44D9: 3A 81 47        LD      A,($4781)           ; {code.wordBeingTested} That 1st word has several fields
+44DC: E6 38           AND     $38                 ; Number ...
+44DE: 0F              RRCA                        ; ... of ...
+44DF: 0F              RRCA                        ; ... bytes ...
+44E0: 0F              RRCA                        ; ... in ...
+44E1: 47              LD      B,A                 ; word data
+44E2: EB              EX      DE,HL               ; Save our current ...
+44E3: 22 79 47        LD      ($4779),HL          ; {code.currentParsePtr} ... position in the input
+44E6: EB              EX      DE,HL               ; Shuffle our pointers back
+44E7: 13              INC     DE                  ; Get next from ...
+44E8: 1A              LD      A,(DE)              ; ... input buffer
+44E9: BE              CP      (HL)                ; Does it match the word we are testing?
+44EA: C2 4E 45        JP      NZ,$454E            ; {code.FindEndOfTestChars} No, try next word
+44ED: 23              INC     HL                  ; Next in input
+44EE: 13              INC     DE                  ; Next in word text
+44EF: 0D              DEC     C                   ; All characters of word being tested?
+44F0: C2 E8 44        JP      NZ,$44E8            ; {} No, keep testing
+44F3: 3A 7D 47        LD      A,($477D)           ; {code.charsInWord}
+44F6: FE 06           CP      $06                 ; Six is the max size EXCEPT FOR "SCEPTER" WHICH IS 7 -- BUG?
+44F8: CA 05 45        JP      Z,$4505             ; {code.FindEndOfInputWord} Six matched ... ignore the rest of the input
+44FB: 7E              LD      A,(HL)              ; Not six ... is the next input ...
+44FC: FE 20           CP      $20                 ; ... a space?
+44FE: CA 13 45        JP      Z,$4513             ; {} Yes ... we are ready for next word
+4501: A7              AND     A                   ; Maybe the end of the input buffer?
+4502: C2 53 45        JP      NZ,$4553            ; {code.FindEndOfTestData} No ... not a match
+;
+FindEndOfInputWord:
+4505: 7E              LD      A,(HL)              ; Next in buffer is ...
+4506: FE 20           CP      $20                 ; ... a space?
+4508: CA 13 45        JP      Z,$4513             ; {} Yes, end of word success
+450B: A7              AND     A                   ; End of input buffer?
+450C: CA 13 45        JP      Z,$4513             ; {} Yes, end of word success
+450F: 23              INC     HL                  ; Next character in input
+4510: C3 05 45        JP      $4505               ; {code.FindEndOfInputWord} Find end of word
+;
+4513: 3A 81 47        LD      A,($4781)           ; {code.wordBeingTested}
+4516: E6 C0           AND     $C0                 ; Is the word a noun? (anything else is a verb)
+4518: CA 2D 45        JP      Z,$452D             ; {} Yes ... record the noun
+451B: 32 7D 46        LD      ($467D),A           ; {code.grammar} Hold the verb's grammar
+451E: 1A              LD      A,(DE)              ; Get the verb number ...
+451F: 32 7C 46        LD      ($467C),A           ; {code.verb} ... from script (lots of words might map to same number)
+4522: E5              PUSH    HL                  ; Hold input pointer
+4523: 21 FD 46        LD      HL,$46FD            ; {+code.unknownVerb} Storage for unknownVerb
+4526: CD 85 45        CALL    $4585               ; {code.CopyWord} Copy input to the unknownVerb storage
+4529: E1              POP     HL                  ; Restore pointer
+452A: C3 46 45        JP      $4546               ; {} Skip spaces and next word
+;
+452D: 1A              LD      A,(DE)              ; Store the ...
+452E: 32 7B 46        LD      ($467B),A           ; {code.noun} ... noun number (several words might match)
+4531: EB              EX      DE,HL               ; Get HL into position
+4532: 22 AA 45        LD      ($45AA),HL          ; {code.nounPointer} Store pointer to noun
+4535: EB              EX      DE,HL               ; Restore pointer positions
+4536: 78              LD      A,B                 ; Number of bytes ...
+4537: 32 A8 45        LD      ($45A8),A           ; {code.numBytesWordData} ... of data for this word
+453A: 97              SUB     A                   ; Clear the ...
+453B: 32 A1 44        LD      ($44A1),A           ; {code.isLoneObject} ... isLoneObject flag (we have a verb)
+453E: E5              PUSH    HL                  ; Hold
+453F: 21 D3 46        LD      HL,$46D3            ; {+code.unknownNoun} Copy the ...
+4542: CD 85 45        CALL    $4585               ; {code.CopyWord} ... input noun
+4545: E1              POP     HL                  ; Restore
+4546: 7E              LD      A,(HL)              ; From input
+4547: FE 20           CP      $20                 ; Is it a space?
+4549: D1              POP     DE                  ; Restore
+454A: CA AC 44        JP      Z,$44AC             ; {} Yes ... decode the next word
+454D: C9              RET                         ; Done
+;
+FindEndOfTestChars:
+454E: 13              INC     DE                  ; Skip ...
+454F: 0D              DEC     C                   ; ... all characters ...
+4550: C2 4E 45        JP      NZ,$454E            ; {code.FindEndOfTestChars} ... in test word
+;
+FindEndOfTestData:
+4553: 13              INC     DE                  ; Next in word text data
+4554: 05              DEC     B                   ; Reached the end of the test word?
+4555: C2 53 45        JP      NZ,$4553            ; {code.FindEndOfTestData} No, move to the end
+;
+4558: E1              POP     HL                  ; Restore pointer to input
+4559: C3 B4 44        JP      $44B4               ; {} Skip blank spaces in input
+;
+455C: 3A A9 45        LD      A,($45A9)           ; {code.bufferHasSomething} Is the buffer ...
+455F: A7              AND     A                   ; ... empty?
+4560: C0              RET     NZ                  ; YES, we are done
+;
+4561: 3E 03           LD      A,$03               ; Stand alone ...
+4563: 32 7D 46        LD      ($467D),A           ; {code.grammar} ... verb
+4566: C9              RET                         ; Done
+;
+4567: E1              POP     HL                  ; Restore pointer to input
+4568: 97              SUB     A                   ; Zero the ...
+4569: 32 7C 46        LD      ($467C),A           ; {code.verb} ... verb
+456C: 32 7B 46        LD      ($467B),A           ; {code.noun} And the noun
+456F: 7E              LD      A,(HL)              ; Next input
+4570: FE 20           CP      $20                 ; Is it a space?
+4572: C2 79 45        JP      NZ,$4579            ; {code.SkipInputWord} No, go process it
+4575: 23              INC     HL                  ; Skip ...
+4576: C3 6F 45        JP      $456F               ; {} ... blank spaces
+;
+SkipInputWord:
+4579: 7E              LD      A,(HL)              ; End of ...
+457A: A7              AND     A                   ; ... user input?
+457B: C8              RET     Z                   ; Yes, we are done
+457C: FE 20           CP      $20                 ; Space?
+457E: CA AC 44        JP      Z,$44AC             ; {} Yes, go lookup any word that follows
+4581: 23              INC     HL                  ; Keep skipping ...
+4582: C3 79 45        JP      $4579               ; {code.SkipInputWord} ... input word
 
-; RAM used in parsing input
+CopyWord:
+4585: EB              EX      DE,HL               ; Now DE=storage
+4586: 2A 7B 47        LD      HL,($477B)          ; {code.startOfWord}
+4589: 06 28           LD      B,$28               ; 40 chars max in storage for word
+458B: 7E              LD      A,(HL)              ; From input buffer
+458C: A7              AND     A                   ; End of the buffer?
+458D: CA 9F 45        JP      Z,$459F             ; {} Yes ... done
+4590: FE 20           CP      $20                 ; Is it a space betwen words?
+4592: CA 9F 45        JP      Z,$459F             ; {} Yes ... done
+4595: 12              LD      (DE),A              ; Store input word char to storage
+4596: 23              INC     HL                  ; Next input
+4597: 13              INC     DE                  ; Next storage
+4598: 05              DEC     B                   ; Count down remaining storage
+4599: 78              LD      A,B                 ; Storage all ...
+459A: FE 01           CP      $01                 ; ... full?
+459C: C2 8B 45        JP      NZ,$458B            ; {} No ... keep copying
+459F: 3E 40           LD      A,$40               ; Fill ...
+45A1: 12              LD      (DE),A              ; ... remainder of ...
+45A2: 13              INC     DE                  ; ... storage ...
+45A3: 05              DEC     B                   ; ... with ...
+45A4: C2 9F 45        JP      NZ,$459F            ; {} ... the "@" character
+45A7: C9              RET                         
 
 numBytesWordData:
 45A8: 00
@@ -493,23 +514,23 @@ bufferHasSomething:
 nounPointer:
 45AA: 00 00
 
-45AC: 00
-45AD: 00
+; unused
+45AC: 00 00
 ```
 
 # Print Packed
 
 ```code
 PrintPacked:
-; Unpack a message (or multiple packed message) and print.
+; Unpack a message (or multiple packed messages) and print.
 ; HL is pointer to message
 45AE: 7E              LD      A,(HL)              ; Next byte of data
-45AF: A7              AND     A                   ; Return if we are ... ??length of string??
-45B0: C8              RET     Z                   ; ... at the end?
+45AF: A7              AND     A                   ; Return if we are ...
+45B0: C8              RET     Z                   ; ... at the end
 ;
 45B1: 23              INC     HL                  ; Next in string
-45B2: 11 5A 46        LD      DE,$465A            ; {+code.InputBuffer}
-45B5: CD C2 47        CALL    $47C2               ; {code.UnpackString} Unpack the string
+45B2: 11 5A 46        LD      DE,$465A            ; {+code.inputBuffer} Destination buffer
+45B5: CD C2 47        CALL    $47C2               ; {code.UnpackStringToScreen} Unpack the string
 45B8: 7E              LD      A,(HL)              ; Character from string
 45B9: A7              AND     A                   ; 0 means end with a carriage return?
 45BA: CA E7 45        JP      Z,$45E7             ; {code.PrintCarriageReturn} Yes, print carriage return and out
@@ -560,7 +581,7 @@ WaitForKey:
 45EF: 3A 74 47        LD      A,($4774)           ; {code.keyWaitCounter} Bump the ...
 45F2: 3C              INC     A                   ; ... counter used for ...
 45F3: 32 74 47        LD      ($4774),A           ; {code.keyWaitCounter} ... random numbers
-45F6: CD 2B 00        CALL    $002B               ; {hard.ScanKeyboard} Call the ROM routine to scan the keyboard
+45F6: CD 2B 00        CALL    $002B               ; {hard.GetKey} Call the ROM routine to scan the keyboard
 45F9: A7              AND     A                   ; Any key typed?
 45FA: CA EF 45        JP      Z,$45EF             ; {} No, keep waiting
 45FD: D1              POP     DE                  ; Restore our DE
@@ -584,7 +605,7 @@ PromptAndReadLine:
 4605: 06 3A           LD      B,$3A               ; Colon ":"
 4607: 78              LD      A,B                 ; User starts typing after ...
 4608: CD FF 45        CALL    $45FF               ; {code.PrintChar} ... the colon
-460B: 21 5A 46        LD      HL,$465A            ; {+code.InputBuffer} Start of the input buffer
+460B: 21 5A 46        LD      HL,$465A            ; {+code.inputBuffer} Start of the input buffer
 460E: 0E 00           LD      C,$00               ; Input character count (0 to start)
 ;
 4610: E5              PUSH    HL                  ; Hold ...
@@ -603,7 +624,7 @@ PromptAndReadLine:
 4625: CA 57 46        JP      Z,$4657             ; {code.InputDone} Yes, we are done
 4628: 0C              INC     C                   ; Increment the character count
 4629: 23              INC     HL                  ; Next in buffer
-462A: 11 7A 46        LD      DE,$467A            ; {+code.EndOfInputBuffer} One past the end of the input buffer
+462A: 11 7A 46        LD      DE,$467A            ; {+code.OnePastInput} One past the end of the input buffer
 462D: 7C              LD      A,H                 ; Overflowed the ...
 462E: BA              CP      D                   ; ... buffer?
 462F: DA 10 46        JP      C,$4610             ; {} No, keep taking keys
@@ -642,7 +663,7 @@ InputDone:
 ; Again, look 99 bytes down for the last assembly's data.
 ; Interestingly, the data 99 down overlaps a reserved area too,
 ; which lets us see the assembly BEFORE THAT!
-InputBuffer:
+inputBuffer:
 ; UNINITIALIZED MEMORY
 465A: 41 4E 54 20 4D 45 20 54 4F 20 44 4F 20 57 49 54  ; WANT_ME_TO_DO_WIT
 466A: 48 20 54 48 45 20 2C 41 0D 12 30 30 30 30 20 20  ; H_THE_ ,A<CR>?000__  ; 18 bytes, whatever the instruction is
@@ -660,10 +681,8 @@ InputBuffer:
 ; --  "---------------,A"  0D  ; Must be "MOV x,A" where x is B,C,D,E,H,L,M,A
 ; 12  "0000  -----------"  --  ; Double-space means no label, and we know the length (10)
 
-; Used in input parsing
-
-EndOfInputBuffer:
-467A: 00 ; Never written to
+OnePastInput: ; Really UNUSED, but having this makes a label reference above
+467A: 00
 
 noun:
 467B: 00
@@ -687,15 +706,19 @@ ErrorString4:
 4685: 58 47 ; "I DON'T KNOW WHAT YOUR MEAN."
 
 ; I_SEE_NO_
+MsgISeeNo:
 4687: 49 20 53 45 45 20 4E 4F 20 01
 
 ; _HERE.[CR]
+MsgHere:
 4691: 20 48 45 52 45 2E 00
 
 ; YOU_AREN'T_CARRYING_IT.[CR]
+MsgNotCarrying:
 4698: 59 4F 55 20 41 52 45 4E 27 54 20 43 41 52 52 59 49 4E 47 20 49 54 2E 00
 
 ; WHAT_DO_YOU_WANT_ME_TO_DO_WITH_THE_
+MsgWhatDoWith:
 46B0: 57 48 41 54 20 44 4F 20 59 4F 55 20 57 41 4E 54 20 4D 45 20 54 4F 20 44 4F 20 57 49 54 48 20 54
 46D0: 48 45 20
 
@@ -707,13 +730,14 @@ unknownNoun:
 46E7: 54 20 55 4E 44 45 52 53 54 41 ; T_UNDERSTA
 46F1: 4E 44 2E 00 49 20 44 4F 4E 27 ; ND.*I_DON'
 
-UnknownNounPunctuation:
+unknownNounPunct:
 ; "?"
-46FB: 3F 00
+46FB: 3F 00 ; The code changes this depending on the sentence
 
 ; 40 byte buffer for unknown verb (followed by WHAT?)
 unknownVerb:
 ; UNINITIALIZED MEMORY
+; This is from the source code a few bytes down
 46FD: 4B 4E 4F 57 20 57 48 41 54 20 ; KNOW_WHAT_
 4707: 59 4F 55 20 4D 45 41 4E 2E 00 ; YOU_MEAN.*
 4711: 00 00 00 00 00 00 00 00 00 00 ;
@@ -738,21 +762,26 @@ ErrorString4:
 keyWaitCounter:
 4774: 00 ; Entropy for random numbers
 
-4775: 00
-4776: 00
-4777: 00
-4778: 00
-4779: 00
-477A: 00
-477B: 00
-477C: 00
+; unused
+4775: 00 00 00 00
+
+currentParsePtr:
+4779: 00 00
+
+startOfWord:
+477B: 00 00 ; Input buffer start of word we are tokenizing
+
+charsInWord:
 477D: 00
-477E: 00
-477F: 00
-4780: 00
+
+; unused
+477E: 00 00 00
+
+wordBeingTested:
 4781: 00
 
 ; "WELCOME TO PYRAMID!!",0
+WelcomeMsg:
 4782: 57 45 4C 43 4F 4D 45 20 54 4F 20 50 59 52 41 4D 49 44 21 21 00
 
 ; The next 40 bytes (there is that magic number 40 again) are uninitalized
@@ -798,112 +827,164 @@ TopOfStack:
 ; memory reserved for the statck.
 47BF: 00 
 
-ConstantZero:
+; unused
 47C0: 00 00
+```
 
-UnpackString:
-47C2: 32 84 48        LD      ($4884),A           ; {} ??TODO??
-47C5: 3E 01           LD      A,$01               
-47C7: 32 87 48        LD      ($4887),A           ; {}
-47CA: C3 D4 47        JP      $47D4               ; {}
+# Packed strings
+
+By limiting a character to 40 possible values, we can pack three characters into 2 bytes:
+
+40 x 40 x 40 = 64,000 (just shy of 65,536)
+
+The 40 characters from CharTable: ?!2_"'<>/03ABCDEFGHIJKLMNOPQRSTUVWXYZ-,.
+
+The first byte of a packed string is the number of words to unpack. Other printable characters
+may be listed after that with a 0 terminating the string.
+
+For instance, PS_02:
+
+```
+; YOU_ARE_IN_THE_DESERT.[CR]
+07 C7 DE 94 14 4B 5E 96 96 DB 72 F5 59 3E 62 2E 00
+```
+
+There are 7 words to unpack (14 bytes) followed by the "2E" period and the null terminator 0.
+
+Each double word is listed LSB first. The first word to unpack is 0xDEC7.
+
+```
+val = 0x1494
+c1 = val % 40  # 31 -> 'U'
+val //= 40
+c2 = val % 40  # 25 -> 'O'
+val //= 40
+c3 = val % 40  # 35 -> 'Y'
+```
+
+Which gives us 'YOU' (reversed order).
+
+Next is 1419:
+
+```
+c1 = 28  -> 'R'
+c2 = 11  -> 'A'
+c3 = 3   -> '_' (really the space character)
+```
+
+Bringing us to "YOU_AR", and so on.
+
+```code
+UnpackStringToScreen:
+47C2: 32 84 48        LD      ($4884),A           ; {code.unpackNumWords} Number of words to unpack
+47C5: 3E 01           LD      A,$01               ; We are unpacking to ...
+47C7: 32 87 48        LD      ($4887),A           ; {code.unpackFlagToScreen} ... the screen
+47CA: C3 D4 47        JP      $47D4               ; {} Do the unpack
 ;
-47CD: 32 84 48        LD      ($4884),A           ; {}
-47D0: 97              SUB     A                   
-47D1: 32 87 48        LD      ($4887),A           ; {}
-47D4: E5              PUSH    HL                  
-47D5: 06 03           LD      B,$03               
-47D7: E1              POP     HL                  
-47D8: 7E              LD      A,(HL)              
-47D9: 23              INC     HL                  
-47DA: 4E              LD      C,(HL)              
-47DB: 23              INC     HL                  
-47DC: E5              PUSH    HL                  
-47DD: 61              LD      H,C                 
-47DE: 6F              LD      L,A                 
-47DF: 13              INC     DE                  
-47E0: 13              INC     DE                  
-47E1: EB              EX      DE,HL               
-47E2: E5              PUSH    HL                  
-47E3: C5              PUSH    BC                  
-47E4: 21 28 00        LD      HL,$0028            
-47E7: 22 85 48        LD      ($4885),HL          ; {}
-47EA: 21 1A 48        LD      HL,$481A            
-47ED: 36 11           LD      (HL),$11            
-47EF: 01 00 00        LD      BC,$0000            
-47F2: C5              PUSH    BC                  
-47F3: 7B              LD      A,E                 
-47F4: 17              RLA                         
-47F5: 5F              LD      E,A                 
-47F6: 7A              LD      A,D                 
-47F7: 17              RLA                         
-47F8: 57              LD      D,A                 
-47F9: 35              DEC     (HL)                
-
-47FA: E1              POP     HL                  
-47FB: CA 1B 48        JP      Z,$481B             ; {}
-47FE: 3E 00           LD      A,$00               
-4800: CE 00           ADC     $00                 
-4802: 29              ADD     HL,HL               
-4803: 44              LD      B,H                 
-4804: 85              ADD     A,L                 
-4805: 2A 85 48        LD      HL,($4885)          ; {}
-4808: 95              SUB     L                   
-4809: 4F              LD      C,A                 
-480A: 78              LD      A,B                 
-480B: 9C              SBC     H                   
-480C: 47              LD      B,A                 
-480D: C5              PUSH    BC                  
-480E: D2 13 48        JP      NC,$4813            ; {}
-4811: 09              ADD     HL,BC               
-4812: E3              EX      (SP),HL             
-4813: 21 1A 48        LD      HL,$481A            
-4816: 3F              CCF                         
-4817: C3 F3 47        JP      $47F3               ; {}
-
-481A: 00
-
-481B: 01 5C 48        LD      BC,$485C            
-481E: 09              ADD     HL,BC               
-481F: 7E              LD      A,(HL)              
-4820: C1              POP     BC                  
-4821: E1              POP     HL                  
-4822: 77              LD      (HL),A              
-4823: 2B              DEC     HL                  
-4824: 05              DEC     B                   
-4825: C2 E2 47        JP      NZ,$47E2            ; {}
-4828: 3A 87 48        LD      A,($4887)           ; {}
-482B: A7              AND     A                   
-482C: CA 44 48        JP      Z,$4844             ; {}
+UnpackStringToBuffer:  ; Never used
+47CD: 32 84 48        LD      ($4884),A           ; {code.unpackNumWords} Number of words to unpack
+47D0: 97              SUB     A                   ; We are unpacking to ...
+47D1: 32 87 48        LD      ($4887),A           ; {code.unpackFlagToScreen} ... the buffer
 ;
-482F: E5              PUSH    HL                  
-4830: C5              PUSH    BC                  
-4831: D5              PUSH    DE                  
-4832: 1E 03           LD      E,$03               
-4834: 23              INC     HL                  
-4835: 46              LD      B,(HL)              
-4836: E5              PUSH    HL                  
-4837: 78              LD      A,B                 
-4838: CD FF 45        CALL    $45FF               ; {code.PrintChar} ??why are we printing in the unpack? Error??
-483B: E1              POP     HL                  
-483C: 23              INC     HL                  
-483D: 1D              DEC     E                   
-483E: C2 35 48        JP      NZ,$4835            ; {}
-4841: D1              POP     DE                  
-4842: C1              POP     BC                  
-4843: E1              POP     HL                  
-4844: EB              EX      DE,HL               
-4845: 13              INC     DE                  
-4846: 3A 87 48        LD      A,($4887)           ; {}
-4849: A7              AND     A                   
-484A: C2 50 48        JP      NZ,$4850            ; {}
-484D: 13              INC     DE                  
-484E: 13              INC     DE                  
-484F: 13              INC     DE                  
-4850: 3A 84 48        LD      A,($4884)           ; {}
-4853: 3D              DEC     A                   
-4854: 32 84 48        LD      ($4884),A           ; {}
-4857: C2 D5 47        JP      NZ,$47D5            ; {}
-485A: E1              POP     HL                  
+; HL points to data to unpack
+; DE points to unpack buffer (just 3 bytes if going to screen)
+47D4: E5              PUSH    HL                  ; Hold the pointer to the words
+;
+47D5: 06 03           LD      B,$03               ; Three characters to extract from word
+47D7: E1              POP     HL                  ; Get the ...
+47D8: 7E              LD      A,(HL)              ; ... MSB of the word
+47D9: 23              INC     HL                  ; Get the ...
+47DA: 4E              LD      C,(HL)              ; ... LSB of the word
+47DB: 23              INC     HL                  ; Update the pointer ...
+47DC: E5              PUSH    HL                  ; ... to the words
+47DD: 61              LD      H,C                 ; Data word ...
+47DE: 6F              LD      L,A                 ; ... to HL
+47DF: 13              INC     DE                  ; Skip to end ...
+47E0: 13              INC     DE                  ; ... we are storing in reverse
+47E1: EB              EX      DE,HL               ; Now HL=buffer and DE=data
+47E2: E5              PUSH    HL                  ; Hold pointer to the buffer
+47E3: C5              PUSH    BC                  ; Hold our count to 3
+;
+47E4: 21 28 00        LD      HL,$0028            ; The value of ...
+47E7: 22 85 48        LD      ($4885),HL          ; {code.valueOfForty} ... 40 for division (repeated subtraction)
+47EA: 21 1A 48        LD      HL,$481A            ; {+code.shiftCount} We stop after ...
+47ED: 36 11           LD      (HL),$11            ; ... 16 shifts (end + 1 = 17)
+47EF: 01 00 00        LD      BC,$0000            ; Value we are extracting
+47F2: C5              PUSH    BC                  ; Hold the value on the stack
+47F3: 7B              LD      A,E                 ; Shift ...
+47F4: 17              RLA                         ; ... DE ...
+47F5: 5F              LD      E,A                 ; ... left ...
+47F6: 7A              LD      A,D                 ; ... one ...
+47F7: 17              RLA                         ; ... bit ...
+47F8: 57              LD      D,A                 ; ... bit goes to CF
+47F9: 35              DEC     (HL)                ; All shifts done?
+47FA: E1              POP     HL                  ; Current extracted value from stack
+47FB: CA 1B 48        JP      Z,$481B             ; {} Yes, store the extracted character
+47FE: 3E 00           LD      A,$00               ; Left bit ...
+4800: CE 00           ADC     $00                 ; ... to A
+4802: 29              ADD     HL,HL               ; Value = value * 2
+4803: 44              LD      B,H                 ; MSB
+4804: 85              ADD     A,L                 ; 
+4805: 2A 85 48        LD      HL,($4885)          ; {code.valueOfForty}
+4808: 95              SUB     L                   ; 
+4809: 4F              LD      C,A                 ; 
+480A: 78              LD      A,B                 ; TODO figure out the exact math here
+480B: 9C              SBC     H                   ; 
+480C: 47              LD      B,A                 ; 
+480D: C5              PUSH    BC                  ; 
+480E: D2 13 48        JP      NC,$4813            ; {} Less than 40 ... skip adding
+4811: 09              ADD     HL,BC               ; Greater or equal, add to the extracted value
+4812: E3              EX      (SP),HL             ; New value back to stack
+4813: 21 1A 48        LD      HL,$481A            ; {+code.shiftCount}
+4816: 3F              CCF                         ; Clear carry for next math
+4817: C3 F3 47        JP      $47F3               ; {} Do all bits
+
+shiftCount:
+481A: 00  ; Count of shifts during the unpack algorithm
+
+481B: 01 5C 48        LD      BC,$485C            ; {+code.CharTable} Offset to character table
+481E: 09              ADD     HL,BC               ; Offset to the character in the table
+481F: 7E              LD      A,(HL)              ; Get the character
+4820: C1              POP     BC                  ; Restore the count in B
+4821: E1              POP     HL                  ; Restore the pointer to buffer
+4822: 77              LD      (HL),A              ; Store the character in the buffer
+4823: 2B              DEC     HL                  ; Working backwards in sets of 3
+4824: 05              DEC     B                   ; All 3 values extracted?
+4825: C2 E2 47        JP      NZ,$47E2            ; {} No, go get them all
+4828: 3A 87 48        LD      A,($4887)           ; {code.unpackFlagToScreen} Unpacking to ...
+482B: A7              AND     A                   ; ... a buffer?
+482C: CA 44 48        JP      Z,$4844             ; {} Yes, skip screen printing
+;
+482F: E5              PUSH    HL                  ; Hold ...
+4830: C5              PUSH    BC                  ; ... our ...
+4831: D5              PUSH    DE                  ; ... progress ...
+4832: 1E 03           LD      E,$03               ; Three characters to print
+4834: 23              INC     HL                  ; Next to print
+4835: 46              LD      B,(HL)              ; Get the character
+4836: E5              PUSH    HL                  ; Hold the buffer pointer
+4837: 78              LD      A,B                 ; To B
+4838: CD FF 45        CALL    $45FF               ; {code.PrintChar} Print the unpacked character
+483B: E1              POP     HL                  ; Restore buffer pointer
+483C: 23              INC     HL                  ; Next in buffer
+483D: 1D              DEC     E                   ; All 3 printed?
+483E: C2 35 48        JP      NZ,$4835            ; {} No, print the 3 we just unpacked
+4841: D1              POP     DE                  ; Restore ...
+4842: C1              POP     BC                  ; ... our ...
+4843: E1              POP     HL                  ; ... progress
+;
+4844: EB              EX      DE,HL               ; Now HL=data and DE=buffer
+4845: 13              INC     DE                  ; Will be next in buffer
+4846: 3A 87 48        LD      A,($4887)           ; {code.unpackFlagToScreen} Are we unpacking ...
+4849: A7              AND     A                   ; ... to the screen?
+484A: C2 50 48        JP      NZ,$4850            ; {} Yes ... reuse this 3-byte buffer
+484D: 13              INC     DE                  ; No, move to the ...
+484E: 13              INC     DE                  ; ... next 3-byte slot ...
+484F: 13              INC     DE                  ; ... in the buffer
+4850: 3A 84 48        LD      A,($4884)           ; {code.unpackNumWords} Count down ...
+4853: 3D              DEC     A                   ; ... number of ...
+4854: 32 84 48        LD      ($4884),A           ; {code.unpackNumWords} ... words
+4857: C2 D5 47        JP      NZ,$47D5            ; {} Go back for all the words
+485A: E1              POP     HL                  ; Point to the next character after the words in the string
 485B: C9              RET                         
 ```
 
@@ -916,11 +997,14 @@ CharTable:
 4867: 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50  ; ABCDEFGHIJKLMNOP
 4877: 51 52 53 54 55 56 57 58 59 5A 2D 2C 2E           ; QRSTUVWXYZ-,.
 
-; RAM used by unpack
+unpackNumWords:
 4884: 00
-4885: 00
-4886: 00
-4887: 00
+
+valueOfForty:  ; Used in dividing by 40
+4885: 00 00
+
+unpackFlagToScreen:
+4887: 00 ; Set to 1 to print the characters or 0 to buffer unpack to the buffer
 ```
 
 # Room Table
@@ -2209,10 +2293,19 @@ room_68:
 
 # Ambient Light Table
 
+When we calculate the score, we look at the upper bit in each room. If the bit is set, the second value
+is added to the score. This mechanism is not used by the existing code -- probably an old feature.
+
+This is the beginning of the save-to-tape. Maybe at one time, the ambient light changed?
+It doesn't now, and there is no need to save this table. We could have just started
+saving with the object data.
+
 ```code
 ; 2 bytes per room
 ; * 0x4000 means there is light in the room (no need for a lamp)
 ; * 0x0000 means you better have a lamp
+;
+; 2nd byte is BCD score if upper bit is set of 1st byte
 
 AmbientLightTable:
 4F45: 40 00    ;  1 (has natural light)
@@ -2371,19 +2464,30 @@ ObjectData:
 ```code
 currentRoom:
 503F: 01
+
+bcdTurnCountLSB:
 5040: 00
+
+bcdTurnCountMSB:
 5041: 00
-5042: 00 00 ; ?? Lamp on time?
+
+lampOnTurnCount:
+5042: 00 00 ; Number of turns the lamp has been on
 
 lastRoom:
 5044: 00
 
 numObjInPack:
 5045: 00
-5046: 00 ; ?? Number of times resurrected?
+
+numResurrected:
+5046: 00 ; Number of times resurrected?
 ```
 
-# Object Table
+# Object Info
+
+The LoadGame code restores the 1st four bytes of this table even though only the 1st byte
+is mangled (bug in code?).
 
 ```code
 ObjectDescriptions:
@@ -2485,15 +2589,15 @@ ScriptCommands:
 ;  2.  Warn the player if the lamp is going dim and change the batteries automatically.
 AfterEveryStep:
 50D9: 3E 0F           LD      A,$0F               ; obj_LAMP_on
-50DB: 21 E7 4F        LD      HL,$4FE7            ; Object table
+50DB: 21 E7 4F        LD      HL,$4FE7            ; {+code.ObjectData} Object table
 50DE: CD 61 43        CALL    $4361               ; {code.TableOffsetTwoBytes} Lookup the object info
 50E1: 23              INC     HL                  ; Location
 50E2: 7E              LD      A,(HL)              ; Is the ...
 50E3: A7              AND     A                   ; ... lamp turned on?
 50E4: CA 34 51        JP      Z,$5134             ; {code.CheckAutoBatteries} No, bump BCD turn count and out
-50E7: 2A 42 50        LD      HL,($5042)          ; {} Bump ...
+50E7: 2A 42 50        LD      HL,($5042)          ; {code.lampOnTurnCount} Bump ...
 50EA: 23              INC     HL                  ; ... turns the lamp ...
-50EB: 22 42 50        LD      ($5042),HL          ; {} ... has been on
+50EB: 22 42 50        LD      ($5042),HL          ; {code.lampOnTurnCount} ... has been on
 50EE: 7C              LD      A,H                 ; Has lamp been ...
 50EF: FE 01           CP      $01                 ; ... on 256 turns or more?
 50F1: C2 34 51        JP      NZ,$5134            ; {code.CheckAutoBatteries} No, bump BCD turn count and out
@@ -2506,12 +2610,12 @@ AfterEveryStep:
 5103: FE 36           CP      $36                 ; Has lamp been lit 256+54 = 310 turns?
 5105: C2 34 51        JP      NZ,$5134            ; {code.CheckAutoBatteries} No, bump BCD turn count and out
 5108: 3E 0F           LD      A,$0F               ; obj_LAMP_on
-510A: 21 E7 4F        LD      HL,$4FE7            ; Object table
+510A: 21 E7 4F        LD      HL,$4FE7            ; {+code.ObjectData} Object table
 510D: CD 61 43        CALL    $4361               ; {code.TableOffsetTwoBytes} Look up the object info
 5110: 23              INC     HL                  ; Point to location
 5111: 46              LD      B,(HL)              ; Current location of the obj_LAMP_on
 5112: 36 00           LD      (HL),$00            ; The obj_LAMP_on is now out of play
-5114: 21 E7 4F        LD      HL,$4FE7            ; Look up ...
+5114: 21 E7 4F        LD      HL,$4FE7            ; {+code.ObjectData} Look up ...
 5117: 3E 2C           LD      A,$2C               ; ... info for ...
 5119: CD 61 43        CALL    $4361               ; {code.TableOffsetTwoBytes} ... obj_LAMP_dead
 511C: 23              INC     HL                  ; Location
@@ -2526,7 +2630,7 @@ AfterEveryStep:
 5131: C3 77 51        JP      $5177               ; {code.BumpBCDTurnCount} Bump the BCD turn count and out
 ;
 CheckAutoBatteries:
-5134: 2A 42 50        LD      HL,($5042)          ; {} Get the turns the lamp has been on
+5134: 2A 42 50        LD      HL,($5042)          ; {code.lampOnTurnCount} Get the turns the lamp has been on
 5137: 11 2C 01        LD      DE,$012C            ; Match 300 turns
 513A: 7C              LD      A,H                 ; Has lamp been on ...
 513B: BA              CP      D                   ; ... 300 turns?
@@ -2545,7 +2649,7 @@ CheckAutoBatteries:
 5158: 23              INC     HL                  ; The obj_LAMP_dead ...
 5159: 36 00           LD      (HL),$00            ; ... is now out of play
 515B: 3E 23           LD      A,$23               ; Get the ...
-515D: 21 E7 4F        LD      HL,$4FE7            ; ... info for ...
+515D: 21 E7 4F        LD      HL,$4FE7            ; {+code.ObjectData} ... info for ...
 5160: CD 61 43        CALL    $4361               ; {code.TableOffsetTwoBytes} ... obj_BATTERIES_fresh
 5163: 23              INC     HL                  ; Fresh batteries ...
 5164: 36 00           LD      (HL),$00            ; ... are now out of play
@@ -2559,14 +2663,14 @@ CheckAutoBatteries:
 5174: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print message
 ;
 BumpBCDTurnCount:
-5177: 3A 40 50        LD      A,($5040)           ; {} Get the lower BCD turn count
+5177: 3A 40 50        LD      A,($5040)           ; {code.bcdTurnCountLSB} Get the lower BCD turn count
 517A: C6 01           ADD     $01                 ; Add one to ...
 517C: 27              DAA                         ; ... BCD value
-517D: 32 40 50        LD      ($5040),A           ; {} Store new BCD value
-5180: 3A 41 50        LD      A,($5041)           ; {} Get the upper BCD turn count
+517D: 32 40 50        LD      ($5040),A           ; {code.bcdTurnCountLSB} Store new BCD value
+5180: 3A 41 50        LD      A,($5041)           ; {code.bcdTurnCountMSB} Get the upper BCD turn count
 5183: CE 00           ADC     $00                 ; Add any ...
 5185: 27              DAA                         ; ... carry from lower
-5186: 32 41 50        LD      ($5041),A           ; {} Update upper BCD count
+5186: 32 41 50        LD      ($5041),A           ; {code.bcdTurnCountMSB} Update upper BCD count
 5189: C9              RET                         
 ```
 
@@ -2757,7 +2861,7 @@ MoveObjectIntoContainer:
 52B6: 46              LD      B,(HL)              ; Get the destination object number from script
 52B7: 23              INC     HL                  ; Update ...
 52B8: E5              PUSH    HL                  ; ... the script pointer
-52B9: 21 E7 4F        LD      HL,$4FE7            ; Lookup the ...
+52B9: 21 E7 4F        LD      HL,$4FE7            ; {+code.ObjectData} Lookup the ...
 52BC: CD 61 43        CALL    $4361               ; {code.TableOffsetTwoBytes} ... target object
 52BF: 7E              LD      A,(HL)              ; Set ...
 52C0: F6 80           OR      $80                 ; ... the "is carried" ...
@@ -3001,7 +3105,7 @@ PrintInventory:
 53BC: CD 50 43        CALL    $4350               ; {code.GetObjectInfo} Get the object info
 53BF: C2 B3 53        JP      NZ,$53B3            ; {} Object is not in backpack, move to next object
 53C2: 78              LD      A,B                 ; Object number
-53C3: 21 47 50        LD      HL,$5047            ; Object info table
+53C3: 21 47 50        LD      HL,$5047            ; {+code.ObjectDescriptions} Object info table
 53C6: CD 61 43        CALL    $4361               ; {code.TableOffsetTwoBytes} Look up the description
 53C9: 7E              LD      A,(HL)              ; Description LSB
 53CA: 23              INC     HL                  ; Next entry
@@ -3101,7 +3205,7 @@ MoveObjectToRoom:
 5437: 5E              LD      E,(HL)              ; Get the room number
 5438: 23              INC     HL                  ; Update the ...
 5439: E5              PUSH    HL                  ; ... script pointer
-543A: 21 E7 4F        LD      HL,$4FE7            ; Look up the ...
+543A: 21 E7 4F        LD      HL,$4FE7            ; {+code.ObjectData} Look up the ...
 543D: CD 61 43        CALL    $4361               ; {code.TableOffsetTwoBytes} ... target object
 5440: 7E              LD      A,(HL)              ; Clear the ...
 5441: E6 7F           AND     $7F                 ; ... being-carried flag
@@ -3111,9 +3215,9 @@ MoveObjectToRoom:
 5446: C3 AB 43        JP      $43AB               ; {code.ScriptCommandPASS} Command passes
 
 PlayerDied:
-5449: 3A 46 50        LD      A,($5046)           ; {} Number of resurrections
+5449: 3A 46 50        LD      A,($5046)           ; {code.numResurrected} Number of resurrections
 544C: 3C              INC     A                   ; Add one ...
-544D: 32 46 50        LD      ($5046),A           ; {} ... to the count
+544D: 32 46 50        LD      ($5046),A           ; {code.numResurrected} ... to the count
 5450: FE 03           CP      $03                 ; Third time (or more)?
 5452: D2 BC 54        JP      NC,$54BC            ; {code.ThirdResurrection} Yes, do the 3rd
 5455: FE 02           CP      $02                 ; 2nd time?
@@ -3129,7 +3233,7 @@ PlayerDied:
 546B: C2 EF 55        JP      NZ,$55EF            ; {code.PrintScoreAndStop} No, print score and stop
 546E: 2A C5 54        LD      HL,($54C5)          ; {code.NextResurrectMessage} Print resurrection ...
 5471: CD AE 45        CALL    $45AE               ; {code.PrintPacked} ... message
-5474: 21 02 50        LD      HL,$5002            ; obj_LAMP_off to ...
+5474: 21 02 50        LD      HL,$5002            ; {+} obj_LAMP_off to ...
 5477: 36 01           LD      (HL),$01            ; ... room_1
 5479: 23              INC     HL                  ; Point to ...
 547A: 23              INC     HL                  ; ... obj_LAMP_on
@@ -3156,13 +3260,13 @@ PlayerDied:
 54A1: CD 45 52        CALL    $5245               ; {code.DescribeRoom} Print the room description
 54A4: 31 BF 47        LD      SP,$47BF            ; Reset the stack pointer
 54A7: 21 00 00        LD      HL,$0000            ; Reset the ...
-54AA: 22 42 50        LD      ($5042),HL          ; {} ... lamp time (very generous)
+54AA: 22 42 50        LD      ($5042),HL          ; {code.lampOnTurnCount} ... lamp time (very generous)
 54AD: C3 19 43        JP      $4319               ; {code.GameLoop} Back to the top of the game loop
 
 SecondResurrection:
-54B0: 21 4E 7F        LD      HL,$7F4E            ; Next resurrection ...
+54B0: 21 4E 7F        LD      HL,$7F4E            ; {+code.PS_BD} Next resurrection ...
 54B3: 22 C5 54        LD      ($54C5),HL          ; {code.NextResurrectMessage} ... message "WHERE_DID_I_PUT_ORANGE_SMOKE"
-54B6: 21 1D 7E        LD      HL,$7E1D            ; "YOU_CLUMBSY_OAF,_YOU'VE_DONE_IT_AGAIN
+54B6: 21 1D 7E        LD      HL,$7E1D            ; {+code.PS_BA} "YOU_CLUMBSY_OAF,_YOU'VE_DONE_IT_AGAIN
 54B9: C3 63 54        JP      $5463               ; {} Print the message and ressurect
 
 ThirdResurrection:
@@ -3173,109 +3277,113 @@ ThirdResurrection:
 NextResurrectMessage:
 54C5: 00 00
 
-54C7: CD CD 54        CALL    $54CD               ; {code.PrintScore}
-54CA: C3 AB 43        JP      $43AB               ; {code.ScriptCommandPASS}
+54C7: CD CD 54        CALL    $54CD               ; {code.PrintScore} Print the score
+54CA: C3 AB 43        JP      $43AB               ; {code.ScriptCommandPASS} Command passes
 ```
 
 # Command 8: PrintScore
 
 ```code
 PrintScore:
-54CD: 21 00 00        LD      HL,$0000            ; ??TODO??
-54D0: 22 B2 55        LD      ($55B2),HL          ; {}
-54D3: 21 45 4F        LD      HL,$4F45            
-54D6: 0E 51           LD      C,$51               
-54D8: 7E              LD      A,(HL)              
-54D9: E6 80           AND     $80                 
-54DB: 23              INC     HL                  
-54DC: CA F0 54        JP      Z,$54F0             ; {}
-54DF: 3A B2 55        LD      A,($55B2)           ; {}
-54E2: 86              ADD     A,(HL)              
-54E3: 27              DAA                         
-54E4: 32 B2 55        LD      ($55B2),A           ; {}
-54E7: 3A B3 55        LD      A,($55B3)           ; {}
-54EA: CE 00           ADC     $00                 
-54EC: 27              DAA                         
-54ED: 32 B3 55        LD      ($55B3),A           ; {}
-54F0: 23              INC     HL                  
-54F1: 0D              DEC     C                   
-54F2: C2 D8 54        JP      NZ,$54D8            ; {}
-54F5: 21 E7 4F        LD      HL,$4FE7            
-54F8: 0E 2C           LD      C,$2C               
-54FA: 7E              LD      A,(HL)              
-54FB: E6 20           AND     $20                 
-54FD: 23              INC     HL                  
-54FE: CA 21 55        JP      Z,$5521             ; {}
-5501: 7E              LD      A,(HL)              
-5502: FE 02           CP      $02                 
-5504: 06 20           LD      B,$20               
-5506: CA 10 55        JP      Z,$5510             ; {}
-5509: FE FF           CP      $FF                 
-550B: C2 21 55        JP      NZ,$5521            ; {}
-550E: 06 05           LD      B,$05               
-5510: 3A B2 55        LD      A,($55B2)           ; {}
-5513: 80              ADD     A,B                 
-5514: 27              DAA                         
-5515: 32 B2 55        LD      ($55B2),A           ; {}
-5518: 3A B3 55        LD      A,($55B3)           ; {}
-551B: CE 00           ADC     $00                 
-551D: 27              DAA                         
-551E: 32 B3 55        LD      ($55B3),A           ; {}
-5521: 23              INC     HL                  
-5522: 0D              DEC     C                   
-5523: C2 FA 54        JP      NZ,$54FA            ; {}
-5526: 3A 46 50        LD      A,($5046)           ; {}
-5529: A7              AND     A                   
-552A: CA 48 55        JP      Z,$5548             ; {}
-552D: 4F              LD      C,A                 
-552E: 06 90           LD      B,$90               
-5530: 3A B2 55        LD      A,($55B2)           ; {}
-5533: 80              ADD     A,B                 
-5534: 27              DAA                         
-5535: 32 B2 55        LD      ($55B2),A           ; {}
-5538: DA 44 55        JP      C,$5544             ; {}
-553B: 3A B3 55        LD      A,($55B3)           ; {}
-553E: C6 99           ADD     $99                 
-5540: 27              DAA                         
-5541: 32 B3 55        LD      ($55B3),A           ; {}
-5544: 0D              DEC     C                   
-5545: C2 30 55        JP      NZ,$5530            ; {}
-5548: 3A B3 55        LD      A,($55B3)           ; {}
-554B: FE 90           CP      $90                 
-554D: DA 78 55        JP      C,$5578             ; {}
-5550: 3E 2D           LD      A,$2D               
-5552: 32 BF 55        LD      ($55BF),A           ; {}
-5555: 3A B3 55        LD      A,($55B3)           ; {}
-5558: 47              LD      B,A                 
-5559: 3E 99           LD      A,$99               
-555B: 90              SUB     B                   
-555C: 32 B3 55        LD      ($55B3),A           ; {}
-555F: 3A B2 55        LD      A,($55B2)           ; {}
-5562: 47              LD      B,A                 
-5563: 3E 99           LD      A,$99               
-5565: 90              SUB     B                   
-5566: C6 01           ADD     $01                 
-5568: 27              DAA                         
-5569: 32 B2 55        LD      ($55B2),A           ; {}
-556C: 3A B3 55        LD      A,($55B3)           ; {}
-556F: CE 00           ADC     $00                 
-5571: 27              DAA                         
-5572: 32 B3 55        LD      ($55B3),A           ; {}
-5575: C3 7D 55        JP      $557D               ; {}
-
-5578: 3E 20           LD      A,$20               
-557A: 32 BF 55        LD      ($55BF),A           ; {}
+54CD: 21 00 00        LD      HL,$0000            ; Clear score tally
+54D0: 22 B2 55        LD      ($55B2),HL          ; {code.scoreTempLSB}
+54D3: 21 45 4F        LD      HL,$4F45            ; {+code.AmbientLightTable}
+54D6: 0E 51           LD      C,$51               ; 81 rooms to check
+54D8: 7E              LD      A,(HL)              ; First byte
+54D9: E6 80           AND     $80                 ; Was something scored in this room?
+54DB: 23              INC     HL                  ; Next room
+54DC: CA F0 54        JP      Z,$54F0             ; {} No ... next room
+54DF: 3A B2 55        LD      A,($55B2)           ; {code.scoreTempLSB} BCD LSB
+54E2: 86              ADD     A,(HL)              ; Add in the score from the room
+54E3: 27              DAA                         ; Adjust for BCD
+54E4: 32 B2 55        LD      ($55B2),A           ; {code.scoreTempLSB} Update LSB
+54E7: 3A B3 55        LD      A,($55B3)           ; {code.scoreTempMSB} Carry into ...
+54EA: CE 00           ADC     $00                 ; ... the MSB
+54EC: 27              DAA                         ; Adjust for BCD
+54ED: 32 B3 55        LD      ($55B3),A           ; {code.scoreTempMSB} Update MSB
+54F0: 23              INC     HL                  ; Next room
+54F1: 0D              DEC     C                   ; All rooms checked?
+54F2: C2 D8 54        JP      NZ,$54D8            ; {} No ... check them all
 ;
-557D: 21 C0 55        LD      HL,$55C0            
-5580: 3A B3 55        LD      A,($55B3)           ; {}
-5583: CD A2 55        CALL    $55A2               ; {code.BinaryToASCII}
-5586: 3A B2 55        LD      A,($55B2)           ; {}
-5589: CD A2 55        CALL    $55A2               ; {code.BinaryToASCII}
-558C: 21 E3 55        LD      HL,$55E3            
-558F: 3A 41 50        LD      A,($5041)           ; {}
-5592: CD A2 55        CALL    $55A2               ; {code.BinaryToASCII}
-5595: 3A 40 50        LD      A,($5040)           ; {}
-5598: CD A2 55        CALL    $55A2               ; {code.BinaryToASCII}
+54F5: 21 E7 4F        LD      HL,$4FE7            ; {+code.ObjectData} Now check the objects
+54F8: 0E 2C           LD      C,$2C               ; 44 objects to check
+54FA: 7E              LD      A,(HL)              ; First byte of object
+54FB: E6 20           AND     $20                 ; Is this a treasure?
+54FD: 23              INC     HL                  ; Next in table
+54FE: CA 21 55        JP      Z,$5521             ; {} Not a treasure, skip it
+5501: 7E              LD      A,(HL)              ; Location of object
+5502: FE 02           CP      $02                 ; Is this object (or parent container) in room 2?
+5504: 06 20           LD      B,$20               ; Score 20 points (BCD) if it is
+5506: CA 10 55        JP      Z,$5510             ; {} It is in the target room ... go score it
+5509: FE FF           CP      $FF                 ; Is it in the backpack?
+550B: C2 21 55        JP      NZ,$5521            ; {} No, next object
+550E: 06 05           LD      B,$05               ; Score 5 points if the object is in the backpack
+5510: 3A B2 55        LD      A,($55B2)           ; {code.scoreTempLSB} BCD LSB
+5513: 80              ADD     A,B                 ; Add in score from the object
+5514: 27              DAA                         ; Adjust for BCD
+5515: 32 B2 55        LD      ($55B2),A           ; {code.scoreTempLSB} Update LSB
+5518: 3A B3 55        LD      A,($55B3)           ; {code.scoreTempMSB} Carry into ...
+551B: CE 00           ADC     $00                 ; ... the MSB
+551D: 27              DAA                         ; Adjust for BCD
+551E: 32 B3 55        LD      ($55B3),A           ; {code.scoreTempMSB} Update the MSB
+;
+5521: 23              INC     HL                  ; Next in object table
+5522: 0D              DEC     C                   ; Have we processed all objects?
+5523: C2 FA 54        JP      NZ,$54FA            ; {} No, go check them all
+;
+5526: 3A 46 50        LD      A,($5046)           ; {code.numResurrected} Number of deaths
+5529: A7              AND     A                   ; No penalty if ...
+552A: CA 48 55        JP      Z,$5548             ; {} ... we haven't died
+552D: 4F              LD      C,A                 ; Penalized 10 points for each death
+552E: 06 90           LD      B,$90               ; BCD value for "-10"
+5530: 3A B2 55        LD      A,($55B2)           ; {code.scoreTempLSB} LSB of score
+5533: 80              ADD     A,B                 ; Add penalty (negative)
+5534: 27              DAA                         ; Adjust for BCD
+5535: 32 B2 55        LD      ($55B2),A           ; {code.scoreTempLSB} Update LSB
+5538: DA 44 55        JP      C,$5544             ; {} No borrow ... move on
+553B: 3A B3 55        LD      A,($55B3)           ; {code.scoreTempMSB} MSB of score
+553E: C6 99           ADD     $99                 ; BCD value for "-1" (borrow)
+5540: 27              DAA                         ; Adjust for BCD
+5541: 32 B3 55        LD      ($55B3),A           ; {code.scoreTempMSB} Update the MSB
+5544: 0D              DEC     C                   ; All deaths subtracted off?
+5545: C2 30 55        JP      NZ,$5530            ; {} No ... do them all
+;
+5548: 3A B3 55        LD      A,($55B3)           ; {code.scoreTempMSB} Is score ...
+554B: FE 90           CP      $90                 ; ... positive?
+554D: DA 78 55        JP      C,$5578             ; {} Yes ... print a space for the sign
+5550: 3E 2D           LD      A,$2D               ; Add a "-" to ...
+5552: 32 BF 55        LD      ($55BF),A           ; {code.scoreSign} ... the score string
+5555: 3A B3 55        LD      A,($55B3)           ; {code.scoreTempMSB}
+5558: 47              LD      B,A                 ; 
+5559: 3E 99           LD      A,$99               ; TODO decode the math
+555B: 90              SUB     B                   ; Negative values need fixing up to make them right
+555C: 32 B3 55        LD      ($55B3),A           ; {code.scoreTempMSB}
+555F: 3A B2 55        LD      A,($55B2)           ; {code.scoreTempLSB}
+5562: 47              LD      B,A                 ; 
+5563: 3E 99           LD      A,$99               ; 
+5565: 90              SUB     B                   ; 
+5566: C6 01           ADD     $01                 ; 
+5568: 27              DAA                         ; 
+5569: 32 B2 55        LD      ($55B2),A           ; {code.scoreTempLSB}
+556C: 3A B3 55        LD      A,($55B3)           ; {code.scoreTempMSB}
+556F: CE 00           ADC     $00                 ; 
+5571: 27              DAA                         ; 
+5572: 32 B3 55        LD      ($55B3),A           ; {code.scoreTempMSB}
+5575: C3 7D 55        JP      $557D               ; {} Now update the turns
+
+5578: 3E 20           LD      A,$20               ; Space means "+" ...
+557A: 32 BF 55        LD      ($55BF),A           ; {code.scoreSign} ... in the score message
+;
+557D: 21 C0 55        LD      HL,$55C0            ; {+code.scoreSpot} Turn count in the score message
+5580: 3A B3 55        LD      A,($55B3)           ; {code.scoreTempMSB} MSB of calculated score
+5583: CD A2 55        CALL    $55A2               ; {code.BinaryToASCII} Add MSB of score to string
+5586: 3A B2 55        LD      A,($55B2)           ; {code.scoreTempLSB} LSB of calculated score
+5589: CD A2 55        CALL    $55A2               ; {code.BinaryToASCII} Add LSB of score to string
+558C: 21 E3 55        LD      HL,$55E3            ; {+code.turnSpot} Turn count spot in string
+558F: 3A 41 50        LD      A,($5041)           ; {code.bcdTurnCountMSB} Add MSB of turn ...
+5592: CD A2 55        CALL    $55A2               ; {code.BinaryToASCII} ... count to string
+5595: 3A 40 50        LD      A,($5040)           ; {code.bcdTurnCountLSB} Add LSB of turn ...
+5598: CD A2 55        CALL    $55A2               ; {code.BinaryToASCII} ... count to string
 559B: 21 B4 55        LD      HL,$55B4            ; {+code.ScoreString} The string we just built
 559E: CD D0 45        CALL    $45D0               ; {code.PrintPlain} Print the constructed score
 55A1: C9              RET                         
@@ -3295,13 +3403,22 @@ BinaryToASCII:
 55B0: 23              INC     HL                  ; Bump buffer
 55B1: C9              RET                         
 
-55B2: 00
+scoreTempLSB:
+55B2: 00 
+
+scoreTempMSB:
 55B3: 00           
 
 ScoreString:
 ; YOU_SCORED_______OUT_OF_A_POSSIBLE_0220,_USING______TURNS.[CR]
-55B4: 59 4F 55 20 53 43 4F 52 45 44 20 20 20 20 20 20 20 4F 55 54 20 4F 46 20 41 20 50 4F 53 53 49 42
-55D4: 4C 45 20 30 32 32 30 2C 20 55 53 49 4E 47 20 20 20 20 20 20 54 55 52 4E 53 2E 00
+55B4: 59 4F 55 20 53 43 4F 52 45 44 20 
+scoreSign:
+55BF: 20 
+scoreSpot:
+55C0: 20 20 20 20 20 4F 55 54 20 4F 46 20 41 20 50 4F 53 53 49 42
+55D4: 4C 45 20 30 32 32 30 2C 20 55 53 49 4E 47 20 
+turnSpot:
+55E3: 20 20 20 20 20 54 55 52 4E 53 2E 00
 ```
 
 # Command 9: PrintScoreAndStop
@@ -3318,6 +3435,7 @@ EndlessLoop:
 
 ```code
 LoadGame:
+RCONT: ; Label appears in unitialized memory in Code1.md!
 55F5: 21 A0 7F        LD      HL,$7FA0            ; {+code.PS_BE} "READY CASSETTE"
 55F8: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print message
 55FB: CD EE 45        CALL    $45EE               ; {code.WaitForKey} Wait on key
@@ -3326,15 +3444,15 @@ LoadGame:
 5603: FE 0D           CP      $0D                 ; Enter?
 5605: C2 FB 55        JP      NZ,$55FB            ; {} No ... keep waiting
 5608: 97              SUB     A                   ; Make a zero
-5609: CD 12 02        CALL    $0212               ; Turn on cassette 0
-560C: CD 96 02        CALL    $0296               ; Read tape leader
-560F: 21 45 4F        LD      HL,$4F45            ; Load destination
+5609: CD 12 02        CALL    $0212               ; {hard.TapeOn} Turn on cassette 0
+560C: CD 96 02        CALL    $0296               ; {hard.ReadTapeLeader} Read tape leader
+560F: 21 45 4F        LD      HL,$4F45            ; {+code.AmbientLightTable} Load destination
 5612: 01 03 01        LD      BC,$0103            ; 259 bytes
 5615: 1E 00           LD      E,$00               ; Initialize checksum
 5617: E5              PUSH    HL                  ; ROM ...
 5618: C5              PUSH    BC                  ; ... mangles ...
 5619: D5              PUSH    DE                  ; ... these
-561A: CD 35 02        CALL    $0235               ; Read one byte of data
+561A: CD 35 02        CALL    $0235               ; {hard.ReadTapeByte} Read one byte of data
 561D: D1              POP     DE                  ; Un ...
 561E: C1              POP     BC                  ; ... mangle ...
 561F: E1              POP     HL                  ; ... these
@@ -3347,21 +3465,21 @@ LoadGame:
 5626: B1              OR      C                   ; ... affect the zero flag
 5627: C2 17 56        JP      NZ,$5617            ; {} Nope ... do all $103 bytes
 562A: D5              PUSH    DE                  ; Hold
-562B: CD 35 02        CALL    $0235               ; Read the checksum
+562B: CD 35 02        CALL    $0235               ; {hard.ReadTapeByte} Read the checksum
 562E: D1              POP     DE                  ; Restore
 562F: BB              CP      E                   ; Checksum OK?
 5630: CA 3F 56        JP      Z,$563F             ; {} Yes ... out
 5633: 21 AC 7F        LD      HL,$7FAC            ; {+code.PS_BF} "CHECKSUM_ERROR[CR]"
 5636: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print error message
-5639: CD F8 01        CALL    $01F8               ; Turn off tape drive
+5639: CD F8 01        CALL    $01F8               ; {hard.TapeOff} Turn off tape drive
 ;
 ; We already wrote bytes to our memory, and we got a checksum error. We are going back
 ; to the top, but if the player aborts the load at the top of this function, then the
 ; game continues with corrupt data. Oops.
 ;
-563C: C3 F5 55        JP      $55F5               ; {code.LoadGame} Go back and try again
+563C: C3 F5 55        JP      $55F5               ; {code.RCONT} Go back and try again
 ;
-563F: CD F8 01        CALL    $01F8               ; Turn off the tape
+563F: CD F8 01        CALL    $01F8               ; {hard.TapeOff} Turn off the tape
 ;
 ; We loaded 103 bytes starting at 4F45. This overwrites part of the object descriptions, which we
 ; manually reset here. ?? why are we reading more than we need ??
@@ -3376,6 +3494,9 @@ LoadGame:
 
 # Command 28: SaveGame
 
+Save 4F45 through 5047 That's one too many and picks up a byte from the ObjectDescriptions table (read only).
+The LoadGame code restores the first four bytes of this ObjectDescriptions table for some reason.
+
 ```code
 5654: 21 A0 7F        LD      HL,$7FA0            ; {+code.PS_BE} "READY_CASSETTE[CR]"
 5657: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print the message
@@ -3386,9 +3507,9 @@ LoadGame:
 5664: C2 5A 56        JP      NZ,$565A            ; {} No, keep waiting for backspace or ENTER
 ;
 5667: 97              SUB     A                   ; Turn on ...
-5668: CD 12 02        CALL    $0212               ; ... cassette 1
-566B: CD 87 02        CALL    $0287               ; Write the tape leader
-566E: 21 45 4F        LD      HL,$4F45            ; 4F45 ...
+5668: CD 12 02        CALL    $0212               ; {hard.TapeOn} ... cassette 1
+566B: CD 87 02        CALL    $0287               ; {hard.WriteTapeLeader} Write the tape leader
+566E: 21 45 4F        LD      HL,$4F45            ; {+code.AmbientLightTable} 4F45 ...
 5671: 01 03 01        LD      BC,$0103            ; ... through 5047 ?? too many??
 5674: 1E 00           LD      E,$00               ; Checksum as we go
 5676: E5              PUSH    HL                  ; Hold the memory pointer
@@ -3398,7 +3519,7 @@ LoadGame:
 567A: 5F              LD      E,A                 ; ... into checksum
 567B: D5              PUSH    DE                  ; Hold the checksum
 567C: 7E              LD      A,(HL)              ; Get the byte again
-567D: CD 64 02        CALL    $0264               ; Write the byte in A to tape
+567D: CD 64 02        CALL    $0264               ; {hard.WriteTapeByte} Write the byte in A to tape
 5680: D1              POP     DE                  ; Restore checksum
 5681: C1              POP     BC                  ; Restore count
 5682: E1              POP     HL                  ; Restore memory pointer
@@ -3408,8 +3529,8 @@ LoadGame:
 5686: B1              OR      C                   ; ... set (means not zero)?
 5687: C2 76 56        JP      NZ,$5676            ; {} Yes, keep writing memory to cassette
 568A: 7B              LD      A,E                 ; The checksum
-568B: CD 64 02        CALL    $0264               ; Write the checksum byte in A to tape
-568E: CD F8 01        CALL    $01F8               ; Turn the tape off
+568B: CD 64 02        CALL    $0264               ; {hard.WriteTapeByte} Write the checksum byte in A to tape
+568E: CD F8 01        CALL    $01F8               ; {hard.TapeOff} Turn the tape off
 5691: C3 AB 43        JP      $43AB               ; {code.ScriptCommandPASS}
 ```
 

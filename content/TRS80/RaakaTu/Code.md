@@ -708,7 +708,7 @@ GetInputLine:
 
 GetKey:
 47D6: CD D3 4F        CALL    $4FD3               ; {code.GetRandom}  Get random number ever key stroke
-47D9: CD 2B 00        CALL    $002B               ; {hard.ScanKeyboard} Read the keyboard
+47D9: CD 2B 00        CALL    $002B               ; {hard.GetKey} Read the keyboard
 47DC: A7              AND     A                   ; Did we get one?
 47DD: CA D6 47        JP      Z,$47D6             ; {code.GetKey} No ... keep waiting
 47E0: C9              RET                         ; Return the key
@@ -1574,8 +1574,8 @@ Com_27_load_game:
 4D16: FE 0D           CP      $0D                 
 4D18: C2 0E 4D        JP      NZ,$4D0E            ; {}
 4D1B: 97              SUB     A                   
-4D1C: CD 12 02        CALL    $0212               
-4D1F: CD 96 02        CALL    $0296               
+4D1C: CD 12 02        CALL    $0212               ; {hard.TapeOn}
+4D1F: CD 96 02        CALL    $0296               ; {hard.ReadTapeLeader}
 4D22: 21 51 56        LD      HL,$5651            ; {+code.ObjectData}
 4D25: 01 CE 11        LD      BC,$11CE            
 4D28: 04              INC     B                   
@@ -1587,7 +1587,7 @@ Com_27_load_game:
 4D34: E5              PUSH    HL                  
 4D35: C5              PUSH    BC                  
 4D36: D5              PUSH    DE                  
-4D37: CD 35 02        CALL    $0235               
+4D37: CD 35 02        CALL    $0235               ; {hard.ReadTapeByte}
 4D3A: D1              POP     DE                  
 4D3B: C1              POP     BC                  
 4D3C: E1              POP     HL                  
@@ -1600,7 +1600,7 @@ Com_27_load_game:
 4D45: E5              PUSH    HL                  
 4D46: D5              PUSH    DE                  
 4D47: C5              PUSH    BC                  
-4D48: CD 35 02        CALL    $0235               
+4D48: CD 35 02        CALL    $0235               ; {hard.ReadTapeByte}
 4D4B: C1              POP     BC                  
 4D4C: D1              POP     DE                  
 4D4D: E1              POP     HL                  
@@ -1608,7 +1608,7 @@ Com_27_load_game:
 4D4F: C2 89 4D        JP      NZ,$4D89            ; {}
 4D52: 05              DEC     B                   
 4D53: C2 29 4D        JP      NZ,$4D29            ; {}
-4D56: CD F8 01        CALL    $01F8               
+4D56: CD F8 01        CALL    $01F8               ; {hard.TapeOff}
 4D59: 31 FF 7F        LD      SP,$7FFF            
 4D5C: 3E 1D           LD      A,$1D               
 4D5E: 32 20 50        LD      ($5020),A           ; {ram.ACTIVE_OBJ_NUM}
@@ -1628,7 +1628,7 @@ Com_27_load_game:
 4D81: 3E 0D           LD      A,$0D               
 4D83: CD 0D 4F        CALL    $4F0D               ; {code.PrintCharacterAutoWrap}
 4D86: C3 23 43        JP      $4323               ; {}
-4D89: CD F8 01        CALL    $01F8               
+4D89: CD F8 01        CALL    $01F8               ; {hard.TapeOff}
 4D8C: 11 95 4D        LD      DE,$4D95            
 4D8F: CD AF 4D        CALL    $4DAF               ; {}
 4D92: C3 0E 4D        JP      $4D0E               ; {}
@@ -1677,8 +1677,8 @@ Com_28_save_game:
 4DCA: FE 0D           CP      $0D                 
 4DCC: C2 C2 4D        JP      NZ,$4DC2            ; {}
 4DCF: 97              SUB     A                   
-4DD0: CD 12 02        CALL    $0212               
-4DD3: CD 87 02        CALL    $0287               
+4DD0: CD 12 02        CALL    $0212               ; {hard.TapeOn}
+4DD3: CD 87 02        CALL    $0287               ; {hard.WriteTapeLeader}
 4DD6: 21 51 56        LD      HL,$5651            ; {+code.ObjectData}
 4DD9: 01 CE 11        LD      BC,$11CE            
 4DDC: 04              INC     B                   
@@ -1691,7 +1691,7 @@ Com_28_save_game:
 4DE4: 5F              LD      E,A                 
 4DE5: D5              PUSH    DE                  
 4DE6: 7E              LD      A,(HL)              
-4DE7: CD 64 02        CALL    $0264               
+4DE7: CD 64 02        CALL    $0264               ; {hard.WriteTapeByte}
 4DEA: D1              POP     DE                  
 4DEB: C1              POP     BC                  
 4DEC: E1              POP     HL                  
@@ -1702,13 +1702,13 @@ Com_28_save_game:
 4DF3: E5              PUSH    HL                  
 4DF4: D5              PUSH    DE                  
 4DF5: C5              PUSH    BC                  
-4DF6: CD 64 02        CALL    $0264               
+4DF6: CD 64 02        CALL    $0264               ; {hard.WriteTapeByte}
 4DF9: C1              POP     BC                  
 4DFA: D1              POP     DE                  
 4DFB: E1              POP     HL                  
 4DFC: 05              DEC     B                   
 4DFD: C2 DD 4D        JP      NZ,$4DDD            ; {}
-4E00: CD F8 01        CALL    $01F8               
+4E00: CD F8 01        CALL    $01F8               ; {hard.TapeOff}
 4E03: C3 D0 4C        JP      $4CD0               ; {}
 
 Com_26_print_score:

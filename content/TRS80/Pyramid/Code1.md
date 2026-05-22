@@ -745,7 +745,7 @@ InputBuffer:
 4603: 11 30 30 30 30 20 20 4A 4D 50 20 52 43 4F 4E 54 0D  ; "0000  JMP RCONT"
 4614: 08 30 30                                            ; "00" ...
 ;
-; An old routine? The final code does not call 1F8 anywhere.
+; This is from the "Code.md" file at the end of "LoadTape"
 ; --  "----  CALL 1F8H"  0D  ; Turn cassette off
 ; 11  "0000  JMP RCONT"  0D  ;
 ; 08  "00----"           --  ; Must have been a blank like 
