@@ -582,6 +582,7 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 476C: 7D              LD      A,L                 
 476D: BB              CP      E                   
 476E: C9              RET                         
+
 476F: 21 C0 3F        LD      HL,$3FC0            
 4772: CD 20 48        CALL    $4820               ; {}
 4775: CD 26 48        CALL    $4826               ; {}
@@ -637,6 +638,7 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 47D8: C3 75 47        JP      $4775               ; {}
 47DB: CD EE 47        CALL    $47EE               ; {}
 47DE: C9              RET                         
+
 47DF: 21 C0 3F        LD      HL,$3FC0            
 47E2: 06 40           LD      B,$40               
 47E4: 36 20           LD      (HL),$20            
@@ -644,6 +646,7 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 47E7: 05              DEC     B                   
 47E8: C2 E4 47        JP      NZ,$47E4            ; {}
 47EB: C3 6F 47        JP      $476F               ; {}
+
 47EE: 54              LD      D,H                 
 47EF: 5D              LD      E,L                 
 47F0: 45              LD      B,L                 
@@ -662,6 +665,7 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 4801: 36 20           LD      (HL),$20            
 4803: 68              LD      L,B                 
 4804: C9              RET                         
+
 4805: F5              PUSH    AF                  
 4806: 7D              LD      A,L                 
 4807: FE FF           CP      $FF                 
@@ -679,9 +683,11 @@ list for BEDLAM and RAAKATU is empty so the code is never used anyway.
 481C: 36 20           LD      (HL),$20            
 481E: F1              POP     AF                  
 481F: C9              RET                         
+
 4820: CD 05 48        CALL    $4805               ; {}
 4823: 36 8F           LD      (HL),$8F            
 4825: C9              RET                         
+
 4826: CD 31 4F        CALL    $4F31               ; {code.Com_2B_generate_random}
 4829: CD 2B 00        CALL    $002B               ; {hard.GetKey}
 482C: A7              AND     A                   

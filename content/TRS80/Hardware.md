@@ -1,6 +1,6 @@
 ![TRS80 Hardware](TRS80Tech.jpg)
 
-# TRS80 Hardware
+# TRS80 Hardware Level 2
 
 # Memory Map
  * 0000-2FFF Level 2 ROM
@@ -22,8 +22,12 @@ Start of user RAM for program storage: 42E9
 >>> memory
 
 | | | |
-| --- | --- | --- |
-| 0033 | PrintChar | Print a character to the screen |
-| 002B | ScanKeyboard | Return typed char in A or 0 for none |
-
-Level 1 and 2 ROM had DIFFERENT ENTRIES. We need 2 files for this table.
+| ---  | ---             | ---                                    |
+| 002B | GetKey          | Return typed char in A or 0 for none   |
+| 0033 | PrintChar       | Print the character in A to the screen |
+| 01F8 | TapeOff         | Turn off the tape drive                |
+| 0212 | TapeOn          | Turn on the tape drive specified in A  |
+| 0235 | ReadTapeByte    | Read a byte from the tape              |
+| 0264 | WriteTapeByte   | Write a byte to the tape               |
+| 0287 | WriteTapeLeader | Write a leader to the tape             |
+| 0296 | ReadTapeLeader  | Read a leader from the tape            |

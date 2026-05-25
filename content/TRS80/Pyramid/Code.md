@@ -358,6 +358,8 @@ ParseInputString:
 44AF: EB              EX      DE,HL               ; Now HL=words we know, DE=where we are in the input
 44B0: 22 79 47        LD      ($4779),HL          ; {code.currentParsePtr} Hold our current spot in the word table
 44B3: EB              EX      DE,HL               ; Now HL=where we are in input, DE=where we are in words
+;
+; Skip over blank spaces before next word
 44B4: 7E              LD      A,(HL)              ; Ignore ...
 44B5: FE 20           CP      $20                 ; ... all ...
 44B7: C2 BE 44        JP      NZ,$44BE            ; {} ... leading ...
@@ -366,6 +368,7 @@ ParseInputString:
 44BE: 22 7B 47        LD      ($477B),HL          ; {code.startOfWord} start of this word
 44C1: A7              AND     A                   ; Nothing but spaces?
 44C2: CA 5C 45        JP      Z,$455C             ; {} Yes, we are done parsing
+;
 44C5: 3E 01           LD      A,$01               ; There is SOMETHING ...
 44C7: 32 A9 45        LD      ($45A9),A           ; {code.bufferHasSomething} ... in the buffer
 44CA: E5              PUSH    HL                  ; Hold the pointer
@@ -376,7 +379,7 @@ ParseInputString:
 44D3: E6 07           AND     $07                 ; Number of bytes ...
 44D5: 4F              LD      C,A                 ; ... in ...
 44D6: 32 7D 47        LD      ($477D),A           ; {code.charsInWord} ... current word text
-44D9: 3A 81 47        LD      A,($4781)           ; {code.wordBeingTested} That 1st word has several fields
+44D9: 3A 81 47        LD      A,($4781)           ; {code.wordBeingTested} We'll need that info byte several times
 44DC: E6 38           AND     $38                 ; Number ...
 44DE: 0F              RRCA                        ; ... of ...
 44DF: 0F              RRCA                        ; ... bytes ...
@@ -388,12 +391,12 @@ ParseInputString:
 44E7: 13              INC     DE                  ; Get next from ...
 44E8: 1A              LD      A,(DE)              ; ... input buffer
 44E9: BE              CP      (HL)                ; Does it match the word we are testing?
-44EA: C2 4E 45        JP      NZ,$454E            ; {code.FindEndOfTestChars} No, try next word
+44EA: C2 4E 45        JP      NZ,$454E            ; {code.FindEndOfTestWord} No, try next word
 44ED: 23              INC     HL                  ; Next in input
 44EE: 13              INC     DE                  ; Next in word text
 44EF: 0D              DEC     C                   ; All characters of word being tested?
 44F0: C2 E8 44        JP      NZ,$44E8            ; {} No, keep testing
-44F3: 3A 7D 47        LD      A,($477D)           ; {code.charsInWord}
+44F3: 3A 7D 47        LD      A,($477D)           ; {code.charsInWord} Number of characters in the test word
 44F6: FE 06           CP      $06                 ; Six is the max size EXCEPT FOR "SCEPTER" WHICH IS 7 -- BUG?
 44F8: CA 05 45        JP      Z,$4505             ; {code.FindEndOfInputWord} Six matched ... ignore the rest of the input
 44FB: 7E              LD      A,(HL)              ; Not six ... is the next input ...
@@ -442,10 +445,10 @@ FindEndOfInputWord:
 454A: CA AC 44        JP      Z,$44AC             ; {} Yes ... decode the next word
 454D: C9              RET                         ; Done
 ;
-FindEndOfTestChars:
+FindEndOfTestWord:
 454E: 13              INC     DE                  ; Skip ...
 454F: 0D              DEC     C                   ; ... all characters ...
-4550: C2 4E 45        JP      NZ,$454E            ; {code.FindEndOfTestChars} ... in test word
+4550: C2 4E 45        JP      NZ,$454E            ; {code.FindEndOfTestWord} ... in test word
 ;
 FindEndOfTestData:
 4553: 13              INC     DE                  ; Next in word text data
@@ -772,7 +775,7 @@ startOfWord:
 477B: 00 00 ; Input buffer start of word we are tokenizing
 
 charsInWord:
-477D: 00
+477D: 00 ; Number of characters in the test word while tokenizing
 
 ; unused
 477E: 00 00 00
@@ -827,8 +830,8 @@ TopOfStack:
 ; memory reserved for the statck.
 47BF: 00 
 
-; unused
-47C0: 00 00
+EmptyString:
+47C0: 00 00 ; For objects that have no descriptions
 ```
 
 # Packed strings
@@ -1017,87 +1020,87 @@ RoomTable:
 ;
 ; 81 rooms numbered starting at 1
 ;      Description   Script
-4888: DB 5B CC 49 ; room_1
-488C: 10 5C E1 49 ; room_2
-4890: 57 5C F2 49 ; room_3
-4894: 57 5C 03 4A ; room_4
-4898: 57 5C 14 4A ; room_5
-489C: 57 5C 25 4A ; room_6
-48A0: 68 5C 36 4A ; room_7
-48A4: E2 5C 47 4A ; room_8
-48A8: 28 5D 58 4A ; room_9
-48AC: 7D 5D 69 4A ; room_10
-48B0: A0 5D 7E 4A ; room_11
-48B4: 1E 5E 87 4A ; room_12
-48B8: 8E 5E 9D 4A ; room_13
-48BC: 69 5F C8 4A ; room_14
-48C0: AB 5F D1 4A ; room_15
-48C4: 08 60 0D 4B ; room_16
-48C8: 3C 60 48 4B ; room_17
-48CC: 55 60 51 4B ; room_18
-48D0: 85 60 90 4B ; room_19
-48D4: F1 60 A9 4B ; room_20
-48D8: 5F 61 BE 4B ; room_21
-48DC: AC 61 C7 4B ; room_22
-48E0: D8 61 D8 4B ; room_23
-48E4: E0 61 E1 4B ; room_24
-48E8: 18 62 F2 4B ; room_25
-48EC: 58 62 07 4C ; room_26
-48F0: B0 62 14 4C ; room_27
-48F4: C8 62 21 4C ; room_28
-48F8: C8 62 36 4C ; room_29
-48FC: C8 62 47 4C ; room_30
-4900: C8 62 60 4C ; room_31
-4904: C8 62 69 4C ; room_32
-4908: C8 62 76 4C ; room_33
-490C: C8 62 87 4C ; room_34
-4910: C8 62 98 4C ; room_35
-4914: C8 62 B1 4C ; room_36
-4918: C8 62 C2 4C ; room_37
-491C: C8 62 CB 4C ; room_38
-4920: C8 62 DC 4C ; room_39
-4924: C8 62 E9 4C ; room_40
-4928: C8 62 F6 4C ; room_41
-492C: D8 61 03 4D ; room_42
-4930: D8 61 08 4D ; room_43
-4934: D8 61 0D 4D ; room_44
-4938: D8 61 12 4D ; room_45
-493C: D8 61 17 4D ; room_46
-4940: D8 61 1C 4D ; room_47
-4944: D8 61 21 4D ; room_48
-4948: D8 61 26 4D ; room_49
-494C: D8 61 2B 4D ; room_50
-4950: D8 61 30 4D ; room_51
-4954: EA 62 41 4D ; room_52
-4958: D8 61 56 4D ; room_53
-495C: 49 63 5B 4D ; room_54
-4960: A6 63 68 4D ; room_55
-4964: DA 63 75 4D ; room_56
-4968: 1F 64 93 4D ; room_57
-496C: 7A 64 9C 4D ; room_58
-4970: 0A 65 B1 4D ; room_59
-4974: A1 65 BE 4D ; room_60
-4978: D5 65 06 4E ; room_61
-497C: 82 66 21 4E ; room_62
-4980: E0 66 2A 4E ; room_63
-4984: 07 67 33 4E ; room_64
-4988: 29 67 3C 4E ; room_65
-498C: 89 67 65 4E ; room_66
-4990: 00 00 00 00 ; room_67
-4994: D2 6B 3B 4F ; room_68
-4998: 00 00 00 00 ; room_69
-499C: B1 6B 32 4F ; room_70
-49A0: 5C 6B 25 4F ; room_71
-49A4: 25 68 6E 4E ; room_72
-49A8: 82 68 77 4E ; room_73
-49AC: 00 00 00 00 ; room_74
-49B0: 00 00 00 00 ; room_75
-49B4: F6 68 86 4E ; room_76
-49B8: F3 6A 0E 4F ; room_77
-49BC: 3F 69 9B 4E ; room_78
-49C0: 21 6A A8 4E ; room_79
-49C4: 4B 6A B1 4E ; room_80
-49C8: 9D 6A BE 4E ; room_81
+4888: DB 5B CC 49 ; PS_00 room_1
+488C: 10 5C E1 49 ; PS_01 room_2
+4890: 57 5C F2 49 ; PS_02 room_3
+4894: 57 5C 03 4A ; PS_02 room_4
+4898: 57 5C 14 4A ; PS_02 room_5
+489C: 57 5C 25 4A ; PS_02 room_6
+48A0: 68 5C 36 4A ; PS_03 room_7
+48A4: E2 5C 47 4A ; PS_04 room_8
+48A8: 28 5D 58 4A ; PS_05 room_9
+48AC: 7D 5D 69 4A ; PS_06 room_10
+48B0: A0 5D 7E 4A ; PS_07 room_11
+48B4: 1E 5E 87 4A ; PS_08 room_12
+48B8: 8E 5E 9D 4A ; PS_09 room_13
+48BC: 69 5F C8 4A ; PS_0A room_14
+48C0: AB 5F D1 4A ; PS_0B room_15
+48C4: 08 60 0D 4B ; PS_0C room_16
+48C8: 3C 60 48 4B ; PS_0D room_17
+48CC: 55 60 51 4B ; PS_0E room_18
+48D0: 85 60 90 4B ; PS_0F room_19
+48D4: F1 60 A9 4B ; PS_10 room_20
+48D8: 5F 61 BE 4B ; PS_11 room_21
+48DC: AC 61 C7 4B ; PS_12 room_22
+48E0: D8 61 D8 4B ; PS_13 room_23
+48E4: E0 61 E1 4B ; PS_14 room_24
+48E8: 18 62 F2 4B ; PS_15 room_25
+48EC: 58 62 07 4C ; PS_16 room_26
+48F0: B0 62 14 4C ; PS_17 room_27
+48F4: C8 62 21 4C ; PS_18 room_28
+48F8: C8 62 36 4C ; PS_18 room_29
+48FC: C8 62 47 4C ; PS_18 room_30
+4900: C8 62 60 4C ; PS_18 room_31
+4904: C8 62 69 4C ; PS_18 room_32
+4908: C8 62 76 4C ; PS_18 room_33
+490C: C8 62 87 4C ; PS_18 room_34
+4910: C8 62 98 4C ; PS_18 room_35
+4914: C8 62 B1 4C ; PS_18 room_36
+4918: C8 62 C2 4C ; PS_18 room_37
+491C: C8 62 CB 4C ; PS_18 room_38
+4920: C8 62 DC 4C ; PS_18 room_39
+4924: C8 62 E9 4C ; PS_18 room_40
+4928: C8 62 F6 4C ; PS_18 room_41
+492C: D8 61 03 4D ; PS_13 room_42
+4930: D8 61 08 4D ; PS_13 room_43
+4934: D8 61 0D 4D ; PS_13 room_44
+4938: D8 61 12 4D ; PS_13 room_45
+493C: D8 61 17 4D ; PS_13 room_46
+4940: D8 61 1C 4D ; PS_13 room_47
+4944: D8 61 21 4D ; PS_13 room_48
+4948: D8 61 26 4D ; PS_13 room_49
+494C: D8 61 2B 4D ; PS_13 room_50
+4950: D8 61 30 4D ; PS_13 room_51
+4954: EA 62 41 4D ; PS_19 room_52
+4958: D8 61 56 4D ; PS_13 room_53
+495C: 49 63 5B 4D ; PS_1A room_54
+4960: A6 63 68 4D ; PS_1B room_55
+4964: DA 63 75 4D ; PS_1C room_56
+4968: 1F 64 93 4D ; PS_1D room_57
+496C: 7A 64 9C 4D ; PS_1E room_58
+4970: 0A 65 B1 4D ; PS_1F room_59
+4974: A1 65 BE 4D ; PS_20 room_60
+4978: D5 65 06 4E ; PS_21 room_61
+497C: 82 66 21 4E ; PS_22 room_62
+4980: E0 66 2A 4E ; PS_23 room_63
+4984: 07 67 33 4E ; PS_24 room_64
+4988: 29 67 3C 4E ; PS_25 room_65
+498C: 89 67 65 4E ; PS_26 room_66
+4990: 00 00 00 00 ; unused 67
+4994: D2 6B 3B 4F ; PS_31 room_68
+4998: 00 00 00 00 ; unused 69
+499C: B1 6B 32 4F ; PS_30 room_70
+49A0: 5C 6B 25 4F ; PS_2F room_71
+49A4: 25 68 6E 4E ; PS_27 room_72
+49A8: 82 68 77 4E ; PS_28 room_73
+49AC: 00 00 00 00 ; unused 74
+49B0: 00 00 00 00 ; unused 75
+49B4: F6 68 86 4E ; PS_29 room_76
+49B8: F3 6A 0E 4F ; PS_2E room_77
+49BC: 3F 69 9B 4E ; PS_2A room_78
+49C0: 21 6A A8 4E ; PS_2B room_79
+49C4: 4B 6A B1 4E ; PS_2C room_80
+49C8: 9D 6A BE 4E ; PS_2D room_81
 ```
 
 # Room Scripts
@@ -2413,30 +2416,30 @@ AmbientLightTable:
 ObjectData:
 ; Object data table (2 bytes)
 ;             MCT             #    Name                 Start location
-4FE7: 00 00 ; 000_00000 00  ; 1    obj_bridge_15
-4FE9: 00 00 ; 000_00000 00  ; 2    obj_bridge_18
+4FE7: 00 00 ; 000_00000 00  ; 1    obj_bridge_15        *
+4FE9: 00 00 ; 000_00000 00  ; 2    obj_bridge_18        *
 4FEB: 00 00 ;               ; 3
 4FED: 00 00 ;               ; 4
 4FEF: 00 00 ;               ; 5 
 4FF1: 00 33 ; 000_00000 33  ; 6    obj_MACHINE          (Room 51)
 4FF3: 00 51 ; 000_00000 51  ; 7    obj_PLANT_A          (Room 81)
-4FF5: 00 00 ; 000_00000 00  ; 8    obj_PLANT_B
-4FF7: 00 00 ; 000_00000 00  ; 9    obj_PLANT_C
+4FF5: 00 00 ; 000_00000 00  ; 8    obj_PLANT_B          *
+4FF7: 00 00 ; 000_00000 00  ; 9    obj_PLANT_C          *
 4FF9: 00 00 ; 000_00000 00  ; 10
 4FFB: 00 10 ; 000_00000 10  ; 11   obj_SERPENT (Room 16)
 4FFD: 00 00 ;               ; 12 
 4FFF: 00 00 ;               ; 13
 5001: 40 02 ; 010_00000 02  ; 14   obj_LAMP_off         (Room 2)
-5003: 40 00 ; 010_00000 00  ; 15   obj_LAMP_on
+5003: 40 00 ; 010_00000 00  ; 15   obj_LAMP_on          *
 5005: 40 08 ; 010_00000 08  ; 16   obj_BOX              (Room 8)
 5007: 40 09 ; 010_00000 09  ; 17   obj_SCEPTER          (Room 9)
 5009: 40 48 ; 010_00000 48  ; 18   obj_PILLOW           (Room 72)
 500B: 40 0B ; 010_00000 0B  ; 19   obj_BIRD             (Room 11)
-500D: 00 00 ; 000_00000 00  ; 20   obj_BIRD_boxed
-500F: 00 00 ; 000_00000 00  ; 21   obj_POTTERY
-5011: 60 00 ; 011_00000 00  ; 22   obj_PEARL
+500D: 00 00 ; 000_00000 00  ; 20   obj_BIRD_boxed       *
+500F: 00 00 ; 000_00000 00  ; 21   obj_POTTERY          *
+5011: 60 00 ; 011_00000 00  ; 22   obj_PEARL            *
 5013: 40 3D ; 010_00000 3D  ; 23   obj_SARCOPH_full     (Room 61)
-5015: 40 00 ; 010_00000 00  ; 24   obj_SARCOPH_empty
+5015: 40 00 ; 010_00000 00  ; 24   obj_SARCOPH_empty    *
 5017: 40 3B ; 010_00000 3B  ; 25   obj_MAGAZINES        (Room 59)
 5019: 40 02 ; 010_00000 02  ; 26   obj_FOOD             (Room 2)
 501B: 40 02 ; 010_00000 02  ; 27   obj_BOTTLE           (Room 2)
@@ -2444,19 +2447,19 @@ ObjectData:
 501F: 00 00 ;               ; 29
 5021: 00 38 ; 000_00000 38  ; 30   obj_STREAM_56        (Room 56)
 5023: 60 4C ; 011_00000 4C  ; 31   obj_EMERALD          (Room 76)
-5025: 60 00 ; 011_00000 00  ; 32   obj_VASE_pillow
+5025: 60 00 ; 011_00000 00  ; 32   obj_VASE_pillow      *
 5027: 60 49 ; 011_00000 49  ; 33   obj_VASE_solo        (Room 73)
 5029: 60 44 ; 011_00000 44  ; 34   obj_KEY              (Room 68)
-502B: 40 00 ; 010_00000 00  ; 35   obj_BATTERIES_fresh
-502D: 40 00 ; 010_00000 00  ; 36   obj_BATTERIES_worn
+502B: 40 00 ; 010_00000 00  ; 35   obj_BATTERIES_fresh  *
+502D: 40 00 ; 010_00000 00  ; 36   obj_BATTERIES_worn   *
 502F: 60 0E ; 011_00000 0E  ; 37   obj_GOLD             (Room 14)
 5031: 60 11 ; 011_00000 11  ; 38   obj_DIAMNODS         (Room 17) 
 5033: 60 19 ; 011_00000 19  ; 39   obj_SILVER           (Room 25)
 5035: 60 12 ; 011_00000 12  ; 40   obj_JEWELRY          (Room 18)
 5037: 60 18 ; 011_00000 18  ; 41   obj_COINS            (Room 24)
-5039: 60 00 ; 011_00000 00  ; 42   obj_CHEST
+5039: 60 00 ; 011_00000 00  ; 42   obj_CHEST            *
 503B: 60 47 ; 011_00000 47  ; 43   obj_NEST             (Room 71)
-503D: 40 00 ; 010_00000 00  ; 44   obj_LAMP_dead
+503D: 40 00 ; 010_00000 00  ; 44   obj_LAMP_dead        *
 ```
 
 # Game Variables
@@ -2495,50 +2498,50 @@ ObjectDescriptions:
 ; For packable objects each slot points to a message pair. The first is the long
 ; description and the second is the short description for the backpack.
 ;                  # Name              Description
-5047: 58 6D     ;  1 obj_bridge_15        Stone bridge room 15
-5049: 58 6D     ;  2 obj_bridge_18        Stone bridge room 18
+5047: 58 6D     ;  1 obj_bridge_15        PS_40 Stone bridge room 15
+5049: 58 6D     ;  2 obj_bridge_18        PS_40 Stone bridge room 18
 504B: C0 47     ;  3                   -Never used (points to empty string)
 504D: C0 47     ;  4                   -Never used (points to empty string)
 504F: C0 47     ;  5                   -Never used (points to empty string)
-5051: E1 6E     ;  6 obj_MACHINE          Vending Machine
-5053: 45 6E     ;  7 obj_PLANT_A          Tiny plant
-5055: 71 6E     ;  8 obj_PLANT_B          Twelve foot beanstalk
-5057: B1 6E     ;  9 obj_PLANT_C          Giant beanstalk
+5051: E1 6E     ;  6 obj_MACHINE          PS_4E Vending Machine
+5053: 45 6E     ;  7 obj_PLANT_A          PS_4B Tiny plant
+5055: 71 6E     ;  8 obj_PLANT_B          PS_4C Twelve foot beanstalk
+5057: B1 6E     ;  9 obj_PLANT_C          PS_4D Giant beanstalk
 5059: 00 00     ; 10                   -Never used (points to null)
-505B: 3A 6D     ; 11 obj_SERPENT          Serpent bars the way
+505B: 3A 6D     ; 11 obj_SERPENT          PS_3F Serpent bars the way
 505D: 00 00     ; 12                   -Never used (points to null)
 505F: 00 00     ; 13                   -Never used (points to null)
-5061: 2E 6C     ; 14 obj_LAMP_off         Lamp (not lit)
-5063: 53 6C     ; 15 obj_LAMP_on          Lamp (lit)
-5065: 75 6C     ; 16 obj_BOX              Statue box
-5067: 9E 6C     ; 17 obj_SCEPTER          Scepter
-5069: 12 6D     ; 18 obj_PILLOW           Pillow
-506B: CD 6C     ; 19 obj_BIRD             Statue
-506D: EB 6C     ; 20 obj_BIRD_boxed       Statue in box
-506F: ED 70     ; 21 obj_POTTERY          Pottery
-5071: 47 71     ; 22 obj_PEARL            Pearl
-5073: 78 6D     ; 23 obj_SARCOPH_full     Sarcophagus with pearl
-5075: 78 6D     ; 24 obj_SARCOPH_empty    Sarcophagus empty
-5077: B1 6D     ; 25 obj_MAGAZINES        Magazines
-5079: EC 6D     ; 26 obj_FOOD             Food
-507B: 04 6E     ; 27 obj_BOTTLE           Bottle
-507D: 20 6E     ; 28 obj_WATER            Water in the bottle
+5061: 2E 6C     ; 14 obj_LAMP_off         PS_32 Lamp (not lit)
+5063: 53 6C     ; 15 obj_LAMP_on          PS_34 Lamp (lit)
+5065: 75 6C     ; 16 obj_BOX              PS_36 Statue box
+5067: 9E 6C     ; 17 obj_SCEPTER          PS_38 Scepter
+5069: 12 6D     ; 18 obj_PILLOW           PS_3D Pillow
+506B: CD 6C     ; 19 obj_BIRD             PS_3A Statue
+506D: EB 6C     ; 20 obj_BIRD_boxed       PS_3B Statue in box
+506F: ED 70     ; 21 obj_POTTERY          PS_66 Pottery
+5071: 47 71     ; 22 obj_PEARL            PS_69 Pearl
+5073: 78 6D     ; 23 obj_SARCOPH_full     PS_41 Sarcophagus with pearl
+5075: 78 6D     ; 24 obj_SARCOPH_empty    PS_41 Sarcophagus empty
+5077: B1 6D     ; 25 obj_MAGAZINES        PS_43 Magazines
+5079: EC 6D     ; 26 obj_FOOD             PS_45 Food
+507B: 04 6E     ; 27 obj_BOTTLE           PS_47 Bottle
+507D: 20 6E     ; 28 obj_WATER            PS_49 Water in the bottle
 507F: C0 47     ; 29                   -Never used (points to empty string)
-5081: C0 47     ; 30 obj_STREAM_56        Stream in room 56  (points to empty string)
-5083: 14 71     ; 31 obj_EMERALD          Emerald
-5085: C5 70     ; 32 obj_VASE_pillow      Vase on pillow
-5087: A2 70     ; 33 obj_VASE_solo        Vase
-5089: 7E 70     ; 34 obj_KEY              Key
-508B: 30 6F     ; 35 obj_BATTERIES_fresh  Batteries
-508D: 4F 6F     ; 36 obj_BATTERIES_worn   Worn-out batteries
-508F: 7B 6F     ; 37 obj_GOLD             Gold Nugget
-5091: AB 6F     ; 38 obj_DIAMNODS         Diamonds
-5093: CA 6F     ; 39 obj_SILVER           Silver
-5095: EA 6F     ; 40 obj_JEWELRY          Jewelry
-5097: 0E 70     ; 41 obj_COINS            Coins
-5099: 2B 70     ; 42 obj_CHEST            Chest
-509B: 52 70     ; 43 obj_NEST             Nest of golden eggs
-509D: 2E 6C     ; 44 obj_LAMP_dead        Lamp (dead)
+5081: C0 47     ; 30 obj_STREAM_56        EmptyString Stream in room 56
+5083: 14 71     ; 31 obj_EMERALD          PS_67 Emerald
+5085: C5 70     ; 32 obj_VASE_pillow      PS_65 Vase on pillow
+5087: A2 70     ; 33 obj_VASE_solo        PS_63 Vase
+5089: 7E 70     ; 34 obj_KEY              PS_61 Key
+508B: 30 6F     ; 35 obj_BATTERIES_fresh  PS_4F Batteries
+508D: 4F 6F     ; 36 obj_BATTERIES_worn   PS_51 Worn-out batteries
+508F: 7B 6F     ; 37 obj_GOLD             PS_53 Gold Nugget
+5091: AB 6F     ; 38 obj_DIAMNODS         PS_55 Diamonds
+5093: CA 6F     ; 39 obj_SILVER           PS_57 Silver
+5095: EA 6F     ; 40 obj_JEWELRY          PS_59 Jewelry
+5097: 0E 70     ; 41 obj_COINS            PS_5B Coins
+5099: 2B 70     ; 42 obj_CHEST            PS_5D Chest
+509B: 52 70     ; 43 obj_NEST             PS_5F Nest of golden eggs
+509D: 2E 6C     ; 44 obj_LAMP_dead        PS_32 Lamp (dead)
 ```
 
 # Script Commands
@@ -3360,7 +3363,7 @@ PrintScore:
 555C: 32 B3 55        LD      ($55B3),A           ; {code.scoreTempMSB}
 555F: 3A B2 55        LD      A,($55B2)           ; {code.scoreTempLSB}
 5562: 47              LD      B,A                 ; 
-5563: 3E 99           LD      A,$99               ; 
+5563: 3E 99           LD      A,$99               ; TODO BCD math for negatives
 5565: 90              SUB     B                   ; 
 5566: C6 01           ADD     $01                 ; 
 5568: 27              DAA                         ; 
@@ -3449,12 +3452,12 @@ RCONT: ; Label appears in unitialized memory in Code1.md!
 560F: 21 45 4F        LD      HL,$4F45            ; {+code.AmbientLightTable} Load destination
 5612: 01 03 01        LD      BC,$0103            ; 259 bytes
 5615: 1E 00           LD      E,$00               ; Initialize checksum
-5617: E5              PUSH    HL                  ; ROM ...
+5617: E5              PUSH    HL                  ; ROM function ...
 5618: C5              PUSH    BC                  ; ... mangles ...
 5619: D5              PUSH    DE                  ; ... these
 561A: CD 35 02        CALL    $0235               ; {hard.ReadTapeByte} Read one byte of data
-561D: D1              POP     DE                  ; Un ...
-561E: C1              POP     BC                  ; ... mangle ...
+561D: D1              POP     DE                  ; ROM function ...
+561E: C1              POP     BC                  ; ... mangles ...
 561F: E1              POP     HL                  ; ... these
 5620: 77              LD      (HL),A              ; Store the byte
 5621: 83              ADD     A,E                 ; Add to ...
@@ -3555,6 +3558,7 @@ CNALL: ; This is label from the actual 8080 source code (see Code1)
 56AF: E6 03           AND     $03                 ; Limit to verbs 1-4
 56B1: C2 B6 56        JP      NZ,$56B6            ; {} Are we in 1, 2, or 3? Yes, keep it
 56B4: 3E 04           LD      A,$04               ; We rolled around. 0 becomes 4.
+CNAL2: ; This is the label from the actual 8080 source code (see Code1)
 56B6: 77              LD      (HL),A              ; New verb number
 56B7: 23              INC     HL                  ; Point to list length
 56B8: 7E              LD      A,(HL)              ; Get the length
