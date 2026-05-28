@@ -4,7 +4,6 @@
 >>>   +SpaceInvaders.jpg<br>
 >>>   +SpaceInvaders.js<br>
 >>>   invaders_c.asm<br>
->>>   +invaders_c.txt<br>
 >>>   Hardware.md<br>
 >>>   RAMUse.md<br>
 >>>   %Code.md<br>
@@ -19,8 +18,8 @@
 
 # Assembly Source
 
-David Levy has produced an ASM file to create the original Space Invaders binary. Download the assembly
-file here: [invaders_c.asm](invaders_c.asm). Or view it in your browser: [invaders_c.txt](invaders_c.txt).
+David Levy has produced an ASM file to create the original Space Invaders binary. Download or view the assembly
+file here: [invaders_c.asm](invaders_c.asm). 
 
 Now you can tweak the code (change graphics, logic, etc) and assemble it for play in MAME. Or break
 out your EPROM programmer and make new ROMs for your arcade cabinet. I pasted the file into the online
