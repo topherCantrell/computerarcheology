@@ -3,7 +3,7 @@
 >>> deploy:<br>
 >>>   +SpaceInvaders.jpg<br>
 >>>   +SpaceInvaders.js<br>
->>>   +invaders_c.asm<br>
+>>>   invaders_c.asm<br>
 >>>   Hardware.md<br>
 >>>   RAMUse.md<br>
 >>>   %Code.md<br>
