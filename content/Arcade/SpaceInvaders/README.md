@@ -3,6 +3,8 @@
 >>> deploy:<br>
 >>>   +SpaceInvaders.jpg<br>
 >>>   +SpaceInvaders.js<br>
+>>>   invaders_c.asm<br>
+>>>   +invaders_c.txt<br>
 >>>   Hardware.md<br>
 >>>   RAMUse.md<br>
 >>>   %Code.md<br>
@@ -15,7 +17,20 @@
 * [RAM Usage](RAMUse.md)
 * [Hardware Info](Hardware.md)
 
-# Related Projects
+# Assembly Source
+
+David Levy has produced an ASM file to create the original Space Invaders binary. Download the assembly
+file here: [invaders_c.asm](invaders_c.asm). Or view it in your browser: [invaders_c.txt](invaders_c.txt).
+
+Now you can tweak the code (change graphics, logic, etc) and assemble it for play in MAME. Or break
+out your EPROM programmer and make new ROMs for your arcade cabinet. I pasted the file into the online
+assembler at [https://www.asm80.com/onepage/asm8080.html](https://www.asm80.com/onepage/asm8080.html).
+
+(Comment out the CPU line for the online assembler.)
+
+Check out David's port of Space Invaders to Linux here: [https://github.com/valleyco/invaders](https://github.com/valleyco/invaders).
+
+# High-Score Table
 
 Mikael Agren patched the original ROMs to add a [high-score table](http://myprojectsweblog.blogspot.com/2011/09/space-invaders-high-score-list-hack.html). 
 Check out his project blog and demo movie.
