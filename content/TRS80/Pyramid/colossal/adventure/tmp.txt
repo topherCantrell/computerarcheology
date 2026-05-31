@@ -1,0 +1,85 @@
+4888: DB 5B CC 49 ; PS_00 room_1    new "before entrance"
+488C: 10 5C E1 49 ; PS_01 room_2    new "in entrance" (wood's woodsRoom3 wellhouse)
+4890: 57 5C F2 49 ; PS_02 room_3    new "desert"
+4894: 57 5C 03 4A ; PS_02 room_4    new "desert"
+4898: 57 5C 14 4A ; PS_02 room_5    new "desert"
+489C: 57 5C 25 4A ; PS_02 room_6    new "desert"
+;
+48A0: 68 5C 36 4A ; PS_03 room_7    woodsRoom9
+48A4: E2 5C 47 4A ; PS_04 room_8    woodsRoom10
+48A8: 28 5D 58 4A ; PS_05 room_9    woodsRoom11
+48AC: 7D 5D 69 4A ; PS_06 room_10   woodsRoom12
+48B0: A0 5D 7E 4A ; PS_07 room_11   woodsRoom13
+48B4: 1E 5E 87 4A ; PS_08 room_12   woodsRoom14
+48B8: 8E 5E 9D 4A ; PS_09 room_13   woodsRoom15
+48BC: 69 5F C8 4A ; PS_0A room_14   woodsRoom18
+48C0: AB 5F D1 4A ; PS_0B room_15   woodsRoom17
+48C4: 08 60 0D 4B ; PS_0C room_16   woodsRoom19
+48C8: 3C 60 48 4B ; PS_0D room_17   woodsRoom29
+48CC: 55 60 51 4B ; PS_0E room_18   woodsRoom27
+48D0: 85 60 90 4B ; PS_0F room_19   woodsRoom41
+48D4: F1 60 A9 4B ; PS_10 room_20   woodsRoom60
+48D8: 5F 61 BE 4B ; PS_11 room_21   woodsRoom61
+48DC: AC 61 C7 4B ; PS_12 room_22   woodsRoom62
+48E0: D8 61 D8 4B ; PS_13 room_23   woodsRoom63
+48E4: E0 61 E1 4B ; PS_14 room_24   woodsRoom30
+48E8: 18 62 F2 4B ; PS_15 room_25   woodsRoom28
+48EC: 58 62 07 4C ; PS_16 room_26   woodsRoom33
+48F0: B0 62 14 4C ; PS_17 room_27   woodsRoom34
+;
+; Maze
+48F4: C8 62 21 4C ; PS_18 room_28   woodsRoom42
+48F8: C8 62 36 4C ; PS_18 room_29   woodsRoom80
+48FC: C8 62 47 4C ; PS_18 room_30   woodsRoom45
+4900: C8 62 60 4C ; PS_18 room_31   woodsRoom87
+4904: C8 62 69 4C ; PS_18 room_32   woodsRoom43
+4908: C8 62 76 4C ; PS_18 room_33   woodsRoom44
+490C: C8 62 87 4C ; PS_18 room_34   woodsRoom50
+4910: C8 62 98 4C ; PS_18 room_35   woodsRoom52
+4914: C8 62 B1 4C ; PS_18 room_36   woodsRoom55
+4918: C8 62 C2 4C ; PS_18 room_37   woodsRoom49
+491C: C8 62 CB 4C ; PS_18 room_38   woodsRoom51
+4920: C8 62 DC 4C ; PS_18 room_39   woodsRoom53
+4924: C8 62 E9 4C ; PS_18 room_40   woodsRoom84
+4928: C8 62 F6 4C ; PS_18 room_41   woodsRoom83
+492C: D8 61 03 4D ; PS_13 room_42   woodsRoom46
+4930: D8 61 08 4D ; PS_13 room_43   woodsRoom47
+4934: D8 61 0D 4D ; PS_13 room_44   woodsRoom82
+4938: D8 61 12 4D ; PS_13 room_45   woodsRoom48
+493C: D8 61 17 4D ; PS_13 room_46   woodsRoom54
+4940: D8 61 1C 4D ; PS_13 room_47   woodsRoom86
+4944: D8 61 21 4D ; PS_13 room_48   woodsRoom56
+4948: D8 61 26 4D ; PS_13 room_49   woodsRoom58
+494C: D8 61 2B 4D ; PS_13 room_50   woodsRoom85
+4950: D8 61 30 4D ; PS_13 room_51   woodsRoom81
+4954: EA 62 41 4D ; PS_19 room_52   woodsRoom57
+4958: D8 61 56 4D ; PS_13 room_53   woodsRoom114
+;
+495C: 49 63 5B 4D ; PS_1A room_54   woodsRoom36
+4960: A6 63 68 4D ; PS_1B room_55   woodsRoom37
+4964: DA 63 75 4D ; PS_1C room_56   woodsRoom38
+4968: 1F 64 93 4D ; PS_1D room_57   woodsRoom39
+496C: 7A 64 9C 4D ; PS_1E room_58   woodsRoom64
+4970: 0A 65 B1 4D ; PS_1F room_59   woodsRoom106
+4974: A1 65 BE 4D ; PS_20 room_60   woodsRoom108
+4978: D5 65 06 4E ; PS_21 room_61   woodsRoom103
+497C: 82 66 21 4E ; PS_22 room_62   woodsRoom102
+4980: E0 66 2A 4E ; PS_23 room_63   woodsRoom104
+4984: 07 67 33 4E ; PS_24 room_64   woodsRoom105
+4988: 29 67 3C 4E ; PS_25 room_65   woodsRoom65
+498C: 89 67 65 4E ; PS_26 room_66   woodsRoom68
+4990: 00 00 00 00 ; unused 67         ? later removed ? 91 "Steep incline" ?
+4994: D2 6B 3B 4F ; PS_31 room_68   woodsRoom94
+4998: 00 00 00 00 ; unused 69         ? later removed ? 98 "Misty cavern" ?
+499C: B1 6B 32 4F ; PS_30 room_70   woodsRoom93
+49A0: 5C 6B 25 4F ; PS_2F room_71   woodsRoom92
+49A4: 25 68 6E 4E ; PS_27 room_72   woodsRoom96
+49A8: 82 68 77 4E ; PS_28 room_73   woodsRoom99
+49AC: 00 00 00 00 ; unused 74         ? later removed ? 97 "Oriental room" ?
+49B0: 00 00 00 00 ; unused 75         ? later removed ? 101 "Dark room" ?
+49B4: F6 68 86 4E ; PS_29 room_76   woodsRoom100
+49B8: F3 6A 0E 4F ; PS_2E room_77   woodsRoom88
+49BC: 3F 69 9B 4E ; PS_2A room_78   woodsRoom67
+49C0: 21 6A A8 4E ; PS_2B room_79   woodsRoom24
+49C4: 4B 6A B1 4E ; PS_2C room_80   woodsRoom23
+49C8: 9D 6A BE 4E ; PS_2D room_81   woodsRoom25

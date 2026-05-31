@@ -1,6 +1,6 @@
 ![TRS-80 Pyramid](TRS80Pyramid.jpg)
 
-# Pyramid
+# Pyramid (For TRS80 Level 2 ROM)
 
 >>> cpu Z80
 
@@ -257,7 +257,7 @@ ParseUserInput:
 43F5: 3C              INC     A                   ; Point to next
 43F6: E6 03           AND     $03                 ; Roll around over 4 messages
 43F8: 32 7E 46        LD      ($467E),A           ; {code.nextErrorString} For next time
-43FB: 21 7F 46        LD      HL,$467F            ; {+code.ErrorString1} Table of general error messages
+43FB: 21 7F 46        LD      HL,$467F            ; {+code.PtrErrorString1} Table of general error messages
 43FE: 07              RLCA                        ; Two bytes each
 43FF: 4F              LD      C,A                 ; All ...
 4400: 06 00           LD      B,$00               ; ... this ...
@@ -309,7 +309,7 @@ ParseUserInput:
 4455: 3A 7D 46        LD      A,($467D)           ; {code.grammar} Grammar type
 4458: FE 40           CP      $40                 ; 01_000_000 means noun-in-pack
 445A: C2 63 44        JP      NZ,$4463            ; {} Error ... can't find noun in room
-445D: 21 98 46        LD      HL,$4698            ; {+code.MsgNotCarrying} "YOU_AREN'T_CARRYING_IT.[CR]"
+445D: 21 98 46        LD      HL,$4698            ; {+code.MsgNotCarrying} "YOU_AREN'T_CARRYING_IT."
 4460: C3 7C 44        JP      $447C               ; {} Print error and back to try again
 4463: 21 87 46        LD      HL,$4687            ; {+code.MsgISeeNo} "I_SEE_NO_"
 4466: CD D0 45        CALL    $45D0               ; {code.PrintPlain} First fragment
@@ -399,6 +399,7 @@ ParseInputString:
 44F3: 3A 7D 47        LD      A,($477D)           ; {code.charsInWord} Number of characters in the test word
 44F6: FE 06           CP      $06                 ; Six is the max size EXCEPT FOR "SCEPTER" WHICH IS 7 -- BUG?
 44F8: CA 05 45        JP      Z,$4505             ; {code.FindEndOfInputWord} Six matched ... ignore the rest of the input
+;
 44FB: 7E              LD      A,(HL)              ; Not six ... is the next input ...
 44FC: FE 20           CP      $20                 ; ... a space?
 44FE: CA 13 45        JP      Z,$4513             ; {} Yes ... we are ready for next word
@@ -699,24 +700,27 @@ grammar:
 nextErrorString:
 467E: 00    ; Which error string do we show next? 0, 1, 2, or 3
 
-ErrorString1:
+PtrErrorString1:
+; 61	 WHAT?
 467F: 25 47 ; " WHAT?"
-ErrorString2:
+PtrErrorString2:
+; 60	 I DON'T KNOW THAT WORD.
 4681: 2C 47 ; "I DON'T KNOW THAT WORD."
-ErrorString3:
+PtrErrorString3:
+; 13	 I DON'T UNDERSTAND THAT!
 4683: 44 47 ; "I DON'T UNDERSTAND."
-ErrorString4:
-4685: 58 47 ; "I DON'T KNOW WHAT YOUR MEAN."
+PtrErrorString4:
+4685: 58 47 ; "I DON'T KNOW WHAT YOU MEAN."
 
 ; I_SEE_NO_
 MsgISeeNo:
 4687: 49 20 53 45 45 20 4E 4F 20 01
 
-; _HERE.[CR]
+; _HERE.
 MsgHere:
 4691: 20 48 45 52 45 2E 00
 
-; YOU_AREN'T_CARRYING_IT.[CR]
+; YOU_AREN'T_CARRYING_IT.
 MsgNotCarrying:
 4698: 59 4F 55 20 41 52 45 4E 27 54 20 43 41 52 52 59 49 4E 47 20 49 54 2E 00
 
@@ -747,19 +751,19 @@ unknownVerb:
 471B: 00 00 00 00 57 45 4C 43 4F 4D ;     WELCOM
 
 ErrorString1:
-;" WHAT?",0
+;" WHAT?"
 4725: 20 57 48 41 54 3F 00
 
 ErrorString2:
-; "I DON'T KNOW THAT WORD.",0
+; "I DON'T KNOW THAT WORD."
 472C: 49 20 44 4F 4E 27 54 20 4B 4E 4F 57 20 54 48 41 54 20 57 4F 52 44 2E 00
 
 ErrorString3:
-; "I DON'T UNDERSTAND.",0
+; "I DON'T UNDERSTAND."
 4744: 49 20 44 4F 4E 27 54 20 55 4E 44 45 52 53 54 41 4E 44 2E 00
 
 ErrorString4:
-; "I DON'T KNOW WHAT YOU MEAN.",0
+; "I DON'T KNOW WHAT YOU MEAN."
 4758: 49 20 44 4F 4E 27 54 20 4B 4E 4F 57 20 57 48 41 54 20 59 4F 55 20 4D 45 41 4E 2E 00
 
 keyWaitCounter:
@@ -783,7 +787,7 @@ charsInWord:
 wordBeingTested:
 4781: 00
 
-; "WELCOME TO PYRAMID!!",0
+; "WELCOME TO PYRAMID!!"
 WelcomeMsg:
 4782: 57 45 4C 43 4F 4D 45 20 54 4F 20 50 59 52 41 4D 49 44 21 21 00
 
@@ -848,7 +852,7 @@ may be listed after that with a 0 terminating the string.
 For instance, PS_02:
 
 ```
-; YOU_ARE_IN_THE_DESERT.[CR]
+; YOU_ARE_IN_THE_DESERT.
 07 C7 DE 94 14 4B 5E 96 96 DB 72 F5 59 3E 62 2E 00
 ```
 
@@ -1015,92 +1019,130 @@ unpackFlagToScreen:
 Each entry is 4 bytes. The first word is the packed room description.
 The second word is the room's command script.
 
+Woods 1-8 rewritten left out. New desert sequence added here as 1-6.
+
+The following messages in loc.c are regular prints here: 16, 20, 21, 22,
+26, 31, 32, 40, 59, 89, 90
+
+```
+Large sequences left out of Pyramid:
+  - 107 - 112 "Witt's end" (replaced with Land of the Dead)
+  - 69 - 79 "Secret canyon area"
+  - 115 - 140 "Repository, Dragon, and Bear"
+
+Single rooms missing from Pyramid:
+  - 35 "Shadowing figure peering back at you" (mirror from 110, which was removed)
+  - 66 "Swiss cheese room" (better in a cave)
+  - 95 "Sparkling waterfall" (probably not a lot of these in a pyramid) TRIDENT here
+  - 113 "Underground reservoir" (probably not a lot of these in a pyramid)
+  - 91 "Steep incline"  
+  - 97 "Oriental room"
+  - 98 "Misty carvern"
+  - 101 "Dark room" STONE TABLET congrats on bringing light
+```
+
+Rusty door in 94. Oil to get access to 95 and the trident.
+
+Four of these missing single rooms were ported to Pyramid but later removed
+likely to fit the game in 16K.
+
+Which of these 4 were made the port? My best guesses above
+
 ```code
 RoomTable:
 ;
 ; 81 rooms numbered starting at 1
 ;      Description   Script
-4888: DB 5B CC 49 ; PS_00 room_1
-488C: 10 5C E1 49 ; PS_01 room_2
-4890: 57 5C F2 49 ; PS_02 room_3
-4894: 57 5C 03 4A ; PS_02 room_4
-4898: 57 5C 14 4A ; PS_02 room_5
-489C: 57 5C 25 4A ; PS_02 room_6
-48A0: 68 5C 36 4A ; PS_03 room_7
-48A4: E2 5C 47 4A ; PS_04 room_8
-48A8: 28 5D 58 4A ; PS_05 room_9
-48AC: 7D 5D 69 4A ; PS_06 room_10
-48B0: A0 5D 7E 4A ; PS_07 room_11
-48B4: 1E 5E 87 4A ; PS_08 room_12
-48B8: 8E 5E 9D 4A ; PS_09 room_13
-48BC: 69 5F C8 4A ; PS_0A room_14
-48C0: AB 5F D1 4A ; PS_0B room_15
-48C4: 08 60 0D 4B ; PS_0C room_16
-48C8: 3C 60 48 4B ; PS_0D room_17
-48CC: 55 60 51 4B ; PS_0E room_18
-48D0: 85 60 90 4B ; PS_0F room_19
-48D4: F1 60 A9 4B ; PS_10 room_20
-48D8: 5F 61 BE 4B ; PS_11 room_21
-48DC: AC 61 C7 4B ; PS_12 room_22
-48E0: D8 61 D8 4B ; PS_13 room_23
-48E4: E0 61 E1 4B ; PS_14 room_24
-48E8: 18 62 F2 4B ; PS_15 room_25
-48EC: 58 62 07 4C ; PS_16 room_26
-48F0: B0 62 14 4C ; PS_17 room_27
-48F4: C8 62 21 4C ; PS_18 room_28
-48F8: C8 62 36 4C ; PS_18 room_29
-48FC: C8 62 47 4C ; PS_18 room_30
-4900: C8 62 60 4C ; PS_18 room_31
-4904: C8 62 69 4C ; PS_18 room_32
-4908: C8 62 76 4C ; PS_18 room_33
-490C: C8 62 87 4C ; PS_18 room_34
-4910: C8 62 98 4C ; PS_18 room_35
-4914: C8 62 B1 4C ; PS_18 room_36
-4918: C8 62 C2 4C ; PS_18 room_37
-491C: C8 62 CB 4C ; PS_18 room_38
-4920: C8 62 DC 4C ; PS_18 room_39
-4924: C8 62 E9 4C ; PS_18 room_40
-4928: C8 62 F6 4C ; PS_18 room_41
-492C: D8 61 03 4D ; PS_13 room_42
-4930: D8 61 08 4D ; PS_13 room_43
-4934: D8 61 0D 4D ; PS_13 room_44
-4938: D8 61 12 4D ; PS_13 room_45
-493C: D8 61 17 4D ; PS_13 room_46
-4940: D8 61 1C 4D ; PS_13 room_47
-4944: D8 61 21 4D ; PS_13 room_48
-4948: D8 61 26 4D ; PS_13 room_49
-494C: D8 61 2B 4D ; PS_13 room_50
-4950: D8 61 30 4D ; PS_13 room_51
-4954: EA 62 41 4D ; PS_19 room_52
-4958: D8 61 56 4D ; PS_13 room_53
-495C: 49 63 5B 4D ; PS_1A room_54
-4960: A6 63 68 4D ; PS_1B room_55
-4964: DA 63 75 4D ; PS_1C room_56
-4968: 1F 64 93 4D ; PS_1D room_57
-496C: 7A 64 9C 4D ; PS_1E room_58
-4970: 0A 65 B1 4D ; PS_1F room_59
-4974: A1 65 BE 4D ; PS_20 room_60
-4978: D5 65 06 4E ; PS_21 room_61
-497C: 82 66 21 4E ; PS_22 room_62
-4980: E0 66 2A 4E ; PS_23 room_63
-4984: 07 67 33 4E ; PS_24 room_64
-4988: 29 67 3C 4E ; PS_25 room_65
-498C: 89 67 65 4E ; PS_26 room_66
-4990: 00 00 00 00 ; unused 67
-4994: D2 6B 3B 4F ; PS_31 room_68
-4998: 00 00 00 00 ; unused 69
-499C: B1 6B 32 4F ; PS_30 room_70
-49A0: 5C 6B 25 4F ; PS_2F room_71
-49A4: 25 68 6E 4E ; PS_27 room_72
-49A8: 82 68 77 4E ; PS_28 room_73
-49AC: 00 00 00 00 ; unused 74
-49B0: 00 00 00 00 ; unused 75
-49B4: F6 68 86 4E ; PS_29 room_76
-49B8: F3 6A 0E 4F ; PS_2E room_77
-49BC: 3F 69 9B 4E ; PS_2A room_78
-49C0: 21 6A A8 4E ; PS_2B room_79
-49C4: 4B 6A B1 4E ; PS_2C room_80
-49C8: 9D 6A BE 4E ; PS_2D room_81
+4888: DB 5B CC 49 ; PS_00 room_1    new "before entrance"
+488C: 10 5C E1 49 ; PS_01 room_2    new "in entrance" (wood's woodsRoom3 wellhouse)
+4890: 57 5C F2 49 ; PS_02 room_3    new "desert"
+4894: 57 5C 03 4A ; PS_02 room_4    new "desert"
+4898: 57 5C 14 4A ; PS_02 room_5    new "desert"
+489C: 57 5C 25 4A ; PS_02 room_6    new "desert"
+;
+48A0: 68 5C 36 4A ; PS_03 room_7    woodsRoom9
+48A4: E2 5C 47 4A ; PS_04 room_8    woodsRoom10
+48A8: 28 5D 58 4A ; PS_05 room_9    woodsRoom11
+48AC: 7D 5D 69 4A ; PS_06 room_10   woodsRoom12
+48B0: A0 5D 7E 4A ; PS_07 room_11   woodsRoom13
+48B4: 1E 5E 87 4A ; PS_08 room_12   woodsRoom14
+48B8: 8E 5E 9D 4A ; PS_09 room_13   woodsRoom15
+48BC: 69 5F C8 4A ; PS_0A room_14   woodsRoom18
+48C0: AB 5F D1 4A ; PS_0B room_15   woodsRoom17
+48C4: 08 60 0D 4B ; PS_0C room_16   woodsRoom19
+48C8: 3C 60 48 4B ; PS_0D room_17   woodsRoom29
+48CC: 55 60 51 4B ; PS_0E room_18   woodsRoom27
+48D0: 85 60 90 4B ; PS_0F room_19   woodsRoom41
+48D4: F1 60 A9 4B ; PS_10 room_20   woodsRoom60
+48D8: 5F 61 BE 4B ; PS_11 room_21   woodsRoom61
+48DC: AC 61 C7 4B ; PS_12 room_22   woodsRoom62
+48E0: D8 61 D8 4B ; PS_13 room_23   woodsRoom63
+48E4: E0 61 E1 4B ; PS_14 room_24   woodsRoom30
+48E8: 18 62 F2 4B ; PS_15 room_25   woodsRoom28
+48EC: 58 62 07 4C ; PS_16 room_26   woodsRoom33
+48F0: B0 62 14 4C ; PS_17 room_27   woodsRoom34
+;
+48F4: C8 62 21 4C ; PS_18 room_28   woodsRoom42
+48F8: C8 62 36 4C ; PS_18 room_29   woodsRoom80
+48FC: C8 62 47 4C ; PS_18 room_30   woodsRoom45
+4900: C8 62 60 4C ; PS_18 room_31   woodsRoom87
+4904: C8 62 69 4C ; PS_18 room_32   woodsRoom43
+4908: C8 62 76 4C ; PS_18 room_33   woodsRoom44
+490C: C8 62 87 4C ; PS_18 room_34   woodsRoom50
+4910: C8 62 98 4C ; PS_18 room_35   woodsRoom52
+4914: C8 62 B1 4C ; PS_18 room_36   woodsRoom55
+4918: C8 62 C2 4C ; PS_18 room_37   woodsRoom49
+491C: C8 62 CB 4C ; PS_18 room_38   woodsRoom51
+4920: C8 62 DC 4C ; PS_18 room_39   woodsRoom53
+4924: C8 62 E9 4C ; PS_18 room_40   woodsRoom84
+4928: C8 62 F6 4C ; PS_18 room_41   woodsRoom83
+492C: D8 61 03 4D ; PS_13 room_42   woodsRoom46
+4930: D8 61 08 4D ; PS_13 room_43   woodsRoom47
+4934: D8 61 0D 4D ; PS_13 room_44   woodsRoom82
+4938: D8 61 12 4D ; PS_13 room_45   woodsRoom48
+493C: D8 61 17 4D ; PS_13 room_46   woodsRoom54
+4940: D8 61 1C 4D ; PS_13 room_47   woodsRoom86
+4944: D8 61 21 4D ; PS_13 room_48   woodsRoom56
+4948: D8 61 26 4D ; PS_13 room_49   woodsRoom58
+494C: D8 61 2B 4D ; PS_13 room_50   woodsRoom85
+4950: D8 61 30 4D ; PS_13 room_51   woodsRoom81
+4954: EA 62 41 4D ; PS_19 room_52   woodsRoom57
+4958: D8 61 56 4D ; PS_13 room_53   woodsRoom114
+;
+495C: 49 63 5B 4D ; PS_1A room_54   woodsRoom36
+4960: A6 63 68 4D ; PS_1B room_55   woodsRoom37
+4964: DA 63 75 4D ; PS_1C room_56   woodsRoom38
+4968: 1F 64 93 4D ; PS_1D room_57   woodsRoom39
+496C: 7A 64 9C 4D ; PS_1E room_58   woodsRoom64
+4970: 0A 65 B1 4D ; PS_1F room_59   woodsRoom106
+4974: A1 65 BE 4D ; PS_20 room_60   woodsRoom108
+4978: D5 65 06 4E ; PS_21 room_61   woodsRoom103
+497C: 82 66 21 4E ; PS_22 room_62   woodsRoom102
+4980: E0 66 2A 4E ; PS_23 room_63   woodsRoom104
+4984: 07 67 33 4E ; PS_24 room_64   woodsRoom105
+4988: 29 67 3C 4E ; PS_25 room_65   woodsRoom65
+498C: 89 67 65 4E ; PS_26 room_66   woodsRoom68
+4990: 00 00 00 00 ; unused 67           ?woodsRoom66
+4994: D2 6B 3B 4F ; PS_31 room_68   woodsRoom94
+4998: 00 00 00 00 ; unused 69           ?woodsRoom69
+499C: B1 6B 32 4F ; PS_30 room_70   woodsRoom93
+49A0: 5C 6B 25 4F ; PS_2F room_71   woodsRoom92
+49A4: 25 68 6E 4E ; PS_27 room_72   woodsRoom96
+49A8: 82 68 77 4E ; PS_28 room_73   woodsRoom99
+;
+; Rooms 73 and 76 are the "tight squeeze" with the emerald. In the
+; In the Woods implementation, there are 5 rooms here. His ORIENT
+; room (97) and his DARK room (101) are dead-ends with one passage
+; each. I suspect these were the two
+49AC: 00 00 00 00 ; unused 74         ?
+49B0: 00 00 00 00 ; unused 75         ?woodsRoom91,95,  97,98,101
+;
+49B4: F6 68 86 4E ; PS_29 room_76   woodsRoom100
+49B8: F3 6A 0E 4F ; PS_2E room_77   woodsRoom88
+49BC: 3F 69 9B 4E ; PS_2A room_78   woodsRoom67
+49C0: 21 6A A8 4E ; PS_2B room_79   woodsRoom24
+49C4: 4B 6A B1 4E ; PS_2C room_80   woodsRoom23
+49C8: 9D 6A BE 4E ; PS_2D room_81   woodsRoom25
 ```
 
 # Room Scripts
@@ -1111,284 +1153,284 @@ RoomScripts:
 room_1:
 ; PS_00
 ; YOU_ARE_STANDING_BEFORE_THE_ENTRANCE_OF_A_PYRAMID.__AROUND_YOU__
-; IS_A_DESERT.[CR]
+; IS_A_DESERT.
 ;
 49CC: 01 03     ; N
-49CE: 01 02     ;     MoveToRoom(room_2)
+49CE: 01 02     ;     MoveToRoom(room_2) new
 49D0: 02 03     ; E
-49D2: 01 03     ;     MoveToRoom(room_3)
+49D2: 01 03     ;     MoveToRoom(room_3) new
 49D4: 03 03     ; S
-49D6: 01 04     ;     MoveToRoom(room_4)
+49D6: 01 04     ;     MoveToRoom(room_4) new
 49D8: 04 03     ; W
-49DA: 01 05     ;     MoveToRoom(room_5)
+49DA: 01 05     ;     MoveToRoom(room_5) new
 49DC: 0B 03     ; IN
-49DE: 01 02     ;     MoveToRoom(room_2)
+49DE: 01 02     ;     MoveToRoom(room_2) new
 49E0: 00
 
 room_2:
 ; PS_01
 ; YOU_ARE_IN_THE_ENTRANCE_TO_THE_PYRAMID.__A_HOLE_IN_THE_FLOOR____
-; LEADS_TO_A_PASSAGE_BENEATH_THE_SURFACE.[CR]
+; LEADS_TO_A_PASSAGE_BENEATH_THE_SURFACE.
 ;
 49E1: 03 03     ; S
-49E3: 01 01     ;    MoveToRoom(room_1)
+49E3: 01 01     ;    MoveToRoom(room_1) new
 49E5: 0A 03     ; D
-49E7: 01 07     ;    MoveToRoom(room_7)
+49E7: 01 07     ;    MoveToRoom(room_7) woodsRoom9
 49E9: 0C 03     ; OUT
-49EB: 01 01     ;    MoveToRoom(room_1)
+49EB: 01 01     ;    MoveToRoom(room_1) new
 49ED: 12 03     ; PANEL
-49EF: 01 1A     ;    MoveToRoom(room_26)
+49EF: 01 1A     ;    MoveToRoom(room_26) woodsRoom33
 49F1: 00
 
 room_3:
 ; PS_02
-; YOU_ARE_IN_THE_DESERT.[CR]
+; YOU_ARE_IN_THE_DESERT.
 ;
 49F2: 01 03     ; N
-49F4: 01 06     ;    MoveToRoom(room_6)
+49F4: 01 06     ;    MoveToRoom(room_6) new
 49F6: 02 03     ; E
-49F8: 01 03     ;    MoveToRoom(room_3)
+49F8: 01 03     ;    MoveToRoom(room_3) new
 49FA: 03 03     ; S
-49FC: 01 04     ;    MoveToRoom(room_4)
+49FC: 01 04     ;    MoveToRoom(room_4) new
 49FE: 04 03     ; W
-4A00: 01 01     ;    MoveToRoom(room_1)
+4A00: 01 01     ;    MoveToRoom(room_1) new
 4A02: 00
 
 room_4:
 ; PS_02
-; YOU_ARE_IN_THE_DESERT.[CR]
+; YOU_ARE_IN_THE_DESERT.
 ;
 4A03: 01 03     ; N
-4A05: 01 01     ;    MoveToRoom(room_1)
+4A05: 01 01     ;    MoveToRoom(room_1) new
 4A07: 02 03     ; E
-4A09: 01 03     ;    MoveToRoom(room_3)
+4A09: 01 03     ;    MoveToRoom(room_3) new
 4A0B: 03 03     ; S
-4A0D: 01 04     ;    MoveToRoom(room_4)
+4A0D: 01 04     ;    MoveToRoom(room_4) new
 4A0F: 04 03     ; W
-4A11: 01 05     ;    MoveToRoom(room_5)
+4A11: 01 05     ;    MoveToRoom(room_5) new
 4A13: 00
 
 room_5:
 ; PS_02
-; YOU_ARE_IN_THE_DESERT.[CR]
+; YOU_ARE_IN_THE_DESERT.
 ;
 4A14: 01 03     ; N
-4A16: 01 06     ;    MoveToRoom(room_6)
+4A16: 01 06     ;    MoveToRoom(room_6) new
 4A18: 02 03     ; E
-4A1A: 01 01     ;    MoveToRoom(room_1)
+4A1A: 01 01     ;    MoveToRoom(room_1) new
 4A1C: 03 03     ; S
-4A1E: 01 04     ;    MoveToRoom(room_4)
+4A1E: 01 04     ;    MoveToRoom(room_4) new
 4A20: 04 03     ; W
-4A22: 01 05     ;    MoveToRoom(room_5)
+4A22: 01 05     ;    MoveToRoom(room_5) new
 4A24: 00
 
 room_6:
 ; PS_02
-; YOU_ARE_IN_THE_DESERT.[CR]
+; YOU_ARE_IN_THE_DESERT.
 ;
 4A25: 01 03     ; N
-4A27: 01 06     ;    MoveToRoom(room_6)
+4A27: 01 06     ;    MoveToRoom(room_6) new
 4A29: 02 03     ; E
-4A2B: 01 03     ;    MoveToRoom(room_3)
+4A2B: 01 03     ;    MoveToRoom(room_3) new
 4A2D: 03 03     ; S
-4A2F: 01 01     ;    MoveToRoom(room_1)
+4A2F: 01 01     ;    MoveToRoom(room_1) new
 4A31: 04 03     ; W
-4A33: 01 05     ;    MoveToRoom(room_5)
+4A33: 01 05     ;    MoveToRoom(room_5) new
 4A35: 00
 
-room_7:
+room_7: ; woodsRoom9
 ; PS_03
 ; YOU_ARE_IN_A_SMALL_CHAMBER_BENEATH_A_HOLE_FROM_THE_SURFACE.__A__
 ; LOW_CRAWL_LEADS_INWARD_TO_THE_WEST.__HIEROGLYPHICS_ON_THE_WALL__
-; TRANSLATE,_"CURSE_ALL_WHO_ENTER_THIS_SACRED_CRYPT."[CR]
+; TRANSLATE,_"CURSE_ALL_WHO_ENTER_THIS_SACRED_CRYPT."
 ;
 4A36: 09 03     ; U
-4A38: 01 02     ;    MoveToRoom(room_2)
+4A38: 01 02     ;    MoveToRoom(room_2) new
 4A3A: 0C 03     ; OUT
-4A3C: 01 02     ;    MoveToRoom(room_2)
+4A3C: 01 02     ;    MoveToRoom(room_2) new
 4A3E: 04 03     ; W
-4A40: 01 08     ;    MoveToRoom(room_8)
+4A40: 01 08     ;    MoveToRoom(room_8) woodsRoom10
 4A42: 0B 03     ; IN
-4A44: 01 08     ;    MoveToRoom(room_8)
+4A44: 01 08     ;    MoveToRoom(room_8) woodsRoom10
 4A46: 00
 
-room_8:
+room_8: ; woodsRoom10
 ; PS_04
 ; YOU_ARE_CRAWLING_OVER_PEBBLES_IN_A_LOW_PASSAGE.__THERE_IS_A_DIM_
-; LIGHT_AT_THE_EAST_END_OF_THE_PASSAGE.[CR]
+; LIGHT_AT_THE_EAST_END_OF_THE_PASSAGE.
 ;
 4A47: 02 03     ; E
-4A49: 01 07     ;    MoveToRoom(room_7)
-4A4B: 0C 03     ; OUT
-4A4D: 01 07     ;    MoveToRoom(room_7)
+4A49: 01 07     ;    MoveToRoom(room_7) woodsRoom9
+4A4B: 0C 03     ; OUT 
+4A4D: 01 07     ;    MoveToRoom(room_7) woodsRoom9
 4A4F: 04 03     ; W
-4A51: 01 09     ;    MoveToRoom(room_9)
+4A51: 01 09     ;    MoveToRoom(room_9) woodsRoom11
 4A53: 0B 03     ; IN
-4A55: 01 09     ;    MoveToRoom(room_9)
+4A55: 01 09     ;    MoveToRoom(room_9) woodsRoom11
 4A57: 00
 
-room_9:
+room_9: ; woodsRoom11
 ; PS_05
 ; YOU_ARE_IN_A_ROOM_FILLED_WITH_BROKEN_POTTERY_SHARDS_OF_ANCIENT__
-; EGYPTIAN_CRAFTS.__AN_AWKWARD_CORRIDOR_LEADS_UPWARD_AND_WEST.[CR]
+; EGYPTIAN_CRAFTS.__AN_AWKWARD_CORRIDOR_LEADS_UPWARD_AND_WEST.
 ;
 4A58: 02 03     ; E
-4A5A: 01 08     ;    MoveToRoom(room_8)
+4A5A: 01 08     ;    MoveToRoom(room_8) woodsRoom10
 4A5C: 0B 03     ; IN
-4A5E: 01 0A     ;    MoveToRoom(room_10)
+4A5E: 01 0A     ;    MoveToRoom(room_10) woodsRoom12
 4A60: 09 03     ; U
-4A62: 01 0A     ;    MoveToRoom(room_10)
+4A62: 01 0A     ;    MoveToRoom(room_10) woodsRoom12
 4A64: 04 03     ; W
-4A66: 01 0A     ;    MoveToRoom(room_10)
+4A66: 01 0A     ;    MoveToRoom(room_10) woodsRoom12
 4A68: 00
 
-room_10:
+room_10: ; woodsRoom12
 ; PS_06
-; YOU_ARE_IN_AN_AWKWARD_SLOPING_EAST/WEST_CORRIDOR.[CR]
+; YOU_ARE_IN_AN_AWKWARD_SLOPING_EAST/WEST_CORRIDOR.
 ;
 4A69: 0A 03     ; D
-4A6B: 01 09     ;    MoveToRoom(room_9)
+4A6B: 01 09     ;    MoveToRoom(room_9) woodsRoom11
 4A6D: 02 03     ; E
-4A6F: 01 09     ;    MoveToRoom(room_9)
+4A6F: 01 09     ;    MoveToRoom(room_9) woodsRoom11
 4A71: 0B 03     ; IN
-4A73: 01 0B     ;    MoveToRoom(room_11)
+4A73: 01 0B     ;    MoveToRoom(room_11) woodsRoom13
 4A75: 04 03     ; W
-4A77: 01 0B     ;    MoveToRoom(room_11)
+4A77: 01 0B     ;    MoveToRoom(room_11) woodsRoom13
 4A79: 09 03     ; U
-4A7B: 01 0B     ;    MoveToRoom(room_11)
+4A7B: 01 0B     ;    MoveToRoom(room_11) woodsRoom13
 4A7D: 00
 
-room_11:
+room_11: ; woodsRoom13
 ; PS_07
 ; YOU_ARE_IN_A_SPLENDID_CHAMBER_THIRTY_FEET_HIGH.__THE_WALLS_ARE__
 ; FROZEN_RIVERS_OF_ORANGE_STONE.__AN_AWKWARD_CORRIDOR_AND_A_GOOD__
-; PASSAGE_EXIT_FROM_THE_EAST_AND_WEST_SIDES_OF_THE_CHAMBER.[CR]
+; PASSAGE_EXIT_FROM_THE_EAST_AND_WEST_SIDES_OF_THE_CHAMBER.
 ;
 4A7E: 02 03     ; E
-4A80: 01 0A     ;    MoveToRoom(room_10)
+4A80: 01 0A     ;    MoveToRoom(room_10) woodsRoom12
 4A82: 04 03     ; W
-4A84: 01 0C     ;    MoveToRoom(room_12)
+4A84: 01 0C     ;    MoveToRoom(room_12) woodsRoom14
 4A86: 00
 
-room_12:
+room_12: ; woodsRoom14
 ; PS_08
 ; AT_YOUR_FEET_IS_A_SMALL_PIT_BREATHING_TRACES_OF_WHITE_MIST.__AN_
 ; EAST_PASSAGE_ENDS_HERE_EXCEPT_FOR_A_SMALL_CRACK_LEADING_ON._____
-; ROUGH_STONE_STEPS_LEAD_DOWN_THE_PIT.[CR]
+; ROUGH_STONE_STEPS_LEAD_DOWN_THE_PIT.
 ;
 4A87: 02 03     ; E
-4A89: 01 0B     ;    MoveToRoom(room_11)
+4A89: 01 0B     ;    MoveToRoom(room_11) woodsRoom13
 4A8B: 0A 0B     ; D
 4A8D: 07 07     ;    StopIfPassElseContinue
 4A8F: 02 25     ;        AssertObjectIsInPack(obj_GOLD)
-4A91: 04 71 71  ;        Print(PS_6B:"YOU_ARE_AT_THE_BOTTOM_OF_THE_PIT_WITH_A_BROKEN_NECK.[CR]")
+4A91: 04 71 71  ;        Print(PS_6B:"YOU_ARE_AT_THE_BOTTOM_OF_THE_PIT_WITH_A_BROKEN_NECK.")
 4A94: 05        ;        PrintScoreAndStop
-4A95: 01 0D     ;    MoveToRoom(room_13)
+4A95: 01 0D     ;    MoveToRoom(room_13) woodsRoom15
 4A97: 04 04     ; W
-4A99: 04 96 71  ;    Print(PS_6C:"THE_CRACK_IS_FAR_TOO_SMALL_FOR_YOU_TO_FOLLOW.[CR]")
+4A99: 04 96 71  ;    Print(PS_6C:"THE_CRACK_IS_FAR_TOO_SMALL_FOR_YOU_TO_FOLLOW.")
 4A9C: 00
 
-room_13:
+room_13: ; woodsRoom15
 ; PS_09
 ; YOU_ARE_AT_ONE_END_OF_A_VAST_HALL_STRETCHING_FORWARD_OUT_OF_____
 ; SIGHT_TO_THE_WEST.__THERE_ARE_OPENINGS_TO_EITHER_SIDE.__NEARBY,_
 ; A_WIDE_STONE_STAIRCASE_LEADS_DOWNWARD.__THE_HALL_IS_VERY_MUSTY__
 ; AND_A_COLD_WIND_BLOWS_UP_THE_STAIRCASE.__THERE_IS_A_PASSAGE_AT__
 ; THE_TOP_OF_A_DOME_BEHIND_YOU.__ROUGH_STONE_STEPS_LEAD_UP_THE____
-; DOME.[CR]
+; DOME.
 ;
 4A9D: 03 03     ; S
-4A9F: 01 0E     ;    MoveToRoom(room_14)
+4A9F: 01 0E     ;    MoveToRoom(room_14) woodsRoom18
 4AA1: 04 03     ; W
-4AA3: 01 0F     ;    MoveToRoom(room_15)
+4AA3: 01 0F     ;    MoveToRoom(room_15) woodsRoom17
 4AA5: 0A 03     ; D
-4AA7: 01 10     ;    MoveToRoom(room_16)
+4AA7: 01 10     ;    MoveToRoom(room_16) woodsRoom19
 4AA9: 01 03     ; N
-4AAB: 01 10     ;    MoveToRoom(room_16)
+4AAB: 01 10     ;    MoveToRoom(room_16) woodsRoom19
 4AAD: 09 0A     ; U
 4AAF: 07 06     ;    StopIfPassElseContinue
 4AB1: 02 25     ;        AssertObjectIsInPack(obj_GOLD)
-4AB3: 04 B6 71  ;        Print(PS_6D:"THE_DOME_IS_UNCLIMBABLE.[CR]")
-4AB6: 01 0C     ;    MoveToRoom(room_12)
+4AB3: 04 B6 71  ;        Print(PS_6D:"THE_DOME_IS_UNCLIMBABLE.")
+4AB6: 01 0C     ;    MoveToRoom(room_12) woodsRoom14
 4AB8: 02 0A     ; E
 4ABA: 07 06     ;    StopIfPassElseContinue
 4ABC: 02 25     ;        AssertObjectIsInPack(obj_GOLD)
-4ABE: 04 B6 71  ;        Print(PS_6D:"THE_DOME_IS_UNCLIMBABLE.[CR]")
-4AC1: 01 0C     ;    MoveToRoom(room_12)
-4AC3: 20 03     ; ??20??
-4AC5: 01 1A     ;    MoveToRoom(room_26)
+4ABE: 04 B6 71  ;        Print(PS_6D:"THE_DOME_IS_UNCLIMBABLE.")
+4AC1: 01 0C     ;    MoveToRoom(room_12) woodsRoom14
+4AC3: 20 03     ; word_20 ; in CCA loc.c this is GO_Y2 -- command: "GO Y2" or "Y2"
+4AC5: 01 1A     ;    MoveToRoom(room_26) woodsRoom33
 4AC7: 00
 
-room_14:
+room_14: ; woodsRoom18
 ; PS_0A
 ; THIS_IS_A_LOW_ROOM_WITH_A_HIEROGLYPH_ON_THE_WALL.__IT_TRANSLATES
-; "YOU_WON'T_GET_IT_UP_THE_STEPS".[CR]
+; "YOU_WON'T_GET_IT_UP_THE_STEPS".
 ;
 4AC8: 0C 03     ; OUT
-4ACA: 01 0D     ;    MoveToRoom(room_13)
+4ACA: 01 0D     ;    MoveToRoom(room_13) woodsRoom15
 4ACC: 01 03     ; N
-4ACE: 01 0D     ;    MoveToRoom(room_13)
+4ACE: 01 0D     ;    MoveToRoom(room_13) woodsRoom15
 4AD0: 00
 
-room_15:
+room_15: ; woodsRoom17
 ; PS_0B
 ; YOU_ARE_ON_THE_EAST_BANK_OF_A_BOTTOMLESS_PIT_STRETCHING_ACROSS__
 ; THE_HALL.__THE_MIST_IS_QUITE_THICK_HERE,_AND_THE_PIT_IS_TOO_WIDE
-; TO_JUMP.[CR]
+; TO_JUMP.
 ;
 4AD1: 02 03     ; E
-4AD3: 01 0D     ;    MoveToRoom(room_13)
+4AD3: 01 0D     ;    MoveToRoom(room_13) woodsRoom15
 4AD5: 10 0C     ; JUMP
 4AD7: 07 06     ;    StopIfPassElseContinue
 4AD9: 03 01     ;        AssertObjectIsInCurrentRoomOrPack(obj_bridge_15)
 4ADB: 04 C8 71  ;        Print(PS_6E:"I_RESPECTFULLY_SUGGEST_YOU_GO_ACROSS_THE_BRIDGE_INSTEAD_OF______
-;                                     JUMPING.[CR]")
-4ADE: 04 FA 71  ;    Print(PS_6F:"YOU_DIDN'T_MAKE_IT.[CR]")
+;                                     JUMPING.")
+4ADE: 04 FA 71  ;    Print(PS_6F:"YOU_DIDN'T_MAKE_IT.")
 4AE1: 05        ;    PrintScoreAndStop
 4AE2: 04 0A     ; W
 4AE4: 07 05     ;    StopIfPassElseContinue
 4AE6: 03 01     ;        AssertObjectIsInCurrentRoomOrPack(obj_bridge_15)
-4AE8: 01 12     ;        MoveToRoom(room_18)
-4AEA: 04 09 72  ;    Print(PS_70:"THERE_IS_NO_WAY_ACROSS_THE_BOTTOMLESS_PIT.[CR]")
+4AE8: 01 12     ;        MoveToRoom(room_18) woodsRoom27
+4AEA: 04 09 72  ;    Print(PS_70:"THERE_IS_NO_WAY_ACROSS_THE_BOTTOMLESS_PIT.")
 4AED: 0D 05     ; CROSS
 4AEF: 03 01     ;    AssertObjectIsInCurrentRoomOrPack(obj_bridge_15)
-4AF1: 01 12     ;    MoveToRoom(room_18)
+4AF1: 01 12     ;    MoveToRoom(room_18) woodsRoom27
 4AF3: 23 18     ; WAVE
 4AF5: 11 11     ;    AssertObjectMatchesUserInput(obj_SCEPTER)
 4AF7: 07 0C     ;    StopIfPassElseContinue
 4AF9: 03 01     ;        AssertObjectIsInCurrentRoomOrPack(obj_bridge_15)
 4AFB: 15 01 00  ;        MoveObjectToRoom(obj_bridge_15, room_0)
 4AFE: 15 02 00  ;        MoveObjectToRoom(obj_bridge_18, room_0)
-4B01: 04 DE 7B  ;        Print(PS_AE:"THE_STONE_BRIDGE_HAS_RETRACTED![CR]")
+4B01: 04 DE 7B  ;        Print(PS_AE:"THE_STONE_BRIDGE_HAS_RETRACTED!")
 4B04: 18 01     ;    MoveObjectToCurrentRoom(obj_bridge_15)
 4B06: 15 02 12  ;    MoveObjectToRoom(obj_bridge_18, room_18)
-4B09: 04 F5 7B  ;    Print(PS_AF:"A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.[CR]")
+4B09: 04 F5 7B  ;    Print(PS_AF:"A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.")
 4B0C: 00
 
-room_16:
+room_16: ; woodsRoom19
 ; PS_0C
 ; YOU_ARE_IN_THE_PHARAOH'S_CHAMBER,_WITH_PASSAGES_OFF_IN_ALL______
-; DIRECTIONS.[CR]
+; DIRECTIONS.
 ;
 4B0D: 09 03     ; U
-4B0F: 01 0D     ;    MoveToRoom(room_13)
+4B0F: 01 0D     ;    MoveToRoom(room_13) woodsRoom15
 4B11: 02 03     ; E
-4B13: 01 0D     ;    MoveToRoom(room_13)
+4B13: 01 0D     ;    MoveToRoom(room_13) woodsRoom15
 4B15: 03 0A     ; S
 4B17: 07 06     ;    StopIfPassElseContinue
 4B19: 03 0B     ;        AssertObjectIsInCurrentRoomOrPack(obj_SERPENT)
-4B1B: 04 27 72  ;        Print(PS_71:"YOU_CAN'T_GET_BY_THE_SERPENT.[CR]")
-4B1E: 01 11     ;    MoveToRoom(room_17)
+4B1B: 04 27 72  ;        Print(PS_71:"YOU_CAN'T_GET_BY_THE_SERPENT.")
+4B1E: 01 11     ;    MoveToRoom(room_17) woodsRoom29
 4B20: 01 0A     ; N
 4B22: 07 06     ;    StopIfPassElseContinue
 4B24: 03 0B     ;        AssertObjectIsInCurrentRoomOrPack(obj_SERPENT)
-4B26: 04 27 72  ;        Print(PS_71:"YOU_CAN'T_GET_BY_THE_SERPENT.[CR]")
-4B29: 01 19     ;    MoveToRoom(room_25)
+4B26: 04 27 72  ;        Print(PS_71:"YOU_CAN'T_GET_BY_THE_SERPENT.")
+4B29: 01 19     ;    MoveToRoom(room_25) woodsRoom28
 4B2B: 04 0A     ; W
 4B2D: 07 06     ;    StopIfPassElseContinue
 4B2F: 03 0B     ;        AssertObjectIsInCurrentRoomOrPack(obj_SERPENT)
-4B31: 04 27 72  ;        Print(PS_71:"YOU_CAN'T_GET_BY_THE_SERPENT.[CR]")
-4B34: 01 18     ;    MoveToRoom(room_24)
+4B31: 04 27 72  ;        Print(PS_71:"YOU_CAN'T_GET_BY_THE_SERPENT.")
+4B34: 01 18     ;    MoveToRoom(room_24) woodsRoom30
 4B36: 26 10     ; THROW
 4B38: 11 14     ;    AssertObjectMatchesUserInput(obj_BIRD_boxed)
 4B3A: 03 0B     ;    AssertObjectIsInCurrentRoomOrPack(obj_SERPENT)
@@ -1397,693 +1439,693 @@ room_16:
 4B41: 15 14 00  ;    MoveObjectToRoom(obj_BIRD_boxed, room_0)
 4B44: 04 A1 7C  ;    Print(PS_B4:"THE_BIRD_STATUE_COMES_TO_LIFE_AND_ATTACKS_THE_SERPENT_AND_IN_AN_
 ;                                 ASTOUNDING_FLURRY,_DRIVES_THE_SERPENT_AWAY.__THE_BIRD_TURNS_BACK
-;                                 INTO_A_STATUE.[CR]")
+;                                 INTO_A_STATUE.")
 4B47: 00
 
-room_17:
+room_17: ; woodsRoom29
 ; PS_0D
-; YOU_ARE_IN_THE_SOUTH_SIDE_CHAMBER.[CR]
+; YOU_ARE_IN_THE_SOUTH_SIDE_CHAMBER.
 ;
 4B48: 01 03     ; N
-4B4A: 01 10     ;    MoveToRoom(room_16)
+4B4A: 01 10     ;    MoveToRoom(room_16) woodsRoom19
 4B4C: 0C 03     ; OUT
-4B4E: 01 10     ;    MoveToRoom(room_16)
+4B4E: 01 10     ;    MoveToRoom(room_16) woodsRoom19
 4B50: 00
 
-room_18:
+room_18: ; woodsRoom27
 ; PS_0E
 ; YOU_ARE_ON_THE_WEST_SIDE_OF_THE_BOTTOMLESS_PIT_IN_THE_HALL_OF___
-; GODS.[CR]
+; GODS.
 ;
 4B51: 10 0C     ; JUMP
 4B53: 07 06     ;    StopIfPassElseContinue
 4B55: 03 02     ;        AssertObjectIsInCurrentRoomOrPack(obj_bridge_18)
 4B57: 04 C8 71  ;        Print(PS_6E:"I_RESPECTFULLY_SUGGEST_YOU_GO_ACROSS_THE_BRIDGE_INSTEAD_OF______
-;                                     JUMPING.[CR]")
-4B5A: 04 FA 71  ;    Print(PS_6F:"YOU_DIDN'T_MAKE_IT.[CR]")
+;                                     JUMPING.")
+4B5A: 04 FA 71  ;    Print(PS_6F:"YOU_DIDN'T_MAKE_IT.")
 4B5D: 05        ;    PrintScoreAndStop
 4B5E: 02 0A     ; E
 4B60: 07 05     ;    StopIfPassElseContinue
 4B62: 03 02     ;        AssertObjectIsInCurrentRoomOrPack(obj_bridge_18)
-4B64: 01 0F     ;        MoveToRoom(room_15)
-4B66: 04 09 72  ;    Print(PS_70:"THERE_IS_NO_WAY_ACROSS_THE_BOTTOMLESS_PIT.[CR]")
+4B64: 01 0F     ;        MoveToRoom(room_15) woodsRoom17
+4B66: 04 09 72  ;    Print(PS_70:"THERE_IS_NO_WAY_ACROSS_THE_BOTTOMLESS_PIT.")
 4B69: 01 06     ; N
 4B6B: 04 3D 72  ;    Print(PS_72:"YOU_HAVE_CRAWLED_THROUGH_A_VERY_LOW_WIDE_PASSAGE_PARALLEL_TO_AND
-;                                 NORTH_OF_THE_HALL_OF_GODS.[CR]")
-4B6E: 01 13     ;    MoveToRoom(room_19)
+;                                 NORTH_OF_THE_HALL_OF_GODS.")
+4B6E: 01 13     ;    MoveToRoom(room_19) woodsRoom41
 4B70: 0D 05     ; CROSS
 4B72: 03 02     ;    AssertObjectIsInCurrentRoomOrPack(obj_bridge_18)
-4B74: 01 0F     ;    MoveToRoom(room_15)
+4B74: 01 0F     ;    MoveToRoom(room_15) woodsRoom17
 4B76: 23 18     ; WAVE
 4B78: 11 11     ;    AssertObjectMatchesUserInput(obj_SCEPTER)
 4B7A: 07 0C     ;    StopIfPassElseContinue
 4B7C: 03 02     ;        AssertObjectIsInCurrentRoomOrPack(obj_bridge_18)
 4B7E: 15 02 00  ;        MoveObjectToRoom(obj_bridge_18, room_0)
 4B81: 15 01 00  ;        MoveObjectToRoom(obj_bridge_15, room_0)
-4B84: 04 DE 7B  ;        Print(PS_AE:"THE_STONE_BRIDGE_HAS_RETRACTED![CR]")
+4B84: 04 DE 7B  ;        Print(PS_AE:"THE_STONE_BRIDGE_HAS_RETRACTED!")
 4B87: 18 02     ;    MoveObjectToCurrentRoom(obj_bridge_18)
 4B89: 15 01 0F  ;    MoveObjectToRoom(obj_bridge_15, room_15)
-4B8C: 04 F5 7B  ;    Print(PS_AF:"A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.[CR]")
+4B8C: 04 F5 7B  ;    Print(PS_AF:"A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.")
 4B8F: 00
 
-room_19:
+room_19: ; woodsRoom41
 ; PS_0F
 ; YOU_ARE_AT_THE_WEST_END_OF_THE_HALL_OF_GODS.___A_LOW_WIDE_PASS__
 ; CONTINUES_WEST_AND_ANOTHER_GOES_NORTH.__TO_THE_SOUTH_IS_A_LITTLE
-; PASSAGE_SIX_FEET_OFF_THE_FLOOR.[CR]
+; PASSAGE_SIX_FEET_OFF_THE_FLOOR.
 ;
 4B90: 03 03     ; S
-4B92: 01 1C     ;    MoveToRoom(room_28)
+4B92: 01 1C     ;    MoveToRoom(room_28) woodsRoom42
 4B94: 09 03     ; U
-4B96: 01 1C     ;    MoveToRoom(room_28)
+4B96: 01 1C     ;    MoveToRoom(room_28) woodsRoom42
 4B98: 11 03     ; CLIMB
-4B9A: 01 1C     ;    MoveToRoom(room_28)
+4B9A: 01 1C     ;    MoveToRoom(room_28) woodsRoom42
 4B9C: 02 03     ; E
-4B9E: 01 12     ;    MoveToRoom(room_18)
+4B9E: 01 12     ;    MoveToRoom(room_18) woodsRoom27
 4BA0: 01 03     ; N
-4BA2: 01 12     ;    MoveToRoom(room_18)
+4BA2: 01 12     ;    MoveToRoom(room_18) woodsRoom27
 4BA4: 04 03     ; W
-4BA6: 01 14     ;    MoveToRoom(room_20)
+4BA6: 01 14     ;    MoveToRoom(room_20) woodsRoom60
 4BA8: 00
 
-room_20:
+room_20: ; woodsRoom60
 ; PS_10
 ; YOU_ARE_AT_EAST_END_OF_A_VERY_LONG_HALL_APPARENTLY_WITHOUT_SIDE_
 ; CHAMBERS.__TO_THE_EAST_A_LOW_WIDE_CRAWL_SLANTS_UP.__TO_THE_NORTH
-; A_ROUND_TWO_FOOT_HOLE_SLANTS_DOWN.[CR]
+; A_ROUND_TWO_FOOT_HOLE_SLANTS_DOWN.
 ;
 4BA9: 02 03     ; E
-4BAB: 01 13     ;    MoveToRoom(room_19)
+4BAB: 01 13     ;    MoveToRoom(room_19) woodsRoom41
 4BAD: 09 03     ; U
-4BAF: 01 13     ;    MoveToRoom(room_19)
+4BAF: 01 13     ;    MoveToRoom(room_19) woodsRoom41
 4BB1: 04 03     ; W
-4BB3: 01 15     ;    MoveToRoom(room_21)
+4BB3: 01 15     ;    MoveToRoom(room_21) woodsRoom61
 4BB5: 01 03     ; N
-4BB7: 01 16     ;    MoveToRoom(room_22)
+4BB7: 01 16     ;    MoveToRoom(room_22) woodsRoom62
 4BB9: 0A 03     ; D
-4BBB: 01 16     ;    MoveToRoom(room_22)
+4BBB: 01 16     ;    MoveToRoom(room_22) woodsRoom62
 4BBD: 00
 
-room_21:
+room_21: ; woodsRoom61
 ; PS_11
 ; YOU_ARE_AT_THE_WEST_END_OF_A_VERY_LONG_FEATURELESS_HALL.__THE___
-; HALL_JOINS_; UP_WITH_A_NARROW_NORTH/SOUTH_PASSAGE.[CR]
+; HALL_JOINS_UP_WITH_A_NARROW_NORTH/SOUTH_PASSAGE.
 ;
 4BBE: 02 03     ; E
-4BC0: 01 14     ;    MoveToRoom(room_20)
+4BC0: 01 14     ;    MoveToRoom(room_20) woodsRoom60
 4BC2: 01 03     ; N
-4BC4: 01 16     ;    MoveToRoom(room_22)
+4BC4: 01 16     ;    MoveToRoom(room_22) woodsRoom62
 4BC6: 00
 
-room_22:
+room_22: ; woodsRoom62
 ; PS_12
-; YOU_ARE_AT_A_CROSSOVER_OF_A_HIGH_N/S_PASSAGE_AND_A_LOW_E/W_ONE.[CR]
+; YOU_ARE_AT_A_CROSSOVER_OF_A_HIGH_N/S_PASSAGE_AND_A_LOW_E/W_ONE.
 ;
 4BC7: 04 03     ; W
-4BC9: 01 14     ;    MoveToRoom(room_20)
+4BC9: 01 14     ;    MoveToRoom(room_20) woodsRoom60
 4BCB: 01 03     ; N
-4BCD: 01 17     ;    MoveToRoom(room_23)
+4BCD: 01 17     ;    MoveToRoom(room_23) woodsRoom63
 4BCF: 02 03     ; E
-4BD1: 01 18     ;    MoveToRoom(room_24)
+4BD1: 01 18     ;    MoveToRoom(room_24) woodsRoom30
 4BD3: 03 03     ; S
-4BD5: 01 15     ;    MoveToRoom(room_21)
+4BD5: 01 15     ;    MoveToRoom(room_21) woodsRoom61
 4BD7: 00
 
-room_23:
+room_23: ; woodsRoom63
 ; PS_13
-; DEAD_END.[CR]
+; DEAD_END.
 ;
 4BD8: 03 03     ; S
-4BDA: 01 16     ;    MoveToRoom(room_22)
+4BDA: 01 16     ;    MoveToRoom(room_22) woodsRoom62
 4BDC: 0C 03     ; OUT
-4BDE: 01 16     ;    MoveToRoom(room_22)
+4BDE: 01 16     ;    MoveToRoom(room_22) woodsRoom62
 4BE0: 00
 
-room_24:
+room_24: ; woodsRoom30
 ; PS_14
 ; YOU_ARE_IN_THE_WEST_THRONE_CHAMBER.__A_PASSAGE_CONTINUES_WEST___
-; AND_UP_FROM_HERE.[CR]
+; AND_UP_FROM_HERE.
 ;
 4BE1: 02 03     ; E
-4BE3: 01 10     ;    MoveToRoom(room_16)
+4BE3: 01 10     ;    MoveToRoom(room_16) woodsRoom19
 4BE5: 0C 03     ; OUT
-4BE7: 01 10     ;    MoveToRoom(room_16)
+4BE7: 01 10     ;    MoveToRoom(room_16) woodsRoom19
 4BE9: 04 03     ; W
-4BEB: 01 16     ;    MoveToRoom(room_22)
+4BEB: 01 16     ;    MoveToRoom(room_22) woodsRoom62
 4BED: 09 03     ; U
-4BEF: 01 16     ;    MoveToRoom(room_22)
+4BEF: 01 16     ;    MoveToRoom(room_22) woodsRoom62
 4BF1: 00
 
-room_25:
+room_25: ; woodsRoom28
 ; PS_15
 ; YOU_ARE_IN_A_LOW_N/S_PASSAGE_AT_A_HOLE_IN_THE_FLOOR.__THE_HOLE__
-; GOES_DOWN_TO_AN_E/W_PASSAGE.[CR]
+; GOES_DOWN_TO_AN_E/W_PASSAGE.
 ;
 4BF2: 0C 03     ; OUT
-4BF4: 01 10     ;    MoveToRoom(room_16)
+4BF4: 01 10     ;    MoveToRoom(room_16) woodsRoom19
 4BF6: 03 03     ; S
-4BF8: 01 10     ;    MoveToRoom(room_16)
+4BF8: 01 10     ;    MoveToRoom(room_16) woodsRoom19
 4BFA: 01 03     ; N
-4BFC: 01 1A     ;    MoveToRoom(room_26)
-4BFE: 20 03     ; ??20??
-4C00: 01 1A     ;    MoveToRoom(room_26)
+4BFC: 01 1A     ;    MoveToRoom(room_26) woodsRoom33
+4BFE: 20 03     ; word_20 ; in CCA loc.c this is GO_Y2 -- command: "GO Y2" or "Y2"
+4C00: 01 1A     ;    MoveToRoom(room_26) woodsRoom33
 4C02: 0A 03     ; D
-4C04: 01 36     ;    MoveToRoom(room_54)
+4C04: 01 36     ;    MoveToRoom(room_54) woodsRoom36
 4C06: 00
 
-room_26:
+room_26: ; woodsRoom33 -- this is the Y2 room (with a panel instead of a Y2 rock)
 ; PS_16
 ; YOU_ARE_IN_A_LARGE_ROOM,_WITH_A_PASSAGE_TO_THE_SOUTH,_AND_A_WALL
-; OF_BROKEN_ROCK_TO_THE_EAST.__THERE_IS_A_PANEL_ON_THE_NORTH_WALL.[CR]
+; OF_BROKEN_ROCK_TO_THE_EAST.__THERE_IS_A_PANEL_ON_THE_NORTH_WALL.
 ;
 4C07: 12 03     ; PANEL
-4C09: 01 02     ;    MoveToRoom(room_2)
+4C09: 01 02     ;    MoveToRoom(room_2) new
 4C0B: 03 03     ; S
-4C0D: 01 19     ;    MoveToRoom(room_25)
+4C0D: 01 19     ;    MoveToRoom(room_25) woodsRoom28
 4C0F: 02 03     ; E
-4C11: 01 1B     ;    MoveToRoom(room_27)
+4C11: 01 1B     ;    MoveToRoom(room_27) woodsRoom34
 4C13: 00
 
-room_27:
+room_27: ; woodsRoom34
 ; PS_17
-; YOU_ARE_IN_THE_CHAMBER_OF_ANUBIS.[CR]
+; YOU_ARE_IN_THE_CHAMBER_OF_ANUBIS.
 ;
 4C14: 0A 03     ; D
-4C16: 01 1A     ;    MoveToRoom(room_26)
-4C18: 20 03     ; ??20??
-4C1A: 01 1A     ;    MoveToRoom(room_26)
+4C16: 01 1A     ;    MoveToRoom(room_26) woodsRoom33
+4C18: 20 03     ; word_20 ; in CCA loc.c this is GO_Y2 -- command: "GO Y2" or "Y2"
+4C1A: 01 1A     ;    MoveToRoom(room_26) woodsRoom33
 4C1C: 09 03     ; U
-4C1E: 01 0D     ;    MoveToRoom(room_13)
+4C1E: 01 0D     ;    MoveToRoom(room_13) woodsRoom15
 4C20: 00
 
-room_28:
+room_28: ; woodsRoom42
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C21: 01 03     ; N
-4C23: 01 1C     ;    MoveToRoom(room_28)
+4C23: 01 1C     ;    MoveToRoom(room_28) woodsRoom42
 4C25: 02 03     ; E
-4C27: 01 20     ;    MoveToRoom(room_32)
+4C27: 01 20     ;    MoveToRoom(room_32) woodsRoom43
 4C29: 03 03     ; S
-4C2B: 01 1E     ;    MoveToRoom(room_30)
+4C2B: 01 1E     ;    MoveToRoom(room_30) woodsRoom45
 4C2D: 04 03     ; W
-4C2F: 01 1D     ;    MoveToRoom(room_29)
+4C2F: 01 1D     ;    MoveToRoom(room_29) woodsRoom80
 4C31: 09 03     ; U
-4C33: 01 13     ;    MoveToRoom(room_19)
+4C33: 01 13     ;    MoveToRoom(room_19) woodsRoom41
 4C35: 00
 
-room_29:
+room_29: ; woodsRoom80
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C36: 01 03     ; N
-4C38: 01 1C     ;    MoveToRoom(room_28)
+4C38: 01 1C     ;    MoveToRoom(room_28) woodsRoom42
 4C3A: 02 03     ; E
-4C3C: 01 33     ;    MoveToRoom(room_51)
+4C3C: 01 33     ;    MoveToRoom(room_51) woodsRoom81
 4C3E: 03 03     ; S
-4C40: 01 1D     ;    MoveToRoom(room_29)
+4C40: 01 1D     ;    MoveToRoom(room_29) woodsRoom80
 4C42: 04 03     ; W
-4C44: 01 1D     ;    MoveToRoom(room_29)
+4C44: 01 1D     ;    MoveToRoom(room_29) woodsRoom80
 4C46: 00
 
-room_30:
+room_30: ; woodsRoom45
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C47: 01 03     ; N
-4C49: 01 20     ;    MoveToRoom(room_32)
+4C49: 01 20     ;    MoveToRoom(room_32) woodsRoom43
 4C4B: 02 03     ; E
-4C4D: 01 2A     ;    MoveToRoom(room_42)
+4C4D: 01 2A     ;    MoveToRoom(room_42) woodsRoom46
 4C4F: 03 03     ; S
-4C51: 01 2B     ;    MoveToRoom(room_43)
+4C51: 01 2B     ;    MoveToRoom(room_43) woodsRoom47
 4C53: 04 03     ; W
-4C55: 01 1C     ;    MoveToRoom(room_28)
+4C55: 01 1C     ;    MoveToRoom(room_28) woodsRoom42
 4C57: 09 03     ; U
-4C59: 01 1F     ;    MoveToRoom(room_31)
+4C59: 01 1F     ;    MoveToRoom(room_31) woodsRoom87
 4C5B: 0A 03     ; D
-4C5D: 01 1F     ;    MoveToRoom(room_31)
+4C5D: 01 1F     ;    MoveToRoom(room_31) woodsRoom87
 4C5F: 00
 
-room_31:
+room_31: ; woodsRoom87
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C60: 09 03     ; U
-4C62: 01 1E     ;    MoveToRoom(room_30)
+4C62: 01 1E     ;    MoveToRoom(room_30) woodsRoom45
 4C64: 0A 03     ; D
-4C66: 01 1E     ;    MoveToRoom(room_30)
+4C66: 01 1E     ;    MoveToRoom(room_30) woodsRoom45
 4C68: 00
 
-room_32:
+room_32: ; woodsRoom43
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C69: 02 03     ; E
-4C6B: 01 1E     ;    MoveToRoom(room_30)
+4C6B: 01 1E     ;    MoveToRoom(room_30) woodsRoom45
 4C6D: 03 03     ; S
-4C6F: 01 21     ;    MoveToRoom(room_33)
+4C6F: 01 21     ;    MoveToRoom(room_33) woodsRoom44
 4C71: 04 03     ; W
-4C73: 01 1C     ;    MoveToRoom(room_28)
+4C73: 01 1C     ;    MoveToRoom(room_28) woodsRoom42
 4C75: 00
 
-room_33:
+room_33: ; woodsRoom44
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C76: 01 03     ; N
-4C78: 01 2C     ;    MoveToRoom(room_44)
+4C78: 01 2C     ;    MoveToRoom(room_44) woodsRoom82
 4C7A: 02 03     ; E
-4C7C: 01 20     ;    MoveToRoom(room_32)
+4C7C: 01 20     ;    MoveToRoom(room_32) woodsRoom43
 4C7E: 03 03     ; S
-4C80: 01 22     ;    MoveToRoom(room_34)
+4C80: 01 22     ;    MoveToRoom(room_34) woodsRoom50
 4C82: 0A 03     ; D
-4C84: 01 2D     ;    MoveToRoom(room_45)
+4C84: 01 2D     ;    MoveToRoom(room_45) woodsRoom48
 4C86: 00
 
-room_34:
+room_34: ; woodsRoom50
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C87: 02 03     ; E
-4C89: 01 21     ;    MoveToRoom(room_33)
+4C89: 01 21     ;    MoveToRoom(room_33) woodsRoom44
 4C8B: 03 03     ; S
-4C8D: 01 23     ;    MoveToRoom(room_35)
+4C8D: 01 23     ;    MoveToRoom(room_35) woodsRoom52
 4C8F: 04 03     ; W
-4C91: 01 25     ;    MoveToRoom(room_37)
+4C91: 01 25     ;    MoveToRoom(room_37) woodsRoom49
 4C93: 0A 03     ; D
-4C95: 01 26     ;    MoveToRoom(room_38)
+4C95: 01 26     ;    MoveToRoom(room_38) woodsRoom51
 4C97: 00
 
-room_35:
+room_35: ; woodsRoom52
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C98: 01 03     ; N
-4C9A: 01 24     ;    MoveToRoom(room_36)
+4C9A: 01 24     ;    MoveToRoom(room_36) woodsRoom55
 4C9C: 02 03     ; E
-4C9E: 01 26     ;    MoveToRoom(room_38)
+4C9E: 01 26     ;    MoveToRoom(room_38) woodsRoom51
 4CA0: 03 03     ; S
-4CA2: 01 23     ;    MoveToRoom(room_35)
+4CA2: 01 23     ;    MoveToRoom(room_35) woodsRoom52
 4CA4: 04 03     ; W
-4CA6: 01 22     ;    MoveToRoom(room_34)
+4CA6: 01 22     ;    MoveToRoom(room_34) woodsRoom50
 4CA8: 09 03     ; U
-4CAA: 01 27     ;    MoveToRoom(room_39)
+4CAA: 01 27     ;    MoveToRoom(room_39) woodsRoom53
 4CAC: 0A 03     ; D
-4CAE: 01 2F     ;    MoveToRoom(room_47)
+4CAE: 01 2F     ;    MoveToRoom(room_47) woodsRoom86
 4CB0: 00
 
-room_36:
+room_36: ; woodsRoom55
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4CB1: 01 03     ; N
-4CB3: 01 24     ;    MoveToRoom(room_36)
+4CB3: 01 24     ;    MoveToRoom(room_36) woodsRoom55
 4CB5: 02 03     ; E
-4CB7: 01 34     ;    MoveToRoom(room_52)
+4CB7: 01 34     ;    MoveToRoom(room_52) woodsRoom57
 4CB9: 04 03     ; W
-4CBB: 01 23     ;    MoveToRoom(room_35)
+4CBB: 01 23     ;    MoveToRoom(room_35) woodsRoom52
 4CBD: 0A 03     ; D
-4CBF: 01 30     ;    MoveToRoom(room_48)
+4CBF: 01 30     ;    MoveToRoom(room_48) woodsRoom56
 4CC1: 00
 
-room_37:
+room_37: ; woodsRoom49
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4CC2: 02 03     ; E
-4CC4: 01 22     ;    MoveToRoom(room_34)
+4CC4: 01 22     ;    MoveToRoom(room_34) woodsRoom50
 4CC6: 04 03     ; W
-4CC8: 01 26     ;    MoveToRoom(room_38)
+4CC8: 01 26     ;    MoveToRoom(room_38) woodsRoom51
 4CCA: 00
 
-room_38:
+room_38: ; woodsRoom51
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4CCB: 02 03     ; E
-4CCD: 01 23     ;    MoveToRoom(room_35)
+4CCD: 01 23     ;    MoveToRoom(room_35) woodsRoom52
 4CCF: 03 03     ; S
-4CD1: 01 27     ;    MoveToRoom(room_39)
+4CD1: 01 27     ;    MoveToRoom(room_39) woodsRoom53
 4CD3: 04 03     ; W
-4CD5: 01 25     ;    MoveToRoom(room_37)
+4CD5: 01 25     ;    MoveToRoom(room_37) woodsRoom49
 4CD7: 09 03     ; U
-4CD9: 01 22     ;    MoveToRoom(room_34)
+4CD9: 01 22     ;    MoveToRoom(room_34) woodsRoom50
 4CDB: 00
 
-room_39:
+room_39: ; woodsRoom53
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4CDC: 01 03     ; N
-4CDE: 01 23     ;    MoveToRoom(room_35)
+4CDE: 01 23     ;    MoveToRoom(room_35) woodsRoom52
 4CE0: 03 03     ; S
-4CE2: 01 2E     ;    MoveToRoom(room_46)
+4CE2: 01 2E     ;    MoveToRoom(room_46) woodsRoom54
 4CE4: 04 03     ; W
-4CE6: 01 26     ;    MoveToRoom(room_38)
+4CE6: 01 26     ;    MoveToRoom(room_38) woodsRoom51
 4CE8: 00
 
-room_40:
+room_40: ; woodsRoom84
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4CE9: 01 03     ; N
-4CEB: 01 34     ;    MoveToRoom(room_52)
+4CEB: 01 34     ;    MoveToRoom(room_52) woodsRoom57
 4CED: 04 03     ; W
-4CEF: 01 29     ;    MoveToRoom(room_41)
+4CEF: 01 29     ;    MoveToRoom(room_41) woodsRoom83
 4CF1: 08 03     ; NW
-4CF3: 01 35     ;    MoveToRoom(room_53)
+4CF3: 01 35     ;    MoveToRoom(room_53) woodsRoom114
 4CF5: 00
 
-room_41:
+room_41: ; woodsRoom83
 ; PS_18
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4CF6: 02 03     ; E
-4CF8: 01 28     ;    MoveToRoom(room_40)
+4CF8: 01 28     ;    MoveToRoom(room_40) woodsRoom84
 4CFA: 03 03     ; S
-4CFC: 01 34     ;    MoveToRoom(room_52)
+4CFC: 01 34     ;    MoveToRoom(room_52) woodsRoom57
 4CFE: 04 03     ; W
-4D00: 01 32     ;    MoveToRoom(room_50)
+4D00: 01 32     ;    MoveToRoom(room_50) woodsRoom85
 4D02: 00
 
-room_42:
+room_42: ; woodsRoom46
 ; PS_13
-; DEAD_END.[CR]
+; DEAD_END.
 ;
 4D03: 04 03     ; W
-4D05: 01 1E     ;    MoveToRoom(room_30)
+4D05: 01 1E     ;    MoveToRoom(room_30) woodsRoom45
 4D07: 00
 
-room_43:
+room_43: ; woodsRoom47
 ; PS_13
-; DEAD_END.[CR]
+; DEAD_END.
 ;
 4D08: 02 03     ; E
-4D0A: 01 1E     ;    MoveToRoom(room_30)
+4D0A: 01 1E     ;    MoveToRoom(room_30) woodsRoom45
 4D0C: 00
 
-room_44:
+room_44: ; woodsRoom82
 ; PS_13
-; DEAD_END.[CR]
+; DEAD_END.
 ;
 4D0D: 03 03     ; S
-4D0F: 01 21     ;    MoveToRoom(room_33)
+4D0F: 01 21     ;    MoveToRoom(room_33) woodsRoom44
 4D11: 00
 
-room_45:
+room_45: ; woodsRoom48
 ; PS_13
-; DEAD_END.[CR]
+; DEAD_END.
 ;
 4D12: 09 03     ; U
-4D14: 01 21     ;    MoveToRoom(room_33)
+4D14: 01 21     ;    MoveToRoom(room_33) woodsRoom44
 4D16: 00
 
-room_46:
+room_46: ; woodsRoom54
 ; PS_13
-; DEAD_END.[CR]
+; DEAD_END.
 ;
 4D17: 04 03     ; W
-4D19: 01 27     ;    MoveToRoom(room_39)
+4D19: 01 27     ;    MoveToRoom(room_39) woodsRoom53
 4D1B: 00
 
-room_47:
+room_47: ; woodsRoom86
 ; PS_13
-; DEAD_END.[CR]
+; DEAD_END.
 ;
 4D1C: 09 03     ; U
-4D1E: 01 23     ;    MoveToRoom(room_35)
+4D1E: 01 23     ;    MoveToRoom(room_35) woodsRoom52
 4D20: 00
 
-room_48:
+room_48: ; woodsRoom56
 ; PS_13
-; DEAD_END.[CR]
+; DEAD_END.
 ;
 4D21: 09 03     ; U
-4D23: 01 24     ;    MoveToRoom(room_36)
+4D23: 01 24     ;    MoveToRoom(room_36) woodsRoom55
 4D25: 00
 
-room_49:
+room_49: ; woodsRoom58
 ; PS_13
-; DEAD_END.[CR]
+; DEAD_END.
 ;
 4D26: 02 03     ; E
-4D28: 01 34     ;    MoveToRoom(room_52)
+4D28: 01 34     ;    MoveToRoom(room_52) woodsRoom57
 4D2A: 00
 
-room_50:
+room_50: ; woodsRoom85
 ; PS_13
-; DEAD_END.[CR]
+; DEAD_END.
 ;
 4D2B: 02 03     ; E
-4D2D: 01 29     ;    MoveToRoom(room_41)
+4D2D: 01 29     ;    MoveToRoom(room_41) woodsRoom83
 4D2F: 00
 
-room_51:
+room_51: ; woodsRoom81
 ; PS_13
-; DEAD_END.[CR]
+; DEAD_END.
 ;
 4D30: 04 03     ; W
-4D32: 01 1D     ;    MoveToRoom(room_29)
+4D32: 01 1D     ;    MoveToRoom(room_29) woodsRoom80
 4D34: 21 0B     ; DROP
 4D36: 11 29     ;    AssertObjectMatchesUserInput(obj_COINS)
 4D38: 15 29 00  ;    MoveObjectToRoom(obj_COINS, room_0)
 4D3B: 18 23     ;    MoveObjectToCurrentRoom(obj_BATTERIES_fresh)
-4D3D: 04 58 7C  ;    Print(PS_B2:"THERE_ARE_NOW_SOME_FRESH_BATTERIES_HERE.[CR]")
+4D3D: 04 58 7C  ;    Print(PS_B2:"THERE_ARE_NOW_SOME_FRESH_BATTERIES_HERE.")
 4D40: 00
 
-room_52:
+room_52: ; woodsRoom57
 ; PS_19
 ; YOU_ARE_ON_THE_BRINK_OF_A_LARGE_PIT.__YOU_COULD_CLIMB_DOWN,_BUT_
 ; YOU_WOULD_NOT_BE_ABLE_TO_CLIMB_BACK_UP.__THE_MAZE_CONTINUES_ON__
-; THIS_LEVEL.[CR]
+; THIS_LEVEL.
 ;
 4D41: 01 03     ; N
-4D43: 01 29     ;    MoveToRoom(room_41)
+4D43: 01 29     ;    MoveToRoom(room_41) woodsRoom83
 4D45: 02 03     ; E
-4D47: 01 28     ;    MoveToRoom(room_40)
+4D47: 01 28     ;    MoveToRoom(room_40) woodsRoom84
 4D49: 03 03     ; S
-4D4B: 01 31     ;    MoveToRoom(room_49)
+4D4B: 01 31     ;    MoveToRoom(room_49) woodsRoom58
 4D4D: 04 03     ; W
-4D4F: 01 24     ;    MoveToRoom(room_36)
+4D4F: 01 24     ;    MoveToRoom(room_36) woodsRoom55
 4D51: 0A 03     ; D
-4D53: 01 0B     ;    MoveToRoom(room_11)
+4D53: 01 0B     ;    MoveToRoom(room_11) woodsRoom13
 4D55: 00
 
-room_53:
+room_53: ; woodsRoom114 CHEST_ROOM1
 ; PS_13
-; DEAD_END.[CR]
+; DEAD_END.
 ;
 4D56: 06 03     ; SE
-4D58: 01 28     ;    MoveToRoom(room_40)
+4D58: 01 28     ;    MoveToRoom(room_40) woodsRoom84
 4D5A: 00
 
-room_54:
+room_54: ; woodsRoom36
 ; PS_1A
 ; YOU_ARE_IN_A_DIRTY_BROKEN_PASSAGE.__TO_THE_EAST_IS_A_CRAWL.__TO_
 ; THE_WEST_IS_A_LARGE_PASSAGE.__ABOVE_YOU_IS_A_HOLE_TO_ANOTHER____
-; PASSAGE.[CR]
+; PASSAGE.
 ;
 4D5B: 02 03     ; E
-4D5D: 01 37     ;    MoveToRoom(room_55)
+4D5D: 01 37     ;    MoveToRoom(room_55) woodsRoom37
 4D5F: 04 03     ; W
-4D61: 01 39     ;    MoveToRoom(room_57)
+4D61: 01 39     ;    MoveToRoom(room_57) woodsRoom39
 4D63: 09 03     ; U
-4D65: 01 19     ;    MoveToRoom(room_25)
+4D65: 01 19     ;    MoveToRoom(room_25) woodsRoom28
 4D67: 00
 
-room_55:
+room_55: ; woodsRoom37
 ; PS_1B
 ; YOU_ARE_ON_THE_BRINK_OF_A_SMALL_CLEAN_CLIMBABLE_PIT.__A_CRAWL___
-; LEADS_WEST.[CR]
+; LEADS_WEST.
 ;
 4D68: 04 03     ; W
-4D6A: 01 36     ;    MoveToRoom(room_54)
+4D6A: 01 36     ;    MoveToRoom(room_54) woodsRoom36
 4D6C: 0A 03     ; D
-4D6E: 01 38     ;    MoveToRoom(room_56)
+4D6E: 01 38     ;    MoveToRoom(room_56) woodsRoom38
 4D70: 11 03     ; CLIMB
-4D72: 01 38     ;    MoveToRoom(room_56)
+4D72: 01 38     ;    MoveToRoom(room_56) woodsRoom38
 4D74: 00
 
-room_56:
+room_56: ; woodsRoom38
 ; PS_1C
 ; YOU_ARE_IN_THE_BOTTOM_OF_A_SMALL_PIT_WITH_A_LITTLE_STREAM,_WHICH
-; ENTERS_AND_EXITS_THROUGH_TINY_SLITS.[CR]
+; ENTERS_AND_EXITS_THROUGH_TINY_SLITS.
 ;
 4D75: 09 03     ; U
-4D77: 01 37     ;    MoveToRoom(room_55)
+4D77: 01 37     ;    MoveToRoom(room_55) woodsRoom37
 4D79: 0C 03     ; OUT
-4D7B: 01 37     ;    MoveToRoom(room_55)
+4D7B: 01 37     ;    MoveToRoom(room_55) woodsRoom37
 4D7D: 11 03     ; CLIMB
-4D7F: 01 37     ;    MoveToRoom(room_55)
+4D7F: 01 37     ;    MoveToRoom(room_55) woodsRoom37
 4D81: 0A 04     ; D
-4D83: 04 7B 72  ;    Print(PS_73:"YOU_DON'T_FIT_THROUGH_TWO-INCH_SLIT![CR]")
+4D83: 04 7B 72  ;    Print(PS_73:"YOU_DON'T_FIT_THROUGH_TWO-INCH_SLIT!")
 4D86: 27 0B     ; FILL
 4D88: 07 06     ;    StopIfPassElseContinue
 4D8A: 02 1C     ;        AssertObjectIsInPack(obj_WATER)
-4D8C: 04 37 7B  ;        Print(PS_AC:"YOUR_BOTTLE_IS_ALREADY_FULL.[CR]")
+4D8C: 04 37 7B  ;        Print(PS_AC:"YOUR_BOTTLE_IS_ALREADY_FULL.")
 4D8F: 19 1C 1B  ;    MoveObjectIntoContainer(obj_WATER, obj_BOTTLE)
 4D92: 00
 
-room_57:
+room_57: ; woodsRoom39
 ; PS_1D
 ; YOU_ARE_IN_A_THE_ROOM_OF_BES,_WHOSE_PICTURE_IS_ON_THE_WALL._____
 ; THERE_IS_A_BIG_HOLE_IN_THE_FLOOR.__THERE_IS_A_PASSAGE_LEADING___
-; EAST.[CR]
+; EAST.
 ;
 4D93: 02 03     ; E
-4D95: 01 36     ;    MoveToRoom(room_54)
+4D95: 01 36     ;    MoveToRoom(room_54) woodsRoom36
 4D97: 0A 03     ; D
-4D99: 01 3A     ;    MoveToRoom(room_58)
+4D99: 01 3A     ;    MoveToRoom(room_58) woodsRoom64
 4D9B: 00
 
-room_58:
+room_58: ; woodsRoom64
 ; PS_1E
 ; YOU_ARE_AT_A_COMPLEX_JUNCTION.__A_LOW_HANDS_AND_KNEES_PASSAGE___
 ; FROM_THE_NORTH_JOINS_A_HIGHER_CRAWL_FROM_THE_EAST_TO_MAKE_A_____
 ; WALKING_PASSAGE_GOING_WEST.__THERE_IS_ALSO_A_LARGE_ROOM_ABOVE.__
-; THE_AIR_IS_DAMP_HERE.[CR]
+; THE_AIR_IS_DAMP_HERE.
 ;
 4D9C: 01 03     ; N
-4D9E: 01 3D     ;    MoveToRoom(room_61)
+4D9E: 01 3D     ;    MoveToRoom(room_61) woodsRoom103
 4DA0: 02 03     ; E
-4DA2: 01 3B     ;    MoveToRoom(room_59)
+4DA2: 01 3B     ;    MoveToRoom(room_59) woodsRoom106
 4DA4: 04 03     ; W
-4DA6: 01 41     ;    MoveToRoom(room_65)
+4DA6: 01 41     ;    MoveToRoom(room_65) woodsRoom65
 4DA8: 09 03     ; U
-4DAA: 01 39     ;    MoveToRoom(room_57)
+4DAA: 01 39     ;    MoveToRoom(room_57) woodsRoom39
 4DAC: 11 03     ; CLIMB
-4DAE: 01 39     ;    MoveToRoom(room_57)
+4DAE: 01 39     ;    MoveToRoom(room_57) woodsRoom39
 4DB0: 00
 
-room_59:
+room_59: ; woodsRoom106
 ; PS_1F
 ; YOU_ARE_IN_THE_UNDERWORLD_ANTEROOM_OF_SEKER.__PASSAGES_GO_EAST,_
 ; WEST,_AND_UP.__HUMAN_BONES_ARE_STREWN_ABOUT_ON_THE_FLOOR._______
 ; HIEROGLYPHICS_ON_THE_WALL_ROUGHLY_TRANSLATE_TO_"THOSE_WHO_______
-; PROCEED_EAST_MAY_NEVER_RETURN."[CR]
+; PROCEED_EAST_MAY_NEVER_RETURN."
 ;
 4DB1: 02 03     ; E
-4DB3: 01 3C     ;    MoveToRoom(room_60)
+4DB3: 01 3C     ;    MoveToRoom(room_60) woodsRoom108
 4DB5: 04 03     ; W
-4DB7: 01 41     ;    MoveToRoom(room_65)
+4DB7: 01 41     ;    MoveToRoom(room_65) woodsRoom65
 4DB9: 09 03     ; U
-4DBB: 01 3A     ;    MoveToRoom(room_58)
+4DBB: 01 3A     ;    MoveToRoom(room_58) woodsRoom64
 4DBD: 00
 
-room_60:
+room_60: ; woodsRoom108
 ; PS_20
 ; YOU_ARE_AT_THE_LAND_OF_DEAD.__PASSAGES_LEAD_OFF_IN_>ALL<________
-; DIRECTIONS.[CR]
+; DIRECTIONS.
 ;
 4DBE: 01 07     ; N
 4DC0: 07 03     ;    StopIfPassElseContinue
 4DC2: 0A F0     ;        AssertRandomIsLessOrEqual(240)
-4DC4: 01 3B     ;    MoveToRoom(room_59)
+4DC4: 01 3B     ;    MoveToRoom(room_59) woodsRoom106
 4DC6: 02 07     ; E
 4DC8: 07 03     ;    StopIfPassElseContinue
 4DCA: 0A F0     ;        AssertRandomIsLessOrEqual(240)
-4DCC: 01 3B     ;    MoveToRoom(room_59)
+4DCC: 01 3B     ;    MoveToRoom(room_59) woodsRoom106
 4DCE: 03 07     ; S
 4DD0: 07 03     ;    StopIfPassElseContinue
 4DD2: 0A F0     ;        AssertRandomIsLessOrEqual(240)
-4DD4: 01 3B     ;    MoveToRoom(room_59)
+4DD4: 01 3B     ;    MoveToRoom(room_59) woodsRoom106
 4DD6: 05 07     ; NE
 4DD8: 07 03     ;    StopIfPassElseContinue
 4DDA: 0A F0     ;        AssertRandomIsLessOrEqual(240)
-4DDC: 01 3B     ;    MoveToRoom(room_59)
+4DDC: 01 3B     ;    MoveToRoom(room_59) woodsRoom106
 4DDE: 06 07     ; SE
 4DE0: 07 03     ;    StopIfPassElseContinue
 4DE2: 0A F0     ;        AssertRandomIsLessOrEqual(240)
-4DE4: 01 3B     ;    MoveToRoom(room_59)
+4DE4: 01 3B     ;    MoveToRoom(room_59) woodsRoom106
 4DE6: 07 07     ; SW
 4DE8: 07 03     ;    StopIfPassElseContinue
 4DEA: 0A F0     ;        AssertRandomIsLessOrEqual(240)
-4DEC: 01 3B     ;    MoveToRoom(room_59)
+4DEC: 01 3B     ;    MoveToRoom(room_59) woodsRoom106
 4DEE: 08 07     ; NW
 4DF0: 07 03     ;    StopIfPassElseContinue
 4DF2: 0A F0     ;        AssertRandomIsLessOrEqual(240)
-4DF4: 01 3B     ;    MoveToRoom(room_59)
+4DF4: 01 3B     ;    MoveToRoom(room_59) woodsRoom106
 4DF6: 09 07     ; U
 4DF8: 07 03     ;    StopIfPassElseContinue
 4DFA: 0A F0     ;        AssertRandomIsLessOrEqual(240)
-4DFC: 01 3B     ;    MoveToRoom(room_59)
+4DFC: 01 3B     ;    MoveToRoom(room_59) woodsRoom106
 4DFE: 04 06     ; W
 4E00: 04 CF 72  ;    Print(PS_75:"YOU_HAVE_CRAWLED_AROUND_IN_SOME_LITTLE_HOLES_AND_FOUND_YOUR_WAY_
-;                                 BLOCKED_BY_A_FALLEN_SLAB.__YOU_ARE_NOW_BACK_IN_THE_MAIN_PASSAGE.[CR]")
-4E03: 01 3C     ;    MoveToRoom(room_60)
+;                                 BLOCKED_BY_A_FALLEN_SLAB.__YOU_ARE_NOW_BACK_IN_THE_MAIN_PASSAGE.")
+4E03: 01 3C     ;    MoveToRoom(room_60) woodsRoom108
 4E05: 00
 
-room_61:
+room_61: ; woodsRoom103
 ; PS_21
 ; YOU'RE_IN_A_LARGE_ROOM_WITH_ANCIENT_DRAWINGS_ON_ALL_WALLS.______
 ; THE_PICTURES_DEPICT_ATUM,_A_PHARAOH_WEARING_THE_DOUBLE_CROWN.___
 ; A_SHALLOW_PASSAGE_PROCEEDS_DOWNWARD,_AND_A_SOMEWHAT_STEEPER_ONE_
-; LEADS_UP.__A_LOW_HANDS_AND_KNEES_PASSAGE_ENTERS_FROM_THE_SOUTH. [CR]
+; LEADS_UP.__A_LOW_HANDS_AND_KNEES_PASSAGE_ENTERS_FROM_THE_SOUTH. 
 ;
 4E06: 03 11     ; S
 4E08: 07 06     ;    StopIfPassElseContinue
 4E0A: 02 17     ;        AssertObjectIsInPack(obj_SARCOPH_full)
-4E0C: 04 27 73  ;        Print(PS_76:"YOU_CAN'T_FIT_THIS_BIG_SARCOPHAGUS_THROUGH_THAT_LITTLE_PASSAGE![CR]")
+4E0C: 04 27 73  ;        Print(PS_76:"YOU_CAN'T_FIT_THIS_BIG_SARCOPHAGUS_THROUGH_THAT_LITTLE_PASSAGE!")
 4E0F: 07 06     ;    StopIfPassElseContinue
 4E11: 02 18     ;        AssertObjectIsInPack(obj_SARCOPH_empty)
-4E13: 04 27 73  ;        Print(PS_76:"YOU_CAN'T_FIT_THIS_BIG_SARCOPHAGUS_THROUGH_THAT_LITTLE_PASSAGE![CR]")
-4E16: 01 3A     ;    MoveToRoom(room_58)
+4E13: 04 27 73  ;        Print(PS_76:"YOU_CAN'T_FIT_THIS_BIG_SARCOPHAGUS_THROUGH_THAT_LITTLE_PASSAGE!")
+4E16: 01 3A     ;    MoveToRoom(room_58) woodsRoom64
 4E18: 09 03     ; U
-4E1A: 01 3E     ;    MoveToRoom(room_62)
+4E1A: 01 3E     ;    MoveToRoom(room_62) woodsRoom102
 4E1C: 0A 03     ; D
-4E1E: 01 3F     ;    MoveToRoom(room_63)
+4E1E: 01 3F     ;    MoveToRoom(room_63) woodsRoom104
 4E20: 00
 
-room_62:
+room_62: ; woodsRoom102
 ; PS_22
 ; YOU_ARE_IN_A_CHAMBER_WHOSE_WALL_CONTAINS_A_PICTURE_OF_A_MAN_____
 ; WEARING_THE_LUNAR_DISK_ON_HIS_HEAD.__HE_IS_THE_GOD_KHONS,_THE___
-; MOON_GOD.[CR]
+; MOON_GOD.
 ;
 4E21: 0A 03     ; D
-4E23: 01 3D     ;    MoveToRoom(room_61)
+4E23: 01 3D     ;    MoveToRoom(room_61) woodsRoom103
 4E25: 0C 03     ; OUT
-4E27: 01 3D     ;    MoveToRoom(room_61)
+4E27: 01 3D     ;    MoveToRoom(room_61) woodsRoom103
 4E29: 00
 
-room_63:
+room_63: ; woodsRoom104
 ; PS_23
-; YOU_ARE_IN_A_LONG_SLOPING_CORRIDOR_WITH_RAGGED_WALLS._ [CR]
+; YOU_ARE_IN_A_LONG_SLOPING_CORRIDOR_WITH_RAGGED_WALLS._ 
 ;
 4E2A: 09 03     ; U
-4E2C: 01 3D     ;    MoveToRoom(room_61)
+4E2C: 01 3D     ;    MoveToRoom(room_61) woodsRoom103
 4E2E: 0A 03     ; D
-4E30: 01 40     ;    MoveToRoom(room_64)
+4E30: 01 40     ;    MoveToRoom(room_64) woodsRoom105
 4E32: 00
 
-room_64:
+room_64: ; woodsRoom105
 ; PS_24
-; YOU_ARE_IN_A_CUL-DE-SAC_ABOUT_EIGHT_FEET_ACROSS.[CR]
+; YOU_ARE_IN_A_CUL-DE-SAC_ABOUT_EIGHT_FEET_ACROSS.
 ;
 4E33: 09 03     ; U
-4E35: 01 3F     ;    MoveToRoom(room_63)
+4E35: 01 3F     ;    MoveToRoom(room_63) woodsRoom104
 4E37: 0C 03     ; OUT
-4E39: 01 3F     ;    MoveToRoom(room_63)
+4E39: 01 3F     ;    MoveToRoom(room_63) woodsRoom104
 4E3B: 00
 
-room_65:
+room_65: ; woodsRoom65
 ; PS_25
 ; YOU_ARE_IN_THE_CHAMBER_OF_HORUS,_A_LONG_EAST/WEST_PASSAGE_WITH__
 ; HOLES_EVERYWHERE.__TO_EXPLORE_AT_RANDOM,_SELECT_NORTH,_SOUTH,___
-; UP,_OR_DOWN.[CR]
+; UP,_OR_DOWN.
 ;
 4E3C: 02 03     ; E
-4E3E: 01 3A     ;    MoveToRoom(room_58)
+4E3E: 01 3A     ;    MoveToRoom(room_58) woodsRoom64
 4E40: 04 03     ; W
-4E42: 01 4E     ;    MoveToRoom(room_78)
+4E42: 01 4E     ;    MoveToRoom(room_78) woodsRoom67
 4E44: 09 07     ; U
 4E46: 07 03     ;    StopIfPassElseContinue
 4E48: 0A CC     ;        AssertRandomIsLessOrEqual(204)
-4E4A: 01 48     ;    MoveToRoom(room_72)
+4E4A: 01 48     ;    MoveToRoom(room_72) woodsRoom96
 4E4C: 01 07     ; N
 4E4E: 07 03     ;    StopIfPassElseContinue
 4E50: 0A CC     ;        AssertRandomIsLessOrEqual(204)
-4E52: 01 49     ;    MoveToRoom(room_73)
+4E52: 01 49     ;    MoveToRoom(room_73) woodsRoom99
 4E54: 03 07     ; S
 4E56: 07 03     ;    StopIfPassElseContinue
 4E58: 0A CC     ;        AssertRandomIsLessOrEqual(204)
@@ -2091,128 +2133,128 @@ room_65:
 4E5C: 0A 07     ; D
 4E5E: 07 03     ;    StopIfPassElseContinue
 4E60: 0A CC     ;        AssertRandomIsLessOrEqual(204)
-4E62: 01 3B     ;    MoveToRoom(room_59)
+4E62: 01 3B     ;    MoveToRoom(room_59) woodsRoom106
 4E64: 00
 
-room_66:
+room_66: ; woodsRoom68
 ; PS_26
 ; YOU_ARE_IN_A_LARGE_LOW_CIRCULAR_CHAMBER_WHOSE_FLOOR_IS_AN_______
 ; IMMENSE_SLAB_FALLEN_FROM_THE_CEILING.__EAST_AND_WEST_THERE_ONCE_
 ; WHERE_LARGE_PASSAGES,_BUT_THEY_ARE_NOW_FILLED_WITH_SAND.________
-; LOW_SMALL_PASSAGES_GO_NORTH_AND_SOUTH.[CR]
+; LOW_SMALL_PASSAGES_GO_NORTH_AND_SOUTH.
 ;
 4E65: 01 03     ; N
-4E67: 01 41     ;    MoveToRoom(room_65)
+4E67: 01 41     ;    MoveToRoom(room_65) woodsRoom65
 4E69: 03 03     ; S
-4E6B: 01 50     ;    MoveToRoom(room_80)
+4E6B: 01 50     ;    MoveToRoom(room_80) woodsRoom23
 4E6D: 00
 
-room_72:
+room_72: ; woodsRoom96
 ; PS_27
 ; YOU_ARE_IN_THE_PRIEST'S_BEDROOM.__THE_WALLS_ARE_COVERED_WITH____
 ; CURTAINS,_THE_FLOOR_WITH_A_THICK_PILE_CARPET.__MOSS_COVERS_THE__
-; CEILING.[CR]
+; CEILING.
 ;
 4E6E: 04 03     ; W
-4E70: 01 41     ;    MoveToRoom(room_65)
+4E70: 01 41     ;    MoveToRoom(room_65) woodsRoom65
 4E72: 0C 03     ; OUT
-4E74: 01 41     ;    MoveToRoom(room_65)
+4E74: 01 41     ;    MoveToRoom(room_65) woodsRoom65
 4E76: 00
 
-room_73:
+room_73: ; woodsRoom99
 ; PS_28
 ; THIS_IS_THE_CHAMBER_OF_THE_HIGH_PRIEST.___ANCIENT_DRAWINGS_COVER
 ; THE_WALLS.__AN_EXTREMELY_TIGHT_TUNNEL_LEADS_WEST.__IT_LOOKS_LIKE
-; A_TIGHT_SQUEEZE.__ANOTHER_PASSAGE_LEADS_SE.[CR]
+; A_TIGHT_SQUEEZE.__ANOTHER_PASSAGE_LEADS_SE.
 ;
 4E77: 04 09     ; W
 4E79: 07 04     ;    StopIfPassElseContinue
 4E7B: 0D        ;        AssertPackIsEmptyExceptForEmerald
-4E7C: 01 4C     ;        MoveToRoom(room_76)
+4E7C: 01 4C     ;        MoveToRoom(room_76) woodsRoom100
 4E7E: 04 53 73  ;    Print(PS_77:"SOMETHING_YOU'RE_CARRYING_WON'T_FIT_THROUGH_THE_TUNNEL_WITH_YOU.
-;                                 YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.[CR]")
+;                                 YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.")
 4E81: 06 03     ; SE
-4E83: 01 41     ;    MoveToRoom(room_65)
+4E83: 01 41     ;    MoveToRoom(room_65) woodsRoom65
 4E85: 00
 
-room_76:
+room_76: ; woodsRoom100
 ; PS_29
 ; YOU_ARE_IN_THE_HIGH_PRIEST'S_TREASURE_ROOM_LIT_BY_AN_EERIE_GREEN
-; LIGHT.__A_NARROW_TUNNEL_EXITS_TO_THE_EAST.[CR]
+; LIGHT.__A_NARROW_TUNNEL_EXITS_TO_THE_EAST.
 ;
 4E86: 02 09     ; E
 4E88: 07 04     ;    StopIfPassElseContinue
 4E8A: 0D        ;        AssertPackIsEmptyExceptForEmerald
-4E8B: 01 49     ;        MoveToRoom(room_73)
+4E8B: 01 49     ;        MoveToRoom(room_73) woodsRoom99
 4E8D: 04 53 73  ;    Print(PS_77:"SOMETHING_YOU'RE_CARRYING_WON'T_FIT_THROUGH_THE_TUNNEL_WITH_YOU.
-;                                 YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.[CR]")
+;                                 YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.")
 4E90: 0C 09     ; OUT
 4E92: 07 04     ;    StopIfPassElseContinue
 4E94: 0D        ;        AssertPackIsEmptyExceptForEmerald
-4E95: 01 49     ;        MoveToRoom(room_73)
+4E95: 01 49     ;        MoveToRoom(room_73) woodsRoom99
 4E97: 04 53 73  ;    Print(PS_77:"SOMETHING_YOU'RE_CARRYING_WON'T_FIT_THROUGH_THE_TUNNEL_WITH_YOU.
-;                                 YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.[CR]")
+;                                 YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.")
 4E9A: 00
 
-room_78:
+room_78: ; woodsRoom67
 ; PS_2A
 ; YOU_ARE_AT_THE_EAST_END_OF_THE_TWOPIT_ROOM.__THE_FLOOR_HERE_IS__
 ; LITTERED_WITH_THIN_ROCK_SLABS,_WHICH_MAKE_IT_EASY_TO_DESCEND_THE
 ; PITS.__THERE_IS_A_PATH_HERE_BYPASSING_THE_PITS_TO_CONNECT_______
 ; PASSAGES_EAST_AND_WEST.__THERE_ARE_HOLES_ALL_OVER,_BUT_THE_ONLY_
 ; BIG_ONE_IS_ON_THE_WALL_DIRECTLY_OVER_THE_WEST_PIT_WHERE_YOU_____
-; CAN'T_GET_TO_IT.[CR]
+; CAN'T_GET_TO_IT.
 ;
 4E9B: 02 03     ; E
-4E9D: 01 41     ;    MoveToRoom(room_65)
+4E9D: 01 41     ;    MoveToRoom(room_65) woodsRoom65
 4E9F: 04 03     ; W
-4EA1: 01 50     ;    MoveToRoom(room_80)
+4EA1: 01 50     ;    MoveToRoom(room_80) woodsRoom23
 4EA3: 0A 03     ; D
-4EA5: 01 4F     ;    MoveToRoom(room_79)
+4EA5: 01 4F     ;    MoveToRoom(room_79) woodsRoom24
 4EA7: 00
 
-room_79:
+room_79: ; woodsRoom24
 ; PS_2B
-; YOU_ARE_AT_THE_BOTTOM_OF_THE_EASTERN_PIT_IN_THE_TWOPIT_ROOM.[CR]
+; YOU_ARE_AT_THE_BOTTOM_OF_THE_EASTERN_PIT_IN_THE_TWOPIT_ROOM.
 ;
 4EA8: 09 03     ; U
-4EAA: 01 4E     ;    MoveToRoom(room_78)
+4EAA: 01 4E     ;    MoveToRoom(room_78) woodsRoom67
 4EAC: 0C 03     ; OUT
-4EAE: 01 4E     ;    MoveToRoom(room_78)
+4EAE: 01 4E     ;    MoveToRoom(room_78) woodsRoom67
 4EB0: 00
 
-room_80:
+room_80: ; woodsRoom23
 ; PS_2C
 ; YOU_ARE_AT_THE_WEST_END_OF_THE_TWOPIT_ROOM.__THERE_IS_A_LARGE___
-; HOLE_IN_THE_WALL_ABOVE_THE_PIT_AT_THIS_END_OF_THE_ROOM.[CR]
+; HOLE_IN_THE_WALL_ABOVE_THE_PIT_AT_THIS_END_OF_THE_ROOM.
 ;
 4EB1: 02 03     ; E
-4EB3: 01 4E     ;    MoveToRoom(room_78)
+4EB3: 01 4E     ;    MoveToRoom(room_78) woodsRoom67
 4EB5: 04 03     ; W
-4EB7: 01 42     ;    MoveToRoom(room_66)
+4EB7: 01 42     ;    MoveToRoom(room_66) woodsRoom68
 4EB9: 0A 03     ; D
-4EBB: 01 51     ;    MoveToRoom(room_81)
+4EBB: 01 51     ;    MoveToRoom(room_81) woodsRoom25
 4EBD: 00
 
-room_81:
+room_81: ; woodsRoom25
 ; PS_2D
 ; YOU_ARE_AT_THE_BOTTOM_OF_THE_WEST_PIT_IN_THE_TWOPIT_ROOM.__THERE
-; IS_A_LARGE_HOLE_IN_THE_WALL_ABOUT_TWENTY_FIVE_FEET_ABOVE_YOU.[CR]
+; IS_A_LARGE_HOLE_IN_THE_WALL_ABOUT_TWENTY_FIVE_FEET_ABOVE_YOU.
 ;
 4EBE: 09 03     ; U
-4EC0: 01 50     ;    MoveToRoom(room_80)
+4EC0: 01 50     ;    MoveToRoom(room_80) woodsRoom23
 4EC2: 0C 03     ; OUT
-4EC4: 01 50     ;    MoveToRoom(room_80)
+4EC4: 01 50     ;    MoveToRoom(room_80) woodsRoom23
 4EC6: 11 16     ; CLIMB
 4EC8: 07 08     ;    StopIfPassElseContinue
 4ECA: 03 09     ;        AssertObjectIsInCurrentRoomOrPack(obj_PLANT_C)
-4ECC: 04 9E 73  ;        Print(PS_78:"YOU_CLAMBER_UP_THE_PLANT_AND_SCURRY_THROUGH_THE_HOLE_AT_THE_TOP.[CR]")
-4ECF: 01 4D     ;        MoveToRoom(room_77)
+4ECC: 04 9E 73  ;        Print(PS_78:"YOU_CLAMBER_UP_THE_PLANT_AND_SCURRY_THROUGH_THE_HOLE_AT_THE_TOP.")
+4ECF: 01 4D     ;        MoveToRoom(room_77) woodsRoom88
 4ED1: 07 06     ;    StopIfPassElseContinue
 4ED3: 03 08     ;        AssertObjectIsInCurrentRoomOrPack(obj_PLANT_B)
-4ED5: 04 CB 73  ;        Print(PS_79:"YOU'VE_CLIMBED_UP_THE_PLANT_AND_OUT_OF_THE_PIT.[CR]")
-4ED8: 01 50     ;    MoveToRoom(room_80)
-4EDA: 04 7D 7D  ;    Print(PS_B8:"THERE_IS_NOTHING_HERE_TO_CLIMB.__USE_UP_OR_OUT_TO_LEAVE_THE_PIT.[CR]")
+4ED5: 04 CB 73  ;        Print(PS_79:"YOU'VE_CLIMBED_UP_THE_PLANT_AND_OUT_OF_THE_PIT.")
+4ED8: 01 50     ;    MoveToRoom(room_80) woodsRoom23
+4EDA: 04 7D 7D  ;    Print(PS_B8:"THERE_IS_NOTHING_HERE_TO_CLIMB.__USE_UP_OR_OUT_TO_LEAVE_THE_PIT.")
 4EDD: 24 2F     ; POUR
 4EDF: 11 1C     ;    AssertObjectMatchesUserInput(obj_WATER)
 4EE1: 15 1C 00  ;    MoveObjectToRoom(obj_WATER, room_0)
@@ -2220,75 +2262,75 @@ room_81:
 4EE6: 03 07     ;        AssertObjectIsInCurrentRoomOrPack(obj_PLANT_A)
 4EE8: 15 07 00  ;        MoveObjectToRoom(obj_PLANT_A, room_0)
 4EEB: 18 08     ;        MoveObjectToCurrentRoom(obj_PLANT_B)
-4EED: 04 02 7D  ;        Print(PS_B5:"THE_PLANT_SPURTS_INTO_FURIOUS_GROWTH_FOR_A_FEW_SECONDS.[CR]")
+4EED: 04 02 7D  ;        Print(PS_B5:"THE_PLANT_SPURTS_INTO_FURIOUS_GROWTH_FOR_A_FEW_SECONDS.")
 4EF0: 04 71 6E  ;        Print(PS_4C:"THERE_IS_A_TWELVE_FOOT_BEAN_STALK_STRETCHING_UP_OUT_OF_THE_PIT,_
-;                                     BELLOWING_"WATER..._WATER..."[CR]")
+;                                     BELLOWING_"WATER..._WATER..."")
 4EF3: 07 0E     ;    StopIfPassElseContinue
 4EF5: 03 08     ;        AssertObjectIsInCurrentRoomOrPack(obj_PLANT_B)
 4EF7: 15 08 00  ;        MoveObjectToRoom(obj_PLANT_B, room_0)
 4EFA: 18 09     ;        MoveObjectToCurrentRoom(obj_PLANT_C)
 4EFC: 04 29 7D  ;        Print(PS_B6:"THE_PLANT_GROWS_EXPLOSIVELY,_ALMOST_FILLING_THE_BOTTOM_OF_THE___
-;                                     PIT.[CR]")
+;                                     PIT.")
 4EFF: 04 B1 6E  ;        Print(PS_4D:"THERE_IS_A_GIGANTIC_BEAN_STALK_STRETCHING_ALL_THE_WAY_UP_TO_THE_
-;                                     HOLE.[CR]")
+;                                     HOLE.")
 4F02: 15 09 00  ;    MoveObjectToRoom(obj_PLANT_C, room_0)
 4F05: 18 07     ;    MoveObjectToCurrentRoom(obj_PLANT_A)
-4F07: 04 59 7D  ;    Print(PS_B7:"YOU'VE_OVER-WATERED_THE_PLANT!__IT'S_SHRIVELING_UP![CR]")
-4F0A: 04 45 6E  ;    Print(PS_4B:"THERE_IS_A_TINY_PLANT_IN_THE_PIT,_MURMURING_"WATER,_WATER,_..."[CR]")
+4F07: 04 59 7D  ;    Print(PS_B7:"YOU'VE_OVER-WATERED_THE_PLANT!__IT'S_SHRIVELING_UP!")
+4F0A: 04 45 6E  ;    Print(PS_4B:"THERE_IS_A_TINY_PLANT_IN_THE_PIT,_MURMURING_"WATER,_WATER,_..."")
 4F0D: 00
 
-room_77:
+room_77: ; woodsRoom88
 ; PS_2E
 ; YOU_ARE_IN_A_LONG,_NARROW_CORRIDOR_STRETCHING_OUT_OF_SIGHT_TO___
 ; THE_WEST.__AT_THE_EASTERN_END_IS_A_HOLE_THROUGH_WHICH_YOU_CAN___
-; SEE_A_PROFUSION_OF_LEAVES.[CR]
+; SEE_A_PROFUSION_OF_LEAVES.
 ;
 4F0E: 02 03     ; E
-4F10: 01 51     ;    MoveToRoom(room_81)
+4F10: 01 51     ;    MoveToRoom(room_81) woodsRoom25
 4F12: 0A 03     ; D
-4F14: 01 51     ;    MoveToRoom(room_81)
+4F14: 01 51     ;    MoveToRoom(room_81) woodsRoom25
 4F16: 11 03     ; CLIMB
-4F18: 01 51     ;    MoveToRoom(room_81)
+4F18: 01 51     ;    MoveToRoom(room_81) woodsRoom25
 4F1A: 10 05     ; JUMP
-4F1C: 04 71 71  ;    Print(PS_6B:"YOU_ARE_AT_THE_BOTTOM_OF_THE_PIT_WITH_A_BROKEN_NECK.[CR]")
+4F1C: 04 71 71  ;    Print(PS_6B:"YOU_ARE_AT_THE_BOTTOM_OF_THE_PIT_WITH_A_BROKEN_NECK.")
 4F1F: 05        ;    PrintScoreAndStop
 4F20: 04 03     ; W
-4F22: 01 47     ;    MoveToRoom(room_71)
+4F22: 01 47     ;    MoveToRoom(room_71) woodsRoom92
 4F24: 00
 
-room_71:
+room_71: ; woodsRoom92
 ; PS_2F
 ; YOU_ARE_IN_THE_CHAMBER_OF_OSIRIS._THE_CEILING_IS_TOO_HIGH_UP_FOR
-; YOUR_LAMP_TO_SHOW_IT.__PASSAGES_LEAD_EAST,_NORTH,_AND_SOUTH.[CR]
+; YOUR_LAMP_TO_SHOW_IT.__PASSAGES_LEAD_EAST,_NORTH,_AND_SOUTH.
 ;
 4F25: 01 03     ; N
-4F27: 01 44     ;    MoveToRoom(room_68)
+4F27: 01 44     ;    MoveToRoom(room_68) woodsRoom94
 4F29: 02 03     ; E
-4F2B: 01 46     ;    MoveToRoom(room_70)
+4F2B: 01 46     ;    MoveToRoom(room_70) woodsRoom93
 4F2D: 03 03     ; S
-4F2F: 01 4D     ;    MoveToRoom(room_77)
+4F2F: 01 4D     ;    MoveToRoom(room_77) woodsRoom88
 4F31: 00
 
-room_70:
+room_70: ; woodsRoom93
 ; PS_30
-; THE_PASSAGE_HERE_IS_BLOCKED_BY_A_FALLEN_BLOCK.[CR]
+; THE_PASSAGE_HERE_IS_BLOCKED_BY_A_FALLEN_BLOCK.
 ;
 4F32: 03 03     ; S
-4F34: 01 47     ;    MoveToRoom(room_71)
+4F34: 01 47     ;    MoveToRoom(room_71) woodsRoom92
 4F36: 0C 03     ; OUT
-4F38: 01 47     ;    MoveToRoom(room_71)
+4F38: 01 47     ;    MoveToRoom(room_71) woodsRoom92
 4F3A: 00
 
-room_68:
+room_68: ; woodsRoom94
 ; PS_31
 ; YOU_ARE_IN_THE_CHAMBER_OF_NEKHEBET,_A_WOMAN_WITH_THE_HEAD_OF_A__
 ; VULTURE,_WEARING_THE_CROWN_OF_EGYPT.__A_PASSAGE_EXITS_TO_THE____
-; SOUTH.[CR]
+; SOUTH.
 ;
 4F3B: 03 03     ; S
-4F3D: 01 47     ;    MoveToRoom(room_71)
+4F3D: 01 47     ;    MoveToRoom(room_71) woodsRoom92
 4F3F: 0C 03     ; OUT
-4F41: 01 47     ;    MoveToRoom(room_71)
+4F41: 01 47     ;    MoveToRoom(room_71) woodsRoom92
 4F43: 00
 
 4F44: FF
@@ -2425,8 +2467,8 @@ ObjectData:
 4FF3: 00 51 ; 000_00000 51  ; 7    obj_PLANT_A          (Room 81)
 4FF5: 00 00 ; 000_00000 00  ; 8    obj_PLANT_B          *
 4FF7: 00 00 ; 000_00000 00  ; 9    obj_PLANT_C          *
-4FF9: 00 00 ; 000_00000 00  ; 10
-4FFB: 00 10 ; 000_00000 10  ; 11   obj_SERPENT (Room 16)
+4FF9: 00 00 ;               ; 10
+4FFB: 00 10 ; 000_00000 10  ; 11   obj_SERPENT          (Room 16)
 4FFD: 00 00 ;               ; 12 
 4FFF: 00 00 ;               ; 13
 5001: 40 02 ; 010_00000 02  ; 14   obj_LAMP_off         (Room 2)
@@ -2444,7 +2486,7 @@ ObjectData:
 5019: 40 02 ; 010_00000 02  ; 26   obj_FOOD             (Room 2)
 501B: 40 02 ; 010_00000 02  ; 27   obj_BOTTLE           (Room 2)
 501D: C0 1B ; 110_00000 1B  ; 28   obj_WATER            (Room 27)
-501F: 00 00 ;               ; 29
+501F: 00 00 ;               ; 29 ? oil (in the bottle) from the easter pit
 5021: 00 38 ; 000_00000 38  ; 30   obj_STREAM_56        (Room 56)
 5023: 60 4C ; 011_00000 4C  ; 31   obj_EMERALD          (Room 76)
 5025: 60 00 ; 011_00000 00  ; 32   obj_VASE_pillow      *
@@ -2563,7 +2605,7 @@ ScriptCommands:
 50AD: C7 54   ;   8     0   PrintScore
 50AF: EF 55   ;   9     0   PrintScoreAndStop
 50B1: 18 53   ;  10     1   AssertRandomIsLessOrEqual
-50B3: 6B 53   ;  11     1   DropObject(obj_num) ?? Command B (NEVER USED ??)
+50B3: 6B 53   ;  11     1   DropObject(obj_num) (NEVER USED)
 50B5: 32 53   ;  12     1   MoveToRoomIfItWasLastRoom(room_num) (NEVER USED)
 50B7: FB 52   ;  13     0   AssertPackIsEmptyExceptForEmerald
 50B9: 81 53   ;  14     0   MoveToLastRoom
@@ -2627,7 +2669,7 @@ AfterEveryStep:
 5120: 1E FF           LD      E,$FF               ; Fresh batteries in ...
 5122: CD 50 43        CALL    $4350               ; {code.GetObjectInfo} ... backpack?
 5125: CA 34 51        JP      Z,$5134             ; {code.CheckAutoBatteries} Yes, automatically replace them
-5128: 21 4A 7A        LD      HL,$7A4A            ; {+code.PS_A7} "YOUR_LAMP_HAS_RUN_OUT_OF_POWER.[CR]"
+5128: 21 4A 7A        LD      HL,$7A4A            ; {+code.PS_A7} "YOUR_LAMP_HAS_RUN_OUT_OF_POWER."
 512B: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print the message
 512E: CD 45 52        CALL    $5245               ; {code.DescribeRoom} Describe the dark room
 5131: C3 77 51        JP      $5177               ; {code.BumpBCDTurnCount} Bump the BCD turn count and out
@@ -2662,7 +2704,7 @@ CheckAutoBatteries:
 516A: 1E FF           LD      E,$FF               ; ... in the backpack
 516C: 3E 0F           LD      A,$0F               ; obj_LAMP_on
 516E: CD 76 43        CALL    $4376               ; {code.SetObjectLocation} Move the obj_LAMP_on to the backpack
-5171: 21 91 7A        LD      HL,$7A91            ; {+code.PS_A9} "REPLACING__THE_BATTERIES.[CR]"
+5171: 21 91 7A        LD      HL,$7A91            ; {+code.PS_A9} "REPLACING__THE_BATTERIES."
 5174: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print message
 ;
 BumpBCDTurnCount:
@@ -2728,7 +2770,7 @@ MoveToRoom:
 51C9: 3A 74 47        LD      A,($4774)           ; {code.keyWaitCounter} Random number (key-input wait counter)
 51CC: FE 67           CP      $67                 ; random(255) < 103? That's 40% of the time.
 51CE: DA DA 51        JP      C,$51DA             ; {} Yes, we were lucky. Make the move.
-51D1: 21 04 79        LD      HL,$7904            ; {+code.PS_A1} "YOU_FELL_INTO_A_PIT_AND_BROKE_EVERY_BONE_IN_YOUR_BODY. [CR]"
+51D1: 21 04 79        LD      HL,$7904            ; {+code.PS_A1} "YOU_FELL_INTO_A_PIT_AND_BROKE_EVERY_BONE_IN_YOUR_BODY. "
 51D4: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print message
 51D7: C3 49 54        JP      $5449               ; {code.PlayerDied} The player died. Resurrect the player.
 ;
@@ -2966,7 +3008,7 @@ In all cases, it is wrapped in a "StopIfPassElseContinue" like this:
 4DEE: 08 07     ; NW
 4DF0: 07 03     ;    StopIfPassElseContinue
 4DF2: 0A F0     ;        AssertRandomIsLessOrEqual(240)
-4DF4: 01 3B     ;    MoveToRoom(room_59)
+4DF4: 01 3B     ;    MoveToRoom(room_59) woodsRoom106
 ```
 
 Most of the time (random values 0 through 240) the command passes and the player stays put.
@@ -2983,7 +3025,7 @@ AssertRandomIsLessOrEqual:
 531F: B8              CP      B                   ; Compare with target value
 5320: CA 26 53        JP      Z,$5326             ; {} The same means pass
 5323: D2 BE 43        JP      NC,$43BE            ; {code.ScriptCommandFAIL} Less than means pass
-5326: 21 95 72        LD      HL,$7295            ; {+code.PS_74} "WOUND_UP_BACK__IN_THE_MAIN_PASSAGE.[CR]"
+5326: 21 95 72        LD      HL,$7295            ; {+code.PS_74} "WOUND_UP_BACK__IN_THE_MAIN_PASSAGE."
 5329: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print message
 532C: CD 45 52        CALL    $5245               ; {code.DescribeRoom} Reprint the current room description
 532F: C3 AB 43        JP      $43AB               ; {code.ScriptCommandPASS} Pass
@@ -3020,7 +3062,7 @@ GetUserInputObject:
 5346: 1E FF           LD      E,$FF               ; Get the ...
 5348: CD 50 43        CALL    $4350               ; {code.GetObjectInfo} ... target object's info
 534B: C2 57 53        JP      NZ,$5357            ; {} It isn't in the backpack. No error here.
-534E: 21 60 75        LD      HL,$7560            ; {+code.PS_87} "YOU_ARE_ALREADY_CARRYING_IT.[CR]"
+534E: 21 60 75        LD      HL,$7560            ; {+code.PS_87} "YOU_ARE_ALREADY_CARRYING_IT."
 5351: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print the error
 5354: C3 AB 43        JP      $43AB               ; {code.ScriptCommandPASS} Success (the object is in backpack as requested!)
 ;
@@ -3079,7 +3121,7 @@ This command always passes but prints a message if there was no last room.
 538C: 32 44 50        LD      ($5044),A           ; {code.lastRoom} ... to last room
 538F: C3 E0 51        JP      $51E0               ; {} Continue with MoveToRoom logic (lighting, mummy, etc)
 ;
-5392: 21 33 75        LD      HL,$7533            ; {+code.PS_86} "SORRY,_BUT_I_NO_LONGER_SEEM_TO_REMEMBER_HOW_IT_WAS_YOU_GOT_HERE.[CR]"
+5392: 21 33 75        LD      HL,$7533            ; {+code.PS_86} "SORRY,_BUT_I_NO_LONGER_SEEM_TO_REMEMBER_HOW_IT_WAS_YOU_GOT_HERE."
 5395: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print string
 5398: C3 AB 43        JP      $43AB               ; {code.ScriptCommandPASS} Command passes
 ```
@@ -3092,11 +3134,11 @@ PrintInventory:
 539E: A7              AND     A                   ; ... the backpack?
 539F: C2 AB 53        JP      NZ,$53AB            ; {} Yes, go list the contents
 ;
-53A2: 21 A6 75        LD      HL,$75A6            ; {+code.PS_89} "YOU'RE_NOT_CARRYING_ANYTHING.[CR]"
+53A2: 21 A6 75        LD      HL,$75A6            ; {+code.PS_89} "YOU'RE_NOT_CARRYING_ANYTHING."
 53A5: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print the message
 53A8: C3 AB 43        JP      $43AB               ; {code.ScriptCommandPASS} Command passes
 ;
-53AB: 21 BC 75        LD      HL,$75BC            ; {+code.PS_8A} "YOU_ARE_CURRENTLY_HOLDING_THE_FOLLOWING:[CR]"
+53AB: 21 BC 75        LD      HL,$75BC            ; {+code.PS_8A} "YOU_ARE_CURRENTLY_HOLDING_THE_FOLLOWING:"
 53AE: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print the banner
 53B1: 06 00           LD      B,$00               ; Object number through loop
 53B3: 1E FF           LD      E,$FF               ; Backpack room number
@@ -3161,7 +3203,7 @@ GetToBackpack:
 53F7: 7E              LD      A,(HL)              ; Is this object ...
 53F8: E6 40           AND     $40                 ; ... able to be picked up?
 53FA: C2 06 54        JP      NZ,$5406            ; {} Yes, skip the error
-53FD: 21 D9 75        LD      HL,$75D9            ; {+code.PS_8B} "DON'T_BE_RIDICULOUS![CR]"
+53FD: 21 D9 75        LD      HL,$75D9            ; {+code.PS_8B} "DON'T_BE_RIDICULOUS!"
 5400: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print the message
 5403: C3 AB 43        JP      $43AB               ; {code.ScriptCommandPASS} Command passes
 ;
@@ -3193,7 +3235,7 @@ DropUserInputObject:
 
 ```code
 PrintOK:
-542B: 21 2F 75        LD      HL,$752F            ; {+code.PS_85} "OK_[CR]"
+542B: 21 2F 75        LD      HL,$752F            ; {+code.PS_85} "OK_"
 542E: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print string
 5431: C3 AB 43        JP      $43AB               ; {code.ScriptCommandPASS} Command passes
 ```
@@ -3273,7 +3315,7 @@ SecondResurrection:
 54B9: C3 63 54        JP      $5463               ; {} Print the message and ressurect
 
 ThirdResurrection:
-54BC: 21 79 7E        LD      HL,$7E79            ; {+code.PS_BB} "HOW_CAN_I_REINCARNATE_YOU____WITHOUT_ORANGE_SMOKE?[CR]"
+54BC: 21 79 7E        LD      HL,$7E79            ; {+code.PS_BB} "HOW_CAN_I_REINCARNATE_YOU____WITHOUT_ORANGE_SMOKE?"
 54BF: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print message
 54C2: C3 EF 55        JP      $55EF               ; {code.PrintScoreAndStop} All lives gone. Print score and stop.
 
@@ -3373,7 +3415,7 @@ PrintScore:
 5571: 27              DAA                         ; 
 5572: 32 B3 55        LD      ($55B3),A           ; {code.scoreTempMSB}
 5575: C3 7D 55        JP      $557D               ; {} Now update the turns
-
+;
 5578: 3E 20           LD      A,$20               ; Space means "+" ...
 557A: 32 BF 55        LD      ($55BF),A           ; {code.scoreSign} ... in the score message
 ;
@@ -3413,7 +3455,7 @@ scoreTempMSB:
 55B3: 00           
 
 ScoreString:
-; YOU_SCORED_______OUT_OF_A_POSSIBLE_0220,_USING______TURNS.[CR]
+; YOU_SCORED_______OUT_OF_A_POSSIBLE_0220,_USING______TURNS.
 55B4: 59 4F 55 20 53 43 4F 52 45 44 20 
 scoreSign:
 55BF: 20 
@@ -3472,7 +3514,7 @@ RCONT: ; Label appears in unitialized memory in Code1.md!
 562E: D1              POP     DE                  ; Restore
 562F: BB              CP      E                   ; Checksum OK?
 5630: CA 3F 56        JP      Z,$563F             ; {} Yes ... out
-5633: 21 AC 7F        LD      HL,$7FAC            ; {+code.PS_BF} "CHECKSUM_ERROR[CR]"
+5633: 21 AC 7F        LD      HL,$7FAC            ; {+code.PS_BF} "CHECKSUM_ERROR"
 5636: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print error message
 5639: CD F8 01        CALL    $01F8               ; {hard.TapeOff} Turn off tape drive
 ;
@@ -3501,7 +3543,7 @@ Save 4F45 through 5047 That's one too many and picks up a byte from the ObjectDe
 The LoadGame code restores the first four bytes of this ObjectDescriptions table for some reason.
 
 ```code
-5654: 21 A0 7F        LD      HL,$7FA0            ; {+code.PS_BE} "READY_CASSETTE[CR]"
+5654: 21 A0 7F        LD      HL,$7FA0            ; {+code.PS_BE} "READY_CASSETTE"
 5657: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print the message
 565A: CD EE 45        CALL    $45EE               ; {code.WaitForKey} Get a key
 565D: FE 08           CP      $08                 ; Backspace means abort?
@@ -3544,11 +3586,11 @@ The LoadGame code restores the first four bytes of this ObjectDescriptions table
 5697: E6 03           AND     $03                 ; 0, 1, 2, or 3
 5699: 47              LD      B,A                 ; To B
 569A: 21 CC 49        LD      HL,$49CC            ; {+code.room_1} start of room scripts
+CNALL: ; This is the label from the actual 8080 source code (see Code1)
 569D: 7E              LD      A,(HL)              ; Get the verb number
-CNALL: ; This is label from the actual 8080 source code (see Code1)
 569E: 23              INC     HL                  ; Next byte
 569F: A7              AND     A                   ; End of script for this room?
-56A0: CA 9D 56        JP      Z,$569D             ; {} Yes ... ignore the terminator and move to next room
+56A0: CA 9D 56        JP      Z,$569D             ; {code.CNALL} Yes ... ignore the terminator and move to next room
 56A3: FE FF           CP      $FF                 ; FF means the end of all room scripts
 56A5: CA C2 56        JP      Z,$56C2             ; {} We are done, print message and out
 56A8: FE 05           CP      $05                 ; Is this verb in the script a compass direction?
@@ -3556,7 +3598,7 @@ CNALL: ; This is label from the actual 8080 source code (see Code1)
 56AD: 80              ADD     A,B                 ; Roll the verb
 56AE: 2B              DEC     HL                  ; Point back to the verb
 56AF: E6 03           AND     $03                 ; Limit to verbs 1-4
-56B1: C2 B6 56        JP      NZ,$56B6            ; {} Are we in 1, 2, or 3? Yes, keep it
+56B1: C2 B6 56        JP      NZ,$56B6            ; {code.CNAL2} Are we in 1, 2, or 3? Yes, keep it
 56B4: 3E 04           LD      A,$04               ; We rolled around. 0 becomes 4.
 CNAL2: ; This is the label from the actual 8080 source code (see Code1)
 56B6: 77              LD      (HL),A              ; New verb number
@@ -3567,9 +3609,9 @@ CNAL2: ; This is the label from the actual 8080 source code (see Code1)
 56BB: 7C              LD      A,H                 ; ... to ...
 56BC: CE 00           ADC     $00                 ; ... script ...
 56BE: 67              LD      H,A                 ; ... pointer
-56BF: C3 9D 56        JP      $569D               ; {} Try all the verbs in all rooms
+56BF: C3 9D 56        JP      $569D               ; {code.CNALL} Try all the verbs in all rooms
 ;
-56C2: 21 B8 7F        LD      HL,$7FB8            ; {+code.PS_C0} "I_NO_LONGER_SEEM_TO_KNOW_WHICH_WAY_IS_NORTH![CR]"
+56C2: 21 B8 7F        LD      HL,$7FB8            ; {+code.PS_C0} "I_NO_LONGER_SEEM_TO_KNOW_WHICH_WAY_IS_NORTH!"
 56C5: CD AE 45        CALL    $45AE               ; {code.PrintPacked} Print message
 56C8: 31 BF 47        LD      SP,$47BF            ; Reset stack
 56CB: C3 19 43        JP      $4319               ; {code.GameLoop} Back to top of game loop
@@ -3702,6 +3744,7 @@ wordTable:
 58CD: CC 4C 4F 4F 4B            1C        ; 11_001_100 LOOK
 58D3: CC 48 45 4C 50            1D        ; 11_001_100 HELP
 58D9: CC 46 49 4E 44            1E        ; 11_001_100 FIND
+;                               20        ; 11_001_010 Y2 would go here. 20 is referenced in the scripts.
 58DF: 4C 44 52 4F 50            21        ; 01_001_100 DROP
 58E5: 4E 52 45 4C 45 41 53      21        ; 01_001_110 RELEAS
 58ED: 4C 46 52 45 45            21        ; 01_001_100 FREE
@@ -3744,59 +3787,59 @@ This script is used when the room doesn't have a script for the input command.
 ```code
 GeneralCommandHandler:
 59B0: 01 04     ; N
-59B2: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]")
+59B2: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.")
 59B5: 02 04     ; E
-59B7: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]")
+59B7: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.")
 59BA: 03 04     ; S
-59BC: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]")
+59BC: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.")
 59BF: 04 04     ; W
-59C1: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]")
+59C1: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.")
 59C4: 05 04     ; NE
-59C6: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]")
+59C6: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.")
 59C9: 06 04     ; SE
-59CB: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]")
+59CB: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.")
 59CE: 07 04     ; SW
-59D0: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]")
+59D0: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.")
 59D3: 08 04     ; NW
-59D5: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]")
+59D5: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.")
 59D8: 09 04     ; U
-59DA: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]")
+59DA: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.")
 59DD: 0A 04     ; D
-59DF: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]")
+59DF: 04 ED 73  ;    Print(PS_7A:"THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.")
 59E2: 0B 04     ; IN
-59E4: 04 0D 74  ;    Print(PS_7B:"I_DON'T_KNOW_IN_FROM_OUT_HERE.__USE_COMPASS_POINTS.[CR]")
+59E4: 04 0D 74  ;    Print(PS_7B:"I_DON'T_KNOW_IN_FROM_OUT_HERE.__USE_COMPASS_POINTS.")
 59E7: 0C 04     ; OUT
-59E9: 04 0D 74  ;    Print(PS_7B:"I_DON'T_KNOW_IN_FROM_OUT_HERE.__USE_COMPASS_POINTS.[CR]")
+59E9: 04 0D 74  ;    Print(PS_7B:"I_DON'T_KNOW_IN_FROM_OUT_HERE.__USE_COMPASS_POINTS.")
 59EC: 0E 04     ; LEFT
-59EE: 04 31 74  ;    Print(PS_7C:"I_AM_UNSURE_HOW_YOU_ARE_FACING.__USE_COMPASS_POINTS.[CR]")
+59EE: 04 31 74  ;    Print(PS_7C:"I_AM_UNSURE_HOW_YOU_ARE_FACING.__USE_COMPASS_POINTS.")
 59F1: 0F 04     ; RIGHT
-59F3: 04 31 74  ;    Print(PS_7C:"I_AM_UNSURE_HOW_YOU_ARE_FACING.__USE_COMPASS_POINTS.[CR]")
+59F3: 04 31 74  ;    Print(PS_7C:"I_AM_UNSURE_HOW_YOU_ARE_FACING.__USE_COMPASS_POINTS.")
 59F6: 12 04     ; PANEL
-59F8: 04 56 74  ;    Print(PS_7D:"NOTHING_HAPPENS.[CR]")
+59F8: 04 56 74  ;    Print(PS_7D:"NOTHING_HAPPENS.")
 59FB: 14 02     ; BACK
 59FD: 0E        ;    MoveToLastRoom
 59FE: 16 04     ; SWIM
-5A00: 04 63 74  ;    Print(PS_7E:"I_DON'T_KNOW_HOW.[CR]")
+5A00: 04 63 74  ;    Print(PS_7E:"I_DON'T_KNOW_HOW.")
 5A03: 17 18     ; ON
 5A05: 07 0C     ;    StopIfPassElseContinue
 5A07: 02 0E     ;        AssertObjectIsInPack(obj_LAMP_off)
 5A09: 15 0E 00  ;        MoveObjectToRoom(obj_LAMP_off, room_0)
 5A0C: 15 0F FF  ;        MoveObjectToRoom(obj_LAMP_on, room_255)
-5A0F: 04 8F 74  ;        Print(PS_80:"YOUR_LAMP_IS_NOW_ON.[CR]")
+5A0F: 04 8F 74  ;        Print(PS_80:"YOUR_LAMP_IS_NOW_ON.")
 5A12: 07 06     ;    StopIfPassElseContinue
 5A14: 02 0F     ;        AssertObjectIsInPack(obj_LAMP_on)
-5A16: 04 8F 74  ;        Print(PS_80:"YOUR_LAMP_IS_NOW_ON.[CR]")
-5A19: 04 9F 74  ;    Print(PS_81:"YOU_HAVE_NO_SOURCE_OF_LIGHT.[CR]")
+5A16: 04 8F 74  ;        Print(PS_80:"YOUR_LAMP_IS_NOW_ON.")
+5A19: 04 9F 74  ;    Print(PS_81:"YOU_HAVE_NO_SOURCE_OF_LIGHT.")
 5A1C: 18 18     ; OFF
 5A1E: 07 0C     ;    StopIfPassElseContinue
 5A20: 02 0F     ;        AssertObjectIsInPack(obj_LAMP_on)
 5A22: 15 0F 00  ;        MoveObjectToRoom(obj_LAMP_on, room_0)
 5A25: 15 0E FF  ;        MoveObjectToRoom(obj_LAMP_off, room_255)
-5A28: 04 B4 74  ;        Print(PS_82:"YOUR_LAMP_IS_NOW_OFF.[CR]")
+5A28: 04 B4 74  ;        Print(PS_82:"YOUR_LAMP_IS_NOW_OFF.")
 5A2B: 07 06     ;    StopIfPassElseContinue
 5A2D: 02 0E     ;        AssertObjectIsInPack(obj_LAMP_off)
-5A2F: 04 B4 74  ;        Print(PS_82:"YOUR_LAMP_IS_NOW_OFF.[CR]")
-5A32: 04 9F 74  ;    Print(PS_81:"YOU_HAVE_NO_SOURCE_OF_LIGHT.[CR]")
+5A2F: 04 B4 74  ;        Print(PS_82:"YOUR_LAMP_IS_NOW_OFF.")
+5A32: 04 9F 74  ;    Print(PS_81:"YOU_HAVE_NO_SOURCE_OF_LIGHT.")
 5A35: 19 02     ; QUIT
 5A37: 09        ;    PrintScoreAndStop
 5A38: 1A 02     ; SCORE
@@ -3806,26 +3849,26 @@ GeneralCommandHandler:
 5A3E: 1C 02     ; LOOK
 5A40: 10        ;    PrintRoomDescription
 5A41: 1D 04     ; HELP
-5A43: 04 C4 74  ;    Print(PS_83:"I'M_AS_CONFUSED_AS_YOU_ARE.[CR]")
+5A43: 04 C4 74  ;    Print(PS_83:"I'M_AS_CONFUSED_AS_YOU_ARE.")
 5A46: 1E 04     ; FIND
 5A48: 04 D8 74  ;    Print(PS_84:"I_CAN_ONLY_TELL_YOU_WHAT_YOU_SEE_AS_YOU_MOVE_ABOUT_AND__________
-;                                 MANIPULATE_THINGS.__I_CAN_NOT_TELL_YOU_WHERE_REMOTE_THINGS_ARE.[CR]")
+;                                 MANIPULATE_THINGS.__I_CAN_NOT_TELL_YOU_WHERE_REMOTE_THINGS_ARE.")
 5A4B: 28 47     ; TAKE
 5A4D: 07 06     ;    StopIfPassElseContinue
 5A4F: 11 07     ;        AssertObjectMatchesUserInput(obj_PLANT_A)
 5A51: 04 61 7A  ;        Print(PS_A8:"THE_PLANT_HAS_EXCEPTIONALLY_DEEP_ROOTS_AND_CANNOT_BE_PULLED_____
-;                                     FREE.[CR]")
+;                                     FREE.")
 5A54: 07 17     ;    StopIfPassElseContinue
 5A56: 11 13     ;        AssertObjectMatchesUserInput(obj_BIRD)
 5A58: 07 06     ;        StopIfPassElseContinue
 5A5A: 02 11     ;            AssertObjectIsInPack(obj_SCEPTER)
 5A5C: 04 C7 7A  ;            Print(PS_AA:"AS_YOU_APPROACH_THE_STATUE,_IT_COMES_TO_LIFE_AND_FLIES_ACROSS___
-;                                         THE_CHAMBER_WHERE_IT_LANDS_AND_RETURNS_TO_STONE.[CR]")
+;                                         THE_CHAMBER_WHERE_IT_LANDS_AND_RETURNS_TO_STONE.")
 5A5F: 07 09     ;        StopIfPassElseContinue
 5A61: 02 10     ;            AssertObjectIsInPack(obj_BOX)
 5A63: 15 13 00  ;            MoveObjectToRoom(obj_BIRD, room_0)
 5A66: 19 14 10  ;            MoveObjectIntoContainer(obj_BIRD_boxed, obj_BOX)
-5A69: 04 14 7B  ;        Print(PS_AB:"YOU_CAN_LIFT_THE_STATUE,_BUT_YOU_CANNOT_CARRY_IT.[CR]")
+5A69: 04 14 7B  ;        Print(PS_AB:"YOU_CAN_LIFT_THE_STATUE,_BUT_YOU_CANNOT_CARRY_IT.")
 5A6C: 07 0A     ;    StopIfPassElseContinue
 5A6E: 11 20     ;        AssertObjectMatchesUserInput(obj_VASE_pillow)
 5A70: 12 21     ;        GetObjectFromRoom(obj_VASE_solo)
@@ -3835,7 +3878,7 @@ GeneralCommandHandler:
 5A79: 11 1E     ;        AssertObjectMatchesUserInput(obj_STREAM_56)
 5A7B: 07 06     ;        StopIfPassElseContinue
 5A7D: 02 1C     ;            AssertObjectIsInPack(obj_WATER)
-5A7F: 04 37 7B  ;            Print(PS_AC:"YOUR_BOTTLE_IS_ALREADY_FULL.[CR]")
+5A7F: 04 37 7B  ;            Print(PS_AC:"YOUR_BOTTLE_IS_ALREADY_FULL.")
 5A82: 19 1C 1B  ;        MoveObjectIntoContainer(obj_WATER, obj_BOTTLE)
 5A85: 07 0C     ;    StopIfPassElseContinue
 5A87: 11 12     ;        AssertObjectMatchesUserInput(obj_PILLOW)
@@ -3851,139 +3894,139 @@ GeneralCommandHandler:
 5A9C: 07 08     ;        StopIfPassElseContinue
 5A9E: 1A 12     ;            AssertObjectIsInCurrentRoom(obj_PILLOW)
 5AA0: 18 20     ;            MoveObjectToCurrentRoom(obj_VASE_pillow)
-5AA2: 04 15 7C  ;            Print(PS_B0:"THE_VASE_IS_NOW_RESTING,_DELICATELY,_ON_A_VELVET_PILLOW.[CR]")
+5AA2: 04 15 7C  ;            Print(PS_B0:"THE_VASE_IS_NOW_RESTING,_DELICATELY,_ON_A_VELVET_PILLOW.")
 5AA5: 18 15     ;        MoveObjectToCurrentRoom(obj_POTTERY)
-5AA7: 04 3D 7C  ;        Print(PS_B1:"THE_VASE_DROPS_WITH_A_DELICATE_CRASH.[CR]")
+5AA7: 04 3D 7C  ;        Print(PS_B1:"THE_VASE_DROPS_WITH_A_DELICATE_CRASH.")
 5AAA: 17        ;    DropUserInputObject
 5AAB: 26 0E     ; THROW
 5AAD: 07 0B     ;    StopIfPassElseContinue
 5AAF: 11 21     ;        AssertObjectMatchesUserInput(obj_VASE_solo)
 5AB1: 15 21 00  ;        MoveObjectToRoom(obj_VASE_solo, room_0)
 5AB4: 18 15     ;        MoveObjectToCurrentRoom(obj_POTTERY)
-5AB6: 04 75 7C  ;        Print(PS_B3:"YOU_HAVE_TAKEN_THE_VASE_AND_HURLED_IT_DELICATELY_TO_THE_GROUND.[CR]")
+5AB6: 04 75 7C  ;        Print(PS_B3:"YOU_HAVE_TAKEN_THE_VASE_AND_HURLED_IT_DELICATELY_TO_THE_GROUND.")
 5AB9: 17        ;    DropUserInputObject
 5ABA: 29 36     ; OPEN
 5ABC: 07 1C     ;    StopIfPassElseContinue
 5ABE: 11 17     ;        AssertObjectMatchesUserInput(obj_SARCOPH_full)
 5AC0: 07 06     ;        StopIfPassElseContinue
 5AC2: 02 17     ;            AssertObjectIsInPack(obj_SARCOPH_full)
-5AC4: 04 01 77  ;            Print(PS_94:"I'D_ADVISE_YOU_TO_PUT_DOWN_THE_SARCOPHAGUS_BEFORE_OPENING_IT!![CR]")
+5AC4: 04 01 77  ;            Print(PS_94:"I'D_ADVISE_YOU_TO_PUT_DOWN_THE_SARCOPHAGUS_BEFORE_OPENING_IT!!")
 5AC7: 07 0E     ;        StopIfPassElseContinue
 5AC9: 02 22     ;            AssertObjectIsInPack(obj_KEY)
 5ACB: 04 BE 76  ;            Print(PS_93:"A_GLISTENING_PEARL_FALLS_OUT_OF_THE_SARCOPHAGUS_AND_ROLLS_AWAY._
-;                                         THE_SARCOPHAGUS_SNAPS_SHUT_AGAIN.[CR]")
+;                                         THE_SARCOPHAGUS_SNAPS_SHUT_AGAIN.")
 5ACE: 15 16 40  ;            MoveObjectToRoom(obj_PEARL, room_64)
 5AD1: 15 17 00  ;            MoveObjectToRoom(obj_SARCOPH_full, room_0)
 5AD4: 18 18     ;            MoveObjectToCurrentRoom(obj_SARCOPH_empty)
-5AD6: 04 6B 77  ;        Print(PS_96:"YOU_DON'T_HAVE_ANYTHING_STRONG_ENOUGH_TO_OPEN_THE_SARCOPHAGUS.[CR]")
+5AD6: 04 6B 77  ;        Print(PS_96:"YOU_DON'T_HAVE_ANYTHING_STRONG_ENOUGH_TO_OPEN_THE_SARCOPHAGUS.")
 5AD9: 07 14     ;    StopIfPassElseContinue
 5ADB: 11 18     ;        AssertObjectMatchesUserInput(obj_SARCOPH_empty)
 5ADD: 07 06     ;        StopIfPassElseContinue
 5ADF: 02 18     ;            AssertObjectIsInPack(obj_SARCOPH_empty)
-5AE1: 04 01 77  ;            Print(PS_94:"I'D_ADVISE_YOU_TO_PUT_DOWN_THE_SARCOPHAGUS_BEFORE_OPENING_IT!![CR]")
+5AE1: 04 01 77  ;            Print(PS_94:"I'D_ADVISE_YOU_TO_PUT_DOWN_THE_SARCOPHAGUS_BEFORE_OPENING_IT!!")
 5AE4: 07 06     ;        StopIfPassElseContinue
 5AE6: 02 22     ;            AssertObjectIsInPack(obj_KEY)
 5AE8: 04 2D 77  ;            Print(PS_95:"THE_SARCOPHAGUS_CREAKS_OPEN,_REVEALING_NOTHING_INSIDE.__IT______
-;                                         PROMPTLY_SNAPS_SHUT_AGAIN.[CR]")
-5AEB: 04 6B 77  ;        Print(PS_96:"YOU_DON'T_HAVE_ANYTHING_STRONG_ENOUGH_TO_OPEN_THE_SARCOPHAGUS.[CR]")
-5AEE: 04 97 77  ;    Print(PS_97:"I_DON'T_KNOW_HOW_TO_LOCK_OR_UNLOCK_SUCH_A_THING.[CR]")
+;                                         PROMPTLY_SNAPS_SHUT_AGAIN.")
+5AEB: 04 6B 77  ;        Print(PS_96:"YOU_DON'T_HAVE_ANYTHING_STRONG_ENOUGH_TO_OPEN_THE_SARCOPHAGUS.")
+5AEE: 04 97 77  ;    Print(PS_97:"I_DON'T_KNOW_HOW_TO_LOCK_OR_UNLOCK_SUCH_A_THING.")
 5AF1: 23 04     ; WAVE
-5AF3: 04 56 74  ;    Print(PS_7D:"NOTHING_HAPPENS.[CR]")
+5AF3: 04 56 74  ;    Print(PS_7D:"NOTHING_HAPPENS.")
 5AF6: 24 0E     ; POUR
 5AF8: 07 09     ;    StopIfPassElseContinue
 5AFA: 11 1C     ;        AssertObjectMatchesUserInput(obj_WATER)
 5AFC: 15 1C 00  ;        MoveObjectToRoom(obj_WATER, room_0)
-5AFF: 04 E9 75  ;        Print(PS_8C:"YOUR_BOTTLE_IS_EMPTY_AND_THE_GROUND_IS_WET.[CR]")
-5B02: 04 08 76  ;    Print(PS_8D:"YOU_CAN'T_POUR_THAT.[CR]")
+5AFF: 04 E9 75  ;        Print(PS_8C:"YOUR_BOTTLE_IS_EMPTY_AND_THE_GROUND_IS_WET.")
+5B02: 04 08 76  ;    Print(PS_8D:"YOU_CAN'T_POUR_THAT.")
 5B05: 25 12     ; RUB
 5B07: 07 06     ;    StopIfPassElseContinue
 5B09: 11 0E     ;        AssertObjectMatchesUserInput(obj_LAMP_off)
 5B0B: 04 18 76  ;        Print(PS_8E:"RUBBING_THE_ELECTRIC_LAMP_IS_NOT_PARTICULARLY_REWARDING.________
-;                                     ANYWAY,_NOTHING_EXCITING_HAPPENS.[CR]")
+;                                     ANYWAY,_NOTHING_EXCITING_HAPPENS.")
 5B0E: 07 06     ;    StopIfPassElseContinue
 5B10: 11 0F     ;        AssertObjectMatchesUserInput(obj_LAMP_on)
 5B12: 04 18 76  ;        Print(PS_8E:"RUBBING_THE_ELECTRIC_LAMP_IS_NOT_PARTICULARLY_REWARDING.________
-;                                     ANYWAY,_NOTHING_EXCITING_HAPPENS.[CR]")
-5B15: 04 5B 76  ;    Print(PS_8F:"PECULIAR.__NOTHING_UNEXPECTED_HAPPENS.[CR]")
+;                                     ANYWAY,_NOTHING_EXCITING_HAPPENS.")
+5B15: 04 5B 76  ;    Print(PS_8F:"PECULIAR.__NOTHING_UNEXPECTED_HAPPENS.")
 5B18: 27 12     ; FILL
 5B1A: 07 06     ;    StopIfPassElseContinue
 5B1C: 11 1B     ;        AssertObjectMatchesUserInput(obj_BOTTLE)
-5B1E: 04 77 76  ;        Print(PS_90:"THERE_IS_NOTHING_HERE_WITH_WHICH_TO_FILL_THE_BOTTLE.[CR]")
+5B1E: 04 77 76  ;        Print(PS_90:"THERE_IS_NOTHING_HERE_WITH_WHICH_TO_FILL_THE_BOTTLE.")
 5B21: 07 06     ;    StopIfPassElseContinue
 5B23: 11 21     ;        AssertObjectMatchesUserInput(obj_VASE_solo)
-5B25: 04 D9 75  ;        Print(PS_8B:"DON'T_BE_RIDICULOUS![CR]")
-5B28: 04 AE 76  ;    Print(PS_92:"YOU_CAN'T_FILL_THAT.[CR]")
+5B25: 04 D9 75  ;        Print(PS_8B:"DON'T_BE_RIDICULOUS!")
+5B28: 04 AE 76  ;    Print(PS_92:"YOU_CAN'T_FILL_THAT.")
 5B2B: 2C 2D     ; ATTACK
 5B2D: 07 09     ;    StopIfPassElseContinue
 5B2F: 11 13     ;        AssertObjectMatchesUserInput(obj_BIRD)
 5B31: 15 13 00  ;        MoveObjectToRoom(obj_BIRD, room_0)
-5B34: 04 B9 77  ;        Print(PS_98:"THE_BIRD_STATUE_IS_NOW_DEAD.__ITS_BODY_DISAPPEARS.[CR]")
+5B34: 04 B9 77  ;        Print(PS_98:"THE_BIRD_STATUE_IS_NOW_DEAD.__ITS_BODY_DISAPPEARS.")
 5B37: 07 09     ;    StopIfPassElseContinue
 5B39: 11 14     ;        AssertObjectMatchesUserInput(obj_BIRD_boxed)
 5B3B: 15 14 00  ;        MoveObjectToRoom(obj_BIRD_boxed, room_0)
-5B3E: 04 B9 77  ;        Print(PS_98:"THE_BIRD_STATUE_IS_NOW_DEAD.__ITS_BODY_DISAPPEARS.[CR]")
+5B3E: 04 B9 77  ;        Print(PS_98:"THE_BIRD_STATUE_IS_NOW_DEAD.__ITS_BODY_DISAPPEARS.")
 5B41: 07 06     ;    StopIfPassElseContinue
 5B43: 11 17     ;        AssertObjectMatchesUserInput(obj_SARCOPH_full)
-5B45: 04 DD 77  ;        Print(PS_99:"THE_STONE_IS_VERY_STRONG_AND_IS_IMPERVIOUS_TO_ATTACK.[CR]")
+5B45: 04 DD 77  ;        Print(PS_99:"THE_STONE_IS_VERY_STRONG_AND_IS_IMPERVIOUS_TO_ATTACK.")
 5B48: 07 06     ;    StopIfPassElseContinue
 5B4A: 11 18     ;        AssertObjectMatchesUserInput(obj_SARCOPH_empty)
-5B4C: 04 DD 77  ;        Print(PS_99:"THE_STONE_IS_VERY_STRONG_AND_IS_IMPERVIOUS_TO_ATTACK.[CR]")
+5B4C: 04 DD 77  ;        Print(PS_99:"THE_STONE_IS_VERY_STRONG_AND_IS_IMPERVIOUS_TO_ATTACK.")
 5B4F: 07 06     ;    StopIfPassElseContinue
 5B51: 11 0B     ;        AssertObjectMatchesUserInput(obj_SERPENT)
-5B53: 04 03 78  ;        Print(PS_9A:"ATTACKING_THE_SERPENT_BOTH_DOESN'T_WORK_AND_IS_VERY_DANGEROUS.[CR]")
-5B56: 04 2F 78  ;    Print(PS_9B:"YOU_CAN'T_BE_SERIOUS![CR]")
+5B53: 04 03 78  ;        Print(PS_9A:"ATTACKING_THE_SERPENT_BOTH_DOESN'T_WORK_AND_IS_VERY_DANGEROUS.")
+5B56: 04 2F 78  ;    Print(PS_9B:"YOU_CAN'T_BE_SERIOUS!")
 5B59: 30 04     ; BREAK
-5B5B: 04 3F 78  ;    Print(PS_9C:"IT_IS_BEYOND_YOUR_POWER_TO_DO_THAT.[CR]")
+5B5B: 04 3F 78  ;    Print(PS_9C:"IT_IS_BEYOND_YOUR_POWER_TO_DO_THAT.")
 5B5E: 2E 23     ; EAT
 5B60: 07 09     ;    StopIfPassElseContinue
 5B62: 11 1A     ;        AssertObjectMatchesUserInput(obj_FOOD)
 5B64: 15 1A 00  ;        MoveObjectToRoom(obj_FOOD, room_0)
-5B67: 04 59 78  ;        Print(PS_9D:"THANK_YOU,_IT_WAS_DELICIOUS![CR]")
+5B67: 04 59 78  ;        Print(PS_9D:"THANK_YOU,_IT_WAS_DELICIOUS!")
 5B6A: 07 06     ;    StopIfPassElseContinue
 5B6C: 11 0A     ;        AssertObjectMatchesUserInput(obj_UNUSED_10)
-5B6E: 04 6E 78  ;        Print(PS_9E:"I_THINK_I_JUST_LOST_MY_APPETITE.[CR]")
+5B6E: 04 6E 78  ;        Print(PS_9E:"I_THINK_I_JUST_LOST_MY_APPETITE.")
 5B71: 07 06     ;    StopIfPassElseContinue
 5B73: 11 13     ;        AssertObjectMatchesUserInput(obj_BIRD)
-5B75: 04 6E 78  ;        Print(PS_9E:"I_THINK_I_JUST_LOST_MY_APPETITE.[CR]")
+5B75: 04 6E 78  ;        Print(PS_9E:"I_THINK_I_JUST_LOST_MY_APPETITE.")
 5B78: 07 06     ;    StopIfPassElseContinue
 5B7A: 11 14     ;        AssertObjectMatchesUserInput(obj_BIRD_boxed)
-5B7C: 04 6E 78  ;        Print(PS_9E:"I_THINK_I_JUST_LOST_MY_APPETITE.[CR]")
-5B7F: 04 D9 75  ;    Print(PS_8B:"DON'T_BE_RIDICULOUS![CR]")
+5B7C: 04 6E 78  ;        Print(PS_9E:"I_THINK_I_JUST_LOST_MY_APPETITE.")
+5B7F: 04 D9 75  ;    Print(PS_8B:"DON'T_BE_RIDICULOUS!")
 5B82: 2F 15     ; DRINK
 5B84: 07 09     ;    StopIfPassElseContinue
 5B86: 11 1C     ;        AssertObjectMatchesUserInput(obj_WATER)
 5B88: 15 1C 00  ;        MoveObjectToRoom(obj_WATER, room_0)
-5B8B: 04 9C 76  ;        Print(PS_91:"THE_BOTTLE_IS_NOW_EMPTY.[CR]")
+5B8B: 04 9C 76  ;        Print(PS_91:"THE_BOTTLE_IS_NOW_EMPTY.")
 5B8E: 07 06     ;    StopIfPassElseContinue
 5B90: 11 1E     ;        AssertObjectMatchesUserInput(obj_STREAM_56)
 5B92: 04 86 78  ;        Print(PS_9F:"YOU_HAVE_TAKEN_A_DRINK_FROM_THE_STREAM.__THE_WATER_TASTES_______
 ;                                     STRONGLY_OF_MINERALS,_BUT_IS_NOT_UNPLEASANT.__IT_IS_EXTREMELY___
-;                                     COLD.[CR]")
-5B95: 04 2F 78  ;    Print(PS_9B:"YOU_CAN'T_BE_SERIOUS![CR]")
+;                                     COLD.")
+5B95: 04 2F 78  ;    Print(PS_9B:"YOU_CAN'T_BE_SERIOUS!")
 5B98: 2D 38     ; FEED
 5B9A: 07 06     ;    StopIfPassElseContinue
 5B9C: 11 13     ;        AssertObjectMatchesUserInput(obj_BIRD)
-5B9E: 04 E1 78  ;        Print(PS_A0:"IT'S_NOT_HUNGRY.__BESIDES,_YOU_HAVE_NO_BIRD_SEED.[CR]")
+5B9E: 04 E1 78  ;        Print(PS_A0:"IT'S_NOT_HUNGRY.__BESIDES,_YOU_HAVE_NO_BIRD_SEED.")
 5BA1: 07 06     ;    StopIfPassElseContinue
 5BA3: 11 14     ;        AssertObjectMatchesUserInput(obj_BIRD_boxed)
-5BA5: 04 E1 78  ;        Print(PS_A0:"IT'S_NOT_HUNGRY.__BESIDES,_YOU_HAVE_NO_BIRD_SEED.[CR]")
+5BA5: 04 E1 78  ;        Print(PS_A0:"IT'S_NOT_HUNGRY.__BESIDES,_YOU_HAVE_NO_BIRD_SEED.")
 5BA8: 07 10     ;    StopIfPassElseContinue
 5BAA: 11 0B     ;        AssertObjectMatchesUserInput(obj_SERPENT)
 5BAC: 07 09     ;        StopIfPassElseContinue
 5BAE: 02 14     ;            AssertObjectIsInPack(obj_BIRD_boxed)
 5BB0: 15 14 00  ;            MoveObjectToRoom(obj_BIRD_boxed, room_0)
-5BB3: 04 2B 79  ;            Print(PS_A2:"THE_SERPENT_HAS_NOW_DEVOURED_YOUR_BIRD_STATUE.[CR]")
-5BB6: 04 4C 79  ;        Print(PS_A3:"THERE_IS_NOTHING_HERE_IT_WANTS_TO_EAT_-_EXCEPT_PERHAPS_YOU.[CR]")
+5BB3: 04 2B 79  ;            Print(PS_A2:"THE_SERPENT_HAS_NOW_DEVOURED_YOUR_BIRD_STATUE.")
+5BB6: 04 4C 79  ;        Print(PS_A3:"THERE_IS_NOTHING_HERE_IT_WANTS_TO_EAT_-_EXCEPT_PERHAPS_YOU.")
 5BB9: 07 06     ;    StopIfPassElseContinue
 5BBB: 11 17     ;        AssertObjectMatchesUserInput(obj_SARCOPH_full)
-5BBD: 04 A7 79  ;        Print(PS_A5:"I'M_GAME.__WOULD_YOU_CARE_TO_EXPLAIN_HOW?[CR]")
+5BBD: 04 A7 79  ;        Print(PS_A5:"I'M_GAME.__WOULD_YOU_CARE_TO_EXPLAIN_HOW?")
 5BC0: 07 06     ;    StopIfPassElseContinue
 5BC2: 11 18     ;        AssertObjectMatchesUserInput(obj_SARCOPH_empty)
-5BC4: 04 A7 79  ;        Print(PS_A5:"I'M_GAME.__WOULD_YOU_CARE_TO_EXPLAIN_HOW?[CR]")
+5BC4: 04 A7 79  ;        Print(PS_A5:"I'M_GAME.__WOULD_YOU_CARE_TO_EXPLAIN_HOW?")
 5BC7: 07 06     ;    StopIfPassElseContinue
 5BC9: 11 0D     ;        AssertObjectMatchesUserInput(obj_UNUSED_13)
-5BCB: 04 4C 79  ;        Print(PS_A3:"THERE_IS_NOTHING_HERE_IT_WANTS_TO_EAT_-_EXCEPT_PERHAPS_YOU.[CR]")
-5BCE: 04 D9 75  ;    Print(PS_8B:"DON'T_BE_RIDICULOUS![CR]")
+5BCB: 04 4C 79  ;        Print(PS_A3:"THERE_IS_NOTHING_HERE_IT_WANTS_TO_EAT_-_EXCEPT_PERHAPS_YOU.")
+5BCE: 04 D9 75  ;    Print(PS_8B:"DON'T_BE_RIDICULOUS!")
 5BD1: 39 02     ; PLUGH
 5BD3: 1D        ;    RandomizeDirections
 5BD4: 3A 02     ; LOAD
@@ -3993,21 +4036,22 @@ GeneralCommandHandler:
 5BDA: 00
 ```
 
-# Packed strings
+# Room descriptions (packed)
 
 ```code
-RoomDescriptions:
 
+; adventure.dat ??
 ; YOU_ARE_STANDING_BEFORE_THE_ENTRANCE_OF_A_PYRAMID.__AROUND_YOU__
-; IS_A_DESERT.[CR]
+; IS_A_DESERT.
 PS_00: ; room_1
 5BDB: 19 C7 DE 94 14 55 5E 50 BD 90 5A C4 6A 59 60 5B
 5BEB: B1 5F BE 30 15 EB BF 17 98 B8 16 7B 14 14 A8 6B
 5BFB: 48 9B 5D 94 14 30 A1 1B 58 1B A1 D5 15 7B 14 F5
 5C0B: 59 3E 62 2E 00
 
+; adventure.dat ??
 ; YOU_ARE_IN_THE_ENTRANCE_TO_THE_PYRAMID.__A_HOLE_IN_THE_FLOOR____
-; LEADS_TO_A_PASSAGE_BENEATH_THE_SURFACE.[CR]
+; LEADS_TO_A_PASSAGE_BENEATH_THE_SURFACE.
 PS_01: ; room_2
 5C10: 22 C7 DE 94 14 4B 5E 96 96 DB 72 9E 61 D0 B0 9B
 5C20: 53 6B BF 5F BE F3 16 CF B0 17 79 43 13 A9 15 DB
@@ -4015,14 +4059,19 @@ PS_01: ; room_2
 5C40: 17 7B 14 55 A4 09 B7 44 5E 8F 61 82 49 82 17 55
 5C50: 5E 30 C6 D7 46 2E 00
 
-; YOU_ARE_IN_THE_DESERT.[CR]
+; adventure.dat ??
+; YOU_ARE_IN_THE_DESERT.
 PS_02: ; room_3, room_4, room_5, room_6
 5C57: 07 C7 DE 94 14 4B 5E 96 96 DB 72 F5 59 3E 62 2E
 5C67: 00
 
+; 9	 YOU ARE IN A SMALL CHAMBER BENEATH A 3X3 STEEL GRATE TO THE
+; 9	 SURFACE. A LOW CRAWL OVER COBBLES LEADS INWARD TO THE WEST.
+; woods9
+;
 ; YOU_ARE_IN_A_SMALL_CHAMBER_BENEATH_A_HOLE_FROM_THE_SURFACE.__A__
 ; LOW_CRAWL_LEADS_INWARD_TO_THE_WEST.__HIEROGLYPHICS_ON_THE_WALL__
-; TRANSLATE,_"CURSE_ALL_WHO_ENTER_THIS_SACRED_CRYPT."[CR]
+; TRANSLATE,_"CURSE_ALL_WHO_ENTER_THIS_SACRED_CRYPT."
 PS_03: ; room_7
 5C68: 3B C7 DE 94 14 4B 5E 83 96 5F 17 46 48 DA 14 64
 5C78: 48 23 62 70 4D 96 5F 03 71 A9 15 DB 8B 79 68 56
@@ -4033,8 +4082,12 @@ PS_03: ; room_7
 5CC8: C6 43 5E F3 8C 29 D1 30 15 F4 BD 82 17 4B 7B 05
 5CD8: B7 66 B1 E4 14 EE DE 2E 22 00
 
+; 10	 YOU ARE CRAWLING OVER COBBLES IN A LOW PASSAGE. THERE IS A
+; 10	 DIM LIGHT AT THE EAST END OF THE PASSAGE.
+; woods10
+;
 ; YOU_ARE_CRAWLING_OVER_PEBBLES_IN_A_LOW_PASSAGE.__THERE_IS_A_DIM_
-; LIGHT_AT_THE_EAST_END_OF_THE_PASSAGE.[CR]
+; LIGHT_AT_THE_EAST_END_OF_THE_PASSAGE.
 PS_04: ; room_8
 5CE2: 21 C7 DE 94 14 45 5E D9 B0 90 8C D1 6A 74 CA DF
 5CF2: 16 F6 4C 4B 62 83 7A 4E 45 6B A1 55 A4 09 B7 DB
@@ -4042,8 +4095,15 @@ PS_04: ; room_8
 5D12: 14 82 17 47 5E 66 49 30 15 11 58 96 64 DB 72 55
 5D22: A4 09 B7 45 2E 00
 
+; 11	 YOU ARE IN A DEBRIS ROOM, FILLED WITH STUFF WASHED IN FROM
+; 11	 THE SURFACE. A LOW WIDE PASSAGE WITH COBBLES BECOMES
+; 11	 PLUGGED WITH MUD AND DEBRIS HERE,BUT AN AWKWARD CANYON
+; 11	 LEADS UPWARD AND WEST.
+; 11	 A NOTE ON THE WALL SAYS 'MAGIC WORD XYZZY'.
+; woods11
+;
 ; YOU_ARE_IN_A_ROOM_FILLED_WITH_BROKEN_POTTERY_SHARDS_OF_ANCIENT__
-; EGYPTIAN_CRAFTS.__AN_AWKWARD_CORRIDOR_LEADS_UPWARD_AND_WEST.[CR]
+; EGYPTIAN_CRAFTS.__AN_AWKWARD_CORRIDOR_LEADS_UPWARD_AND_WEST.
 PS_05: ; room_9
 5D28: 29 C7 DE 94 14 4B 5E 83 96 39 17 DB 9F 0E 67 E6
 5D38: 8B FB 17 53 BE 79 4F B0 85 E9 16 3F C0 7B B4 1B
@@ -4052,15 +4112,23 @@ PS_05: ; room_9
 5D68: 55 06 B2 A3 A0 E3 8B 0B 5C F1 C5 2E 49 90 14 19
 5D78: 58 66 62 2E 00
 
-; YOU_ARE_IN_AN_AWKWARD_SLOPING_EAST/WEST_CORRIDOR.[CR]
+; 12	 YOU ARE IN AN AWKWARD SLOPING EAST/WEST CANYON.
+; woods12
+;
+; YOU_ARE_IN_AN_AWKWARD_SLOPING_EAST/WEST_CORRIDOR.
 PS_06: ; room_10
 5D7D: 10 C7 DE 94 14 4B 5E 83 96 83 96 A9 D1 2E 49 5E
 5D8D: 17 63 A0 AB 98 95 5F E1 BC 66 62 E1 14 73 B3 84
 5D9D: 5B 2E 00
 
+; 13	 YOU ARE IN A SPLENDID CHAMBER THIRTY FEET HIGH. THE WALLS
+; 13	 ARE FROZEN RIVERS OF ORANGE STONE. AN AWKWARD CANYON AND A
+; 13	 GOOD PASSAGE EXIT FROM EAST AND WEST SIDES OF THE CHAMBER.
+; woods13
+;
 ; YOU_ARE_IN_A_SPLENDID_CHAMBER_THIRTY_FEET_HIGH.__THE_WALLS_ARE__
 ; FROZEN_RIVERS_OF_ORANGE_STONE.__AN_AWKWARD_CORRIDOR_AND_A_GOOD__
-; PASSAGE_EXIT_FROM_THE_EAST_AND_WEST_SIDES_OF_THE_CHAMBER.[CR]
+; PASSAGE_EXIT_FROM_THE_EAST_AND_WEST_SIDES_OF_THE_CHAMBER.
 PS_07: ; room_11
 5DA0: 3D C7 DE 94 14 4B 5E 83 96 62 17 F0 8B 86 5A DA
 5DB0: 14 64 48 23 62 63 BE D3 B3 4F 15 73 62 89 73 9B
@@ -4071,9 +4139,13 @@ PS_07: ; room_11
 5E00: 68 56 90 DB 72 95 5F 03 BC 33 98 B5 D0 15 BC FF
 5E10: 78 D1 B5 96 64 DB 72 1B 54 AF 91 52 2E 00
 
+; 14	 AT YOUR FEET IS A SMALL PIT BREATHING TRACES OF WHITE MIST. AN
+; 14	 EAST PASSAGE ENDS HERE EXCEPT FOR A SMALL CRACK LEADING ON.
+; woods14
+;
 ; AT_YOUR_FEET_IS_A_SMALL_PIT_BREATHING_TRACES_OF_WHITE_MIST.__AN_
 ; EAST_PASSAGE_ENDS_HERE_EXCEPT_FOR_A_SMALL_CRACK_LEADING_ON._____
-; ROUGH_STONE_STEPS_LEAD_DOWN_THE_PIT.[CR]
+; ROUGH_STONE_STEPS_LEAD_DOWN_THE_PIT.
 PS_08: ; room_12
 5E1E: 36 73 49 C7 DE 88 AF 36 60 D5 15 7B 14 E3 B8 F3
 5E2E: 8C 96 A5 BC 14 96 5F 90 73 D6 6A C5 B0 4B 62 C3
@@ -4083,12 +4155,20 @@ PS_08: ; room_12
 5E6E: 98 27 A0 3B 13 54 13 29 A1 15 71 80 BF 55 5E F2
 5E7E: BD CE B5 86 5F 09 15 03 D2 5F BE E3 16 54 2E 00
 
+; 15	 YOU ARE AT ONE END OF A VAST HALL STRETCHING FORWARD OUT OF
+; 15	 SIGHT TO THE WEST. THERE ARE OPENINGS TO EITHER SIDE. NEARBY, A WIDE
+; 15	 STONE STAIRCASE LEADS DOWNWARD. THE HALL IS FILLED WITH
+; 15	 WISPS OF WHITE MIST SWAYING TO AND FRO ALMOST AS IF ALIVE.
+; 15	 A COLD WIND BLOWS UP THE STAIRCASE. THERE IS A PASSAGE
+; 15	 AT THE TOP OF A DOME BEHIND YOU.
+; woods15
+;
 ; YOU_ARE_AT_ONE_END_OF_A_VAST_HALL_STRETCHING_FORWARD_OUT_OF_____
 ; SIGHT_TO_THE_WEST.__THERE_ARE_OPENINGS_TO_EITHER_SIDE.__NEARBY,_
 ; A_WIDE_STONE_STAIRCASE_LEADS_DOWNWARD.__THE_HALL_IS_VERY_MUSTY__
 ; AND_A_COLD_WIND_BLOWS_UP_THE_STAIRCASE.__THERE_IS_A_PASSAGE_AT__
 ; THE_TOP_OF_A_DOME_BEHIND_YOU.__ROUGH_STONE_STEPS_LEAD_UP_THE____
-; DOME.[CR]
+; DOME.
 PS_09: ; room_13
 5E8E: 6C C7 DE 94 14 43 5E 11 BC 5B 98 8E 61 B8 16 7B
 5E9E: 14 D5 C9 0A BC 46 48 66 17 76 B1 23 54 AB 98 04
@@ -4105,8 +4185,12 @@ PS_09: ; room_13
 5F4E: 13 29 A1 15 71 80 BF 55 5E F2 BD CE B5 86 5F B2
 5F5E: 17 82 17 3B 5E 46 13 E7 9F 2E 00
 
+; 18	 THIS IS A LOW ROOM WITH A CRUDE NOTE ON THE WALL.
+; 18	 IT SAYS 'YOU WON'T GET IT UP THE STEPS'.
+; woods18
+;
 ; THIS_IS_A_LOW_ROOM_WITH_A_HIEROGLYPH_ON_THE_WALL.__IT_TRANSLATES
-; "YOU_WON'T_GET_IT_UP_THE_STEPS".[CR]
+; "YOU_WON'T_GET_IT_UP_THE_STEPS".
 PS_0A: ; room_14
 5F69: 20 63 BE CB B5 C3 B5 49 16 D4 CE 3F A0 FB 17 53
 5F79: BE 4A 45 34 79 FE 9E E2 DE C0 16 82 17 59 5E 46
@@ -4114,9 +4198,14 @@ PS_0A: ; room_14
 5F99: D2 F3 23 B6 6C D6 15 B2 17 82 17 55 5E F2 BD 07
 5FA9: B6 00
 
+; 17	 YOU ARE ON THE EAST BANK OF A FISSURE SLICING CLEAR ACROSS
+; 17	 THE HALL. THE MIST IS QUITE THICK HERE, AND THE FISSURE IS
+; 17	 TOO WIDE TO JUMP.
+; woods17
+;
 ; YOU_ARE_ON_THE_EAST_BANK_OF_A_BOTTOMLESS_PIT_STRETCHING_ACROSS__
 ; THE_HALL.__THE_MIST_IS_QUITE_THICK_HERE,_AND_THE_PIT_IS_TOO_WIDE
-; TO_JUMP.[CR]
+; TO_JUMP.
 PS_0B: ; room_15
 5FAB: 2D C7 DE 94 14 51 5E 96 96 DB 72 95 5F 04 BC 95
 5FBB: 48 B8 16 7B 14 06 4F 7F BF F5 8B D2 B5 73 7B 0C
@@ -4125,29 +4214,43 @@ PS_0B: ; room_15
 5FEB: BE 8B 54 F4 72 B3 63 8E 48 82 17 52 5E 73 7B 4B
 5FFB: 7B 81 BF FB 17 F6 59 CC 9C 72 C5 2E 00
 
+; 19	 YOU ARE IN THE HALL OF THE MOUNTAIN KING, WITH PASSAGES
+; 19	 OFF IN ALL DIRECTIONS.
+; woods19
+;
 ; YOU_ARE_IN_THE_PHARAOH'S_CHAMBER,_WITH_PASSAGES_OFF_IN_ALL______
-; DIRECTIONS.[CR]
+; DIRECTIONS.
 PS_0C: ; room_16
 6008: 19 C7 DE 94 14 4B 5E 96 96 DB 72 5B A5 D1 B0 65
 6018: 71 DA 14 64 48 46 62 FB 17 53 BE 55 A4 09 B7 4B
 6028: 62 D0 9E D0 15 8E 14 FB 89 3B 13 03 15 65 B1 91
 6038: BE AF 9A 00
 
-; YOU_ARE_IN_THE_SOUTH_SIDE_CHAMBER.[CR]
+; 29	 YOU ARE IN THE SOUTH SIDE CHAMBER.
+; woods29
+;
+; YOU_ARE_IN_THE_SOUTH_SIDE_CHAMBER.
 PS_0D: ; room_17
 603C: 0B C7 DE 94 14 4B 5E 96 96 DB 72 47 B9 53 BE 46
 604C: B8 45 5E 4F 72 74 4D 2E 00
 
+; 27	 YOU ARE ON THE WEST SIDE OF THE FISSURE IN THE HALL OF MISTS.
+; woods27
+;
 ; YOU_ARE_ON_THE_WEST_SIDE_OF_THE_BOTTOMLESS_PIT_IN_THE_HALL_OF___
-; GODS.[CR]
+; GODS.
 PS_0E: ; room_18
 6055: 17 C7 DE 94 14 51 5E 96 96 DB 72 B5 D0 15 BC FF
 6065: 78 B8 16 82 17 44 5E 0E A1 EE 9F 65 62 E3 16 0B
 6075: BC 96 96 DB 72 4E 72 11 8A 7B 64 81 15 2F 5C 00
 
+; 41	 YOU ARE AT THE WEST END OF HALL OF MISTS. A LOW WIDE CRAWL
+; 41	 CONTINUES WEST AND ANOTHER GOES NORTH. TO THE SOUTH IS A
+; 41	 LITTLE PASSAGE 6 FEET OFF THE FLOOR.
+;
 ; YOU_ARE_AT_THE_WEST_END_OF_THE_HALL_OF_GODS.___A_LOW_WIDE_PASS__
 ; CONTINUES_WEST_AND_ANOTHER_GOES_NORTH.__TO_THE_SOUTH_IS_A_LITTLE
-; PASSAGE_SIX_FEET_OFF_THE_FLOOR.[CR]
+; PASSAGE_SIX_FEET_OFF_THE_FLOOR.
 PS_0F: ; room_19
 6085: 35 C7 DE 94 14 43 5E 16 BC DB 72 B5 D0 07 BC 33
 6095: 98 C3 9E 5F BE 9B 15 F3 8C C3 9E 36 6E 5B BB 43
@@ -4157,9 +4260,13 @@ PS_0F: ; room_19
 60D5: 7B 4E 45 8E 7B F2 8B 65 49 77 47 5B 17 08 D5 36
 60E5: 60 B8 16 96 64 DB 72 89 67 C7 A0 00
 
+; 60	 YOU ARE AT THE EAST END OF A VERY LONG HALL APPARENTLY
+; 60	 WITHOUT SIDE CHAMBERS. TO THE EAST A LOW WIDE CRAWL SLANTS
+; 60	 UP. TO THE NORTH A ROUND TWO FOOT HOLE SLANTS DOWN.
+;
 ; YOU_ARE_AT_EAST_END_OF_A_VERY_LONG_HALL_APPARENTLY_WITHOUT_SIDE_
 ; CHAMBERS.__TO_THE_EAST_A_LOW_WIDE_CRAWL_SLANTS_UP.__TO_THE_NORTH
-; A_ROUND_TWO_FOOT_HOLE_SLANTS_DOWN.[CR]
+; A_ROUND_TWO_FOOT_HOLE_SLANTS_DOWN.
 PS_10: ; room_20
 60F1: 36 C7 DE 94 14 43 5E 07 BC 66 49 30 15 11 58 83
 6101: 64 CF 17 7B B4 80 8D CA 6A 46 48 92 14 54 A4 9E
@@ -4169,8 +4276,10 @@ PS_10: ; room_20
 6141: 9C DB 72 04 9A 5B BE 39 17 8E C5 91 17 C8 9C 46
 6151: A0 A9 15 DB 8B BB B8 CD 9A 09 15 27 D2 00
 
+; 61	 YOU ARE AT THE WEST END OF A VERY LONG FEATURELESS HALL.
+;
 ; YOU_ARE_AT_THE_WEST_END_OF_A_VERY_LONG_FEATURELESS_HALL.__THE___
-; HALL_JOINS_; UP_WITH_A_NARROW_NORTH/SOUTH_PASSAGE.[CR]
+; HALL_JOINS_UP_WITH_A_NARROW_NORTH/SOUTH_PASSAGE.
 PS_11: ; room_21
 615F: 25 C7 DE 94 14 43 5E 16 BC DB 72 B5 D0 07 BC 33
 616F: 98 C3 9E 58 45 43 62 49 16 AB 98 63 66 74 C0 3F
@@ -4178,34 +4287,51 @@ PS_11: ; room_21
 618F: 80 8B 9A D3 C5 56 D1 03 71 8B 16 79 B3 D0 CE BE
 619F: A0 DD 71 36 A1 12 71 65 49 77 47 2E 00
 
-; YOU_ARE_AT_A_CROSSOVER_OF_A_HIGH_N/S_PASSAGE_AND_A_LOW_E/W_ONE.[CR]
+; 62	 YOU ARE AT A CROSSOVER OF A HIGH N/S PASSAGE AND A LOW E/W ONE.
+;
+; YOU_ARE_AT_A_CROSSOVER_OF_A_HIGH_N/S_PASSAGE_AND_A_LOW_E/W_ONE.
 PS_12: ; room_22
 61AC: 15 C7 DE 94 14 43 5E 03 BC E4 14 E5 A0 4F A1 91
 61BC: AF 83 64 A3 15 13 6D 5D 97 DB 16 D3 B9 9B 6C 8E
 61CC: 48 7B 14 89 8D 20 15 D1 CE 7F 98 00
 
-; DEAD_END.[CR]
+; 63	 DEAD END
+;
+; DEAD_END.
 PS_13: ; room_23, room_42, room_43, room_44, room_45, room_46, room_47, room_48, room_49, room_50, room_51, room_53
 61D8: 03 E3 59 07 58 57 98 00
 
+; 30	 YOU ARE IN THE WEST SIDE CHAMBER OF HALL OF MT KING.
+; 30	 A PASSAGE CONTINUES WEST AND UP HERE.
+; woods31
+;
 ; YOU_ARE_IN_THE_WEST_THRONE_CHAMBER.__A_PASSAGE_CONTINUES_WEST___
-; AND_UP_FROM_HERE.[CR]
+; AND_UP_FROM_HERE.
 PS_14: ; room_24
 61E0: 1B C7 DE 94 14 4B 5E 96 96 DB 72 B5 D0 16 BC F9
 61F0: 74 5B 98 1B 54 AF 91 1B B5 7B 14 55 A4 09 B7 45
 6200: 5E 1E A0 9F 7A 4B 62 B5 D0 FB BB 90 14 17 58 08
 6210: A3 FF B2 9F 15 7F B1 00
 
+; 28	 YOU ARE IN A LOW N/S PASSAGE AT A HOLE IN THE FLOOR.
+; 28	 THE HOLE GOES DOWN TO AN E/W PASSAGE.
+; woods28
+;
 ; YOU_ARE_IN_A_LOW_N/S_PASSAGE_AT_A_HOLE_IN_THE_FLOOR.__THE_HOLE__
-; GOES_DOWN_TO_AN_E/W_PASSAGE.[CR]
+; GOES_DOWN_TO_AN_E/W_PASSAGE.
 PS_15: ; room_25
 6218: 1E C7 DE 94 14 4B 5E 83 96 49 16 D0 CE 8B 36 55
 6228: A4 09 B7 43 5E 03 BC A9 15 DB 8B 83 7A 5F BE 56
 6238: 15 44 A0 3B F4 5F BE A9 15 DB 8B 81 15 4B 62 89
 6248: 5B 96 96 C3 9C 87 96 2B 37 55 A4 09 B7 45 2E 00
 
+; 33	 YOU ARE IN A LARGE ROOM, WITH A PASSAGE TO THE SOUTH,
+; 33	 A PASSAGE TO THE WEST, AND A WALL OF BROKEN ROCK TO
+; 33	 THE EAST. THERE IS A LARGE 'Y2' ON A ROCK IN ROOMS CENTER.
+; woods33
+;
 ; YOU_ARE_IN_A_LARGE_ROOM,_WITH_A_PASSAGE_TO_THE_SOUTH,_AND_A_WALL
-; OF_BROKEN_ROCK_TO_THE_EAST.__THERE_IS_A_PANEL_ON_THE_NORTH_WALL.[CR]
+; OF_BROKEN_ROCK_TO_THE_EAST.__THERE_IS_A_PANEL_ON_THE_NORTH_WALL.
 PS_16: ; room_26
 6258: 2A C7 DE 94 14 4B 5E 83 96 3B 16 B7 B1 39 17 FE
 6268: 9F FB 17 53 BE 52 45 65 49 77 47 89 17 82 17 55
@@ -4214,12 +4340,13 @@ PS_16: ; room_26
 6298: BE 5B B1 4B 7B 52 45 8F 48 11 8A 96 96 DB 72 04
 62A8: 9A 53 BE 0E D0 4C 2E 00
 
-; YOU_ARE_IN_THE_CHAMBER_OF_ANUBIS.[CR]
+; adventure.dat ??
+; YOU_ARE_IN_THE_CHAMBER_OF_ANUBIS.
 PS_17: ; room_27
 62B0: 0B C7 DE 94 14 4B 5E 96 96 DB 72 1B 54 AF 91 91
 62C0: AF 83 64 E4 9A 6F 7B 00
 
-; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.[CR]
+; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 PS_18: ; room_28, room_29, room_30, room_31, room_32, room_33, room_34, room_35, room_36, room_37, room_38, room_39, room_40, room_41
 62C8: 10 C7 DE 94 14 4B 5E 83 96 63 16 5B E3 C3 9E BB
 62D8: C0 13 BA DB 16 D3 B9 B5 6C 03 EE F3 8C 43 48 BF
@@ -4227,7 +4354,7 @@ PS_18: ; room_28, room_29, room_30, room_31, room_32, room_33, room_34, room_35,
 
 ; YOU_ARE_ON_THE_BRINK_OF_A_LARGE_PIT.__YOU_COULD_CLIMB_DOWN,_BUT_
 ; YOU_WOULD_NOT_BE_ABLE_TO_CLIMB_BACK_UP.__THE_MAZE_CONTINUES_ON__
-; THIS_LEVEL.[CR]
+; THIS_LEVEL.
 PS_19: ; room_52
 62EA: 2E C7 DE 94 14 51 5E 96 96 DB 72 73 4F 4B 99 C3
 62FA: 9E 4E 45 31 49 52 5E 97 7B 5B 13 1B A1 47 55 B3
@@ -4236,9 +4363,14 @@ PS_19: ; room_52
 632A: 4B DD 46 B2 17 3B F4 5F BE 63 16 5B E3 40 55 90
 633A: BE 35 C4 C0 16 56 13 95 73 3F 16 6E CA 2E 00
 
+; 36	 YOU ARE IN A DIRTY BROKEN PASSAGE. TO THE EAST IS A CRAWL.
+; 36	 TO THE WEST IS A LARGE PASSAGE. ABOVE YOU IS A HOLE TO
+; 36	 ANOTHER PASSAGE.
+; woods36
+;
 ; YOU_ARE_IN_A_DIRTY_BROKEN_PASSAGE.__TO_THE_EAST_IS_A_CRAWL.__TO_
 ; THE_WEST_IS_A_LARGE_PASSAGE.__ABOVE_YOU_IS_A_HOLE_TO_ANOTHER____
-; PASSAGE.[CR]
+; PASSAGE.
 PS_1A: ; room_54
 6349: 2D C7 DE 94 14 4B 5E 83 96 03 15 D3 B3 BC 14 97
 6359: 9F 92 96 65 49 77 47 3B F4 6B BF 5F BE 23 15 F3
@@ -4247,16 +4379,22 @@ PS_1A: ; room_54
 6389: 14 4F A1 51 18 4B C2 C3 B5 A9 15 DB 8B 6B BF 99
 6399: 48 5F BE 7B AF 52 13 65 49 77 47 2E 00
 
+; 37	 YOU ARE ON THE BRINK OF A SMALL CLEAN CLIMBABLE PIT.
+; 37	 A CRAWL LEADS WEST.
+;
 ; YOU_ARE_ON_THE_BRINK_OF_A_SMALL_CLEAN_CLIMBABLE_PIT.__A_CRAWL___
-; LEADS_WEST.[CR]
+; LEADS_WEST.
 PS_1B: ; room_55
 63A6: 19 C7 DE 94 14 51 5E 96 96 DB 72 73 4F 4B 99 C3
 63B6: 9E 55 45 8E 91 05 8A E3 8B 85 96 8F 8C C4 4C DB
 63C6: 8B 96 A5 3B F4 45 45 D9 B0 FB 89 3F 16 0D 47 F7
 63D6: 17 17 BA 00
 
+; 38	 YOU ARE IN THE BOTTOM OF A SMALL PIT WITH A LITTLE
+; 38	 STREAM, WHICH ENTERS AND EXITS THROUGH TINY SLITS.
+;
 ; YOU_ARE_IN_THE_BOTTOM_OF_A_SMALL_PIT_WITH_A_LITTLE_STREAM,_WHICH
-; ENTERS_AND_EXITS_THROUGH_TINY_SLITS.[CR]
+; ENTERS_AND_EXITS_THROUGH_TINY_SLITS.
 PS_1C: ; room_56
 63DA: 21 C7 DE 94 14 4B 5E 96 96 DB 72 06 4F 7F BF B8
 63EA: 16 7B 14 E3 B8 F3 8C 96 A5 FB 17 53 BE 4E 45 8E
@@ -4266,7 +4404,7 @@ PS_1C: ; room_56
 
 ; YOU_ARE_IN_A_THE_ROOM_OF_BES,_WHOSE_PICTURE_IS_ON_THE_WALL._____
 ; THERE_IS_A_BIG_HOLE_IN_THE_FLOOR.__THERE_IS_A_PASSAGE_LEADING___
-; EAST.[CR]
+; EAST.
 PS_1D: ; room_57
 641F: 2C C7 DE 94 14 4B 5E 83 96 82 17 54 5E 3F A0 B8
 642F: 16 AF 14 33 BB 29 D1 9B B7 85 A5 74 C0 4B 5E D1
@@ -4275,10 +4413,17 @@ PS_1D: ; room_57
 645F: A0 3B F4 5F BE 5B B1 4B 7B 52 45 65 49 77 47 3F
 646F: 16 03 47 AB 98 47 13 66 49 2E 00
 
+; 64	 YOU ARE AT A COMPLEX JUNCTION. A LOW HANDS AND KNEES
+; 64	 PASSAGE FROM THE NORTH JOINS A HIGHER CRAWL
+; 64	 FROM THE EAST TO MAKE  A WALKING PASSAGE GOING WEST
+; 64	 THERE IS ALSO A LARGE ROOM ABOVE. THE AIR IS DAMP HERE.
+; 64	 A SIGN IN MIDAIR HERE SAYS 'CAVE UNDER CONSTRUCTION BEYOND
+; 64	 THIS POINT. PROCEED AT OWN RISK.'
+;
 ; YOU_ARE_AT_A_COMPLEX_JUNCTION.__A_LOW_HANDS_AND_KNEES_PASSAGE___
 ; FROM_THE_NORTH_JOINS_A_HIGHER_CRAWL_FROM_THE_EAST_TO_MAKE_A_____
 ; WALKING_PASSAGE_GOING_WEST.__THERE_IS_ALSO_A_LARGE_ROOM_ABOVE.__
-; THE_AIR_IS_DAMP_HERE.[CR]
+; THE_AIR_IS_DAMP_HERE.
 PS_1E: ; room_58
 647A: 47 C7 DE 94 14 43 5E 03 BC E1 14 E6 93 13 63 F0
 648A: 81 03 56 27 A0 43 13 49 16 CA CE 8E 48 C3 B5 33
@@ -4293,7 +4438,7 @@ PS_1E: ; room_58
 ; YOU_ARE_IN_THE_UNDERWORLD_ANTEROOM_OF_SEKER.__PASSAGES_GO_EAST,_
 ; WEST,_AND_UP.__HUMAN_BONES_ARE_STREWN_ABOUT_ON_THE_FLOOR._______
 ; HIEROGLYPHICS_ON_THE_WALL_ROUGHLY_TRANSLATE_TO_"THOSE_WHO_______
-; PROCEED_EAST_MAY_NEVER_RETURN."[CR]
+; PROCEED_EAST_MAY_NEVER_RETURN."
 PS_1F: ; room_59
 650A: 4A C7 DE 94 14 4B 5E 96 96 DB 72 8E C5 41 62 B6
 651A: A0 03 58 BF 9A 01 B3 51 90 95 64 17 61 1B B5 DB
@@ -4307,7 +4452,7 @@ PS_1F: ; room_59
 659A: AF 8F 62 E7 B2 22 00
 
 ; YOU_ARE_AT_THE_LAND_OF_DEAD.__PASSAGES_LEAD_OFF_IN_>ALL<________
-; DIRECTIONS.[CR]
+; DIRECTIONS.
 PS_20: ; room_60
 65A1: 19 C7 DE 94 14 43 5E 16 BC DB 72 50 8B 11 58 86
 65B1: 64 86 5F 3B F4 55 A4 09 B7 4B 62 E3 8B 11 58 83
@@ -4317,7 +4462,7 @@ PS_20: ; room_60
 ; YOU'RE_IN_A_LARGE_ROOM_WITH_ANCIENT_DRAWINGS_ON_ALL_WALLS.______
 ; THE_PICTURES_DEPICT_ATUM,_A_PHARAOH_WEARING_THE_DOUBLE_CROWN.___
 ; A_SHALLOW_PASSAGE_PROCEEDS_DOWNWARD,_AND_A_SOMEWHAT_STEEPER_ONE_
-; LEADS_UP.__A_LOW_HANDS_AND_KNEES_PASSAGE_ENTERS_FROM_THE_SOUTH. [CR]
+; LEADS_UP.__A_LOW_HANDS_AND_KNEES_PASSAGE_ENTERS_FROM_THE_SOUTH. 
 PS_21: ; room_61
 65D5: 55 C7 DE AF 23 D0 15 7B 14 54 8B 9B 6C 01 B3 59
 65E5: 90 82 7B 90 14 47 54 B3 9A EB 5B 50 D1 CB 6E 03
@@ -4333,7 +4478,7 @@ PS_21: ; room_61
 
 ; YOU_ARE_IN_A_CHAMBER_WHOSE_WALL_CONTAINS_A_PICTURE_OF_A_MAN_____
 ; WEARING_THE_LUNAR_DISK_ON_HIS_HEAD.__HE_IS_THE_GOD_KHONS,_THE___
-; MOON_GOD.[CR]
+; MOON_GOD.
 PS_22: ; room_62
 6682: 2D C7 DE 94 14 4B 5E 83 96 DA 14 64 48 23 62 29
 6692: D1 9B B7 0E D0 05 8A 1E A0 D0 47 C3 B5 E3 16 0F
@@ -4342,21 +4487,24 @@ PS_22: ; room_62
 66C2: 15 17 47 4A 13 4B 5E D6 B5 DB 72 36 6E 1A 16 1D
 66D2: A0 16 EE DB 72 4F 13 40 A0 81 15 44 2E 00
 
-; YOU_ARE_IN_A_LONG_SLOPING_CORRIDOR_WITH_RAGGED_WALLS._ [CR]
+; YOU_ARE_IN_A_LONG_SLOPING_CORRIDOR_WITH_RAGGED_WALLS._ 
 PS_23: ; room_63
 66E0: 12 C7 DE 94 14 4B 5E 83 96 49 16 AB 98 C9 B8 90
 66F0: A5 C5 6A BC A0 09 79 99 AF 82 7B 2B 17 F7 6C 19
 6700: 58 46 48 5B BB 20 00
 
-; YOU_ARE_IN_A_CUL-DE-SAC_ABOUT_EIGHT_FEET_ACROSS.[CR]
+; YOU_ARE_IN_A_CUL-DE-SAC_ABOUT_EIGHT_FEET_ACROSS.
 PS_24: ; room_64
 6707: 10 C7 DE 94 14 4B 5E 83 96 E7 14 56 8F A5 63 CB
 6717: 46 B9 46 73 C6 C9 60 33 75 67 66 03 BC B9 55 EF
 6727: B9 00
 
+; 65	 YOU ARE IN BEDQUILT, A LONG EAST/WEST PASSAGE WITH HOLES EVERYWHERE.
+; 65	 TO EXPLORE AT RANDOM SELECT NORTH, SOUTH, UP, OR DOWN.
+;
 ; YOU_ARE_IN_THE_CHAMBER_OF_HORUS,_A_LONG_EAST/WEST_PASSAGE_WITH__
 ; HOLES_EVERYWHERE.__TO_EXPLORE_AT_RANDOM,_SELECT_NORTH,_SOUTH,___
-; UP,_OR_DOWN.[CR]
+; UP,_OR_DOWN.
 PS_25: ; room_65
 6729: 2E C7 DE 94 14 4B 5E 96 96 DB 72 1B 54 AF 91 91
 6739: AF 8A 64 BF A0 33 BB 4E 45 11 A0 23 15 F8 B9 B5
@@ -4365,10 +4513,16 @@ PS_25: ; room_65
 6769: 14 2B 17 49 98 B3 95 AE B7 E6 5F 99 16 C2 B3 15
 6779: EE 36 A1 73 76 57 13 73 A8 A3 A0 89 5B 4E 2E 00
 
+; 68	 YOU ARE IN A LARGE LOW CIRCULAR CHAMBER WHOSE FLOOR IS AN
+; 68	 IMMENSE SLAB FALLEN FROM THE CEILING(SLAB ROOM). EAST AND
+; 68	 WEST THERE ONCE WERE LARGE PASSAGES, BUT THEY ARE NOW FILLED
+; 68	 WITH BOULDERS. LOW SMALL PASSAGES GO NORTH AND SOUTH, AND THE
+; 68	 SOUTH ONE QUICKLY BENDS WEST AROUND THE BOULDERS.
+;
 ; YOU_ARE_IN_A_LARGE_LOW_CIRCULAR_CHAMBER_WHOSE_FLOOR_IS_AN_______
 ; IMMENSE_SLAB_FALLEN_FROM_THE_CEILING.__EAST_AND_WEST_THERE_ONCE_
 ; WHERE_LARGE_PASSAGES,_BUT_THEY_ARE_NOW_FILLED_WITH_SAND.________
-; LOW_SMALL_PASSAGES_GO_NORTH_AND_SOUTH.[CR]
+; LOW_SMALL_PASSAGES_GO_NORTH_AND_SOUTH.
 PS_26: ; room_66
 6789: 4C C7 DE 94 14 4B 5E 83 96 3B 16 B7 B1 49 16 C5
 6799: CE 2D 7B 3B C5 85 AF 4F 72 74 4D FA 17 D7 A0 56
@@ -4383,7 +4537,7 @@ PS_26: ; room_66
 
 ; YOU_ARE_IN_THE_PRIEST'S_BEDROOM.__THE_WALLS_ARE_COVERED_WITH____
 ; CURTAINS,_THE_FLOOR_WITH_A_THICK_PILE_CARPET.__MOSS_COVERS_THE__
-; CEILING.[CR]
+; CEILING.
 PS_27: ; room_72
 6825: 2D C7 DE 94 14 4B 5E 96 96 DB 72 F3 A6 66 62 CB
 6835: 23 66 4D 01 B3 DB 95 82 17 59 5E 46 48 C3 B5 5B
@@ -4394,7 +4548,7 @@ PS_27: ; room_72
 
 ; THIS_IS_THE_CHAMBER_OF_THE_HIGH_PRIEST.___ANCIENT_DRAWINGS_COVER
 ; THE_WALLS.__AN_EXTREMELY_TIGHT_TUNNEL_LEADS_WEST.__IT_LOOKS_LIKE
-; A_TIGHT_SQUEEZE.__ANOTHER_PASSAGE_LEADS_SE.[CR]
+; A_TIGHT_SQUEEZE.__ANOTHER_PASSAGE_LEADS_SE.
 PS_28: ; room_73
 6882: 39 63 BE CB B5 D6 B5 DB 72 1B 54 AF 91 91 AF 96
 6892: 64 DB 72 89 73 12 71 07 B2 17 BA 3B 13 8D 48 30
@@ -4406,7 +4560,7 @@ PS_28: ; room_73
 68F2: 5C BF B7 00
 
 ; YOU_ARE_IN_THE_HIGH_PRIEST'S_TREASURE_ROOM_LIT_BY_AN_EERIE_GREEN
-; LIGHT.__A_NARROW_TUNNEL_EXITS_TO_THE_EAST.[CR]
+; LIGHT.__A_NARROW_TUNNEL_EXITS_TO_THE_EAST.
 PS_29: ; room_76
 68F6: 23 C7 DE 94 14 4B 5E 96 96 DB 72 89 73 12 71 07
 6906: B2 F5 B9 D6 B5 63 B1 34 BA 54 5E 3F A0 43 16 04
@@ -4414,12 +4568,19 @@ PS_29: ; room_76
 6926: F4 50 45 3C 49 6B A1 70 C0 6E 98 3A 15 8D 7B 89
 6936: 17 82 17 47 5E 66 49 2E 00
 
+; 67	 YOU ARE IN THE TWOPIT ROOM. THE FLOOR
+; 67	 HERE IS LITTERED WITH THIN ROCK SLABS, WHICH MAKE IT
+; 67	 EASY TO DESCEND THE PITS. THERE IS A PATH HERE BYPASSING
+; 67	 THE PITS TO CONNECT PASSAGES FROM EAST AND WEST.THERE
+; 67	 ARE HOLES ALL OVER, BUT THE ONLY BIG ONE IS ON THE WALL
+; 67	 DIRECTLY OVER THE EAST PIT WHERE YOU CAN'T GET TO IT.
+;
 ; YOU_ARE_AT_THE_EAST_END_OF_THE_TWOPIT_ROOM.__THE_FLOOR_HERE_IS__
 ; LITTERED_WITH_THIN_ROCK_SLABS,_WHICH_MAKE_IT_EASY_TO_DESCEND_THE
 ; PITS.__THERE_IS_A_PATH_HERE_BYPASSING_THE_PITS_TO_CONNECT_______
 ; PASSAGES_EAST_AND_WEST.__THERE_ARE_HOLES_ALL_OVER,_BUT_THE_ONLY_
 ; BIG_ONE_IS_ON_THE_WALL_DIRECTLY_OVER_THE_WEST_PIT_WHERE_YOU_____
-; CAN'T_GET_TO_IT.[CR]
+; CAN'T_GET_TO_IT.
 PS_2A: ; room_78
 693F: 70 C7 DE 94 14 43 5E 16 BC DB 72 95 5F 07 BC 33
 694F: 98 C3 9E 5F BE 91 17 63 A0 14 BC 3F A0 3B F4 5F
@@ -4437,14 +4598,20 @@ PS_2A: ; room_78
 6A0F: B1 C7 DE 3B 13 45 13 85 48 09 BC 73 62 6B BF 97
 6A1F: 7B 00
 
-; YOU_ARE_AT_THE_BOTTOM_OF_THE_EASTERN_PIT_IN_THE_TWOPIT_ROOM.[CR]
+; woods24 YOU ARE AT THE BOTTOM OF THE EASTERN PIT IN THE TWOPIT ROOM.  THERE IS
+; woods24 A SMALL POOL OF OIL IN ONE CORNER OF THE PIT.
+;
+; YOU_ARE_AT_THE_BOTTOM_OF_THE_EASTERN_PIT_IN_THE_TWOPIT_ROOM.
 PS_2B: ; room_79
 6A21: 14 C7 DE 94 14 43 5E 16 BC DB 72 06 4F 7F BF B8
 6A31: 16 82 17 47 5E 66 49 38 62 E3 16 0B BC 96 96 DB
 6A41: 72 C1 C0 96 A5 39 17 FF 9F 00
 
+; woods23    YOU ARE AT THE WEST END OF THE TWOPIT ROOM.  THERE IS A LARGE HOLE IN
+; woods23    THE WALL ABOVE THE PIT AT THIS END OF THE ROOM.
+;
 ; YOU_ARE_AT_THE_WEST_END_OF_THE_TWOPIT_ROOM.__THERE_IS_A_LARGE___
-; HOLE_IN_THE_WALL_ABOVE_THE_PIT_AT_THIS_END_OF_THE_ROOM.[CR]
+; HOLE_IN_THE_WALL_ABOVE_THE_PIT_AT_THIS_END_OF_THE_ROOM.
 PS_2C: ; room_80
 6A4B: 27 C7 DE 94 14 43 5E 16 BC DB 72 B5 D0 07 BC 33
 6A5B: 98 C3 9E 5F BE 91 17 63 A0 14 BC 3F A0 3B F4 5F
@@ -4453,8 +4620,12 @@ PS_2C: ; room_80
 6A8B: BC 16 BC 95 73 30 15 11 58 96 64 DB 72 01 B3 4D
 6A9B: 2E 00
 
+; 25    YOU ARE AT THE BOTTOM OF THE WESTERN PIT IN THE TWOPIT ROOM.  THERE IS
+; 25    A LARGE HOLE IN THE WALL ABOUT 25 FEET ABOVE YOU.
+; woods25
+;
 ; YOU_ARE_AT_THE_BOTTOM_OF_THE_WEST_PIT_IN_THE_TWOPIT_ROOM.__THERE
-; IS_A_LARGE_HOLE_IN_THE_WALL_ABOUT_TWENTY_FIVE_FEET_ABOVE_YOU.[CR]
+; IS_A_LARGE_HOLE_IN_THE_WALL_ABOUT_TWENTY_FIVE_FEET_ABOVE_YOU.
 PS_2D: ; room_81
 6A9D: 29 C7 DE 94 14 43 5E 16 BC DB 72 06 4F 7F BF B8
 6AAD: 16 82 17 59 5E 66 62 E3 16 0B BC 96 96 DB 72 C1
@@ -4465,7 +4636,7 @@ PS_2D: ; room_81
 
 ; YOU_ARE_IN_A_LONG,_NARROW_CORRIDOR_STRETCHING_OUT_OF_SIGHT_TO___
 ; THE_WEST.__AT_THE_EASTERN_END_IS_A_HOLE_THROUGH_WHICH_YOU_CAN___
-; SEE_A_PROFUSION_OF_LEAVES.[CR]
+; SEE_A_PROFUSION_OF_LEAVES.
 PS_2E: ; room_77
 6AF3: 33 C7 DE 94 14 4B 5E 83 96 49 16 CE 98 8B 16 79
 6B03: B3 C5 CE BC A0 09 79 95 AF EF BF 9A BD 91 7A C7
@@ -4476,7 +4647,7 @@ PS_2E: ; room_77
 6B53: A0 C3 9E E3 8B 75 CA 2E 00
 
 ; YOU_ARE_IN_THE_CHAMBER_OF_OSIRIS._THE_CEILING_IS_TOO_HIGH_UP_FOR
-; YOUR_LAMP_TO_SHOW_IT.__PASSAGES_LEAD_EAST,_NORTH,_AND_SOUTH.[CR]
+; YOUR_LAMP_TO_SHOW_IT.__PASSAGES_LEAD_EAST,_NORTH,_AND_SOUTH.
 PS_2F: ; room_71
 6B5C: 29 C7 DE 94 14 4B 5E 96 96 DB 72 1B 54 AF 91 91
 6B6C: AF 91 64 54 B8 6F 7B 82 17 45 5E CE 60 91 7A D5
@@ -4485,7 +4656,7 @@ PS_2F: ; room_71
 6B9C: 62 E3 8B 07 58 66 49 10 EE BE A0 73 76 8E 48 61
 6BAC: 17 82 C6 2E 00
 
-; THE_PASSAGE_HERE_IS_BLOCKED_BY_A_FALLEN_BLOCK.[CR]
+; THE_PASSAGE_HERE_IS_BLOCKED_BY_A_FALLEN_BLOCK.
 PS_30: ; room_70
 6BB1: 0F 5F BE DB 16 D3 B9 9B 6C F4 72 4B 5E C4 B5 75
 6BC1: 8D A6 85 C3 14 7B 14 CE 65 F0 8B B6 14 5D 9E 2E
@@ -4493,7 +4664,7 @@ PS_30: ; room_70
 
 ; YOU_ARE_IN_THE_CHAMBER_OF_NEKHEBET,_A_WOMAN_WITH_THE_HEAD_OF_A__
 ; VULTURE,_WEARING_THE_CROWN_OF_EGYPT.__A_PASSAGE_EXITS_TO_THE____
-; SOUTH.[CR]
+; SOUTH.
 PS_31: ; room_68
 6BD2: 2C C7 DE 94 14 4B 5E 96 96 DB 72 1B 54 AF 91 91
 6BE2: AF 90 64 1A 61 AF 5F 73 C1 59 45 E3 9F 99 96 82
@@ -4501,131 +4672,135 @@ PS_31: ; room_68
 6C02: B1 F7 17 33 49 AB 98 5F BE E4 14 80 A1 B8 16 29
 6C12: 15 EE DE 3B F4 52 45 65 49 77 47 3A 15 8D 7B 89
 6C22: 17 82 17 3B 5E 55 13 36 A1 48 2E 00
+```
 
-; THERE_IS_A_SHINY_BRASS_LAMP_NEARBY.[CR]
+# Object descriptions (packed)
+
+```code
+; THERE_IS_A_SHINY_BRASS_LAMP_NEARBY.
 PS_32:
 6C2E: 0B 5F BE 5B B1 4B 7B 55 45 90 73 44 DB D5 B0 CE
 6C3E: B5 72 48 8F 16 2C 49 59 2E 00
 
-; BRASS_LANTERN[CR]
+; BRASS_LANTERN
 PS_33:
 6C48: 04 6B 4F CB B9 50 8B F4 BD 4E 00
 
-; THERE_IS_A_LAMP_SHINING_NEARBY.[CR]
+; THERE_IS_A_LAMP_SHINING_NEARBY.
 PS_34:
 6C53: 0A 5F BE 5B B1 4B 7B 4E 45 72 48 5A 17 93 7A AB
 6C63: 98 63 98 03 B1 2E 00
 
-; BRASS_LANTERN[CR]
+; BRASS_LANTERN
 PS_35:
 6C6A: 04 6B 4F CB B9 50 8B F4 BD 4E 00
 
-; THERE_IS_A_SMALL_STATUE_BOX_DISCARDED_NEARBY.[CR]
+; THERE_IS_A_SMALL_STATUE_BOX_DISCARDED_NEARBY.
 PS_36:
 6C75: 0F 5F BE 5B B1 4B 7B 55 45 8E 91 15 8A 56 BD 1B
 6C85: C4 0A 4F 03 15 53 B7 3F B1 10 58 94 5F 9F 50 00
 
-; STATUE_BOX[CR]
+; STATUE_BOX
 PS_37:
 6C95: 03 FB B9 67 C0 B9 14 58 00
 
-; A_THREE_FOOT_SCEPTER_WITH_AN_ANKH_ON_AN_END_LIES_NEARBY.[CR]
+; A_THREE_FOOT_SCEPTER_WITH_AN_ANKH_ON_AN_END_LIES_NEARBY.
 PS_38:
 6C9E: 12 56 45 EF 74 48 5E 46 A0 55 17 EE 61 23 62 56
 6CAE: D1 03 71 83 96 5A 99 C0 16 90 14 30 15 0E 58 35
 6CBE: 79 8F 16 2C 49 59 2E 00
 
-; SCEPTER[CR]
+; SCEPTER
 PS_39:
 6CC6: 02 57 B7 3F A7 52 00
 
-; A_STATUE_OF_THE_BIRD_GOD_IS_SITTING_HERE.[CR]
+; A_STATUE_OF_THE_BIRD_GOD_IS_SITTING_HERE.
 PS_3A:
 6CCD: 0D 55 45 56 BD 1B C4 C3 9E 5F BE B3 14 33 B1 36
 6CDD: 6E D5 15 5B 17 43 C0 AB 98 F4 72 45 2E 00
 
-; THERE_IS_A_BIRD_STATUE_IN_THE_BOX.[CR]
+; THERE_IS_A_BIRD_STATUE_IN_THE_BOX.
 PS_3B:
 6CEB: 0B 5F BE 5B B1 4B 7B 44 45 2E 7B 66 17 8F 49 4B
 6CFB: 5E 96 96 DB 72 0A 4F 2E 00
 
-; BIRD_STATUE_IN_BOX[CR]
+; BIRD_STATUE_IN_BOX
 PS_3C:
 6D04: 06 14 4E 15 58 56 BD 1B C4 83 7A 0A 4F 00
 
-; A_SMALL_VELVET_PILLOW_LIES_ON_THE_FLOOR.[CR]
+; A_SMALL_VELVET_PILLOW_LIES_ON_THE_FLOOR.
 PS_3D:
 6D12: 0D 55 45 8E 91 18 8A 50 61 73 62 8E A5 89 8D 43
 6D22: 16 4B 62 03 A0 5F BE 56 15 44 A0 2E 00
 
-; VELVET_PILLOW[CR]
+; VELVET_PILLOW
 PS_3E:
 6D2F: 04 6E CA 76 CA E3 16 09 8D 57 00
 
-; A_HUGE_GREEN_FIERCE_SERPENT_BARS_THE_WAY![CR]
+; A_HUGE_GREEN_FIERCE_SERPENT_BARS_THE_WAY!
 PS_3F:
 6D3A: 0D 4A 45 77 C4 84 15 30 60 53 15 2D 62 55 5E 3A
 6D4A: 62 9E 61 AB 14 8B B3 5F BE F3 17 59 21 00
 
-; A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.[CR]
+; A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.
 PS_40:
 6D58: 0E 55 45 80 BF 44 5E 06 B2 9B 6C 09 9A 62 17 9D
 6D68: 48 82 17 44 5E 0E A1 EE 9F 65 62 E3 16 54 2E 00
 
-; THERE_IS_A_SARCOPHAGUS_HERE_WITH_IT'S_COVER_TIGHTLY_CLOSED.[CR]
+; THERE_IS_A_SARCOPHAGUS_HERE_WITH_IT'S_COVER_TIGHTLY_CLOSED.
 PS_41:
 6D78: 13 5F BE 5B B1 4B 7B 55 45 2D 49 62 A0 87 47 CA
 6D88: B5 2F 62 FB 17 53 BE 75 7B C5 B5 4F A1 96 AF 7A
 6D98: 79 13 BF DE 14 D7 A0 44 2E 00
 
-; SARCOPHAGUS_>GROAN<[CR]
+; SARCOPHAGUS_>GROAN<
 PS_42:
 6DA2: 06 14 B7 42 55 49 72 4B C6 84 2E 10 9E 3C 00
 
-; THERE_ARE_A_FEW_RECENT_ISSUES_OF_"EGYPTIAN_WEEKLY"_MAGAZINE_HERE[CR]
+; THERE_ARE_A_FEW_RECENT_ISSUES_OF_"EGYPTIAN_WEEKLY"_MAGAZINE_HERE
 PS_43:
 6DB1: 15 5F BE 5B B1 2F 49 7B 14 79 66 2F 17 B0 53 0B
 6DC1: BC E7 B9 4B 62 C3 9E 69 1B EE DE 90 78 F7 17 1E
 6DD1: 61 63 DB 89 91 73 4A 5B 98 F4 72 45 00
 
-; "EGYPTIAN_WEEKLY"[CR]
+; "EGYPTIAN_WEEKLY"
 PS_44:
 6DDE: 05 69 1B EE DE 90 78 F7 17 1E 61 59 22 00
 
-; THERE_IS_FOOD_HERE.[CR]
+; THERE_IS_FOOD_HERE.
 PS_45:
 6DEC: 06 5F BE 5B B1 4B 7B 01 68 0A 58 2F 62 2E 00
 
-; TASTY_FOOD[CR]
+; TASTY_FOOD
 PS_46:
 6DFB: 03 55 BD FB C0 01 68 44 00
 
-; THERE_IS_A_BOTTLE_HERE.[CR]
+; THERE_IS_A_BOTTLE_HERE.
 PS_47:
 6E04: 07 5F BE 5B B1 4B 7B 44 45 0E A1 DB 8B F4 72 45
 6E14: 2E 00
 
-; SMALL_BOTTLE[CR]
+; SMALL_BOTTLE
 PS_48:
 6E16: 04 E3 B8 F3 8C 06 4F FF BE 00
 
-; THERE_IS_WATER_IN_THE_BOTTLE.[CR]
+; THERE_IS_WATER_IN_THE_BOTTLE.
 PS_49:
 6E20: 09 5F BE 5B B1 4B 7B 16 D0 23 62 83 7A 5F BE B9
 6E30: 14 46 C0 45 2E 00
 
-; WATER_IN_THE_BOTTLE[CR]
+; WATER_IN_THE_BOTTLE
 PS_4A:
 6E36: 06 16 D0 23 62 83 7A 5F BE B9 14 46 C0 45 00
 
-; THERE_IS_A_TINY_PLANT_IN_THE_PIT,_MURMURING_"WATER,_WATER,_..."[CR]
+; THERE_IS_A_TINY_PLANT_IN_THE_PIT,_MURMURING_"WATER,_WATER,_..."
 PS_4B:
 6E45: 15 5F BE 5B B1 4B 7B 56 45 A3 7A E6 16 9E 48 D0
 6E55: 15 82 17 52 5E 96 7B 77 16 B7 B2 10 B2 BC 6A 16
 6E65: D0 46 62 F3 17 F4 BD 1F EE DC F9 00
 
 ; THERE_IS_A_TWELVE_FOOT_BEAN_STALK_STRETCHING_UP_OUT_OF_THE_PIT,_
-; BELLOWING_"WATER..._WATER..."[CR]
+; BELLOWING_"WATER..._WATER..."
 PS_4C:
 6E71: 1F 5F BE 5B B1 4B 7B 56 45 AE D0 5B CA 01 68 04
 6E81: BC 90 5F 66 17 45 48 66 17 76 B1 23 54 AB 98 D3
@@ -4633,14 +4808,14 @@ PS_4C:
 6EA1: D1 BC 6A 16 D0 47 62 DB F9 16 D0 47 62 DC F9 00
 
 ; THERE_IS_A_GIGANTIC_BEAN_STALK_STRETCHING_ALL_THE_WAY_UP_TO_THE_
-; HOLE.[CR]
+; HOLE.
 PS_4D:
 6EB1: 17 5F BE 5B B1 4B 7B 49 45 73 79 C3 9A C4 51 90
 6EC1: 5F 66 17 45 48 66 17 76 B1 23 54 AB 98 46 48 82
 6ED1: 17 59 5E 3B 4A D3 C5 6B BF 5F BE A9 15 FF 8B 00
 
 ; THERE_IS_A_MASSIVE_VENDING_MACHINE_HERE.__THE_INSTRUCTIONS_ON_IT
-; READ-_"DROP_COINS_HERE_TO_RECIEVE_FRESH_BATTERIES".[CR]
+; READ-_"DROP_COINS_HERE_TO_RECIEVE_FRESH_BATTERIES".
 PS_4E:
 6EE1: 26 5F BE 5B B1 4B 7B 4F 45 65 49 CF 7B CF 17 43
 6EF1: 98 AB 98 85 91 90 73 4A 5E 2F 62 3B F4 5F BE D0
@@ -4648,200 +4823,236 @@ PS_4E:
 6F11: 13 02 B3 E1 14 9D 7A 9F 15 5B B1 6B BF 65 B1 38
 6F21: 79 48 5E 75 B1 04 71 8E 49 33 62 4C 62 2E 00
 
-; THERE_ARE_FRESH_BATTERIES_HERE.[CR]
+; THERE_ARE_FRESH_BATTERIES_HERE.
 PS_4F:
 6F30: 0A 5F BE 5B B1 2F 49 5C 15 5A 62 AB 14 3F C0 07
 6F40: B2 CA B5 2F 62 2E 00
 
-; BATTERIES[CR]
+; BATTERIES
 PS_50:
 6F47: 03 D6 4C F4 BD 35 79 00
 
-; SOME_WORN-OUT_BATTERIES_HAVE_BEEN_DISCARDED_NEARBY.[CR]
+; SOME_WORN-OUT_BATTERIES_HAVE_BEEN_DISCARDED_NEARBY.
 PS_51:
 6F4F: 11 3F B9 59 5E B8 A0 47 EB 04 BC 8E 49 33 62 4B
 6F5F: 62 58 72 44 5E 30 60 03 15 53 B7 3F B1 10 58 94
 6F6F: 5F 9F 50 00
 
-; BATTERIES[CR]
+; BATTERIES
 PS_52:
 6F73: 03 D6 4C F4 BD 35 79 00
 
-; THERE_IS_A_LARGE_SPARKLING_NUGGET_OF_GOLD_HERE![CR]
+; THERE_IS_A_LARGE_SPARKLING_NUGGET_OF_GOLD_HERE!
 PS_53:
 6F7B: 0F 5F BE 5B B1 4B 7B 4E 45 31 49 55 5E 54 A4 C3
 6F8B: 86 AB 98 E9 9A B6 6C B8 16 81 15 B3 8B F4 72 45
 6F9B: 21 00
 
-; LARGE_GOLD_NUGGET[CR]
+; LARGE_GOLD_NUGGET
 PS_54:
 6F9D: 05 54 8B 9B 6C 3E 6E 10 58 79 C4 45 54 00
 
-; THERE_ARE_DIAMONDS_HERE![CR]
+; THERE_ARE_DIAMONDS_HERE!
 PS_55:
 6FAB: 08 5F BE 5B B1 2F 49 03 15 71 48 4D 98 9F 15 59
 6FBB: B1 00
 
-; SEVERAL_DIAMONDS[CR]
+; SEVERAL_DIAMONDS
 PS_56:
 6FBD: 05 B8 B7 2B 62 06 8A 8F 78 0E A0 53 00
 
-; THERE_ARE_BARS_OF_SILVER_HERE![CR]
+; THERE_ARE_BARS_OF_SILVER_HERE!
 PS_57:
 6FCA: 0A 5F BE 5B B1 2F 49 AB 14 8B B3 C3 9E 4E B8 74
 6FDA: CA 9F 15 59 B1 00
 
-; SILVER_BARS[CR]
+; SILVER_BARS
 PS_58:
 6FE0: 03 4E B8 74 CA AB 14 52 53 00
 
-; THERE_IS_PRECIOUS_JEWELRY_HERE![CR]
+; THERE_IS_PRECIOUS_JEWELRY_HERE!
 PS_59:
 6FEA: 0A 5F BE 5B B1 4B 7B EF A6 51 54 4B C6 79 7F 4C
 6FFA: 61 4A DB 2F 62 21 00
 
-; PRECIOUS_JEWELRY[CR]
+; PRECIOUS_JEWELRY
 PS_5A:
 7001: 05 EF A6 51 54 4B C6 79 7F 4C 61 59 00
 
-; THERE_ARE_MANY_COINS_HERE![CR]
+; THERE_ARE_MANY_COINS_HERE!
 PS_5B:
 700E: 08 5F BE 5B B1 2F 49 63 16 7B 9B 3B 55 8B 9A F4
 701E: 72 45 21 00
 
-; RARE_COINS[CR]
+; RARE_COINS
 PS_5C:
 7022: 03 D4 B0 45 5E 50 9F 53 00
 
-; THE_PHARAOH'S_TREASURE_CHEST_IS_HERE![CR]
+; THE_PHARAOH'S_TREASURE_CHEST_IS_HERE!
 PS_5D:
 702B: 0C 5F BE E2 16 2B 49 15 9F D6 B5 63 B1 34 BA 45
 703B: 5E F5 72 0B BC CA B5 2F 62 21 00
 
-; TREASURE_CHEST[CR]
+; TREASURE_CHEST
 PS_5E:
 7046: 04 EF BF 67 49 5B B1 1F 54 53 54 00
 
-; THERE_IS_A_LARGE_NEST_HERE,_FULL_OF_GOLDEN_EGGS![CR]
+; THERE_IS_A_LARGE_NEST_HERE,_FULL_OF_GOLDEN_EGGS!
 PS_5F:
 7052: 10 5F BE 5B B1 4B 7B 4E 45 31 49 50 5E 66 62 9F
 7062: 15 7E B1 5F 15 F3 8C C3 9E 3E 6E F0 59 29 15 C9
 7072: 6E 00
 
-; GOLDEN_EGGS[CR]
+; GOLDEN_EGGS
 PS_60:
 7074: 03 3E 6E F0 59 29 15 47 53 00
 
-; THERE_IS_A_JEWEL-ENCRUSTED_KEY_HERE![CR]
+; THERE_IS_A_JEWEL-ENCRUSTED_KEY_HERE!
 PS_61:
 707E: 0C 5F BE 5B B1 4B 7B 4C 45 F7 62 57 8F 24 98 66
 708E: C6 F3 5F BB 85 9F 15 59 B1 00
 
-; JEWELED_KEY[CR]
+; JEWELED_KEY
 PS_62:
 7098: 03 79 7F 3F 61 0D 58 45 59 00
 
-; THERE_IS_A_DELICATE,_PRECIOUS,_VASE_HERE![CR]
+; THERE_IS_A_DELICATE,_PRECIOUS,_VASE_HERE!
 PS_63:
 70A2: 0D 5F BE 5B B1 4B 7B 46 45 43 61 16 53 B3 63 EF
 70B2: A6 51 54 6E C6 CB 17 9B B7 F4 72 45 21 00
 
-; VASE[CR]
+; VASE
 PS_64:
 70C0: 01 D5 C9 45 00
 
-; THE_VASE_IS_NOW_RESTING,_DELICATELY,_ON_A_VELVET_PILLOW.[CR]
+; THE_VASE_IS_NOW_RESTING,_DELICATELY,_ON_A_VELVET_PILLOW.
 PS_65:
 70C5: 12 5F BE CB 17 9B B7 4B 7B 09 9A 2F 17 03 BA CE
 70D5: 98 FF 14 85 8C 7F 49 1E 8F C0 16 7B 14 6E CA 76
 70E5: CA E3 16 09 8D 57 2E 00
 
-; THE_FLOOR_IS_LITTERED_WITH_WORTHLESS_SHARDS_OF_POTTERY.[CR]
+; THE_FLOOR_IS_LITTERED_WITH_WORTHLESS_SHARDS_OF_POTTERY.
 PS_66:
 70ED: 12 5F BE 56 15 44 A0 D5 15 43 16 3F C0 66 B1 FB
 70FD: 17 53 BE 44 D2 66 BE 65 62 5A 17 2E 49 D1 B5 92
 710D: 64 0E A1 43 62 2E 00
 
-; THERE_IS_AN_EMERALD_HERE_THE_SIZE_OF_A_PLOVER'S_EGG![CR]
+; THERE_IS_AN_EMERALD_HERE_THE_SIZE_OF_A_PLOVER'S_EGG!
 PS_67:
 7114: 11 5F BE 5B B1 4B 7B 83 48 67 61 CE B0 0A 58 2F
 7124: 62 82 17 55 5E 6F 7C B8 16 7B 14 09 A6 74 CA CB
 7134: 23 79 60 21 00
 
-; EGG-SIZED_EMERALD[CR]
+; EGG-SIZED_EMERALD
 PS_68:
 7139: 05 79 60 DB EB 66 E3 2F 15 2B 62 4C 44 00
 
-; OFF_TO_ONE_SIDE_LIES_A_GLISTENING_PEARL![CR]
+; OFF_TO_ONE_SIDE_LIES_A_GLISTENING_PEARL!
 PS_69:
 7147: 0D D0 9E 89 17 C0 16 55 5E FF 78 43 16 4B 62 49
 7157: 45 95 8C F0 BD 91 7A DF 16 36 49 21 00
 
-; GLISTENING_PEARL[CR]
+; GLISTENING_PEARL
 PS_6A:
 7164: 05 C3 6D FF B9 10 99 D2 6A 94 5F 4C 00
+```
 
-; YOU_ARE_AT_THE_BOTTOM_OF_THE_PIT_WITH_A_BROKEN_NECK.[CR]
+# Miscalaneous messages (packed)
+
+```code
+; 20	 YOU ARE AT THE BOTTOM OF THE PIT WITH A BROKEN NECK.
+; woods20
+;
+; YOU_ARE_AT_THE_BOTTOM_OF_THE_PIT_WITH_A_BROKEN_NECK.
 PS_6B:
 7171: 11 C7 DE 94 14 43 5E 16 BC DB 72 06 4F 7F BF B8
 7181: 16 82 17 52 5E 73 7B 56 D1 03 71 BC 14 97 9F 90
 7191: 96 DD 5F 2E 00
 
-; THE_CRACK_IS_FAR_TOO_SMALL_FOR_YOU_TO_FOLLOW.[CR]
+; 16	 THE CRACK IS FAR TOO SMALL FOR YOU TO FOLLOW.
+; woods16
+;
+; THE_CRACK_IS_FAR_TOO_SMALL_FOR_YOU_TO_FOLLOW.
 PS_6C:
 7196: 0F 5F BE E4 14 DD 46 D5 15 4B 15 96 AF 2B A0 E3
 71A6: B8 F3 8C 04 68 51 18 56 C2 C8 9C C6 9F 8F A1 00
 
-; THE_DOME_IS_UNCLIMBABLE.[CR]
+; 22	 THE DOME IS UNCLIMBABLE
+; woods22
+;
+; THE_DOME_IS_UNCLIMBABLE.
 PS_6D:
 71B6: 08 5F BE 09 15 1B 92 4B 7B 8D C5 8F 8C C4 4C FF
 71C6: 8B 00
 
 ; I_RESPECTFULLY_SUGGEST_YOU_GO_ACROSS_THE_BRIDGE_INSTEAD_OF______
-; JUMPING.[CR]
+; JUMPING.
 PS_6E:
 71C8: 18 54 77 62 62 E6 5F EE 68 FB 8E 29 BA B5 6C 1B
 71D8: BC 1B A1 2B 6E E4 46 E5 A0 82 17 44 5E 06 B2 9B
 71E8: 6C 9D 7A E3 BD 11 58 7B 64 3B 13 FF 15 E3 93 CF
 71F8: 98 00
 
-; YOU_DIDN'T_MAKE_IT.[CR]
+; 21	 YOU DIDN'T MAKE IT
+; woods21
+;
+; YOU_DIDN'T_MAKE_IT.
 PS_6F:
 71FA: 06 C7 DE 03 15 45 5B 0F BC 17 48 D6 15 2E 00
 
-; THERE_IS_NO_WAY_ACROSS_THE_BOTTOMLESS_PIT.[CR]
+; 31	 THERE IS NO WAY ACROSS THE FISSURE.
+;
+; THERE_IS_NO_WAY_ACROSS_THE_BOTTOMLESS_PIT.
 PS_70:
 7209: 0E 5F BE 5B B1 4B 7B EB 99 1B D0 85 14 05 B3 D6
 7219: B5 DB 72 06 4F 7F BF F5 8B D2 B5 97 7B 00
 
-; YOU_CAN'T_GET_BY_THE_SERPENT.[CR]
+; 32	 YOU CAN'T GET BY THE SNAKE
+; woods32
+;
+; YOU_CAN'T_GET_BY_THE_SERPENT.
 PS_71:
 7227: 09 C7 DE D3 14 E6 96 77 15 04 BC 56 DB DB 72 B4
 7237: B7 F0 A4 54 2E 00
 
+; 40	 YOU HAVE CRAWLED THROUGH A VERY LOW WIDE PASSAGE PARALLEL
+; 40	 TO AND NORTH OF THE HALL OF MISTS.
+; woods40 and woods59
+;
 ; YOU_HAVE_CRAWLED_THROUGH_A_VERY_LOW_WIDE_PASSAGE_PARALLEL_TO_AND
-; NORTH_OF_THE_HALL_OF_GODS.[CR]
+; NORTH_OF_THE_HALL_OF_GODS.
 PS_72:
 723D: 1E C7 DE 9B 15 5B CA AB 55 BF D1 16 58 F9 74 7A
 724D: C4 7B 14 74 CA 4E DB 6B A1 46 D1 52 5E 65 49 77
 725D: 47 DB 16 CE B0 EE 8B 89 17 90 14 59 5B C2 B3 B8
 726D: 16 82 17 4A 5E 46 48 B8 16 81 15 2F 5C 00
 
-; YOU_DON'T_FIT_THROUGH_TWO-INCH_SLIT![CR]
+; no crowther
+; woods95   YOU DON'T FIT THROUGH A TWO-INCH SLIT!
+;
+; YOU_DON'T_FIT_THROUGH_TWO-INCH_SLIT!
 PS_73:
 727B: 0C C7 DE 09 15 E6 96 53 15 16 BC F9 74 7A C4 91
 728B: 17 1B A2 1A 98 5E 17 71 7B 00
 
+; 56	 YOU HAVE CRAWLED AROUND IN SOME LITTLE HOLES AND WOUND UP
+; 56	 BACK IN THE MAIN PASSAGE.
+; woods56
+;
 ; YOU_HAVE_CRAWLED_AROUND_IN_SOME_LITTLE_HOLES_AND_WOUND_UP_BACK__
-; IN_THE_MAIN_PASSAGE.[CR]
+; IN_THE_MAIN_PASSAGE.
 PS_74:
 7295: 1C C7 DE 9B 15 5B CA AB 55 BF D1 03 58 07 B3 33
 72A5: 98 83 7A 3F B9 4E 5E 8E 7B DB 8B 7E 74 4B 62 8E
 72B5: 48 01 18 8E C5 B2 17 AB 14 8B 54 D0 15 82 17 4F
 72C5: 5E D0 47 DB 16 D3 B9 BF 6C 00
 
+; no crowther
+; woods126   YOU HAVE CRAWLED AROUND IN SOME LITTLE HOLES AND FOUND YOUR WAY
+; woods126   BLOCKED BY A RECENT CAVE-IN.  YOU ARE NOW BACK IN THE MAIN PASSAGE.
+;
 ; YOU_HAVE_CRAWLED_AROUND_IN_SOME_LITTLE_HOLES_AND_FOUND_YOUR_WAY_
-; BLOCKED_BY_A_FALLEN_SLAB.__YOU_ARE_NOW_BACK_IN_THE_MAIN_PASSAGE.[CR]
+; BLOCKED_BY_A_FALLEN_SLAB.__YOU_ARE_NOW_BACK_IN_THE_MAIN_PASSAGE.
 PS_75:
 72CF: 2A C7 DE 9B 15 5B CA AB 55 BF D1 03 58 07 B3 33
 72DF: 98 83 7A 3F B9 4E 5E 8E 7B DB 8B 7E 74 4B 62 8E
@@ -4850,14 +5061,14 @@ PS_75:
 730F: C2 5B B1 09 9A AB 14 8B 54 83 7A 5F BE 63 16 83
 731F: 7A 55 A4 09 B7 45 2E 00
 
-; YOU_CAN'T_FIT_THIS_BIG_SARCOPHAGUS_THROUGH_THAT_LITTLE_PASSAGE![CR]
+; YOU_CAN'T_FIT_THIS_BIG_SARCOPHAGUS_THROUGH_THAT_LITTLE_PASSAGE!
 PS_76:
 7327: 15 C7 DE D3 14 E6 96 53 15 16 BC 95 73 B3 14 D5
 7337: 6A 2D 49 62 A0 87 47 D6 B5 F9 74 7A C4 82 17 73
 7347: 49 96 8C FF BE DB 16 D3 B9 99 6C 00
 
 ; SOMETHING_YOU'RE_CARRYING_WON'T_FIT_THROUGH_THE_TUNNEL_WITH_YOU.
-; YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.[CR]
+; YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.
 PS_77:
 7353: 24 3F B9 82 62 91 7A 51 18 A4 C2 45 5E 3C 49 D0
 7363: DD D9 6A 05 A0 08 BC 73 7B 6C BE 29 A1 16 71 DB
@@ -4865,68 +5076,93 @@ PS_77:
 7383: 14 F3 B9 4D BD 4B 5E 0F 9B C9 9A 7B B4 8E 48 0C
 7393: 15 53 A0 3F B9 82 62 91 7A 2E 00
 
-; YOU_CLAMBER_UP_THE_PLANT_AND_SCURRY_THROUGH_THE_HOLE_AT_THE_TOP.[CR]
+; woods26   YOU CLAMBER UP THE PLANT AND SCURRY THROUGH THE HOLE AT THE TOP.
+; YOU_CLAMBER_UP_THE_PLANT_AND_SCURRY_THROUGH_THE_HOLE_AT_THE_TOP.
 PS_78:
 739E: 15 C7 DE DE 14 64 48 23 62 D3 C5 5F BE E6 16 9E
 73AE: 48 90 14 15 58 34 56 7B B4 6C BE 29 A1 16 71 DB
 73BE: 72 7E 74 43 5E 16 BC DB 72 82 BF 2E 00
 
-; YOU'VE_CLIMBED_UP_THE_PLANT_AND_OUT_OF_THE_PIT.[CR]
+; YOU'VE_CLIMBED_UP_THE_PLANT_AND_OUT_OF_THE_PIT.
 PS_79:
 73CB: 0F C7 DE 4F 24 DE 14 64 7A F3 5F D3 C5 5F BE E6
 73DB: 16 9E 48 90 14 11 58 73 C6 C3 9E 5F BE E3 16 54
 73EB: 2E 00
 
-; THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.[CR]
+; 9	 THERE IS NO WAY TO GO THAT DIRECTION.
+;
+; THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.
 PS_7A:
 73ED: 0F 5F BE 5B B1 4B 7B EB 99 1B D0 59 15 9B AF 1B
 73FD: A1 6B BF 2B 6E 5B BE 06 BC 2F 7B 03 56 27 A0 00
 
-; I_DON'T_KNOW_IN_FROM_OUT_HERE.__USE_COMPASS_POINTS.[CR]
+; 11	 I DON'T KNOW IN FROM OUT HERE. USE COMPASS POINTS OR NAME
+; 11	 SOMETHING IN THE GENERAL DIRECTION YOU WANT TO GO.
+;
+; I_DON'T_KNOW_IN_FROM_OUT_HERE.__USE_COMPASS_POINTS.
 PS_7B:
 740D: 11 46 77 05 A0 0D BC 09 9A D0 15 5C 15 DB 9F 36
 741D: A1 9F 15 7F B1 57 13 9B B7 3F 55 55 A4 D2 B5 50
 742D: 9F 2F C0 00
 
-; I_AM_UNSURE_HOW_YOU_ARE_FACING.__USE_COMPASS_POINTS.[CR]
+; 10	 I AM UNSURE HOW YOU ARE FACING. USE COMPASS POINTS OR
+; 10	 NEARBY OBJECTS.
+;
+; I_AM_UNSURE_HOW_YOU_ARE_FACING.__USE_COMPASS_POINTS.
 PS_7C:
 7431: 11 43 77 57 90 A7 9A 5B B1 89 74 51 18 43 C2 5B
 7441: B1 C5 65 91 7A 3B F4 57 C6 E1 14 DB 93 CB B9 7B
 7451: A6 CD 9A 2E 00
 
-; NOTHING_HAPPENS.[CR]
+; 42	 NOTHING HAPPENS.
+;
+; NOTHING_HAPPENS.
 PS_7D:
 7456: 05 06 9A 90 73 CA 6A EA 48 9D 61 2E 00
 
-; I_DON'T_KNOW_HOW.[CR]
-PS_7E:
+; I_DON'T_KNOW_HOW.
+PS_7E: ; (only used for SWIM)
 7463: 05 46 77 05 A0 0D BC 09 9A A9 15 57 2E 00
 
-; I_DON'T_KNOW_HOW_TO_APPLY_THAT_WORD_HERE.[CR]
+; 12	 I DON'T KNOW HOW TO APPLY THAT WORD HERE.
+;
+; I_DON'T_KNOW_HOW_TO_APPLY_THAT_WORD_HERE.
 PS_7F:
 7471: 0D 46 77 05 A0 0D BC 09 9A A9 15 D6 CE C3 9C A6
 7481: A6 56 DB 56 72 01 18 33 B1 F4 72 45 2E 00
 
-; YOUR_LAMP_IS_NOW_ON.[CR]
+; 39	 YOUR LAMP IS NOW ON.
+;
+; YOUR_LAMP_IS_NOW_ON.
 PS_80:
 748F: 06 C7 DE 8E AF 72 48 D5 15 99 16 D1 CE 4E 2E 00
 
-; YOU_HAVE_NO_SOURCE_OF_LIGHT.[CR]
+; 38	 YOU HAVE NO SOURCE OF LIGHT.
+;
+; YOU_HAVE_NO_SOURCE_OF_LIGHT.
 PS_81:
 749F: 09 C7 DE 9B 15 5B CA EB 99 47 B9 17 B1 B8 16 43
 74AF: 16 2E 6D 2E 00
 
-; YOUR_LAMP_IS_NOW_OFF.[CR]
+; 40	 YOUR LAMP IS NOW OFF.
+;
+; YOUR_LAMP_IS_NOW_OFF.
 PS_82:
 74B4: 07 C7 DE 8E AF 72 48 D5 15 99 16 D1 CE A7 66 00
 
-; I'M_AS_CONFUSED_AS_YOU_ARE.[CR]
+; 68	 I'M AS CONFUSED AS YOU ARE.
+;
+; I'M_AS_CONFUSED_AS_YOU_ARE.
 PS_83:
 74C4: 09 9F 77 95 14 E1 14 9F 98 A6 B7 95 14 51 18 43
 74D4: C2 7F B1 00
 
+; 59	 I CAN ONLY TELL YOU WHAT YOU SEE AS YOU MOVE ABOUT
+; 59	 AND MANIPULATE THINGS. I CANNOT TELL YOU WHERE REMOTE THINGS
+; 59	 ARE.
+;
 ; I_CAN_ONLY_TELL_YOU_WHAT_YOU_SEE_AS_YOU_MOVE_ABOUT_AND__________
-; MANIPULATE_THINGS.__I_CAN_NOT_TELL_YOU_WHERE_REMOTE_THINGS_ARE.[CR]
+; MANIPULATE_THINGS.__I_CAN_NOT_TELL_YOU_WHERE_REMOTE_THINGS_ARE.
 PS_84:
 74D8: 2A 45 77 83 48 16 A0 56 DB 46 61 51 18 59 C2 56
 74E8: 72 51 18 55 C2 1B 60 4B 49 C7 DE 71 16 5B CA B9
@@ -4935,54 +5171,64 @@ PS_84:
 7518: 17 F3 8C C7 DE FA 17 2F 62 2F 17 C6 93 56 5E 90
 7528: 73 CB 6E 2F 49 2E 00
 
-; OK_[CR]
+; 54	 OK
+;
+; OK_
 PS_85:
 752F: 01 8B 9F 00
 
-; SORRY,_BUT_I_NO_LONGER_SEEM_TO_REMEMBER_HOW_IT_WAS_YOU_GOT_HERE.[CR]
+; SORRY,_BUT_I_NO_LONGER_SEEM_TO_REMEMBER_HOW_IT_WAS_YOU_GOT_HERE.
 PS_86:
 7533: 15 44 B9 9E B4 BF 14 0B BC 99 16 49 16 B7 98 95
 7543: AF 2F 60 89 17 2F 17 2F 92 74 4D A9 15 CB CE 19
 7553: BC 4B 49 C7 DE 81 15 0A BC 2F 62 2E 00
 
-; YOU_ARE_ALREADY_CARRYING_IT.[CR]
+; 24	 YOU ARE ALREADY CARRYING IT!
+;
+; YOU_ARE_ALREADY_CARRYING_IT.
 PS_87:
 7560: 09 C7 DE 94 14 43 5E EF 8D 13 47 D3 14 83 B3 91
 7570: 7A D6 15 2E 00
 
 ; YOU_CAN'T_CARRY_ANYTHING_MORE.__YOU'LL_HAVE_TO_DROP_SOMETHING___
-; FIRST.[CR]
+; FIRST.
 PS_88:
 7575: 17 C7 DE D3 14 E6 96 D3 14 83 B3 90 14 82 DF 91
 7585: 7A 71 16 7F B1 5B 13 1D A1 F3 8C 58 72 56 5E C6
 7595: 9C 02 B3 61 17 36 92 90 73 BB 6A 53 15 A6 B3 2E
 75A5: 00
 
-; YOU'RE_NOT_CARRYING_ANYTHING.[CR]
+; YOU'RE_NOT_CARRYING_ANYTHING.
 PS_89:
 75A6: 09 C7 DE AF 23 99 16 05 BC 3C 49 D0 DD C3 6A 96
 75B6: 9B 90 73 47 2E 00
 
-; YOU_ARE_CURRENTLY_HOLDING_THE_FOLLOWING:[CR]
+; YOU_ARE_CURRENTLY_HOLDING_THE_FOLLOWING:
 PS_8A:
 75BC: 0D C7 DE 94 14 45 5E 3C C6 9E 61 FB 8E 7E 74 90
 75CC: 5A D6 6A DB 72 FE 67 89 8D 91 7A 3A 00
 
-; DON'T_BE_RIDICULOUS![CR]
+; DON'T_BE_RIDICULOUS!
 PS_8B:
 75D9: 06 80 5B F3 23 5B 4D 06 B2 E7 78 87 8D 53 21 00
 
-; YOUR_BOTTLE_IS_EMPTY_AND_THE_GROUND_IS_WET.[CR]
+; 77	 YOUR BOTTLE IS EMPTY AND THE GROUND IS WET.
+; YOUR_BOTTLE_IS_EMPTY_AND_THE_GROUND_IS_WET.
 PS_8C:
 75E9: 0E C7 DE 84 AF 0E A1 DB 8B 4B 7B 72 61 FB C0 8E
 75F9: 48 82 17 49 5E 07 B3 33 98 4B 7B B6 D0 2E 00
 
-; YOU_CAN'T_POUR_THAT.[CR]
+; 78	 YOU CAN'T POUR THAT.
+;
+; YOU_CAN'T_POUR_THAT.
 PS_8D:
 7608: 06 C7 DE D3 14 E6 96 E9 16 23 C6 5B BE 54 2E 00
 
+; 75	 RUBBING THE ELECTRIC LAMP IS NOT PARTICULARLY REWARDING.
+; 75	 ANYWAY, NOTHING EXCITING HAPPENS.
+;
 ; RUBBING_THE_ELECTRIC_LAMP_IS_NOT_PARTICULARLY_REWARDING.________
-; ANYWAY,_NOTHING_EXCITING_HAPPENS.[CR]
+; ANYWAY,_NOTHING_EXCITING_HAPPENS.
 PS_8E:
 7618: 20 E4 B3 10 4E D6 6A DB 72 3F 61 0C 56 CB 78 4F
 7628: 8B 0B A3 D0 B5 F3 A0 54 A4 85 BE 3B C5 93 B2 2F
@@ -4990,28 +5236,30 @@ PS_8E:
 7648: E0 06 9A 90 73 C7 6A 9B D6 90 BE CA 6A EA 48 9D
 7658: 61 2E 00
 
-; PECULIAR.__NOTHING_UNEXPECTED_HAPPENS.[CR]
+; 76	 PECULIAR.  NOTHING UNEXPECTED HAPPENS.
+;
+; PECULIAR.__NOTHING_UNEXPECTED_HAPPENS.
 PS_8F:
 765B: 0C E5 A4 43 C5 47 49 50 13 02 A1 91 7A B0 17 2A
 766B: 63 E6 5F F3 5F 52 72 F0 A4 53 2E 00
 
-; THERE_IS_NOTHING_HERE_WITH_WHICH_TO_FILL_THE_BOTTLE.[CR]
+; THERE_IS_NOTHING_HERE_WITH_WHICH_TO_FILL_THE_BOTTLE.
 PS_90:
 7677: 11 5F BE 5B B1 4B 7B 06 9A 90 73 CA 6A 2F 62 FB
 7687: 17 53 BE 23 D1 13 54 6B BF 0E 67 16 8A DB 72 06
 7697: 4F FF BE 2E 00
 
-; THE_BOTTLE_IS_NOW_EMPTY.[CR]
+; THE_BOTTLE_IS_NOW_EMPTY.
 PS_91:
 769C: 08 5F BE B9 14 46 C0 4B 5E D0 B5 6B A1 72 61 1F
 76AC: C1 00
 
-; YOU_CAN'T_FILL_THAT.[CR]
+; YOU_CAN'T_FILL_THAT.
 PS_92:
 76AE: 06 C7 DE D3 14 E6 96 53 15 F3 8C 5B BE 54 2E 00
 
 ; A_GLISTENING_PEARL_FALLS_OUT_OF_THE_SARCOPHAGUS_AND_ROLLS_AWAY._
-; THE_SARCOPHAGUS_SNAPS_SHUT_AGAIN.[CR]
+; THE_SARCOPHAGUS_SNAPS_SHUT_AGAIN.
 PS_93:
 76BE: 20 49 45 95 8C F0 BD 91 7A DF 16 36 49 4B 15 0D
 76CE: 8D C7 16 11 BC 96 64 DB 72 14 B7 42 55 49 72 4B
@@ -5019,72 +5267,74 @@ PS_93:
 76EE: 49 62 A0 87 47 D5 B5 D2 97 D5 B5 76 75 89 14 D0
 76FE: 47 2E 00
 
-; I'D_ADVISE_YOU_TO_PUT_DOWN_THE_SARCOPHAGUS_BEFORE_OPENING_IT!![CR]
+; I'D_ADVISE_YOU_TO_PUT_DOWN_THE_SARCOPHAGUS_BEFORE_OPENING_IT!!
 PS_94:
 7701: 14 96 77 86 14 15 CB 5B 5E 1B A1 6B BF 76 A7 09
 7711: 15 03 D2 5F BE 53 17 21 B1 5B A5 35 6F AF 14 04
 7721: 68 51 5E F0 A4 91 7A D6 15 21 21 00
 
 ; THE_SARCOPHAGUS_CREAKS_OPEN,_REVEALING_NOTHING_INSIDE.__IT______
-; PROMPTLY_SNAPS_SHUT_AGAIN.[CR]
+; PROMPTLY_SNAPS_SHUT_AGAIN.
 PS_95:
 772D: 1E 5F BE 53 17 21 B1 5B A5 35 6F E4 14 8D 5F D1
 773D: B5 F0 A4 14 EE CF 62 43 48 AB 98 06 9A 90 73 CB
 774D: 6A 9B 9A FF 59 4B 13 FB BB 3B 13 EC 16 F2 9F 13
 775D: BF 60 17 ED 48 5A 17 73 C6 73 47 A7 7A 00
 
-; YOU_DON'T_HAVE_ANYTHING_STRONG_ENOUGH_TO_OPEN_THE_SARCOPHAGUS.[CR]
+; YOU_DON'T_HAVE_ANYTHING_STRONG_ENOUGH_TO_OPEN_THE_SARCOPHAGUS.
 PS_96:
 776B: 14 C7 DE 09 15 E6 96 9B 15 5B CA A3 48 63 BE AB
 777B: 98 0C BA 11 A0 30 15 29 A1 16 71 D1 9C F0 A4 82
 778B: 17 55 5E 2D 49 62 A0 87 47 53 2E 00
 
-; I_DON'T_KNOW_HOW_TO_LOCK_OR_UNLOCK_SUCH_A_THING.[CR]
+; I_DON'T_KNOW_HOW_TO_LOCK_OR_UNLOCK_SUCH_A_THING.
 PS_97:
 7797: 10 46 77 05 A0 0D BC 09 9A A9 15 D6 CE CE 9C 5D
 77A7: 9E C4 16 B0 17 75 8D D5 83 DA C3 7B 14 63 BE CF
 77B7: 98 00
 
-; THE_BIRD_STATUE_IS_NOW_DEAD.__ITS_BODY_DISAPPEARS.[CR]
+; THE_BIRD_STATUE_IS_NOW_DEAD.__ITS_BODY_DISAPPEARS.
 PS_98:
 77B9: 10 5F BE B3 14 33 B1 FB B9 67 C0 D5 15 99 16 C6
 77C9: CE 86 5F 3B F4 8D 7B B9 14 FB 5C 95 5A EA 48 94
 77D9: 5F 53 2E 00
 
-; THE_STONE_IS_VERY_STRONG_AND_IS_IMPERVIOUS_TO_ATTACK.[CR]
+; THE_STONE_IS_VERY_STRONG_AND_IS_IMPERVIOUS_TO_ATTACK.
 PS_99:
 77DD: 11 5F BE 66 17 0F A0 D5 15 CF 17 7B B4 0C BA 11
 77ED: A0 90 14 0B 58 CB B5 DF 93 13 B4 35 A1 89 17 96
 77FD: 14 45 BD 4B 2E 00
 
-; ATTACKING_THE_SERPENT_BOTH_DOESN'T_WORK_AND_IS_VERY_DANGEROUS.[CR]
+; ATTACKING_THE_SERPENT_BOTH_DOESN'T_WORK_AND_IS_VERY_DANGEROUS.
 PS_9A:
 7803: 14 8E 49 DD 46 91 7A 82 17 55 5E 3A 62 9E 61 B9
 7813: 14 53 BE 77 5B 05 B9 19 BC B5 A0 90 14 0B 58 D8
 7823: B5 43 62 FB 14 B7 98 07 B3 53 2E 00
 
-; YOU_CAN'T_BE_SERIOUS![CR]
+; 25	 YOU CAN'T BE SERIOUS!
+;
+; YOU_CAN'T_BE_SERIOUS!
 PS_9B:
 782F: 07 C7 DE D3 14 E6 96 AF 14 57 17 11 B2 49 C6 00
 
-; IT_IS_BEYOND_YOUR_POWER_TO_DO_THAT.[CR]
+; IT_IS_BEYOND_YOUR_POWER_TO_DO_THAT.
 PS_9C:
 783F: 0B 73 7B 4B 7B 7B 4D 0E A0 51 18 23 C6 89 A6 23
 784F: 62 6B BF 6B 5B 5B BE 54 2E 00
 
-; THANK_YOU,_IT_WAS_DELICIOUS![CR]
+; THANK_YOU,_IT_WAS_DELICIOUS!
 PS_9D:
 7859: 09 5B BE 4B 99 C7 DE 0B EE 19 BC 4B 49 EE 59 DB
 7869: 78 35 A1 21 00
 
-; I_THINK_I_JUST_LOST_MY_APPETITE.[CR]
+; I_THINK_I_JUST_LOST_MY_APPETITE.
 PS_9E:
 786E: 0A 56 77 90 73 CB 83 FF 15 F3 B9 85 8D 0F BC 43
 787E: DB 9F A6 96 BE 45 2E 00
 
 ; YOU_HAVE_TAKEN_A_DRINK_FROM_THE_STREAM.__THE_WATER_TASTES_______
 ; STRONGLY_OF_MINERALS,_BUT_IS_NOT_UNPLEASANT.__IT_IS_EXTREMELY___
-; COLD.[CR]
+; COLD.
 PS_9F:
 7886: 2C C7 DE 9B 15 5B CA 4D BD 83 61 46 45 10 B2 C8
 7896: 83 FF B2 82 17 55 5E EF BF 7F 48 56 13 DB 72 16
@@ -5093,39 +5343,46 @@ PS_9F:
 78C6: 9A B0 17 FF A5 53 49 D7 9A 4B 13 0B BC C7 B5 4C
 78D6: D9 67 61 FB 8E 45 13 BE 9F 2E 00
 
-; IT'S_NOT_HUNGRY.__BESIDES,_YOU_HAVE_NO_BIRD_SEED.[CR]
+; IT'S_NOT_HUNGRY.__BESIDES,_YOU_HAVE_NO_BIRD_SEED.
 PS_A0:
 78E1: 10 75 7B D0 B5 F3 A0 70 75 C3 6E 3B F4 75 4D FF
 78F1: 78 33 BB C7 DE 9B 15 5B CA EB 99 14 4E 15 58 26
 7901: 60 2E 00
 
-; YOU_FELL_INTO_A_PIT_AND_BROKE_EVERY_BONE_IN_YOUR_BODY. [CR]
+; 23	 YOU FELL INTO A PIT AND BROKE EVERY BONE IN YOUR BODY!
+;
+; YOU_FELL_INTO_A_PIT_AND_BROKE_EVERY_BONE_IN_YOUR_BODY. 
 PS_A1:
 7904: 12 C7 DE 4F 15 F3 8C 9E 7A C3 9C E3 16 03 BC 33
 7914: 98 79 4F 9B 85 CF 62 7B B4 00 4F 4B 5E 9B 96 34
 7924: A1 B9 14 1F 5D 20 00
 
-; THE_SERPENT_HAS_NOW_DEVOURED_YOUR_BIRD_STATUE.[CR]
+; 45	 THE LITTLE BIRD IS NOW DEAD. ITS BODY DISAPPEARS.
+;
+; THE_SERPENT_HAS_NOW_DEVOURED_YOUR_BIRD_STATUE.
 PS_A2:
 792B: 0F 5F BE 57 17 1F B3 B3 9A 55 72 99 16 C6 CE D9
 793B: 62 2F C6 1B 58 34 A1 B3 14 33 B1 FB B9 67 C0 2E
 794B: 00
 
-; THERE_IS_NOTHING_HERE_IT_WANTS_TO_EAT_-_EXCEPT_PERHAPS_YOU.[CR]
+; THERE_IS_NOTHING_HERE_IT_WANTS_TO_EAT_-_EXCEPT_PERHAPS_YOU.
 PS_A3:
 794C: 13 5F BE 5B B1 4B 7B 06 9A 90 73 CA 6A 2F 62 D6
 795C: 15 F3 17 CD 9A 89 17 23 15 1D BC 3A 15 B2 53 12
 796C: BC 32 62 ED 48 51 18 55 2E 00
 
+; 16	 IT IS NOW PITCH BLACK. IF YOU PROCEED YOU WILL LIKELY
+; 16	 FALL INTO A PIT.
+;
 ; IT_IS_NOW_PITCH_DARK.__IF_YOU_PROCEED,_YOU_WILL_LIKELY_FALL_INTO
-; A_PIT.[CR]
+; A_PIT.
 PS_A4:
 7976: 17 73 7B 4B 7B 09 9A E3 16 9A BD FB 14 6F B2 4B
 7986: 13 9B 64 1B A1 F9 A6 A7 53 73 5D C7 DE FB 17 F3
 7996: 8C 8D 8C 53 61 4B 15 F3 8C 9E 7A FB 9D 96 A5 2E
 79A6: 00
 
-; I'M_GAME.__WOULD_YOU_CARE_TO_EXPLAIN_HOW?[CR]
+; I'M_GAME.__WOULD_YOU_CARE_TO_EXPLAIN_HOW?
 PS_A5:
 79A7: 0D 9F 77 73 15 3F 92 59 13 2E A1 1B 58 1B A1 14
 79B7: 53 56 5E C7 9C A6 D8 D0 47 A9 15 57 3F 00
@@ -5133,7 +5390,7 @@ PS_A5:
 ; YOUR_LAMP_IS_GETTING_DIM.__YOU'D_BEST_START_WRAPPING_THIS_UP,___
 ; UNLESS_YOU_CAN_FIND_SOME_FRESH_BATTERIES.__I_SEEM_TO_RECALL_____
 ; THERE_IS_A_VENDING_MACHINE_IN_THE_MAZE.__BRING_SOME_COINS_WITH__
-; YOU.[CR]
+; YOU.
 PS_A6:
 79C5: 41 C7 DE 8E AF 72 48 D5 15 77 15 43 C0 AB 98 8F
 79D5: 5A 3B F4 C7 DE 73 21 75 4D 15 BC 54 BD 19 BC D2
@@ -5145,28 +5402,31 @@ PS_A6:
 7A35: 63 BC 14 91 7A 61 17 1B 92 3B 55 8B 9A 56 D1 FB
 7A45: 70 C7 DE 2E 00
 
-; YOUR_LAMP_HAS_RUN_OUT_OF_POWER.[CR]
+; YOUR_LAMP_HAS_RUN_OUT_OF_POWER.
 PS_A7:
 7A4A: 0A C7 DE 8E AF 72 48 9B 15 D4 B5 83 C5 36 A1 B8
 7A5A: 16 E9 16 B4 D0 2E 00
 
 ; THE_PLANT_HAS_EXCEPTIONALLY_DEEP_ROOTS_AND_CANNOT_BE_PULLED_____
-; FREE.[CR]
+; FREE.
 PS_A8:
 7A61: 17 5F BE E6 16 9E 48 9B 15 C7 B5 97 D6 43 A7 0B
 7A71: A0 13 8D FF 14 D3 61 01 B3 0B C0 8E 48 D3 14 D9
 7A81: 99 04 BC 52 5E 46 C5 F3 5F 3B 13 5C 15 3F 60 00
 
 ; YOUR_LAMP_IS_GETTING_DIM.__I'M_TAKING_THE_LIBERTY_OF_REPLACING__
-; THE_BATTERIES.[CR]
+; THE_BATTERIES.
 PS_A9:
 7A91: 1A C7 DE 8E AF 72 48 D5 15 77 15 43 C0 AB 98 8F
 7AA1: 5A 3B F4 9F 77 7B 17 50 86 D6 6A DB 72 84 8C 3E
 7AB1: 62 51 DB 94 64 E6 61 DB 46 AB 98 82 17 44 5E 8E
 7AC1: 49 33 62 6F 62 00
 
+; 26	 THE BIRD WAS UNAFRAID WHEN YOU ENTERED, BUT AS YOU APPROACH
+; 26	 IT BECOMES DISTURBED AND YOU CANNOT CATCH IT.
+;
 ; AS_YOU_APPROACH_THE_STATUE,_IT_COMES_TO_LIFE_AND_FLIES_ACROSS___
-; THE_CHAMBER_WHERE_IT_LANDS_AND_RETURNS_TO_STONE.[CR]
+; THE_CHAMBER_WHERE_IT_LANDS_AND_RETURNS_TO_STONE.
 PS_AA:
 7AC7: 25 4B 49 C7 DE 92 14 F9 A6 DA 46 82 17 55 5E 56
 7AD7: BD 3E C4 D6 15 E1 14 35 92 89 17 43 16 5B 66 8E
@@ -5174,13 +5434,15 @@ PS_AA:
 7AF7: 72 74 4D FA 17 2F 62 D6 15 3B 16 4D 98 90 14 14
 7B07: 58 8F 62 DD B2 89 17 66 17 0F A0 2E 00
 
-; YOU_CAN_LIFT_THE_STATUE,_BUT_YOU_CANNOT_CARRY_IT.[CR]
+; woods27	 YOU CAN CATCH THE BIRD, BUT YOU CANNOT CARRY IT.
+;
+; YOU_CAN_LIFT_THE_STATUE,_BUT_YOU_CANNOT_CARRY_IT.
 PS_AB:
 7B14: 10 C7 DE D3 14 8E 96 5E 79 82 17 55 5E 56 BD 3E
 7B24: C4 BF 14 1B BC 1B A1 10 53 06 9A D3 14 83 B3 D6
 7B34: 15 2E 00
 
-; YOUR_BOTTLE_IS_ALREADY_FULL.[CR]
+; YOUR_BOTTLE_IS_ALREADY_FULL.
 PS_AC:
 7B37: 09 C7 DE 84 AF 0E A1 DB 8B 4B 7B 4C 48 86 5F 48
 7B47: DB 46 C5 2E 00
@@ -5188,7 +5450,7 @@ PS_AC:
 ; _____SUDDENLY,_A_MUMMY_CREEPS_UP_BEHIND_YOU!!______"I'M_THE_____
 ; KEEPER_OF_THE_TOMB",__HE_WAILS,_"I_TAKE_THESE_TREASURES_AND_PUT_
 ; THEM_IN_THE_CHEST_DEEP_IN_THE_MAZE!"__HE_GRABS_YOUR_TREASURE_AND
-; VANISHES_INTO_THE_GLOOM.[CR]
+; VANISHES_INTO_THE_GLOOM.
 PS_AD:
 7B4C: 48 3B 13 55 13 FE C3 96 61 B3 E0 4F 45 6F C5 45
 7B5C: DB 67 B1 0B A7 D3 C5 6A 4D 8E 7A 51 18 E9 C1 3B
@@ -5201,41 +5463,46 @@ PS_AD:
 7BCC: 48 D0 C9 5A 7B 4B 62 9E 7A D6 9C DB 72 C9 6D FF
 7BDC: 9F 00
 
-; THE_STONE_BRIDGE_HAS_RETRACTED![CR]
+; THE_STONE_BRIDGE_HAS_RETRACTED!
 PS_AE:
 7BDE: 0A 5F BE 66 17 0F A0 BC 14 01 79 4A 5E 4B 49 76
 7BEE: B1 C5 B0 E6 BD 21 00
 
-; A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.[CR]
+; 112	 A CRYSTAL BRIDGE NOW SPANS THE FISSURE.
+;
+; A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.
 PS_AF:
 7BF5: 0E 55 45 80 BF 44 5E 06 B2 9B 6C 09 9A 62 17 9D
 7C05: 48 82 17 44 5E 0E A1 EE 9F 65 62 E3 16 54 2E 00
 
-; THE_VASE_IS_NOW_RESTING,_DELICATELY,_ON_A_VELVET_PILLOW.[CR]
+; THE_VASE_IS_NOW_RESTING,_DELICATELY,_ON_A_VELVET_PILLOW.
 PS_B0:
 7C15: 12 5F BE CB 17 9B B7 4B 7B 09 9A 2F 17 03 BA CE
 7C25: 98 FF 14 85 8C 7F 49 1E 8F C0 16 7B 14 6E CA 76
 7C35: CA E3 16 09 8D 57 2E 00
 
-; THE_VASE_DROPS_WITH_A_DELICATE_CRASH.[CR]
+; THE_VASE_DROPS_WITH_A_DELICATE_CRASH.
 PS_B1:
 7C3D: 0C 5F BE CB 17 9B B7 F9 5B 0B A7 56 D1 03 71 FF
 7C4D: 14 85 8C 7F 49 E4 14 5A 49 2E 00
 
-; THERE_ARE_NOW_SOME_FRESH_BATTERIES_HERE.[CR]
+; THERE_ARE_NOW_SOME_FRESH_BATTERIES_HERE.
 PS_B2:
 7C58: 0D 5F BE 5B B1 2F 49 99 16 D5 CE E7 9F 5C 15 5A
 7C68: 62 AB 14 3F C0 07 B2 CA B5 2F 62 2E 00
 
-; YOU_HAVE_TAKEN_THE_VASE_AND_HURLED_IT_DELICATELY_TO_THE_GROUND.[CR]
+; YOU_HAVE_TAKEN_THE_VASE_AND_HURLED_IT_DELICATELY_TO_THE_GROUND.
 PS_B3:
 7C75: 15 C7 DE 9B 15 5B CA 4D BD 83 61 5F BE CB 17 9B
 7C85: B7 8E 48 AF 15 7F B2 0B 58 06 BC 43 61 16 53 53
 7C95: 61 89 17 82 17 49 5E 07 B3 57 98 00
 
+; 30	 THE LITTLE BIRD ATTACKS THE GREEN SNAKE, AND IN AN
+; 30	 ASTOUNDING FLURRY DRIVES THE SNAKE AWAY.
+;
 ; THE_BIRD_STATUE_COMES_TO_LIFE_AND_ATTACKS_THE_SERPENT_AND_IN_AN_
 ; ASTOUNDING_FLURRY,_DRIVES_THE_SERPENT_AWAY.__THE_BIRD_TURNS_BACK
-; INTO_A_STATUE.[CR]
+; INTO_A_STATUE.
 PS_B4:
 7CA1: 2F 5F BE B3 14 33 B1 FB B9 67 C0 E1 14 35 92 89
 7CB1: 17 43 16 5B 66 8E 48 96 14 45 BD CB 87 5F BE 57
@@ -5245,26 +5512,26 @@ PS_B4:
 7CF1: 17 DD B2 AB 14 9B 54 C9 9A 7B 14 FB B9 67 C0 2E
 7D01: 00
 
-; THE_PLANT_SPURTS_INTO_FURIOUS_GROWTH_FOR_A_FEW_SECONDS.[CR]
+; THE_PLANT_SPURTS_INTO_FURIOUS_GROWTH_FOR_A_FEW_SECONDS.
 PS_B5:
 7D02: 12 5F BE E6 16 9E 48 62 17 3E C6 CB B5 C9 9A 5F
 7D12: 15 11 B2 4B C6 B9 6E 02 D3 59 15 83 AF 4F 15 D5
 7D22: CE E1 5F 4D 98 2E 00
 
 ; THE_PLANT_GROWS_EXPLOSIVELY,_ALMOST_FILLING_THE_BOTTOM_OF_THE___
-; PIT.[CR]
+; PIT.
 PS_B6:
 7D29: 16 5F BE E6 16 9E 48 84 15 85 A1 3A 15 09 A6 58
 7D39: B8 53 61 03 EE 31 8D F3 B9 0E 67 90 8C D6 6A DB
 7D49: 72 06 4F 7F BF B8 16 82 17 3B 5E E3 16 54 2E 00
 
-; YOU'VE_OVER-WATERED_THE_PLANT!__IT'S_SHRIVELING_UP![CR]
+; YOU'VE_OVER-WATERED_THE_PLANT!__IT'S_SHRIVELING_UP!
 PS_B7:
 7D59: 11 C7 DE 4F 24 C8 16 45 62 16 D0 2F 62 16 58 DB
 7D69: 72 FB A5 B1 9A 4B 13 65 BC 5A 17 18 B2 43 61 AB
 7D79: 98 D1 C5 00
 
-; THERE_IS_NOTHING_HERE_TO_CLIMB.__USE_UP_OR_OUT_TO_LEAVE_THE_PIT.[CR]
+; THERE_IS_NOTHING_HERE_TO_CLIMB.__USE_UP_OR_OUT_TO_LEAVE_THE_PIT.
 PS_B8:
 7D7D: 15 5F BE 5B B1 4B 7B 06 9A 90 73 CA 6A 2F 62 89
 7D8D: 17 DE 14 64 7A 3B F4 57 C6 B2 17 C4 16 C7 16 16
@@ -5272,7 +5539,7 @@ PS_B8:
 
 ; OH_DEAR,_YOU_SEEM_TO_HAVE_GOTTEN_YOURSELF_KILLED.__I_MIGHT_BE___
 ; ABLE_TO_HELP_YOU_OUT,_BUT_I'VE_NEVER_REALLY_DONE_THIS_BEFORE.___
-; DO_YOU_WANT_ME_TO_TRY_TO_REINCARNATE_YOU?[CR]
+; DO_YOU_WANT_ME_TO_TRY_TO_REINCARNATE_YOU?
 PS_B9:
 7DAA: 38 13 9F E3 59 F3 B4 C7 DE 57 17 5B 61 6B BF 58
 7DBA: 72 49 5E 0E A1 83 61 C7 DE 97 B3 03 8C 4E 86 E6
@@ -5285,7 +5552,7 @@ PS_B9:
 
 ; YOU_CLUMSY_OAF,_YOU'VE_DONE_IT_AGAIN!__I_DON'T_KNOW_HOW_LONG_I__
 ; CAN_KEEP_THIS_UP.__DO_YOU_WANT_ME_TO_TRY_REINCARNATING_YOU______
-; AGAIN?[CR]
+; AGAIN?
 PS_BA:
 7E1D: 2C C7 DE DE 14 75 C5 51 DB 66 47 51 18 A8 C2 46
 7E2D: 5E 0F A0 D6 15 89 14 D0 47 BB 06 46 77 05 A0 0D
@@ -5295,7 +5562,7 @@ PS_BA:
 7E6D: 6A 1B A1 3B 13 43 13 0B 6C 4E 3F 00
 
 ; I_SEEM_TO_BE_OUT_OF_ORANGE_SMOKE.__HOW_CAN_I_REINCARNATE_YOU____
-; WITHOUT_ORANGE_SMOKE?[CR]
+; WITHOUT_ORANGE_SMOKE?
 PS_BB:
 7E79: 1C 55 77 2F 60 89 17 AF 14 C7 16 11 BC 91 64 D0
 7E89: B0 9B 6C F1 B8 BF 85 4A 13 6B A1 10 53 BB 15 6B
@@ -5305,7 +5572,7 @@ PS_BB:
 ; ALL_RIGHT.__BUT_DON'T_BLAME_ME_IF_SOMETHING_GOES_WR.............
 ; ______________________----__POOF_!!__----_______________________
 ; YOU_ARE_ENGULFED_IN_A_CLOUD_OF_ORANGE_SMOKE.__COUGHING_AND______
-; GASPING,_YOU_EMERGE_FROM_THE_SMOKE.[CR]
+; GASPING,_YOU_EMERGE_FROM_THE_SMOKE.
 PS_BC:
 7EB4: 4B 46 48 33 17 2E 6D 3B F4 F6 4F 09 15 E6 96 B6
 7EC4: 14 67 48 67 16 C8 15 61 17 36 92 90 73 C9 6A B5
@@ -5319,7 +5586,7 @@ PS_BC:
 7F44: B2 82 17 55 5E BD 93 45 2E 00
 
 ; OKAY,_NOW_WHERE_DID_I_PUT_MY_ORANGE_SMOKE?..._>POOF!<___________
-; EVERYTHING_DISAPPEARS_IN_A_DENSE_CLOUD_OF_ORANGE_SMOKE.[CR]
+; EVERYTHING_DISAPPEARS_IN_A_DENSE_CLOUD_OF_ORANGE_SMOKE.
 PS_BD:
 7F4E: 27 93 9F B3 E0 09 9A FA 17 2F 62 03 15 0B 58 EF
 7F5E: 16 0F BC 51 DB D0 B0 9B 6C F1 B8 98 85 FF F9 F2
@@ -5328,20 +5595,24 @@ PS_BD:
 7F8E: 9A DE 14 26 A1 B8 16 C4 16 91 48 55 5E BD 93 45
 7F9E: 2E 00
 
-; READY_CASSETTE[CR]
+; READY_CASSETTE
 PS_BE:
 7FA0: 04 63 B1 FB 5C 15 53 B6 B7 54 45 00
 
-; CHECKSUM_ERROR[CR]
+; CHECKSUM_ERROR
 PS_BF:
 7FAC: 04 1F 54 A5 54 5B C5 3C 62 4F 52 00
 
 ; OH,_NO!__I_LOST_MY_COMPASS.__I_NO_LONGER_SEEM_TO_KNOW_WHICH_WAY_
-; IS_NORTH![CR]
+; IS_NORTH!
 PS_C0:
 7FB8: 18 36 9F 99 16 BB 06 4E 77 E6 A0 7B 16 E1 14 DB
 7FC8: 93 EF B9 4B 13 99 16 49 16 B7 98 95 AF 2F 60 89
 7FD8: 17 20 16 6B A1 23 D1 13 54 1B D0 D5 15 99 16 C2
 7FE8: B3 21 00
 ```
+
+Some bytes on the end of the tape:
+
+39 00 39 00 39 00 39 00 39 00 39 00 39 00 39 00 39 00 39 00 47 78 00 43 FF FF
 
