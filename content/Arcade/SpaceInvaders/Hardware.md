@@ -179,7 +179,7 @@ Port 6:
 
 # Screen Geometry 
 
-2400 - 3FFF (1C00 bytes = 256 * 28) 28*8=224. Screen is 256x224 pixels.
+2400 - 3FFF (1C00 bytes = 32 * 224) 32 * 8 = 256. Screen is 256x224 pixels.
 
 The map below shows the raster layout. Take this map and rotate it counter clockwise once. Thus the first
 byte is lower left. First "row" ends upper left. Last byte is upper right.
