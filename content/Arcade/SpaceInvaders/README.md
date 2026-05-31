@@ -3,7 +3,7 @@
 >>> deploy:<br>
 >>>   +SpaceInvaders.jpg<br>
 >>>   +SpaceInvaders.js<br>
->>>   invaders_c.asm<br>
+>>>   invaders.asm<br>
 >>>   Hardware.md<br>
 >>>   RAMUse.md<br>
 >>>   %Code.md<br>
@@ -19,7 +19,7 @@
 # Assembly Source
 
 David Levy has produced an ASM file to create the original Space Invaders binary. Download or view the assembly
-file here: [invaders_c.asm](invaders_c.asm). 
+file here: [invaders.asm](invaders.asm). 
 
 Now you can tweak the code (change graphics, logic, etc) and assemble it for play in MAME. Or break
 out your EPROM programmer and make new ROMs for your arcade cabinet. I pasted the file into the online
@@ -650,3 +650,5 @@ Thanks to Adrian Torres for pointing out that hexidecimal values in the write-up
 'RST 8' and 'RST 10' pointing out that they are really 'RST 1 (jumps to 0x0008)' and 'RST 2 (jumps to 0x0010)'.
 
 Thanks to Elliot Roush for correcting the alien-shot-screen-deltas. The correct values are -4 (normally) and -5 (when less than 8 aliens).
+
+Thanks to David Levy for correcting the screen geometry details.
