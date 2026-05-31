@@ -12,7 +12,7 @@
 
 >>> memoryTable hard
 
-[Hardware Info](../Hardware.md)
+[Hardware Info](../HardwareLevel2.md)
 
 # Start
 

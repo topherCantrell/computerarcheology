@@ -3,7 +3,9 @@
 # TRS80
 
 >>> deploy:<br>
->>>   Hardware.md<br>
+>>>   HardwareLevel2.md<br>
+>>>   HardwareLevel1.md<br>
+>>>   HardwareDisk.md<br>
 >>>   +TRS80.jpg<br>
 >>>   +TRS80Tech.jpg<br>
 >>>   +TRS80Text.js<br>
@@ -11,6 +13,7 @@
 >>>   Pyramid<br>
 >>>   RaakaTu<br>
 >>>   Bedlam<br>
+>>>   Xenos<br>
 
 # Disassemblies
 

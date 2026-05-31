@@ -1,6 +1,6 @@
 ![TRS80 Hardware](TRS80Tech.jpg)
 
-# TRS80 Hardware Level 2
+# TRS80 Hardware DiskOS
 
 # Memory Map
  * 0000-2FFF Level 2 ROM
@@ -31,3 +31,5 @@ Start of user RAM for program storage: 42E9
 | 0264 | WriteTapeByte   | Write a byte to the tape               |
 | 0287 | WriteTapeLeader | Write a leader to the tape             |
 | 0296 | ReadTapeLeader  | Read a leader from the tape            |
+| 4020:4021 | Cursor Pointer | Pointer into screen memory |
+

@@ -1,9 +1,12 @@
-%%image = TRS80Pyramid.jpg
-%%title = Pyramid RAM Use
+![RAM Use](Xenos.png)
 
-{{{memory
-||= Address  || Name                  || Description                                  ||
-|| 4FDC      || CurrentRoom           || Current Room Number                          ||
-}}}
+# RAM Use
 
-Stack initialized to 475C
+>>> memory
+
+| | | |
+| --- | --- | --- |
+| BF9A | stack             | stack |
+
+
+Stack initialized to BF9A

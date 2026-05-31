@@ -1,6 +1,6 @@
 ![TRS80 Hardware](TRS80Tech.jpg)
 
-# TRS80 Hardware
+# TRS80 Hardware Level 1 ROM
 
 # Memory Map
  * 0000-2FFF Level 2 ROM

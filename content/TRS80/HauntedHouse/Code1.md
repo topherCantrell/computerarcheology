@@ -12,7 +12,7 @@
 
 >>> memoryTable hard 
 
-[Hardware Info](../Hardware.md)
+[Hardware Info](../HardwareLevel1.md)
 
 # Start
 
@@ -24,7 +24,7 @@ Start:
 ; at $435E over the first floor code. Obviously this loading code must
 ; remain resident.
 
-42EC: CD F8 01        CALL    $01F8               ; {hard.TapeOff} Turn off the tape drive
+42EC: CD F8 01        CALL    $01F8               ; Turn off the tape drive
 42EF: 21 41 43        LD      HL,$4341            ; "CHECKSUM[CR]"
 42F2: CD D0 45        CALL    $45D0               ; {code.PrintMessage} Print message
 ```
@@ -43,7 +43,7 @@ ScriptCommand17:
 4301: FE 0D           CP      $0D                 ; Enter?
 4303: C2 FE 42        JP      NZ,$42FE            ; {} No ... wait for player to press enter
 4306: CD 93 02        CALL    $0293               ; Find the cassette header
-4309: CD 35 02        CALL    $0235               ; {hard.ReadTapeByte} Get one byte from the tape
+4309: CD 35 02        CALL    $0235               ; Get one byte from the tape
 430C: FE 55           CP      $55                 ; Start of data?
 430E: 20 F9           JR      NZ,$4309            ; {} No ... keep reading
 ;
@@ -52,23 +52,23 @@ ScriptCommand17:
 4313: 23              INC     HL                  ; Bump HL (??? This may be where the asterisk is going to print in model 1 routine)
 4314: 10 FC           DJNZ    $4312               ; {} Keep going to add 6 to HL
 4316: CD 2C 02        CALL    $022C               ; (Model I only) Blinks right asterisk during tape load operations
-4319: CD 35 02        CALL    $0235               ; {hard.ReadTapeByte} Get one byte from the tape
+4319: CD 35 02        CALL    $0235               ; Get one byte from the tape
 431C: FE 78           CP      $78                 ; End of load?
 431E: CA 5B 43        JP      Z,$435B             ; {} If yes then stop the cassette and start 2nd floor
 4321: FE 3C           CP      $3C                 ; Starting-point marker?
 4323: 20 F4           JR      NZ,$4319            ; {} If no then go back and wait for the starting-point marker
-4325: CD 35 02        CALL    $0235               ; {hard.ReadTapeByte} Get count byte from the tape
+4325: CD 35 02        CALL    $0235               ; Get count byte from the tape
 4328: 47              LD      B,A                 ; Count to B for DJNZ
 4329: CD 14 03        CALL    $0314               ; Reads two byte destination from tape to HL register
 432C: 85              ADD     A,L                 ; COUNT + LSB ...
 432D: 4F              LD      C,A                 ; ... is expected checksum
-432E: CD 35 02        CALL    $0235               ; {hard.ReadTapeByte} Read one byte from tape
+432E: CD 35 02        CALL    $0235               ; Read one byte from tape
 4331: 77              LD      (HL),A              ; Store in buffer
 4332: 23              INC     HL                  ; Bump buffer pointer
 4333: 81              ADD     A,C                 ; Add to ...
 4334: 4F              LD      C,A                 ; ... running checksum
 4335: 10 F7           DJNZ    $432E               ; {} All B bytes read? No ... go back for them all
-4337: CD 35 02        CALL    $0235               ; {hard.ReadTapeByte} Get the final checksum byte from the tape
+4337: CD 35 02        CALL    $0235               ; Get the final checksum byte from the tape
 433A: B9              CP      C                   ; Does our checksum match?
 433B: CA 16 43        JP      Z,$4316             ; {} If yes then keep loading till end
 433E: C3 EC 42        JP      $42EC               ; {} Do checksum error and try loading again
@@ -81,7 +81,7 @@ ScriptCommand17:
                  
 4359: 00 00
                      
-435B: CD F8 01        CALL    $01F8               ; {hard.TapeOff} Stop the cassette and fall into loaded second floor code
+435B: CD F8 01        CALL    $01F8               ; Stop the cassette and fall into loaded second floor code
 
 ; First Floor starts here (the second floor loads here too)
 
@@ -561,7 +561,7 @@ WaitForKey:
 45EF: 3A 7E 46        LD      A,($467E)           ; {ram.InputEntroy} Bump ...
 45F2: 3C              INC     A                   ; ... some ...
 45F3: 32 7E 46        LD      ($467E),A           ; {ram.InputEntroy} ... ??? counter
-45F6: CD 2B 00        CALL    $002B               ; {hard.GetKey} Get a key
+45F6: CD 2B 00        CALL    $002B               ; {hard.ScanKeyboard} Get a key
 45F9: A7              AND     A                   ; Keep waiting ...
 45FA: CA EF 45        JP      Z,$45EF             ; {} ... if nothing pressed
 45FD: D1              POP     DE                  ; Restore DE
