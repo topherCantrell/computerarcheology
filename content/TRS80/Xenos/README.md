@@ -1,4 +1,4 @@
-![TRS80 Bedlam](Xenos.png)
+![TRS80 Xenos](Xenos.png)
 
 # Raaka Tu
 

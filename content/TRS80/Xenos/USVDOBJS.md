@@ -1,4 +1,4 @@
-![TRS-80 Bedlam](Xenos.png)
+![Xenos](Xenos.png)
 
 # Xenos USVDOBJS.DAT
 
