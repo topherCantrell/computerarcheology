@@ -59,7 +59,7 @@ def decode_object(cursor):
     mlength = cursor.decode_length(line)
     end_pos = mlength+cursor.pos
     word_text = language.WORDS[1].get(word_num, [f'??{word_num:02X}??'])[0]    
-    cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Word Number: 0x{word_num:02X} "{word_text}", Length: 0x{mlength:02X}',0)
+    cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Word Number: 0x{word_num:02X} "{word_text}", Length: 0x{mlength:04X}',0)
     
     # Object data (location, points, data bits)
 
@@ -80,7 +80,7 @@ def decode_object(cursor):
         if section_num not in SECTION_DESC:
             raise Exception(f'Unknown section type: 0x{section_num:02X}')    
 
-        cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Section {section_num}: {SECTION_DESC[section_num]}, Length: 0x{mlength:02X}',1)
+        cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Section {section_num}: {SECTION_DESC[section_num]}, Length: 0x{mlength:04X}',1)
 
         if section_num == 0x02:
             decode_section_02(cursor, end_of_sec)
@@ -100,11 +100,12 @@ cursor.set_pos(0x887A)
 origin, line = cursor.start_new_line()
 
 lid = cursor.get_byte(line)
-end_of_objects = cursor.decode_length(line) + cursor.pos
+mlength = cursor.decode_length(line)
+end_of_objects = mlength + cursor.pos
 
 # List header
 
-print(f'{origin:04X}: {cursor.build_data_line(line)} ; ID: 0x{lid:02X}, Length: 0x{line[0]:02X}')
+print(f'{origin:04X}: {cursor.build_data_line(line)} ; ID: 0x{lid:02X}, Length: 0x{mlength:04X}')
 
 objnum = 0
 while cursor.pos < end_of_objects:

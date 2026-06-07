@@ -226,6 +226,10 @@ class ScriptCursor:
     def decode_unknown38(self, origin, line, prt_level):
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN38', prt_level)
 
+    def decode_unknown2D(self, origin, line, prt_level):
+        value = self.get_byte(line)
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN2D, Value: 0x{value:02X}', prt_level)
+
     def decode_unknown2E(self, origin, line, prt_level):
         value = self.get_byte(line)
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN2E, Value: 0x{value:02X}', prt_level)
@@ -239,6 +243,14 @@ class ScriptCursor:
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN34', prt_level)
     def decode_unknown35(self, origin, line, prt_level):
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN35', prt_level)
+    def decode_unknown0F(self, origin, line, prt_level):        
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN0F', prt_level)
+    def decode_unknown39(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN39', prt_level)
+    def decode_unknown36(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN36', prt_level)
+    def decode_unknown37(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN37', prt_level)
 
 
     def decode_swap(self, origin, line, prt_level):
@@ -261,6 +273,32 @@ class ScriptCursor:
         first_noun = self.get_byte(line)
         second_noun = self.get_byte(line)
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; EXECUTE PHRASE, Phrase number: 0x{phrase_num:02X}, First noun: 0x{first_noun:02X}, Second noun: 0x{second_noun:02X}', prt_level)
+    
+    def decode_is_active_this(self, origin, line, prt_level):
+        obj_num = self.get_byte(line)
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; IS ACTIVE THIS, Object number: 0x{obj_num:02X}', prt_level)
+
+    def decode_check_var(self, origin, line, prt_level):
+        value = self.get_byte(line)
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; CHECK VAR, Value: 0x{value:02X}', prt_level)
+
+    def decode_is_var_owned_by_active(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; IS VAR OWNED BY ACTIVE', prt_level)
+
+    def decode_clear_screen(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; CLEAR SCREEN', prt_level)
+
+    def decode_print_first_noun(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; PRINT FIRST NOUN', prt_level)
+
+    def decode_print_var(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; PRINT VAR', prt_level)
+
+    def decode_wait_for_key123(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; WAIT FOR KEY 1, 2, OR 3', prt_level)
+
+    def decode_print_score(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; PRINT SCORE', prt_level)
 
 
     COMMANDS = {
@@ -278,30 +316,43 @@ class ScriptCursor:
         0x0C: decode_fail,
         0x0D: decode_while_pass,
         0x0E: decode_while_fail,
+        0x0F: decode_unknown0F,
         0x10: decode_drop_var,
+        0x11: decode_print_first_noun,
         0x12: decode_print_second_noun,
         0x14: decode_execute_and_reverse_status,
+        0x15: decode_check_var, 
+        0x16: decode_print_var,
         0x17: decode_move_to,
+        0x18: decode_is_var_owned_by_active,
         0x1A: decode_set_var_to_first_noun,
         0x1B: decode_set_var_to_second_noun,
         0x1C: decode_set_var_object,
         0x1D: decode_attack_VAR,
         0x1E: decode_swap,
         0x1F: decode_print2,
+        0x20: decode_is_active_this,
         0x21: decode_execute_phrase,
         0x23: decode_heal_var,
         0x24: decode_exit_program,
         0x25: decode_print_linefeed,
+        0x26: decode_print_score,
         0x29: decode_print_open_var,
         0x2A: decode_unknown2A,
         0x2C: decode_set_active,
+        0x2D: decode_unknown2D,
         0x2E: decode_unknown2E,
         0x2F: decode_unknown2F,
         0x30: decode_unknown30,
         0x33: decode_unknown33,
         0x34: decode_unknown34,
         0x35: decode_unknown35,
+        0x36: decode_unknown36,
+        0x37: decode_unknown37,
         0x38: decode_unknown38,
+        0x39: decode_unknown39,
+        0x3A: decode_clear_screen,
+        0x3B: decode_wait_for_key123,
     } 
 
     def print_with_level(self, text, prt_level):
