@@ -98,7 +98,7 @@ class ScriptCursor:
         end_of_command = self.pos+length
         fn_to_call = self.get_byte(line)
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; SWITCH, Length: 0x{length:04X}, Function to call: 0x{fn_to_call:02X}', prt_level)
-        if fn_to_call != 0x0A and fn_to_call != 0x03 and fn_to_call != 0x05 and fn_to_call != 0x22: # TODO different descript below
+        if fn_to_call != 0x0A and fn_to_call != 0x03 and fn_to_call != 0x05 and fn_to_call != 0x22 and fn_to_call != 0x08: # TODO different descript below
             raise Exception(f"Unknown function to call in SWITCH command: 0x{fn_to_call:02X}")
         
         while self.pos < end_of_command:
@@ -237,6 +237,10 @@ class ScriptCursor:
     def decode_unknown2A(self, origin, line, prt_level):
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN2A', prt_level)
 
+    def decode_unknown31(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN31', prt_level)
+    def decode_unknown32(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN32', prt_level)
     def decode_unknown33(self, origin, line, prt_level):
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN33', prt_level)
     def decode_unknown34(self, origin, line, prt_level):
@@ -251,6 +255,12 @@ class ScriptCursor:
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN36', prt_level)
     def decode_unknown37(self, origin, line, prt_level):
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN37', prt_level)
+    def decode_unknown13(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN13', prt_level)
+    def decode_unknown27(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN27', prt_level)
+    def decode_unknown28(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN28', prt_level)
 
 
     def decode_swap(self, origin, line, prt_level):
@@ -300,6 +310,9 @@ class ScriptCursor:
     def decode_print_score(self, origin, line, prt_level):
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; PRINT SCORE', prt_level)
 
+    def decode_print_inventory(self, origin, line, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; PRINT INVENTORY', prt_level)
+
 
     COMMANDS = {
         0x00: decode_move_and_look,
@@ -308,6 +321,7 @@ class ScriptCursor:
         0x03: decode_is_located,
         0x04: decode_print_command,
         0x05: decode_is_less_equal_last_random,    
+        0x06: decode_print_inventory,
         0x07: decode_print_room_description, 
         0x08: decode_is_first_noun,
         0x09: decode_compare_to_second_noun,   
@@ -320,6 +334,7 @@ class ScriptCursor:
         0x10: decode_drop_var,
         0x11: decode_print_first_noun,
         0x12: decode_print_second_noun,
+        0x13: decode_unknown13,
         0x14: decode_execute_and_reverse_status,
         0x15: decode_check_var, 
         0x16: decode_print_var,
@@ -337,6 +352,8 @@ class ScriptCursor:
         0x24: decode_exit_program,
         0x25: decode_print_linefeed,
         0x26: decode_print_score,
+        0x27: decode_unknown27,
+        0x28: decode_unknown28,
         0x29: decode_print_open_var,
         0x2A: decode_unknown2A,
         0x2C: decode_set_active,
@@ -344,6 +361,8 @@ class ScriptCursor:
         0x2E: decode_unknown2E,
         0x2F: decode_unknown2F,
         0x30: decode_unknown30,
+        0x31: decode_unknown31,
+        0x32: decode_unknown32,
         0x33: decode_unknown33,
         0x34: decode_unknown34,
         0x35: decode_unknown35,
@@ -434,3 +453,14 @@ class ScriptCursor:
         while self.pos < end_of_list:
             self.decode_room(0)
         
+
+if __name__ == "__main__":    
+    with open('content/trs80/xenos/roms/xenos.bin', 'rb') as f:
+        RAW = f.read()
+    cursor = ScriptCursor(RAW, 0x5D00)
+    cursor.set_pos(0x7D4F)
+    mlength = cursor.decode_length([])
+    end_of_coms = mlength + cursor.pos
+
+
+    cursor.decode_command_list(end_of_coms, 0)

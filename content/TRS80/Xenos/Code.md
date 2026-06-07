@@ -3485,2309 +3485,1281 @@ KnownWords:
 GeneralScript:
 7D4E: 00 8B 29        ; End+1 = 887A
 ;
-7D51: 0E 8B 26 
-7D54: 0D            
-7D55: 3F             
-7D56: 0E 08        
-7D58: 0A    
-7D59: 01 0A 02      
-7D5C: 0A              LD      A,(BC)              
-7D5D: 03              INC     BC                  
-7D5E: 0A              LD      A,(BC)              
-7D5F: 04              INC     B                   
-7D60: 0E 33           LD      C,$33               
-7D62: 0D              DEC     C                   
-7D63: 20 14           JR      NZ,$7D79            ; {}
-7D65: 37              SCF                         
-7D66: 0E 1C           LD      C,$1C               
-7D68: 13              INC     DE                  
-7D69: 0D              DEC     C                   
-7D6A: 19              ADD     HL,DE               
-7D6B: 20 01           JR      NZ,$7D6E            ; {}
-7D6D: 04 15                         ; PRINT, Length: 0x0015
+7D51: 0E 8B 26                      ; WHILE FAIL, Length: 0x0B26
+7D54:    0D 3F                      ;   WHILE PASS, Length: 0x003F
+7D56:       0E 08                   ;     WHILE FAIL, Length: 0x0008
+7D58:          0A 01                ;       IS INPUT PHRASE, Phrase number: 0x01
+7D5A:          0A 02                ;       IS INPUT PHRASE, Phrase number: 0x02
+7D5C:          0A 03                ;       IS INPUT PHRASE, Phrase number: 0x03
+7D5E:          0A 04                ;       IS INPUT PHRASE, Phrase number: 0x04
+7D60:       0E 33                   ;     WHILE FAIL, Length: 0x0033
+7D62:          0D 20                ;       WHILE PASS, Length: 0x0020
+7D64:             14                ;         EXECUTE AND REVERSE STATUS
+7D65:             37                ;         UNKNOWN37
+7D66:             0E 1C             ;         WHILE FAIL, Length: 0x001C
+7D68:                13             ;           UNKNOWN13
+7D69:                0D 19          ;           WHILE PASS, Length: 0x0019
+7D6B:                   20 01       ;             IS ACTIVE THIS, Object number: 0x01
+7D6D:                   04 15       ;             PRINT, Length: 0x0015
 ;
 ; YOU WALK AIMLESSLY INTO A WALL.
 ;
-7D6F:    C7 DE F3 17 CB 8C CF 47 F5 8B D3 B8 D0 15 6B BF ; 
-7D7F:    59 45 46 48 2E             ; 
-7D84: 0D 0F                         ; WHILE PASS, Length: 0x000F
-7D86:    04 0B                      ;   PRINT, Length: 0x000B
+7D6F:                      C7 DE F3 17 CB 8C CF 47 F5 8B D3 B8 D0 15 6B BF ; 
+7D7F:                      59 45 46 48 2E ; 
+7D84:          0D 0F                ;       WHILE PASS, Length: 0x000F
+7D86:             04 0B             ;         PRINT, Length: 0x000B
 ;
 ; YOU ARE STILL IN
 ;
-7D88:       C7 DE 94 14 55 5E 8E BE 0B 8A 4E ; 
-7D93:    AA                         ;   COMMAND 0xAA
-7D94:    8B                         ;   COMMAND 0x8B
-7D95: 0B 8A E2 0A                   ; SWITCH, Length: 0x0AE2, Function to call: 0x0A
-7D99:    05                         ;   Phrase number: 0x05
-7D9A:    0A                         ;   ELSE go to: 0x7DA5
-7D9B:       0E 08                   ;     WHILE FAIL, Length: 0x0008
-7D9D:          A2                   ;       COMMAND 0xA2
-7D9E: 13              INC     DE                  
-7D9F: 0D              DEC     C                   
-7DA0: 02              LD      (BC),A              
-7DA1: 1A              LD      A,(DE)              
-7DA2: 8F              ADC     A,A                 
-7DA3: 14              INC     D                   
-7DA4: 0C              INC     C                   
-7DA5: 43              LD      B,E                 
-7DA6: 0D              DEC     C                   
-7DA7: 0E 0B           LD      C,$0B               
-7DA9: A2              AND     D                   
-7DAA: 13              INC     DE                  
-7DAB: 0D              DEC     C                   
-7DAC: 03              INC     BC                  
-7DAD: 1B              DEC     DE                  
-7DAE: 14              INC     D                   
-7DAF: 8F              ADC     A,A                 
-7DB0: 0D              DEC     C                   
-7DB1: 02              LD      (BC),A              
-7DB2: 1A              LD      A,(DE)              
-7DB3: 8F              ADC     A,A                 
-7DB4: 06 23           LD      B,$23               
-7DB6: 0E 21           LD      C,$21               
-7DB8: 13              INC     DE                  
-7DB9: 0D              DEC     C                   
-7DBA: 13              INC     DE                  
-7DBB: 1A              LD      A,(DE)              
-7DBC: 14              INC     D                   
-7DBD: 15              DEC     D                   
-7DBE: 20 
-7DBF: 04 0B                         ; PRINT, Length: 0x000B
+7D88:                C7 DE 94 14 55 5E 8E BE 0B 8A 4E ; 
+7D93:             AA                ;         COMMAND 0xAA
+7D94:             8B                ;         COMMAND 0x8B
+7D95:    0B 8A E2 0A                ;   SWITCH, Length: 0x0AE2, Function to call: 0x0A
+7D99:       05                      ;     Phrase number: 0x05
+7D9A:       0A                      ;     ELSE go to: 0x7DA5
+7D9B:          0E 08                ;       WHILE FAIL, Length: 0x0008
+7D9D:             A2                ;         COMMAND 0xA2
+7D9E:             13                ;         UNKNOWN13
+7D9F:             0D 02             ;         WHILE PASS, Length: 0x0002
+7DA1:                1A             ;           SET VAR TO FIRST NOUN
+7DA2:                8F             ;           COMMAND 0x8F
+7DA3:             14                ;         EXECUTE AND REVERSE STATUS
+7DA4:             0C                ;         FAIL
+7DA5:       43                      ;     Phrase number: 0x43
+7DA6:       0D                      ;     ELSE go to: 0x7DB4
+7DA7:          0E 0B                ;       WHILE FAIL, Length: 0x000B
+7DA9:             A2                ;         COMMAND 0xA2
+7DAA:             13                ;         UNKNOWN13
+7DAB:             0D 03             ;         WHILE PASS, Length: 0x0003
+7DAD:                1B             ;           SET VAR TO SECOND NOUN
+7DAE:                14             ;           EXECUTE AND REVERSE STATUS
+7DAF:                8F             ;           COMMAND 0x8F
+7DB0:             0D 02             ;         WHILE PASS, Length: 0x0002
+7DB2:                1A             ;           SET VAR TO FIRST NOUN
+7DB3:                8F             ;           COMMAND 0x8F
+7DB4:       06                      ;     Phrase number: 0x06
+7DB5:       23                      ;     ELSE go to: 0x7DD9
+7DB6:          0E 21                ;       WHILE FAIL, Length: 0x0021
+7DB8:             13                ;         UNKNOWN13
+7DB9:             0D 13             ;         WHILE PASS, Length: 0x0013
+7DBB:                1A             ;           SET VAR TO FIRST NOUN
+7DBC:                14             ;           EXECUTE AND REVERSE STATUS
+7DBD:                15 20          ;           CHECK VAR, Value: 0x20
+7DBF:                04 0B          ;           PRINT, Length: 0x000B
 ;
 ; HOW CAN YOU DROP
 ;
-7DC1:    89 74 D3 14 9B 96 1B A1 F9 5B 50 ; 
-7DCC: A8                            ; COMMAND 0xA8
-7DCD: 8B                            ; COMMAND 0x8B
-7DCE: 0D 09                         ; WHILE PASS, Length: 0x0009
-7DD0:    10                         ;   DROP VAR
-7DD1:    04 06                      ;   PRINT, Length: 0x0006
+7DC1:                   89 74 D3 14 9B 96 1B A1 F9 5B 50 ; 
+7DCC:                A8             ;           COMMAND 0xA8
+7DCD:                8B             ;           COMMAND 0x8B
+7DCE:             0D 09             ;         WHILE PASS, Length: 0x0009
+7DD0:                10             ;           DROP VAR
+7DD1:                04 06          ;           PRINT, Length: 0x0006
 ;
 ; DROPPED. 
 ;
-7DD3:       F9 5B 9F A6 9B 5D       ;        
-7DD9: 08              EX      AF,AF'              
-7DDA: 17              RLA                         
-7DDB: 0E 15           LD      C,$15               
-7DDD: 13              INC     DE                  
-7DDE: 0D              DEC     C                   
-7DDF: 12              LD      (DE),A              
-7DE0: 04              INC     B                   
-7DE1: 0E 5F           LD      C,$5F               
-7DE3: BE              CP      (HL)                
-7DE4: 5D              LD      E,L                 
-7DE5: B1              OR      C                   
-7DE6: D0              RET     NC                  
-7DE7: B5              OR      L                   
-7DE8: D9              EXX                         
-7DE9: 9C              SBC     H                   
-7DEA: 16 B2           LD      D,$B2               
-7DEC: 91              SUB     C                   
-7DED: 7A              LD      A,D                 
-7DEE: C0              RET     NZ                  
-7DEF: 16 A8           LD      D,$A8               
-7DF1: 8B              ADC     A,E                 
-7DF2: 11 15 0E        LD      DE,$0E15            
-7DF5: 13              INC     DE                  
-7DF6: 13              INC     DE                  
-7DF7: 92              SUB     D                   
-7DF8: 0D              DEC     C                   
-7DF9: 0D              DEC     C                   
-7DFA: 1A              LD      A,(DE)              
-7DFB: 2E 40           LD      L,$40               
-7DFD: A8              XOR     B                   
-7DFE: 04              INC     B                   
-7DFF: 07              RLCA                        
-7E00: 4B              LD      C,E                 
-7E01: 7B              LD      A,E                 
-7E02: 75              LD      (HL),L              
-7E03: 8D              ADC     A,L                 
-7E04: A6              AND     (HL)                
-7E05: 85              ADD     A,L                 
-7E06: 2E A5           LD      L,$A5               
-7E08: A6              AND     (HL)                
-7E09: 3A 11 0E        LD      A,($0E11)           
-7E0C: 0F              RRCA                        
-7E0D: 0D              DEC     C                   
-7E0E: 03              INC     BC                  
-7E0F: 1B              DEC     DE                  
-7E10: 14              INC     D                   
-7E11: 8F              ADC     A,A                 
-7E12: 13              INC     DE                  
-7E13: 92              SUB     D                   
-7E14: A5              AND     L                   
-7E15: 0D              DEC     C                   
-7E16: 04              INC     B                   
-7E17: 2E 40           LD      L,$40               
-7E19: 2A 0C A6        LD      HL,($A60C)          ; {}
-7E1C: 40              LD      B,B                 
-7E1D: 24              INC     H                   
-7E1E: 0E 22           LD      C,$22               
-7E20: 13              INC     DE                  
-7E21: 92              SUB     D                   
-7E22: 0D              DEC     C                   
-7E23: 0E 1A           LD      C,$1A               
-7E25: 2E 20           LD      L,$20               
-7E27: A8              XOR     B                   
-7E28: 04              INC     B                   
-7E29: 08              EX      AF,AF'              
-7E2A: 4B              LD      C,E                 
-7E2B: 7B              LD      A,E                 
-7E2C: 06 9A           LD      B,$9A               
-7E2E: C2 16 A7        JP      NZ,$A716            ; {}
-7E31: 61              LD      H,C                 
-7E32: 0D              DEC     C                   
-7E33: 0E 29           LD      C,$29               
-7E35: A8              XOR     B                   
-7E36: 04              INC     B                   
-7E37: 0A              LD      A,(BC)              
-7E38: 4B              LD      C,E                 
-7E39: 7B              LD      A,E                 
-7E3A: 09              ADD     HL,BC               
-7E3B: 9A              SBC     D                   
-7E3C: DE 14           SBC     $14                 
-7E3E: D7              RST     0X10                
-7E3F: A0              AND     B                   
-7E40: 9B              SBC     E                   
-7E41: 5D              LD      E,L                 
-7E42: 42              LD      B,D                 
-7E43: 2D              DEC     L                   
-7E44: 0E 2B           LD      C,$2B               
-7E46: 0D              DEC     C                   
-7E47: 03              INC     BC                  
-7E48: 1B              DEC     DE                  
-7E49: 14              INC     D                   
-7E4A: 8F              ADC     A,A                 
-7E4B: 13              INC     DE                  
-7E4C: 92              SUB     D                   
-7E4D: 0D              DEC     C                   
-7E4E: 11 1A 14        LD      DE,$141A            
-7E51: 2E 40           LD      L,$40               
-7E53: A8              XOR     B                   
-7E54: 04              INC     B                   
-7E55: 0A              LD      A,(BC)              
-7E56: 4B              LD      C,E                 
-7E57: 7B              LD      A,E                 
-7E58: 06 9A           LD      B,$9A               
-7E5A: 49              LD      C,C                 
-7E5B: 16 97           LD      D,$97               
-7E5D: 54              LD      D,H                 
-7E5E: 9B              SBC     E                   
-7E5F: 5D              LD      E,L                 
-7E60: 0D              DEC     C                   
-7E61: 0F              RRCA                        
-7E62: 2A A8 04        LD      HL,($04A8)          
-7E65: 0B              DEC     BC                  
-7E66: 4B              LD      C,E                 
-7E67: 7B              LD      A,E                 
-7E68: 09              ADD     HL,BC               
-7E69: 9A              SBC     D                   
-7E6A: B0              OR      B                   
-7E6B: 17              RLA                         
-7E6C: 75              LD      (HL),L              
-7E6D: 8D              ADC     A,L                 
-7E6E: A6              AND     (HL)                
-7E6F: 85              ADD     A,L                 
-7E70: 2E 41           LD      L,$41               
-7E72: 45              LD      B,L                 
-7E73: 0E 43           LD      C,$43               
-7E75: 0D              DEC     C                   
-7E76: 03              INC     BC                  
-7E77: 1B              DEC     DE                  
-7E78: 14              INC     D                   
-7E79: 8F              ADC     A,A                 
-7E7A: 13              INC     DE                  
-7E7B: 92              SUB     D                   
-7E7C: 0D              DEC     C                   
-7E7D: 17              RLA                         
-7E7E: 14              INC     D                   
-7E7F: 09              ADD     HL,BC               
-7E80: 14              INC     D                   
-7E81: 04              INC     B                   
-7E82: 0A              LD      A,(BC)              
-7E83: C7              RST     0X00                
-7E84: DE D3           SBC     $D3                 
-7E86: 14              INC     D                   
-7E87: E6 96           AND     $96                 
-7E89: 49              LD      C,C                 
-7E8A: 16 8B           LD      D,$8B               
-7E8C: 54              LD      D,H                 
-7E8D: A8              XOR     B                   
-7E8E: 04              INC     B                   
-7E8F: 03              INC     BC                  
-7E90: 56              LD      D,(HL)              
-7E91: D1              POP     DE                  
-7E92: 48              LD      C,B                 
-7E93: A9              XOR     C                   
-7E94: 8B              ADC     A,E                 
-7E95: 0D              DEC     C                   
-7E96: 11 1A 2E        LD      DE,$2E1A            
-7E99: 40              LD      B,B                 
-7E9A: A8              XOR     B                   
-7E9B: 04              INC     B                   
-7E9C: 0B              DEC     BC                  
-7E9D: 4B              LD      C,E                 
-7E9E: 7B              LD      A,E                 
-7E9F: 06 9A           LD      B,$9A               
-7EA1: B0              OR      B                   
-7EA2: 17              RLA                         
-7EA3: 75              LD      (HL),L              
-7EA4: 8D              ADC     A,L                 
-7EA5: A6              AND     (HL)                
-7EA6: 85              ADD     A,L                 
-7EA7: 2E 0D           LD      L,$0D               
-7EA9: 0E 2A           LD      C,$2A               
-7EAB: A8              XOR     B                   
-7EAC: 04              INC     B                   
-7EAD: 0A              LD      A,(BC)              
-7EAE: 4B              LD      C,E                 
-7EAF: 7B              LD      A,E                 
-7EB0: 09              ADD     HL,BC               
-7EB1: 9A              SBC     D                   
-7EB2: 49              LD      C,C                 
-7EB3: 16 97           LD      D,$97               
-7EB5: 54              LD      D,H                 
-7EB6: 9B              SBC     E                   
-7EB7: 5D              LD      E,L                 
-7EB8: 12              LD      (DE),A              
-7EB9: 28 0E           JR      Z,$7EC9             ; {}
-7EBB: 26 13           LD      H,$13               
-7EBD: 0D              DEC     C                   
-7EBE: 05              DEC     B                   
-7EBF: 1A              LD      A,(DE)              
-7EC0: 14              INC     D                   
-7EC1: 15              DEC     D                   
-7EC2: 20 C2           JR      NZ,$7E86            ; {}
-7EC4: 0D              DEC     C                   
-7EC5: 1C              INC     E                   
-7EC6: 04              INC     B                   
-7EC7: 13              INC     DE                  
-7EC8: 33              INC     SP                  
-7EC9: D1              POP     DE                  
-7ECA: 09              ADD     HL,BC               
-7ECB: 15              DEC     D                   
-7ECC: E6 96           AND     $96                 
-7ECE: 51              LD      D,C                 
-7ECF: 18 4E           JR      $7F1F               ; {}
-7ED1: C2 98 5F        JP      NZ,$5F98            ; {}
-7ED4: 56              LD      D,(HL)              
-7ED5: 5E              LD      E,(HL)              
-7ED6: DB 72           IN      A,($72)             
-7ED8: 81              ADD     A,C                 
-7ED9: A6              AND     (HL)                
-7EDA: 52              LD      D,D                 
-7EDB: 11 04 04        LD      DE,$0404            
-7EDE: 49              LD      C,C                 
-7EDF: 48              LD      C,B                 
-7EE0: 7F              LD      A,A                 
-7EE1: 98              SBC     B                   
-7EE2: 09              ADD     HL,BC               
-7EE3: 57              LD      D,A                 
-7EE4: 0E 55           LD      C,$55               
-7EE6: 14              INC     D                   
-7EE7: 1B              DEC     DE                  
-7EE8: 14              INC     D                   
-7EE9: 0E 03           LD      C,$03               
-7EEB: 09              ADD     HL,BC               
-7EEC: 37              SCF                         
-7EED: 8F              ADC     A,A                 
-7EEE: 0E 3E           LD      C,$3E               
-7EF0: 0D              DEC     C                   
-7EF1: 17              RLA                         
-7EF2: 14              INC     D                   
-7EF3: 15              DEC     D                   
-7EF4: 40              LD      B,B                 
-7EF5: 04              INC     B                   
-7EF6: 0A              LD      A,(BC)              
-7EF7: C7              RST     0X00                
-7EF8: DE D3           SBC     $D3                 
-7EFA: 14              INC     D                   
-7EFB: E6 96           AND     $96                 
-7EFD: AF              XOR     A                   
-7EFE: 15              DEC     D                   
-7EFF: B3              OR      E                   
-7F00: B3              OR      E                   
-7F01: A8              XOR     B                   
-7F02: 04              INC     B                   
-7F03: 03              INC     BC                  
-7F04: 56              LD      D,(HL)              
-7F05: D1              POP     DE                  
-7F06: 48              LD      C,B                 
-7F07: A9              XOR     C                   
-7F08: 8B              ADC     A,E                 
-7F09: 13              INC     DE                  
-7F0A: 0D              DEC     C                   
-7F0B: 22 1A 14        LD      ($141A),HL          
-7F0E: 15              DEC     D                   
-7F0F: 10 04           DJNZ    $7F15               ; {}
-7F11: 13              INC     DE                  
-7F12: 73              LD      (HL),E              
-7F13: 7B              LD      A,E                 
-7F14: 77              LD      (HL),A              
-7F15: 5B              LD      E,E                 
-7F16: D0              RET     NC                  
-7F17: B5              OR      L                   
-7F18: C9              RET                         
-7F19: 9C              SBC     H                   
-7F1A: 36 A0           LD      (HL),$A0            
-7F1C: 89              ADC     A,C                 
-7F1D: 17              RLA                         
-7F1E: AF              XOR     A                   
-7F1F: 14              INC     D                   
-7F20: 73              LD      (HL),E              
-7F21: 49              LD      C,C                 
-7F22: 03              INC     BC                  
-7F23: A0              AND     B                   
-7F24: 41              LD      B,C                 
-7F25: 11 04 04        LD      DE,$0404            
-7F28: 56              LD      D,(HL)              
-7F29: D1              POP     DE                  
-7F2A: 03              INC     BC                  
-7F2B: 71              LD      (HL),C              
-7F2C: 12              LD      (DE),A              
-7F2D: 8B              ADC     A,E                 
-7F2E: 0D              DEC     C                   
-7F2F: 0B              DEC     BC                  
-7F30: A8              XOR     B                   
-7F31: 04              INC     B                   
-7F32: 08              EX      AF,AF'              
-7F33: 4B              LD      C,E                 
-7F34: 7B              LD      A,E                 
-7F35: 92              SUB     D                   
-7F36: C5              PUSH    BC                  
-7F37: 37              SCF                         
-7F38: 49              LD      C,C                 
-7F39: 17              RLA                         
-7F3A: 60              LD      H,B                 
-7F3B: 0A              LD      A,(BC)              
-7F3C: 01 07 15        LD      BC,$1507            
-7F3F: 26 0E           LD      H,$0E               
-7F41: 24              INC     H                   
-7F42: 13              INC     DE                  
-7F43: 0D              DEC     C                   
-7F44: 21 04 0A        LD      HL,$0A04            
-7F47: 80              ADD     A,B                 
-7F48: 5B              LD      E,E                 
-7F49: F3              DI                          
-7F4A: 23              INC     HL                  
-7F4B: 5B              LD      E,E                 
-7F4C: 4D              LD      C,L                 
-7F4D: 4E              LD      C,(HL)              
-7F4E: B8              CP      B                   
-7F4F: F9              LD      SP,HL               
-7F50: 8E              ADC     A,(HL)              
-7F51: A8              XOR     B                   
-7F52: 04              INC     B                   
-7F53: 12              LD      (DE),A              
-7F54: 47              LD      B,A                 
-7F55: D2 C8 8B        JP      NC,$8BC8            ; {}
-7F58: F3              DI                          
-7F59: 23              INC     HL                  
-7F5A: 55              LD      D,L                 
-7F5B: BD              CP      L                   
-7F5C: DB BD           IN      A,($BD)             
-7F5E: 41              LD      B,C                 
-7F5F: 6E              LD      L,(HL)              
-7F60: 03              INC     BC                  
-7F61: 58              LD      E,B                 
-7F62: 99              SBC     C                   
-7F63: 9B              SBC     E                   
-7F64: 5F              LD      E,A                 
-7F65: 4A              LD      C,D                 
-7F66: 59              LD      E,C                 
-7F67: 13              INC     DE                  
-7F68: 0E 11           LD      C,$11               
-7F6A: 13              INC     DE                  
-7F6B: 0D              DEC     C                   
-7F6C: 0E 04           LD      C,$04               
-7F6E: 0B              DEC     BC                  
-7F6F: 73              LD      (HL),E              
-7F70: 7B              LD      A,E                 
-7F71: 55              LD      D,L                 
-7F72: BD              CP      L                   
-7F73: F5              PUSH    AF                  
-7F74: BD              CP      L                   
-7F75: 43              LD      B,E                 
-7F76: 16 9B           LD      D,$9B               
-7F78: 85              ADD     A,L                 
-7F79: 41              LD      B,C                 
-7F7A: 11 17 4C        LD      DE,$4C17            
-7F7D: 0E 4A           LD      C,$4A               
-7F7F: 13              INC     DE                  
-7F80: 0D              DEC     C                   
-7F81: 22 1A 15        LD      ($151A),HL          
-7F84: 10 04           DJNZ    $7F8A               ; {}
-7F86: 09              ADD     HL,BC               
-7F87: 46              LD      B,(HL)              
-7F88: 77              LD      (HL),A              
-7F89: 05              DEC     B                   
-7F8A: A0              AND     B                   
-7F8B: 16 BC           LD      D,$BC               
-7F8D: 90              SUB     B                   
-7F8E: 73              LD      (HL),E              
-7F8F: 4B              LD      C,E                 
-7F90: A8              XOR     B                   
-7F91: 04              INC     B                   
-7F92: 11 4E D1        LD      DE,$D14E            
-7F95: 15              DEC     D                   
-7F96: 8A              ADC     A,D                 
-7F97: 50              LD      D,B                 
-7F98: BD              CP      L                   
-7F99: 15              DEC     D                   
-7F9A: 58              LD      E,B                 
-7F9B: 8E              ADC     A,(HL)              
-7F9C: BE              CP      (HL)                
-7F9D: 08              EX      AF,AF'              
-7F9E: 8A              ADC     A,D                 
-7F9F: BE              CP      (HL)                
-7FA0: A0              AND     B                   
-7FA1: 56              LD      D,(HL)              
-7FA2: 72              LD      (HL),D              
-7FA3: 2E 0D           LD      L,$0D               
-7FA5: 23              INC     HL                  
-7FA6: 04              INC     B                   
-7FA7: 10 CF           DJNZ    $7F78               ; {}
-7FA9: 62              LD      H,D                 
-7FAA: 8B              ADC     A,E                 
-7FAB: 96              SUB     (HL)                
-7FAC: 9B              SBC     E                   
-7FAD: 64              LD      H,H                 
-7FAE: 1B              DEC     DE                  
-7FAF: A1              AND     C                   
-7FB0: 47              LD      B,A                 
-7FB1: 55              LD      D,L                 
-7FB2: B3              OR      E                   
-7FB3: 8B              ADC     A,E                 
-7FB4: C3 54 A3        JP      $A354               ; {}
-7FB7: 91              SUB     C                   
-7FB8: A8              XOR     B                   
-7FB9: 04              INC     B                   
-7FBA: 0E 73           LD      C,$73               
-7FBC: 7B              LD      A,E                 
-7FBD: 47              LD      B,A                 
-7FBE: D2 C8 8B        JP      NC,$8BC8            ; {}
-7FC1: F3              DI                          
-7FC2: 23              INC     HL                  
-7FC3: EE 72           XOR     $72                 
-7FC5: 1B              DEC     DE                  
-7FC6: A3              AND     E                   
-7FC7: 3F              CCF                         
-7FC8: A1              AND     C                   
-7FC9: 16 12           LD      D,$12               
-7FCB: 0E 10           LD      C,$10               
-7FCD: 13              INC     DE                  
-7FCE: 0D              DEC     C                   
-7FCF: 0D              DEC     C                   
-7FD0: A8              XOR     B                   
-7FD1: 04              INC     B                   
-7FD2: 0A              LD      A,(BC)              
-7FD3: 4B              LD      C,E                 
-7FD4: 7B              LD      A,E                 
-7FD5: 06 9A           LD      B,$9A               
-7FD7: BF              CP      A                   
-7FD8: 14              INC     D                   
-7FD9: D3 B2           OUT     ($B2),A             
-7FDB: CF              RST     0X08                
-7FDC: 98              SBC     B                   
-7FDD: 18 2E           JR      $800D               ; {}
-7FDF: 0E 2C           LD      C,$2C               
-7FE1: 13              INC     DE                  
-7FE2: 0D              DEC     C                   
-7FE3: 15              DEC     D                   
-7FE4: 1A              LD      A,(DE)              
-7FE5: 15              DEC     D                   
-7FE6: 10 04           DJNZ    $7FEC               ; {}
-7FE8: 0E 5B           LD      C,$5B               
-7FEA: BE              CP      (HL)                
-7FEB: 65              LD      H,L                 
-7FEC: BC              CP      H                   
-7FED: 99              SBC     C                   
-7FEE: 16 F3           LD      D,$F3               
-7FF0: 17              RLA                         
-7FF1: 56              LD      D,(HL)              
-7FF2: DB CA           IN      A,($CA)             
-7FF4: 9C              SBC     H                   
-7FF5: 3E C6           LD      A,$C6               
-7FF7: AA              XOR     D                   
-7FF8: 8B              ADC     A,E                 
-7FF9: 0D              DEC     C                   
-7FFA: 12              LD      (DE),A              
-7FFB: A8              XOR     B                   
-7FFC: 04              INC     B                   
-7FFD: 0F              RRCA                        
-7FFE: 81              ADD     A,C                 
-7FFF: 8D              ADC     A,L                 
-8000: CB 87           RES     0,A                 
-8002: A5              AND     L                   
-8003: 94              SUB     H                   
-8004: 04              INC     B                   
-8005: 71              LD      (HL),C              
-8006: 8E              ADC     A,(HL)              
-8007: 62              LD      H,D                 
-8008: 23              INC     HL                  
-8009: 62              LD      H,D                 
-800A: 09              ADD     HL,BC               
-800B: 9A              SBC     D                   
-800C: 2E 0B           LD      L,$0B               
-800E: 65              LD      H,L                 
-800F: 0E 63           LD      C,$63               
-8011: 13              INC     DE                  
-8012: 0D              DEC     C                   
-8013: 17              RLA                         
-8014: 1A              LD      A,(DE)              
-8015: 15              DEC     D                   
-8016: 04              INC     B                   
-8017: 04              INC     B                   
-8018: 10 3F           DJNZ    $8059               ; {}
-801A: B9              CP      C                   
-801B: 82              ADD     A,D                 
-801C: 62              LD      H,D                 
-801D: 91              SUB     C                   
-801E: 7A              LD      A,D                 
-801F: D5              PUSH    DE                  
-8020: 15              DEC     D                   
-8021: 04              INC     B                   
-8022: 18 8E           JR      $7FB2               ; {}
-8024: 7B              LD      A,E                 
-8025: 83              ADD     A,E                 
-8026: 61              LD      H,C                 
-8027: 03              INC     BC                  
-8028: A0              AND     B                   
-8029: AA              XOR     D                   
-802A: 8B              ADC     A,E                 
-802B: 0D              DEC     C                   
-802C: 0D              DEC     C                   
-802D: 2E 20           LD      L,$20               
-802F: 04              INC     B                   
-8030: 09              ADD     HL,BC               
-8031: 73              LD      (HL),E              
-8032: 7B              LD      A,E                 
-8033: 4B              LD      C,E                 
-8034: 7B              LD      A,E                 
-8035: C9              RET                         
-8036: 54              LD      D,H                 
-8037: A6              AND     (HL)                
-8038: B7              OR      A                   
-8039: 2E 0D           LD      L,$0D               
-803B: 0D              DEC     C                   
-803C: 2E 40           LD      L,$40               
-803E: 04              INC     B                   
-803F: 09              ADD     HL,BC               
-8040: 73              LD      (HL),E              
-8041: 7B              LD      A,E                 
-8042: 4B              LD      C,E                 
-8043: 7B              LD      A,E                 
-8044: 75              LD      (HL),L              
-8045: 8D              ADC     A,L                 
-8046: A6              AND     (HL)                
-8047: 85              ADD     A,L                 
-8048: 2E 0D           LD      L,$0D               
-804A: 0A              LD      A,(BC)              
-804B: 15              DEC     D                   
-804C: 02              LD      (BC),A              
-804D: 0E 05           LD      C,$05               
-804F: 2E 80           LD      L,$80               
-8051: 14              INC     D                   
-8052: 2E 20           LD      L,$20               
-8054: 33              INC     SP                  
-8055: 0D              DEC     C                   
-8056: 03              INC     BC                  
-8057: 15              DEC     D                   
-8058: 01 33 0D        LD      BC,$0D33            
-805B: 18 04           JR      $8061               ; {}
-805D: 14              INC     D                   
-805E: 5F              LD      E,A                 
-805F: BE              CP      (HL)                
-8060: 5D              LD      E,L                 
-8061: B1              OR      C                   
-8062: D0              RET     NC                  
-8063: B5              OR      L                   
-8064: 02              LD      (BC),A              
-8065: A1              AND     C                   
-8066: 91              SUB     C                   
-8067: 7A              LD      A,D                 
-8068: 62              LD      H,D                 
-8069: 17              RLA                         
-806A: DB 5F           IN      A,($5F)             
-806C: 33              INC     SP                  
-806D: 48              LD      C,B                 
-806E: B9              CP      C                   
-806F: 46              LD      B,(HL)              
-8070: 73              LD      (HL),E              
-8071: C6 A8           ADD     $A8                 
-8073: 8B              ADC     A,E                 
-8074: 0C              INC     C                   
-8075: 17              RLA                         
-8076: 0E 15           LD      C,$15               
-8078: 13              INC     DE                  
-8079: 0D              DEC     C                   
-807A: 12              LD      (DE),A              
-807B: 04              INC     B                   
-807C: 0E 5F           LD      C,$5F               
-807E: BE              CP      (HL)                
-807F: 5D              LD      E,L                 
-8080: B1              OR      C                   
-8081: D0              RET     NC                  
-8082: B5              OR      L                   
-8083: 02              LD      (BC),A              
-8084: A1              AND     C                   
-8085: 91              SUB     C                   
-8086: 7A              LD      A,D                 
-8087: B0              OR      B                   
-8088: 17              RLA                         
-8089: F4 59 A8        CALL    P,$A859             ; {}
-808C: 8B              ADC     A,E                 
-808D: 10 4C           DJNZ    $80DB               ; {}
-808F: 0E 4A           LD      C,$4A               
-8091: 13              INC     DE                  
-8092: 0D              DEC     C                   
-8093: 2A 1B 14        LD      HL,($141B)          
-8096: 15              DEC     D                   
-8097: 02              LD      (BC),A              
-8098: 04              INC     B                   
-8099: 22 40 55        LD      ($5540),HL          
-809C: B0              OR      B                   
-809D: 53              LD      D,E                 
-809E: EB              EX      DE,HL               
-809F: BF              CP      A                   
-80A0: DB BD           IN      A,($BD)             
-80A2: 4B              LD      C,E                 
-80A3: 49              LD      C,C                 
-80A4: C7              RST     0X00                
-80A5: DE 63           SBC     $63                 
-80A7: 16 B3           LD      D,$B3               
-80A9: E0              RET     PO                  
-80AA: C7              RST     0X00                
-80AB: DE D3           SBC     $D3                 
-80AD: 14              INC     D                   
-80AE: 90              SUB     B                   
-80AF: 96              SUB     (HL)                
-80B0: F3              DI                          
-80B1: A0              AND     B                   
-80B2: A7              AND     A                   
-80B3: B7              OR      A                   
-80B4: 90              SUB     B                   
-80B5: 14              INC     D                   
-80B6: 82              ADD     A,D                 
-80B7: DF              RST     0X18                
-80B8: 91              SUB     C                   
-80B9: 7A              LD      A,D                 
-80BA: D0              RET     NC                  
-80BB: 15              DEC     D                   
-80BC: A9              XOR     C                   
-80BD: 8B              ADC     A,E                 
-80BE: 0D              DEC     C                   
-80BF: 0F              RRCA                        
-80C0: 14              INC     D                   
-80C1: 2E 80           LD      L,$80               
-80C3: 2E 20           LD      L,$20               
-80C5: A9              XOR     C                   
-80C6: 04              INC     B                   
-80C7: 07              RLCA                        
-80C8: 4B              LD      C,E                 
-80C9: 7B              LD      A,E                 
-80CA: C9              RET                         
-80CB: 54              LD      D,H                 
-80CC: A6              AND     (HL)                
-80CD: B7              OR      A                   
-80CE: 2E 33           LD      L,$33               
-80D0: 0D              DEC     C                   
-80D1: 09              ADD     HL,BC               
-80D2: A9              XOR     C                   
-80D3: 04              INC     B                   
-80D4: 06 4B           LD      B,$4B               
-80D6: 7B              LD      A,E                 
-80D7: 72              LD      (HL),D              
-80D8: 61              LD      H,C                 
-80D9: 1F              RRA                         
-80DA: C1              POP     BC                  
-80DB: 4C              LD      C,H                 
-80DC: 51              LD      D,C                 
-80DD: 0E 4F           LD      C,$4F               
-80DF: 13              INC     DE                  
-80E0: 0D              DEC     C                   
-80E1: 1A              LD      A,(DE)              
-80E2: 1B              DEC     DE                  
-80E3: 15              DEC     D                   
-80E4: 04              INC     B                   
-80E5: 04              INC     B                   
-80E6: 13              INC     DE                  
-80E7: 5F              LD      E,A                 
-80E8: BE              CP      (HL)                
-80E9: 5D              LD      E,L                 
-80EA: B1              OR      C                   
-80EB: D5              PUSH    DE                  
-80EC: B5              OR      L                   
-80ED: E7              RST     0X20                
-80EE: 9F              SBC     A                   
-80EF: 63              LD      H,E                 
-80F0: BE              CP      (HL)                
-80F1: AB              XOR     E                   
-80F2: 98              SBC     B                   
-80F3: B3              OR      E                   
-80F4: D2 3F C0        JP      NC,$C03F            
-80F7: 91              SUB     C                   
-80F8: 96              SUB     (HL)                
-80F9: 4E              LD      C,(HL)              
-80FA: A9              XOR     C                   
-80FB: 8B              ADC     A,E                 
-80FC: 0D              DEC     C                   
-80FD: 1D              DEC     E                   
-80FE: 14              INC     D                   
-80FF: 15              DEC     D                   
-8100: 01 04 16        LD      BC,$1604            
-8103: 5F              LD      E,A                 
-8104: BE              CP      (HL)                
-8105: 5D              LD      E,L                 
-8106: B1              OR      C                   
-8107: D0              RET     NC                  
-8108: B5              OR      L                   
-8109: 02              LD      (BC),A              
-810A: A1              AND     C                   
-810B: 91              SUB     C                   
-810C: 7A              LD      A,D                 
-810D: 99              SBC     C                   
-810E: 16 F9           LD      D,$F9               
-8110: BD              CP      L                   
-8111: BE              CP      (HL)                
-8112: A0              AND     B                   
-8113: FB              EI                          
-8114: 75              LD      (HL),L              
-8115: B9              CP      C                   
-8116: 46              LD      B,(HL)              
-8117: 73              LD      (HL),E              
-8118: C6 A9           ADD     $A9                 
-811A: 8B              ADC     A,E                 
-811B: 33              INC     SP                  
-811C: 0D              DEC     C                   
-811D: 10 04           DJNZ    $8123               ; {}
-811F: 0C              INC     C                   
-8120: 5F              LD      E,A                 
-8121: BE              CP      (HL)                
-8122: 5D              LD      E,L                 
-8123: B1              OR      C                   
-8124: D0              RET     NC                  
-8125: B5              OR      L                   
-8126: 02              LD      (BC),A              
-8127: A1              AND     C                   
-8128: 91              SUB     C                   
-8129: 7A              LD      A,D                 
-812A: C0              RET     NZ                  
-812B: 16 A9           LD      D,$A9               
-812D: 8B              ADC     A,E                 
-812E: 1B              DEC     DE                  
-812F: 1E 0E           LD      E,$0E               
-8131: 1C              INC     E                   
-8132: 13              INC     DE                  
-8133: 0D              DEC     C                   
-8134: 03              INC     BC                  
-8135: 08              EX      AF,AF'              
-8136: 00                         
-8137: 07              RLCA                        
-8138: 0D              DEC     C                   
-8139: 14              INC     D                   
-813A: 04              INC     B                   
-813B: 10 5F           DJNZ    $819C               ; {}
-813D: BE              CP      (HL)                
-813E: 5B              LD      E,E                 
-813F: B1              OR      C                   
-8140: 4B              LD      C,E                 
-8141: 7B              LD      A,E                 
-8142: 06 9A           LD      B,$9A               
-8144: 90              SUB     B                   
-8145: 73              LD      (HL),E              
-8146: C3 6A 07        JP      $076A               
-8149: B3              OR      E                   
-814A: 33              INC     SP                  
-814B: 98              SBC     B                   
-814C: A8              XOR     B                   
-814D: 8B              ADC     A,E                 
-814E: 1C              INC     E                   
-814F: 32 0E 30        LD      ($300E),A           
-8152: 13              INC     DE                  
-8153: 0D              DEC     C                   
-8154: 17              RLA                         
-8155: 08              EX      AF,AF'              
-8156: 00                         
-8157: 04              INC     B                   
-8158: 13              INC     DE                  
-8159: 5F              LD      E,A                 
-815A: BE              CP      (HL)                
-815B: 5B              LD      E,E                 
-815C: B1              OR      C                   
-815D: 4B              LD      C,E                 
-815E: 7B              LD      A,E                 
-815F: 06 9A           LD      B,$9A               
-8161: 90              SUB     B                   
-8162: 73              LD      (HL),E              
-8163: C4 6A A3        CALL    NZ,$A36A            ; {}
-8166: 60              LD      H,B                 
-8167: 33              INC     SP                  
-8168: 98              SBC     B                   
-8169: C7              RST     0X00                
-816A: DE 2E           SBC     $2E                 
-816C: 0D              DEC     C                   
-816D: 14              INC     D                   
-816E: 04              INC     B                   
-816F: 10 5F           DJNZ    $81D0               ; {}
-8171: BE              CP      (HL)                
-8172: 5B              LD      E,E                 
-8173: B1              OR      C                   
-8174: 4B              LD      C,E                 
-8175: 7B              LD      A,E                 
-8176: 06 9A           LD      B,$9A               
-8178: 90              SUB     B                   
-8179: 73              LD      (HL),E              
-817A: C4 6A A3        CALL    NZ,$A36A            ; {}
-817D: 60              LD      H,B                 
-817E: 33              INC     SP                  
-817F: 98              SBC     B                   
-8180: A8              XOR     B                   
-8181: 8B              ADC     A,E                 
-8182: 1D              DEC     E                   
-8183: 16 04           LD      D,$04               
-8185: 14              INC     D                   
-8186: 9F              SBC     A                   
-8187: 77              LD      (HL),A              
-8188: AF              XOR     A                   
-8189: 14              INC     D                   
-818A: 91              SUB     C                   
-818B: 7A              LD      A,D                 
-818C: 95              SUB     L                   
-818D: 14              INC     D                   
-818E: D3 14           OUT     ($14),A             
-8190: 68              LD      L,B                 
-8191: B1              OR      C                   
-8192: 33              INC     SP                  
-8193: C5              PUSH    BC                  
-8194: 4B              LD      C,E                 
-8195: 49              LD      C,C                 
-8196: 45              LD      B,L                 
-8197: 77              LD      (HL),A              
-8198: 81              ADD     A,C                 
-8199: 48              LD      C,B                 
-819A: 1E 04           LD      E,$04               
-819C: 04              INC     B                   
-819D: 02              LD      (BC),A              
-819E: E9              JP      (HL)                
-819F: 99              SBC     C                   
-81A0: 1F              RRA                         
-81A1: 05              DEC     B                   
-81A2: 04              INC     B                   
-81A3: 03              INC     BC                  
-81A4: 35              DEC     (HL)                
-81A5: DD 21 21 1C     LD      IX,$1C21            
-81A9: 04              INC     B                   
-81AA: 1A              LD      A,(DE)              
-81AB: 44              LD      B,H                 
-81AC: B9              CP      C                   
-81AD: 9E              SBC     (HL)                
-81AE: B4              OR      H                   
-81AF: BB              CP      E                   
-81B0: 15              DEC     D                   
-81B1: 80              ADD     A,B                 
-81B2: 5B              LD      E,E                 
-81B3: F3              DI                          
-81B4: 23              INC     HL                  
-81B5: 6E              LD      L,(HL)              
-81B6: 4D              LD      C,L                 
-81B7: 38 79           JR      C,$8232             ; {}
-81B9: 4B              LD      C,E                 
-81BA: 5E              LD      E,(HL)              
-81BB: 8F              ADC     A,A                 
-81BC: 96              SUB     (HL)                
-81BD: 7B              LD      A,E                 
-81BE: 47              LD      B,A                 
-81BF: D9              EXX                         
-81C0: 51              LD      D,C                 
-81C1: AE              XOR     (HL)                
-81C2: A0              AND     B                   
-81C3: 5B              LD      E,E                 
-81C4: BB              CP      E                   
-81C5: 5A              LD      E,D                 
-81C6: 1B              DEC     DE                  
-81C7: 04              INC     B                   
-81C8: 19              ADD     HL,DE               
-81C9: 25              DEC     H                   
-81CA: A1              AND     C                   
-81CB: AB              XOR     E                   
-81CC: 70              LD      (HL),B              
-81CD: 56              LD      D,(HL)              
-81CE: 77              LD      (HL),A              
-81CF: BE              CP      (HL)                
-81D0: 9F              SBC     A                   
-81D1: 51              LD      D,C                 
-81D2: 18 B3           JR      $8187               ; {}
-81D4: C7              RST     0X00                
-81D5: 5B              LD      E,E                 
-81D6: BE              CP      (HL)                
-81D7: 0B              DEC     BC                  
-81D8: C0              RET     NZ                  
-81D9: 06 9A           LD      B,$9A               
-81DB: E9              JP      (HL)                
-81DC: 16 DB           LD      D,$DB               
-81DE: B9              CP      C                   
-81DF: 7F              LD      A,A                 
-81E0: 4E              LD      C,(HL)              
-81E1: 21 22 12        LD      HL,$1222            
-81E4: 04              INC     B                   
-81E5: 10 5B           DJNZ    $8242               ; {}
-81E7: E0              RET     PO                  
-81E8: 27              DAA                         
-81E9: 60              LD      H,B                 
-81EA: 31 60 41        LD      SP,$4160            
-81ED: A0              AND     B                   
-81EE: 49              LD      C,C                 
-81EF: A0              AND     B                   
-81F0: 89              ADC     A,C                 
-81F1: D3 89           OUT     ($89),A             
-81F3: D3 69           OUT     ($69),A             
-81F5: CE 23           ADC     $23                 
-81F7: 01 24 2C        LD      BC,$2C24            
-81FA: 01 C9 3E        LD      BC,$3EC9            
-81FD: 04              INC     B                   
-81FE: 0D              DEC     C                   
-81FF: 02              LD      (BC),A              
-8200: C6 27           ADD     $27                 
-8202: 3F              CCF                         
-8203: 04              INC     B                   
-8204: 0D              DEC     C                   
-8205: 02              LD      (BC),A              
-8206: C6 28           ADD     $28                 
-8208: 25              DEC     H                   
-8209: 20 04           JR      NZ,$820F            ; {}
-820B: 1E C7           LD      E,$C7               
-820D: DE AF           SBC     $AF                 
-820F: 23              INC     HL                  
-8210: 99              SBC     C                   
-8211: 16 09           LD      D,$09               
-8213: BC              CP      H                   
-8214: 8E              ADC     A,(HL)              
-8215: 62              LD      H,D                 
-8216: 91              SUB     C                   
-8217: 7A              LD      A,D                 
-8218: 90              SUB     B                   
-8219: 14              INC     D                   
-821A: FA DF 2F        JP      M,$2FDF             
-821D: 62              LD      H,D                 
-821E: 16 EE           LD      D,$EE               
-8220: 7B              LD      A,E                 
-8221: B4              OR      H                   
-8222: 46              LD      B,(HL)              
-8223: 45              LD      B,L                 
-8224: 2F              CPL                         
-8225: 7B              LD      A,E                 
-8226: 03              INC     BC                  
-8227: 56              LD      D,(HL)              
-8228: 27              DAA                         
-8229: A0              AND     B                   
-822A: 26 20           LD      H,$20               
-822C: 0E 1E           LD      C,$1E               
-822E: 13              INC     DE                  
-822F: 0D              DEC     C                   
-8230: 13              INC     DE                  
-8231: 1A              LD      A,(DE)              
-8232: 15              DEC     D                   
-8233: 10 A8           DJNZ    $81DD               ; {}
-8235: 04              INC     B                   
-8236: 0D              DEC     C                   
-8237: 40              LD      B,B                 
-8238: D2 F3 23        JP      NC,$23F3            
-823B: F6 8B           OR      $8B                 
-823D: 51              LD      D,C                 
-823E: 18 52           JR      $8292               ; {}
-8240: C2 65 49        JP      NZ,$4965            
-8243: 21 04 06        LD      HL,$0604            
-8246: 09              ADD     HL,BC               
-8247: 9A              SBC     D                   
-8248: FA 17 70        JP      M,$7017             ; {}
-824B: 49              LD      C,C                 
-824C: 3D              DEC     A                   
-824D: 01 91 27        LD      BC,$2791            
-8250: 0E 0E           LD      C,$0E               
-8252: 0C              INC     C                   
-8253: 13              INC     DE                  
-8254: 04              INC     B                   
-8255: 09              ADD     HL,BC               
-8256: 25              DEC     H                   
-8257: A1              AND     C                   
-8258: AB              XOR     E                   
-8259: 70              LD      (HL),B              
-825A: 3B              DEC     SP                  
-825B: 95              SUB     L                   
-825C: 77              LD      (HL),A              
-825D: BF              CP      A                   
-825E: 21 44 09        LD      HL,$0944            
-8261: 04              INC     B                   
-8262: 07              RLCA                        
-8263: AF              XOR     A                   
-8264: 6E              LD      L,(HL)              
-8265: 83              ADD     A,E                 
-8266: 62              LD      H,D                 
-8267: C5              PUSH    BC                  
-8268: 98              SBC     B                   
-8269: 21 45 30        LD      HL,$3045            
-826C: 0E 2E           LD      C,$2E               
-826E: 13              INC     DE                  
-826F: 0D              DEC     C                   
-8270: 12              LD      (DE),A              
-8271: 1A              LD      A,(DE)              
-8272: 15              DEC     D                   
-8273: 10 A8           DJNZ    $821D               ; {}
-8275: 04              INC     B                   
-8276: 0C              INC     C                   
-8277: 72              LD      (HL),D              
-8278: B1              OR      C                   
-8279: 87              ADD     A,A                 
-827A: 8C              ADC     A,H                 
-827B: 33              INC     SP                  
-827C: BB              CP      E                   
-827D: DF              RST     0X18                
-827E: 1B              DEC     DE                  
-827F: 09              ADD     HL,BC               
-8280: 8D              ADC     A,L                 
-8281: 63              LD      H,E                 
-8282: F4 0D 17        CALL    P,$170D             
-8285: 04              INC     B                   
-8286: 13              INC     DE                  
-8287: 16 A0           LD      D,$A0               
-8289: 43              LD      B,E                 
-828A: DB E4           IN      A,($E4)             
-828C: 14              INC     D                   
-828D: 83              ADD     A,E                 
-828E: 4A              LD      C,D                 
-828F: 01 18 3E        LD      BC,$3E18            
-8292: C5              PUSH    BC                  
-8293: 7B              LD      A,E                 
-8294: 17              RLA                         
-8295: CB 8C           RES     1,H                 
-8297: 6B              LD      L,E                 
-8298: BF              CP      A                   
-8299: 41              LD      B,C                 
-829A: 11 8B 46        LD      DE,$468B            
-829D: 08              EX      AF,AF'              
-829E: 04              INC     B                   
-829F: 06 46           LD      B,$46               
-82A1: 77              LD      (HL),A              
-82A2: 98              SBC     B                   
-82A3: C5              PUSH    BC                  
-82A4: 5B              LD      E,E                 
-82A5: A2              AND     D                   
-82A6: 47              LD      B,A                 
-82A7: 09              ADD     HL,BC               
-82A8: 04              INC     B                   
-82A9: 07              RLCA                        
-82AA: 29              ADD     HL,HL               
-82AB: D1              POP     DE                  
-82AC: 20 16           JR      NZ,$82C4            ; {}
-82AE: 85              ADD     A,L                 
-82AF: A1              AND     C                   
-82B0: 3F              CCF                         
-82B1: 4A              LD      C,D                 
-82B2: 18 0E           JR      $82C2               ; {}
-82B4: 16 13           LD      D,$13               
-82B6: 0D              DEC     C                   
-82B7: 13              INC     DE                  
-82B8: 04              INC     B                   
-82B9: 11 9E 77        LD      DE,$779E            
-82BC: 08              EX      AF,AF'              
-82BD: 8A              ADC     A,D                 
-82BE: C6 9F           ADD     $9F                 
-82C0: 6B              LD      L,E                 
-82C1: A1              AND     C                   
-82C2: C7              RST     0X00                
-82C3: DE 90           SBC     $90                 
-82C5: 14              INC     D                   
-82C6: FA DF 2F        JP      M,$2FDF             
-82C9: 62              LD      H,D                 
-82CA: 21 49 26        LD      HL,$2649            
-82CD: 0E 24           LD      C,$24               
-82CF: 13              INC     DE                  
-82D0: 0D              DEC     C                   
-82D1: 11 09 00        LD      DE,$0009            
-82D4: A8              XOR     B                   
-82D5: 04              INC     B                   
-82D6: 0C              INC     C                   
-82D7: 09              ADD     HL,BC               
-82D8: 4F              LD      C,A                 
-82D9: CB B5           RES     6,L                 
-82DB: 89              ADC     A,C                 
-82DC: 96              SUB     (HL)                
-82DD: 67              LD      H,A                 
-82DE: B1              OR      C                   
-82DF: 90              SUB     B                   
-82E0: BE              CP      (HL)                
-82E1: 5B              LD      E,E                 
-82E2: 70              LD      (HL),B              
-82E3: 04              INC     B                   
-82E4: 0E 5F           LD      C,$5F               
-82E6: BE              CP      (HL)                
-82E7: 44              LD      B,H                 
-82E8: DB 6B           IN      A,($6B)             
-82EA: A1              AND     C                   
-82EB: 83              ADD     A,E                 
-82EC: 7A              LD      A,D                 
-82ED: AF              XOR     A                   
-82EE: 6E              LD      L,(HL)              
-82EF: 83              ADD     A,E                 
-82F0: 62              LD      H,D                 
-82F1: CF              RST     0X08                
-82F2: 98              SBC     B                   
-82F3: 28 36           JR      Z,$832B             ; {}
-82F5: 0E 34           LD      C,$34               
-82F7: 13              INC     DE                  
-82F8: 0D              DEC     C                   
-82F9: 16 1A           LD      D,$1A               
-82FB: 15              DEC     D                   
-82FC: 10 A8           DJNZ    $82A6               ; {}
-82FE: 04              INC     B                   
-82FF: 10 60           DJNZ    $8361               ; {}
-8301: 7B              LD      A,E                 
-8302: F3              DI                          
-8303: 23              INC     HL                  
-8304: 70              LD      (HL),B              
-8305: 75              LD      (HL),L              
-8306: C3 6E 33        JP      $336E               
-8309: 17              RLA                         
-830A: 2E 6D           LD      L,$6D               
-830C: 99              SBC     C                   
-830D: 16 5B           LD      D,$5B               
-830F: D4 0D 19        CALL    NC,$190D            
-8312: 04              INC     B                   
-8313: 0D              DEC     C                   
-8314: 80              ADD     A,B                 
-8315: 5B              LD      E,E                 
-8316: F3              DI                          
-8317: 23              INC     HL                  
-8318: C7              RST     0X00                
-8319: DE 20           SBC     $20                 
-831B: 16 6B           LD      D,$6B               
-831D: A1              AND     C                   
-831E: 5B              LD      E,E                 
-831F: BE              CP      (HL)                
-8320: 54              LD      D,H                 
-8321: A8              XOR     B                   
-8322: 04              INC     B                   
-8323: 07              RLCA                        
-8324: 10 53           DJNZ    $8379               ; {}
-8326: F3              DI                          
-8327: 23              INC     HL                  
-8328: 96              SUB     (HL)                
-8329: 5F              LD      E,A                 
-832A: 21 29 34        LD      HL,$3429            
-832D: 0E 32           LD      C,$32               
-832F: 13              INC     DE                  
-8330: 0D              DEC     C                   
-8331: 14              INC     D                   
-8332: 1B              DEC     DE                  
-8333: 15              DEC     D                   
-8334: 10 A9           DJNZ    $82DF               ; {}
-8336: 04              INC     B                   
-8337: 0E 47           LD      C,$47               
-8339: D2 B3 8B        JP      NC,$8BB3            ; {}
-833C: D6 B0           SUB     $B0                 
-833E: F4 72 23        CALL    P,$2372             
-8341: 15              DEC     D                   
-8342: 1B              DEC     DE                  
-8343: BC              CP      H                   
-8344: 19              ADD     HL,DE               
-8345: A1              AND     C                   
-8346: 0D              DEC     C                   
-8347: 19              ADD     HL,DE               
-8348: 04              INC     B                   
-8349: 17              RLA                         
-834A: 43              LD      B,E                 
-834B: 79              LD      A,C                 
-834C: C7              RST     0X00                
-834D: DE D3           SBC     $D3                 
-834F: 14              INC     D                   
-8350: 88              ADC     A,B                 
-8351: 96              SUB     (HL)                
-8352: 8E              ADC     A,(HL)              
-8353: 7A              LD      A,D                 
-8354: 7B              LD      A,E                 
-8355: 14              INC     D                   
-8356: C7              RST     0X00                
-8357: 93              SUB     E                   
-8358: 76              HALT                        
-8359: BE              CP      (HL)                
-835A: BD              CP      L                   
-835B: 15              DEC     D                   
-835C: 49              LD      C,C                 
-835D: 90              SUB     B                   
-835E: 67              LD      H,A                 
-835F: 48              LD      C,B                 
-8360: 21 2F 07        LD      HL,$072F            
-8363: 04              INC     B                   
-8364: 05              DEC     B                   
-8365: 9B              SBC     E                   
-8366: 29              ADD     HL,HL               
-8367: 57              LD      D,A                 
-8368: C6 3E           ADD     $3E                 
-836A: 31 17 04        LD      SP,$0417            
-836D: 15              DEC     D                   
-836E: 36 9F           LD      (HL),$9F            
-8370: D6 15           SUB     $15                 
-8372: CB 23           SLA     E                   
-8374: 39              ADD     HL,SP               
-8375: 49              LD      C,C                 
-8376: 8E              ADC     A,(HL)              
-8377: C5              PUSH    BC                  
-8378: 9F              SBC     A                   
-8379: 15              DEC     D                   
-837A: 5B              LD      E,E                 
-837B: B1              OR      C                   
-837C: 3F              CCF                         
-837D: B9              CP      C                   
-837E: FA 62 2F        JP      M,$2F62             
-8381: 62              LD      H,D                 
-8382: 2E 2D           LD      L,$2D               
-8384: 09              ADD     HL,BC               
-8385: 0E 07           LD      C,$07               
-8387: 13              INC     DE                  
-8388: 0D              DEC     C                   
-8389: 02              LD      (BC),A              
-838A: 1A              LD      A,(DE)              
-838B: 8F              ADC     A,A                 
-838C: 14              INC     D                   
-838D: 0C              INC     C                   
-838E: 48              LD      C,B                 
-838F: 11 0E 0F        LD      DE,$0F0E            
-8392: 13              INC     DE                  
-8393: 04              INC     B                   
-8394: 0C              INC     C                   
-8395: C7              RST     0X00                
-8396: DE D3           SBC     $D3                 
-8398: 14              INC     D                   
-8399: E6 96           AND     $96                 
-839B: 09              ADD     HL,BC               
-839C: 15              DEC     D                   
-839D: 82              ADD     A,D                 
-839E: 17              RLA                         
-839F: 97              SUB     A                   
-83A0: 49              LD      C,C                 
-83A1: 33              INC     SP                  
-83A2: 27              DAA                         
-83A3: 0E 25           LD      C,$25               
-83A5: 13              INC     DE                  
-83A6: 04              INC     B                   
-83A7: 22 0F A0        LD      ($A00F),HL          ; {}
-83AA: 5F              LD      E,A                 
-83AB: 17              RLA                         
-83AC: 46              LD      B,(HL)              
-83AD: 48              LD      C,B                 
-83AE: 66              LD      H,(HL)              
-83AF: 17              RLA                         
-83B0: D3 61           OUT     ($61),A             
-83B2: 04              INC     B                   
-83B3: 68              LD      L,B                 
-83B4: 63              LD      H,E                 
-83B5: 16 5B           LD      D,$5B               
-83B7: 99              SBC     C                   
-83B8: 56              LD      D,(HL)              
-83B9: 98              SBC     B                   
-83BA: C0              RET     NZ                  
-83BB: 16 49           LD      D,$49               
-83BD: 5E              LD      E,(HL)              
-83BE: 90              SUB     B                   
-83BF: 78              LD      A,B                 
-83C0: 0E BC           LD      C,$BC               
-83C2: 92              SUB     D                   
-83C3: 5F              LD      E,A                 
-83C4: 59              LD      E,C                 
-83C5: 15              DEC     D                   
-83C6: 9B              SBC     E                   
-83C7: AF              XOR     A                   
-83C8: 19              ADD     HL,DE               
-83C9: A1              AND     C                   
-83CA: 34              INC     (HL)                
-83CB: 23              INC     HL                  
-83CC: 0E 21           LD      C,$21               
-83CE: 13              INC     DE                  
-83CF: 04              INC     B                   
-83D0: 1E C7           LD      E,$C7               
-83D2: DE 95           SBC     $95                 
-83D4: AF              XOR     A                   
-83D5: D5              PUSH    DE                  
-83D6: C3 65 62        JP      $6265               ; {}
-83D9: D5              PUSH    DE                  
-83DA: 15              DEC     D                   
-83DB: 67              LD      H,A                 
-83DC: 16 67           LD      D,$67               
-83DE: 49              LD      C,C                 
-83DF: 66              LD      H,(HL)              
-83E0: B1              OR      C                   
-83E1: D0              RET     NC                  
-83E2: 15              DEC     D                   
-83E3: 3F              CCF                         
-83E4: 16 ED           LD      D,$ED               
-83E6: 48              LD      C,B                 
-83E7: 90              SUB     B                   
-83E8: 14              INC     D                   
-83E9: 04              INC     B                   
-83EA: 58              LD      E,B                 
-83EB: 30 A1           JR      NC,$838E            ; {}
-83ED: 09              ADD     HL,BC               
-83EE: 5C              LD      E,H                 
-83EF: 35              DEC     (HL)                
-83F0: 1C              INC     E                   
-83F1: 0E 1A           LD      C,$1A               
-83F3: 13              INC     DE                  
-83F4: 04              INC     B                   
-83F5: 17              RLA                         
-83F6: C7              RST     0X00                
-83F7: DE 73           SBC     $73                 
-83F9: 21 76 4D        LD      HL,$4D76            
-83FC: F4 BD F3        CALL    P,$F3BD             
-83FF: 17              RLA                         
-8400: 9A              SBC     D                   
-8401: BD              CP      L                   
-8402: FA 17 2F        JP      M,$2F17             
-8405: 62              LD      H,D                 
-8406: 51              LD      D,C                 
-8407: 18 55           JR      $845E               ; {}
-8409: C2 F2 BD        JP      NZ,$BDF2            ; {}
-840C: 21 36 04        LD      HL,$0436            
-840F: 0E 02           LD      C,$02               
-8411: 13              INC     DE                  
-8412: 91              SUB     C                   
-8413: 37              SCF                         
-8414: 04              INC     B                   
-8415: 0E 02           LD      C,$02               
-8417: 13              INC     DE                  
-8418: 91              SUB     C                   
-8419: 54              LD      D,H                 
-841A: 17              RLA                         
-841B: 0E 15           LD      C,$15               
-841D: 13              INC     DE                  
-841E: 04              INC     B                   
-841F: 12              LD      (DE),A              
-8420: 5F              LD      E,A                 
-8421: BE              CP      (HL)                
-8422: 5B              LD      E,E                 
-8423: B1              OR      C                   
-8424: 4B              LD      C,E                 
-8425: 7B              LD      A,E                 
-8426: EB              EX      DE,HL               
-8427: 99              SBC     C                   
-8428: FB              EI                          
-8429: A5              AND     L                   
-842A: 9B              SBC     E                   
-842B: 53              LD      D,E                 
-842C: 6B              LD      L,E                 
-842D: BF              CP      A                   
-842E: 2B              DEC     HL                  
-842F: 6E              LD      L,(HL)              
-8430: F7              RST     0X30                
-8431: C5              PUSH    BC                  
-8432: 55              LD      D,L                 
-8433: 19              ADD     HL,DE               
-8434: 0E 17           LD      C,$17               
-8436: 13              INC     DE                  
-8437: 04              INC     B                   
-8438: 14              INC     D                   
-8439: 5F              LD      E,A                 
-843A: BE              CP      (HL)                
-843B: 5B              LD      E,E                 
-843C: B1              OR      C                   
-843D: 4B              LD      C,E                 
-843E: 7B              LD      A,E                 
-843F: EB              EX      DE,HL               
-8440: 99              SBC     C                   
-8441: FB              EI                          
-8442: A5              AND     L                   
-8443: 9B              SBC     E                   
-8444: 53              LD      D,E                 
-8445: 6B              LD      L,E                 
-8446: BF              CP      A                   
-8447: 2B              DEC     HL                  
-8448: 6E              LD      L,(HL)              
-8449: 89              ADC     A,C                 
-844A: 5B              LD      E,E                 
-844B: 1B              DEC     DE                  
-844C: 9C              SBC     H                   
-844D: 38 1D           JR      C,$846C             ; {}
-844F: 0E 1B           LD      C,$1B               
-8451: 13              INC     DE                  
-8452: 0D              DEC     C                   
-8453: 18 04           JR      $8459               ; {}
-8455: 14              INC     D                   
-8456: 5F              LD      E,A                 
-8457: BE              CP      (HL)                
-8458: 5B              LD      E,E                 
-8459: B1              OR      C                   
-845A: 4B              LD      C,E                 
-845B: 7B              LD      A,E                 
-845C: 06 9A           LD      B,$9A               
-845E: 30 15           JR      NC,$8475            ; {}
-8460: 29              ADD     HL,HL               
-8461: A1              AND     C                   
-8462: 14              INC     D                   
-8463: 71              LD      (HL),C              
-8464: 3F              CCF                         
-8465: A0              AND     B                   
-8466: B0              OR      B                   
-8467: 17              RLA                         
-8468: F4 59 A8        CALL    P,$A859             ; {}
-846B: 8B              ADC     A,E                 
-846C: 39              ADD     HL,SP               
-846D: 1D              DEC     E                   
-846E: 0E 1B           LD      C,$1B               
-8470: 13              INC     DE                  
-8471: 0D              DEC     C                   
-8472: 18 04           JR      $8478               ; {}
-8474: 16 C7           LD      D,$C7               
-8476: DE FB           SBC     $FB                 
-8478: 17              RLA                         
-8479: F3              DI                          
-847A: 8C              ADC     A,H                 
-847B: 58              LD      E,B                 
-847C: 72              LD      (HL),D              
-847D: 56              LD      D,(HL)              
-847E: 5E              LD      E,(HL)              
-847F: D2 9C 73        JP      NC,$739C            ; {}
-8482: C6 73           ADD     $73                 
-8484: 7B              LD      A,E                 
-8485: 83              ADD     A,E                 
-8486: 7A              LD      A,D                 
-8487: 5F              LD      E,A                 
-8488: BE              CP      (HL)                
-8489: 7F              LD      A,A                 
-848A: B1              OR      C                   
-848B: 0D              DEC     C                   
-848C: 2B              DEC     HL                  
-848D: 0E 29           LD      C,$29               
-848F: 0D              DEC     C                   
-8490: 25              DEC     H                   
-8491: 1A              LD      A,(DE)              
-8492: 8F              ADC     A,A                 
-8493: 0E 21           LD      C,$21               
-8495: 13              INC     DE                  
-8496: 0D              DEC     C                   
-8497: 1E 0E           LD      E,$0E               
-8499: 07              RLCA                        
-849A: 14              INC     D                   
-849B: 15              DEC     D                   
-849C: 10 1B           DJNZ    $84B9               ; {}
-849E: 14              INC     D                   
-849F: 15              DEC     D                   
-84A0: 40              LD      B,B                 
-84A1: A8              XOR     B                   
-84A2: 04              INC     B                   
-84A3: 0F              RRCA                        
-84A4: 07              RLCA                        
-84A5: 4F              LD      C,A                 
-84A6: 17              RLA                         
-84A7: 98              SBC     B                   
-84A8: CA B5 37        JP      Z,$37B5             
-84AB: 49              LD      C,C                 
-84AC: F5              PUSH    AF                  
-84AD: 8B              ADC     A,E                 
-84AE: D3 B8           OUT     ($B8),A             
-84B0: B8              CP      B                   
-84B1: 16 46           LD      D,$46               
-84B3: A9              XOR     C                   
-84B4: 8B              ADC     A,E                 
-84B5: 10 14           DJNZ    $84CB               ; {}
-84B7: 0C              INC     C                   
-84B8: 57              LD      D,A                 
-84B9: 81              ADD     A,C                 
-84BA: 09              ADD     HL,BC               
-84BB: 0E 81           LD      C,$81               
-84BD: 06 13           LD      B,$13               
-84BF: 0D              DEC     C                   
-84C0: 0F              RRCA                        
-84C1: 14              INC     D                   
-84C2: 09              ADD     HL,BC               
-84C3: 28 A9           JR      Z,$846E             ; {}
-84C5: 04              INC     B                   
-84C6: 09              ADD     HL,BC               
-84C7: 60              LD      H,B                 
-84C8: 7B              LD      A,E                 
-84C9: F3              DI                          
-84CA: 23              INC     HL                  
-84CB: 73              LD      (HL),E              
-84CC: 8D              ADC     A,L                 
-84CD: E6 59           AND     $59                 
-84CF: 2E 0D           LD      L,$0D               
-84D1: 0A              LD      A,(BC)              
-84D2: 14              INC     D                   
-84D3: 03              INC     BC                  
-84D4: 28 29           JR      Z,$84FF             ; {}
-84D6: 04              INC     B                   
-84D7: 04              INC     B                   
-84D8: C3 54 AF        JP      $AF54               ; {}
-84DB: 54              LD      D,H                 
-84DC: 0D              DEC     C                   
-84DD: 80              ADD     A,B                 
-84DE: CB 04           RLC     H                   
-84E0: 04              INC     B                   
-84E1: 7B              LD      A,E                 
-84E2: 4E              LD      C,(HL)              
-84E3: EB              EX      DE,HL               
-84E4: 8F              ADC     A,A                 
-84E5: 0B              DEC     BC                  
-84E6: 80              ADD     A,B                 
-84E7: C2 08 33        JP      NZ,$3308            
-84EA: 0E 0D           LD      C,$0D               
-84EC: 0C              INC     C                   
-84ED: 04              INC     B                   
-84EE: 07              RLCA                        
-84EF: 41              LD      B,C                 
-84F0: 6E              LD      L,(HL)              
-84F1: 15              DEC     D                   
-84F2: 58              LD      E,B                 
-84F3: 86              ADD     A,(HL)              
-84F4: 74              LD      (HL),H              
-84F5: 21 1A 1D        LD      HL,$1D1A            
-84F8: 64              LD      H,H                 
-84F9: 62              LD      H,D                 
-84FA: 4D              LD      C,L                 
-84FB: 0D              DEC     C                   
-84FC: 4B              LD      C,E                 
-84FD: 04              INC     B                   
-84FE: 45              LD      B,L                 
-84FF: 5F              LD      E,A                 
-8500: BE              CP      (HL)                
-8501: 8E              ADC     A,(HL)              
-8502: 14              INC     D                   
-8503: 30 79           JR      NC,$857E            ; {}
-8505: D5              PUSH    DE                  
-8506: 15              DEC     D                   
-8507: 43              LD      B,E                 
-8508: 16 BF           LD      D,$BF               
-850A: 68              LD      L,B                 
-850B: 03              INC     BC                  
-850C: 58              LD      E,B                 
-850D: 33              INC     SP                  
-850E: 98              SBC     B                   
-850F: 6C              LD      L,H                 
-8510: BE              CP      (HL)                
-8511: 80              ADD     A,B                 
-8512: A1              AND     C                   
-8513: AB              XOR     E                   
-8514: 14              INC     D                   
-8515: A9              XOR     C                   
-8516: 54              LD      D,H                 
-8517: 2E 49           LD      L,$49               
-8519: C4 B5 56        CALL    NZ,$56B5            
-851C: DB DB           IN      A,($DB)             
-851E: 72              LD      (HL),D              
-851F: 72              LD      (HL),D              
-8520: 7A              LD      A,D                 
-8521: E6 46           AND     $46                 
-8523: B8              CP      B                   
-8524: 16 82           LD      D,$82               
-8526: 17              RLA                         
-8527: 44              LD      B,H                 
-8528: 5E              LD      E,(HL)              
-8529: 55              LD      D,L                 
-852A: 8B              ADC     A,E                 
-852B: 9B              SBC     E                   
-852C: C1              POP     BC                  
-852D: 8D              ADC     A,L                 
-852E: 7B              LD      A,E                 
-852F: 43              LD      B,E                 
-8530: 16 D3           LD      D,$D3               
-8532: 93              SUB     E                   
-8533: F6 4E           OR      $4E                 
-8535: 48              LD      C,B                 
-8536: DB 46           IN      A,($46)             
-8538: 48              LD      C,B                 
-8539: D6 B5           SUB     $B5                 
-853B: D6 9C           SUB     $9C                 
-853D: DB 72           IN      A,($72)             
-853F: B9              CP      C                   
-8540: 6E              LD      L,(HL)              
-8541: 8E              ADC     A,(HL)              
-8542: C5              PUSH    BC                  
-8543: 2E 1C           LD      L,$1C               
-8545: 62              LD      H,D                 
-8546: 1D              DEC     E                   
-8547: 15              DEC     D                   
-8548: 89              ADC     A,C                 
-8549: 60              LD      H,B                 
-854A: 0D              DEC     C                   
-854B: 5E              LD      E,(HL)              
-854C: 04              INC     B                   
-854D: 58              LD      E,B                 
-854E: 5F              LD      E,A                 
-854F: BE              CP      (HL)                
-8550: 5A              LD      E,D                 
-8551: 17              RLA                         
-8552: 01 A1 83        LD      BC,$83A1            
-8555: C5              PUSH    BC                  
-8556: F3              DI                          
-8557: B2              OR      D                   
-8558: 8B              ADC     A,E                 
-8559: B3              OR      E                   
-855A: E3              EX      (SP),HL             
-855B: 59              LD      E,C                 
-855C: 70              LD      (HL),B              
-855D: 66              LD      H,(HL)              
-855E: 91              SUB     C                   
-855F: 7A              LD      A,D                 
-8560: 1E 8F           LD      E,$8F               
-8562: BF              CP      A                   
-8563: 14              INC     D                   
-8564: 0A              LD      A,(BC)              
-8565: BC              CP      H                   
-8566: 4B              LD      C,E                 
-8567: 49              LD      C,C                 
-8568: 96              SUB     (HL)                
-8569: 8C              ADC     A,H                 
-856A: FF              RST     0X38                
-856B: BE              CP      (HL)                
-856C: 28 15           JR      Z,$8583             ; {}
-856E: 65              LD      H,L                 
-856F: 66              LD      H,(HL)              
-8570: 11 BC 96        LD      DE,$96BC            
-8573: 96              SUB     (HL)                
-8574: DB 72           IN      A,($72)             
-8576: 18 D0           JR      $8548               ; {}
-8578: 51              LD      D,C                 
-8579: 5E              LD      E,(HL)              
-857A: 95              SUB     L                   
-857B: 64              LD      H,H                 
-857C: 8E              ADC     A,(HL)              
-857D: 91              SUB     C                   
-857E: 04              INC     B                   
-857F: 8A              ADC     A,D                 
-8580: 45              LD      B,L                 
-8581: 8B              ADC     A,E                 
-8582: C5              PUSH    BC                  
-8583: 83              ADD     A,E                 
-8584: 63              LD      H,E                 
-8585: B1              OR      C                   
-8586: 74              LD      (HL),H              
-8587: C0              RET     NZ                  
-8588: 4B              LD      C,E                 
-8589: 62              LD      H,D                 
-858A: 5B              LD      E,E                 
-858B: BE              CP      (HL)                
-858C: 19              ADD     HL,DE               
-858D: BC              CP      H                   
-858E: 5A              LD      E,D                 
-858F: 49              LD      C,C                 
-8590: C8              RET     Z                   
-8591: 16 23           LD      D,$23               
-8593: 62              LD      H,D                 
-8594: C7              RST     0X00                
-8595: DE 15           SBC     $15                 
-8597: EE 90           XOR     $90                 
-8599: BE              CP      (HL)                
-859A: 50              LD      D,B                 
-859B: 6D              LD      L,L                 
-859C: DB 6A           IN      A,($6A)             
-859E: 1B              DEC     DE                  
-859F: A1              AND     C                   
-85A0: 6B              LD      L,E                 
-85A1: BF              CP      A                   
-85A2: E3              EX      (SP),HL             
-85A3: 59              LD      E,C                 
-85A4: 77              LD      (HL),A              
-85A5: BE              CP      (HL)                
-85A6: 1C              INC     E                   
-85A7: 01 1D 4B        LD      BC,$4B1D            
-85AA: 0D              DEC     C                   
-85AB: 18 04           JR      $85B1               ; {}
-85AD: 14              INC     D                   
-85AE: 5F              LD      E,A                 
-85AF: BE              CP      (HL)                
-85B0: 5B              LD      E,E                 
-85B1: B1              OR      C                   
-85B2: 2F              CPL                         
-85B3: 49              LD      C,C                 
-85B4: 57              LD      D,A                 
-85B5: 17              RLA                         
-85B6: 74              LD      (HL),H              
-85B7: CA 33 48        JP      Z,$4833             
-85BA: 79              LD      A,C                 
-85BB: 98              SBC     B                   
-85BC: A9              XOR     C                   
-85BD: 15              DEC     D                   
-85BE: F5              PUSH    AF                  
-85BF: 8B              ADC     A,E                 
-85C0: D0              RET     NC                  
-85C1: 15              DEC     D                   
-85C2: A8              XOR     B                   
-85C3: 8B              ADC     A,E                 
-85C4: 0E 13           LD      C,$13               
-85C6: 0E 11           LD      C,$11               
-85C8: 13              INC     DE                  
-85C9: 0D              DEC     C                   
-85CA: 0E A9           LD      C,$A9               
-85CC: 04              INC     B                   
-85CD: 0B              DEC     BC                  
-85CE: 77              LD      (HL),A              
-85CF: 5B              LD      E,E                 
-85D0: 05              DEC     B                   
-85D1: B9              CP      C                   
-85D2: 19              ADD     HL,DE               
-85D3: BC              CP      H                   
-85D4: 9E              SBC     (HL)                
-85D5: 48              LD      C,B                 
-85D6: D6 15           SUB     $15                 
-85D8: 2E 0F           LD      L,$0F               
-85DA: 1D              DEC     E                   
-85DB: 0E 1B           LD      C,$1B               
-85DD: 0D              DEC     C                   
-85DE: 06 1A           LD      B,$1A               
-85E0: 14              INC     D                   
-85E1: 2E 10           LD      L,$10               
-85E3: 14              INC     D                   
-85E4: 8F              ADC     A,A                 
-85E5: 14              INC     D                   
-85E6: BF              CP      A                   
-85E7: 0D              DEC     C                   
-85E8: 05              DEC     B                   
-85E9: 1B              DEC     DE                  
-85EA: 14              INC     D                   
-85EB: 15              DEC     D                   
-85EC: 02              LD      (BC),A              
-85ED: B6              OR      (HL)                
-85EE: B7              OR      A                   
-85EF: 0D              DEC     C                   
-85F0: 04              INC     B                   
-85F1: 1B              DEC     DE                  
-85F2: 32 B5 0C        LD      ($0CB5),A           
-85F5: 13              INC     DE                  
-85F6: 14              INC     D                   
-85F7: 0C              INC     C                   
-85F8: 4D              LD      C,L                 
-85F9: 23              INC     HL                  
-85FA: 0E 21           LD      C,$21               
-85FC: 0D              DEC     C                   
-85FD: 05              DEC     B                   
-85FE: 1B              DEC     DE                  
-85FF: 14              INC     D                   
-8600: 2E 10           LD      L,$10               
-8602: B8              CP      B                   
-8603: 14              INC     D                   
-8604: BF              CP      A                   
-8605: 0D              DEC     C                   
-8606: 05              DEC     B                   
-8607: 1A              LD      A,(DE)              
-8608: 14              INC     D                   
-8609: 15              DEC     D                   
-860A: 02              LD      (BC),A              
-860B: B6              OR      (HL)                
-860C: B7              OR      A                   
-860D: 0D              DEC     C                   
-860E: 05              DEC     B                   
-860F: 1B              DEC     DE                  
-8610: 14              INC     D                   
-8611: 2E 10           LD      L,$10               
-8613: B8              CP      B                   
-8614: 0D              DEC     C                   
-8615: 04              INC     B                   
-8616: 1A              LD      A,(DE)              
-8617: 31 B5 0C        LD      SP,$0CB5            
-861A: 13              INC     DE                  
-861B: 14              INC     D                   
-861C: 0C              INC     C                   
-861D: 4E              LD      C,(HL)              
-861E: 3F              CCF                         
-861F: 0E 3D           LD      C,$3D               
-8621: 0D              DEC     C                   
-8622: 0A              LD      A,(BC)              
-8623: 1A              LD      A,(DE)              
-8624: 14              INC     D                   
-8625: 2E 10           LD      L,$10               
-8627: 04              INC     B                   
-8628: 03              INC     BC                  
-8629: 81              ADD     A,C                 
-862A: A6              AND     (HL)                
-862B: 52              LD      D,D                 
-862C: 11 14 BF        LD      DE,$BF14            
-862F: 0D              DEC     C                   
-8630: 10 09           DJNZ    $863B               ; {}
-8632: 00                         
-8633: 1C              INC     E                   
-8634: 00                         
-8635: 32 A8 04        LD      ($04A8),A           
-8638: 08              EX      AF,AF'              
-8639: 4B              LD      C,E                 
-863A: 7B              LD      A,E                 
-863B: 09              ADD     HL,BC               
-863C: 9A              SBC     D                   
-863D: 81              ADD     A,C                 
-863E: 15              DEC     D                   
-863F: 7F              LD      A,A                 
-8640: 98              SBC     B                   
-8641: 0D              DEC     C                   
-8642: 12              LD      (DE),A              
-8643: 1B              DEC     DE                  
-8644: 14              INC     D                   
-8645: 15              DEC     D                   
-8646: 02              LD      (BC),A              
-8647: A9              XOR     C                   
-8648: 04              INC     B                   
-8649: 08              EX      AF,AF'              
-864A: 4B              LD      C,E                 
-864B: 7B              LD      A,E                 
-864C: 09              ADD     HL,BC               
-864D: 9A              SBC     D                   
-864E: FB              EI                          
-864F: 14              INC     D                   
-8650: F7              RST     0X30                
-8651: 93              SUB     E                   
-8652: 1C              INC     E                   
-8653: 00                         
-8654: 32 0D 04        LD      ($040D),A           
-8657: 1B              DEC     DE                  
-8658: 32 B5 0C        LD      ($0CB5),A           
-865B: 13              INC     DE                  
-865C: 14              INC     D                   
-865D: 0C              INC     C                   
-865E: 4F              LD      C,A                 
-865F: 52              LD      D,D                 
-8660: 0E 50           LD      C,$50               
-8662: 0D              DEC     C                   
-8663: 32 1A 14        LD      ($141A),A           
-8666: 2E 10           LD      L,$10               
-8668: 04              INC     B                   
-8669: 2A C7 DE        LD      HL,($DEC7)          
-866C: AF              XOR     A                   
-866D: 23              INC     HL                  
-866E: 5B              LD      E,E                 
-866F: 17              RLA                         
-8670: AE              XOR     (HL)                
-8671: 54              LD      D,H                 
-8672: BF              CP      A                   
-8673: 14              INC     D                   
-8674: 10 BC           DJNZ    $8632               ; {}
-8676: F3              DI                          
-8677: A0              AND     B                   
-8678: 4E              LD      C,(HL)              
-8679: 72              LD      (HL),D              
-867A: 83              ADD     A,E                 
-867B: 64              LD      H,H                 
-867C: D5              PUSH    DE                  
-867D: B5              OR      L                   
-867E: DD ; ????
-867F: 78              LD      A,B                 
-8680: 95              SUB     L                   
-8681: 14              INC     D                   
-8682: 51              LD      D,C                 
-8683: 18 59           JR      $86DE               ; {}
-8685: C2 2E A1        JP      NZ,$A12E            ; {}
-8688: 04              INC     B                   
-8689: 58              LD      E,B                 
-868A: 4B              LD      C,E                 
-868B: 5E              LD      E,(HL)              
-868C: 9B              SBC     E                   
-868D: 64              LD      H,H                 
-868E: 1B              DEC     DE                  
-868F: A1              AND     C                   
-8690: EB              EX      DE,HL               
-8691: 5B              LD      E,E                 
-8692: 4B              LD      C,E                 
-8693: 99              SBC     C                   
-8694: A8              XOR     B                   
-8695: 8B              ADC     A,E                 
-8696: 14              INC     D                   
-8697: BF              CP      A                   
-8698: 0D              DEC     C                   
-8699: 04              INC     B                   
-869A: 13              INC     DE                  
-869B: 1C              INC     E                   
-869C: 00                         
-869D: 32 0D 12        LD      ($120D),A           
-86A0: 1C              INC     E                   
-86A1: 00                         
-86A2: 32 04 0D        LD      ($0D04),A           
-86A5: C7              RST     0X00                
-86A6: DE 4F           SBC     $4F                 
-86A8: 15              DEC     D                   
-86A9: 33              INC     SP                  
-86AA: 61              LD      H,C                 
-86AB: 68              LD      L,B                 
-86AC: B1              OR      C                   
-86AD: 75              LD      (HL),L              
-86AE: B1              OR      C                   
-86AF: E6 72           AND     $72                 
-86B1: 2E 4B           LD      L,$4B               
-86B3: 43              LD      B,E                 
-86B4: 0E 41           LD      C,$41               
-86B6: 13              INC     DE                  
-86B7: 0D              DEC     C                   
-86B8: 06 1A           LD      B,$1A               
-86BA: 14              INC     D                   
-86BB: 2E 10           LD      L,$10               
-86BD: 14              INC     D                   
-86BE: 8F              ADC     A,A                 
-86BF: 0D              DEC     C                   
-86C0: 16 2E           LD      D,$2E               
-86C2: 10 0E           DJNZ    $86D2               ; {}
-86C4: 12              LD      (DE),A              
-86C5: 14              INC     D                   
-86C6: BF              CP      A                   
-86C7: 0D              DEC     C                   
-86C8: 0E A9           LD      C,$A9               
-86CA: 04              INC     B                   
-86CB: 08              EX      AF,AF'              
-86CC: 4B              LD      C,E                 
-86CD: 7B              LD      A,E                 
-86CE: 09              ADD     HL,BC               
-86CF: 9A              SBC     D                   
-86D0: F7              RST     0X30                
-86D1: 17              RLA                         
-86D2: 9B              SBC     E                   
-86D3: C1              POP     BC                  
-86D4: 1C              INC     E                   
-86D5: 00                         
-86D6: 32 0D 16        LD      ($160D),A           
-86D9: 1B              DEC     DE                  
-86DA: 14              INC     D                   
-86DB: 15              DEC     D                   
-86DC: 01 04 10        LD      BC,$1004            
-86DF: 5F              LD      E,A                 
-86E0: BE              CP      (HL)                
-86E1: 5D              LD      E,L                 
-86E2: B1              OR      C                   
-86E3: D0              RET     NC                  
-86E4: B5              OR      L                   
-86E5: F3              DI                          
-86E6: A0              AND     B                   
-86E7: 99              SBC     C                   
-86E8: 61              LD      H,C                 
-86E9: 7A              LD      A,D                 
-86EA: C4 39 17        CALL    NZ,$1739            
-86ED: FF              RST     0X38                
-86EE: 9F              SBC     A                   
-86EF: 0D              DEC     C                   
-86F0: 04              INC     B                   
-86F1: 1B              DEC     DE                  
-86F2: 32 B5 0C        LD      ($0CB5),A           
-86F5: 14              INC     D                   
-86F6: 0C              INC     C                   
-86F7: 19              ADD     HL,DE               
-86F8: 80              ADD     A,B                 
-86F9: EB              EX      DE,HL               
-86FA: 0D              DEC     C                   
-86FB: 80              ADD     A,B                 
-86FC: E8              RET     PE                  
-86FD: 1C              INC     E                   
-86FE: 01 0B 80        LD      BC,$800B            
-8701: E3              EX      (SP),HL             
-8702: 22 05 24        LD      ($2405),HL          
-8705: 04              INC     B                   
-8706: 22 C7 DE        LD      ($DEC7),HL          
-8709: 94              SUB     H                   
-870A: 14              INC     D                   
-870B: 51              LD      D,C                 
-870C: 5E              LD      E,(HL)              
-870D: 9B              SBC     E                   
-870E: 96              SUB     (HL)                
-870F: 34              INC     (HL)                
-8710: A1              AND     C                   
-8711: 3B              DEC     SP                  
-8712: 16 F3           LD      D,$F3               
-8714: B9              CP      C                   
-8715: E9              JP      (HL)                
-8716: 8B              ADC     A,E                 
-8717: 5B              LD      E,E                 
-8718: BB              CP      E                   
-8719: A3              AND     E                   
-871A: 48              LD      C,B                 
-871B: 63              LD      H,E                 
-871C: BE              CP      (HL)                
-871D: AB              XOR     E                   
-871E: 98              SBC     B                   
-871F: 47              LD      B,A                 
-8720: 55              LD      D,L                 
-8721: B3              OR      E                   
-8722: 8B              ADC     A,E                 
-8723: 4E              LD      C,(HL)              
-8724: 86              ADD     A,(HL)              
-8725: 1B              DEC     DE                  
-8726: 8A              ADC     A,D                 
-8727: 19              ADD     HL,DE               
-8728: A1              AND     C                   
-8729: 14              INC     D                   
-872A: 1C              INC     E                   
-872B: 04              INC     B                   
-872C: 1A              LD      A,(DE)              
-872D: 0F              RRCA                        
-872E: A0              AND     B                   
-872F: 71              LD      (HL),C              
-8730: 16 5B           LD      D,$5B               
-8732: B1              OR      C                   
-8733: 41              LD      B,C                 
-8734: 6E              LD      L,(HL)              
-8735: 0B              DEC     BC                  
-8736: 58              LD      E,B                 
-8737: 3F              CCF                         
-8738: 99              SBC     C                   
-8739: 7B              LD      A,E                 
-873A: B4              OR      H                   
-873B: 8E              ADC     A,(HL)              
-873C: 48              LD      C,B                 
-873D: 51              LD      D,C                 
-873E: 18 A8           JR      $86E8               ; {}
-8740: C2 4A 5E        JP      NZ,$5E4A            ; {}
-8743: F3              DI                          
-8744: 46              LD      B,(HL)              
-8745: 71              LD      (HL),C              
-8746: 7B              LD      A,E                 
-8747: 23              INC     HL                  
-8748: 22 04 20        LD      ($2004),HL          
-874B: C7              RST     0X00                
-874C: DE 94           SBC     $94                 
-874E: 14              INC     D                   
-874F: 48              LD      C,B                 
-8750: 5E              LD      E,(HL)              
-8751: 2E 60           LD      L,$60               
-8753: 91              SUB     C                   
-8754: 7A              LD      A,D                 
-8755: 17              RLA                         
-8756: 17              RLA                         
-8757: 7F              LD      A,A                 
-8758: 7B              LD      A,E                 
-8759: CE 15           ADC     $15                 
-875B: 9B              SBC     E                   
-875C: 8F              ADC     A,A                 
-875D: 52              LD      D,D                 
-875E: 77              LD      (HL),A              
-875F: 75              LD      (HL),L              
-8760: B1              OR      C                   
-8761: B3              OR      E                   
-8762: 55              LD      D,L                 
-8763: 5B              LD      E,E                 
-8764: 4D              LD      C,L                 
-8765: 17              RLA                         
-8766: 53              LD      D,E                 
-8767: 91              SUB     C                   
-8768: BE              CP      (HL)                
-8769: 2B              DEC     HL                  
-876A: 96              SUB     (HL)                
-876B: 33              INC     SP                  
-876C: 32 04 30        LD      ($3004),A           
-876F: C7              RST     0X00                
-8770: DE 94           SBC     $94                 
-8772: 14              INC     D                   
-8773: 50              LD      D,B                 
-8774: 5E              LD      E,(HL)              
-8775: F3              DI                          
-8776: A0              AND     B                   
-8777: 67              LD      H,A                 
-8778: 66              LD      H,(HL)              
-8779: 90              SUB     B                   
-877A: 8C              ADC     A,H                 
-877B: D7              RST     0X10                
-877C: 6A              LD      L,D                 
-877D: 16 A3           LD      D,$A3               
-877F: D2 9C 47        JP      NC,$479C            
-8782: 49              LD      C,C                 
-8783: 51              LD      D,C                 
-8784: 18 55           JR      $87DB               ; {}
-8786: C2 87 74        JP      NZ,$7487            ; {}
-8789: B3              OR      E                   
-878A: 8B              ADC     A,E                 
-878B: 4D              LD      C,L                 
-878C: BD              CP      L                   
-878D: 44              LD      B,H                 
-878E: 5E              LD      E,(HL)              
-878F: 8E              ADC     A,(HL)              
-8790: 62              LD      H,D                 
-8791: 23              INC     HL                  
-8792: 62              LD      H,D                 
-8793: 14              INC     D                   
-8794: 53              LD      D,E                 
-8795: 51              LD      D,C                 
-8796: 5E              LD      E,(HL)              
-8797: 9B              SBC     E                   
-8798: 64              LD      H,H                 
-8799: 34              INC     (HL)                
-879A: A1              AND     C                   
-879B: AE              XOR     (HL)                
-879C: B7              OR      A                   
-879D: 1B              DEC     DE                  
-879E: 6A              LD      L,D                 
-879F: 44              LD      B,H                 
-87A0: 24              INC     H                   
-87A1: 04              INC     B                   
-87A2: 22 C7 DE        LD      ($DEC7),HL          
-87A5: AF              XOR     A                   
-87A6: 23              INC     HL                  
-87A7: 4F              LD      C,A                 
-87A8: 15              DEC     D                   
-87A9: 43              LD      B,E                 
-87AA: 61              LD      H,C                 
-87AB: AB              XOR     E                   
-87AC: 98              SBC     B                   
-87AD: EF              RST     0X28                
-87AE: A6              AND     (HL)                
-87AF: 53              LD      D,E                 
-87B0: C0              RET     NZ                  
-87B1: 81              ADD     A,C                 
-87B2: 15              DEC     D                   
-87B3: 73              LD      (HL),E              
-87B4: 9E              SBC     (HL)                
-87B5: 8E              ADC     A,(HL)              
-87B6: C5              PUSH    BC                  
-87B7: 23              INC     HL                  
-87B8: 62              LD      H,D                 
-87B9: 5F              LD      E,A                 
-87BA: BE              CP      (HL)                
-87BB: DB 14           IN      A,($14)             
-87BD: 27              DAA                         
-87BE: B1              OR      C                   
-87BF: 66              LD      H,(HL)              
-87C0: 94              SUB     H                   
-87C1: 8D              ADC     A,L                 
-87C2: 48              LD      C,B                 
-87C3: 6F              LD      L,A                 
-87C4: 62              LD      H,D                 
-87C5: FF              RST     0X38                
-87C6: 1E 04           LD      E,$04               
-87C8: 1C              INC     E                   
-87C9: C7              RST     0X00                
-87CA: DE 4F           SBC     $4F                 
-87CC: 15              DEC     D                   
-87CD: 33              INC     SP                  
-87CE: 61              LD      H,C                 
-87CF: 4B              LD      C,E                 
-87D0: 49              LD      C,C                 
-87D1: 41              LD      B,C                 
-87D2: 6E              LD      L,(HL)              
-87D3: 03              INC     BC                  
-87D4: 58              LD      E,B                 
-87D5: D6 B5           SUB     $B5                 
-87D7: DB 72           IN      A,($72)             
-87D9: 5B              LD      E,E                 
-87DA: 59              LD      E,C                 
-87DB: 51              LD      D,C                 
-87DC: 18 59           JR      $8837               ; {}
-87DE: C2 2F 62        JP      NZ,$622F            ; {}
-87E1: B9              CP      C                   
-87E2: 14              INC     D                   
-87E3: E7              RST     0X20                
-87E4: B2              OR      D                   
-87E5: 52              LD      D,D                 
-87E6: 04              INC     B                   
-87E7: 0E 02           LD      C,$02               
-87E9: 13              INC     DE                  
-87EA: B8              CP      B                   
-87EB: 56              LD      D,(HL)              
-87EC: 11 0E 0F        LD      DE,$0F0E            
-87EF: 13              INC     DE                  
-87F0: 04              INC     B                   
-87F1: 0C              INC     C                   
-87F2: 46              LD      B,(HL)              
-87F3: 77              LD      (HL),A              
-87F4: 6B              LD      L,E                 
-87F5: 79              LD      A,C                 
-87F6: 73              LD      (HL),E              
-87F7: 7B              LD      A,E                 
-87F8: 81              ADD     A,C                 
-87F9: BF              CP      A                   
-87FA: 0F              RRCA                        
-87FB: EE 81           XOR     $81                 
-87FD: 48              LD      C,B                 
-87FE: 50              LD      D,B                 
-87FF: 11 0E 0F        LD      DE,$0F0E            
-8802: 13              INC     DE                  
-8803: 04              INC     B                   
-8804: 0C              INC     C                   
-8805: C7              RST     0X00                
-8806: DE D3           SBC     $D3                 
-8808: 14              INC     D                   
-8809: E6 96           AND     $96                 
-880B: 09              ADD     HL,BC               
-880C: 15              DEC     D                   
-880D: 82              ADD     A,D                 
-880E: 17              RLA                         
-880F: 71              LD      (HL),C              
-8810: 49              LD      C,C                 
-8811: 51              LD      D,C                 
-8812: 2B              DEC     HL                  
-8813: 0E 29           LD      C,$29               
-8815: 13              INC     DE                  
-8816: 04              INC     B                   
-8817: 26 68           LD      H,$68               
-8819: 4D              LD      C,L                 
-881A: AF              XOR     A                   
-881B: A0              AND     B                   
-881C: 51              LD      D,C                 
-881D: 18 45           JR      $8864               ; {}
-881F: C2 83 48        JP      NZ,$4883            
-8822: 74              LD      (HL),H              
-8823: C0              RET     NZ                  
-8824: 95              SUB     L                   
-8825: 96              SUB     (HL)                
-8826: E7              RST     0X20                
-8827: 9F              SBC     A                   
-8828: 63              LD      H,E                 
-8829: BE              CP      (HL)                
-882A: AB              XOR     E                   
-882B: 98              SBC     B                   
-882C: D0              RET     NC                  
-882D: 9E              SBC     (HL)                
-882E: 0B              DEC     BC                  
-882F: EE 0F           XOR     $0F                 
-8831: BC              CP      H                   
-8832: 66              LD      H,(HL)              
-8833: C6 AF           ADD     $AF                 
-8835: 14              INC     D                   
-8836: 8F              ADC     A,A                 
-8837: 17              RLA                         
-8838: CF              RST     0X08                
-8839: B2              OR      D                   
-883A: 11 58 1B        LD      DE,$1B58            
-883D: 9C              SBC     H                   
-883E: 53              LD      D,E                 
-883F: 0F              RRCA                        
-8840: 0E 0D           LD      C,$0D               
-8842: 13              INC     DE                  
-8843: 0D              DEC     C                   
-8844: 0A              LD      A,(BC)              
-8845: 04              INC     B                   
-8846: 08              EX      AF,AF'              
-8847: 57              LD      D,A                 
-8848: C6 93           ADD     $93                 
-884A: 13              INC     DE                  
-884B: 3B              DEC     SP                  
-884C: C0              RET     NZ                  
-884D: 8D              ADC     A,L                 
-884E: 54              LD      D,H                 
-884F: 58              LD      E,B                 
-8850: 0D              DEC     C                   
-8851: 0E 0B           LD      C,$0B               
-8853: 13              INC     DE                  
-8854: 0D              DEC     C                   
-8855: 08              EX      AF,AF'              
-8856: 04              INC     B                   
-8857: 06 55           LD      B,$55               
-8859: 77              LD      (HL),A              
-885A: 1B              DEC     DE                  
-885B: 60              LD      H,B                 
-885C: 97              SUB     A                   
-885D: 7B              LD      A,E                 
-885E: 07              RLCA                        
-885F: 1A              LD      A,(DE)              
-8860: 0D              DEC     C                   
-8861: 18 04           JR      $8867               ; {}
-8863: 15              DEC     D                   
-8864: C7              RST     0X00                
-8865: DE 94           SBC     $94                 
-8867: 14              INC     D                   
-8868: 45              LD      B,L                 
-8869: 5E              LD      E,(HL)              
-886A: 3C              INC     A                   
-886B: 49              LD      C,C                 
-886C: D0              RET     NC                  
-886D: DD ; ????
-886E: D6 6A           SUB     $6A                 
-8870: DB 72           IN      A,($72)             
-8872: FE 67           CP      $67                 
-8874: 89              ADC     A,C                 
-8875: 8D              ADC     A,L                 
-8876: 91              SUB     C                   
-8877: 7A              LD      A,D                 
-8878: 3A 06 
+7DD3:                   F9 5B 9F A6 9B 5D ; 
+7DD9:       08                      ;     Phrase number: 0x08
+7DDA:       17                      ;     ELSE go to: 0x7DF2
+7DDB:          0E 15                ;       WHILE FAIL, Length: 0x0015
+7DDD:             13                ;         UNKNOWN13
+7DDE:             0D 12             ;         WHILE PASS, Length: 0x0012
+7DE0:                04 0E          ;           PRINT, Length: 0x000E
+;
+; THERE'S NO WRITING ON
+;
+7DE2:                   5F BE 5D B1 D0 B5 D9 9C 16 B2 91 7A C0 16 ; 
+7DF0:                A8             ;           COMMAND 0xA8
+7DF1:                8B             ;           COMMAND 0x8B
+7DF2:       11                      ;     Phrase number: 0x11
+7DF3:       15                      ;     ELSE go to: 0x7E09
+7DF4:          0E 13                ;       WHILE FAIL, Length: 0x0013
+7DF6:             13                ;         UNKNOWN13
+7DF7:             92                ;         COMMAND 0x92
+7DF8:             0D 0D             ;         WHILE PASS, Length: 0x000D
+7DFA:                1A             ;           SET VAR TO FIRST NOUN
+7DFB:                2E 40          ;           UNKNOWN2E, Value: 0x40
+7DFD:                A8             ;           COMMAND 0xA8
+7DFE:                04 07          ;           PRINT, Length: 0x0007
+;
+; IS LOCKED.
+;
+7E00:                   4B 7B 75 8D A6 85 2E ; 
+7E07:             A5                ;         COMMAND 0xA5
+7E08:             A6                ;         COMMAND 0xA6
+7E09:       3A                      ;     Phrase number: 0x3A
+7E0A:       11                      ;     ELSE go to: 0x7E1C
+7E0B:          0E 0F                ;       WHILE FAIL, Length: 0x000F
+7E0D:             0D 03             ;         WHILE PASS, Length: 0x0003
+7E0F:                1B             ;           SET VAR TO SECOND NOUN
+7E10:                14             ;           EXECUTE AND REVERSE STATUS
+7E11:                8F             ;           COMMAND 0x8F
+7E12:             13                ;         UNKNOWN13
+7E13:             92                ;         COMMAND 0x92
+7E14:             A5                ;         COMMAND 0xA5
+7E15:             0D 04             ;         WHILE PASS, Length: 0x0004
+7E17:                2E 40          ;           UNKNOWN2E, Value: 0x40
+7E19:                2A             ;           UNKNOWN2A
+7E1A:                0C             ;           FAIL
+7E1B:             A6                ;         COMMAND 0xA6
+7E1C:       40                      ;     Phrase number: 0x40
+7E1D:       24                      ;     ELSE go to: 0x7E42
+7E1E:          0E 22                ;       WHILE FAIL, Length: 0x0022
+7E20:             13                ;         UNKNOWN13
+7E21:             92                ;         COMMAND 0x92
+7E22:             0D 0E             ;         WHILE PASS, Length: 0x000E
+7E24:                1A             ;           SET VAR TO FIRST NOUN
+7E25:                2E 20          ;           UNKNOWN2E, Value: 0x20
+7E27:                A8             ;           COMMAND 0xA8
+7E28:                04 08          ;           PRINT, Length: 0x0008
+;
+; IS NOT OPEN.
+;
+7E2A:                   4B 7B 06 9A C2 16 A7 61 ; 
+7E32:             0D 0E             ;         WHILE PASS, Length: 0x000E
+7E34:                29             ;           PRINT OPEN VAR
+7E35:                A8             ;           COMMAND 0xA8
+7E36:                04 0A          ;           PRINT, Length: 0x000A
+;
+; IS NOW CLOSED. 
+;
+7E38:                   4B 7B 09 9A DE 14 D7 A0 9B 5D ; 
+7E42:       42                      ;     Phrase number: 0x42
+7E43:       2D                      ;     ELSE go to: 0x7E71
+7E44:          0E 2B                ;       WHILE FAIL, Length: 0x002B
+7E46:             0D 03             ;         WHILE PASS, Length: 0x0003
+7E48:                1B             ;           SET VAR TO SECOND NOUN
+7E49:                14             ;           EXECUTE AND REVERSE STATUS
+7E4A:                8F             ;           COMMAND 0x8F
+7E4B:             13                ;         UNKNOWN13
+7E4C:             92                ;         COMMAND 0x92
+7E4D:             0D 11             ;         WHILE PASS, Length: 0x0011
+7E4F:                1A             ;           SET VAR TO FIRST NOUN
+7E50:                14             ;           EXECUTE AND REVERSE STATUS
+7E51:                2E 40          ;           UNKNOWN2E, Value: 0x40
+7E53:                A8             ;           COMMAND 0xA8
+7E54:                04 0A          ;           PRINT, Length: 0x000A
+;
+; IS NOT LOCKED. 
+;
+7E56:                   4B 7B 06 9A 49 16 97 54 9B 5D ; 
+7E60:             0D 0F             ;         WHILE PASS, Length: 0x000F
+7E62:                2A             ;           UNKNOWN2A
+7E63:                A8             ;           COMMAND 0xA8
+7E64:                04 0B          ;           PRINT, Length: 0x000B
+;
+; IS NOW UNLOCKED.
+;
+7E66:                   4B 7B 09 9A B0 17 75 8D A6 85 2E ; 
+7E71:       41                      ;     Phrase number: 0x41
+7E72:       45                      ;     ELSE go to: 0x7EB8
+7E73:          0E 43                ;       WHILE FAIL, Length: 0x0043
+7E75:             0D 03             ;         WHILE PASS, Length: 0x0003
+7E77:                1B             ;           SET VAR TO SECOND NOUN
+7E78:                14             ;           EXECUTE AND REVERSE STATUS
+7E79:                8F             ;           COMMAND 0x8F
+7E7A:             13                ;         UNKNOWN13
+7E7B:             92                ;         COMMAND 0x92
+7E7C:             0D 17             ;         WHILE PASS, Length: 0x0017
+7E7E:                14             ;           EXECUTE AND REVERSE STATUS
+7E7F:                09 14          ;           COMPARE TO SECOND NOUN, Word number: 0x14
+7E81:                04 0A          ;           PRINT, Length: 0x000A
+;
+; YOU CAN'T LOCK 
+;
+7E83:                   C7 DE D3 14 E6 96 49 16 8B 54 ; 
+7E8D:                A8             ;           COMMAND 0xA8
+7E8E:                04 03          ;           PRINT, Length: 0x0003
+;
+; WITH
+;
+7E90:                   56 D1 48    ; 
+7E93:                A9             ;           COMMAND 0xA9
+7E94:                8B             ;           COMMAND 0x8B
+7E95:             0D 11             ;         WHILE PASS, Length: 0x0011
+7E97:                1A             ;           SET VAR TO FIRST NOUN
+7E98:                2E 40          ;           UNKNOWN2E, Value: 0x40
+7E9A:                A8             ;           COMMAND 0xA8
+7E9B:                04 0B          ;           PRINT, Length: 0x000B
+;
+; IS NOT UNLOCKED.
+;
+7E9D:                   4B 7B 06 9A B0 17 75 8D A6 85 2E ; 
+7EA8:             0D 0E             ;         WHILE PASS, Length: 0x000E
+7EAA:                2A             ;           UNKNOWN2A
+7EAB:                A8             ;           COMMAND 0xA8
+7EAC:                04 0A          ;           PRINT, Length: 0x000A
+;
+; IS NOW LOCKED. 
+;
+7EAE:                   4B 7B 09 9A 49 16 97 54 9B 5D ; 
+7EB8:       12                      ;     Phrase number: 0x12
+7EB9:       28                      ;     ELSE go to: 0x7EE2
+7EBA:          0E 26                ;       WHILE FAIL, Length: 0x0026
+7EBC:             13                ;         UNKNOWN13
+7EBD:             0D 05             ;         WHILE PASS, Length: 0x0005
+7EBF:                1A             ;           SET VAR TO FIRST NOUN
+7EC0:                14             ;           EXECUTE AND REVERSE STATUS
+7EC1:                15 20          ;           CHECK VAR, Value: 0x20
+7EC3:                C2             ;           COMMAND 0xC2
+7EC4:             0D 1C             ;         WHILE PASS, Length: 0x001C
+7EC6:                04 13          ;           PRINT, Length: 0x0013
+;
+; WHY DON'T YOU LEAVE THE POOR
+;
+7EC8:                   33 D1 09 15 E6 96 51 18 4E C2 98 5F 56 5E DB 72 ; 
+7ED8:                   81 A6 52    ; 
+7EDB:                11             ;           PRINT FIRST NOUN
+7EDC:                04 04          ;           PRINT, Length: 0x0004
+;
+; ALONE.
+;
+7EDE:                   49 48 7F 98 ; 
+7EE2:       09                      ;     Phrase number: 0x09
+7EE3:       57                      ;     ELSE go to: 0x7F3B
+7EE4:          0E 55                ;       WHILE FAIL, Length: 0x0055
+7EE6:             14                ;         EXECUTE AND REVERSE STATUS
+7EE7:             1B                ;         SET VAR TO SECOND NOUN
+7EE8:             14                ;         EXECUTE AND REVERSE STATUS
+7EE9:             0E 03             ;         WHILE FAIL, Length: 0x0003
+7EEB:                09 37          ;           COMPARE TO SECOND NOUN, Word number: 0x37
+7EED:                8F             ;           COMMAND 0x8F
+7EEE:             0E 3E             ;         WHILE FAIL, Length: 0x003E
+7EF0:                0D 17          ;           WHILE PASS, Length: 0x0017
+7EF2:                   14          ;             EXECUTE AND REVERSE STATUS
+7EF3:                   15 40       ;             CHECK VAR, Value: 0x40
+7EF5:                   04 0A       ;             PRINT, Length: 0x000A
+;
+; YOU CAN'T HURT 
+;
+7EF7:                      C7 DE D3 14 E6 96 AF 15 B3 B3 ; 
+7F01:                   A8          ;             COMMAND 0xA8
+7F02:                   04 03       ;             PRINT, Length: 0x0003
+;
+; WITH
+;
+7F04:                      56 D1 48 ; 
+7F07:                   A9          ;             COMMAND 0xA9
+7F08:                   8B          ;             COMMAND 0x8B
+7F09:                13             ;           UNKNOWN13
+7F0A:                0D 22          ;           WHILE PASS, Length: 0x0022
+7F0C:                   1A          ;             SET VAR TO FIRST NOUN
+7F0D:                   14          ;             EXECUTE AND REVERSE STATUS
+7F0E:                   15 10       ;             CHECK VAR, Value: 0x10
+7F10:                   04 13       ;             PRINT, Length: 0x0013
+;
+; IT DOES NO GOOD TO BEAT ON A
+;
+7F12:                      73 7B 77 5B D0 B5 C9 9C 36 A0 89 17 AF 14 73 49 ; 
+7F22:                      03 A0 41 ; 
+7F25:                   11          ;             PRINT FIRST NOUN
+7F26:                   04 04       ;             PRINT, Length: 0x0004
+;
+; WITH A
+;
+7F28:                      56 D1 03 71 ; 
+7F2C:                   12          ;             PRINT SECOND NOUN
+7F2D:                   8B          ;             COMMAND 0x8B
+7F2E:             0D 0B             ;         WHILE PASS, Length: 0x000B
+7F30:                A8             ;           COMMAND 0xA8
+7F31:                04 08          ;           PRINT, Length: 0x0008
+;
+; IS UNHARMED.
+;
+7F33:                   4B 7B 92 C5 37 49 17 60 ; 
+7F3B:       0A                      ;     Phrase number: 0x0A
+7F3C:       01                      ;     ELSE go to: 0x7F3E
+7F3D:          07                   ;       PRINT ROOM DESCRIPTION
+7F3E:       15                      ;     Phrase number: 0x15
+7F3F:       26                      ;     ELSE go to: 0x7F66
+7F40:          0E 24                ;       WHILE FAIL, Length: 0x0024
+7F42:             13                ;         UNKNOWN13
+7F43:             0D 21             ;         WHILE PASS, Length: 0x0021
+7F45:                04 0A          ;           PRINT, Length: 0x000A
+;
+; DON'T BE SILLY!
+;
+7F47:                   80 5B F3 23 5B 4D 4E B8 F9 8E ; 
+7F51:                A8             ;           COMMAND 0xA8
+7F52:                04 12          ;           PRINT, Length: 0x0012
+;
+; WOULDN'T TASTE GOOD ANYWAY.
+;
+7F54:                   47 D2 C8 8B F3 23 55 BD DB BD 41 6E 03 58 99 9B ; 
+7F64:                   5F 4A       ; 
+7F66:       59                      ;     Phrase number: 0x59
+7F67:       13                      ;     ELSE go to: 0x7F7B
+7F68:          0E 11                ;       WHILE FAIL, Length: 0x0011
+7F6A:             13                ;         UNKNOWN13
+7F6B:             0D 0E             ;         WHILE PASS, Length: 0x000E
+7F6D:                04 0B          ;           PRINT, Length: 0x000B
+;
+; IT TASTES LIKE A
+;
+7F6F:                   73 7B 55 BD F5 BD 43 16 9B 85 41 ; 
+7F7A:                11             ;           PRINT FIRST NOUN
+7F7B:       17                      ;     Phrase number: 0x17
+7F7C:       4C                      ;     ELSE go to: 0x7FC9
+7F7D:          0E 4A                ;       WHILE FAIL, Length: 0x004A
+7F7F:             13                ;         UNKNOWN13
+7F80:             0D 22             ;         WHILE PASS, Length: 0x0022
+7F82:                1A             ;           SET VAR TO FIRST NOUN
+7F83:                15 10          ;           CHECK VAR, Value: 0x10
+7F85:                04 09          ;           PRINT, Length: 0x0009
+;
+; I DON'T THINK
+;
+7F87:                   46 77 05 A0 16 BC 90 73 4B ; 
+7F90:                A8             ;           COMMAND 0xA8
+7F91:                04 11          ;           PRINT, Length: 0x0011
+;
+; WILL STAND STILL FORTHAT.
+;
+7F93:                   4E D1 15 8A 50 BD 15 58 8E BE 08 8A BE A0 56 72 ; 
+7FA3:                   2E          ; 
+7FA4:             0D 23             ;         WHILE PASS, Length: 0x0023
+7FA6:                04 10          ;           PRINT, Length: 0x0010
+;
+; EVEN IF YOU COULD CLIMB 
+;
+7FA8:                   CF 62 8B 96 9B 64 1B A1 47 55 B3 8B C3 54 A3 91 ; 
+7FB8:                A8             ;           COMMAND 0xA8
+7FB9:                04 0E          ;           PRINT, Length: 0x000E
+;
+; IT WOULDN'T HELP YOU.
+;
+7FBB:                   73 7B 47 D2 C8 8B F3 23 EE 72 1B A3 3F A1 ; 
+7FC9:       16                      ;     Phrase number: 0x16
+7FCA:       12                      ;     ELSE go to: 0x7FDD
+7FCB:          0E 10                ;       WHILE FAIL, Length: 0x0010
+7FCD:             13                ;         UNKNOWN13
+7FCE:             0D 0D             ;         WHILE PASS, Length: 0x000D
+7FD0:                A8             ;           COMMAND 0xA8
+7FD1:                04 0A          ;           PRINT, Length: 0x000A
+;
+; IS NOT BURNING.
+;
+7FD3:                   4B 7B 06 9A BF 14 D3 B2 CF 98 ; 
+7FDD:       18                      ;     Phrase number: 0x18
+7FDE:       2E                      ;     ELSE go to: 0x800D
+7FDF:          0E 2C                ;       WHILE FAIL, Length: 0x002C
+7FE1:             13                ;         UNKNOWN13
+7FE2:             0D 15             ;         WHILE PASS, Length: 0x0015
+7FE4:                1A             ;           SET VAR TO FIRST NOUN
+7FE5:                15 10          ;           CHECK VAR, Value: 0x10
+7FE7:                04 0E          ;           PRINT, Length: 0x000E
+;
+; THAT'S NO WAY TO HURT
+;
+7FE9:                   5B BE 65 BC 99 16 F3 17 56 DB CA 9C 3E C6 ; 
+7FF7:                AA             ;           COMMAND 0xAA
+7FF8:                8B             ;           COMMAND 0x8B
+7FF9:             0D 12             ;         WHILE PASS, Length: 0x0012
+7FFB:                A8             ;           COMMAND 0xA8
+7FFC:                04 0F          ;           PRINT, Length: 0x000F
+;
+; LOOKS MUCH BETTER NOW.
+;
+7FFE:                   81 8D CB 87 A5 94 04 71 8E 62 23 62 09 9A 2E ; 
+800D:       0B                      ;     Phrase number: 0x0B
+800E:       65                      ;     ELSE go to: 0x8074
+800F:          0E 63                ;       WHILE FAIL, Length: 0x0063
+8011:             13                ;         UNKNOWN13
+8012:             0D 17             ;         WHILE PASS, Length: 0x0017
+8014:                1A             ;           SET VAR TO FIRST NOUN
+8015:                15 04          ;           CHECK VAR, Value: 0x04
+8017:                04 10          ;           PRINT, Length: 0x0010
+;
+; SOMETHING IS WRITTEN ON 
+;
+8019:                   3F B9 82 62 91 7A D5 15 04 18 8E 7B 83 61 03 A0 ; 
+8029:                AA             ;           COMMAND 0xAA
+802A:                8B             ;           COMMAND 0x8B
+802B:             0D 0D             ;         WHILE PASS, Length: 0x000D
+802D:                2E 20          ;           UNKNOWN2E, Value: 0x20
+802F:                04 09          ;           PRINT, Length: 0x0009
+;
+; IT IS CLOSED.
+;
+8031:                   73 7B 4B 7B C9 54 A6 B7 2E ; 
+803A:             0D 0D             ;         WHILE PASS, Length: 0x000D
+803C:                2E 40          ;           UNKNOWN2E, Value: 0x40
+803E:                04 09          ;           PRINT, Length: 0x0009
+;
+; IT IS LOCKED.
+;
+8040:                   73 7B 4B 7B 75 8D A6 85 2E ; 
+8049:             0D 0A             ;         WHILE PASS, Length: 0x000A
+804B:                15 02          ;           CHECK VAR, Value: 0x02
+804D:                0E 05          ;           WHILE FAIL, Length: 0x0005
+804F:                   2E 80       ;             UNKNOWN2E, Value: 0x80
+8051:                   14          ;             EXECUTE AND REVERSE STATUS
+8052:                   2E 20       ;             UNKNOWN2E, Value: 0x20
+8054:                33             ;           UNKNOWN33
+8055:             0D 03             ;         WHILE PASS, Length: 0x0003
+8057:                15 01          ;           CHECK VAR, Value: 0x01
+8059:                33             ;           UNKNOWN33
+805A:             0D 18             ;         WHILE PASS, Length: 0x0018
+805C:                04 14          ;           PRINT, Length: 0x0014
+;
+; THERE'S NOTHING SPECIAL ABOUT 
+;
+805E:                   5F BE 5D B1 D0 B5 02 A1 91 7A 62 17 DB 5F 33 48 ; 
+806E:                   B9 46 73 C6 ; 
+8072:                A8             ;           COMMAND 0xA8
+8073:                8B             ;           COMMAND 0x8B
+8074:       0C                      ;     Phrase number: 0x0C
+8075:       17                      ;     ELSE go to: 0x808D
+8076:          0E 15                ;       WHILE FAIL, Length: 0x0015
+8078:             13                ;         UNKNOWN13
+8079:             0D 12             ;         WHILE PASS, Length: 0x0012
+807B:                04 0E          ;           PRINT, Length: 0x000E
+;
+; THERE'S NOTHING UNDER
+;
+807D:                   5F BE 5D B1 D0 B5 02 A1 91 7A B0 17 F4 59 ; 
+808B:                A8             ;           COMMAND 0xA8
+808C:                8B             ;           COMMAND 0x8B
+808D:       10                      ;     Phrase number: 0x10
+808E:       4C                      ;     ELSE go to: 0x80DB
+808F:          0E 4A                ;       WHILE FAIL, Length: 0x004A
+8091:             13                ;         UNKNOWN13
+8092:             0D 2A             ;         WHILE PASS, Length: 0x002A
+8094:                1B             ;           SET VAR TO SECOND NOUN
+8095:                14             ;           EXECUTE AND REVERSE STATUS
+8096:                15 02          ;           CHECK VAR, Value: 0x02
+8098:                04 22          ;           PRINT, Length: 0x0022
+;
+; CONCENTRATE AS YOU MAY, YOU CAN NOT SEE ANYTHING IN
+;
+809A:                   40 55 B0 53 EB BF DB BD 4B 49 C7 DE 63 16 B3 E0 ; 
+80AA:                   C7 DE D3 14 90 96 F3 A0 A7 B7 90 14 82 DF 91 7A ; 
+80BA:                   D0 15       ; 
+80BC:                A9             ;           COMMAND 0xA9
+80BD:                8B             ;           COMMAND 0x8B
+80BE:             0D 0F             ;         WHILE PASS, Length: 0x000F
+80C0:                14             ;           EXECUTE AND REVERSE STATUS
+80C1:                2E 80          ;           UNKNOWN2E, Value: 0x80
+80C3:                2E 20          ;           UNKNOWN2E, Value: 0x20
+80C5:                A9             ;           COMMAND 0xA9
+80C6:                04 07          ;           PRINT, Length: 0x0007
+;
+; IS CLOSED.
+;
+80C8:                   4B 7B C9 54 A6 B7 2E ; 
+80CF:             33                ;         UNKNOWN33
+80D0:             0D 09             ;         WHILE PASS, Length: 0x0009
+80D2:                A9             ;           COMMAND 0xA9
+80D3:                04 06          ;           PRINT, Length: 0x0006
+;
+; IS EMPTY.
+;
+80D5:                   4B 7B 72 61 1F C1 ; 
+80DB:       4C                      ;     Phrase number: 0x4C
+80DC:       51                      ;     ELSE go to: 0x812E
+80DD:          0E 4F                ;       WHILE FAIL, Length: 0x004F
+80DF:             13                ;         UNKNOWN13
+80E0:             0D 1A             ;         WHILE PASS, Length: 0x001A
+80E2:                1B             ;           SET VAR TO SECOND NOUN
+80E3:                15 04          ;           CHECK VAR, Value: 0x04
+80E5:                04 13          ;           PRINT, Length: 0x0013
+;
+; THERE'S SOMETHING WRITTEN ON
+;
+80E7:                   5F BE 5D B1 D5 B5 E7 9F 63 BE AB 98 B3 D2 3F C0 ; 
+80F7:                   91 96 4E    ; 
+80FA:                A9             ;           COMMAND 0xA9
+80FB:                8B             ;           COMMAND 0x8B
+80FC:             0D 1D             ;         WHILE PASS, Length: 0x001D
+80FE:                14             ;           EXECUTE AND REVERSE STATUS
+80FF:                15 01          ;           CHECK VAR, Value: 0x01
+8101:                04 16          ;           PRINT, Length: 0x0016
+;
+; THERE'S NOTHING NOTEWORTHY ABOUT 
+;
+8103:                   5F BE 5D B1 D0 B5 02 A1 91 7A 99 16 F9 BD BE A0 ; 
+8113:                   FB 75 B9 46 73 C6 ; 
+8119:                A9             ;           COMMAND 0xA9
+811A:                8B             ;           COMMAND 0x8B
+811B:             33                ;         UNKNOWN33
+811C:             0D 10             ;         WHILE PASS, Length: 0x0010
+811E:                04 0C          ;           PRINT, Length: 0x000C
+;
+; THERE'S NOTHING ON
+;
+8120:                   5F BE 5D B1 D0 B5 02 A1 91 7A C0 16 ; 
+812C:                A9             ;           COMMAND 0xA9
+812D:                8B             ;           COMMAND 0x8B
+812E:       1B                      ;     Phrase number: 0x1B
+812F:       1E                      ;     ELSE go to: 0x814E
+8130:          0E 1C                ;       WHILE FAIL, Length: 0x001C
+8132:             13                ;         UNKNOWN13
+8133:             0D 03             ;         WHILE PASS, Length: 0x0003
+8135:                08 00          ;           IS FIRST NOUN, Word number: 0x00
+8137:                07             ;           PRINT ROOM DESCRIPTION
+8138:             0D 14             ;         WHILE PASS, Length: 0x0014
+813A:                04 10          ;           PRINT, Length: 0x0010
+;
+; THERE IS NOTHING AROUND 
+;
+813C:                   5F BE 5B B1 4B 7B 06 9A 90 73 C3 6A 07 B3 33 98 ; 
+814C:                A8             ;           COMMAND 0xA8
+814D:                8B             ;           COMMAND 0x8B
+814E:       1C                      ;     Phrase number: 0x1C
+814F:       32                      ;     ELSE go to: 0x8182
+8150:          0E 30                ;       WHILE FAIL, Length: 0x0030
+8152:             13                ;         UNKNOWN13
+8153:             0D 17             ;         WHILE PASS, Length: 0x0017
+8155:                08 00          ;           IS FIRST NOUN, Word number: 0x00
+8157:                04 13          ;           PRINT, Length: 0x0013
+;
+; THERE IS NOTHING BEHIND YOU.
+;
+8159:                   5F BE 5B B1 4B 7B 06 9A 90 73 C4 6A A3 60 33 98 ; 
+8169:                   C7 DE 2E    ; 
+816C:             0D 14             ;         WHILE PASS, Length: 0x0014
+816E:                04 10          ;           PRINT, Length: 0x0010
+;
+; THERE IS NOTHING BEHIND 
+;
+8170:                   5F BE 5B B1 4B 7B 06 9A 90 73 C4 6A A3 60 33 98 ; 
+8180:                A8             ;           COMMAND 0xA8
+8181:                8B             ;           COMMAND 0x8B
+8182:       1D                      ;     Phrase number: 0x1D
+8183:       16                      ;     ELSE go to: 0x819A
+8184:          04 14                ;       PRINT, Length: 0x0014
+;
+; I'M BEING AS CAREFUL AS I CAN!
+;
+8186:             9F 77 AF 14 91 7A 95 14 D3 14 68 B1 33 C5 4B 49 ; 
+8196:             45 77 81 48       ; 
+819A:       1E                      ;     Phrase number: 0x1E
+819B:       04                      ;     ELSE go to: 0x81A0
+819C:          04 02                ;       PRINT, Length: 0x0002
+;
+; NO!
+;
+819E:             E9 99             ; 
+81A0:       1F                      ;     Phrase number: 0x1F
+81A1:       05                      ;     ELSE go to: 0x81A7
+81A2:          04 03                ;       PRINT, Length: 0x0003
+;
+; YES!
+;
+81A4:             35 DD 21          ; 
+81A7:       21                      ;     Phrase number: 0x21
+81A8:       1C                      ;     ELSE go to: 0x81C5
+81A9:          04 1A                ;       PRINT, Length: 0x001A
+;
+; SORRY, I DON'T BELIEVE IN MAGIC WORDS. 
+;
+81AB:             44 B9 9E B4 BB 15 80 5B F3 23 6E 4D 38 79 4B 5E ; 
+81BB:             8F 96 7B 47 D9 51 AE A0 5B BB ; 
+81C5:       5A                      ;     Phrase number: 0x5A
+81C6:       1B                      ;     ELSE go to: 0x81E2
+81C7:          04 19                ;       PRINT, Length: 0x0019
+;
+; OUCH! I TOLD YOU, THATS NOT POSSIBLE!
+;
+81C9:             25 A1 AB 70 56 77 BE 9F 51 18 B3 C7 5B BE 0B C0 ; 
+81D9:             06 9A E9 16 DB B9 7F 4E 21 ; 
+81E2:       22                      ;     Phrase number: 0x22
+81E3:       12                      ;     ELSE go to: 0x81F6
+81E4:          04 10                ;       PRINT, Length: 0x0010
+;
+; YYYEEEEEOOOOOOWWWWWWWW!!
+;
+81E6:             5B E0 27 60 31 60 41 A0 49 A0 89 D3 89 D3 69 CE ; 
+81F6:       23                      ;     Phrase number: 0x23
+81F7:       01                      ;     ELSE go to: 0x81F9
+81F8:          24                   ;       EXIT PROGRAM
+81F9:       2C                      ;     Phrase number: 0x2C
+81FA:       01                      ;     ELSE go to: 0x81FC
+81FB:          C9                   ;       COMMAND 0xC9
+81FC:       3E                      ;     Phrase number: 0x3E
+81FD:       04                      ;     ELSE go to: 0x8202
+81FE:          0D 02                ;       WHILE PASS, Length: 0x0002
+8200:             C6                ;         COMMAND 0xC6
+8201:             27                ;         UNKNOWN27
+8202:       3F                      ;     Phrase number: 0x3F
+8203:       04                      ;     ELSE go to: 0x8208
+8204:          0D 02                ;       WHILE PASS, Length: 0x0002
+8206:             C6                ;         COMMAND 0xC6
+8207:             28                ;         UNKNOWN28
+8208:       25                      ;     Phrase number: 0x25
+8209:       20                      ;     ELSE go to: 0x822A
+820A:          04 1E                ;       PRINT, Length: 0x001E
+;
+; YOU'RE NOT GETTING ANYWHERE, TRY A DIRECTION.
+;
+820C:             C7 DE AF 23 99 16 09 BC 8E 62 91 7A 90 14 FA DF ; 
+821C:             2F 62 16 EE 7B B4 46 45 2F 7B 03 56 27 A0 ; 
+822A:       26                      ;     Phrase number: 0x26
+822B:       20                      ;     ELSE go to: 0x824C
+822C:          0E 1E                ;       WHILE FAIL, Length: 0x001E
+822E:             13                ;         UNKNOWN13
+822F:             0D 13             ;         WHILE PASS, Length: 0x0013
+8231:                1A             ;           SET VAR TO FIRST NOUN
+8232:                15 10          ;           CHECK VAR, Value: 0x10
+8234:                A8             ;           COMMAND 0xA8
+8235:                04 0D          ;           PRINT, Length: 0x000D
+;
+; WON'T LET YOU PASS!
+;
+8237:                   40 D2 F3 23 F6 8B 51 18 52 C2 65 49 21 ; 
+8244:             04 06             ;         PRINT, Length: 0x0006
+;
+; NOW WHAT?
+;
+8246:                09 9A FA 17 70 49 ; 
+824C:       3D                      ;     Phrase number: 0x3D
+824D:       01                      ;     ELSE go to: 0x824F
+824E:          91                   ;       COMMAND 0x91
+824F:       27                      ;     Phrase number: 0x27
+8250:       0E                      ;     ELSE go to: 0x825F
+8251:          0E 0C                ;       WHILE FAIL, Length: 0x000C
+8253:             13                ;         UNKNOWN13
+8254:             04 09             ;         PRINT, Length: 0x0009
+;
+; OUCH! MY TOE!
+;
+8256:                25 A1 AB 70 3B 95 77 BF 21 ; 
+825F:       44                      ;     Phrase number: 0x44
+8260:       09                      ;     ELSE go to: 0x826A
+8261:          04 07                ;       PRINT, Length: 0x0007
+;
+; GREETINGS!
+;
+8263:             AF 6E 83 62 C5 98 21 ; 
+826A:       45                      ;     Phrase number: 0x45
+826B:       30                      ;     ELSE go to: 0x829C
+826C:          0E 2E                ;       WHILE FAIL, Length: 0x002E
+826E:             13                ;         UNKNOWN13
+826F:             0D 12             ;         WHILE PASS, Length: 0x0012
+8271:                1A             ;           SET VAR TO FIRST NOUN
+8272:                15 10          ;           CHECK VAR, Value: 0x10
+8274:                A8             ;           COMMAND 0xA8
+8275:                04 0C          ;           PRINT, Length: 0x000C
+;
+; REPLIES, "HELLO." 
+;
+8277:                   72 B1 87 8C 33 BB DF 1B 09 8D 63 F4 ; 
+8283:             0D 17             ;         WHILE PASS, Length: 0x0017
+8285:                04 13          ;           PRINT, Length: 0x0013
+;
+; ONLY A CRAZY WOULD TALK TO A
+;
+8287:                   16 A0 43 DB E4 14 83 4A 01 18 3E C5 7B 17 CB 8C ; 
+8297:                   6B BF 41    ; 
+829A:                11             ;           PRINT FIRST NOUN
+829B:                8B             ;           COMMAND 0x8B
+829C:       46                      ;     Phrase number: 0x46
+829D:       08                      ;     ELSE go to: 0x82A6
+829E:          04 06                ;       PRINT, Length: 0x0006
+;
+; I DUNNO. 
+;
+82A0:             46 77 98 C5 5B A2 ; 
+82A6:       47                      ;     Phrase number: 0x47
+82A7:       09                      ;     ELSE go to: 0x82B1
+82A8:          04 07                ;       PRINT, Length: 0x0007
+;
+; WHO KNOWS?
+;
+82AA:             29 D1 20 16 85 A1 3F ; 
+82B1:       4A                      ;     Phrase number: 0x4A
+82B2:       18                      ;     ELSE go to: 0x82CB
+82B3:          0E 16                ;       WHILE FAIL, Length: 0x0016
+82B5:             13                ;         UNKNOWN13
+82B6:             0D 13             ;         WHILE PASS, Length: 0x0013
+82B8:                04 11          ;           PRINT, Length: 0x0011
+;
+; I'LL FOLLOW YOU ANYWHERE!
+;
+82BA:                   9E 77 08 8A C6 9F 6B A1 C7 DE 90 14 FA DF 2F 62 ; 
+82CA:                   21          ; 
+82CB:       49                      ;     Phrase number: 0x49
+82CC:       26                      ;     ELSE go to: 0x82F3
+82CD:          0E 24                ;       WHILE FAIL, Length: 0x0024
+82CF:             13                ;         UNKNOWN13
+82D0:             0D 11             ;         WHILE PASS, Length: 0x0011
+82D2:                09 00          ;           COMPARE TO SECOND NOUN, Word number: 0x00
+82D4:                A8             ;           COMMAND 0xA8
+82D5:                04 0C          ;           PRINT, Length: 0x000C
+;
+; BOWS IN GREETING. 
+;
+82D7:                   09 4F CB B5 89 96 67 B1 90 BE 5B 70 ; 
+82E3:             04 0E             ;         PRINT, Length: 0x000E
+;
+; THEY BOW IN GREETING.
+;
+82E5:                5F BE 44 DB 6B A1 83 7A AF 6E 83 62 CF 98 ; 
+82F3:       28                      ;     Phrase number: 0x28
+82F4:       36                      ;     ELSE go to: 0x832B
+82F5:          0E 34                ;       WHILE FAIL, Length: 0x0034
+82F7:             13                ;         UNKNOWN13
+82F8:             0D 16             ;         WHILE PASS, Length: 0x0016
+82FA:                1A             ;           SET VAR TO FIRST NOUN
+82FB:                15 10          ;           CHECK VAR, Value: 0x10
+82FD:                A8             ;           COMMAND 0xA8
+82FE:                04 10          ;           PRINT, Length: 0x0010
+;
+; ISN'T HUNGRY RIGHT NOW. 
+;
+8300:                   60 7B F3 23 70 75 C3 6E 33 17 2E 6D 99 16 5B D4 ; 
+8310:             0D 19             ;         WHILE PASS, Length: 0x0019
+8312:                04 0D          ;           PRINT, Length: 0x000D
+;
+; DON'T YOU KNOW THAT
+;
+8314:                   80 5B F3 23 C7 DE 20 16 6B A1 5B BE 54 ; 
+8321:                A8             ;           COMMAND 0xA8
+8322:                04 07          ;           PRINT, Length: 0x0007
+;
+; CAN'T EAT!
+;
+8324:                   10 53 F3 23 96 5F 21 ; 
+832B:       29                      ;     Phrase number: 0x29
+832C:       34                      ;     ELSE go to: 0x8361
+832D:          0E 32                ;       WHILE FAIL, Length: 0x0032
+832F:             13                ;         UNKNOWN13
+8330:             0D 14             ;         WHILE PASS, Length: 0x0014
+8332:                1B             ;           SET VAR TO SECOND NOUN
+8333:                15 10          ;           CHECK VAR, Value: 0x10
+8335:                A9             ;           COMMAND 0xA9
+8336:                04 0E          ;           PRINT, Length: 0x000E
+;
+; WOULD RATHER EAT YOU!
+;
+8338:                   47 D2 B3 8B D6 B0 F4 72 23 15 1B BC 19 A1 ; 
+8346:             0D 19             ;         WHILE PASS, Length: 0x0019
+8348:                04 17          ;           PRINT, Length: 0x0017
+;
+; IF YOU CAN FIND A MOUTH, I'M GAME!
+;
+834A:                   43 79 C7 DE D3 14 88 96 8E 7A 7B 14 C7 93 76 BE ; 
+835A:                   BD 15 49 90 67 48 21 ; 
+8361:       2F                      ;     Phrase number: 0x2F
+8362:       07                      ;     ELSE go to: 0x836A
+8363:          04 05                ;       PRINT, Length: 0x0005
+;
+; <PAUSE>
+;
+8365:             9B 29 57 C6 3E    ; 
+836A:       31                      ;     Phrase number: 0x31
+836B:       17                      ;     ELSE go to: 0x8383
+836C:          04 15                ;       PRINT, Length: 0x0015
+;
+; OH, IT'S AROUND HERE SOMEWHERE.
+;
+836E:             36 9F D6 15 CB 23 39 49 8E C5 9F 15 5B B1 3F B9 ; 
+837E:             FA 62 2F 62 2E    ; 
+8383:       2D                      ;     Phrase number: 0x2D
+8384:       09                      ;     ELSE go to: 0x838E
+8385:          0E 07                ;       WHILE FAIL, Length: 0x0007
+8387:             13                ;         UNKNOWN13
+8388:             0D 02             ;         WHILE PASS, Length: 0x0002
+838A:                1A             ;           SET VAR TO FIRST NOUN
+838B:                8F             ;           COMMAND 0x8F
+838C:             14                ;         EXECUTE AND REVERSE STATUS
+838D:             0C                ;         FAIL
+838E:       48                      ;     Phrase number: 0x48
+838F:       11                      ;     ELSE go to: 0x83A1
+8390:          0E 0F                ;       WHILE FAIL, Length: 0x000F
+8392:             13                ;         UNKNOWN13
+8393:             04 0C             ;         PRINT, Length: 0x000C
+;
+; YOU CAN'T DO THAT.
+;
+8395:                C7 DE D3 14 E6 96 09 15 82 17 97 49 ; 
+83A1:       33                      ;     Phrase number: 0x33
+83A2:       27                      ;     ELSE go to: 0x83CA
+83A3:          0E 25                ;       WHILE FAIL, Length: 0x0025
+83A5:             13                ;         UNKNOWN13
+83A6:             04 22             ;         PRINT, Length: 0x0022
+;
+; ONE SMALL STEP FOR MANKIND, ONE GIANT LEAP FOR YOU!
+;
+83A8:                0F A0 5F 17 46 48 66 17 D3 61 04 68 63 16 5B 99 ; 
+83B8:                56 98 C0 16 49 5E 90 78 0E BC 92 5F 59 15 9B AF ; 
+83C8:                19 A1          ; 
+83CA:       34                      ;     Phrase number: 0x34
+83CB:       23                      ;     ELSE go to: 0x83EF
+83CC:          0E 21                ;       WHILE FAIL, Length: 0x0021
+83CE:             13                ;         UNKNOWN13
+83CF:             04 1E             ;         PRINT, Length: 0x001E
+;
+; YOUR SUCCESS IS MEASURED IN LEAPS AND BOUNDS!
+;
+83D1:                C7 DE 95 AF D5 C3 65 62 D5 15 67 16 67 49 66 B1 ; 
+83E1:                D0 15 3F 16 ED 48 90 14 04 58 30 A1 09 5C ; 
+83EF:       35                      ;     Phrase number: 0x35
+83F0:       1C                      ;     ELSE go to: 0x840D
+83F1:          0E 1A                ;       WHILE FAIL, Length: 0x001A
+83F3:             13                ;         UNKNOWN13
+83F4:             04 17             ;         PRINT, Length: 0x0017
+;
+; YOU'D BETTER WATCH WHERE YOU STEP!
+;
+83F6:                C7 DE 73 21 76 4D F4 BD F3 17 9A BD FA 17 2F 62 ; 
+8406:                51 18 55 C2 F2 BD 21 ; 
+840D:       36                      ;     Phrase number: 0x36
+840E:       04                      ;     ELSE go to: 0x8413
+840F:          0E 02                ;       WHILE FAIL, Length: 0x0002
+8411:             13                ;         UNKNOWN13
+8412:             91                ;         COMMAND 0x91
+8413:       37                      ;     Phrase number: 0x37
+8414:       04                      ;     ELSE go to: 0x8419
+8415:          0E 02                ;       WHILE FAIL, Length: 0x0002
+8417:             13                ;         UNKNOWN13
+8418:             91                ;         COMMAND 0x91
+8419:       54                      ;     Phrase number: 0x54
+841A:       17                      ;     ELSE go to: 0x8432
+841B:          0E 15                ;       WHILE FAIL, Length: 0x0015
+841D:             13                ;         UNKNOWN13
+841E:             04 12             ;         PRINT, Length: 0x0012
+;
+; THERE IS NO PLACE TO GO UP.
+;
+8420:                5F BE 5B B1 4B 7B EB 99 FB A5 9B 53 6B BF 2B 6E ; 
+8430:                F7 C5          ; 
+8432:       55                      ;     Phrase number: 0x55
+8433:       19                      ;     ELSE go to: 0x844D
+8434:          0E 17                ;       WHILE FAIL, Length: 0x0017
+8436:             13                ;         UNKNOWN13
+8437:             04 14             ;         PRINT, Length: 0x0014
+;
+; THERE IS NO PLACE TO GO DOWN. 
+;
+8439:                5F BE 5B B1 4B 7B EB 99 FB A5 9B 53 6B BF 2B 6E ; 
+8449:                89 5B 1B 9C    ; 
+844D:       38                      ;     Phrase number: 0x38
+844E:       1D                      ;     ELSE go to: 0x846C
+844F:          0E 1B                ;       WHILE FAIL, Length: 0x001B
+8451:             13                ;         UNKNOWN13
+8452:             0D 18             ;         WHILE PASS, Length: 0x0018
+8454:                04 14          ;           PRINT, Length: 0x0014
+;
+; THERE IS NOT ENOUGH ROOM UNDER
+;
+8456:                   5F BE 5B B1 4B 7B 06 9A 30 15 29 A1 14 71 3F A0 ; 
+8466:                   B0 17 F4 59 ; 
+846A:                A8             ;           COMMAND 0xA8
+846B:                8B             ;           COMMAND 0x8B
+846C:       39                      ;     Phrase number: 0x39
+846D:       1D                      ;     ELSE go to: 0x848B
+846E:          0E 1B                ;       WHILE FAIL, Length: 0x001B
+8470:             13                ;         UNKNOWN13
+8471:             0D 18             ;         WHILE PASS, Length: 0x0018
+8473:                04 16          ;           PRINT, Length: 0x0016
+;
+; YOU WILL HAVE TO PUT IT IN THERE.
+;
+8475:                   C7 DE FB 17 F3 8C 58 72 56 5E D2 9C 73 C6 73 7B ; 
+8485:                   83 7A 5F BE 7F B1 ; 
+848B:       0D                      ;     Phrase number: 0x0D
+848C:       2B                      ;     ELSE go to: 0x84B8
+848D:          0E 29                ;       WHILE FAIL, Length: 0x0029
+848F:             0D 25             ;         WHILE PASS, Length: 0x0025
+8491:                1A             ;           SET VAR TO FIRST NOUN
+8492:                8F             ;           COMMAND 0x8F
+8493:                0E 21          ;           WHILE FAIL, Length: 0x0021
+8495:                   13          ;             UNKNOWN13
+8496:                   0D 1E       ;             WHILE PASS, Length: 0x001E
+8498:                      0E 07    ;               WHILE FAIL, Length: 0x0007
+849A:                         14    ;                 EXECUTE AND REVERSE STATUS
+849B:                         15 10 ;                 CHECK VAR, Value: 0x10
+849D:                         1B    ;                 SET VAR TO SECOND NOUN
+849E:                         14    ;                 EXECUTE AND REVERSE STATUS
+849F:                         15 40 ;                 CHECK VAR, Value: 0x40
+84A1:                      A8       ;               COMMAND 0xA8
+84A2:                      04 0F    ;               PRINT, Length: 0x000F
+;
+; BOUNCES HARMLESSLY OFF
+;
+84A4:                         07 4F 17 98 CA B5 37 49 F5 8B D3 B8 B8 16 46 ; 
+84B3:                      A9       ;               COMMAND 0xA9
+84B4:                      8B       ;               COMMAND 0x8B
+84B5:                      10       ;               DROP VAR
+84B6:             14                ;         EXECUTE AND REVERSE STATUS
+84B7:             0C                ;         FAIL
+84B8:       57                      ;     Phrase number: 0x57
+84B9:       81 09                   ;     ELSE go to: 0x85C4
+84BB:          0E 81 06             ;       WHILE FAIL, Length: 0x0106
+84BE:             13                ;         UNKNOWN13
+84BF:             0D 0F             ;         WHILE PASS, Length: 0x000F
+84C1:                14             ;           EXECUTE AND REVERSE STATUS
+84C2:                09 28          ;           COMPARE TO SECOND NOUN, Word number: 0x28
+84C4:                A9             ;           COMMAND 0xA9
+84C5:                04 09          ;           PRINT, Length: 0x0009
+;
+; ISN'T LOADED.
+;
+84C7:                   60 7B F3 23 73 8D E6 59 2E ; 
+84D0:             0D 0A             ;         WHILE PASS, Length: 0x000A
+84D2:                14             ;           EXECUTE AND REVERSE STATUS
+84D3:                03 28 29       ;           IS LOCATED, Room number: 0x28, Object number: 0x29
+84D6:                04 04          ;           PRINT, Length: 0x0004
+;
+; CLICK.
+;
+84D8:                   C3 54 AF 54 ; 
+84DC:             0D 80 CB          ;         WHILE PASS, Length: 0x00CB
+84DF:                04 04          ;           PRINT, Length: 0x0004
+;
+; BLAM! 
+;
+84E1:                   7B 4E EB 8F ; 
+84E5:                0B 80 C2 08    ;           SWITCH, Length: 0x00C2, Function to call: 0x08
+84E9:                   33          ;             Phrase number: 0x33
+84EA:                   0E          ;             ELSE go to: 0x84F9
+84EB:                      0D 0C    ;               WHILE PASS, Length: 0x000C
+84ED:                         04 07 ;                 PRINT, Length: 0x0007
+;
+; GOOD SHOT!
+;
+84EF:                            41 6E 15 58 86 74 21 ; 
+84F6:                         1A    ;                 SET VAR TO FIRST NOUN
+84F7:                         1D 64 ;                 ATTACK VAR, Points: 0x64
+84F9:                   62          ;             Phrase number: 0x62
+84FA:                   4D          ;             ELSE go to: 0x8548
+84FB:                      0D 4B    ;               WHILE PASS, Length: 0x004B
+84FD:                         04 45 ;                 PRINT, Length: 0x0045
+;
+; THE ALIEN IS LIFTED AND THROWN BACKWARDS BY THE IMPACT OF THE BLAST. ITS LIMP BODY FALLS TO THE GROUND.
+;
+84FF:                            5F BE 8E 14 30 79 D5 15 43 16 BF 68 03 58 33 98 ; 
+850F:                            6C BE 80 A1 AB 14 A9 54 2E 49 C4 B5 56 DB DB 72 ; 
+851F:                            72 7A E6 46 B8 16 82 17 44 5E 55 8B 9B C1 8D 7B ; 
+852F:                            43 16 D3 93 F6 4E 48 DB 46 48 D6 B5 D6 9C DB 72 ; 
+853F:                            B9 6E 8E C5 2E ; 
+8544:                         1C 62 ;                 SET VAR OBJECT, Object number: 0x62
+8546:                         1D 15 ;                 ATTACK VAR, Points: 0x15
+8548:                   89          ;             Phrase number: 0x89
+8549:                   60          ;             ELSE go to: 0x85AA
+854A:                      0D 5E    ;               WHILE PASS, Length: 0x005E
+854C:                         04 58 ;                 PRINT, Length: 0x0058
+;
+; THE SHOTGUN ROARS DEAFENINGLY, BUT HAS LITTLE EFFECT ON THE WAVE OF SMALL BLACK CREATURES THAT WASH OVER YOU, STINGING YOU TO DEATH.
+;
+854E:                            5F BE 5A 17 01 A1 83 C5 F3 B2 8B B3 E3 59 70 66 ; 
+855E:                            91 7A 1E 8F BF 14 0A BC 4B 49 96 8C FF BE 28 15 ; 
+856E:                            65 66 11 BC 96 96 DB 72 18 D0 51 5E 95 64 8E 91 ; 
+857E:                            04 8A 45 8B C5 83 63 B1 74 C0 4B 62 5B BE 19 BC ; 
+858E:                            5A 49 C8 16 23 62 C7 DE 15 EE 90 BE 50 6D DB 6A ; 
+859E:                            1B A1 6B BF E3 59 77 BE ; 
+85A6:                         1C 01 ;                 SET VAR OBJECT, Object number: 0x01
+85A8:                         1D 4B ;                 ATTACK VAR, Points: 0x4B
+85AA:             0D 18             ;         WHILE PASS, Length: 0x0018
+85AC:                04 14          ;           PRINT, Length: 0x0014
+;
+; THERE ARE SEVERAL NEW HOLES IN
+;
+85AE:                   5F BE 5B B1 2F 49 57 17 74 CA 33 48 79 98 A9 15 ; 
+85BE:                   F5 8B D0 15 ; 
+85C2:                A8             ;           COMMAND 0xA8
+85C3:                8B             ;           COMMAND 0x8B
+85C4:       0E                      ;     Phrase number: 0x0E
+85C5:       13                      ;     ELSE go to: 0x85D9
+85C6:          0E 11                ;       WHILE FAIL, Length: 0x0011
+85C8:             13                ;         UNKNOWN13
+85C9:             0D 0E             ;         WHILE PASS, Length: 0x000E
+85CB:                A9             ;           COMMAND 0xA9
+85CC:                04 0B          ;           PRINT, Length: 0x000B
+;
+; DOESN'T WANT IT.
+;
+85CE:                   77 5B 05 B9 19 BC 9E 48 D6 15 2E ; 
+85D9:       0F                      ;     Phrase number: 0x0F
+85DA:       1D                      ;     ELSE go to: 0x85F8
+85DB:          0E 1B                ;       WHILE FAIL, Length: 0x001B
+85DD:             0D 06             ;         WHILE PASS, Length: 0x0006
+85DF:                1A             ;           SET VAR TO FIRST NOUN
+85E0:                14             ;           EXECUTE AND REVERSE STATUS
+85E1:                2E 10          ;           UNKNOWN2E, Value: 0x10
+85E3:                14             ;           EXECUTE AND REVERSE STATUS
+85E4:                8F             ;           COMMAND 0x8F
+85E5:             14                ;         EXECUTE AND REVERSE STATUS
+85E6:             BF                ;         COMMAND 0xBF
+85E7:             0D 05             ;         WHILE PASS, Length: 0x0005
+85E9:                1B             ;           SET VAR TO SECOND NOUN
+85EA:                14             ;           EXECUTE AND REVERSE STATUS
+85EB:                15 02          ;           CHECK VAR, Value: 0x02
+85ED:                B6             ;           COMMAND 0xB6
+85EE:             B7                ;         COMMAND 0xB7
+85EF:             0D 04             ;         WHILE PASS, Length: 0x0004
+85F1:                1B             ;           SET VAR TO SECOND NOUN
+85F2:                32             ;           UNKNOWN32
+85F3:                B5             ;           COMMAND 0xB5
+85F4:                0C             ;           FAIL
+85F5:             13                ;         UNKNOWN13
+85F6:             14                ;         EXECUTE AND REVERSE STATUS
+85F7:             0C                ;         FAIL
+85F8:       4D                      ;     Phrase number: 0x4D
+85F9:       23                      ;     ELSE go to: 0x861D
+85FA:          0E 21                ;       WHILE FAIL, Length: 0x0021
+85FC:             0D 05             ;         WHILE PASS, Length: 0x0005
+85FE:                1B             ;           SET VAR TO SECOND NOUN
+85FF:                14             ;           EXECUTE AND REVERSE STATUS
+8600:                2E 10          ;           UNKNOWN2E, Value: 0x10
+8602:                B8             ;           COMMAND 0xB8
+8603:             14                ;         EXECUTE AND REVERSE STATUS
+8604:             BF                ;         COMMAND 0xBF
+8605:             0D 05             ;         WHILE PASS, Length: 0x0005
+8607:                1A             ;           SET VAR TO FIRST NOUN
+8608:                14             ;           EXECUTE AND REVERSE STATUS
+8609:                15 02          ;           CHECK VAR, Value: 0x02
+860B:                B6             ;           COMMAND 0xB6
+860C:             B7                ;         COMMAND 0xB7
+860D:             0D 05             ;         WHILE PASS, Length: 0x0005
+860F:                1B             ;           SET VAR TO SECOND NOUN
+8610:                14             ;           EXECUTE AND REVERSE STATUS
+8611:                2E 10          ;           UNKNOWN2E, Value: 0x10
+8613:                B8             ;           COMMAND 0xB8
+8614:             0D 04             ;         WHILE PASS, Length: 0x0004
+8616:                1A             ;           SET VAR TO FIRST NOUN
+8617:                31             ;           UNKNOWN31
+8618:                B5             ;           COMMAND 0xB5
+8619:                0C             ;           FAIL
+861A:             13                ;         UNKNOWN13
+861B:             14                ;         EXECUTE AND REVERSE STATUS
+861C:             0C                ;         FAIL
+861D:       4E                      ;     Phrase number: 0x4E
+861E:       3F                      ;     ELSE go to: 0x865E
+861F:          0E 3D                ;       WHILE FAIL, Length: 0x003D
+8621:             0D 0A             ;         WHILE PASS, Length: 0x000A
+8623:                1A             ;           SET VAR TO FIRST NOUN
+8624:                14             ;           EXECUTE AND REVERSE STATUS
+8625:                2E 10          ;           UNKNOWN2E, Value: 0x10
+8627:                04 03          ;           PRINT, Length: 0x0003
+;
+; POOR
+;
+8629:                   81 A6 52    ; 
+862C:                11             ;           PRINT FIRST NOUN
+862D:             14                ;         EXECUTE AND REVERSE STATUS
+862E:             BF                ;         COMMAND 0xBF
+862F:             0D 10             ;         WHILE PASS, Length: 0x0010
+8631:                09 00          ;           COMPARE TO SECOND NOUN, Word number: 0x00
+8633:                1C 00          ;           SET VAR OBJECT, Object number: 0x00
+8635:                32             ;           UNKNOWN32
+8636:                A8             ;           COMMAND 0xA8
+8637:                04 08          ;           PRINT, Length: 0x0008
+;
+; IS NOW GONE.
+;
+8639:                   4B 7B 09 9A 81 15 7F 98 ; 
+8641:             0D 12             ;         WHILE PASS, Length: 0x0012
+8643:                1B             ;           SET VAR TO SECOND NOUN
+8644:                14             ;           EXECUTE AND REVERSE STATUS
+8645:                15 02          ;           CHECK VAR, Value: 0x02
+8647:                A9             ;           COMMAND 0xA9
+8648:                04 08          ;           PRINT, Length: 0x0008
+;
+; IS NOW DAMP.
+;
+864A:                   4B 7B 09 9A FB 14 F7 93 ; 
+8652:                1C 00          ;           SET VAR OBJECT, Object number: 0x00
+8654:                32             ;           UNKNOWN32
+8655:             0D 04             ;         WHILE PASS, Length: 0x0004
+8657:                1B             ;           SET VAR TO SECOND NOUN
+8658:                32             ;           UNKNOWN32
+8659:                B5             ;           COMMAND 0xB5
+865A:                0C             ;           FAIL
+865B:             13                ;         UNKNOWN13
+865C:             14                ;         EXECUTE AND REVERSE STATUS
+865D:             0C                ;         FAIL
+865E:       4F                      ;     Phrase number: 0x4F
+865F:       52                      ;     ELSE go to: 0x86B2
+8660:          0E 50                ;       WHILE FAIL, Length: 0x0050
+8662:             0D 32             ;         WHILE PASS, Length: 0x0032
+8664:                1A             ;           SET VAR TO FIRST NOUN
+8665:                14             ;           EXECUTE AND REVERSE STATUS
+8666:                2E 10          ;           UNKNOWN2E, Value: 0x10
+8668:                04 2A          ;           PRINT, Length: 0x002A
+;
+; YOU'RE SICK, BUT NOT HALF AS SICK AS YOU WOULD BE IF YOU DRANK 
+;
+866A:                   C7 DE AF 23 5B 17 AE 54 BF 14 10 BC F3 A0 4E 72 ; 
+867A:                   83 64 D5 B5 DD 78 95 14 51 18 59 C2 2E A1 04 58 ; 
+868A:                   4B 5E 9B 64 1B A1 EB 5B 4B 99 ; 
+8694:                A8             ;           COMMAND 0xA8
+8695:                8B             ;           COMMAND 0x8B
+8696:             14                ;         EXECUTE AND REVERSE STATUS
+8697:             BF                ;         COMMAND 0xBF
+8698:             0D 04             ;         WHILE PASS, Length: 0x0004
+869A:                13             ;           UNKNOWN13
+869B:                1C 00          ;           SET VAR OBJECT, Object number: 0x00
+869D:                32             ;           UNKNOWN32
+869E:             0D 12             ;         WHILE PASS, Length: 0x0012
+86A0:                1C 00          ;           SET VAR OBJECT, Object number: 0x00
+86A2:                32             ;           UNKNOWN32
+86A3:                04 0D          ;           PRINT, Length: 0x000D
+;
+; YOU FEEL REFRESHED.
+;
+86A5:                   C7 DE 4F 15 33 61 68 B1 75 B1 E6 72 2E ; 
+86B2:       4B                      ;     Phrase number: 0x4B
+86B3:       43                      ;     ELSE go to: 0x86F7
+86B4:          0E 41                ;       WHILE FAIL, Length: 0x0041
+86B6:             13                ;         UNKNOWN13
+86B7:             0D 06             ;         WHILE PASS, Length: 0x0006
+86B9:                1A             ;           SET VAR TO FIRST NOUN
+86BA:                14             ;           EXECUTE AND REVERSE STATUS
+86BB:                2E 10          ;           UNKNOWN2E, Value: 0x10
+86BD:                14             ;           EXECUTE AND REVERSE STATUS
+86BE:                8F             ;           COMMAND 0x8F
+86BF:             0D 16             ;         WHILE PASS, Length: 0x0016
+86C1:                2E 10          ;           UNKNOWN2E, Value: 0x10
+86C3:                0E 12          ;           WHILE FAIL, Length: 0x0012
+86C5:                   14          ;             EXECUTE AND REVERSE STATUS
+86C6:                   BF          ;             COMMAND 0xBF
+86C7:                   0D 0E       ;             WHILE PASS, Length: 0x000E
+86C9:                      A9       ;               COMMAND 0xA9
+86CA:                      04 08    ;               PRINT, Length: 0x0008
+;
+; IS NOW WET. 
+;
+86CC:                         4B 7B 09 9A F7 17 9B C1 ; 
+86D4:                      1C 00    ;               SET VAR OBJECT, Object number: 0x00
+86D6:                      32       ;               UNKNOWN32
+86D7:             0D 16             ;         WHILE PASS, Length: 0x0016
+86D9:                1B             ;           SET VAR TO SECOND NOUN
+86DA:                14             ;           EXECUTE AND REVERSE STATUS
+86DB:                15 01          ;           CHECK VAR, Value: 0x01
+86DD:                04 10          ;           PRINT, Length: 0x0010
+;
+; THERE'S NOT ENOUGH ROOM.
+;
+86DF:                   5F BE 5D B1 D0 B5 F3 A0 99 61 7A C4 39 17 FF 9F ; 
+86EF:             0D 04             ;         WHILE PASS, Length: 0x0004
+86F1:                1B             ;           SET VAR TO SECOND NOUN
+86F2:                32             ;           UNKNOWN32
+86F3:                B5             ;           COMMAND 0xB5
+86F4:                0C             ;           FAIL
+86F5:             14                ;         EXECUTE AND REVERSE STATUS
+86F6:             0C                ;         FAIL
+86F7:       19                      ;     Phrase number: 0x19
+86F8:       80 EB                   ;     ELSE go to: 0x87E5
+86FA:          0D 80 E8             ;       WHILE PASS, Length: 0x00E8
+86FD:             1C 01             ;         SET VAR OBJECT, Object number: 0x01
+86FF:             0B 80 E3 22       ;         SWITCH, Length: 0x00E3, Function to call: 0x22
+8703:                05             ;           Phrase number: 0x05
+8704:                24             ;           ELSE go to: 0x8729
+8705:                   04 22       ;             PRINT, Length: 0x0022
+;
+; YOU ARE ON YOUR LAST LEGS. ANYTHING COULD KILL YOU!
+;
+8707:                      C7 DE 94 14 51 5E 9B 96 34 A1 3B 16 F3 B9 E9 8B ; 
+8717:                      5B BB A3 48 63 BE AB 98 47 55 B3 8B 4E 86 1B 8A ; 
+8727:                      19 A1    ; 
+8729:                14             ;           Phrase number: 0x14
+872A:                1C             ;           ELSE go to: 0x8747
+872B:                   04 1A       ;             PRINT, Length: 0x001A
+;
+; ONE MORE GOOD INJURY AND YOU'VE HAD IT!
+;
+872D:                      0F A0 71 16 5B B1 41 6E 0B 58 3F 99 7B B4 8E 48 ; 
+873D:                      51 18 A8 C2 4A 5E F3 46 71 7B ; 
+8747:                23             ;           Phrase number: 0x23
+8748:                22             ;           ELSE go to: 0x876B
+8749:                   04 20       ;             PRINT, Length: 0x0020
+;
+; YOU ARE FEELING QUITE ILL. I PRESCRIBE CAUTION! 
+;
+874B:                      C7 DE 94 14 48 5E 2E 60 91 7A 17 17 7F 7B CE 15 ; 
+875B:                      9B 8F 52 77 75 B1 B3 55 5B 4D 17 53 91 BE 2B 96 ; 
+876B:                33             ;           Phrase number: 0x33
+876C:                32             ;           ELSE go to: 0x879F
+876D:                   04 30       ;             PRINT, Length: 0x0030
+;
+; YOU ARE NOT FEELING UP TO PAR. YOU SHOULD TAKE BETTER CARE OF YOURSELF. 
+;
+876F:                      C7 DE 94 14 50 5E F3 A0 67 66 90 8C D7 6A 16 A3 ; 
+877F:                      D2 9C 47 49 51 18 55 C2 87 74 B3 8B 4D BD 44 5E ; 
+878F:                      8E 62 23 62 14 53 51 5E 9B 64 34 A1 AE B7 1B 6A ; 
+879F:                44             ;           Phrase number: 0x44
+87A0:                24             ;           ELSE go to: 0x87C5
+87A1:                   04 22       ;             PRINT, Length: 0x0022
+;
+; YOU'RE FEELING PRETTY GOOD UNDER THE CIRCUMSTANCES.
+;
+87A3:                      C7 DE AF 23 4F 15 43 61 AB 98 EF A6 53 C0 81 15 ; 
+87B3:                      73 9E 8E C5 23 62 5F BE DB 14 27 B1 66 94 8D 48 ; 
+87C3:                      6F 62    ; 
+87C5:                FF             ;           Phrase number: 0xFF
+87C6:                1E             ;           ELSE go to: 0x87E5
+87C7:                   04 1C       ;             PRINT, Length: 0x001C
+;
+; YOU FEEL AS GOOD AS THE DAY YOU WERE BORN.
+;
+87C9:                      C7 DE 4F 15 33 61 4B 49 41 6E 03 58 D6 B5 DB 72 ; 
+87D9:                      5B 59 51 18 59 C2 2F 62 B9 14 E7 B2 ; 
+87E5:       52                      ;     Phrase number: 0x52
+87E6:       04                      ;     ELSE go to: 0x87EB
+87E7:          0E 02                ;       WHILE FAIL, Length: 0x0002
+87E9:             13                ;         UNKNOWN13
+87EA:             B8                ;         COMMAND 0xB8
+87EB:       56                      ;     Phrase number: 0x56
+87EC:       11                      ;     ELSE go to: 0x87FE
+87ED:          0E 0F                ;       WHILE FAIL, Length: 0x000F
+87EF:             13                ;         UNKNOWN13
+87F0:             04 0C             ;         PRINT, Length: 0x000C
+;
+; I DIG IT TOO, MAN!
+;
+87F2:                46 77 6B 79 73 7B 81 BF 0F EE 81 48 ; 
+87FE:       50                      ;     Phrase number: 0x50
+87FF:       11                      ;     ELSE go to: 0x8811
+8800:          0E 0F                ;       WHILE FAIL, Length: 0x000F
+8802:             13                ;         UNKNOWN13
+8803:             04 0C             ;         PRINT, Length: 0x000C
+;
+; YOU CAN'T DO THAT!
+;
+8805:                C7 DE D3 14 E6 96 09 15 82 17 71 49 ; 
+8811:       51                      ;     Phrase number: 0x51
+8812:       2B                      ;     ELSE go to: 0x883E
+8813:          0E 29                ;       WHILE FAIL, Length: 0x0029
+8815:             13                ;         UNKNOWN13
+8816:             04 26             ;         PRINT, Length: 0x0026
+;
+; BEFORE YOU CAN TURN SOMETHING OFF, IT MUST BE TURNED ON. 
+;
+8818:                68 4D AF A0 51 18 45 C2 83 48 74 C0 95 96 E7 9F ; 
+8828:                63 BE AB 98 D0 9E 0B EE 0F BC 66 C6 AF 14 8F 17 ; 
+8838:                CF B2 11 58 1B 9C ; 
+883E:       53                      ;     Phrase number: 0x53
+883F:       0F                      ;     ELSE go to: 0x884F
+8840:          0E 0D                ;       WHILE FAIL, Length: 0x000D
+8842:             13                ;         UNKNOWN13
+8843:             0D 0A             ;         WHILE PASS, Length: 0x000A
+8845:                04 08          ;           PRINT, Length: 0x0008
+;
+; USE 'ATTACK'
+;
+8847:                   57 C6 93 13 3B C0 8D 54 ; 
+884F:       58                      ;     Phrase number: 0x58
+8850:       0D                      ;     ELSE go to: 0x885E
+8851:          0E 0B                ;       WHILE FAIL, Length: 0x000B
+8853:             13                ;         UNKNOWN13
+8854:             0D 08             ;         WHILE PASS, Length: 0x0008
+8856:                04 06          ;           PRINT, Length: 0x0006
+;
+; I SEE IT.
+;
+8858:                   55 77 1B 60 97 7B ; 
+885E:       07                      ;     Phrase number: 0x07
+885F:       1A                      ;     ELSE go to: 0x887A
+8860:          0D 18                ;       WHILE PASS, Length: 0x0018
+8862:             04 15             ;         PRINT, Length: 0x0015
+;
+; YOU ARE CARRYING THE FOLLOWING:
+;
+8864:                C7 DE 94 14 45 5E 3C 49 D0 DD D6 6A DB 72 FE 67 ; 
+8874:                89 8D 91 7A 3A ; 
+8879:             06                ;         PRINT INVENTORY
 ```
 
 # Object Data
