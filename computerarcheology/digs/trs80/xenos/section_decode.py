@@ -8,8 +8,8 @@ import script_cursor
 with open('content/trs80/xenos/roms/xenos.bin', 'rb') as f:
     RAW = f.read()
 cursor = script_cursor.ScriptCursor(RAW, 0x5D00)
-cursor.pos = 0x7DBF-0x5D00
-for _ in range(4):
+cursor.pos = 0x9622-0x5D00
+for _ in range(20):
     cursor.decode_command(0)
 #cursor.decode_script()
 

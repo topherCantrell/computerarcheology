@@ -25,3 +25,6 @@ def unpack(ptr,data,length):
             # 0 or 1, we are done
             break
     return ret
+
+if __name__ == "__main__":
+    print(unpack(0, [0x0E, 0x22, 0x0D, 0x0A, 0x0E, 0x04, 0x0A, 0x3A, 0x0A, 0x42], 10))

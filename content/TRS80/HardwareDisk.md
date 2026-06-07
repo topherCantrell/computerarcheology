@@ -31,6 +31,7 @@ Start of user RAM for program storage: 42E9
 | 0264 | WriteTapeByte   | Write a byte to the tape               |
 | 0287 | WriteTapeLeader | Write a leader to the tape             |
 | 0296 | ReadTapeLeader  | Read a leader from the tape            |
+| 402D | EndProgram      | No-error exit from disk program  |
 | 4020:4021 | Cursor Pointer | Pointer into screen memory |
 | 4409 | ERROR_SYS4 | Error handler: PUSH AF then loads SYS4 overlay (DO 00,4) |
 | 4420 | EXECUTE | Execute program |

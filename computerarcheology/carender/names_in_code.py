@@ -173,7 +173,8 @@ def update_names_in_code(directory, filename, check_binary=True,extract_binary=F
             if i >= 0:
                 a = a[0:i]            
             opcode = cpu.find_opcodes_for_binary(parts['data'], exact=True, hint=parts['opcode'])
-            if not opcode:
+            #print(">>>>>",line.text)
+            if not opcode:                
                 raise Exception('No opcode found: ' + line.text)
             if len(opcode) > 1:                
                 mop = None

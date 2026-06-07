@@ -1,5 +1,5 @@
 # fname = 'd:/git/computerarcheology/content/atari2600/burgertime/btBank7.bin'
-fname = 'd:/git/computerarcheology/content/trs80/xenos/roms/usvdobjs.bin'
+fname = 'd:/git/computerarcheology/content/trs80/xenos/roms/usvdobjs.dat'
 
 origin = 0x0000
 
@@ -12,6 +12,7 @@ while pos < len(data):
     if cnt >= 16:
         cnt = 0
         g = hex(pos + origin).upper()[2:]
+        g = g.rjust(4, '0')
         print()
         print(g + ':', end='')
     g = hex(data[pos]).upper()[2:]

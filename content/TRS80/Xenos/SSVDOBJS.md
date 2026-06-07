@@ -4,7 +4,7 @@
 
 >>> cpu Z80
 
->>> binary 0000:roms/ssvdobjs.bin
+>>> binary 0000:roms/ssvdobjs.dat
 
 ```code
 0000: 8A 08 80 02 46 20 83 01 88 82 01 88 88 61 8C DA

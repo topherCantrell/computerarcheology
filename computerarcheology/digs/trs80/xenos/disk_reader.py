@@ -1,9 +1,10 @@
 #with open("content/trs80/xenos/roms/XENOS.CMD.tst", "rb") as f:
-with open("content/trs80/xenos/roms/SECTION9.DAT", "rb") as f:
+#with open("content/trs80/xenos/roms/SECTION9.DAT", "rb") as f:
+with open("content/trs80/xenos/roms2/section9.dat", "rb") as f:
     data = f.read()
 
-with open("t9.bin","wb") as f:    
-    x = 113
+with open("content/trs80/xenos/roms2/section9.bin","wb") as f:
+    x = 93
     pos = 0
     while pos < len(data):
         print(f"{list(data[pos:pos+4])}")
