@@ -34,7 +34,7 @@ Start of user RAM for program storage: 42E9
 | 402D | EndProgram      | No-error exit from disk program  |
 | 4020:4021 | Cursor Pointer | Pointer into screen memory |
 | 4409 | ERROR_SYS4 | Error handler: PUSH AF then loads SYS4 overlay (DO 00,4) |
-| 4420 | EXECUTE | Execute program |
+| 4420 | OPEN_NEW_EXISTING | Execute program |
 | 4424 | OPEN_EXISTING | Open existing file |
 | 4428 | CLOSE_FILE | Close file |
 | 4436 | READ_RECORD | Read a record |

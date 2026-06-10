@@ -9,61 +9,58 @@
 ```code
 5200: 00 87 8A                      ; List ID: 0x00, Length: 0x078A
 
-5203: 84 2B 00                      ; Room Number: 0x84, Length: 0x002B, Data: 0x00
+5203: 84 2B 00                      ; room=84_8_??84??, Length: 0x002B, Data: 0x00
 ;
 5206:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-5208:       9C                      ;     COMMAND 0x9C
+5208:       9C                      ;     ROUTINE 0x9C
 ;
 5209:    04 25                      ;   Section COMMANDS, Length: 0x0025
 520B:       0B 23 0A                ;     SWITCH, Length: 0x0023, Function to call: 0x0A
-520E:          12                   ;       Phrase number: 0x12
+520E:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 520F:          04                   ;       ELSE go to: 0x5214
 5210:             0E 02             ;         WHILE FAIL, Length: 0x0002
-5212:                A0             ;           COMMAND 0xA0
-5213:                A1             ;           COMMAND 0xA1
-5214:          36                   ;       Phrase number: 0x36
+5212:                A0             ;           ROUTINE 0xA0
+5213:                A1             ;           ROUTINE 0xA1
+5214:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 5215:          1A                   ;       ELSE go to: 0x5230
 5216:             0D 18             ;         WHILE PASS, Length: 0x0018
-5218:                C0             ;           COMMAND 0xC0
+5218:                C0             ;           ROUTINE 0xC0
 5219:                0E 15          ;           WHILE FAIL, Length: 0x0015
-521B:                   AE          ;             COMMAND 0xAE
+521B:                   AE          ;             ROUTINE 0xAE
 521C:                   14          ;             EXECUTE AND REVERSE STATUS
 521D:                   0B 10 03    ;             SWITCH, Length: 0x0010, Function to call: 0x03
-5220:                      40       ;               Phrase number: 0x40
+5220:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
 5221:                      3E       ;               ELSE go to: 0x5260
 5222:                         07    ;                 PRINT ROOM DESCRIPTION
-5223:                      0D       ;               Phrase number: 0x0D
+5223:                      0D       ;               Phrase 0x0D: "THROW    .vC.....   AT       ...P...."
 5224:                      05       ;               ELSE go to: 0x522A
-5225:                         9E    ;                 COMMAND 0x9E
-5226:                      30       ;               Phrase number: 0x30
+5225:                         9E    ;                 ROUTINE 0x9E
+5226:                      30       ;               Phrase 0x30: "??30??"
 5227:                      82 2F    ;               ELSE go to: 0x5458
 5229:                         07    ;                 PRINT ROOM DESCRIPTION
-522A:                      41       ;               Phrase number: 0x41
+522A:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
 522B:                      3E       ;               ELSE go to: 0x526A
-522C:                         02 00 86 ;                 IS OWNED BY, A=0x86, Object number: 0x00
-522F:                   9E          ;             COMMAND 0x9E
+522C:                         02 00 86 ;                 IS OWNED BY, A=0x86, obj=??00??
+522F:                   9E          ;             ROUTINE 0x9E
 
-5230: 86 80 BF 00                   ; Room Number: 0x86, Length: 0x00BF, Data: 0x00
+5230: 86 80 BF 00                   ; room=86_8_FOOGLURN_GALLEY, Length: 0x00BF, Data: 0x00
 ;
 5234:    03 80 99                   ;   Section DESCRIPTION, Length: 0x0099
 5237:       0D 80 96                ;     WHILE PASS, Length: 0x0096
 523A:          04 06                ;       PRINT, Length: 0x0006
-;
-; FOOGLURN 
-;
 523C:             01 68 CF 6D C3 B2 ; 
+;
+;                 FOOGLURN 
+;
 5242:          0E 07                ;       WHILE FAIL, Length: 0x0007
-5244:             C3                ;         COMMAND 0xC3
+5244:             C3                ;         ROUTINE 0xC3
 5245:             04 04             ;         PRINT, Length: 0x0004
-;
-; GALLEY
-;
 5247:                0E 6C FB 8B    ; 
-524B:          8B                   ;       COMMAND 0x8B
+;
+;                    GALLEY
+;
+524B:          8B                   ;       ROUTINE 0x8B
 524C:          04 80 81             ;       PRINT, Length: 0x0081
-;
-; YOU ARE IN A SMALL GREY ROOM. THERE IS A LARGE SQUARE RECESS IN ONE WALL. ONCE MORE, LOOKING BEHIND YOU, YOU SEE THE PAIR OF RED AND BLUE BUTTONS ON THE WALL. THERE IS A SMALL WHITE TABLE HERE.
-;
 524F:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 84 15 3B 63 ; 
 525F:             01 B3 DB 95 5F BE 5B B1 4B 7B 4E 45 31 49 55 5E ; 
 526F:             A3 AD 5B B1 65 B1 65 62 D0 15 C0 16 59 5E 46 48 ; 
@@ -74,81 +71,81 @@
 52BF:             55 45 8E 91 19 8A 96 73 56 5E B6 46 4A 5E 2F 62 ; 
 52CF:             2E                ; 
 ;
+;                 YOU ARE IN A SMALL GREY ROOM. THERE IS A LARGE SQUARE
+;                 RECESS IN ONE WALL. ONCE MORE, LOOKING BEHIND YOU, YOU SEE
+;                 THE PAIR OF RED AND BLUE BUTTONS ON THE WALL. THERE IS A
+;                 SMALL WHITE TABLE HERE.
+;
+;
 52D0:    04 20                      ;   Section COMMANDS, Length: 0x0020
 52D2:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-52D5:          12                   ;       Phrase number: 0x12
+52D5:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 52D6:          04                   ;       ELSE go to: 0x52DB
 52D7:             0E 02             ;         WHILE FAIL, Length: 0x0002
-52D9:                A0             ;           COMMAND 0xA0
-52DA:                A1             ;           COMMAND 0xA1
-52DB:          36                   ;       Phrase number: 0x36
+52D9:                A0             ;           ROUTINE 0xA0
+52DA:                A1             ;           ROUTINE 0xA1
+52DB:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 52DC:          15                   ;       ELSE go to: 0x52F2
 52DD:             0D 13             ;         WHILE PASS, Length: 0x0013
-52DF:                C0             ;           COMMAND 0xC0
+52DF:                C0             ;           ROUTINE 0xC0
 52E0:                0E 10          ;           WHILE FAIL, Length: 0x0010
-52E2:                   AE          ;             COMMAND 0xAE
+52E2:                   AE          ;             ROUTINE 0xAE
 52E3:                   14          ;             EXECUTE AND REVERSE STATUS
 52E4:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-52E7:                      40       ;               Phrase number: 0x40
+52E7:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
 52E8:                      3E       ;               ELSE go to: 0x5327
-52E9:                         02 00 84 ;                 IS OWNED BY, A=0x84, Object number: 0x00
-52EC:                      41       ;               Phrase number: 0x41
+52E9:                         02 00 84 ;                 IS OWNED BY, A=0x84, obj=??00??
+52EC:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
 52ED:                      3E       ;               ELSE go to: 0x532C
-52EE:                         02 00 88 ;                 IS OWNED BY, A=0x88, Object number: 0x00
-52F1:                   9E          ;             COMMAND 0x9E
+52EE:                         02 00 88 ;                 IS OWNED BY, A=0x88, obj=??00??
+52F1:                   9E          ;             ROUTINE 0x9E
 
-52F2: 88 26 00                      ; Room Number: 0x88, Length: 0x0026, Data: 0x00
+52F2: 88 26 00                      ; room=88_8_??88??, Length: 0x0026, Data: 0x00
 ;
 52F5:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-52F7:       9C                      ;     COMMAND 0x9C
+52F7:       9C                      ;     ROUTINE 0x9C
 ;
 52F8:    04 20                      ;   Section COMMANDS, Length: 0x0020
 52FA:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-52FD:          12                   ;       Phrase number: 0x12
+52FD:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 52FE:          04                   ;       ELSE go to: 0x5303
 52FF:             0E 02             ;         WHILE FAIL, Length: 0x0002
-5301:                A0             ;           COMMAND 0xA0
-5302:                A1             ;           COMMAND 0xA1
-5303:          36                   ;       Phrase number: 0x36
+5301:                A0             ;           ROUTINE 0xA0
+5302:                A1             ;           ROUTINE 0xA1
+5303:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 5304:          15                   ;       ELSE go to: 0x531A
 5305:             0D 13             ;         WHILE PASS, Length: 0x0013
-5307:                C0             ;           COMMAND 0xC0
+5307:                C0             ;           ROUTINE 0xC0
 5308:                0E 10          ;           WHILE FAIL, Length: 0x0010
-530A:                   AE          ;             COMMAND 0xAE
+530A:                   AE          ;             ROUTINE 0xAE
 530B:                   14          ;             EXECUTE AND REVERSE STATUS
 530C:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-530F:                      40       ;               Phrase number: 0x40
+530F:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
 5310:                      3E       ;               ELSE go to: 0x534F
-5311:                         02 00 86 ;                 IS OWNED BY, A=0x86, Object number: 0x00
-5314:                      41       ;               Phrase number: 0x41
+5311:                         02 00 86 ;                 IS OWNED BY, A=0x86, obj=??00??
+5314:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
 5315:                      3E       ;               ELSE go to: 0x5354
-5316:                         02 00 8A ;                 IS OWNED BY, A=0x8A, Object number: 0x00
-5319:                   9E          ;             COMMAND 0x9E
+5316:                         02 00 8A ;                 IS OWNED BY, A=0x8A, obj=??00??
+5319:                   9E          ;             ROUTINE 0x9E
 
-531A: 8A 80 D4 00                   ; Room Number: 0x8A, Length: 0x00D4, Data: 0x00
+531A: 8A 80 D4 00                   ; room=8A_8_SPLURB_RECREATION, Length: 0x00D4, Data: 0x00
 ;
 531E:    03 80 AE                   ;   Section DESCRIPTION, Length: 0x00AE
 5321:       0D 80 AB                ;     WHILE PASS, Length: 0x00AB
 5324:          04 04                ;       PRINT, Length: 0x0004
-;
-; SPLURB
-;
 5326:             66 B9 2C C6       ; 
+;
+;                 SPLURB
+;
 532A:          0E 0A                ;       WHILE FAIL, Length: 0x000A
-532C:             C3                ;         COMMAND 0xC3
+532C:             C3                ;         ROUTINE 0xC3
 532D:             04 07             ;         PRINT, Length: 0x0007
-;
-; RECREATION
-;
 532F:                65 B1 63 B1 91 BE 4E ; 
-5336:          8B                   ;       COMMAND 0x8B
+;
+;                    RECREATION
+;
+5336:          8B                   ;       ROUTINE 0x8B
 5337:          04 80 95             ;       PRINT, Length: 0x0095
-;
-;      YOU ARE IN A WHITE ROOM WITH A CHAIR WHICH FACES THE WEST 
-;      WALL. THERE IS A WEIRD LOOKING HANDGRIP THAT EXTENDS OUT OF 
-;      THE WALL TOWARDS THE CHAIR. THE WALL BEHIND THE PLACE YOU 
-;      ARE STANDING HAS A RED AND A BLUE BUTTON ON IT.
-;
 533A:             C7 DE 94 14 4B 5E 83 96 FA 17 7F 7B 39 17 DB 9F ; 
 534A:             56 D1 03 71 DA 14 D4 47 FA 17 DA 78 4B 15 B5 53 ; 
 535A:             82 17 59 5E 66 62 F3 17 17 8D 82 17 2F 62 D5 15 ; 
@@ -160,82 +157,85 @@
 53BA:             7B 14 66 B1 90 14 03 58 B6 14 1B C4 F6 4F 80 BF ; 
 53CA:             C0 16 D6 15 2E    ; 
 ;
+;                 YOU ARE IN A WHITE ROOM WITH A CHAIR WHICH FACES THE WEST
+;                 WALL. THERE IS A WEIRD LOOKING HANDGRIP THAT EXTENDS OUT OF
+;                 THE WALL TOWARDS THE CHAIR. THE WALL BEHIND THE PLACE YOU
+;                 ARE STANDING HAS A RED AND A BLUE BUTTON ON IT.
+;
+;
 53CF:    04 20                      ;   Section COMMANDS, Length: 0x0020
 53D1:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-53D4:          12                   ;       Phrase number: 0x12
+53D4:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 53D5:          04                   ;       ELSE go to: 0x53DA
 53D6:             0E 02             ;         WHILE FAIL, Length: 0x0002
-53D8:                A0             ;           COMMAND 0xA0
-53D9:                A1             ;           COMMAND 0xA1
-53DA:          36                   ;       Phrase number: 0x36
+53D8:                A0             ;           ROUTINE 0xA0
+53D9:                A1             ;           ROUTINE 0xA1
+53DA:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 53DB:          15                   ;       ELSE go to: 0x53F1
 53DC:             0D 13             ;         WHILE PASS, Length: 0x0013
-53DE:                C0             ;           COMMAND 0xC0
+53DE:                C0             ;           ROUTINE 0xC0
 53DF:                0E 10          ;           WHILE FAIL, Length: 0x0010
-53E1:                   AE          ;             COMMAND 0xAE
+53E1:                   AE          ;             ROUTINE 0xAE
 53E2:                   14          ;             EXECUTE AND REVERSE STATUS
 53E3:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-53E6:                      40       ;               Phrase number: 0x40
+53E6:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
 53E7:                      3E       ;               ELSE go to: 0x5426
-53E8:                         02 00 88 ;                 IS OWNED BY, A=0x88, Object number: 0x00
-53EB:                      41       ;               Phrase number: 0x41
+53E8:                         02 00 88 ;                 IS OWNED BY, A=0x88, obj=??00??
+53EB:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
 53EC:                      3E       ;               ELSE go to: 0x542B
-53ED:                         02 00 8C ;                 IS OWNED BY, A=0x8C, Object number: 0x00
-53F0:                   9E          ;             COMMAND 0x9E
+53ED:                         02 00 8C ;                 IS OWNED BY, A=0x8C, obj=??00??
+53F0:                   9E          ;             ROUTINE 0x9E
 
-53F1: 8C 2C 00                      ; Room Number: 0x8C, Length: 0x002C, Data: 0x00
+53F1: 8C 2C 00                      ; room=8C_8_??8C??, Length: 0x002C, Data: 0x00
 ;
 53F4:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-53F6:       B0                      ;     COMMAND 0xB0
+53F6:       B0                      ;     ROUTINE 0xB0
 ;
 53F7:    04 26                      ;   Section COMMANDS, Length: 0x0026
 53F9:       0B 24 0A                ;     SWITCH, Length: 0x0024, Function to call: 0x0A
-53FC:          12                   ;       Phrase number: 0x12
+53FC:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 53FD:          05                   ;       ELSE go to: 0x5403
 53FE:             0E 03             ;         WHILE FAIL, Length: 0x0003
-5400:                9F             ;           COMMAND 0x9F
-5401:                A0             ;           COMMAND 0xA0
-5402:                A1             ;           COMMAND 0xA1
-5403:          36                   ;       Phrase number: 0x36
+5400:                9F             ;           ROUTINE 0x9F
+5401:                A0             ;           ROUTINE 0xA0
+5402:                A1             ;           ROUTINE 0xA1
+5403:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 5404:          1A                   ;       ELSE go to: 0x541F
 5405:             0D 18             ;         WHILE PASS, Length: 0x0018
-5407:                C0             ;           COMMAND 0xC0
+5407:                C0             ;           ROUTINE 0xC0
 5408:                0E 15          ;           WHILE FAIL, Length: 0x0015
-540A:                   AE          ;             COMMAND 0xAE
+540A:                   AE          ;             ROUTINE 0xAE
 540B:                   14          ;             EXECUTE AND REVERSE STATUS
 540C:                   0B 10 03    ;             SWITCH, Length: 0x0010, Function to call: 0x03
-540F:                      40       ;               Phrase number: 0x40
+540F:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
 5410:                      3E       ;               ELSE go to: 0x544F
-5411:                         02 00 8A ;                 IS OWNED BY, A=0x8A, Object number: 0x00
-5414:                      41       ;               Phrase number: 0x41
+5411:                         02 00 8A ;                 IS OWNED BY, A=0x8A, obj=??00??
+5414:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
 5415:                      3E       ;               ELSE go to: 0x5454
-5416:                         02 00 8E ;                 IS OWNED BY, A=0x8E, Object number: 0x00
-5419:                      3F       ;               Phrase number: 0x3F
+5416:                         02 00 8E ;                 IS OWNED BY, A=0x8E, obj=??00??
+5419:                      3F       ;               Phrase 0x3F: "SAVE     *          *           *"
 541A:                      3E       ;               ELSE go to: 0x5459
-541B:                         02 00 9A ;                 IS OWNED BY, A=0x9A, Object number: 0x00
-541E:                   9E          ;             COMMAND 0x9E
+541B:                         02 00 9A ;                 IS OWNED BY, A=0x9A, obj=??00??
+541E:                   9E          ;             ROUTINE 0x9E
 
-541F: 8E 80 9C 00                   ; Room Number: 0x8E, Length: 0x009C, Data: 0x00
+541F: 8E 80 9C 00                   ; room=8E_8_KURABEL_SICK_BAY, Length: 0x009C, Data: 0x00
 ;
 5423:    03 77                      ;   Section DESCRIPTION, Length: 0x0077
 5425:       0D 75                   ;     WHILE PASS, Length: 0x0075
 5427:          04 05                ;       PRINT, Length: 0x0005
-;
-; KURABEL
-;
 5429:             34 88 AF 46 4C    ; 
+;
+;                 KURABEL
+;
 542E:          0E 09                ;       WHILE FAIL, Length: 0x0009
-5430:             C3                ;         COMMAND 0xC3
+5430:             C3                ;         ROUTINE 0xC3
 5431:             04 06             ;         PRINT, Length: 0x0006
-;
-; SICK BAY 
-;
 5433:                45 B8 C4 83 3B 4A ; 
-5439:          8B                   ;       COMMAND 0x8B
+;
+;                    SICK BAY 
+;
+5439:          8B                   ;       ROUTINE 0x8B
 543A:          04 60                ;       PRINT, Length: 0x0060
-;
-; YOU ARE IN A SMALL ROOM. THERE IS A RED TABLE AGAINST ONE WALL. ON THE OPPOSING WALL THERE IS THE NOW FAMILIAR RED AND BLUE BUTTON ARRANGEMENT. 
-;
 543C:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 39 17 FF 9F ; 
 544C:             82 17 2F 62 D5 15 7B 14 66 B1 7B 17 7F 4E 89 14 ; 
 545C:             D0 47 F3 B9 0F A0 F3 17 17 8D C0 16 82 17 51 5E ; 
@@ -243,78 +243,80 @@
 547C:             50 5E 6B A1 CF 65 43 7A 23 49 66 B1 90 14 04 58 ; 
 548C:             67 8E BF 14 49 C0 83 96 6B B3 B7 98 30 92 9B C1 ; 
 ;
+;                 YOU ARE IN A SMALL ROOM. THERE IS A RED TABLE AGAINST ONE
+;                 WALL. ON THE OPPOSING WALL THERE IS THE NOW FAMILIAR RED
+;                 AND BLUE BUTTON ARRANGEMENT.
+;
+;
 549C:    04 20                      ;   Section COMMANDS, Length: 0x0020
 549E:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-54A1:          12                   ;       Phrase number: 0x12
+54A1:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 54A2:          04                   ;       ELSE go to: 0x54A7
 54A3:             0E 02             ;         WHILE FAIL, Length: 0x0002
-54A5:                A0             ;           COMMAND 0xA0
-54A6:                A1             ;           COMMAND 0xA1
-54A7:          36                   ;       Phrase number: 0x36
+54A5:                A0             ;           ROUTINE 0xA0
+54A6:                A1             ;           ROUTINE 0xA1
+54A7:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 54A8:          15                   ;       ELSE go to: 0x54BE
 54A9:             0D 13             ;         WHILE PASS, Length: 0x0013
-54AB:                C0             ;           COMMAND 0xC0
+54AB:                C0             ;           ROUTINE 0xC0
 54AC:                0E 10          ;           WHILE FAIL, Length: 0x0010
-54AE:                   AE          ;             COMMAND 0xAE
+54AE:                   AE          ;             ROUTINE 0xAE
 54AF:                   14          ;             EXECUTE AND REVERSE STATUS
 54B0:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-54B3:                      40       ;               Phrase number: 0x40
+54B3:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
 54B4:                      3E       ;               ELSE go to: 0x54F3
-54B5:                         02 00 8C ;                 IS OWNED BY, A=0x8C, Object number: 0x00
-54B8:                      41       ;               Phrase number: 0x41
+54B5:                         02 00 8C ;                 IS OWNED BY, A=0x8C, obj=??00??
+54B8:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
 54B9:                      3E       ;               ELSE go to: 0x54F8
-54BA:                         02 00 8F ;                 IS OWNED BY, A=0x8F, Object number: 0x00
-54BD:                   9E          ;             COMMAND 0x9E
+54BA:                         02 00 8F ;                 IS OWNED BY, A=0x8F, obj=??00??
+54BD:                   9E          ;             ROUTINE 0x9E
 
-54BE: 8F 26 00                      ; Room Number: 0x8F, Length: 0x0026, Data: 0x00
+54BE: 8F 26 00                      ; room=8F_8_??8F??, Length: 0x0026, Data: 0x00
 ;
 54C1:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-54C3:       9C                      ;     COMMAND 0x9C
+54C3:       9C                      ;     ROUTINE 0x9C
 ;
 54C4:    04 20                      ;   Section COMMANDS, Length: 0x0020
 54C6:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-54C9:          12                   ;       Phrase number: 0x12
+54C9:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 54CA:          04                   ;       ELSE go to: 0x54CF
 54CB:             0E 02             ;         WHILE FAIL, Length: 0x0002
-54CD:                A0             ;           COMMAND 0xA0
-54CE:                A1             ;           COMMAND 0xA1
-54CF:          36                   ;       Phrase number: 0x36
+54CD:                A0             ;           ROUTINE 0xA0
+54CE:                A1             ;           ROUTINE 0xA1
+54CF:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 54D0:          15                   ;       ELSE go to: 0x54E6
 54D1:             0D 13             ;         WHILE PASS, Length: 0x0013
-54D3:                C0             ;           COMMAND 0xC0
+54D3:                C0             ;           ROUTINE 0xC0
 54D4:                0E 10          ;           WHILE FAIL, Length: 0x0010
-54D6:                   AE          ;             COMMAND 0xAE
+54D6:                   AE          ;             ROUTINE 0xAE
 54D7:                   14          ;             EXECUTE AND REVERSE STATUS
 54D8:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-54DB:                      40       ;               Phrase number: 0x40
+54DB:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
 54DC:                      3E       ;               ELSE go to: 0x551B
-54DD:                         02 00 8E ;                 IS OWNED BY, A=0x8E, Object number: 0x00
-54E0:                      41       ;               Phrase number: 0x41
+54DD:                         02 00 8E ;                 IS OWNED BY, A=0x8E, obj=??00??
+54E0:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
 54E1:                      3E       ;               ELSE go to: 0x5520
-54E2:                         02 00 90 ;                 IS OWNED BY, A=0x90, Object number: 0x00
-54E5:                   9E          ;             COMMAND 0x9E
+54E2:                         02 00 90 ;                 IS OWNED BY, A=0x90, obj=??00??
+54E5:                   9E          ;             ROUTINE 0x9E
 
-54E6: 90 81 10 00                   ; Room Number: 0x90, Length: 0x0110, Data: 0x00
+54E6: 90 81 10 00                   ; room=90_8_ENURGLE_POWER, Length: 0x0110, Data: 0x00
 ;
 54EA:    03 80 EA                   ;   Section DESCRIPTION, Length: 0x00EA
 54ED:       0D 80 E7                ;     WHILE PASS, Length: 0x00E7
 54F0:          04 05                ;       PRINT, Length: 0x0005
-;
-; ENURGLE
-;
 54F2:             9F 61 BE B1 45    ; 
+;
+;                 ENURGLE
+;
 54F7:          0E 07                ;       WHILE FAIL, Length: 0x0007
-54F9:             C3                ;         COMMAND 0xC3
+54F9:             C3                ;         ROUTINE 0xC3
 54FA:             04 04             ;         PRINT, Length: 0x0004
-;
-; POWER 
-;
 54FC:                89 A6 23 62    ; 
-5500:          8B                   ;       COMMAND 0x8B
+;
+;                    POWER 
+;
+5500:          8B                   ;       ROUTINE 0x8B
 5501:          04 80 D3             ;       PRINT, Length: 0x00D3
-;
-; YOU ARE IN A ROOM WITH A GENTLE VIOLET LIGHT EMANATING FROM THE CEILING. THERE IS A LARGE METAL PEDESTAL STANDING IN THE CENTER OF THE ROOM. THERE IS A TWO INCH SQUARE HOLE IN THE TOP OF THE PEDESTAL. ON THE WALL YOUR BACK INITIALLY FACED, ARE A RED BUTTON AND A BLUE BUTTON ARRANGED HORIZONTALLY FROM LEFT TO RIGHT.
-;
 5504:             C7 DE 94 14 4B 5E 83 96 39 17 DB 9F 56 D1 03 71 ; 
 5514:             77 15 C6 9A 58 5E BE 7A 73 62 89 8C 33 75 63 61 ; 
 5524:             D6 97 91 7A 5C 15 DB 9F 5F BE D7 14 43 7A CF 98 ; 
@@ -330,78 +332,83 @@
 55C4:             00 E5 4E BD FB 8E 79 68 4E 90 5E 60 89 17 33 17 ; 
 55D4:             2E 6D 2E          ; 
 ;
+;                 YOU ARE IN A ROOM WITH A GENTLE VIOLET LIGHT EMANATING FROM
+;                 THE CEILING. THERE IS A LARGE METAL PEDESTAL STANDING IN
+;                 THE CENTER OF THE ROOM. THERE IS A TWO INCH SQUARE HOLE IN
+;                 THE TOP OF THE PEDESTAL. ON THE WALL YOUR BACK INITIALLY
+;                 FACED, ARE A RED BUTTON AND A BLUE BUTTON ARRANGED
+;                 HORIZONTALLY FROM LEFT TO RIGHT.
+;
+;
 55D7:    04 20                      ;   Section COMMANDS, Length: 0x0020
 55D9:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-55DC:          12                   ;       Phrase number: 0x12
+55DC:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 55DD:          04                   ;       ELSE go to: 0x55E2
 55DE:             0E 02             ;         WHILE FAIL, Length: 0x0002
-55E0:                A0             ;           COMMAND 0xA0
-55E1:                A1             ;           COMMAND 0xA1
-55E2:          36                   ;       Phrase number: 0x36
+55E0:                A0             ;           ROUTINE 0xA0
+55E1:                A1             ;           ROUTINE 0xA1
+55E2:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 55E3:          15                   ;       ELSE go to: 0x55F9
 55E4:             0D 13             ;         WHILE PASS, Length: 0x0013
-55E6:                C0             ;           COMMAND 0xC0
+55E6:                C0             ;           ROUTINE 0xC0
 55E7:                0E 10          ;           WHILE FAIL, Length: 0x0010
-55E9:                   AE          ;             COMMAND 0xAE
+55E9:                   AE          ;             ROUTINE 0xAE
 55EA:                   14          ;             EXECUTE AND REVERSE STATUS
 55EB:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-55EE:                      40       ;               Phrase number: 0x40
+55EE:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
 55EF:                      3E       ;               ELSE go to: 0x562E
-55F0:                         02 00 8F ;                 IS OWNED BY, A=0x8F, Object number: 0x00
-55F3:                      41       ;               Phrase number: 0x41
+55F0:                         02 00 8F ;                 IS OWNED BY, A=0x8F, obj=??00??
+55F3:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
 55F4:                      3E       ;               ELSE go to: 0x5633
-55F5:                         02 00 91 ;                 IS OWNED BY, A=0x91, Object number: 0x00
-55F8:                   9E          ;             COMMAND 0x9E
+55F5:                         02 00 91 ;                 IS OWNED BY, A=0x91, obj=??00??
+55F8:                   9E          ;             ROUTINE 0x9E
 
-55F9: 91 26 00                      ; Room Number: 0x91, Length: 0x0026, Data: 0x00
+55F9: 91 26 00                      ; room=91_8_??91??, Length: 0x0026, Data: 0x00
 ;
 55FC:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-55FE:       9C                      ;     COMMAND 0x9C
+55FE:       9C                      ;     ROUTINE 0x9C
 ;
 55FF:    04 20                      ;   Section COMMANDS, Length: 0x0020
 5601:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-5604:          12                   ;       Phrase number: 0x12
+5604:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 5605:          04                   ;       ELSE go to: 0x560A
 5606:             0E 02             ;         WHILE FAIL, Length: 0x0002
-5608:                A0             ;           COMMAND 0xA0
-5609:                A1             ;           COMMAND 0xA1
-560A:          36                   ;       Phrase number: 0x36
+5608:                A0             ;           ROUTINE 0xA0
+5609:                A1             ;           ROUTINE 0xA1
+560A:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 560B:          15                   ;       ELSE go to: 0x5621
 560C:             0D 13             ;         WHILE PASS, Length: 0x0013
-560E:                C0             ;           COMMAND 0xC0
+560E:                C0             ;           ROUTINE 0xC0
 560F:                0E 10          ;           WHILE FAIL, Length: 0x0010
-5611:                   AE          ;             COMMAND 0xAE
+5611:                   AE          ;             ROUTINE 0xAE
 5612:                   14          ;             EXECUTE AND REVERSE STATUS
 5613:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-5616:                      40       ;               Phrase number: 0x40
+5616:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
 5617:                      3E       ;               ELSE go to: 0x5656
-5618:                         02 00 90 ;                 IS OWNED BY, A=0x90, Object number: 0x00
-561B:                      41       ;               Phrase number: 0x41
+5618:                         02 00 90 ;                 IS OWNED BY, A=0x90, obj=??00??
+561B:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
 561C:                      3E       ;               ELSE go to: 0x565B
-561D:                         02 00 92 ;                 IS OWNED BY, A=0x92, Object number: 0x00
-5620:                   9E          ;             COMMAND 0x9E
+561D:                         02 00 92 ;                 IS OWNED BY, A=0x92, obj=??00??
+5620:                   9E          ;             ROUTINE 0x9E
 
-5621: 92 81 2E 00                   ; Room Number: 0x92, Length: 0x012E, Data: 0x00
+5621: 92 81 2E 00                   ; room=92_8_MOTOVATOM_ENGINES, Length: 0x012E, Data: 0x00
 ;
 5625:    03 80 AB                   ;   Section DESCRIPTION, Length: 0x00AB
 5628:       0D 80 A8                ;     WHILE PASS, Length: 0x00A8
 562B:          04 06                ;       PRINT, Length: 0x0006
-;
-; MOTOVATOM
-;
 562D:             C6 93 4B A1 7F BF ; 
+;
+;                 MOTOVATOM
+;
 5633:          0E 08                ;       WHILE FAIL, Length: 0x0008
-5635:             C3                ;         COMMAND 0xC3
+5635:             C3                ;         ROUTINE 0xC3
 5636:             04 05             ;         PRINT, Length: 0x0005
-;
-; ENGINES
-;
 5638:                91 61 8F 7A 53 ; 
-563D:          8B                   ;       COMMAND 0x8B
+;
+;                    ENGINES
+;
+563D:          8B                   ;       ROUTINE 0x8B
 563E:          04 80 92             ;       PRINT, Length: 0x0092
-;
-; YOU ARE IN A LARGE ROOM WITH SEVERAL MASSIVE PIECES OF MACHINERY. LARGE SILVER BARS CONNECT THEM TOGETHER. THERE IS A FAINT BLUE GLOW EMANATING FROM THE MACHINES. ON THE WALL BEHIND YOU, THERE IS A SOLITARY RED BUTTON. 
-;
 5641:             C7 DE 94 14 4B 5E 83 96 3B 16 B7 B1 39 17 DB 9F ; 
 5651:             56 D1 15 71 CF 62 CE B0 63 16 DB B9 5B CA 87 A5 ; 
 5661:             B5 53 B8 16 63 16 23 54 74 98 DB E0 54 8B 9B 6C ; 
@@ -413,112 +420,115 @@
 56C1:             D5 15 7B 14 3E B9 7B 7B 7B B4 66 B1 BF 14 49 C0 ; 
 56D1:             1B 9C             ; 
 ;
+;                 YOU ARE IN A LARGE ROOM WITH SEVERAL MASSIVE PIECES OF
+;                 MACHINERY. LARGE SILVER BARS CONNECT THEM TOGETHER. THERE
+;                 IS A FAINT BLUE GLOW EMANATING FROM THE MACHINES. ON THE
+;                 WALL BEHIND YOU, THERE IS A SOLITARY RED BUTTON.
+;
+;
 56D3:    04 7D                      ;   Section COMMANDS, Length: 0x007D
 56D5:       0E 7B                   ;     WHILE FAIL, Length: 0x007B
 56D7:          0D 61                ;       WHILE PASS, Length: 0x0061
 56D9:             0E 5E             ;         WHILE FAIL, Length: 0x005E
 56DB:                0D 1A          ;           WHILE PASS, Length: 0x001A
-56DD:                   03 01 84    ;             IS LOCATED, Room number: 0x01, Object number: 0x84
+56DD:                   03 01 84    ;             IS LOCATED, room=01_PLAYER, obj=??84??
 56E0:                   04 11       ;             PRINT, Length: 0x0011
-;
-; RADIATION HAS KILLED YOU!
-;
 56E2:                      C6 B0 96 78 C0 7A 9B 15 CD B5 46 7A F3 5F C7 DE ; 
 56F2:                      21       ; 
-56F3:                   1C 01       ;             SET VAR OBJECT, Object number: 0x01
-56F5:                   1D 4B       ;             ATTACK VAR, Points: 0x4B
+;
+;                          RADIATION HAS KILLED YOU!
+;
+56F3:                   1C 01       ;             SET VAR OBJECT, obj=01_YOU
+56F5:                   1D 4B       ;             ATTACK VAR, Points: 75
 56F7:                0D 1E          ;           WHILE PASS, Length: 0x001E
-56F9:                   03 01 83    ;             IS LOCATED, Room number: 0x01, Object number: 0x83
+56F9:                   03 01 83    ;             IS LOCATED, room=01_PLAYER, obj=??83??
 56FC:                   04 12       ;             PRINT, Length: 0x0012
-;
-; NOW YOU REALLY FEEL AWFUL! 
-;
 56FE:                      09 9A 51 18 54 C2 8E 5F FB 8E 67 66 03 8A DF D0 ; 
 570E:                      AB 89    ; 
-5710:                   1C 01       ;             SET VAR OBJECT, Object number: 0x01
-5712:                   1D 0A       ;             ATTACK VAR, Points: 0x0A
-5714:                   17 84 01    ;             MOVE TO, Object number: 0x84, Destination room: 0x01
+;
+;                          NOW YOU REALLY FEEL AWFUL! 
+;
+5710:                   1C 01       ;             SET VAR OBJECT, obj=01_YOU
+5712:                   1D 0A       ;             ATTACK VAR, Points: 10
+5714:                   17 84 01    ;             MOVE TO, obj=??84??, room=01_PLAYER
 5717:                0D 20          ;           WHILE PASS, Length: 0x0020
 5719:                   04 17       ;             PRINT, Length: 0x0017
-;
-; YOU ARE FEELING SOMEWHAT NAUSEOUS.
-;
 571B:                      C7 DE 94 14 48 5E 2E 60 91 7A 61 17 39 92 56 72 ; 
 572B:                      8B 16 57 C6 35 A1 2E ; 
-5732:                   17 83 01    ;             MOVE TO, Object number: 0x83, Destination room: 0x01
-5735:                   1C 01       ;             SET VAR OBJECT, Object number: 0x01
-5737:                   1D 0A       ;             ATTACK VAR, Points: 0x0A
+;
+;                          YOU ARE FEELING SOMEWHAT NAUSEOUS.
+;
+5732:                   17 83 01    ;             MOVE TO, obj=??83??, room=01_PLAYER
+5735:                   1C 01       ;             SET VAR OBJECT, obj=01_YOU
+5737:                   1D 0A       ;             ATTACK VAR, Points: 10
 5739:             0C                ;         FAIL
 573A:          0B 16 0A             ;       SWITCH, Length: 0x0016, Function to call: 0x0A
-573D:             12                ;         Phrase number: 0x12
+573D:             12                ;         Phrase 0x12: "PULL     u.......   *           *"
 573E:             01                ;         ELSE go to: 0x5740
-573F:                A0             ;           COMMAND 0xA0
-5740:             36                ;         Phrase number: 0x36
+573F:                A0             ;           ROUTINE 0xA0
+5740:             36                ;         Phrase 0x36: "ENTER    *          *           *"
 5741:             10                ;         ELSE go to: 0x5752
 5742:                0D 0E          ;           WHILE PASS, Length: 0x000E
-5744:                   C0          ;             COMMAND 0xC0
+5744:                   C0          ;             ROUTINE 0xC0
 5745:                   0E 0B       ;             WHILE FAIL, Length: 0x000B
-5747:                      AE       ;               COMMAND 0xAE
+5747:                      AE       ;               ROUTINE 0xAE
 5748:                      14       ;               EXECUTE AND REVERSE STATUS
 5749:                      0B 06 03 ;               SWITCH, Length: 0x0006, Function to call: 0x03
-574C:                         40    ;                 Phrase number: 0x40
+574C:                         40    ;                 Phrase 0x40: "CLOSE    ....A...   *           *"
 574D:                         3E    ;                 ELSE go to: 0x578C
-574E:                            02 00 91 ;                   IS OWNED BY, A=0x91, Object number: 0x00
-5751:                      9E       ;               COMMAND 0x9E
+574E:                            02 00 91 ;                   IS OWNED BY, A=0x91, obj=??00??
+5751:                      9E       ;               ROUTINE 0x9E
 
-5752: 9A 2C 00                      ; Room Number: 0x9A, Length: 0x002C, Data: 0x00
+5752: 9A 2C 00                      ; room=9A_8_??9A??, Length: 0x002C, Data: 0x00
 ;
 5755:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-5757:       B0                      ;     COMMAND 0xB0
+5757:       B0                      ;     ROUTINE 0xB0
 ;
 5758:    04 26                      ;   Section COMMANDS, Length: 0x0026
 575A:       0B 24 0A                ;     SWITCH, Length: 0x0024, Function to call: 0x0A
-575D:          12                   ;       Phrase number: 0x12
+575D:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 575E:          05                   ;       ELSE go to: 0x5764
 575F:             0E 03             ;         WHILE FAIL, Length: 0x0003
-5761:                A0             ;           COMMAND 0xA0
-5762:                A1             ;           COMMAND 0xA1
-5763:                9F             ;           COMMAND 0x9F
-5764:          36                   ;       Phrase number: 0x36
+5761:                A0             ;           ROUTINE 0xA0
+5762:                A1             ;           ROUTINE 0xA1
+5763:                9F             ;           ROUTINE 0x9F
+5764:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 5765:          1A                   ;       ELSE go to: 0x5780
 5766:             0D 18             ;         WHILE PASS, Length: 0x0018
-5768:                C0             ;           COMMAND 0xC0
+5768:                C0             ;           ROUTINE 0xC0
 5769:                0E 15          ;           WHILE FAIL, Length: 0x0015
-576B:                   AE          ;             COMMAND 0xAE
+576B:                   AE          ;             ROUTINE 0xAE
 576C:                   14          ;             EXECUTE AND REVERSE STATUS
 576D:                   0B 10 03    ;             SWITCH, Length: 0x0010, Function to call: 0x03
-5770:                      40       ;               Phrase number: 0x40
+5770:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
 5771:                      3E       ;               ELSE go to: 0x57B0
-5772:                         02 00 9B ;                 IS OWNED BY, A=0x9B, Object number: 0x00
-5775:                      41       ;               Phrase number: 0x41
+5772:                         02 00 9B ;                 IS OWNED BY, A=0x9B, obj=??00??
+5775:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
 5776:                      3E       ;               ELSE go to: 0x57B5
-5777:                         02 00 9C ;                 IS OWNED BY, A=0x9C, Object number: 0x00
-577A:                      3F       ;               Phrase number: 0x3F
+5777:                         02 00 9C ;                 IS OWNED BY, A=0x9C, obj=??00??
+577A:                      3F       ;               Phrase 0x3F: "SAVE     *          *           *"
 577B:                      3E       ;               ELSE go to: 0x57BA
-577C:                         02 00 8C ;                 IS OWNED BY, A=0x8C, Object number: 0x00
-577F:                   9E          ;             COMMAND 0x9E
+577C:                         02 00 8C ;                 IS OWNED BY, A=0x8C, obj=??00??
+577F:                   9E          ;             ROUTINE 0x9E
 
-5780: 9B 80 DA 00                   ; Room Number: 0x9B, Length: 0x00DA, Data: 0x00
+5780: 9B 80 DA 00                   ; room=9B_8_PLASTOTRO_GUN, Length: 0x00DA, Data: 0x00
 ;
 5784:    03 80 BC                   ;   Section DESCRIPTION, Length: 0x00BC
 5787:       0D 80 B9                ;     WHILE PASS, Length: 0x00B9
 578A:          04 06                ;       PRINT, Length: 0x0006
-;
-; PLASTOTRO
-;
 578C:             FB A5 09 BA F9 BF ; 
+;
+;                 PLASTOTRO
+;
 5792:          0E 05                ;       WHILE FAIL, Length: 0x0005
-5794:             C3                ;         COMMAND 0xC3
+5794:             C3                ;         ROUTINE 0xC3
 5795:             04 02             ;         PRINT, Length: 0x0002
-;
-; GUN
-;
 5797:                30 6F          ; 
-5799:          8B                   ;       COMMAND 0x8B
+;
+;                    GUN
+;
+5799:          8B                   ;       ROUTINE 0x8B
 579A:          04 80 A6             ;       PRINT, Length: 0x00A6
-;
-; YOU ARE IN A SMALL DOME SHAPED ROOM. IN THE CENTER OF THE ROOM IS A LARGE, STRANGELY FAMILIAR MACHINE WITH SEVERAL SILVER BARS PROJECTING FROM IT, INTO THE WALLS. A CURSORY EXAMINATION OF THE ROOM REVEALS A SOLITARY BLUE BUTTON ON ONE OF THE WALLS. 
-;
 579D:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 09 15 1B 92 ; 
 57AD:             1B B8 E6 A4 39 17 FF 9F D0 15 82 17 45 5E 9E 61 ; 
 57BD:             23 62 C3 9E 5F BE 39 17 DB 9F 4B 7B 4E 45 31 49 ; 
@@ -531,45 +541,49 @@
 582D:             8F 4E 44 5E 8E C6 03 A0 03 A0 0F A0 B8 16 82 17 ; 
 583D:             59 5E 46 48 5B BB ; 
 ;
+;                 YOU ARE IN A SMALL DOME SHAPED ROOM. IN THE CENTER OF THE
+;                 ROOM IS A LARGE, STRANGELY FAMILIAR MACHINE WITH SEVERAL
+;                 SILVER BARS PROJECTING FROM IT, INTO THE WALLS. A CURSORY
+;                 EXAMINATION OF THE ROOM REVEALS A SOLITARY BLUE BUTTON ON
+;                 ONE OF THE WALLS.
+;
+;
 5843:    04 18                      ;   Section COMMANDS, Length: 0x0018
 5845:       0B 16 0A                ;     SWITCH, Length: 0x0016, Function to call: 0x0A
-5848:          12                   ;       Phrase number: 0x12
+5848:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 5849:          01                   ;       ELSE go to: 0x584B
-584A:             A1                ;         COMMAND 0xA1
-584B:          36                   ;       Phrase number: 0x36
+584A:             A1                ;         ROUTINE 0xA1
+584B:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 584C:          10                   ;       ELSE go to: 0x585D
 584D:             0D 0E             ;         WHILE PASS, Length: 0x000E
-584F:                C0             ;           COMMAND 0xC0
+584F:                C0             ;           ROUTINE 0xC0
 5850:                0E 0B          ;           WHILE FAIL, Length: 0x000B
-5852:                   AE          ;             COMMAND 0xAE
+5852:                   AE          ;             ROUTINE 0xAE
 5853:                   14          ;             EXECUTE AND REVERSE STATUS
 5854:                   0B 06 03    ;             SWITCH, Length: 0x0006, Function to call: 0x03
-5857:                      41       ;               Phrase number: 0x41
+5857:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
 5858:                      3E       ;               ELSE go to: 0x5897
-5859:                         02 00 9A ;                 IS OWNED BY, A=0x9A, Object number: 0x00
-585C:                   9E          ;             COMMAND 0x9E
+5859:                         02 00 9A ;                 IS OWNED BY, A=0x9A, obj=??00??
+585C:                   9E          ;             ROUTINE 0x9E
 
-585D: 9C 80 E5 00                   ; Room Number: 0x9C, Length: 0x00E5, Data: 0x00
+585D: 9C 80 E5 00                   ; room=9C_8_ARMSMITAN_WEAPONRY, Length: 0x00E5, Data: 0x00
 ;
 5861:    03 80 BF                   ;   Section DESCRIPTION, Length: 0x00BF
 5864:       0D 80 BC                ;     WHILE PASS, Length: 0x00BC
 5867:          04 06                ;       PRINT, Length: 0x0006
-;
-; ARMSMITAN
-;
 5869:             37 49 EB B8 50 BD ; 
+;
+;                 ARMSMITAN
+;
 586F:          0E 09                ;       WHILE FAIL, Length: 0x0009
-5871:             C3                ;         COMMAND 0xC3
+5871:             C3                ;         ROUTINE 0xC3
 5872:             04 06             ;         PRINT, Length: 0x0006
-;
-; WEAPONRY 
-;
 5874:                A3 D0 80 A6 7B B4 ; 
-587A:          8B                   ;       COMMAND 0x8B
+;
+;                    WEAPONRY 
+;
+587A:          8B                   ;       ROUTINE 0x8B
 587B:          04 80 A5             ;       PRINT, Length: 0x00A5
-;
-; YOU ARE STANDING IN A LARGE ROOM, IN THE CENTER OF WHICH IS A CONSOLE AND CHAIR. ONCE AGAIN YOU DISCOVER THE NOW FAMILIAR TELEPORTAL BUTTONS ON THE WALL. ONE IS RED AND THE OTHER IS BLUE. FACING THE CHAIR AND THE CONSOLE IS A LARGE VIEWING SCREEN.
-;
 587E:             C7 DE 94 14 55 5E 50 BD 90 5A CB 6A 83 96 3B 16 ; 
 588E:             B7 B1 39 17 FE 9F D0 15 82 17 45 5E 9E 61 23 62 ; 
 589E:             C3 9E 23 D1 13 54 4B 7B 45 45 1D A0 BF 9F 90 14 ; 
@@ -582,81 +596,89 @@
 590E:             3E B9 4B 5E C3 B5 3B 16 B7 B1 D3 17 FB 62 AB 98 ; 
 591E:             64 B7 30 60 2E    ; 
 ;
+;                 YOU ARE STANDING IN A LARGE ROOM, IN THE CENTER OF WHICH IS
+;                 A CONSOLE AND CHAIR. ONCE AGAIN YOU DISCOVER THE NOW
+;                 FAMILIAR TELEPORTAL BUTTONS ON THE WALL. ONE IS RED AND THE
+;                 OTHER IS BLUE. FACING THE CHAIR AND THE CONSOLE IS A LARGE
+;                 VIEWING SCREEN.
+;
+;
 5923:    04 20                      ;   Section COMMANDS, Length: 0x0020
 5925:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-5928:          12                   ;       Phrase number: 0x12
+5928:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 5929:          04                   ;       ELSE go to: 0x592E
 592A:             0E 02             ;         WHILE FAIL, Length: 0x0002
-592C:                A0             ;           COMMAND 0xA0
-592D:                A1             ;           COMMAND 0xA1
-592E:          36                   ;       Phrase number: 0x36
+592C:                A0             ;           ROUTINE 0xA0
+592D:                A1             ;           ROUTINE 0xA1
+592E:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 592F:          15                   ;       ELSE go to: 0x5945
 5930:             0D 13             ;         WHILE PASS, Length: 0x0013
-5932:                C0             ;           COMMAND 0xC0
+5932:                C0             ;           ROUTINE 0xC0
 5933:                0E 10          ;           WHILE FAIL, Length: 0x0010
-5935:                   AE          ;             COMMAND 0xAE
+5935:                   AE          ;             ROUTINE 0xAE
 5936:                   14          ;             EXECUTE AND REVERSE STATUS
 5937:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-593A:                      40       ;               Phrase number: 0x40
+593A:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
 593B:                      3E       ;               ELSE go to: 0x597A
-593C:                         02 00 9A ;                 IS OWNED BY, A=0x9A, Object number: 0x00
-593F:                      41       ;               Phrase number: 0x41
+593C:                         02 00 9A ;                 IS OWNED BY, A=0x9A, obj=??00??
+593F:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
 5940:                      3E       ;               ELSE go to: 0x597F
-5941:                         02 00 9D ;                 IS OWNED BY, A=0x9D, Object number: 0x00
-5944:                   9E          ;             COMMAND 0x9E
+5941:                         02 00 9D ;                 IS OWNED BY, A=0x9D, obj=??00??
+5944:                   9E          ;             ROUTINE 0x9E
 
-5945: 9D 26 00                      ; Room Number: 0x9D, Length: 0x0026, Data: 0x00
+5945: 9D 26 00                      ; room=9D_8_??9D??, Length: 0x0026, Data: 0x00
 ;
 5948:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-594A:       9C                      ;     COMMAND 0x9C
+594A:       9C                      ;     ROUTINE 0x9C
 ;
 594B:    04 20                      ;   Section COMMANDS, Length: 0x0020
 594D:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-5950:          12                   ;       Phrase number: 0x12
+5950:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 5951:          04                   ;       ELSE go to: 0x5956
 5952:             0E 02             ;         WHILE FAIL, Length: 0x0002
-5954:                A0             ;           COMMAND 0xA0
-5955:                A1             ;           COMMAND 0xA1
-5956:          36                   ;       Phrase number: 0x36
+5954:                A0             ;           ROUTINE 0xA0
+5955:                A1             ;           ROUTINE 0xA1
+5956:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 5957:          15                   ;       ELSE go to: 0x596D
 5958:             0D 13             ;         WHILE PASS, Length: 0x0013
-595A:                C0             ;           COMMAND 0xC0
+595A:                C0             ;           ROUTINE 0xC0
 595B:                0E 10          ;           WHILE FAIL, Length: 0x0010
-595D:                   AE          ;             COMMAND 0xAE
+595D:                   AE          ;             ROUTINE 0xAE
 595E:                   14          ;             EXECUTE AND REVERSE STATUS
 595F:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-5962:                      40       ;               Phrase number: 0x40
+5962:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
 5963:                      3E       ;               ELSE go to: 0x59A2
-5964:                         02 00 9C ;                 IS OWNED BY, A=0x9C, Object number: 0x00
-5967:                      41       ;               Phrase number: 0x41
+5964:                         02 00 9C ;                 IS OWNED BY, A=0x9C, obj=??00??
+5967:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
 5968:                      3E       ;               ELSE go to: 0x59A7
-5969:                         02 00 9E ;                 IS OWNED BY, A=0x9E, Object number: 0x00
-596C:                   9E          ;             COMMAND 0x9E
+5969:                         02 00 9E ;                 IS OWNED BY, A=0x9E, obj=??00??
+596C:                   9E          ;             ROUTINE 0x9E
 
-596D: 9E 1E 00                      ; Room Number: 0x9E, Length: 0x001E, Data: 0x00
+596D: 9E 1E 00                      ; room=9E_8_??9E??, Length: 0x001E, Data: 0x00
 ;
 5970:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-5972:       9D                      ;     COMMAND 0x9D
+5972:       9D                      ;     ROUTINE 0x9D
 ;
 5973:    04 18                      ;   Section COMMANDS, Length: 0x0018
 5975:       0B 16 0A                ;     SWITCH, Length: 0x0016, Function to call: 0x0A
-5978:          12                   ;       Phrase number: 0x12
+5978:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
 5979:          01                   ;       ELSE go to: 0x597B
-597A:             9F                ;         COMMAND 0x9F
-597B:          36                   ;       Phrase number: 0x36
+597A:             9F                ;         ROUTINE 0x9F
+597B:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 597C:          10                   ;       ELSE go to: 0x598D
 597D:             0D 0E             ;         WHILE PASS, Length: 0x000E
-597F:                C0             ;           COMMAND 0xC0
+597F:                C0             ;           ROUTINE 0xC0
 5980:                0E 0B          ;           WHILE FAIL, Length: 0x000B
-5982:                   AE          ;             COMMAND 0xAE
+5982:                   AE          ;             ROUTINE 0xAE
 5983:                   14          ;             EXECUTE AND REVERSE STATUS
 5984:                   0B 06 03    ;             SWITCH, Length: 0x0006, Function to call: 0x03
-5987:                      3F       ;               Phrase number: 0x3F
+5987:                      3F       ;               Phrase 0x3F: "SAVE     *          *           *"
 5988:                      3E       ;               ELSE go to: 0x59C7
-5989:                         02 00 9D ;                 IS OWNED BY, A=0x9D, Object number: 0x00
-598C:                   9E          ;             COMMAND 0x9E
+5989:                         02 00 9D ;                 IS OWNED BY, A=0x9D, obj=??00??
+598C:                   9E          ;             ROUTINE 0x9E
+```
 
-
+```code
 598D: D0 15 82 17 46 5E 57 62 B3 B3 47 B9 53 BE C3 9E ; ....F^Wb..G.S...
 599D: 5F BE 89 17 27 D2 04 22 0B 20 0A 01 02 00 9B 02 ; _...'..". ......
 59AD: 06 0D 04 30 B3 2F 03 03 09 0D 07 30 E2 17 9D 01 ; ...0./.....0....

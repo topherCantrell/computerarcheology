@@ -2,9 +2,6 @@ import script_cursor
 import language
 import unpack
 
-with open('content/trs80/xenos/roms/xenos.bin', 'rb') as f:
-    RAW = f.read()
-
 SECTION_DESC = {
     0x00: '??UNKNOWN_00??',
     0x01: '??UNKNOWN_01??',
@@ -21,7 +18,14 @@ SECTION_DESC = {
     0x5C: '??UNKNOWN_5C??',
     0x5E: '??UNKNOWN_5E??',
     0x66: '??UNKNOWN_66??',
-    0x6F: '??UNKNOWN_6F??',
+    0x6F: '??UNKNOWN_6F??',    
+}
+
+OBJECT_NAME = {
+    0x01: "YOU",
+    0x77: "HANDGRIP",
+    0x92: "SCORE",    
+    0x9D: 'THIRST_TRACKER',
 }
 
 def decode_section_09(cursor, end_of_sec):
@@ -30,8 +34,8 @@ def decode_section_09(cursor, end_of_sec):
     hp_current = cursor.get_byte(line)
     cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Hit Points: {hp_current}/{hp_max}',2)
 
-def decode_section_script(cursor, end_of_sec):
-    cursor.decode_command_list(end_of_sec, 2)
+def decode_section_script(cursor, end_of_sec, disk_number):
+    cursor.decode_command_list(end_of_sec, disk_number, 2)
 
 def decode_section_02(cursor, end_of_sec):
     dlen = end_of_sec - cursor.pos
@@ -85,7 +89,9 @@ def decode_object(cursor):
         if section_num == 0x02:
             decode_section_02(cursor, end_of_sec)
         elif section_num in [0x03, 0x06, 0x07, 0x08, 0x0A]:
-            decode_section_script(cursor, end_of_sec)
+            # TODO Some weirdness going on with the objects. Some reference room numbers that
+            # could be in multiple disk sections.
+            decode_section_script(cursor, end_of_sec, 1)
         elif section_num == 0x09:
             decode_section_09(cursor, end_of_sec)
         else:
@@ -94,27 +100,29 @@ def decode_object(cursor):
     if cursor.pos > end_pos:
         raise Exception(f'Overshot end of object, stopped at {cursor.pos:04X}, expected end at {end_pos:04X}')
 
-cursor = script_cursor.ScriptCursor(RAW, 0x5D00)
-cursor.set_pos(0x887A)
+if __name__ == '__main__':
+    with open('d:/git/computerarcheology/content/trs80/xenos/roms/xenos.bin', 'rb') as f:
+        RAW = f.read()
 
-origin, line = cursor.start_new_line()
+    cursor = script_cursor.ScriptCursor(RAW, 0x5D00)
+    cursor.set_pos(0x887A)
 
-lid = cursor.get_byte(line)
-mlength = cursor.decode_length(line)
-end_of_objects = mlength + cursor.pos
+    origin, line = cursor.start_new_line()
 
-# List header
+    lid = cursor.get_byte(line)
+    mlength = cursor.decode_length(line)
+    end_of_objects = mlength + cursor.pos
 
-print(f'{origin:04X}: {cursor.build_data_line(line)} ; ID: 0x{lid:02X}, Length: 0x{mlength:04X}')
+    # List header
 
-objnum = 0
-while cursor.pos < end_of_objects:
-    objnum += 1    
-    print(f'; Object {objnum:02X}')
-    decode_object(cursor)
-    print()
+    print(f'{origin:04X}: {cursor.build_data_line(line)} ; ID: 0x{lid:02X}, Length: 0x{mlength:04X}')
 
-if cursor.pos > end_of_objects:
-    raise Exception(f'Overshot {end_of_objects:04X}, stopped at {cursor.pos:04X}')
+    objnum = 0
+    while cursor.pos < end_of_objects:
+        objnum += 1    
+        print(f'; Object {objnum:02X}')
+        decode_object(cursor)
+        print()
 
-
+    if cursor.pos > end_of_objects:
+        raise Exception(f'Overshot {end_of_objects:04X}, stopped at {cursor.pos:04X}')

@@ -1,5 +1,5 @@
 
-with open("content/trs80/xenos/Code.md", "r") as f:
+with open("d:/git/computerarcheology/content/trs80/xenos/Code.md", "r") as f:
 
     PHRASES = {
     }

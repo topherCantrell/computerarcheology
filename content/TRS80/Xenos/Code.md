@@ -41,7 +41,7 @@ Start:
 5D2E: CD 99 62        CALL    $6299               ; {code.GetKey} Wait for a key to start the game
 5D31: 97              SUB     A                   
 5D32: 21 66 72        LD      HL,$7266            ; Initialize ...
-5D35: CD 57 63        CALL    $6357               ; {code.ExecuteCommand} ... the game
+5D35: CD 57 63        CALL    $6357               ; {code.ExecuteCommand} ... the game (this loads SECTION1.DAT)
 
 GameLoop:
 5D38: 31 9A BF        LD      SP,$BF9A            ; Reset the stack
@@ -973,19 +973,19 @@ COM_19_move_ACTIVE:
 6411: C9              RET                         
 
 COM_37__:
-6412: 06 01           LD      B,$01               
-6414: E5              PUSH    HL                  
-6415: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-6418: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-641B: 7E              LD      A,(HL)              
-641C: E1              POP     HL                  
+6412: 06 01           LD      B,$01               ; Player object number
+6414: E5              PUSH    HL                  ; Hold
+6415: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex} Get the player object
+6418: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Start of the data
+641B: 7E              LD      A,(HL)              ; Player's room number
+641C: E1              POP     HL                  ; Restore
 641D: A7              AND     A                   
 641E: F8              RET     M                   
 641F: 47              LD      B,A                 
 6420: E5              PUSH    HL                  
-6421: 32 0B 72        LD      ($720B),A           ; {}
+6421: 32 0B 72        LD      ($720B),A           ; {} ?? Object the player is in?
 6424: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-6427: 22 0C 72        LD      ($720C),HL          ; {}
+6427: 22 0C 72        LD      ($720C),HL          ; {} ?? Object the player is in?
 642A: E1              POP     HL                  
 642B: 97              SUB     A                   
 
@@ -1081,9 +1081,9 @@ COM_21_execute_phrase:
 64C0: C9              RET                         
 
 64C1: 3A 1E 72        LD      A,($721E)           ; {}
-64C4: FE 38           CP      $38                 
+64C4: FE 38           CP      $38                 ; ?? Object 38 ??
 64C6: CA CC 64        JP      Z,$64CC             ; {}
-64C9: FE 01           CP      $01                 
+64C9: FE 01           CP      $01                 ; ?? Object 1 is the player ??
 64CB: C0              RET     NZ                  
 64CC: 06 01           LD      B,$01               
 64CE: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
@@ -1097,11 +1097,11 @@ COM_21_execute_phrase:
 64E1: 23              INC     HL                  
 64E2: 23              INC     HL                  
 64E3: 23              INC     HL                  
-64E4: 06 02           LD      B,$02               
-64E6: CD AD 61        CALL    $61AD               ; {}
-64E9: D2 F6 64        JP      NC,$64F6            ; {}
-64EC: 23              INC     HL                  
-64ED: CD 6F 70        CALL    $706F               ; {code.PrintPackedAutoWrap}
+64E4: 06 02           LD      B,$02               ; Find field number 2 ...
+64E6: CD AD 61        CALL    $61AD               ; {} ... the object short name
+64E9: D2 F6 64        JP      NC,$64F6            ; {} Skip this object if it has no short name
+64EC: 23              INC     HL                  ; Skip to the length
+64ED: CD 6F 70        CALL    $706F               ; {code.PrintPackedAutoWrap} Print the object's short name
 64F0: 21 7B 65        LD      HL,$657B            
 64F3: CD 57 63        CALL    $6357               ; {code.ExecuteCommand}
 64F6: 2A 22 72        LD      HL,($7222)          ; {code.currentRoomData}
@@ -1448,11 +1448,11 @@ COM_2C__:
 67BC: 97              SUB     A                   
 67BD: C9              RET                         
 
-COM_30__:
-67BE: 7E              LD      A,(HL)              
-67BF: 23              INC     HL                  
-67C0: 32 21 72        LD      ($7221),A           ; {code.currentRoom}
-67C3: 97              SUB     A                   
+COM_30_set_current_room:
+67BE: 7E              LD      A,(HL)              ; Value from the script
+67BF: 23              INC     HL                  ; Advance the script pointer
+67C0: 32 21 72        LD      ($7221),A           ; {code.currentRoom} Set the current room
+67C3: 97              SUB     A                   ; PASS
 67C4: C9              RET                         
 
 COM_02__:
@@ -1508,7 +1508,7 @@ COM_07__:
 6809: 32 F0 71        LD      ($71F0),A           ; {code.stopAtPeriod}
 680C: C9              RET                         
 
-COM_06__:
+COM_06_print_inventory:
 680D: E5              PUSH    HL                  ; Hold
 680E: 3E 0D           LD      A,$0D               ; Print a ...
 6810: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces} ... line feed
@@ -1539,17 +1539,17 @@ COM_06__:
 6846: E6 20           AND     $20                 
 6848: CA 78 68        JP      Z,$6878             ; {}
 684B: 23              INC     HL                  
-684C: 06 02           LD      B,$02               
-684E: CD AD 61        CALL    $61AD               ; {}
-6851: D2 78 68        JP      NC,$6878            ; {}
-6854: 23              INC     HL                  
+684C: 06 02           LD      B,$02               ; Get field 2 ...
+684E: CD AD 61        CALL    $61AD               ; {} ... the short name
+6851: D2 78 68        JP      NC,$6878            ; {} Skip object if it has no short name
+6854: 23              INC     HL                  ; Bump to length
 6855: 22 F3 71        LD      ($71F3),HL          ; {}
 6858: D5              PUSH    DE                  ; Hold
 6859: 3E 41           LD      A,$41               ; Print ...
 685B: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces} ... "A"
 685E: 3E 20           LD      A,$20               ; Print ...
 6860: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces} ... space
-6863: CD 66 70        CALL    $7066               ; {code.PrintPackedAndLF}
+6863: CD 66 70        CALL    $7066               ; {code.PrintPackedAndLF} Print the object short name
 6866: D1              POP     DE                  ; Restore
 6867: CD B2 65        CALL    $65B2               ; {}
 686A: 3A FD 66        LD      A,($66FD)           ; {}
@@ -1615,11 +1615,11 @@ COM_0A__:
 68C4: C9              RET                         
 
 COM_0F__:
-68C5: E5              PUSH    HL                  
-68C6: 06 01           LD      B,$01               
-68C8: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-68CB: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-68CE: 4E              LD      C,(HL)              
+68C5: E5              PUSH    HL                  ; Hold
+68C6: 06 01           LD      B,$01               ; Look up ...
+68C8: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex} ... the player object
+68CB: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Find end of player object
+68CE: 4E              LD      C,(HL)              ; Player's room number
 68CF: 2A 0C 72        LD      HL,($720C)          ; {}
 68D2: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 68D5: 79              LD      A,C                 
@@ -1631,6 +1631,7 @@ COM_0F__:
 68DF: E1              POP     HL                  
 68E0: F6 01           OR      $01                 
 68E2: C9              RET                         
+;
 68E3: 3A 1E 72        LD      A,($721E)           ; {}
 68E6: 77              LD      (HL),A              
 68E7: 23              INC     HL                  
@@ -1802,7 +1803,9 @@ COM_2A__:
 ; File Control Block: https://www.trs-80.com/sub-reference-dos-trsdos-13-internals.htm#FCB
 
 COM_2F_load_disk_section:
-; Loads the section from the disk TODO
+; Loads the section from the disk. This command aborts the current script and returns to the
+; top of the game loop for the next user input. This makes since as the new script is
+; overwriting the old.
 69FE: 7E              LD      A,(HL)              ; Get the section number (1-9)
 69FF: C6 30           ADD     $30                 ; Now an ASCII digit for filename
 6A01: 32 EC 6A        LD      ($6AEC),A           ; {code.sectionLetter} Build the filename
@@ -1999,6 +2002,7 @@ COM_17__: ; ?? move to
 6C87: B0              OR      B                   
 6C88: 77              LD      (HL),A              
 6C89: C3 90 6C        JP      $6C90               ; {}
+;
 6C8C: 7E              LD      A,(HL)              
 6C8D: E6 F0           AND     $F0                 
 6C8F: 77              LD      (HL),A              
@@ -2026,6 +2030,7 @@ COM_18__:
 6CAB: E5              PUSH    HL                  
 6CAC: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
 6CAF: C3 98 6C        JP      $6C98               ; {}
+
 6CB2: 21 7A 88        LD      HL,$887A            
 6CB5: 97              SUB     A                   
 6CB6: 32 1C 72        LD      ($721C),A           ; {}
@@ -2269,23 +2274,23 @@ COM_24__end_program:
 6E41: C3 2D 40        JP      $402D               ; {hard.EndProgram} Exit program normally
 
 COM_28__:
-6E44: 3E 55           LD      A,$55               
+6E44: 3E 55           LD      A,$55               ; "U" prefix
 6E46: 32 4F 6F        LD      ($6F4F),A           ; {}
-6E49: 3E 39           LD      A,$39               
+6E49: 3E 39           LD      A,$39               ; 4439 - WRITE RECORD
 6E4B: 32 1E 6F        LD      ($6F1E),A           ; {}
-6E4E: 3E 20           LD      A,$20               
+6E4E: 3E 20           LD      A,$20               ; 4420 - OPEN EXISTING
 6E50: 32 03 6F        LD      ($6F03),A           ; {}
 6E53: E5              PUSH    HL                  
-6E54: 06 92           LD      B,$92               
-6E56: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-6E59: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-6E5C: 23              INC     HL                  
-6E5D: 3A FA 71        LD      A,($71FA)           ; {code.currentLoadedSection}
-6E60: 77              LD      (HL),A              
-6E61: 06 9B           LD      B,$9B               
+6E54: 06 92           LD      B,$92               ; Look up ...
+6E56: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex} ... score object
+6E59: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Skip to data
+6E5C: 23              INC     HL                  ; Second byte of data
+6E5D: 3A FA 71        LD      A,($71FA)           ; {code.currentLoadedSection} Write section number ...
+6E60: 77              LD      (HL),A              ; ... to the score object
+6E61: 06 9B           LD      B,$9B               ; ?? Object 9B ??
 6E63: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
 6E66: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-6E69: 77              LD      (HL),A              
+6E69: 77              LD      (HL),A              ; ?? loaded section number to ??
 6E6A: C3 DA 6E        JP      $6EDA               ; {}
 
 COM_27__:
@@ -2326,21 +2331,23 @@ COM_27__:
 6EB8: C3 FE 69        JP      $69FE               ; {code.COM_2F_load_disk_section} No ... load the section and print description
 
 COM_34__:
-6EBB: 3E 20           LD      A,$20               
+6EBB: 3E 20           LD      A,$20               ; 4420 - OPEN EXISTING
 6EBD: 32 03 6F        LD      ($6F03),A           ; {}
-6EC0: 3E 39           LD      A,$39               
+6EC0: 3E 39           LD      A,$39               ; 4439 - WRITE RECORD
 6EC2: C3 CC 6E        JP      $6ECC               ; {}
 
 COM_35__:
-6EC5: 3E 24           LD      A,$24               
+6EC5: 3E 24           LD      A,$24               ; 4424 - OPEN NEW OR EXISTING
 6EC7: 32 03 6F        LD      ($6F03),A           ; {}
-6ECA: 3E 36           LD      A,$36               
+6ECA: 3E 36           LD      A,$36               ; 4436 - READ RECORD
+;
 6ECC: 32 1E 6F        LD      ($6F1E),A           ; {}
-6ECF: 3E 53           LD      A,$53               
+6ECF: 3E 53           LD      A,$53               ; "S" prefix
 6ED1: 32 4F 6F        LD      ($6F4F),A           ; {}
 6ED4: E5              PUSH    HL                  
 6ED5: 3E 30           LD      A,$30               
 6ED7: 32 A2 6F        LD      ($6FA2),A           ; {}
+;
 6EDA: 21 4F 6F        LD      HL,$6F4F            
 6EDD: 11 62 6F        LD      DE,$6F62            
 6EE0: 06 13           LD      B,$13               
@@ -2361,27 +2368,32 @@ COM_35__:
 6EFA: 21 6E BD        LD      HL,$BD6E            
 6EFD: 11 62 6F        LD      DE,$6F62            
 6F00: 06 03           LD      B,$03               
-6F02: CD 20 44        CALL    $4420               ; {hard.EXECUTE} ?? Open new file overlay vector ??
+;
+;
+;
+; Various spots in the code change the LSB of this call. Interesting
+;
+6F02: CD 20 44        CALL    $4420               ; {hard.OPEN_NEW_EXISTING} Open new or existing
 6F05: C2 47 6F        JP      NZ,$6F47            ; {}
-6F08: 21 7A 88        LD      HL,$887A            
-6F0B: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-6F0E: D5              PUSH    DE                  
-6F0F: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-6F12: D5              PUSH    DE                  
-6F13: 23              INC     HL                  
-6F14: 23              INC     HL                  
-6F15: 23              INC     HL                  
-6F16: E5              PUSH    HL                  
-6F17: 2B              DEC     HL                  
-6F18: 2B              DEC     HL                  
-6F19: 2B              DEC     HL                  
+6F08: 21 7A 88        LD      HL,$887A            ; Object data
+6F0B: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Pointer to player object
+6F0E: D5              PUSH    DE                  ; Hold
+6F0F: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Pointer to player data
+6F12: D5              PUSH    DE                  ; Hold
+6F13: 23              INC     HL                  ; Pointer ...
+6F14: 23              INC     HL                  ; ... to ...
+6F15: 23              INC     HL                  ; ... upon death script
+6F16: E5              PUSH    HL                  ; Hold it
+6F17: 2B              DEC     HL                  ; Back ...
+6F18: 2B              DEC     HL                  ; ... to ...
+6F19: 2B              DEC     HL                  ; ... player data
 6F1A: 11 62 6F        LD      DE,$6F62            
 6F1D: CD 39 44        CALL    $4439               ; {hard.WRITE_RECORD}
 6F20: C2 47 6F        JP      NZ,$6F47            ; {}
 6F23: E1              POP     HL                  
 6F24: D1              POP     DE                  
 6F25: D5              PUSH    DE                  
-6F26: 06 09           LD      B,$09               
+6F26: 06 09           LD      B,$09               ; Object 9 ?? Field 9 ??
 6F28: CD AD 61        CALL    $61AD               ; {}
 6F2B: D2 33 6F        JP      NC,$6F33            ; {}
 6F2E: D5              PUSH    DE                  
@@ -2397,10 +2409,10 @@ COM_35__:
 6F44: E1              POP     HL                  
 6F45: 97              SUB     A                   
 6F46: C9              RET                         
-6F47: F6 80           OR      $80                 
-
-6F49: CD 09 44        CALL    $4409               ; {hard.ERROR_SYS4} Error handler: PUSH AF then loads SYS4 overlay
-6F4C: C3 38 5D        JP      $5D38               ; {code.GameLoop}
+;
+6F47: F6 80           OR      $80                 ; DOS prints the error and returns here
+6F49: CD 09 44        CALL    $4409               ; {hard.ERROR_SYS4} Print the disk error
+6F4C: C3 38 5D        JP      $5D38               ; {code.GameLoop} Restart the game loop
 
 6F4F: 53          ; SSVDOBJS/DAT
 6F50: 53                         
@@ -2436,13 +2448,13 @@ COM_35__:
 6F7C: 20 20           JR      NZ,$6F9E            ; {}
 6F7E: 20 20           JR      NZ,$6FA0            ; {}
 6F80: 20 20           JR      NZ,$6FA2            ; {}
-6F82: 20 20           JR      NZ,$6FA4            ; {}
+6F82: 20 20           JR      NZ,$6FA4            ; {code.PrintAsciiString}
 6F84: 20 20           JR      NZ,$6FA6            ; {}
 6F86: 20 20           JR      NZ,$6FA8            ; {}
 6F88: 20 20           JR      NZ,$6FAA            ; {}
 6F8A: 20 20           JR      NZ,$6FAC            ; {}
 6F8C: 20 20           JR      NZ,$6FAE            ; {}
-6F8E: 20 20           JR      NZ,$6FB0            ; {code.COM_26__}
+6F8E: 20 20           JR      NZ,$6FB0            ; {code.COM_26_print_score}
 6F90: 20 20           JR      NZ,$6FB2            ; {}
 6F92: 20 20           JR      NZ,$6FB4            ; {}
 6F94: 20 20           JR      NZ,$6FB6            ; {}
@@ -2452,52 +2464,56 @@ COM_35__:
 6F9C: 20 20           JR      NZ,$6FBE            ; {}
 6F9E: 20 20           JR      NZ,$6FC0            ; {}
 6FA0: 20 20           JR      NZ,$6FC2            ; {}
-6FA2: 30 00           JR      NC,$6FA4            ; {}
+6FA2: 30 00           JR      NC,$6FA4            ; {code.PrintAsciiString}
 
-6FA4: 1A              LD      A,(DE)              
-6FA5: A7              AND     A                   
-6FA6: C8              RET     Z                   
-6FA7: D5              PUSH    DE                  
-6FA8: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces}
-6FAB: D1              POP     DE                  
-6FAC: 13              INC     DE                  
-6FAD: C3 A4 6F        JP      $6FA4               ; {}
+PrintAsciiString: ; Doesn't seem to be called
+; DE points to null-terminated string
+6FA4: 1A              LD      A,(DE)              ; Get the next character
+6FA5: A7              AND     A                   ; End of list?
+6FA6: C8              RET     Z                   ; Yes ... done
+6FA7: D5              PUSH    DE                  ; Hold the pointer
+6FA8: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces} Print the character
+6FAB: D1              POP     DE                  ; Restore
+6FAC: 13              INC     DE                  ; Point to next character
+6FAD: C3 A4 6F        JP      $6FA4               ; {code.PrintAsciiString} Do all characters
 
-COM_26__:
-6FB0: E5              PUSH    HL                  
-6FB1: 06 92           LD      B,$92               
-6FB3: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-6FB6: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-6FB9: 7E              LD      A,(HL)              
-6FBA: 32 FB 71        LD      ($71FB),A           ; {}
-6FBD: 3A FB 71        LD      A,($71FB)           ; {}
-6FC0: E6 0F           AND     $0F                 
-6FC2: C6 30           ADD     $30                 
-6FC4: 47              LD      B,A                 
-6FC5: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces}
-6FC8: 3E 00           LD      A,$00               
-6FCA: E6 0F           AND     $0F                 
-6FCC: C6 30           ADD     $30                 
-6FCE: 47              LD      B,A                 
-6FCF: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces}
-6FD2: 3E 20           LD      A,$20               
-6FD4: 47              LD      B,A                 
-6FD5: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces}
-6FD8: E1              POP     HL                  
-6FD9: 97              SUB     A                   
+COM_26_print_score:
+; Score is kept in a BCD nibble printed as "X0" with a trailing 0.
+; Thus score is "00", "10", "20", "30", etc
+6FB0: E5              PUSH    HL                  ; Hold
+6FB1: 06 92           LD      B,$92               ; Look up the ...
+6FB3: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex} ... score object
+6FB6: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Skip to data
+6FB9: 7E              LD      A,(HL)              ; Get the score value
+6FBA: 32 FB 71        LD      ($71FB),A           ; {} Hold on to score value ?? why
+6FBD: 3A FB 71        LD      A,($71FB)           ; {} Get score value
+6FC0: E6 0F           AND     $0F                 ; Kepp lower nibble
+6FC2: C6 30           ADD     $30                 ; Convert to number
+6FC4: 47              LD      B,A                 ; Print ...
+6FC5: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces} ... digit
+6FC8: 3E 00           LD      A,$00               ; Number 0
+6FCA: E6 0F           AND     $0F                 ; Maybe there was a 2nd digit at one time?
+6FCC: C6 30           ADD     $30                 ; Convert to number
+6FCE: 47              LD      B,A                 ; Print ...
+6FCF: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces} ... trailing zero
+6FD2: 3E 20           LD      A,$20               ; Print ...
+6FD4: 47              LD      B,A                 ; ... trailing ...
+6FD5: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces} ... space on end
+6FD8: E1              POP     HL                  ; Restore
+6FD9: 97              SUB     A                   ; PASS
 6FDA: C9              RET                         
 
-COM_38__:
-6FDB: E5              PUSH    HL                  
-6FDC: 06 92           LD      B,$92               
-6FDE: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-6FE1: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-6FE4: 7E              LD      A,(HL)              
-6FE5: C6 01           ADD     $01                 
-6FE7: 27              DAA                         
-6FE8: 77              LD      (HL),A              
-6FE9: E1              POP     HL                  
-6FEA: 97              SUB     A                   
+COM_38_bump_score:
+6FDB: E5              PUSH    HL                  ; Hold
+6FDC: 06 92           LD      B,$92               ; Look up ...
+6FDE: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex} ... the score object
+6FE1: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Skip to data
+6FE4: 7E              LD      A,(HL)              ; Current score nibble
+6FE5: C6 01           ADD     $01                 ; Bump the score
+6FE7: 27              DAA                         ; Adjust for BCD
+6FE8: 77              LD      (HL),A              ; Store new score
+6FE9: E1              POP     HL                  ; Restore
+6FEA: 97              SUB     A                   ; PASS
 6FEB: C9              RET                         
 
 COM_39__:
@@ -2824,7 +2840,7 @@ stopAtPeriod:
 currentLoadedSection:                 
 71FA: 00 ; the currently loaded sction number (1-9)            
 
-71FB: 00                         
+71FB: 00 ; Score is written here during print                        
 71FC: 00                         
 71FD: 00                         
 71FE: 00                         
@@ -2940,62 +2956,63 @@ currentRoomData:
 7265: 00
 
 
-7266: 94               
+InitScript:
+7266: 94  ; Initialization script (Load SECTION1.DAT)           
 
-StartCommand: 
-7267: A3  ; Script command to init game
+SplashMessage: 
+7267: A3  ; Print ">>>> XENOS <<<<" and "STRANGER, BEWARE!"
 
 CommandJumpTable:
 7268: DC 63        ; COM_00_move_ACTIVE_and_look(room_num)
 726A: 7E 67        ; COM_01_is_in_pack_or_current_room(obj_num)
-726C: C5 67        ; COM_02__ ??
-726E: CA 67        ; COM_03__ ??
+726C: C5 67        ; COM_02_is_owned(obj_num)
+726E: CA 67        ; COM_03_is_located(room_num, obj_num)
 7270: DF 67        ; COM_04_print_message(mlength)
 7272: 4B 6D        ; COM_05_is_less_equal_last_random(value)
-7274: 0D 68        ; COM_06__ ??
-7276: 05 68        ; COM_07__ ??
-7278: 80 68        ; COM_08__ ??
-727A: AA 68        ; COM_09__ ??
-727C: BE 68        ; COM_0A__ ??
+7274: 0D 68        ; COM_06_print_inventory()
+7276: 05 68        ; COM_07_print_room_description()
+7278: 80 68        ; COM_08_is_first_noun(word_num)
+727A: AA 68        ; COM_09_compare_to_second_noun(word_num)
+727C: BE 68        ; COM_0A_is_input_phrase(phrase_num)
 727E: B7 63        ; COM_0B_switch(mlength, com_num)
-7280: DC 67        ; COM_0A__ ?? ()
+7280: DC 67        ; COM_0C_fail()
 7282: 8A 63        ; COM_0D_while_pass(mlength)
 7284: A0 63        ; COM_0E_while_fail(mlength)
 7286: C5 68        ; COM_0F__ ??
-7288: EF 68        ; COM_10__ ??
-728A: 6F 69        ; COM_11__ ??
-728C: 9C 69        ; COM_12__ ??
+7288: EF 68        ; COM_10_drop_var()
+728A: 6F 69        ; COM_11_print_first_noun()
+728C: 9C 69        ; COM_12_print_second_noun()
 728E: 07 69        ; COM_13__ ??
-7290: 49 6C        ; COM_14__ ??
-7292: A6 69        ; COM_15__ ??
-7294: 65 69        ; COM_16__ ??
-7296: 6E 6C        ; COM_17__ ?? move object to room
-7298: 94 6C        ; COM_18__ ??
+7290: 49 6C        ; COM_14_execute_and_reverse_status()
+7292: A6 69        ; COM_15_check_var()
+7294: 65 69        ; COM_16_print_var()
+7296: 6E 6C        ; COM_17_move_to()
+7298: 94 6C        ; COM_18_is_var_owned_by_active()
 729A: F5 63        ; COM_19_move_ACTIVE(room_num) ?? player is the only active?
-729C: 2C 64        ; COM_1A__ ?
-729E: 3C 64        ; COM_1B_set_VAR_to_second_noun()
-72A0: 4C 64        ; COM_1C_setVAR(obj_num)
-72A2: 5B 6D        ; COM_1D__ ??
-72A4: 9B 6D        ; COM_1E__ ??
-72A6: EC 67        ; COM_1F__ ??
-72A8: 89 67        ; COM_20__ ??
+729C: 2C 64        ; COM_1A_set_var_to_first_noun()
+729E: 3C 64        ; COM_1B_set_var_to_second_noun()
+72A0: 4C 64        ; COM_1C_set_var_object(obj_num)
+72A2: 5B 6D        ; COM_1D_attack_VAR(points)
+72A4: 9B 6D        ; COM_1E_swap(obj_num1, obj_num2)
+72A6: EC 67        ; COM_1F_print2(mlength)
+72A8: 89 67        ; COM_20_is_active_this(obj_num)
 72AA: 60 64        ; COM_21_execute_phrase(phrase_num, first_noun_num, second_noun_num)
 72AC: B8 6D        ; COM_22__ ??
-72AE: DF 6D        ; COM_23__ ??
+72AE: DF 6D        ; COM_23_heal_var(points)
 72B0: 41 6E        ; COM_24_end_program()
 72B2: 03 6E        ; COM_25_print_linefeed()
-72B4: B0 6F        ; COM_26__ ??
+72B4: B0 6F        ; COM_26_print_score()
 72B6: 6D 6E        ; COM_27__ ??
 72B8: 44 6E        ; COM_28__ ??
-72BA: D2 69        ; COM_29__ ??
+72BA: D2 69        ; COM_29_print_open_var()
 72BC: E8 69        ; COM_2A__ ??
 72BE: C6 71        ; COM_2B_random()
-72C0: 8F 67        ; COM_2C__ ??
+72C0: 8F 67        ; COM_2C_set_active(obj_num)
 72C2: B4 68        ; COM_2D__ ??
 ;
 72C4: C1 69        ; COM_2E__ ??
 72C6: FE 69        ; COM_2F_load_disk_section(section_num)
-72C8: BE 67        ; COM_30__ ??
+72C8: BE 67        ; COM_30_set_current_room(room_num)
 72CA: 54 6C        ; COM_31__ ??
 72CC: 67 6C        ; COM_32__ ??
 72CE: 80 65        ; COM_33__ ??
@@ -3003,7 +3020,7 @@ CommandJumpTable:
 72D2: C5 6E        ; COM_35__ ??
 72D4: 12 6E        ; COM_36__ ??
 72D6: 12 64        ; COM_37__ ??
-72D8: DB 6F        ; COM_38__ ??
+72D8: DB 6F        ; COM_38_bump_score()
 72DA: EC 6F        ; COM_39__ ??
 72DC: 2D 70        ; 3A_clear_screen()
 72DE: 40 70        ; COM_3B_wait_for_key_123()
@@ -3499,45 +3516,45 @@ GeneralScript:
 7D66:             0E 1C             ;         WHILE FAIL, Length: 0x001C
 7D68:                13             ;           UNKNOWN13
 7D69:                0D 19          ;           WHILE PASS, Length: 0x0019
-7D6B:                   20 01       ;             IS ACTIVE THIS, Object number: 0x01
+7D6B:                   20 01       ;             IS ACTIVE THIS, obj=01_YOU
 7D6D:                   04 15       ;             PRINT, Length: 0x0015
-;
-; YOU WALK AIMLESSLY INTO A WALL.
-;
 7D6F:                      C7 DE F3 17 CB 8C CF 47 F5 8B D3 B8 D0 15 6B BF ; 
 7D7F:                      59 45 46 48 2E ; 
+;
+;                          YOU WALK AIMLESSLY INTO A WALL.
+;
 7D84:          0D 0F                ;       WHILE PASS, Length: 0x000F
 7D86:             04 0B             ;         PRINT, Length: 0x000B
-;
-; YOU ARE STILL IN
-;
 7D88:                C7 DE 94 14 55 5E 8E BE 0B 8A 4E ; 
-7D93:             AA                ;         COMMAND 0xAA
-7D94:             8B                ;         COMMAND 0x8B
+;
+;                    YOU ARE STILL IN
+;
+7D93:             AA                ;         ROUTINE 0xAA
+7D94:             8B                ;         ROUTINE 0x8B
 7D95:    0B 8A E2 0A                ;   SWITCH, Length: 0x0AE2, Function to call: 0x0A
-7D99:       05                      ;     Phrase number: 0x05
+7D99:       05                      ;     Phrase 0x05: "GET      ..C.....   *           *"
 7D9A:       0A                      ;     ELSE go to: 0x7DA5
 7D9B:          0E 08                ;       WHILE FAIL, Length: 0x0008
-7D9D:             A2                ;         COMMAND 0xA2
+7D9D:             A2                ;         ROUTINE 0xA2
 7D9E:             13                ;         UNKNOWN13
 7D9F:             0D 02             ;         WHILE PASS, Length: 0x0002
 7DA1:                1A             ;           SET VAR TO FIRST NOUN
-7DA2:                8F             ;           COMMAND 0x8F
+7DA2:                8F             ;           ROUTINE 0x8F
 7DA3:             14                ;         EXECUTE AND REVERSE STATUS
 7DA4:             0C                ;         FAIL
-7DA5:       43                      ;     Phrase number: 0x43
+7DA5:       43                      ;     Phrase 0x43: "GET      ..C.....   WITH     ..C....."
 7DA6:       0D                      ;     ELSE go to: 0x7DB4
 7DA7:          0E 0B                ;       WHILE FAIL, Length: 0x000B
-7DA9:             A2                ;         COMMAND 0xA2
+7DA9:             A2                ;         ROUTINE 0xA2
 7DAA:             13                ;         UNKNOWN13
 7DAB:             0D 03             ;         WHILE PASS, Length: 0x0003
 7DAD:                1B             ;           SET VAR TO SECOND NOUN
 7DAE:                14             ;           EXECUTE AND REVERSE STATUS
-7DAF:                8F             ;           COMMAND 0x8F
+7DAF:                8F             ;           ROUTINE 0x8F
 7DB0:             0D 02             ;         WHILE PASS, Length: 0x0002
 7DB2:                1A             ;           SET VAR TO FIRST NOUN
-7DB3:                8F             ;           COMMAND 0x8F
-7DB4:       06                      ;     Phrase number: 0x06
+7DB3:                8F             ;           ROUTINE 0x8F
+7DB4:       06                      ;     Phrase 0x06: "DROP     ..C.....   *           *"
 7DB5:       23                      ;     ELSE go to: 0x7DD9
 7DB6:          0E 21                ;       WHILE FAIL, Length: 0x0021
 7DB8:             13                ;         UNKNOWN13
@@ -3546,154 +3563,154 @@ GeneralScript:
 7DBC:                14             ;           EXECUTE AND REVERSE STATUS
 7DBD:                15 20          ;           CHECK VAR, Value: 0x20
 7DBF:                04 0B          ;           PRINT, Length: 0x000B
-;
-; HOW CAN YOU DROP
-;
 7DC1:                   89 74 D3 14 9B 96 1B A1 F9 5B 50 ; 
-7DCC:                A8             ;           COMMAND 0xA8
-7DCD:                8B             ;           COMMAND 0x8B
+;
+;                       HOW CAN YOU DROP
+;
+7DCC:                A8             ;           ROUTINE 0xA8
+7DCD:                8B             ;           ROUTINE 0x8B
 7DCE:             0D 09             ;         WHILE PASS, Length: 0x0009
 7DD0:                10             ;           DROP VAR
 7DD1:                04 06          ;           PRINT, Length: 0x0006
-;
-; DROPPED. 
-;
 7DD3:                   F9 5B 9F A6 9B 5D ; 
-7DD9:       08                      ;     Phrase number: 0x08
+;
+;                       DROPPED. 
+;
+7DD9:       08                      ;     Phrase 0x08: "READ     .....?..   *           *"
 7DDA:       17                      ;     ELSE go to: 0x7DF2
 7DDB:          0E 15                ;       WHILE FAIL, Length: 0x0015
 7DDD:             13                ;         UNKNOWN13
 7DDE:             0D 12             ;         WHILE PASS, Length: 0x0012
 7DE0:                04 0E          ;           PRINT, Length: 0x000E
-;
-; THERE'S NO WRITING ON
-;
 7DE2:                   5F BE 5D B1 D0 B5 D9 9C 16 B2 91 7A C0 16 ; 
-7DF0:                A8             ;           COMMAND 0xA8
-7DF1:                8B             ;           COMMAND 0x8B
-7DF2:       11                      ;     Phrase number: 0x11
+;
+;                       THERE'S NO WRITING ON
+;
+7DF0:                A8             ;           ROUTINE 0xA8
+7DF1:                8B             ;           ROUTINE 0x8B
+7DF2:       11                      ;     Phrase 0x11: "OPEN     u.......   *           *"
 7DF3:       15                      ;     ELSE go to: 0x7E09
 7DF4:          0E 13                ;       WHILE FAIL, Length: 0x0013
 7DF6:             13                ;         UNKNOWN13
-7DF7:             92                ;         COMMAND 0x92
+7DF7:             92                ;         ROUTINE 0x92
 7DF8:             0D 0D             ;         WHILE PASS, Length: 0x000D
 7DFA:                1A             ;           SET VAR TO FIRST NOUN
 7DFB:                2E 40          ;           UNKNOWN2E, Value: 0x40
-7DFD:                A8             ;           COMMAND 0xA8
+7DFD:                A8             ;           ROUTINE 0xA8
 7DFE:                04 07          ;           PRINT, Length: 0x0007
-;
-; IS LOCKED.
-;
 7E00:                   4B 7B 75 8D A6 85 2E ; 
-7E07:             A5                ;         COMMAND 0xA5
-7E08:             A6                ;         COMMAND 0xA6
-7E09:       3A                      ;     Phrase number: 0x3A
+;
+;                       IS LOCKED.
+;
+7E07:             A5                ;         ROUTINE 0xA5
+7E08:             A6                ;         ROUTINE 0xA6
+7E09:       3A                      ;     Phrase 0x3A: "OPEN     u.......   WITH     u......."
 7E0A:       11                      ;     ELSE go to: 0x7E1C
 7E0B:          0E 0F                ;       WHILE FAIL, Length: 0x000F
 7E0D:             0D 03             ;         WHILE PASS, Length: 0x0003
 7E0F:                1B             ;           SET VAR TO SECOND NOUN
 7E10:                14             ;           EXECUTE AND REVERSE STATUS
-7E11:                8F             ;           COMMAND 0x8F
+7E11:                8F             ;           ROUTINE 0x8F
 7E12:             13                ;         UNKNOWN13
-7E13:             92                ;         COMMAND 0x92
-7E14:             A5                ;         COMMAND 0xA5
+7E13:             92                ;         ROUTINE 0x92
+7E14:             A5                ;         ROUTINE 0xA5
 7E15:             0D 04             ;         WHILE PASS, Length: 0x0004
 7E17:                2E 40          ;           UNKNOWN2E, Value: 0x40
 7E19:                2A             ;           UNKNOWN2A
 7E1A:                0C             ;           FAIL
-7E1B:             A6                ;         COMMAND 0xA6
-7E1C:       40                      ;     Phrase number: 0x40
+7E1B:             A6                ;         ROUTINE 0xA6
+7E1C:       40                      ;     Phrase 0x40: "CLOSE    ....A...   *           *"
 7E1D:       24                      ;     ELSE go to: 0x7E42
 7E1E:          0E 22                ;       WHILE FAIL, Length: 0x0022
 7E20:             13                ;         UNKNOWN13
-7E21:             92                ;         COMMAND 0x92
+7E21:             92                ;         ROUTINE 0x92
 7E22:             0D 0E             ;         WHILE PASS, Length: 0x000E
 7E24:                1A             ;           SET VAR TO FIRST NOUN
 7E25:                2E 20          ;           UNKNOWN2E, Value: 0x20
-7E27:                A8             ;           COMMAND 0xA8
+7E27:                A8             ;           ROUTINE 0xA8
 7E28:                04 08          ;           PRINT, Length: 0x0008
-;
-; IS NOT OPEN.
-;
 7E2A:                   4B 7B 06 9A C2 16 A7 61 ; 
+;
+;                       IS NOT OPEN.
+;
 7E32:             0D 0E             ;         WHILE PASS, Length: 0x000E
 7E34:                29             ;           PRINT OPEN VAR
-7E35:                A8             ;           COMMAND 0xA8
+7E35:                A8             ;           ROUTINE 0xA8
 7E36:                04 0A          ;           PRINT, Length: 0x000A
-;
-; IS NOW CLOSED. 
-;
 7E38:                   4B 7B 09 9A DE 14 D7 A0 9B 5D ; 
-7E42:       42                      ;     Phrase number: 0x42
+;
+;                       IS NOW CLOSED. 
+;
+7E42:       42                      ;     Phrase 0x42: "UNLOCK   u.......   WITH     u......."
 7E43:       2D                      ;     ELSE go to: 0x7E71
 7E44:          0E 2B                ;       WHILE FAIL, Length: 0x002B
 7E46:             0D 03             ;         WHILE PASS, Length: 0x0003
 7E48:                1B             ;           SET VAR TO SECOND NOUN
 7E49:                14             ;           EXECUTE AND REVERSE STATUS
-7E4A:                8F             ;           COMMAND 0x8F
+7E4A:                8F             ;           ROUTINE 0x8F
 7E4B:             13                ;         UNKNOWN13
-7E4C:             92                ;         COMMAND 0x92
+7E4C:             92                ;         ROUTINE 0x92
 7E4D:             0D 11             ;         WHILE PASS, Length: 0x0011
 7E4F:                1A             ;           SET VAR TO FIRST NOUN
 7E50:                14             ;           EXECUTE AND REVERSE STATUS
 7E51:                2E 40          ;           UNKNOWN2E, Value: 0x40
-7E53:                A8             ;           COMMAND 0xA8
+7E53:                A8             ;           ROUTINE 0xA8
 7E54:                04 0A          ;           PRINT, Length: 0x000A
-;
-; IS NOT LOCKED. 
-;
 7E56:                   4B 7B 06 9A 49 16 97 54 9B 5D ; 
+;
+;                       IS NOT LOCKED. 
+;
 7E60:             0D 0F             ;         WHILE PASS, Length: 0x000F
 7E62:                2A             ;           UNKNOWN2A
-7E63:                A8             ;           COMMAND 0xA8
+7E63:                A8             ;           ROUTINE 0xA8
 7E64:                04 0B          ;           PRINT, Length: 0x000B
-;
-; IS NOW UNLOCKED.
-;
 7E66:                   4B 7B 09 9A B0 17 75 8D A6 85 2E ; 
-7E71:       41                      ;     Phrase number: 0x41
+;
+;                       IS NOW UNLOCKED.
+;
+7E71:       41                      ;     Phrase 0x41: "LOCK     ....A...   WITH     u......."
 7E72:       45                      ;     ELSE go to: 0x7EB8
 7E73:          0E 43                ;       WHILE FAIL, Length: 0x0043
 7E75:             0D 03             ;         WHILE PASS, Length: 0x0003
 7E77:                1B             ;           SET VAR TO SECOND NOUN
 7E78:                14             ;           EXECUTE AND REVERSE STATUS
-7E79:                8F             ;           COMMAND 0x8F
+7E79:                8F             ;           ROUTINE 0x8F
 7E7A:             13                ;         UNKNOWN13
-7E7B:             92                ;         COMMAND 0x92
+7E7B:             92                ;         ROUTINE 0x92
 7E7C:             0D 17             ;         WHILE PASS, Length: 0x0017
 7E7E:                14             ;           EXECUTE AND REVERSE STATUS
 7E7F:                09 14          ;           COMPARE TO SECOND NOUN, Word number: 0x14
 7E81:                04 0A          ;           PRINT, Length: 0x000A
-;
-; YOU CAN'T LOCK 
-;
 7E83:                   C7 DE D3 14 E6 96 49 16 8B 54 ; 
-7E8D:                A8             ;           COMMAND 0xA8
+;
+;                       YOU CAN'T LOCK 
+;
+7E8D:                A8             ;           ROUTINE 0xA8
 7E8E:                04 03          ;           PRINT, Length: 0x0003
-;
-; WITH
-;
 7E90:                   56 D1 48    ; 
-7E93:                A9             ;           COMMAND 0xA9
-7E94:                8B             ;           COMMAND 0x8B
+;
+;                       WITH
+;
+7E93:                A9             ;           ROUTINE 0xA9
+7E94:                8B             ;           ROUTINE 0x8B
 7E95:             0D 11             ;         WHILE PASS, Length: 0x0011
 7E97:                1A             ;           SET VAR TO FIRST NOUN
 7E98:                2E 40          ;           UNKNOWN2E, Value: 0x40
-7E9A:                A8             ;           COMMAND 0xA8
+7E9A:                A8             ;           ROUTINE 0xA8
 7E9B:                04 0B          ;           PRINT, Length: 0x000B
-;
-; IS NOT UNLOCKED.
-;
 7E9D:                   4B 7B 06 9A B0 17 75 8D A6 85 2E ; 
+;
+;                       IS NOT UNLOCKED.
+;
 7EA8:             0D 0E             ;         WHILE PASS, Length: 0x000E
 7EAA:                2A             ;           UNKNOWN2A
-7EAB:                A8             ;           COMMAND 0xA8
+7EAB:                A8             ;           ROUTINE 0xA8
 7EAC:                04 0A          ;           PRINT, Length: 0x000A
-;
-; IS NOW LOCKED. 
-;
 7EAE:                   4B 7B 09 9A 49 16 97 54 9B 5D ; 
-7EB8:       12                      ;     Phrase number: 0x12
+;
+;                       IS NOW LOCKED. 
+;
+7EB8:       12                      ;     Phrase 0x12: "PULL     u.......   *           *"
 7EB9:       28                      ;     ELSE go to: 0x7EE2
 7EBA:          0E 26                ;       WHILE FAIL, Length: 0x0026
 7EBC:             13                ;         UNKNOWN13
@@ -3701,21 +3718,21 @@ GeneralScript:
 7EBF:                1A             ;           SET VAR TO FIRST NOUN
 7EC0:                14             ;           EXECUTE AND REVERSE STATUS
 7EC1:                15 20          ;           CHECK VAR, Value: 0x20
-7EC3:                C2             ;           COMMAND 0xC2
+7EC3:                C2             ;           ROUTINE 0xC2
 7EC4:             0D 1C             ;         WHILE PASS, Length: 0x001C
 7EC6:                04 13          ;           PRINT, Length: 0x0013
-;
-; WHY DON'T YOU LEAVE THE POOR
-;
 7EC8:                   33 D1 09 15 E6 96 51 18 4E C2 98 5F 56 5E DB 72 ; 
 7ED8:                   81 A6 52    ; 
+;
+;                       WHY DON'T YOU LEAVE THE POOR
+;
 7EDB:                11             ;           PRINT FIRST NOUN
 7EDC:                04 04          ;           PRINT, Length: 0x0004
-;
-; ALONE.
-;
 7EDE:                   49 48 7F 98 ; 
-7EE2:       09                      ;     Phrase number: 0x09
+;
+;                       ALONE.
+;
+7EE2:       09                      ;     Phrase 0x09: "ATTACK   ...P....   WITH     .v......"
 7EE3:       57                      ;     ELSE go to: 0x7F3B
 7EE4:          0E 55                ;       WHILE FAIL, Length: 0x0055
 7EE6:             14                ;         EXECUTE AND REVERSE STATUS
@@ -3723,82 +3740,82 @@ GeneralScript:
 7EE8:             14                ;         EXECUTE AND REVERSE STATUS
 7EE9:             0E 03             ;         WHILE FAIL, Length: 0x0003
 7EEB:                09 37          ;           COMPARE TO SECOND NOUN, Word number: 0x37
-7EED:                8F             ;           COMMAND 0x8F
+7EED:                8F             ;           ROUTINE 0x8F
 7EEE:             0E 3E             ;         WHILE FAIL, Length: 0x003E
 7EF0:                0D 17          ;           WHILE PASS, Length: 0x0017
 7EF2:                   14          ;             EXECUTE AND REVERSE STATUS
 7EF3:                   15 40       ;             CHECK VAR, Value: 0x40
 7EF5:                   04 0A       ;             PRINT, Length: 0x000A
-;
-; YOU CAN'T HURT 
-;
 7EF7:                      C7 DE D3 14 E6 96 AF 15 B3 B3 ; 
-7F01:                   A8          ;             COMMAND 0xA8
+;
+;                          YOU CAN'T HURT 
+;
+7F01:                   A8          ;             ROUTINE 0xA8
 7F02:                   04 03       ;             PRINT, Length: 0x0003
-;
-; WITH
-;
 7F04:                      56 D1 48 ; 
-7F07:                   A9          ;             COMMAND 0xA9
-7F08:                   8B          ;             COMMAND 0x8B
+;
+;                          WITH
+;
+7F07:                   A9          ;             ROUTINE 0xA9
+7F08:                   8B          ;             ROUTINE 0x8B
 7F09:                13             ;           UNKNOWN13
 7F0A:                0D 22          ;           WHILE PASS, Length: 0x0022
 7F0C:                   1A          ;             SET VAR TO FIRST NOUN
 7F0D:                   14          ;             EXECUTE AND REVERSE STATUS
 7F0E:                   15 10       ;             CHECK VAR, Value: 0x10
 7F10:                   04 13       ;             PRINT, Length: 0x0013
-;
-; IT DOES NO GOOD TO BEAT ON A
-;
 7F12:                      73 7B 77 5B D0 B5 C9 9C 36 A0 89 17 AF 14 73 49 ; 
 7F22:                      03 A0 41 ; 
+;
+;                          IT DOES NO GOOD TO BEAT ON A
+;
 7F25:                   11          ;             PRINT FIRST NOUN
 7F26:                   04 04       ;             PRINT, Length: 0x0004
-;
-; WITH A
-;
 7F28:                      56 D1 03 71 ; 
+;
+;                          WITH A
+;
 7F2C:                   12          ;             PRINT SECOND NOUN
-7F2D:                   8B          ;             COMMAND 0x8B
+7F2D:                   8B          ;             ROUTINE 0x8B
 7F2E:             0D 0B             ;         WHILE PASS, Length: 0x000B
-7F30:                A8             ;           COMMAND 0xA8
+7F30:                A8             ;           ROUTINE 0xA8
 7F31:                04 08          ;           PRINT, Length: 0x0008
-;
-; IS UNHARMED.
-;
 7F33:                   4B 7B 92 C5 37 49 17 60 ; 
-7F3B:       0A                      ;     Phrase number: 0x0A
+;
+;                       IS UNHARMED.
+;
+7F3B:       0A                      ;     Phrase 0x0A: "LOOK     *          *           *"
 7F3C:       01                      ;     ELSE go to: 0x7F3E
 7F3D:          07                   ;       PRINT ROOM DESCRIPTION
-7F3E:       15                      ;     Phrase number: 0x15
+7F3E:       15                      ;     Phrase 0x15: "EAT      u.......   *           *"
 7F3F:       26                      ;     ELSE go to: 0x7F66
 7F40:          0E 24                ;       WHILE FAIL, Length: 0x0024
 7F42:             13                ;         UNKNOWN13
 7F43:             0D 21             ;         WHILE PASS, Length: 0x0021
 7F45:                04 0A          ;           PRINT, Length: 0x000A
-;
-; DON'T BE SILLY!
-;
 7F47:                   80 5B F3 23 5B 4D 4E B8 F9 8E ; 
-7F51:                A8             ;           COMMAND 0xA8
+;
+;                       DON'T BE SILLY!
+;
+7F51:                A8             ;           ROUTINE 0xA8
 7F52:                04 12          ;           PRINT, Length: 0x0012
-;
-; WOULDN'T TASTE GOOD ANYWAY.
-;
 7F54:                   47 D2 C8 8B F3 23 55 BD DB BD 41 6E 03 58 99 9B ; 
 7F64:                   5F 4A       ; 
-7F66:       59                      ;     Phrase number: 0x59
+;
+;                       WOULDN'T TASTE GOOD ANYWAY.
+;
+7F66:       59                      ;     Phrase 0x59: "TASTE    u.......   *           *"
 7F67:       13                      ;     ELSE go to: 0x7F7B
 7F68:          0E 11                ;       WHILE FAIL, Length: 0x0011
 7F6A:             13                ;         UNKNOWN13
 7F6B:             0D 0E             ;         WHILE PASS, Length: 0x000E
 7F6D:                04 0B          ;           PRINT, Length: 0x000B
-;
-; IT TASTES LIKE A
-;
 7F6F:                   73 7B 55 BD F5 BD 43 16 9B 85 41 ; 
+;
+;                       IT TASTES LIKE A
+;
 7F7A:                11             ;           PRINT FIRST NOUN
-7F7B:       17                      ;     Phrase number: 0x17
+7F7B:       17                      ;     Phrase 0x17: "CLIMB    u.......   *           *"
 7F7C:       4C                      ;     ELSE go to: 0x7FC9
 7F7D:          0E 4A                ;       WHILE FAIL, Length: 0x004A
 7F7F:             13                ;         UNKNOWN13
@@ -3806,41 +3823,41 @@ GeneralScript:
 7F82:                1A             ;           SET VAR TO FIRST NOUN
 7F83:                15 10          ;           CHECK VAR, Value: 0x10
 7F85:                04 09          ;           PRINT, Length: 0x0009
-;
-; I DON'T THINK
-;
 7F87:                   46 77 05 A0 16 BC 90 73 4B ; 
-7F90:                A8             ;           COMMAND 0xA8
+;
+;                       I DON'T THINK
+;
+7F90:                A8             ;           ROUTINE 0xA8
 7F91:                04 11          ;           PRINT, Length: 0x0011
-;
-; WILL STAND STILL FORTHAT.
-;
 7F93:                   4E D1 15 8A 50 BD 15 58 8E BE 08 8A BE A0 56 72 ; 
 7FA3:                   2E          ; 
+;
+;                       WILL STAND STILL FORTHAT.
+;
 7FA4:             0D 23             ;         WHILE PASS, Length: 0x0023
 7FA6:                04 10          ;           PRINT, Length: 0x0010
-;
-; EVEN IF YOU COULD CLIMB 
-;
 7FA8:                   CF 62 8B 96 9B 64 1B A1 47 55 B3 8B C3 54 A3 91 ; 
-7FB8:                A8             ;           COMMAND 0xA8
+;
+;                       EVEN IF YOU COULD CLIMB 
+;
+7FB8:                A8             ;           ROUTINE 0xA8
 7FB9:                04 0E          ;           PRINT, Length: 0x000E
-;
-; IT WOULDN'T HELP YOU.
-;
 7FBB:                   73 7B 47 D2 C8 8B F3 23 EE 72 1B A3 3F A1 ; 
-7FC9:       16                      ;     Phrase number: 0x16
+;
+;                       IT WOULDN'T HELP YOU.
+;
+7FC9:       16                      ;     Phrase 0x16: "DROP     *          OUT      ....A..."
 7FCA:       12                      ;     ELSE go to: 0x7FDD
 7FCB:          0E 10                ;       WHILE FAIL, Length: 0x0010
 7FCD:             13                ;         UNKNOWN13
 7FCE:             0D 0D             ;         WHILE PASS, Length: 0x000D
-7FD0:                A8             ;           COMMAND 0xA8
+7FD0:                A8             ;           ROUTINE 0xA8
 7FD1:                04 0A          ;           PRINT, Length: 0x000A
-;
-; IS NOT BURNING.
-;
 7FD3:                   4B 7B 06 9A BF 14 D3 B2 CF 98 ; 
-7FDD:       18                      ;     Phrase number: 0x18
+;
+;                       IS NOT BURNING.
+;
+7FDD:       18                      ;     Phrase 0x18: "RUB      u.......   *           *"
 7FDE:       2E                      ;     ELSE go to: 0x800D
 7FDF:          0E 2C                ;       WHILE FAIL, Length: 0x002C
 7FE1:             13                ;         UNKNOWN13
@@ -3848,20 +3865,20 @@ GeneralScript:
 7FE4:                1A             ;           SET VAR TO FIRST NOUN
 7FE5:                15 10          ;           CHECK VAR, Value: 0x10
 7FE7:                04 0E          ;           PRINT, Length: 0x000E
-;
-; THAT'S NO WAY TO HURT
-;
 7FE9:                   5B BE 65 BC 99 16 F3 17 56 DB CA 9C 3E C6 ; 
-7FF7:                AA             ;           COMMAND 0xAA
-7FF8:                8B             ;           COMMAND 0x8B
+;
+;                       THAT'S NO WAY TO HURT
+;
+7FF7:                AA             ;           ROUTINE 0xAA
+7FF8:                8B             ;           ROUTINE 0x8B
 7FF9:             0D 12             ;         WHILE PASS, Length: 0x0012
-7FFB:                A8             ;           COMMAND 0xA8
+7FFB:                A8             ;           ROUTINE 0xA8
 7FFC:                04 0F          ;           PRINT, Length: 0x000F
-;
-; LOOKS MUCH BETTER NOW.
-;
 7FFE:                   81 8D CB 87 A5 94 04 71 8E 62 23 62 09 9A 2E ; 
-800D:       0B                      ;     Phrase number: 0x0B
+;
+;                       LOOKS MUCH BETTER NOW.
+;
+800D:       0B                      ;     Phrase 0x0B: "LOOK     *          AT       u......."
 800E:       65                      ;     ELSE go to: 0x8074
 800F:          0E 63                ;       WHILE FAIL, Length: 0x0063
 8011:             13                ;         UNKNOWN13
@@ -3869,26 +3886,26 @@ GeneralScript:
 8014:                1A             ;           SET VAR TO FIRST NOUN
 8015:                15 04          ;           CHECK VAR, Value: 0x04
 8017:                04 10          ;           PRINT, Length: 0x0010
-;
-; SOMETHING IS WRITTEN ON 
-;
 8019:                   3F B9 82 62 91 7A D5 15 04 18 8E 7B 83 61 03 A0 ; 
-8029:                AA             ;           COMMAND 0xAA
-802A:                8B             ;           COMMAND 0x8B
+;
+;                       SOMETHING IS WRITTEN ON 
+;
+8029:                AA             ;           ROUTINE 0xAA
+802A:                8B             ;           ROUTINE 0x8B
 802B:             0D 0D             ;         WHILE PASS, Length: 0x000D
 802D:                2E 20          ;           UNKNOWN2E, Value: 0x20
 802F:                04 09          ;           PRINT, Length: 0x0009
-;
-; IT IS CLOSED.
-;
 8031:                   73 7B 4B 7B C9 54 A6 B7 2E ; 
+;
+;                       IT IS CLOSED.
+;
 803A:             0D 0D             ;         WHILE PASS, Length: 0x000D
 803C:                2E 40          ;           UNKNOWN2E, Value: 0x40
 803E:                04 09          ;           PRINT, Length: 0x0009
-;
-; IT IS LOCKED.
-;
 8040:                   73 7B 4B 7B 75 8D A6 85 2E ; 
+;
+;                       IT IS LOCKED.
+;
 8049:             0D 0A             ;         WHILE PASS, Length: 0x000A
 804B:                15 02          ;           CHECK VAR, Value: 0x02
 804D:                0E 05          ;           WHILE FAIL, Length: 0x0005
@@ -3901,26 +3918,26 @@ GeneralScript:
 8059:                33             ;           UNKNOWN33
 805A:             0D 18             ;         WHILE PASS, Length: 0x0018
 805C:                04 14          ;           PRINT, Length: 0x0014
-;
-; THERE'S NOTHING SPECIAL ABOUT 
-;
 805E:                   5F BE 5D B1 D0 B5 02 A1 91 7A 62 17 DB 5F 33 48 ; 
 806E:                   B9 46 73 C6 ; 
-8072:                A8             ;           COMMAND 0xA8
-8073:                8B             ;           COMMAND 0x8B
-8074:       0C                      ;     Phrase number: 0x0C
+;
+;                       THERE'S NOTHING SPECIAL ABOUT 
+;
+8072:                A8             ;           ROUTINE 0xA8
+8073:                8B             ;           ROUTINE 0x8B
+8074:       0C                      ;     Phrase 0x0C: "LOOK     *          UNDER    u......."
 8075:       17                      ;     ELSE go to: 0x808D
 8076:          0E 15                ;       WHILE FAIL, Length: 0x0015
 8078:             13                ;         UNKNOWN13
 8079:             0D 12             ;         WHILE PASS, Length: 0x0012
 807B:                04 0E          ;           PRINT, Length: 0x000E
-;
-; THERE'S NOTHING UNDER
-;
 807D:                   5F BE 5D B1 D0 B5 02 A1 91 7A B0 17 F4 59 ; 
-808B:                A8             ;           COMMAND 0xA8
-808C:                8B             ;           COMMAND 0x8B
-808D:       10                      ;     Phrase number: 0x10
+;
+;                       THERE'S NOTHING UNDER
+;
+808B:                A8             ;           ROUTINE 0xA8
+808C:                8B             ;           ROUTINE 0x8B
+808D:       10                      ;     Phrase 0x10: "LOOK     *          IN       ......O."
 808E:       4C                      ;     ELSE go to: 0x80DB
 808F:          0E 4A                ;       WHILE FAIL, Length: 0x004A
 8091:             13                ;         UNKNOWN13
@@ -3929,33 +3946,33 @@ GeneralScript:
 8095:                14             ;           EXECUTE AND REVERSE STATUS
 8096:                15 02          ;           CHECK VAR, Value: 0x02
 8098:                04 22          ;           PRINT, Length: 0x0022
-;
-; CONCENTRATE AS YOU MAY, YOU CAN NOT SEE ANYTHING IN
-;
 809A:                   40 55 B0 53 EB BF DB BD 4B 49 C7 DE 63 16 B3 E0 ; 
 80AA:                   C7 DE D3 14 90 96 F3 A0 A7 B7 90 14 82 DF 91 7A ; 
 80BA:                   D0 15       ; 
-80BC:                A9             ;           COMMAND 0xA9
-80BD:                8B             ;           COMMAND 0x8B
+;
+;                       CONCENTRATE AS YOU MAY, YOU CAN NOT SEE ANYTHING IN
+;
+80BC:                A9             ;           ROUTINE 0xA9
+80BD:                8B             ;           ROUTINE 0x8B
 80BE:             0D 0F             ;         WHILE PASS, Length: 0x000F
 80C0:                14             ;           EXECUTE AND REVERSE STATUS
 80C1:                2E 80          ;           UNKNOWN2E, Value: 0x80
 80C3:                2E 20          ;           UNKNOWN2E, Value: 0x20
-80C5:                A9             ;           COMMAND 0xA9
+80C5:                A9             ;           ROUTINE 0xA9
 80C6:                04 07          ;           PRINT, Length: 0x0007
-;
-; IS CLOSED.
-;
 80C8:                   4B 7B C9 54 A6 B7 2E ; 
+;
+;                       IS CLOSED.
+;
 80CF:             33                ;         UNKNOWN33
 80D0:             0D 09             ;         WHILE PASS, Length: 0x0009
-80D2:                A9             ;           COMMAND 0xA9
+80D2:                A9             ;           ROUTINE 0xA9
 80D3:                04 06          ;           PRINT, Length: 0x0006
-;
-; IS EMPTY.
-;
 80D5:                   4B 7B 72 61 1F C1 ; 
-80DB:       4C                      ;     Phrase number: 0x4C
+;
+;                       IS EMPTY.
+;
+80DB:       4C                      ;     Phrase 0x4C: "LOOK     *          ON       .......L"
 80DC:       51                      ;     ELSE go to: 0x812E
 80DD:          0E 4F                ;       WHILE FAIL, Length: 0x004F
 80DF:             13                ;         UNKNOWN13
@@ -3963,34 +3980,34 @@ GeneralScript:
 80E2:                1B             ;           SET VAR TO SECOND NOUN
 80E3:                15 04          ;           CHECK VAR, Value: 0x04
 80E5:                04 13          ;           PRINT, Length: 0x0013
-;
-; THERE'S SOMETHING WRITTEN ON
-;
 80E7:                   5F BE 5D B1 D5 B5 E7 9F 63 BE AB 98 B3 D2 3F C0 ; 
 80F7:                   91 96 4E    ; 
-80FA:                A9             ;           COMMAND 0xA9
-80FB:                8B             ;           COMMAND 0x8B
+;
+;                       THERE'S SOMETHING WRITTEN ON
+;
+80FA:                A9             ;           ROUTINE 0xA9
+80FB:                8B             ;           ROUTINE 0x8B
 80FC:             0D 1D             ;         WHILE PASS, Length: 0x001D
 80FE:                14             ;           EXECUTE AND REVERSE STATUS
 80FF:                15 01          ;           CHECK VAR, Value: 0x01
 8101:                04 16          ;           PRINT, Length: 0x0016
-;
-; THERE'S NOTHING NOTEWORTHY ABOUT 
-;
 8103:                   5F BE 5D B1 D0 B5 02 A1 91 7A 99 16 F9 BD BE A0 ; 
 8113:                   FB 75 B9 46 73 C6 ; 
-8119:                A9             ;           COMMAND 0xA9
-811A:                8B             ;           COMMAND 0x8B
+;
+;                       THERE'S NOTHING NOTEWORTHY ABOUT 
+;
+8119:                A9             ;           ROUTINE 0xA9
+811A:                8B             ;           ROUTINE 0x8B
 811B:             33                ;         UNKNOWN33
 811C:             0D 10             ;         WHILE PASS, Length: 0x0010
 811E:                04 0C          ;           PRINT, Length: 0x000C
-;
-; THERE'S NOTHING ON
-;
 8120:                   5F BE 5D B1 D0 B5 02 A1 91 7A C0 16 ; 
-812C:                A9             ;           COMMAND 0xA9
-812D:                8B             ;           COMMAND 0x8B
-812E:       1B                      ;     Phrase number: 0x1B
+;
+;                       THERE'S NOTHING ON
+;
+812C:                A9             ;           ROUTINE 0xA9
+812D:                8B             ;           ROUTINE 0x8B
+812E:       1B                      ;     Phrase 0x1B: "LOOK     *          AROUND   u......."
 812F:       1E                      ;     ELSE go to: 0x814E
 8130:          0E 1C                ;       WHILE FAIL, Length: 0x001C
 8132:             13                ;         UNKNOWN13
@@ -3999,371 +4016,371 @@ GeneralScript:
 8137:                07             ;           PRINT ROOM DESCRIPTION
 8138:             0D 14             ;         WHILE PASS, Length: 0x0014
 813A:                04 10          ;           PRINT, Length: 0x0010
-;
-; THERE IS NOTHING AROUND 
-;
 813C:                   5F BE 5B B1 4B 7B 06 9A 90 73 C3 6A 07 B3 33 98 ; 
-814C:                A8             ;           COMMAND 0xA8
-814D:                8B             ;           COMMAND 0x8B
-814E:       1C                      ;     Phrase number: 0x1C
+;
+;                       THERE IS NOTHING AROUND 
+;
+814C:                A8             ;           ROUTINE 0xA8
+814D:                8B             ;           ROUTINE 0x8B
+814E:       1C                      ;     Phrase 0x1C: "LOOK     *          BEHIND   u......."
 814F:       32                      ;     ELSE go to: 0x8182
 8150:          0E 30                ;       WHILE FAIL, Length: 0x0030
 8152:             13                ;         UNKNOWN13
 8153:             0D 17             ;         WHILE PASS, Length: 0x0017
 8155:                08 00          ;           IS FIRST NOUN, Word number: 0x00
 8157:                04 13          ;           PRINT, Length: 0x0013
-;
-; THERE IS NOTHING BEHIND YOU.
-;
 8159:                   5F BE 5B B1 4B 7B 06 9A 90 73 C4 6A A3 60 33 98 ; 
 8169:                   C7 DE 2E    ; 
+;
+;                       THERE IS NOTHING BEHIND YOU.
+;
 816C:             0D 14             ;         WHILE PASS, Length: 0x0014
 816E:                04 10          ;           PRINT, Length: 0x0010
-;
-; THERE IS NOTHING BEHIND 
-;
 8170:                   5F BE 5B B1 4B 7B 06 9A 90 73 C4 6A A3 60 33 98 ; 
-8180:                A8             ;           COMMAND 0xA8
-8181:                8B             ;           COMMAND 0x8B
-8182:       1D                      ;     Phrase number: 0x1D
+;
+;                       THERE IS NOTHING BEHIND 
+;
+8180:                A8             ;           ROUTINE 0xA8
+8181:                8B             ;           ROUTINE 0x8B
+8182:       1D                      ;     Phrase 0x1D: "LOOK     *          OUT         *"
 8183:       16                      ;     ELSE go to: 0x819A
 8184:          04 14                ;       PRINT, Length: 0x0014
-;
-; I'M BEING AS CAREFUL AS I CAN!
-;
 8186:             9F 77 AF 14 91 7A 95 14 D3 14 68 B1 33 C5 4B 49 ; 
 8196:             45 77 81 48       ; 
-819A:       1E                      ;     Phrase number: 0x1E
+;
+;                 I'M BEING AS CAREFUL AS I CAN!
+;
+819A:       1E                      ;     Phrase 0x1E: "YES      *          *           *"
 819B:       04                      ;     ELSE go to: 0x81A0
 819C:          04 02                ;       PRINT, Length: 0x0002
-;
-; NO!
-;
 819E:             E9 99             ; 
-81A0:       1F                      ;     Phrase number: 0x1F
+;
+;                 NO!
+;
+81A0:       1F                      ;     Phrase 0x1F: "NO       *          *           *"
 81A1:       05                      ;     ELSE go to: 0x81A7
 81A2:          04 03                ;       PRINT, Length: 0x0003
-;
-; YES!
-;
 81A4:             35 DD 21          ; 
-81A7:       21                      ;     Phrase number: 0x21
+;
+;                 YES!
+;
+81A7:       21                      ;     Phrase 0x21: "PLUGH    *          *           *"
 81A8:       1C                      ;     ELSE go to: 0x81C5
 81A9:          04 1A                ;       PRINT, Length: 0x001A
-;
-; SORRY, I DON'T BELIEVE IN MAGIC WORDS. 
-;
 81AB:             44 B9 9E B4 BB 15 80 5B F3 23 6E 4D 38 79 4B 5E ; 
 81BB:             8F 96 7B 47 D9 51 AE A0 5B BB ; 
-81C5:       5A                      ;     Phrase number: 0x5A
+;
+;                 SORRY, I DON'T BELIEVE IN MAGIC WORDS. 
+;
+81C5:       5A                      ;     Phrase 0x5A: "THUM     *          *           *"
 81C6:       1B                      ;     ELSE go to: 0x81E2
 81C7:          04 19                ;       PRINT, Length: 0x0019
-;
-; OUCH! I TOLD YOU, THATS NOT POSSIBLE!
-;
 81C9:             25 A1 AB 70 56 77 BE 9F 51 18 B3 C7 5B BE 0B C0 ; 
 81D9:             06 9A E9 16 DB B9 7F 4E 21 ; 
-81E2:       22                      ;     Phrase number: 0x22
+;
+;                 OUCH! I TOLD YOU, THATS NOT POSSIBLE!
+;
+81E2:       22                      ;     Phrase 0x22: "SCREAM   *          *           *"
 81E3:       12                      ;     ELSE go to: 0x81F6
 81E4:          04 10                ;       PRINT, Length: 0x0010
-;
-; YYYEEEEEOOOOOOWWWWWWWW!!
-;
 81E6:             5B E0 27 60 31 60 41 A0 49 A0 89 D3 89 D3 69 CE ; 
-81F6:       23                      ;     Phrase number: 0x23
+;
+;                 YYYEEEEEOOOOOOWWWWWWWW!!
+;
+81F6:       23                      ;     Phrase 0x23: "QUIT     *          *           *"
 81F7:       01                      ;     ELSE go to: 0x81F9
 81F8:          24                   ;       EXIT PROGRAM
-81F9:       2C                      ;     Phrase number: 0x2C
+81F9:       2C                      ;     Phrase 0x2C: "SCORE    *          *           *"
 81FA:       01                      ;     ELSE go to: 0x81FC
-81FB:          C9                   ;       COMMAND 0xC9
-81FC:       3E                      ;     Phrase number: 0x3E
+81FB:          C9                   ;       ROUTINE 0xC9
+81FC:       3E                      ;     Phrase 0x3E: "LOAD     *          *           *"
 81FD:       04                      ;     ELSE go to: 0x8202
 81FE:          0D 02                ;       WHILE PASS, Length: 0x0002
-8200:             C6                ;         COMMAND 0xC6
+8200:             C6                ;         ROUTINE 0xC6
 8201:             27                ;         UNKNOWN27
-8202:       3F                      ;     Phrase number: 0x3F
+8202:       3F                      ;     Phrase 0x3F: "SAVE     *          *           *"
 8203:       04                      ;     ELSE go to: 0x8208
 8204:          0D 02                ;       WHILE PASS, Length: 0x0002
-8206:             C6                ;         COMMAND 0xC6
+8206:             C6                ;         ROUTINE 0xC6
 8207:             28                ;         UNKNOWN28
-8208:       25                      ;     Phrase number: 0x25
+8208:       25                      ;     Phrase 0x25: "LEAVE    *          *           *"
 8209:       20                      ;     ELSE go to: 0x822A
 820A:          04 1E                ;       PRINT, Length: 0x001E
-;
-; YOU'RE NOT GETTING ANYWHERE, TRY A DIRECTION.
-;
 820C:             C7 DE AF 23 99 16 09 BC 8E 62 91 7A 90 14 FA DF ; 
 821C:             2F 62 16 EE 7B B4 46 45 2F 7B 03 56 27 A0 ; 
-822A:       26                      ;     Phrase number: 0x26
+;
+;                 YOU'RE NOT GETTING ANYWHERE, TRY A DIRECTION.
+;
+822A:       26                      ;     Phrase 0x26: "GO       *          AROUND   u......."
 822B:       20                      ;     ELSE go to: 0x824C
 822C:          0E 1E                ;       WHILE FAIL, Length: 0x001E
 822E:             13                ;         UNKNOWN13
 822F:             0D 13             ;         WHILE PASS, Length: 0x0013
 8231:                1A             ;           SET VAR TO FIRST NOUN
 8232:                15 10          ;           CHECK VAR, Value: 0x10
-8234:                A8             ;           COMMAND 0xA8
+8234:                A8             ;           ROUTINE 0xA8
 8235:                04 0D          ;           PRINT, Length: 0x000D
-;
-; WON'T LET YOU PASS!
-;
 8237:                   40 D2 F3 23 F6 8B 51 18 52 C2 65 49 21 ; 
+;
+;                       WON'T LET YOU PASS!
+;
 8244:             04 06             ;         PRINT, Length: 0x0006
-;
-; NOW WHAT?
-;
 8246:                09 9A FA 17 70 49 ; 
-824C:       3D                      ;     Phrase number: 0x3D
+;
+;                    NOW WHAT?
+;
+824C:       3D                      ;     Phrase 0x3D: "GO       *          TO       u......."
 824D:       01                      ;     ELSE go to: 0x824F
-824E:          91                   ;       COMMAND 0x91
-824F:       27                      ;     Phrase number: 0x27
+824E:          91                   ;       ROUTINE 0x91
+824F:       27                      ;     Phrase 0x27: "KICK     u.......   *           *"
 8250:       0E                      ;     ELSE go to: 0x825F
 8251:          0E 0C                ;       WHILE FAIL, Length: 0x000C
 8253:             13                ;         UNKNOWN13
 8254:             04 09             ;         PRINT, Length: 0x0009
-;
-; OUCH! MY TOE!
-;
 8256:                25 A1 AB 70 3B 95 77 BF 21 ; 
-825F:       44                      ;     Phrase number: 0x44
+;
+;                    OUCH! MY TOE!
+;
+825F:       44                      ;     Phrase 0x44: "HELLO    *          *           *"
 8260:       09                      ;     ELSE go to: 0x826A
 8261:          04 07                ;       PRINT, Length: 0x0007
-;
-; GREETINGS!
-;
 8263:             AF 6E 83 62 C5 98 21 ; 
-826A:       45                      ;     Phrase number: 0x45
+;
+;                 GREETINGS!
+;
+826A:       45                      ;     Phrase 0x45: "HELLO    ...P....   *           *"
 826B:       30                      ;     ELSE go to: 0x829C
 826C:          0E 2E                ;       WHILE FAIL, Length: 0x002E
 826E:             13                ;         UNKNOWN13
 826F:             0D 12             ;         WHILE PASS, Length: 0x0012
 8271:                1A             ;           SET VAR TO FIRST NOUN
 8272:                15 10          ;           CHECK VAR, Value: 0x10
-8274:                A8             ;           COMMAND 0xA8
+8274:                A8             ;           ROUTINE 0xA8
 8275:                04 0C          ;           PRINT, Length: 0x000C
-;
-; REPLIES, "HELLO." 
-;
 8277:                   72 B1 87 8C 33 BB DF 1B 09 8D 63 F4 ; 
+;
+;                       REPLIES, "HELLO." 
+;
 8283:             0D 17             ;         WHILE PASS, Length: 0x0017
 8285:                04 13          ;           PRINT, Length: 0x0013
-;
-; ONLY A CRAZY WOULD TALK TO A
-;
 8287:                   16 A0 43 DB E4 14 83 4A 01 18 3E C5 7B 17 CB 8C ; 
 8297:                   6B BF 41    ; 
+;
+;                       ONLY A CRAZY WOULD TALK TO A
+;
 829A:                11             ;           PRINT FIRST NOUN
-829B:                8B             ;           COMMAND 0x8B
-829C:       46                      ;     Phrase number: 0x46
+829B:                8B             ;           ROUTINE 0x8B
+829C:       46                      ;     Phrase 0x46: "WHAT     *          *           *"
 829D:       08                      ;     ELSE go to: 0x82A6
 829E:          04 06                ;       PRINT, Length: 0x0006
-;
-; I DUNNO. 
-;
 82A0:             46 77 98 C5 5B A2 ; 
-82A6:       47                      ;     Phrase number: 0x47
+;
+;                 I DUNNO. 
+;
+82A6:       47                      ;     Phrase 0x47: "WHAT     u.......   *           *"
 82A7:       09                      ;     ELSE go to: 0x82B1
 82A8:          04 07                ;       PRINT, Length: 0x0007
-;
-; WHO KNOWS?
-;
 82AA:             29 D1 20 16 85 A1 3F ; 
-82B1:       4A                      ;     Phrase number: 0x4A
+;
+;                 WHO KNOWS?
+;
+82B1:       4A                      ;     Phrase 0x4A: "COME     *          *           *"
 82B2:       18                      ;     ELSE go to: 0x82CB
 82B3:          0E 16                ;       WHILE FAIL, Length: 0x0016
 82B5:             13                ;         UNKNOWN13
 82B6:             0D 13             ;         WHILE PASS, Length: 0x0013
 82B8:                04 11          ;           PRINT, Length: 0x0011
-;
-; I'LL FOLLOW YOU ANYWHERE!
-;
 82BA:                   9E 77 08 8A C6 9F 6B A1 C7 DE 90 14 FA DF 2F 62 ; 
 82CA:                   21          ; 
-82CB:       49                      ;     Phrase number: 0x49
+;
+;                       I'LL FOLLOW YOU ANYWHERE!
+;
+82CB:       49                      ;     Phrase 0x49: "MEET     u.......   *           *"
 82CC:       26                      ;     ELSE go to: 0x82F3
 82CD:          0E 24                ;       WHILE FAIL, Length: 0x0024
 82CF:             13                ;         UNKNOWN13
 82D0:             0D 11             ;         WHILE PASS, Length: 0x0011
 82D2:                09 00          ;           COMPARE TO SECOND NOUN, Word number: 0x00
-82D4:                A8             ;           COMMAND 0xA8
+82D4:                A8             ;           ROUTINE 0xA8
 82D5:                04 0C          ;           PRINT, Length: 0x000C
-;
-; BOWS IN GREETING. 
-;
 82D7:                   09 4F CB B5 89 96 67 B1 90 BE 5B 70 ; 
+;
+;                       BOWS IN GREETING. 
+;
 82E3:             04 0E             ;         PRINT, Length: 0x000E
-;
-; THEY BOW IN GREETING.
-;
 82E5:                5F BE 44 DB 6B A1 83 7A AF 6E 83 62 CF 98 ; 
-82F3:       28                      ;     Phrase number: 0x28
+;
+;                    THEY BOW IN GREETING.
+;
+82F3:       28                      ;     Phrase 0x28: "FEED     ...P....   WITH     u......."
 82F4:       36                      ;     ELSE go to: 0x832B
 82F5:          0E 34                ;       WHILE FAIL, Length: 0x0034
 82F7:             13                ;         UNKNOWN13
 82F8:             0D 16             ;         WHILE PASS, Length: 0x0016
 82FA:                1A             ;           SET VAR TO FIRST NOUN
 82FB:                15 10          ;           CHECK VAR, Value: 0x10
-82FD:                A8             ;           COMMAND 0xA8
+82FD:                A8             ;           ROUTINE 0xA8
 82FE:                04 10          ;           PRINT, Length: 0x0010
-;
-; ISN'T HUNGRY RIGHT NOW. 
-;
 8300:                   60 7B F3 23 70 75 C3 6E 33 17 2E 6D 99 16 5B D4 ; 
+;
+;                       ISN'T HUNGRY RIGHT NOW. 
+;
 8310:             0D 19             ;         WHILE PASS, Length: 0x0019
 8312:                04 0D          ;           PRINT, Length: 0x000D
-;
-; DON'T YOU KNOW THAT
-;
 8314:                   80 5B F3 23 C7 DE 20 16 6B A1 5B BE 54 ; 
-8321:                A8             ;           COMMAND 0xA8
+;
+;                       DON'T YOU KNOW THAT
+;
+8321:                A8             ;           ROUTINE 0xA8
 8322:                04 07          ;           PRINT, Length: 0x0007
-;
-; CAN'T EAT!
-;
 8324:                   10 53 F3 23 96 5F 21 ; 
-832B:       29                      ;     Phrase number: 0x29
+;
+;                       CAN'T EAT!
+;
+832B:       29                      ;     Phrase 0x29: "FEED     u.......   TO       ...P...."
 832C:       34                      ;     ELSE go to: 0x8361
 832D:          0E 32                ;       WHILE FAIL, Length: 0x0032
 832F:             13                ;         UNKNOWN13
 8330:             0D 14             ;         WHILE PASS, Length: 0x0014
 8332:                1B             ;           SET VAR TO SECOND NOUN
 8333:                15 10          ;           CHECK VAR, Value: 0x10
-8335:                A9             ;           COMMAND 0xA9
+8335:                A9             ;           ROUTINE 0xA9
 8336:                04 0E          ;           PRINT, Length: 0x000E
-;
-; WOULD RATHER EAT YOU!
-;
 8338:                   47 D2 B3 8B D6 B0 F4 72 23 15 1B BC 19 A1 ; 
+;
+;                       WOULD RATHER EAT YOU!
+;
 8346:             0D 19             ;         WHILE PASS, Length: 0x0019
 8348:                04 17          ;           PRINT, Length: 0x0017
-;
-; IF YOU CAN FIND A MOUTH, I'M GAME!
-;
 834A:                   43 79 C7 DE D3 14 88 96 8E 7A 7B 14 C7 93 76 BE ; 
 835A:                   BD 15 49 90 67 48 21 ; 
-8361:       2F                      ;     Phrase number: 0x2F
+;
+;                       IF YOU CAN FIND A MOUTH, I'M GAME!
+;
+8361:       2F                      ;     Phrase 0x2F: "WAIT     *          *           *"
 8362:       07                      ;     ELSE go to: 0x836A
 8363:          04 05                ;       PRINT, Length: 0x0005
-;
-; <PAUSE>
-;
 8365:             9B 29 57 C6 3E    ; 
-836A:       31                      ;     Phrase number: 0x31
+;
+;                 <PAUSE>
+;
+836A:       31                      ;     Phrase 0x31: "FIND     u.......   *           *"
 836B:       17                      ;     ELSE go to: 0x8383
 836C:          04 15                ;       PRINT, Length: 0x0015
-;
-; OH, IT'S AROUND HERE SOMEWHERE.
-;
 836E:             36 9F D6 15 CB 23 39 49 8E C5 9F 15 5B B1 3F B9 ; 
 837E:             FA 62 2F 62 2E    ; 
-8383:       2D                      ;     Phrase number: 0x2D
+;
+;                 OH, IT'S AROUND HERE SOMEWHERE.
+;
+8383:       2D                      ;     Phrase 0x2D: "PULL     *          UP       u......."
 8384:       09                      ;     ELSE go to: 0x838E
 8385:          0E 07                ;       WHILE FAIL, Length: 0x0007
 8387:             13                ;         UNKNOWN13
 8388:             0D 02             ;         WHILE PASS, Length: 0x0002
 838A:                1A             ;           SET VAR TO FIRST NOUN
-838B:                8F             ;           COMMAND 0x8F
+838B:                8F             ;           ROUTINE 0x8F
 838C:             14                ;         EXECUTE AND REVERSE STATUS
 838D:             0C                ;         FAIL
-838E:       48                      ;     Phrase number: 0x48
+838E:       48                      ;     Phrase 0x48: "LOWER    u.......   *           *"
 838F:       11                      ;     ELSE go to: 0x83A1
 8390:          0E 0F                ;       WHILE FAIL, Length: 0x000F
 8392:             13                ;         UNKNOWN13
 8393:             04 0C             ;         PRINT, Length: 0x000C
-;
-; YOU CAN'T DO THAT.
-;
 8395:                C7 DE D3 14 E6 96 09 15 82 17 97 49 ; 
-83A1:       33                      ;     Phrase number: 0x33
+;
+;                    YOU CAN'T DO THAT.
+;
+83A1:       33                      ;     Phrase 0x33: "??33??"
 83A2:       27                      ;     ELSE go to: 0x83CA
 83A3:          0E 25                ;       WHILE FAIL, Length: 0x0025
 83A5:             13                ;         UNKNOWN13
 83A6:             04 22             ;         PRINT, Length: 0x0022
-;
-; ONE SMALL STEP FOR MANKIND, ONE GIANT LEAP FOR YOU!
-;
 83A8:                0F A0 5F 17 46 48 66 17 D3 61 04 68 63 16 5B 99 ; 
 83B8:                56 98 C0 16 49 5E 90 78 0E BC 92 5F 59 15 9B AF ; 
 83C8:                19 A1          ; 
-83CA:       34                      ;     Phrase number: 0x34
+;
+;                    ONE SMALL STEP FOR MANKIND, ONE GIANT LEAP FOR YOU!
+;
+83CA:       34                      ;     Phrase 0x34: "JUMP     *          OVER     u......."
 83CB:       23                      ;     ELSE go to: 0x83EF
 83CC:          0E 21                ;       WHILE FAIL, Length: 0x0021
 83CE:             13                ;         UNKNOWN13
 83CF:             04 1E             ;         PRINT, Length: 0x001E
-;
-; YOUR SUCCESS IS MEASURED IN LEAPS AND BOUNDS!
-;
 83D1:                C7 DE 95 AF D5 C3 65 62 D5 15 67 16 67 49 66 B1 ; 
 83E1:                D0 15 3F 16 ED 48 90 14 04 58 30 A1 09 5C ; 
-83EF:       35                      ;     Phrase number: 0x35
+;
+;                    YOUR SUCCESS IS MEASURED IN LEAPS AND BOUNDS!
+;
+83EF:       35                      ;     Phrase 0x35: "JUMP     *          ON       u......."
 83F0:       1C                      ;     ELSE go to: 0x840D
 83F1:          0E 1A                ;       WHILE FAIL, Length: 0x001A
 83F3:             13                ;         UNKNOWN13
 83F4:             04 17             ;         PRINT, Length: 0x0017
-;
-; YOU'D BETTER WATCH WHERE YOU STEP!
-;
 83F6:                C7 DE 73 21 76 4D F4 BD F3 17 9A BD FA 17 2F 62 ; 
 8406:                51 18 55 C2 F2 BD 21 ; 
-840D:       36                      ;     Phrase number: 0x36
+;
+;                    YOU'D BETTER WATCH WHERE YOU STEP!
+;
+840D:       36                      ;     Phrase 0x36: "ENTER    *          *           *"
 840E:       04                      ;     ELSE go to: 0x8413
 840F:          0E 02                ;       WHILE FAIL, Length: 0x0002
 8411:             13                ;         UNKNOWN13
-8412:             91                ;         COMMAND 0x91
-8413:       37                      ;     Phrase number: 0x37
+8412:             91                ;         ROUTINE 0x91
+8413:       37                      ;     Phrase 0x37: "CLIMB    *          OUT         *"
 8414:       04                      ;     ELSE go to: 0x8419
 8415:          0E 02                ;       WHILE FAIL, Length: 0x0002
 8417:             13                ;         UNKNOWN13
-8418:             91                ;         COMMAND 0x91
-8419:       54                      ;     Phrase number: 0x54
+8418:             91                ;         ROUTINE 0x91
+8419:       54                      ;     Phrase 0x54: "CLIMB    *          UP          *"
 841A:       17                      ;     ELSE go to: 0x8432
 841B:          0E 15                ;       WHILE FAIL, Length: 0x0015
 841D:             13                ;         UNKNOWN13
 841E:             04 12             ;         PRINT, Length: 0x0012
-;
-; THERE IS NO PLACE TO GO UP.
-;
 8420:                5F BE 5B B1 4B 7B EB 99 FB A5 9B 53 6B BF 2B 6E ; 
 8430:                F7 C5          ; 
-8432:       55                      ;     Phrase number: 0x55
+;
+;                    THERE IS NO PLACE TO GO UP.
+;
+8432:       55                      ;     Phrase 0x55: "CLIMB    *          DOWN        *"
 8433:       19                      ;     ELSE go to: 0x844D
 8434:          0E 17                ;       WHILE FAIL, Length: 0x0017
 8436:             13                ;         UNKNOWN13
 8437:             04 14             ;         PRINT, Length: 0x0014
-;
-; THERE IS NO PLACE TO GO DOWN. 
-;
 8439:                5F BE 5B B1 4B 7B EB 99 FB A5 9B 53 6B BF 2B 6E ; 
 8449:                89 5B 1B 9C    ; 
-844D:       38                      ;     Phrase number: 0x38
+;
+;                    THERE IS NO PLACE TO GO DOWN. 
+;
+844D:       38                      ;     Phrase 0x38: "CLIMB    *          UNDER    u......."
 844E:       1D                      ;     ELSE go to: 0x846C
 844F:          0E 1B                ;       WHILE FAIL, Length: 0x001B
 8451:             13                ;         UNKNOWN13
 8452:             0D 18             ;         WHILE PASS, Length: 0x0018
 8454:                04 14          ;           PRINT, Length: 0x0014
-;
-; THERE IS NOT ENOUGH ROOM UNDER
-;
 8456:                   5F BE 5B B1 4B 7B 06 9A 30 15 29 A1 14 71 3F A0 ; 
 8466:                   B0 17 F4 59 ; 
-846A:                A8             ;           COMMAND 0xA8
-846B:                8B             ;           COMMAND 0x8B
-846C:       39                      ;     Phrase number: 0x39
+;
+;                       THERE IS NOT ENOUGH ROOM UNDER
+;
+846A:                A8             ;           ROUTINE 0xA8
+846B:                8B             ;           ROUTINE 0x8B
+846C:       39                      ;     Phrase 0x39: "THROW    ..C.....   IN       u......."
 846D:       1D                      ;     ELSE go to: 0x848B
 846E:          0E 1B                ;       WHILE FAIL, Length: 0x001B
 8470:             13                ;         UNKNOWN13
 8471:             0D 18             ;         WHILE PASS, Length: 0x0018
 8473:                04 16          ;           PRINT, Length: 0x0016
-;
-; YOU WILL HAVE TO PUT IT IN THERE.
-;
 8475:                   C7 DE FB 17 F3 8C 58 72 56 5E D2 9C 73 C6 73 7B ; 
 8485:                   83 7A 5F BE 7F B1 ; 
-848B:       0D                      ;     Phrase number: 0x0D
+;
+;                       YOU WILL HAVE TO PUT IT IN THERE.
+;
+848B:       0D                      ;     Phrase 0x0D: "THROW    .vC.....   AT       ...P...."
 848C:       2B                      ;     ELSE go to: 0x84B8
 848D:          0E 29                ;       WHILE FAIL, Length: 0x0029
 848F:             0D 25             ;         WHILE PASS, Length: 0x0025
 8491:                1A             ;           SET VAR TO FIRST NOUN
-8492:                8F             ;           COMMAND 0x8F
+8492:                8F             ;           ROUTINE 0x8F
 8493:                0E 21          ;           WHILE FAIL, Length: 0x0021
 8495:                   13          ;             UNKNOWN13
 8496:                   0D 1E       ;             WHILE PASS, Length: 0x001E
@@ -4373,105 +4390,108 @@ GeneralScript:
 849D:                         1B    ;                 SET VAR TO SECOND NOUN
 849E:                         14    ;                 EXECUTE AND REVERSE STATUS
 849F:                         15 40 ;                 CHECK VAR, Value: 0x40
-84A1:                      A8       ;               COMMAND 0xA8
+84A1:                      A8       ;               ROUTINE 0xA8
 84A2:                      04 0F    ;               PRINT, Length: 0x000F
-;
-; BOUNCES HARMLESSLY OFF
-;
 84A4:                         07 4F 17 98 CA B5 37 49 F5 8B D3 B8 B8 16 46 ; 
-84B3:                      A9       ;               COMMAND 0xA9
-84B4:                      8B       ;               COMMAND 0x8B
+;
+;                             BOUNCES HARMLESSLY OFF
+;
+84B3:                      A9       ;               ROUTINE 0xA9
+84B4:                      8B       ;               ROUTINE 0x8B
 84B5:                      10       ;               DROP VAR
 84B6:             14                ;         EXECUTE AND REVERSE STATUS
 84B7:             0C                ;         FAIL
-84B8:       57                      ;     Phrase number: 0x57
+84B8:       57                      ;     Phrase 0x57: "SHOOT    u.......   WITH     u......."
 84B9:       81 09                   ;     ELSE go to: 0x85C4
 84BB:          0E 81 06             ;       WHILE FAIL, Length: 0x0106
 84BE:             13                ;         UNKNOWN13
 84BF:             0D 0F             ;         WHILE PASS, Length: 0x000F
 84C1:                14             ;           EXECUTE AND REVERSE STATUS
 84C2:                09 28          ;           COMPARE TO SECOND NOUN, Word number: 0x28
-84C4:                A9             ;           COMMAND 0xA9
+84C4:                A9             ;           ROUTINE 0xA9
 84C5:                04 09          ;           PRINT, Length: 0x0009
-;
-; ISN'T LOADED.
-;
 84C7:                   60 7B F3 23 73 8D E6 59 2E ; 
+;
+;                       ISN'T LOADED.
+;
 84D0:             0D 0A             ;         WHILE PASS, Length: 0x000A
 84D2:                14             ;           EXECUTE AND REVERSE STATUS
-84D3:                03 28 29       ;           IS LOCATED, Room number: 0x28, Object number: 0x29
+84D3:                03 28 29       ;           IS LOCATED, room=obj_28, obj=??29??
 84D6:                04 04          ;           PRINT, Length: 0x0004
-;
-; CLICK.
-;
 84D8:                   C3 54 AF 54 ; 
+;
+;                       CLICK.
+;
 84DC:             0D 80 CB          ;         WHILE PASS, Length: 0x00CB
 84DF:                04 04          ;           PRINT, Length: 0x0004
-;
-; BLAM! 
-;
 84E1:                   7B 4E EB 8F ; 
+;
+;                       BLAM! 
+;
 84E5:                0B 80 C2 08    ;           SWITCH, Length: 0x00C2, Function to call: 0x08
-84E9:                   33          ;             Phrase number: 0x33
+84E9:                   33          ;             Phrase 0x33: "??33??"
 84EA:                   0E          ;             ELSE go to: 0x84F9
 84EB:                      0D 0C    ;               WHILE PASS, Length: 0x000C
 84ED:                         04 07 ;                 PRINT, Length: 0x0007
-;
-; GOOD SHOT!
-;
 84EF:                            41 6E 15 58 86 74 21 ; 
+;
+;                                GOOD SHOT!
+;
 84F6:                         1A    ;                 SET VAR TO FIRST NOUN
-84F7:                         1D 64 ;                 ATTACK VAR, Points: 0x64
-84F9:                   62          ;             Phrase number: 0x62
+84F7:                         1D 64 ;                 ATTACK VAR, Points: 100
+84F9:                   62          ;             Phrase 0x62: "??62??"
 84FA:                   4D          ;             ELSE go to: 0x8548
 84FB:                      0D 4B    ;               WHILE PASS, Length: 0x004B
 84FD:                         04 45 ;                 PRINT, Length: 0x0045
-;
-; THE ALIEN IS LIFTED AND THROWN BACKWARDS BY THE IMPACT OF THE BLAST. ITS LIMP BODY FALLS TO THE GROUND.
-;
 84FF:                            5F BE 8E 14 30 79 D5 15 43 16 BF 68 03 58 33 98 ; 
 850F:                            6C BE 80 A1 AB 14 A9 54 2E 49 C4 B5 56 DB DB 72 ; 
 851F:                            72 7A E6 46 B8 16 82 17 44 5E 55 8B 9B C1 8D 7B ; 
 852F:                            43 16 D3 93 F6 4E 48 DB 46 48 D6 B5 D6 9C DB 72 ; 
 853F:                            B9 6E 8E C5 2E ; 
-8544:                         1C 62 ;                 SET VAR OBJECT, Object number: 0x62
-8546:                         1D 15 ;                 ATTACK VAR, Points: 0x15
-8548:                   89          ;             Phrase number: 0x89
+;
+;                                THE ALIEN IS LIFTED AND THROWN BACKWARDS BY THE IMPACT OF
+;                                THE BLAST. ITS LIMP BODY FALLS TO THE GROUND.
+;
+8544:                         1C 62 ;                 SET VAR OBJECT, obj=??62??
+8546:                         1D 15 ;                 ATTACK VAR, Points: 21
+8548:                   89          ;             Phrase 0x89: "??89??"
 8549:                   60          ;             ELSE go to: 0x85AA
 854A:                      0D 5E    ;               WHILE PASS, Length: 0x005E
 854C:                         04 58 ;                 PRINT, Length: 0x0058
-;
-; THE SHOTGUN ROARS DEAFENINGLY, BUT HAS LITTLE EFFECT ON THE WAVE OF SMALL BLACK CREATURES THAT WASH OVER YOU, STINGING YOU TO DEATH.
-;
 854E:                            5F BE 5A 17 01 A1 83 C5 F3 B2 8B B3 E3 59 70 66 ; 
 855E:                            91 7A 1E 8F BF 14 0A BC 4B 49 96 8C FF BE 28 15 ; 
 856E:                            65 66 11 BC 96 96 DB 72 18 D0 51 5E 95 64 8E 91 ; 
 857E:                            04 8A 45 8B C5 83 63 B1 74 C0 4B 62 5B BE 19 BC ; 
 858E:                            5A 49 C8 16 23 62 C7 DE 15 EE 90 BE 50 6D DB 6A ; 
 859E:                            1B A1 6B BF E3 59 77 BE ; 
-85A6:                         1C 01 ;                 SET VAR OBJECT, Object number: 0x01
-85A8:                         1D 4B ;                 ATTACK VAR, Points: 0x4B
+;
+;                                THE SHOTGUN ROARS DEAFENINGLY, BUT HAS LITTLE EFFECT ON THE
+;                                WAVE OF SMALL BLACK CREATURES THAT WASH OVER YOU, STINGING
+;                                YOU TO DEATH.
+;
+85A6:                         1C 01 ;                 SET VAR OBJECT, obj=01_YOU
+85A8:                         1D 4B ;                 ATTACK VAR, Points: 75
 85AA:             0D 18             ;         WHILE PASS, Length: 0x0018
 85AC:                04 14          ;           PRINT, Length: 0x0014
-;
-; THERE ARE SEVERAL NEW HOLES IN
-;
 85AE:                   5F BE 5B B1 2F 49 57 17 74 CA 33 48 79 98 A9 15 ; 
 85BE:                   F5 8B D0 15 ; 
-85C2:                A8             ;           COMMAND 0xA8
-85C3:                8B             ;           COMMAND 0x8B
-85C4:       0E                      ;     Phrase number: 0x0E
+;
+;                       THERE ARE SEVERAL NEW HOLES IN
+;
+85C2:                A8             ;           ROUTINE 0xA8
+85C3:                8B             ;           ROUTINE 0x8B
+85C4:       0E                      ;     Phrase 0x0E: "THROW    u.......   TO       ...P...."
 85C5:       13                      ;     ELSE go to: 0x85D9
 85C6:          0E 11                ;       WHILE FAIL, Length: 0x0011
 85C8:             13                ;         UNKNOWN13
 85C9:             0D 0E             ;         WHILE PASS, Length: 0x000E
-85CB:                A9             ;           COMMAND 0xA9
+85CB:                A9             ;           ROUTINE 0xA9
 85CC:                04 0B          ;           PRINT, Length: 0x000B
-;
-; DOESN'T WANT IT.
-;
 85CE:                   77 5B 05 B9 19 BC 9E 48 D6 15 2E ; 
-85D9:       0F                      ;     Phrase number: 0x0F
+;
+;                       DOESN'T WANT IT.
+;
+85D9:       0F                      ;     Phrase 0x0F: "DROP     ..C.....   IN       ......O."
 85DA:       1D                      ;     ELSE go to: 0x85F8
 85DB:          0E 1B                ;       WHILE FAIL, Length: 0x001B
 85DD:             0D 06             ;         WHILE PASS, Length: 0x0006
@@ -4479,53 +4499,53 @@ GeneralScript:
 85E0:                14             ;           EXECUTE AND REVERSE STATUS
 85E1:                2E 10          ;           UNKNOWN2E, Value: 0x10
 85E3:                14             ;           EXECUTE AND REVERSE STATUS
-85E4:                8F             ;           COMMAND 0x8F
+85E4:                8F             ;           ROUTINE 0x8F
 85E5:             14                ;         EXECUTE AND REVERSE STATUS
-85E6:             BF                ;         COMMAND 0xBF
+85E6:             BF                ;         ROUTINE 0xBF
 85E7:             0D 05             ;         WHILE PASS, Length: 0x0005
 85E9:                1B             ;           SET VAR TO SECOND NOUN
 85EA:                14             ;           EXECUTE AND REVERSE STATUS
 85EB:                15 02          ;           CHECK VAR, Value: 0x02
-85ED:                B6             ;           COMMAND 0xB6
-85EE:             B7                ;         COMMAND 0xB7
+85ED:                B6             ;           ROUTINE 0xB6
+85EE:             B7                ;         ROUTINE 0xB7
 85EF:             0D 04             ;         WHILE PASS, Length: 0x0004
 85F1:                1B             ;           SET VAR TO SECOND NOUN
 85F2:                32             ;           UNKNOWN32
-85F3:                B5             ;           COMMAND 0xB5
+85F3:                B5             ;           ROUTINE 0xB5
 85F4:                0C             ;           FAIL
 85F5:             13                ;         UNKNOWN13
 85F6:             14                ;         EXECUTE AND REVERSE STATUS
 85F7:             0C                ;         FAIL
-85F8:       4D                      ;     Phrase number: 0x4D
+85F8:       4D                      ;     Phrase 0x4D: "FILL     ......O.   WITH     u......."
 85F9:       23                      ;     ELSE go to: 0x861D
 85FA:          0E 21                ;       WHILE FAIL, Length: 0x0021
 85FC:             0D 05             ;         WHILE PASS, Length: 0x0005
 85FE:                1B             ;           SET VAR TO SECOND NOUN
 85FF:                14             ;           EXECUTE AND REVERSE STATUS
 8600:                2E 10          ;           UNKNOWN2E, Value: 0x10
-8602:                B8             ;           COMMAND 0xB8
+8602:                B8             ;           ROUTINE 0xB8
 8603:             14                ;         EXECUTE AND REVERSE STATUS
-8604:             BF                ;         COMMAND 0xBF
+8604:             BF                ;         ROUTINE 0xBF
 8605:             0D 05             ;         WHILE PASS, Length: 0x0005
 8607:                1A             ;           SET VAR TO FIRST NOUN
 8608:                14             ;           EXECUTE AND REVERSE STATUS
 8609:                15 02          ;           CHECK VAR, Value: 0x02
-860B:                B6             ;           COMMAND 0xB6
-860C:             B7                ;         COMMAND 0xB7
+860B:                B6             ;           ROUTINE 0xB6
+860C:             B7                ;         ROUTINE 0xB7
 860D:             0D 05             ;         WHILE PASS, Length: 0x0005
 860F:                1B             ;           SET VAR TO SECOND NOUN
 8610:                14             ;           EXECUTE AND REVERSE STATUS
 8611:                2E 10          ;           UNKNOWN2E, Value: 0x10
-8613:                B8             ;           COMMAND 0xB8
+8613:                B8             ;           ROUTINE 0xB8
 8614:             0D 04             ;         WHILE PASS, Length: 0x0004
 8616:                1A             ;           SET VAR TO FIRST NOUN
 8617:                31             ;           UNKNOWN31
-8618:                B5             ;           COMMAND 0xB5
+8618:                B5             ;           ROUTINE 0xB5
 8619:                0C             ;           FAIL
 861A:             13                ;         UNKNOWN13
 861B:             14                ;         EXECUTE AND REVERSE STATUS
 861C:             0C                ;         FAIL
-861D:       4E                      ;     Phrase number: 0x4E
+861D:       4E                      ;     Phrase 0x4E: "POUR     u.......   *           *"
 861E:       3F                      ;     ELSE go to: 0x865E
 861F:          0E 3D                ;       WHILE FAIL, Length: 0x003D
 8621:             0D 0A             ;         WHILE PASS, Length: 0x000A
@@ -4533,44 +4553,44 @@ GeneralScript:
 8624:                14             ;           EXECUTE AND REVERSE STATUS
 8625:                2E 10          ;           UNKNOWN2E, Value: 0x10
 8627:                04 03          ;           PRINT, Length: 0x0003
-;
-; POOR
-;
 8629:                   81 A6 52    ; 
+;
+;                       POOR
+;
 862C:                11             ;           PRINT FIRST NOUN
 862D:             14                ;         EXECUTE AND REVERSE STATUS
-862E:             BF                ;         COMMAND 0xBF
+862E:             BF                ;         ROUTINE 0xBF
 862F:             0D 10             ;         WHILE PASS, Length: 0x0010
 8631:                09 00          ;           COMPARE TO SECOND NOUN, Word number: 0x00
-8633:                1C 00          ;           SET VAR OBJECT, Object number: 0x00
+8633:                1C 00          ;           SET VAR OBJECT, obj=??00??
 8635:                32             ;           UNKNOWN32
-8636:                A8             ;           COMMAND 0xA8
+8636:                A8             ;           ROUTINE 0xA8
 8637:                04 08          ;           PRINT, Length: 0x0008
-;
-; IS NOW GONE.
-;
 8639:                   4B 7B 09 9A 81 15 7F 98 ; 
+;
+;                       IS NOW GONE.
+;
 8641:             0D 12             ;         WHILE PASS, Length: 0x0012
 8643:                1B             ;           SET VAR TO SECOND NOUN
 8644:                14             ;           EXECUTE AND REVERSE STATUS
 8645:                15 02          ;           CHECK VAR, Value: 0x02
-8647:                A9             ;           COMMAND 0xA9
+8647:                A9             ;           ROUTINE 0xA9
 8648:                04 08          ;           PRINT, Length: 0x0008
-;
-; IS NOW DAMP.
-;
 864A:                   4B 7B 09 9A FB 14 F7 93 ; 
-8652:                1C 00          ;           SET VAR OBJECT, Object number: 0x00
+;
+;                       IS NOW DAMP.
+;
+8652:                1C 00          ;           SET VAR OBJECT, obj=??00??
 8654:                32             ;           UNKNOWN32
 8655:             0D 04             ;         WHILE PASS, Length: 0x0004
 8657:                1B             ;           SET VAR TO SECOND NOUN
 8658:                32             ;           UNKNOWN32
-8659:                B5             ;           COMMAND 0xB5
+8659:                B5             ;           ROUTINE 0xB5
 865A:                0C             ;           FAIL
 865B:             13                ;         UNKNOWN13
 865C:             14                ;         EXECUTE AND REVERSE STATUS
 865D:             0C                ;         FAIL
-865E:       4F                      ;     Phrase number: 0x4F
+865E:       4F                      ;     Phrase 0x4F: "DRINK    u.......   *           *"
 865F:       52                      ;     ELSE go to: 0x86B2
 8660:          0E 50                ;       WHILE FAIL, Length: 0x0050
 8662:             0D 32             ;         WHILE PASS, Length: 0x0032
@@ -4578,29 +4598,30 @@ GeneralScript:
 8665:                14             ;           EXECUTE AND REVERSE STATUS
 8666:                2E 10          ;           UNKNOWN2E, Value: 0x10
 8668:                04 2A          ;           PRINT, Length: 0x002A
-;
-; YOU'RE SICK, BUT NOT HALF AS SICK AS YOU WOULD BE IF YOU DRANK 
-;
 866A:                   C7 DE AF 23 5B 17 AE 54 BF 14 10 BC F3 A0 4E 72 ; 
 867A:                   83 64 D5 B5 DD 78 95 14 51 18 59 C2 2E A1 04 58 ; 
 868A:                   4B 5E 9B 64 1B A1 EB 5B 4B 99 ; 
-8694:                A8             ;           COMMAND 0xA8
-8695:                8B             ;           COMMAND 0x8B
+;
+;                       YOU'RE SICK, BUT NOT HALF AS SICK AS YOU WOULD BE IF YOU
+;                       DRANK
+;
+8694:                A8             ;           ROUTINE 0xA8
+8695:                8B             ;           ROUTINE 0x8B
 8696:             14                ;         EXECUTE AND REVERSE STATUS
-8697:             BF                ;         COMMAND 0xBF
+8697:             BF                ;         ROUTINE 0xBF
 8698:             0D 04             ;         WHILE PASS, Length: 0x0004
 869A:                13             ;           UNKNOWN13
-869B:                1C 00          ;           SET VAR OBJECT, Object number: 0x00
+869B:                1C 00          ;           SET VAR OBJECT, obj=??00??
 869D:                32             ;           UNKNOWN32
 869E:             0D 12             ;         WHILE PASS, Length: 0x0012
-86A0:                1C 00          ;           SET VAR OBJECT, Object number: 0x00
+86A0:                1C 00          ;           SET VAR OBJECT, obj=??00??
 86A2:                32             ;           UNKNOWN32
 86A3:                04 0D          ;           PRINT, Length: 0x000D
-;
-; YOU FEEL REFRESHED.
-;
 86A5:                   C7 DE 4F 15 33 61 68 B1 75 B1 E6 72 2E ; 
-86B2:       4B                      ;     Phrase number: 0x4B
+;
+;                       YOU FEEL REFRESHED.
+;
+86B2:       4B                      ;     Phrase 0x4B: "DROP     ..C.....   ON       .......L"
 86B3:       43                      ;     ELSE go to: 0x86F7
 86B4:          0E 41                ;       WHILE FAIL, Length: 0x0041
 86B6:             13                ;         UNKNOWN13
@@ -4609,239 +4630,270 @@ GeneralScript:
 86BA:                14             ;           EXECUTE AND REVERSE STATUS
 86BB:                2E 10          ;           UNKNOWN2E, Value: 0x10
 86BD:                14             ;           EXECUTE AND REVERSE STATUS
-86BE:                8F             ;           COMMAND 0x8F
+86BE:                8F             ;           ROUTINE 0x8F
 86BF:             0D 16             ;         WHILE PASS, Length: 0x0016
 86C1:                2E 10          ;           UNKNOWN2E, Value: 0x10
 86C3:                0E 12          ;           WHILE FAIL, Length: 0x0012
 86C5:                   14          ;             EXECUTE AND REVERSE STATUS
-86C6:                   BF          ;             COMMAND 0xBF
+86C6:                   BF          ;             ROUTINE 0xBF
 86C7:                   0D 0E       ;             WHILE PASS, Length: 0x000E
-86C9:                      A9       ;               COMMAND 0xA9
+86C9:                      A9       ;               ROUTINE 0xA9
 86CA:                      04 08    ;               PRINT, Length: 0x0008
-;
-; IS NOW WET. 
-;
 86CC:                         4B 7B 09 9A F7 17 9B C1 ; 
-86D4:                      1C 00    ;               SET VAR OBJECT, Object number: 0x00
+;
+;                             IS NOW WET. 
+;
+86D4:                      1C 00    ;               SET VAR OBJECT, obj=??00??
 86D6:                      32       ;               UNKNOWN32
 86D7:             0D 16             ;         WHILE PASS, Length: 0x0016
 86D9:                1B             ;           SET VAR TO SECOND NOUN
 86DA:                14             ;           EXECUTE AND REVERSE STATUS
 86DB:                15 01          ;           CHECK VAR, Value: 0x01
 86DD:                04 10          ;           PRINT, Length: 0x0010
-;
-; THERE'S NOT ENOUGH ROOM.
-;
 86DF:                   5F BE 5D B1 D0 B5 F3 A0 99 61 7A C4 39 17 FF 9F ; 
+;
+;                       THERE'S NOT ENOUGH ROOM.
+;
 86EF:             0D 04             ;         WHILE PASS, Length: 0x0004
 86F1:                1B             ;           SET VAR TO SECOND NOUN
 86F2:                32             ;           UNKNOWN32
-86F3:                B5             ;           COMMAND 0xB5
+86F3:                B5             ;           ROUTINE 0xB5
 86F4:                0C             ;           FAIL
 86F5:             14                ;         EXECUTE AND REVERSE STATUS
 86F6:             0C                ;         FAIL
-86F7:       19                      ;     Phrase number: 0x19
+86F7:       19                      ;     Phrase 0x19: "DIAGNO   *          *           *"
 86F8:       80 EB                   ;     ELSE go to: 0x87E5
 86FA:          0D 80 E8             ;       WHILE PASS, Length: 0x00E8
-86FD:             1C 01             ;         SET VAR OBJECT, Object number: 0x01
+86FD:             1C 01             ;         SET VAR OBJECT, obj=01_YOU
 86FF:             0B 80 E3 22       ;         SWITCH, Length: 0x00E3, Function to call: 0x22
-8703:                05             ;           Phrase number: 0x05
+8703:                05             ;           Phrase 0x05: "GET      ..C.....   *           *"
 8704:                24             ;           ELSE go to: 0x8729
 8705:                   04 22       ;             PRINT, Length: 0x0022
-;
-; YOU ARE ON YOUR LAST LEGS. ANYTHING COULD KILL YOU!
-;
 8707:                      C7 DE 94 14 51 5E 9B 96 34 A1 3B 16 F3 B9 E9 8B ; 
 8717:                      5B BB A3 48 63 BE AB 98 47 55 B3 8B 4E 86 1B 8A ; 
 8727:                      19 A1    ; 
-8729:                14             ;           Phrase number: 0x14
+;
+;                          YOU ARE ON YOUR LAST LEGS. ANYTHING COULD KILL YOU!
+;
+8729:                14             ;           Phrase 0x14: "LIGHT    ....A...   WITH     ....A..."
 872A:                1C             ;           ELSE go to: 0x8747
 872B:                   04 1A       ;             PRINT, Length: 0x001A
-;
-; ONE MORE GOOD INJURY AND YOU'VE HAD IT!
-;
 872D:                      0F A0 71 16 5B B1 41 6E 0B 58 3F 99 7B B4 8E 48 ; 
 873D:                      51 18 A8 C2 4A 5E F3 46 71 7B ; 
-8747:                23             ;           Phrase number: 0x23
+;
+;                          ONE MORE GOOD INJURY AND YOU'VE HAD IT!
+;
+8747:                23             ;           Phrase 0x23: "QUIT     *          *           *"
 8748:                22             ;           ELSE go to: 0x876B
 8749:                   04 20       ;             PRINT, Length: 0x0020
-;
-; YOU ARE FEELING QUITE ILL. I PRESCRIBE CAUTION! 
-;
 874B:                      C7 DE 94 14 48 5E 2E 60 91 7A 17 17 7F 7B CE 15 ; 
 875B:                      9B 8F 52 77 75 B1 B3 55 5B 4D 17 53 91 BE 2B 96 ; 
-876B:                33             ;           Phrase number: 0x33
+;
+;                          YOU ARE FEELING QUITE ILL. I PRESCRIBE CAUTION! 
+;
+876B:                33             ;           Phrase 0x33: "??33??"
 876C:                32             ;           ELSE go to: 0x879F
 876D:                   04 30       ;             PRINT, Length: 0x0030
-;
-; YOU ARE NOT FEELING UP TO PAR. YOU SHOULD TAKE BETTER CARE OF YOURSELF. 
-;
 876F:                      C7 DE 94 14 50 5E F3 A0 67 66 90 8C D7 6A 16 A3 ; 
 877F:                      D2 9C 47 49 51 18 55 C2 87 74 B3 8B 4D BD 44 5E ; 
 878F:                      8E 62 23 62 14 53 51 5E 9B 64 34 A1 AE B7 1B 6A ; 
-879F:                44             ;           Phrase number: 0x44
+;
+;                          YOU ARE NOT FEELING UP TO PAR. YOU SHOULD TAKE BETTER CARE
+;                          OF YOURSELF.
+;
+879F:                44             ;           Phrase 0x44: "HELLO    *          *           *"
 87A0:                24             ;           ELSE go to: 0x87C5
 87A1:                   04 22       ;             PRINT, Length: 0x0022
-;
-; YOU'RE FEELING PRETTY GOOD UNDER THE CIRCUMSTANCES.
-;
 87A3:                      C7 DE AF 23 4F 15 43 61 AB 98 EF A6 53 C0 81 15 ; 
 87B3:                      73 9E 8E C5 23 62 5F BE DB 14 27 B1 66 94 8D 48 ; 
 87C3:                      6F 62    ; 
-87C5:                FF             ;           Phrase number: 0xFF
+;
+;                          YOU'RE FEELING PRETTY GOOD UNDER THE CIRCUMSTANCES.
+;
+87C5:                FF             ;           Phrase 0xFF: "??FF??"
 87C6:                1E             ;           ELSE go to: 0x87E5
 87C7:                   04 1C       ;             PRINT, Length: 0x001C
-;
-; YOU FEEL AS GOOD AS THE DAY YOU WERE BORN.
-;
 87C9:                      C7 DE 4F 15 33 61 4B 49 41 6E 03 58 D6 B5 DB 72 ; 
 87D9:                      5B 59 51 18 59 C2 2F 62 B9 14 E7 B2 ; 
-87E5:       52                      ;     Phrase number: 0x52
+;
+;                          YOU FEEL AS GOOD AS THE DAY YOU WERE BORN.
+;
+87E5:       52                      ;     Phrase 0x52: "START    u.......   *           *"
 87E6:       04                      ;     ELSE go to: 0x87EB
 87E7:          0E 02                ;       WHILE FAIL, Length: 0x0002
 87E9:             13                ;         UNKNOWN13
-87EA:             B8                ;         COMMAND 0xB8
-87EB:       56                      ;     Phrase number: 0x56
+87EA:             B8                ;         ROUTINE 0xB8
+87EB:       56                      ;     Phrase 0x56: "DIG      u.......   WITH     u......."
 87EC:       11                      ;     ELSE go to: 0x87FE
 87ED:          0E 0F                ;       WHILE FAIL, Length: 0x000F
 87EF:             13                ;         UNKNOWN13
 87F0:             04 0C             ;         PRINT, Length: 0x000C
-;
-; I DIG IT TOO, MAN!
-;
 87F2:                46 77 6B 79 73 7B 81 BF 0F EE 81 48 ; 
-87FE:       50                      ;     Phrase number: 0x50
+;
+;                    I DIG IT TOO, MAN!
+;
+87FE:       50                      ;     Phrase 0x50: "TURN     *          ON       u......."
 87FF:       11                      ;     ELSE go to: 0x8811
 8800:          0E 0F                ;       WHILE FAIL, Length: 0x000F
 8802:             13                ;         UNKNOWN13
 8803:             04 0C             ;         PRINT, Length: 0x000C
-;
-; YOU CAN'T DO THAT!
-;
 8805:                C7 DE D3 14 E6 96 09 15 82 17 71 49 ; 
-8811:       51                      ;     Phrase number: 0x51
+;
+;                    YOU CAN'T DO THAT!
+;
+8811:       51                      ;     Phrase 0x51: "TURN     *          OFF      u......."
 8812:       2B                      ;     ELSE go to: 0x883E
 8813:          0E 29                ;       WHILE FAIL, Length: 0x0029
 8815:             13                ;         UNKNOWN13
 8816:             04 26             ;         PRINT, Length: 0x0026
-;
-; BEFORE YOU CAN TURN SOMETHING OFF, IT MUST BE TURNED ON. 
-;
 8818:                68 4D AF A0 51 18 45 C2 83 48 74 C0 95 96 E7 9F ; 
 8828:                63 BE AB 98 D0 9E 0B EE 0F BC 66 C6 AF 14 8F 17 ; 
 8838:                CF B2 11 58 1B 9C ; 
-883E:       53                      ;     Phrase number: 0x53
+;
+;                    BEFORE YOU CAN TURN SOMETHING OFF, IT MUST BE TURNED ON. 
+;
+883E:       53                      ;     Phrase 0x53: "STRIKE   u.......   *           *"
 883F:       0F                      ;     ELSE go to: 0x884F
 8840:          0E 0D                ;       WHILE FAIL, Length: 0x000D
 8842:             13                ;         UNKNOWN13
 8843:             0D 0A             ;         WHILE PASS, Length: 0x000A
 8845:                04 08          ;           PRINT, Length: 0x0008
-;
-; USE 'ATTACK'
-;
 8847:                   57 C6 93 13 3B C0 8D 54 ; 
-884F:       58                      ;     Phrase number: 0x58
+;
+;                       USE 'ATTACK'
+;
+884F:       58                      ;     Phrase 0x58: "POINT    u.......   *           *"
 8850:       0D                      ;     ELSE go to: 0x885E
 8851:          0E 0B                ;       WHILE FAIL, Length: 0x000B
 8853:             13                ;         UNKNOWN13
 8854:             0D 08             ;         WHILE PASS, Length: 0x0008
 8856:                04 06          ;           PRINT, Length: 0x0006
-;
-; I SEE IT.
-;
 8858:                   55 77 1B 60 97 7B ; 
-885E:       07                      ;     Phrase number: 0x07
+;
+;                       I SEE IT.
+;
+885E:       07                      ;     Phrase 0x07: "INVENT   *          *           *"
 885F:       1A                      ;     ELSE go to: 0x887A
 8860:          0D 18                ;       WHILE PASS, Length: 0x0018
 8862:             04 15             ;         PRINT, Length: 0x0015
-;
-; YOU ARE CARRYING THE FOLLOWING:
-;
 8864:                C7 DE 94 14 45 5E 3C 49 D0 DD D6 6A DB 72 FE 67 ; 
 8874:                89 8D 91 7A 3A ; 
+;
+;                    YOU ARE CARRYING THE FOLLOWING:
+;
 8879:             06                ;         PRINT INVENTORY
 ```
 
 # Object Data
 
+Some of the object scripts reference room numbers. Room numbers are
+unique to the disk section but NOT the game in general. There are
+multiple room 85, for instance.
+
+If an object has no formal description, it won't be shown in a room. But
+the player could still interact with it even if it doesn't show up. The
+player just needs to know where to look! Check and document these ghosts.
+
+For instance, the handgrip is in room 0x8A but has no description. The description
+for one of room 8A talks about the handgrip. Sections 2, 6, 8, and 9 all have
+a room 8A. The check for the handgrip might work in all of them.
+
+Hopefully, the object that references the room is stuck in a particular
+room and can't be moved to another room with the same ID. Here are
+the room references in the object scripts. TODO investigate these.
+
+```
+# Room 85 could be 1, 6, 7, 9
+# Room 8E could be 2, 6, or 8
+# Room 90 could be 3, 6, or 8
+# Room 91 could be 3, 6, or 8
+# Room 92 could be 3, 6, or 8
+# Room 99 could be 4, 5, or 7
+# Room 9A could be 4, 5, or 8
+# Room 9C could be 4, 5, or 8
+# Room 9D could be 4, 5, or 8
+# Room C3 only 5
+# Room DB could be 2 or 5
+# Room E8 only 5
+```
+
 ```code
 ObjectData:
 887A: 00 AB 32  ; ID: 0x00, Length: 0x2B32
-;
 ; Object 01
-887D: 01 80 87                      ; Word Number: 0x01 "??01??", Length: 0x87
+887D: 01 80 87                      ; Word Number: 0x01 "??01??", Length: 0x0087
 8880: 80 01 80                      ; Location: 0x80, Points: 1, Data Bits: 0b10000000
-8883:    0A 35                      ;   Section 10: UPON_DEATH, Length: 0x35
+8883:    0A 35                      ;   Section 10: UPON_DEATH, Length: 0x0035
 8885:       0D 33                   ;     WHILE PASS, Length: 0x0033
 8887:          0E 24                ;       WHILE FAIL, Length: 0x0024
 8889:             0D 20             ;         WHILE PASS, Length: 0x0020
-888B:                03 01 35       ;           IS LOCATED, Room number: 0x01, Object number: 0x35
+888B:                03 01 35       ;           IS LOCATED, room=01_PLAYER, obj=??35??
 888E:                1F 1B          ;           PRINT, Length: 0x001B
-;
-; THE SNAKE VENOM WAS EXTREMELY POISONOUS!
-;
 8890:                   5F BE 60 17 17 48 CF 17 FF 99 F3 17 C7 B5 4C D9 ; 
 88A0:                   67 61 FB 8E 7B A6 40 B9 35 A1 21 ; 
+;
+;                       THE SNAKE VENOM WAS EXTREMELY POISONOUS!
+;
 88AB:             14                ;         EXECUTE AND REVERSE STATUS
 88AC:             0C                ;         FAIL
 88AD:          1F 09                ;       PRINT, Length: 0x0009
-;
-; YOU ARE DEAD.
-;
 88AF:             C7 DE 94 14 46 5E 86 5F 2E ; 
-88B8:          C9                   ;       COMMAND 0xC9
+;
+;                 YOU ARE DEAD.
+;
+88B8:          C9                   ;       ROUTINE 0xC9
 88B9:          24                   ;       EXIT PROGRAM
-88BA:    08 43                      ;   Section 8: ??UNKNOWN_08??, Length: 0x43
+88BA:    08 43                      ;   Section 8: ??UNKNOWN_08??, Length: 0x0043
 88BC:       0E 41                   ;     WHILE FAIL, Length: 0x0041
 88BE:          0D 1E                ;       WHILE PASS, Length: 0x001E
-88C0:             03 39 4B          ;         IS LOCATED, Room number: 0x39, Object number: 0x4B
+88C0:             03 39 4B          ;         IS LOCATED, room=obj_39, obj=??4B??
 88C3:             14                ;         EXECUTE AND REVERSE STATUS
-88C4:             01 39             ;         IS IN PACK OR CURRENT ROOM, Object number: 0x39
+88C4:             01 39             ;         IS IN PACK OR CURRENT ROOM, obj=??39??
 88C6:             0E 06             ;         WHILE FAIL, Length: 0x0006
-88C8:                03 9C 01       ;           IS LOCATED, Room number: 0x9C, Object number: 0x01
-88CB:                03 99 01       ;           IS LOCATED, Room number: 0x99, Object number: 0x01
+88C8:                03 9C 01       ;           IS LOCATED, room=??9C??, obj=01_YOU
+88CB:                03 99 01       ;           IS LOCATED, room=??99??, obj=01_YOU
 88CE:             0E 06             ;         WHILE FAIL, Length: 0x0006
-88D0:                03 9A 39       ;           IS LOCATED, Room number: 0x9A, Object number: 0x39
-88D3:                03 9D 39       ;           IS LOCATED, Room number: 0x9D, Object number: 0x39
+88D0:                03 9A 39       ;           IS LOCATED, room=??9A??, obj=??39??
+88D3:                03 9D 39       ;           IS LOCATED, room=??9D??, obj=??39??
 88D6:             1F 06             ;         PRINT, Length: 0x0006
-;
-; BOOOOOOM!
-;
 88D8:                01 4F 41 A0 D9 9F ; 
+;
+;                    BOOOOOOM!
+;
 88DE:          0D 1F                ;       WHILE PASS, Length: 0x001F
-88E0:             03 39 4B          ;         IS LOCATED, Room number: 0x39, Object number: 0x4B
+88E0:             03 39 4B          ;         IS LOCATED, room=obj_39, obj=??4B??
 88E3:             14                ;         EXECUTE AND REVERSE STATUS
-88E4:             01 39             ;         IS IN PACK OR CURRENT ROOM, Object number: 0x39
+88E4:             01 39             ;         IS IN PACK OR CURRENT ROOM, obj=??39??
 88E6:             1F 17             ;         PRINT, Length: 0x0017
-;
-; THE DYNAMITE MUST HAVE BEEN A DUD!
-;
 88E8:                5F BE 13 15 CF 97 7F 7B 77 16 F3 B9 58 72 44 5E ; 
 88F8:                30 60 7B 14 66 5C 21 ; 
-88FF:    02 02                      ;   Section 2: SHORT_NAME, Length: 0x02
+;
+;                    THE DYNAMITE MUST HAVE BEEN A DUD!
+;
+88FF:    02 02                      ;   Section 2: SHORT_NAME, Length: 0x0002
 ;           YOU
 8901:       C7 DE                   ; 
-8903:    09 02                      ;   Section 9: HIT_POINTS, Length: 0x02
+8903:    09 02                      ;   Section 9: HIT_POINTS, Length: 0x0002
 8905:       46 46                   ;     Hit Points: 70/70
 
 ; Object 02
-8907: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x08
+8907: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x0008
 8909: 83 01 88                      ; Location: 0x83, Points: 1, Data Bits: 0b10001000
-890C:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+890C:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 890E:       81 5B 52                ; 
 
 ; Object 03
-8911: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x08
+8911: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x0008
 8913: 82 21 88                      ; Location: 0x82, Points: 33, Data Bits: 0b10001000
-8916:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+8916:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 8918:       81 5B 52                ; 
 
 ; Object 04
-891B: 10 2E                         ; Word Number: 0x10 "DOOR", Length: 0x2E
+891B: 10 2E                         ; Word Number: 0x10 "DOOR", Length: 0x002E
 891D: 88 61 8C                      ; Location: 0x88, Points: 97, Data Bits: 0b10001100
-8920:    07 24                      ;   Section 7: IF_FIRST_NOUN, Length: 0x24
+8920:    07 24                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0024
 8922:       0E 22                   ;     WHILE FAIL, Length: 0x0022
 8924:          0D 0A                ;       WHILE PASS, Length: 0x000A
 8926:             0E 04             ;         WHILE FAIL, Length: 0x0004
@@ -4849,425 +4901,425 @@ ObjectData:
 892A:                0A 42          ;           IS INPUT PHRASE, Phrase number: 0x42
 892C:             14                ;         EXECUTE AND REVERSE STATUS
 892D:             09 1C             ;         COMPARE TO SECOND NOUN, Word number: 0x1C
-892F:             BA                ;         COMMAND 0xBA
+892F:             BA                ;         ROUTINE 0xBA
 8930:          0D 14                ;       WHILE PASS, Length: 0x0014
 8932:             0A 08             ;         IS INPUT PHRASE, Phrase number: 0x08
 8934:             04 10             ;         PRINT, Length: 0x0010
-;
-; IT IS NO LONGER LEGIBLE.
-;
 8936:                73 7B 4B 7B EB 99 80 8D B4 6C 3F 16 44 6D FF 8B ; 
-8946:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+;
+;                    IT IS NO LONGER LEGIBLE.
+;
+8946:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 8948:       81 5B 52                ; 
 
 ; Object 05
-894B: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x08
+894B: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x0008
 894D: DA 01 88                      ; Location: 0xDA, Points: 1, Data Bits: 0b10001000
-8950:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+8950:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 8952:       81 5B 52                ; 
 
 ; Object 06
-8955: 10 2C                         ; Word Number: 0x10 "DOOR", Length: 0x2C
+8955: 10 2C                         ; Word Number: 0x10 "DOOR", Length: 0x002C
 8957: 8D 22 88                      ; Location: 0x8D, Points: 34, Data Bits: 0b10001000
-895A:    03 19                      ;   Section 3: DESCRIPTION, Length: 0x19
+895A:    03 19                      ;   Section 3: DESCRIPTION, Length: 0x0019
 895C:       04 17                   ;     PRINT, Length: 0x0017
-;
-; SWINGING DOORS LEAD TO THE SALOON.
-;
 895E:          7B BA BB 98 AB 98 81 5B 8B B3 E3 8B 16 58 D6 9C ; 
 896E:          DB 72 0E B7 40 A0 2E ; 
-8975:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x02
+;
+;              SWINGING DOORS LEAD TO THE SALOON.
+;
+8975:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0002
 8977:       41 46                   ; 
-8979:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x08
+8979:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x0008
 ;           SALOON DOOR 
 897B:       0E B7 40 A0 09 15 A3 A0 ; 
 
 ; Object 07
-8983: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x08
+8983: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x0008
 8985: A2 02 88                      ; Location: 0xA2, Points: 2, Data Bits: 0b10001000
-8988:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+8988:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 898A:       81 5B 52                ; 
 
 ; Object 08
-898D: 10 41                         ; Word Number: 0x10 "DOOR", Length: 0x41
+898D: 10 41                         ; Word Number: 0x10 "DOOR", Length: 0x0041
 898F: 8D 62 88                      ; Location: 0x8D, Points: 98, Data Bits: 0b10001000
-8992:    03 1B                      ;   Section 3: DESCRIPTION, Length: 0x1B
+8992:    03 1B                      ;   Section 3: DESCRIPTION, Length: 0x001B
 8994:       04 19                   ;     PRINT, Length: 0x0019
-;
-; A DOOR LEADS TO THE SHERIFF'S OFFICE.
-;
 8996:          46 45 44 A0 3F 16 0D 47 89 17 82 17 55 5E F4 72 ; 
 89A6:          50 79 CB 23 D0 9E D7 78 2E ; 
-89AF:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0C
+;
+;              A DOOR LEADS TO THE SHERIFF'S OFFICE.
+;
+89AF:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x000C
 89B1:       0D 0A                   ;     WHILE PASS, Length: 0x000A
 89B3:          0E 04                ;       WHILE FAIL, Length: 0x0004
 89B5:             0A 3A             ;         IS INPUT PHRASE, Phrase number: 0x3A
 89B7:             0A 42             ;         IS INPUT PHRASE, Phrase number: 0x42
 89B9:          14                   ;       EXECUTE AND REVERSE STATUS
 89BA:          09 1B                ;       COMPARE TO SECOND NOUN, Word number: 0x1B
-89BC:          BA                   ;       COMMAND 0xBA
-89BD:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+89BC:          BA                   ;       ROUTINE 0xBA
+89BD:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 89BF:       42                      ; 
-89C0:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x0E
+89C0:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x000E
 ;           SHERIFF'S OFFICE DOOR
 89C2:       1F B8 08 B2 E5 64 B8 16 05 67 46 5E 44 A0 ; 
 
 ; Object 09
-89D0: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x08
+89D0: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x0008
 89D2: 8E 02 88                      ; Location: 0x8E, Points: 2, Data Bits: 0b10001000
-89D5:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+89D5:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 89D7:       81 5B 52                ; 
 
 ; Object 0A
-89DA: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x08
+89DA: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x0008
 89DC: A6 03 88                      ; Location: 0xA6, Points: 3, Data Bits: 0b10001000
-89DF:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+89DF:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 89E1:       81 5B 52                ; 
 
 ; Object 0B
-89E4: 10 34                         ; Word Number: 0x10 "DOOR", Length: 0x34
+89E4: 10 34                         ; Word Number: 0x10 "DOOR", Length: 0x0034
 89E6: 93 23 88                      ; Location: 0x93, Points: 35, Data Bits: 0b10001000
-89E9:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x12
+89E9:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x0012
 89EB:       04 10                   ;     PRINT, Length: 0x0010
-;
-; A DOOR LEADS TO SLIM'S. 
-;
 89ED:          46 45 44 A0 3F 16 0D 47 89 17 5E 17 5D 7A 5B BB ; 
-89FD:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0C
+;
+;              A DOOR LEADS TO SLIM'S. 
+;
+89FD:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x000C
 89FF:       0D 0A                   ;     WHILE PASS, Length: 0x000A
 8A01:          0E 04                ;       WHILE FAIL, Length: 0x0004
 8A03:             0A 3A             ;         IS INPUT PHRASE, Phrase number: 0x3A
 8A05:             0A 42             ;         IS INPUT PHRASE, Phrase number: 0x42
 8A07:          14                   ;       EXECUTE AND REVERSE STATUS
 8A08:          09 1E                ;       COMPARE TO SECOND NOUN, Word number: 0x1E
-8A0A:          BA                   ;       COMMAND 0xBA
-8A0B:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+8A0A:          BA                   ;       ROUTINE 0xBA
+8A0B:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 8A0D:       43                      ; 
-8A0E:    02 0A                      ;   Section 2: SHORT_NAME, Length: 0x0A
+8A0E:    02 0A                      ;   Section 2: SHORT_NAME, Length: 0x000A
 ;           DOOR TO SLIM'S 
 8A10:       81 5B 96 AF D5 9C 8F 8C CB 23 ; 
 
 ; Object 0C
-8A1A: 10 24                         ; Word Number: 0x10 "DOOR", Length: 0x24
+8A1A: 10 24                         ; Word Number: 0x10 "DOOR", Length: 0x0024
 8A1C: 93 23 88                      ; Location: 0x93, Points: 35, Data Bits: 0b10001000
-8A1F:    03 11                      ;   Section 3: DESCRIPTION, Length: 0x11
+8A1F:    03 11                      ;   Section 3: DESCRIPTION, Length: 0x0011
 8A21:       04 0F                   ;     PRINT, Length: 0x000F
-;
-; A DOOR LEADS TO BOB'S.
-;
 8A23:          46 45 44 A0 3F 16 0D 47 89 17 B9 14 E5 4B 2E ; 
-8A32:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+;
+;              A DOOR LEADS TO BOB'S.
+;
+8A32:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 8A34:       44                      ; 
-8A35:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+8A35:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           DOOR TO BOB'S
 8A37:       81 5B 96 AF C4 9C 25 9E 53 ; 
 
 ; Object 0D
-8A40: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x08
+8A40: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x0008
 8A42: 94 03 88                      ; Location: 0x94, Points: 3, Data Bits: 0b10001000
-8A45:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+8A45:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 8A47:       81 5B 52                ; 
 
 ; Object 0E
-8A4A: 10 32                         ; Word Number: 0x10 "DOOR", Length: 0x32
+8A4A: 10 32                         ; Word Number: 0x10 "DOOR", Length: 0x0032
 8A4C: 99 24 88                      ; Location: 0x99, Points: 36, Data Bits: 0b10001000
-8A4F:    03 20                      ;   Section 3: DESCRIPTION, Length: 0x20
+8A4F:    03 20                      ;   Section 3: DESCRIPTION, Length: 0x0020
 8A51:       04 1E                   ;     PRINT, Length: 0x001E
-;
-; THERE ARE DOUBLE DOORS LEADING TO THE HOTEL. 
-;
 8A53:          5F BE 5B B1 2F 49 09 15 B6 C3 46 5E 44 A0 CE B5 ; 
 8A63:          86 5F 91 7A 89 17 82 17 4A 5E FF A0 9B 8F ; 
-8A71:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x02
+;
+;              THERE ARE DOUBLE DOORS LEADING TO THE HOTEL. 
+;
+8A71:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0002
 8A73:       45 47                   ; 
-8A75:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x07
+8A75:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x0007
 ;           HOTEL DOOR
 8A77:       86 74 33 61 81 5B 52    ; 
 
 ; Object 0F
-8A7E: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x08
+8A7E: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x0008
 8A80: AA 04 88                      ; Location: 0xAA, Points: 4, Data Bits: 0b10001000
-8A83:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+8A83:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 8A85:       81 5B 52                ; 
 
 ; Object 10
-8A88: 10 39                         ; Word Number: 0x10 "DOOR", Length: 0x39
+8A88: 10 39                         ; Word Number: 0x10 "DOOR", Length: 0x0039
 8A8A: 99 64 88                      ; Location: 0x99, Points: 100, Data Bits: 0b10001000
-8A8D:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x08
+8A8D:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x0008
 ;           MASSIVE DOOR
 8A8F:       95 91 58 B8 46 5E 44 A0 ; 
-8A97:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0C
+8A97:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x000C
 8A99:       0D 0A                   ;     WHILE PASS, Length: 0x000A
 8A9B:          0E 04                ;       WHILE FAIL, Length: 0x0004
 8A9D:             0A 3A             ;         IS INPUT PHRASE, Phrase number: 0x3A
 8A9F:             0A 42             ;         IS INPUT PHRASE, Phrase number: 0x42
 8AA1:          14                   ;       EXECUTE AND REVERSE STATUS
 8AA2:          09 1D                ;       COMPARE TO SECOND NOUN, Word number: 0x1D
-8AA4:          BA                   ;       COMMAND 0xBA
-8AA5:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x02
+8AA4:          BA                   ;       ROUTINE 0xBA
+8AA5:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0002
 8AA7:       3F 40                   ; 
-8AA9:    03 18                      ;   Section 3: DESCRIPTION, Length: 0x18
+8AA9:    03 18                      ;   Section 3: DESCRIPTION, Length: 0x0018
 8AAB:       04 16                   ;     PRINT, Length: 0x0016
-;
-; A MASSIVE DOOR LEADS TO THE BANK.
-;
 8AAD:          4F 45 65 49 CF 7B 09 15 A3 A0 E3 8B 0B 5C 6B BF ; 
 8ABD:          5F BE AB 14 6F 99    ; 
+;
+;              A MASSIVE DOOR LEADS TO THE BANK.
+;
 
 ; Object 11
-8AC3: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x08
+8AC3: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x0008
 8AC5: 9A 04 88                      ; Location: 0x9A, Points: 4, Data Bits: 0b10001000
-8AC8:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+8AC8:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 8ACA:       81 5B 52                ; 
 
 ; Object 12
-8ACD: 10 03                         ; Word Number: 0x10 "DOOR", Length: 0x03
+8ACD: 10 03                         ; Word Number: 0x10 "DOOR", Length: 0x0003
 8ACF: 00 00 00                      ; Location: 0x00, Points: 0, Data Bits: 0b00000000
 
 ; Object 13
-8AD2: 10 03                         ; Word Number: 0x10 "DOOR", Length: 0x03
+8AD2: 10 03                         ; Word Number: 0x10 "DOOR", Length: 0x0003
 8AD4: 00 00 00                      ; Location: 0x00, Points: 0, Data Bits: 0b00000000
 
 ; Object 14
-8AD7: 10 1D                         ; Word Number: 0x10 "DOOR", Length: 0x1D
+8AD7: 10 1D                         ; Word Number: 0x10 "DOOR", Length: 0x001D
 8AD9: 00 22 88                      ; Location: 0x00, Points: 34, Data Bits: 0b10001000
-8ADC:    03 13                      ;   Section 3: DESCRIPTION, Length: 0x13
+8ADC:    03 13                      ;   Section 3: DESCRIPTION, Length: 0x0013
 8ADE:       04 11                   ;     PRINT, Length: 0x0011
-;
-; A DOOR LEADS UNDERGROUND.
-;
 8AE0:          46 45 44 A0 3F 16 0D 47 B0 17 F4 59 B9 6E 8E C5 ; 
 8AF0:          2E                   ; 
-8AF1:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+;
+;              A DOOR LEADS UNDERGROUND.
+;
+8AF1:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 8AF3:       81 5B 52                ; 
 
 ; Object 15
-8AF6: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x08
+8AF6: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x0008
 8AF8: DB 02 88                      ; Location: 0xDB, Points: 2, Data Bits: 0b10001000
-8AFB:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+8AFB:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 8AFD:       81 5B 52                ; 
 
 ; Object 16
-8B00: 10 30                         ; Word Number: 0x10 "DOOR", Length: 0x30
+8B00: 10 30                         ; Word Number: 0x10 "DOOR", Length: 0x0030
 8B02: DD 64 88                      ; Location: 0xDD, Points: 100, Data Bits: 0b10001000
-8B05:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x12
+8B05:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x0012
 8B07:       04 10                   ;     PRINT, Length: 0x0010
-;
-; A RED DOOR LEADS NORTH. 
-;
 8B09:          54 45 F3 5F 81 5B 8E AF 86 5F D0 B5 BE A0 9B 76 ; 
-8B19:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0C
+;
+;              A RED DOOR LEADS NORTH. 
+;
+8B19:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x000C
 8B1B:       0D 0A                   ;     WHILE PASS, Length: 0x000A
 8B1D:          0E 04                ;       WHILE FAIL, Length: 0x0004
 8B1F:             0A 3A             ;         IS INPUT PHRASE, Phrase number: 0x3A
 8B21:             0A 42             ;         IS INPUT PHRASE, Phrase number: 0x42
 8B23:          14                   ;       EXECUTE AND REVERSE STATUS
 8B24:          09 1A                ;       COMPARE TO SECOND NOUN, Word number: 0x1A
-8B26:          BA                   ;       COMMAND 0xBA
-8B27:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+8B26:          BA                   ;       ROUTINE 0xBA
+8B27:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 8B29:       13                      ; 
-8B2A:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+8B2A:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           RED DOOR 
 8B2C:       66 B1 09 15 A3 A0       ; 
 
 ; Object 17
-8B32: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x08
+8B32: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x0008
 8B34: DE 04 88                      ; Location: 0xDE, Points: 4, Data Bits: 0b10001000
-8B37:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+8B37:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 8B39:       81 5B 52                ; 
 
 ; Object 18
-8B3C: 10 30                         ; Word Number: 0x10 "DOOR", Length: 0x30
+8B3C: 10 30                         ; Word Number: 0x10 "DOOR", Length: 0x0030
 8B3E: DD 64 88                      ; Location: 0xDD, Points: 100, Data Bits: 0b10001000
-8B41:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x12
+8B41:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x0012
 8B43:       04 10                   ;     PRINT, Length: 0x0010
-;
-; A BLUE DOOR LEADS SOUTH.
-;
 8B45:          44 45 67 8E 09 15 A3 A0 E3 8B 0B 5C 47 B9 77 BE ; 
-8B55:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+;
+;              A BLUE DOOR LEADS SOUTH.
+;
+8B55:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 8B57:       0D                      ; 
-8B58:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0C
+8B58:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x000C
 8B5A:       0D 0A                   ;     WHILE PASS, Length: 0x000A
 8B5C:          0E 04                ;       WHILE FAIL, Length: 0x0004
 8B5E:             0A 3A             ;         IS INPUT PHRASE, Phrase number: 0x3A
 8B60:             0A 42             ;         IS INPUT PHRASE, Phrase number: 0x42
 8B62:          14                   ;       EXECUTE AND REVERSE STATUS
 8B63:          09 1A                ;       COMPARE TO SECOND NOUN, Word number: 0x1A
-8B65:          BA                   ;       COMMAND 0xBA
-8B66:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+8B65:          BA                   ;       ROUTINE 0xBA
+8B66:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           BLUE DOOR
 8B68:       8F 4E 46 5E 44 A0       ; 
 
 ; Object 19
-8B6E: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x08
+8B6E: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x0008
 8B70: DF 04 88                      ; Location: 0xDF, Points: 4, Data Bits: 0b10001000
-8B73:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+8B73:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 8B75:       81 5B 52                ; 
 
 ; Object 1A
-8B78: 16 3E                         ; Word Number: 0x16 "KEY", Length: 0x3E
+8B78: 16 3E                         ; Word Number: 0x16 "KEY", Length: 0x003E
 8B7A: 47 00 A4                      ; Location: 0x47, Points: 0, Data Bits: 0b10100100
-8B7D:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x14
+8B7D:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x0014
 8B7F:       04 12                   ;     PRINT, Length: 0x0012
-;
-; THERE IS A MASTER KEY HERE.
-;
 8B81:          5F BE 5B B1 4B 7B 4F 45 66 49 23 62 BB 85 9F 15 ; 
 8B91:          7F B1                ; 
-8B93:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+;
+;              THERE IS A MASTER KEY HERE.
+;
+8B93:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 8B95:       14                      ; 
-8B96:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+8B96:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 8B98:       02                      ; 
-8B99:    07 14                      ;   Section 7: IF_FIRST_NOUN, Length: 0x14
+8B99:    07 14                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0014
 8B9B:       0D 12                   ;     WHILE PASS, Length: 0x0012
 8B9D:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 8B9F:          04 0E                ;       PRINT, Length: 0x000E
-;
-; "ACME MASTER KEY CO."
-;
 8BA1:             C5 1A 1B 92 95 91 F4 BD 17 16 45 DB 5C A2 ; 
-8BAF:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x07
+;
+;                 "ACME MASTER KEY CO."
+;
+8BAF:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x0007
 ;           MASTER KEY
 8BB1:       95 91 F4 BD 17 16 59    ; 
 
 ; Object 1B
-8BB8: 16 36                         ; Word Number: 0x16 "KEY", Length: 0x36
+8BB8: 16 36                         ; Word Number: 0x16 "KEY", Length: 0x0036
 8BBA: 48 00 A4                      ; Location: 0x48, Points: 0, Data Bits: 0b10100100
-8BBD:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x14
+8BBD:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x0014
 8BBF:       04 12                   ;     PRINT, Length: 0x0012
-;
-; THERE IS A BRASS KEY HERE. 
-;
 8BC1:          5F BE 5B B1 4B 7B 44 45 D5 B0 CD B5 3B 63 F4 72 ; 
 8BD1:          DB 63                ; 
-8BD3:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;              THERE IS A BRASS KEY HERE. 
+;
+8BD3:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 8BD5:       02                      ; 
-8BD6:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x02
+8BD6:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0002
 8BD8:       15 42                   ; 
-8BDA:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0C
+8BDA:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x000C
 8BDC:       0D 0A                   ;     WHILE PASS, Length: 0x000A
 8BDE:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 8BE0:          04 06                ;       PRINT, Length: 0x0006
-;
-; "SHERIFF"
-;
 8BE2:             9A 1D 33 62 84 66 ; 
-8BE8:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+;
+;                 "SHERIFF"
+;
+8BE8:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           BRASS KEY
 8BEA:       6B 4F CB B9 BB 85       ; 
 
 ; Object 1C
-8BF0: 16 2B                         ; Word Number: 0x16 "KEY", Length: 0x2B
+8BF0: 16 2B                         ; Word Number: 0x16 "KEY", Length: 0x002B
 8BF2: 49 00 A0                      ; Location: 0x49, Points: 0, Data Bits: 0b10100000
-8BF5:    03 16                      ;   Section 3: DESCRIPTION, Length: 0x16
+8BF5:    03 16                      ;   Section 3: DESCRIPTION, Length: 0x0016
 8BF7:       04 14                   ;     PRINT, Length: 0x0014
-;
-; THERE IS A SKELETON KEY HERE. 
-;
 8BF9:          5F BE 5B B1 4B 7B 55 45 AE 85 89 62 8D 96 3B 63 ; 
 8C09:          F4 72 DB 63          ; 
-8C0D:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;              THERE IS A SKELETON KEY HERE. 
+;
+8C0D:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 8C0F:       02                      ; 
-8C10:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+8C10:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 8C12:       17                      ; 
-8C13:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x08
+8C13:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x0008
 ;           SKELETON KEY
 8C15:       97 B8 F6 8B 03 A0 BB 85 ; 
 
 ; Object 1D
-8C1D: 16 3A                         ; Word Number: 0x16 "KEY", Length: 0x3A
+8C1D: 16 3A                         ; Word Number: 0x16 "KEY", Length: 0x003A
 8C1F: 21 00 A4                      ; Location: 0x21, Points: 0, Data Bits: 0b10100100
-8C22:    03 16                      ;   Section 3: DESCRIPTION, Length: 0x16
+8C22:    03 16                      ;   Section 3: DESCRIPTION, Length: 0x0016
 8C24:       04 14                   ;     PRINT, Length: 0x0014
-;
-; THERE IS A BIG STEEL KEY HERE.
-;
 8C26:          5F BE 5B B1 4B 7B 44 45 6B 79 FF B9 33 61 BB 85 ; 
 8C36:          9F 15 7F B1          ; 
-8C3A:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;              THERE IS A BIG STEEL KEY HERE.
+;
+8C3A:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 8C3C:       02                      ; 
-8C3D:    01 03                      ;   Section 1: ??UNKNOWN_01??, Length: 0x03
+8C3D:    01 03                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0003
 8C3F:       40 18 0E                ; 
-8C42:    07 0A                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0A
+8C42:    07 0A                      ;   Section 7: IF_FIRST_NOUN, Length: 0x000A
 8C44:       0D 08                   ;     WHILE PASS, Length: 0x0008
 8C46:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 8C48:          04 04                ;       PRINT, Length: 0x0004
-;
-; "BANK"
-;
 8C4A:             EB 1A 4C 99       ; 
-8C4E:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+;
+;                 "BANK"
+;
+8C4E:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           BIG STEEL KEY
 8C50:       09 4E 66 17 2E 60 17 16 59 ; 
 
 ; Object 1E
-8C59: 16 33                         ; Word Number: 0x16 "KEY", Length: 0x33
+8C59: 16 33                         ; Word Number: 0x16 "KEY", Length: 0x0033
 8C5B: 21 00 A4                      ; Location: 0x21, Points: 0, Data Bits: 0b10100100
-8C5E:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x12
+8C5E:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x0012
 8C60:       04 10                   ;     PRINT, Length: 0x0010
-;
-; THERE IS A RED KEY HERE.
-;
 8C62:          5F BE 5B B1 4B 7B 54 45 F3 5F BB 85 9F 15 7F B1 ; 
-8C72:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;              THERE IS A RED KEY HERE.
+;
+8C72:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 8C74:       02                      ; 
-8C75:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x02
+8C75:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0002
 8C77:       43 13                   ; 
-8C79:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0C
+8C79:    07 0C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x000C
 8C7B:       0D 0A                   ;     WHILE PASS, Length: 0x000A
 8C7D:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 8C7F:          04 06                ;       PRINT, Length: 0x0006
-;
-; "SLIM'S" 
-;
 8C81:             9E 1D 5D 7A E3 B5 ; 
-8C87:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+;
+;                 "SLIM'S" 
+;
+8C87:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           RED KEY
 8C89:       66 B1 17 16 59          ; 
 
 ; Object 1F
-8C8E: 16 34                         ; Word Number: 0x16 "KEY", Length: 0x34
+8C8E: 16 34                         ; Word Number: 0x16 "KEY", Length: 0x0034
 8C90: 21 00 A4                      ; Location: 0x21, Points: 0, Data Bits: 0b10100100
-8C93:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x14
+8C93:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x0014
 8C95:       04 12                   ;     PRINT, Length: 0x0012
-;
-; THERE IS A SMALL KEY HERE. 
-;
 8C97:          5F BE 5B B1 4B 7B 55 45 8E 91 0D 8A 3B 63 F4 72 ; 
 8CA7:          DB 63                ; 
-8CA9:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;              THERE IS A SMALL KEY HERE. 
+;
+8CA9:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 8CAB:       02                      ; 
-8CAC:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x02
+8CAC:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0002
 8CAE:       4B 0F                   ; 
-8CB0:    07 0A                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0A
+8CB0:    07 0A                      ;   Section 7: IF_FIRST_NOUN, Length: 0x000A
 8CB2:       0D 08                   ;     WHILE PASS, Length: 0x0008
 8CB4:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 8CB6:          04 04                ;       PRINT, Length: 0x0004
-;
-; "CAB" 
-;
 8CB8:             13 1B A3 4B       ; 
-8CBC:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+;
+;                 "CAB" 
+;
+8CBC:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           SMALL KEY
 8CBE:       E3 B8 F3 8C BB 85       ; 
 
 ; Object 20
-8CC4: 1A 32                         ; Word Number: 0x1A "DESK", Length: 0x32
+8CC4: 1A 32                         ; Word Number: 0x1A "DESK", Length: 0x0032
 8CC6: 8E 02 81                      ; Location: 0x8E, Points: 2, Data Bits: 0b10000001
-8CC9:    07 28                      ;   Section 7: IF_FIRST_NOUN, Length: 0x28
+8CC9:    07 28                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0028
 8CCB:       0D 26                   ;     WHILE PASS, Length: 0x0026
 8CCD:          0E 08                ;       WHILE FAIL, Length: 0x0008
 8CCF:             0A 11             ;         IS INPUT PHRASE, Phrase number: 0x11
@@ -5275,19 +5327,19 @@ ObjectData:
 8CD3:             0A 40             ;         IS INPUT PHRASE, Phrase number: 0x40
 8CD5:             0A 3A             ;         IS INPUT PHRASE, Phrase number: 0x3A
 8CD7:          04 1A                ;       PRINT, Length: 0x001A
-;
-; TRY A DRAWER <TOP, MIDDLE, OR BOTTOM>. 
-;
 8CD9:             03 C0 7B 14 EB 5B B4 D0 CE 13 76 A0 6B 16 C6 59 ; 
 8CE9:             B3 63 A3 A0 06 4F 7F BF DB 31 ; 
-8CF3:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+;
+;                 TRY A DRAWER <TOP, MIDDLE, OR BOTTOM>. 
+;
+8CF3:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DESK
 8CF5:       F5 59 4B                ; 
 
 ; Object 21
-8CF8: 1B 54                         ; Word Number: 0x1B "DRAWER", Length: 0x54
+8CF8: 1B 54                         ; Word Number: 0x1B "DRAWER", Length: 0x0054
 8CFA: 8E 62 8A                      ; Location: 0x8E, Points: 98, Data Bits: 0b10001010
-8CFD:    07 43                      ;   Section 7: IF_FIRST_NOUN, Length: 0x43
+8CFD:    07 43                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0043
 8CFF:       0E 41                   ;     WHILE FAIL, Length: 0x0041
 8D01:          0D 3E                ;       WHILE PASS, Length: 0x003E
 8D03:             0E 04             ;         WHILE FAIL, Length: 0x0004
@@ -5298,27 +5350,28 @@ ObjectData:
 8D0C:             2E 20             ;         UNKNOWN2E, Value: 0x20
 8D0E:             09 24             ;         COMPARE TO SECOND NOUN, Word number: 0x24
 8D10:             04 2B             ;         PRINT, Length: 0x002B
-;
-; THERE IS A SCREECH OF TORTURED METAL AND THE DRAWER BURSTS OPEN!
-;
 8D12:                5F BE 5B B1 4B 7B 55 45 AF 55 DA 5F B8 16 89 17 ; 
 8D22:                CF B3 66 B1 67 16 4E BD 90 14 16 58 DB 72 EB 5B ; 
 8D32:                B4 D0 BF 14 A6 B3 D1 B5 F0 A4 21 ; 
+;
+;                    THERE IS A SCREECH OF TORTURED METAL AND THE DRAWER BURSTS
+;                    OPEN!
+;
 8D3D:             1A                ;         SET VAR TO FIRST NOUN
 8D3E:             2A                ;         UNKNOWN2A
-8D3F:             A6                ;         COMMAND 0xA6
-8D40:             38                ;         UNKNOWN38
-8D41:          BA                   ;       COMMAND 0xBA
-8D42:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+8D3F:             A6                ;         ROUTINE 0xA6
+8D40:             38                ;         BUMP SCORE 10%
+8D41:          BA                   ;       ROUTINE 0xBA
+8D42:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 8D44:       28                      ; 
-8D45:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x07
+8D45:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x0007
 ;           TOP DRAWER
 8D47:       82 BF 0C 15 F7 49 52    ; 
 
 ; Object 22
-8D4E: 1B 43                         ; Word Number: 0x1B "DRAWER", Length: 0x43
+8D4E: 1B 43                         ; Word Number: 0x1B "DRAWER", Length: 0x0043
 8D50: 8E 62 8A                      ; Location: 0x8E, Points: 98, Data Bits: 0b10001010
-8D53:    07 30                      ;   Section 7: IF_FIRST_NOUN, Length: 0x30
+8D53:    07 30                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0030
 8D55:       0E 2E                   ;     WHILE FAIL, Length: 0x002E
 8D57:          0D 2B                ;       WHILE PASS, Length: 0x002B
 8D59:             0E 04             ;         WHILE FAIL, Length: 0x0004
@@ -5329,399 +5382,404 @@ ObjectData:
 8D62:             2E 20             ;         UNKNOWN2E, Value: 0x20
 8D64:             09 24             ;         COMPARE TO SECOND NOUN, Word number: 0x24
 8D66:             04 19             ;         PRINT, Length: 0x0019
-;
-; WITH A CRUNCH, THE DRAWER FLIES OPEN!
-;
 8D68:                56 D1 03 71 E4 14 8D C5 73 76 5F BE 0C 15 F7 49 ; 
 8D78:                88 AF 87 8C D1 B5 F0 A4 21 ; 
+;
+;                    WITH A CRUNCH, THE DRAWER FLIES OPEN!
+;
 8D81:             1A                ;         SET VAR TO FIRST NOUN
 8D82:             2A                ;         UNKNOWN2A
-8D83:             A6                ;         COMMAND 0xA6
-8D84:          BA                   ;       COMMAND 0xBA
-8D85:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+8D83:             A6                ;         ROUTINE 0xA6
+8D84:          BA                   ;       ROUTINE 0xBA
+8D85:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 8D87:       3C                      ; 
-8D88:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+8D88:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           MIDDLE DRAWER
 8D8A:       C6 92 FF 5A 0C 15 F7 49 52 ; 
 
 ; Object 23
-8D93: 1B 1C                         ; Word Number: 0x1B "DRAWER", Length: 0x1C
+8D93: 1B 1C                         ; Word Number: 0x1B "DRAWER", Length: 0x001C
 8D95: 8E 22 8A                      ; Location: 0x8E, Points: 34, Data Bits: 0b10001010
-8D98:    07 09                      ;   Section 7: IF_FIRST_NOUN, Length: 0x09
+8D98:    07 09                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0009
 8D9A:       0D 07                   ;     WHILE PASS, Length: 0x0007
 8D9C:          0E 04                ;       WHILE FAIL, Length: 0x0004
 8D9E:             0A 3A             ;         IS INPUT PHRASE, Phrase number: 0x3A
 8DA0:             0A 42             ;         IS INPUT PHRASE, Phrase number: 0x42
-8DA2:          BA                   ;       COMMAND 0xBA
-8DA3:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+8DA2:          BA                   ;       ROUTINE 0xBA
+8DA3:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 8DA5:       3E                      ; 
-8DA6:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+8DA6:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           BOTTOM DRAWER
 8DA8:       06 4F 7F BF 0C 15 F7 49 52 ; 
 
 ; Object 24
-8DB1: 37 29                         ; Word Number: 0x37 "CROWBA", Length: 0x29
+8DB1: 37 29                         ; Word Number: 0x37 "CROWBA", Length: 0x0029
 8DB3: 49 00 E0                      ; Location: 0x49, Points: 0, Data Bits: 0b11100000
-8DB6:    03 16                      ;   Section 3: DESCRIPTION, Length: 0x16
+8DB6:    03 16                      ;   Section 3: DESCRIPTION, Length: 0x0016
 8DB8:       04 14                   ;     PRINT, Length: 0x0014
-;
-; THERE IS A SMALL CROWBAR HERE.
-;
 8DBA:          5F BE 5B B1 4B 7B 55 45 8E 91 05 8A 09 B3 D4 4C ; 
 8DCA:          9F 15 7F B1          ; 
-8DCE:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;              THERE IS A SMALL CROWBAR HERE.
+;
+8DCE:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 8DD0:       10                      ; 
-8DD1:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+8DD1:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           SMALL CROWBAR
 8DD3:       E3 B8 F3 8C B9 55 2B D0 52 ; 
 
 ; Object 25
-8DDC: 38 68                         ; Word Number: 0x38 "POSTER", Length: 0x68
+8DDC: 38 68                         ; Word Number: 0x38 "POSTER", Length: 0x0068
 8DDE: 22 00 A4                      ; Location: 0x22, Points: 0, Data Bits: 0b10100100
-8DE1:    03 16                      ;   Section 3: DESCRIPTION, Length: 0x16
+8DE1:    03 16                      ;   Section 3: DESCRIPTION, Length: 0x0016
 8DE3:       04 14                   ;     PRINT, Length: 0x0014
-;
-; THERE IS A WANTED POSTER HERE.
-;
 8DE5:          5F BE 5B B1 4B 7B 59 45 9E 48 F3 5F 85 A6 F4 BD ; 
 8DF5:          9F 15 7F B1          ; 
-8DF9:    07 40                      ;   Section 7: IF_FIRST_NOUN, Length: 0x40
+;
+;              THERE IS A WANTED POSTER HERE.
+;
+8DF9:    07 40                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0040
 8DFB:       0D 3E                   ;     WHILE PASS, Length: 0x003E
 8DFD:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 8DFF:          04 3A                ;       PRINT, Length: 0x003A
-;
-; "WANTED! MAD DOG THURMAN, ALIAS J. W. THURMAN, FOR DOUBLE PARKING IN A HOSPITAL ZONE." 
-;
 8E01:             33 1E BF 9A AB 57 86 91 09 15 D6 6A 74 75 90 91 ; 
 8E11:             03 EE 83 8C CC B5 59 F4 56 F4 74 75 90 91 08 EE ; 
 8E21:             A3 A0 87 5B 7F 4E DB 16 5B B2 AB 98 83 7A 4A 45 ; 
 8E31:             E2 A0 7B 7B 1C 8A 0F A0 63 F4 ; 
-8E3B:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+;
+;                 "WANTED! MAD DOG THURMAN, ALIAS J. W. THURMAN, FOR DOUBLE
+;                 PARKING IN A HOSPITAL ZONE."
+;
+8E3B:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           WANTED POSTER
 8E3D:       10 D0 E6 BD E9 16 FF B9 52 ; 
 
 ; Object 26
-8E46: 19 80 8A                      ; Word Number: 0x19 "CABINE", Length: 0x8A
+8E46: 19 80 8A                      ; Word Number: 0x19 "CABINE", Length: 0x008A
 8E49: 8E E2 8A                      ; Location: 0x8E, Points: 226, Data Bits: 0b10001010
-8E4C:    07 7B                      ;   Section 7: IF_FIRST_NOUN, Length: 0x7B
+8E4C:    07 7B                      ;   Section 7: IF_FIRST_NOUN, Length: 0x007B
 8E4E:       0E 79                   ;     WHILE FAIL, Length: 0x0079
 8E50:          0D 41                ;       WHILE PASS, Length: 0x0041
 8E52:             0E 04             ;         WHILE FAIL, Length: 0x0004
 8E54:                0A 3A          ;           IS INPUT PHRASE, Phrase number: 0x3A
 8E56:                0A 42          ;           IS INPUT PHRASE, Phrase number: 0x42
-8E58:             03 8E 27          ;         IS LOCATED, Room number: 0x8E, Object number: 0x27
+8E58:             03 8E 27          ;         IS LOCATED, room=??8E??, obj=??27??
 8E5B:             09 1F             ;         COMPARE TO SECOND NOUN, Word number: 0x1F
 8E5D:             04 29             ;         PRINT, Length: 0x0029
-;
-; THE KEY TURNS, THE LOCK CLICKS, AND THE CABINET SPRINGS OPEN!
-;
 8E5F:                5F BE 17 16 56 DB 38 C6 33 BB 5F BE 49 16 8B 54 ; 
 8E6F:                C3 54 A5 54 03 EE 33 98 5F BE D3 14 10 4E 73 62 ; 
 8E7F:                6C B9 91 7A D1 B5 F0 A4 21 ; 
-8E88:             17 27 00          ;         MOVE TO, Object number: 0x27, Destination room: 0x00
-8E8B:             17 28 26          ;         MOVE TO, Object number: 0x28, Destination room: 0x26
-8E8E:             1C 26             ;         SET VAR OBJECT, Object number: 0x26
+;
+;                    THE KEY TURNS, THE LOCK CLICKS, AND THE CABINET SPRINGS
+;                    OPEN!
+;
+8E88:             17 27 00          ;         MOVE TO, obj=??27??, room=00_nowhere
+8E8B:             17 28 26          ;         MOVE TO, obj=??28??, room=obj_26
+8E8E:             1C 26             ;         SET VAR OBJECT, obj=??26??
 8E90:             29                ;         PRINT OPEN VAR
 8E91:             2A                ;         UNKNOWN2A
-8E92:             38                ;         UNKNOWN38
+8E92:             38                ;         BUMP SCORE 10%
 8E93:          0D 28                ;       WHILE PASS, Length: 0x0028
 8E95:             0E 04             ;         WHILE FAIL, Length: 0x0004
 8E97:                0A 3A          ;           IS INPUT PHRASE, Phrase number: 0x3A
 8E99:                0A 42          ;           IS INPUT PHRASE, Phrase number: 0x42
 8E9B:             09 24             ;         COMPARE TO SECOND NOUN, Word number: 0x24
 8E9D:             04 1C             ;         PRINT, Length: 0x001C
-;
-; THE LOCK ON THE CABINET IS TOO STRONG FOR 
-;
 8E9F:                5F BE 49 16 8B 54 03 A0 5F BE D3 14 10 4E 73 62 ; 
 8EAF:                4B 7B 81 BF 66 17 00 B3 C8 6A A3 A0 ; 
-8EBB:             A9                ;         COMMAND 0xA9
-8EBC:             8B                ;         COMMAND 0x8B
+;
+;                    THE LOCK ON THE CABINET IS TOO STRONG FOR 
+;
+8EBB:             A9                ;         ROUTINE 0xA9
+8EBC:             8B                ;         ROUTINE 0x8B
 8EBD:          0D 0A                ;       WHILE PASS, Length: 0x000A
 8EBF:             0E 04             ;         WHILE FAIL, Length: 0x0004
 8EC1:                0A 3A          ;           IS INPUT PHRASE, Phrase number: 0x3A
 8EC3:                0A 42          ;           IS INPUT PHRASE, Phrase number: 0x42
 8EC5:             14                ;         EXECUTE AND REVERSE STATUS
 8EC6:             09 1F             ;         COMPARE TO SECOND NOUN, Word number: 0x1F
-8EC8:             BA                ;         COMMAND 0xBA
-8EC9:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x08
+8EC8:             BA                ;         ROUTINE 0xBA
+8EC9:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x0008
 ;           GUN CABINET 
 8ECB:       30 6F D3 14 10 4E 73 62 ; 
 
 ; Object 27
-8ED3: 39 53                         ; Word Number: 0x39 "SHOTGU", Length: 0x53
+8ED3: 39 53                         ; Word Number: 0x39 "SHOTGU", Length: 0x0053
 8ED5: 8E 02 C0                      ; Location: 0x8E, Points: 2, Data Bits: 0b11000000
-8ED8:    03 2C                      ;   Section 3: DESCRIPTION, Length: 0x2C
+8ED8:    03 2C                      ;   Section 3: DESCRIPTION, Length: 0x002C
 8EDA:       04 2A                   ;     PRINT, Length: 0x002A
-;
-; THERE IS A LOADED DOUBLE BARREL SHOTGUN LOCKED IN THE CABINET. 
-;
 8EDC:          5F BE 5B B1 4B 7B 4E 45 06 9E F3 5F 87 5B 7F 4E ; 
 8EEC:          AB 14 6F B3 15 8A 86 74 30 6F 49 16 97 54 0B 58 ; 
 8EFC:          96 96 DB 72 04 53 8F 7A 9B C1 ; 
-8F06:    07 19                      ;   Section 7: IF_FIRST_NOUN, Length: 0x19
+;
+;              THERE IS A LOADED DOUBLE BARREL SHOTGUN LOCKED IN THE
+;              CABINET.
+;
+8F06:    07 19                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0019
 8F08:       0D 17                   ;     WHILE PASS, Length: 0x0017
 8F0A:          0E 04                ;       WHILE FAIL, Length: 0x0004
 8F0C:             0A 05             ;         IS INPUT PHRASE, Phrase number: 0x05
 8F0E:             0A 43             ;         IS INPUT PHRASE, Phrase number: 0x43
 8F10:          04 0F                ;       PRINT, Length: 0x000F
-;
-; THE CABINET IS LOCKED.
-;
 8F12:             5F BE D3 14 10 4E 73 62 4B 7B 75 8D A6 85 2E ; 
-8F21:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+;
+;                 THE CABINET IS LOCKED.
+;
+8F21:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           SHOTGUN
 8F23:       29 B8 47 BE 4E          ; 
 
 ; Object 28
-8F28: 39 2E                         ; Word Number: 0x39 "SHOTGU", Length: 0x2E
+8F28: 39 2E                         ; Word Number: 0x39 "SHOTGU", Length: 0x002E
 8F2A: 00 00 E0                      ; Location: 0x00, Points: 0, Data Bits: 0b11100000
-8F2D:    03 01                      ;   Section 3: DESCRIPTION, Length: 0x01
-8F2F:       80                      ;     COMMAND 0x80
-8F30:    07 1C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x1C
+8F2D:    03 01                      ;   Section 3: DESCRIPTION, Length: 0x0001
+8F2F:       80                      ;     ROUTINE 0x80
+8F30:    07 1C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x001C
 8F32:       0D 1A                   ;     WHILE PASS, Length: 0x001A
 8F34:          0E 06                ;       WHILE FAIL, Length: 0x0006
 8F36:             0A 0B             ;         IS INPUT PHRASE, Phrase number: 0x0B
 8F38:             0A 10             ;         IS INPUT PHRASE, Phrase number: 0x10
 8F3A:             0A 4C             ;         IS INPUT PHRASE, Phrase number: 0x4C
 8F3C:          0E 06                ;       WHILE FAIL, Length: 0x0006
-8F3E:             03 28 29          ;         IS LOCATED, Room number: 0x28, Object number: 0x29
-8F41:             03 28 2A          ;         IS LOCATED, Room number: 0x28, Object number: 0x2A
-8F44:          A8                   ;       COMMAND 0xA8
+8F3E:             03 28 29          ;         IS LOCATED, room=obj_28, obj=??29??
+8F41:             03 28 2A          ;         IS LOCATED, room=obj_28, obj=??2A??
+8F44:          A8                   ;       ROUTINE 0xA8
 8F45:          04 07                ;       PRINT, Length: 0x0007
-;
-; IS LOADED!
-;
 8F47:             4B 7B 73 8D E6 59 21 ; 
-8F4E:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;                 IS LOADED!
+;
+8F4E:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 8F50:       15                      ; 
-8F51:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+8F51:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           SHOTGUN
 8F53:       29 B8 47 BE 4E          ; 
 
 ; Object 29
-8F58: 00 0E                         ; Word Number: 0x00 "??00??", Length: 0x0E
+8F58: 00 0E                         ; Word Number: 0x00 "??00??", Length: 0x000E
 8F5A: 28 00 A0                      ; Location: 0x28, Points: 0, Data Bits: 0b10100000
-8F5D:    08 09                      ;   Section 8: ??UNKNOWN_08??, Length: 0x09
+8F5D:    08 09                      ;   Section 8: ??UNKNOWN_08??, Length: 0x0009
 8F5F:       0D 07                   ;     WHILE PASS, Length: 0x0007
 8F61:          14                   ;       EXECUTE AND REVERSE STATUS
-8F62:          03 28 2A             ;       IS LOCATED, Room number: 0x28, Object number: 0x2A
-8F65:          1C 29                ;       SET VAR OBJECT, Object number: 0x29
-8F67:          BC                   ;       COMMAND 0xBC
+8F62:          03 28 2A             ;       IS LOCATED, room=obj_28, obj=??2A??
+8F65:          1C 29                ;       SET VAR OBJECT, obj=??29??
+8F67:          BC                   ;       ROUTINE 0xBC
 
 ; Object 2A
-8F68: 00 0A                         ; Word Number: 0x00 "??00??", Length: 0x0A
+8F68: 00 0A                         ; Word Number: 0x00 "??00??", Length: 0x000A
 8F6A: 28 00 A0                      ; Location: 0x28, Points: 0, Data Bits: 0b10100000
-8F6D:    08 05                      ;   Section 8: ??UNKNOWN_08??, Length: 0x05
+8F6D:    08 05                      ;   Section 8: ??UNKNOWN_08??, Length: 0x0005
 8F6F:       0D 03                   ;     WHILE PASS, Length: 0x0003
-8F71:          1C 2A                ;       SET VAR OBJECT, Object number: 0x2A
-8F73:          BC                   ;       COMMAND 0xBC
+8F71:          1C 2A                ;       SET VAR OBJECT, obj=??2A??
+8F73:          BC                   ;       ROUTINE 0xBC
 
 ; Object 2B
-8F74: 3A 6C                         ; Word Number: 0x3A "PUMP", Length: 0x6C
+8F74: 3A 6C                         ; Word Number: 0x3A "PUMP", Length: 0x006C
 8F76: 82 01 81                      ; Location: 0x82, Points: 1, Data Bits: 0b10000001
-8F79:    03 22                      ;   Section 3: DESCRIPTION, Length: 0x22
+8F79:    03 22                      ;   Section 3: DESCRIPTION, Length: 0x0022
 8F7B:       04 20                   ;     PRINT, Length: 0x0020
-;
-; AN OLD FASHIONED GLASS TOP GAS PUMP STANDS HERE.
-;
 8F7D:          83 48 BE 9F 4B 15 23 B8 0F A0 09 58 55 8B D6 B5 ; 
 8F8D:          53 A0 15 6C EF 16 D3 93 FB B9 4D 98 9F 15 7F B1 ; 
-8F9D:    07 3B                      ;   Section 7: IF_FIRST_NOUN, Length: 0x3B
+;
+;              AN OLD FASHIONED GLASS TOP GAS PUMP STANDS HERE.
+;
+8F9D:    07 3B                      ;   Section 7: IF_FIRST_NOUN, Length: 0x003B
 8F9F:       0D 39                   ;     WHILE PASS, Length: 0x0039
 8FA1:          0E 04                ;       WHILE FAIL, Length: 0x0004
 8FA3:             0A 08             ;         IS INPUT PHRASE, Phrase number: 0x08
 8FA5:             0A 0B             ;         IS INPUT PHRASE, Phrase number: 0x0B
 8FA7:          04 31                ;       PRINT, Length: 0x0031
-;
-; MY GOODNESS! IT SAYS, "33 CENTS PER GALLON." I'D BET THERE'S NO GAS LEFT.
-;
 8FA9:             3B 95 41 6E 4F 5B C9 B9 D6 15 53 17 6E DF 6A 13 ; 
 8FB9:             05 3F 9E 61 D2 B5 23 62 0E 6C 80 8D 63 F4 96 77 ; 
 8FC9:             AF 14 16 BC F4 72 A5 5E 99 16 73 15 CE B5 5E 60 ; 
 8FD9:             2E                ; 
-8FDA:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+;
+;                 MY GOODNESS! IT SAYS, "33 CENTS PER GALLON." I'D BET
+;                 THERE'S NO GAS LEFT.
+;
+8FDA:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           GAS PUMP 
 8FDC:       15 6C EF 16 D3 93       ; 
 
 ; Object 2C
-8FE2: 29 0D                         ; Word Number: 0x29 "PADLOC", Length: 0x0D
+8FE2: 29 0D                         ; Word Number: 0x29 "PADLOC", Length: 0x000D
 8FE4: 2B 60 88                      ; Location: 0x2B, Points: 96, Data Bits: 0b10001000
-8FE7:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-8FE9:       BA                      ;     COMMAND 0xBA
-8FEA:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+8FE7:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+8FE9:       BA                      ;     ROUTINE 0xBA
+8FEA:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           PADLOCK
 8FEC:       46 A4 75 8D 4B          ; 
 
 ; Object 2D
-8FF1: 31 5D                         ; Word Number: 0x31 "JACK", Length: 0x5D
+8FF1: 31 5D                         ; Word Number: 0x31 "JACK", Length: 0x005D
 8FF3: 83 01 A4                      ; Location: 0x83, Points: 1, Data Bits: 0b10100100
-8FF6:    03 10                      ;   Section 3: DESCRIPTION, Length: 0x10
+8FF6:    03 10                      ;   Section 3: DESCRIPTION, Length: 0x0010
 8FF8:       04 0E                   ;     PRINT, Length: 0x000E
-;
-; THERE IS A JACK HERE.
-;
 8FFA:          5F BE 5B B1 4B 7B 4C 45 DD 46 9F 15 7F B1 ; 
-9008:    07 3E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x3E
+;
+;              THERE IS A JACK HERE.
+;
+9008:    07 3E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x003E
 900A:       0D 3C                   ;     WHILE PASS, Length: 0x003C
 900C:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 900E:          04 15                ;       PRINT, Length: 0x0015
-;
-; "JACK-O-MATIC DELUXE MODEL 333"
-;
 9010:             2B 1C AD 54 1F A2 83 49 C6 51 4F 61 DB D6 B6 93 ; 
 9020:             33 61 1A 40 22    ; 
+;
+;                 "JACK-O-MATIC DELUXE MODEL 333"
+;
 9025:          25                   ;       PRINT LINEFEED
 9026:          04 20                ;       PRINT, Length: 0x0020
-;
-; "JACK USE INSTRUCTIONS, PUT JACK ON <VEHICLE>." 
-;
 9028:             2B 1C 8B 54 57 C6 D0 15 0C BA E6 C3 C0 7A 33 BB ; 
 9038:             76 A7 EB 15 8B 54 03 A0 8F 2A 85 73 DF 8B 63 F4 ; 
-9048:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
+;
+;                 "JACK USE INSTRUCTIONS, PUT JACK ON <VEHICLE>." 
+;
+9048:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
 904A:       29                      ;     PRINT OPEN VAR
-904B:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+904B:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           JACK
 904D:       C5 7E 4B                ; 
 
 ; Object 2E
-9050: 32 77                         ; Word Number: 0x32 "JEEP", Length: 0x77
+9050: 32 77                         ; Word Number: 0x32 "JEEP", Length: 0x0077
 9052: 86 01 81                      ; Location: 0x86, Points: 1, Data Bits: 0b10000001
-9055:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x14
+9055:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x0014
 9057:       04 12                   ;     PRINT, Length: 0x0012
-;
-; THERE IS A RUSTY JEEP HERE.
-;
 9059:          5F BE 5B B1 4B 7B 54 45 66 C6 4C DB 32 60 9F 15 ; 
 9069:          7F B1                ; 
-906B:    07 53                      ;   Section 7: IF_FIRST_NOUN, Length: 0x53
+;
+;              THERE IS A RUSTY JEEP HERE.
+;
+906B:    07 53                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0053
 906D:       0B 51 0A                ;     SWITCH, Length: 0x0051, Function to call: 0x0A
-9070:          36                   ;       Phrase number: 0x36
+9070:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 9071:          17                   ;       ELSE go to: 0x9089
 9072:             0D 15             ;         WHILE PASS, Length: 0x0015
-9074:                17 01 2E       ;           MOVE TO, Object number: 0x01, Destination room: 0x2E
+9074:                17 01 2E       ;           MOVE TO, obj=01_YOU, room=obj_2E
 9077:                04 10          ;           PRINT, Length: 0x0010
-;
-; YOU ARE NOW IN THE JEEP.
-;
 9079:                   C7 DE 94 14 50 5E 6B A1 83 7A 5F BE EF 15 F7 61 ; 
-9089:          37                   ;       Phrase number: 0x37
+;
+;                       YOU ARE NOW IN THE JEEP.
+;
+9089:          37                   ;       Phrase 0x37: "CLIMB    *          OUT         *"
 908A:          1A                   ;       ELSE go to: 0x90A5
 908B:             0D 18             ;         WHILE PASS, Length: 0x0018
-908D:                1C 01          ;           SET VAR OBJECT, Object number: 0x01
+908D:                1C 01          ;           SET VAR OBJECT, obj=01_YOU
 908F:                10             ;           DROP VAR
 9090:                04 13          ;           PRINT, Length: 0x0013
-;
-; YOU ARE NOW OUT OF THE JEEP.
-;
 9092:                   C7 DE 94 14 50 5E 6B A1 36 A1 B8 16 82 17 4C 5E ; 
 90A2:                   32 60 2E    ; 
-90A5:          52                   ;       Phrase number: 0x52
+;
+;                       YOU ARE NOW OUT OF THE JEEP.
+;
+90A5:          52                   ;       Phrase 0x52: "START    u.......   *           *"
 90A6:          19                   ;       ELSE go to: 0x90C0
 90A7:             04 17             ;         PRINT, Length: 0x0017
-;
-; NOTHING. THE BATTERY MUST BE DEAD!
-;
 90A9:                06 9A 90 73 5B 70 5F BE AB 14 3F C0 7B B4 B5 94 ; 
 90B9:                04 BC 46 5E 86 5F 21 ; 
-90C0:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x07
+;
+;                    NOTHING. THE BATTERY MUST BE DEAD!
+;
+90C0:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x0007
 ;           RUSTY JEEP
 90C2:       F5 B3 FB C0 67 7F 50    ; 
 
 ; Object 2F
-90C9: 21 45                         ; Word Number: 0x21 "TIRE", Length: 0x45
+90C9: 21 45                         ; Word Number: 0x21 "TIRE", Length: 0x0045
 90CB: 2E 00 A0                      ; Location: 0x2E, Points: 0, Data Bits: 0b10100000
-90CE:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x14
+90CE:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x0014
 90D0:       04 12                   ;     PRINT, Length: 0x0012
-;
-; THERE IS A FLAT TIRE HERE. 
-;
 90D2:          5F BE 5B B1 4B 7B 48 45 56 8B 83 17 5B B1 F4 72 ; 
 90E2:          DB 63                ; 
-90E4:    07 1C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x1C
+;
+;              THERE IS A FLAT TIRE HERE. 
+;
+90E4:    07 1C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x001C
 90E6:       0D 1A                   ;     WHILE PASS, Length: 0x001A
 90E8:          0E 04                ;       WHILE FAIL, Length: 0x0004
 90EA:             0A 05             ;         IS INPUT PHRASE, Phrase number: 0x05
 90EC:             0A 43             ;         IS INPUT PHRASE, Phrase number: 0x43
 90EE:          14                   ;       EXECUTE AND REVERSE STATUS
-90EF:          03 2E 2D             ;       IS LOCATED, Room number: 0x2E, Object number: 0x2D
+90EF:          03 2E 2D             ;       IS LOCATED, room=obj_2E, obj=??2D??
 90F2:          04 0E                ;       PRINT, Length: 0x000E
-;
-; YOU MUST USE A JACK. 
-;
 90F4:             C7 DE 77 16 F3 B9 57 C6 7B 14 C5 7E 5B 89 ; 
-9102:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+;
+;                 YOU MUST USE A JACK. 
+;
+9102:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 9104:       22                      ; 
-9105:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+9105:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 9107:       29                      ; 
-9108:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+9108:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           FLAT TIRE
 910A:       7B 67 16 BC 2F 7B       ; 
 
 ; Object 30
-9110: 21 42                         ; Word Number: 0x21 "TIRE", Length: 0x42
+9110: 21 42                         ; Word Number: 0x21 "TIRE", Length: 0x0042
 9112: 86 01 A0                      ; Location: 0x86, Points: 1, Data Bits: 0b10100000
-9115:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x14
+9115:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x0014
 9117:       04 12                   ;     PRINT, Length: 0x0012
-;
-; THERE IS A SPARE TIRE HERE.
-;
 9119:          5F BE 5B B1 4B 7B 55 45 54 A4 56 5E 2F 7B 9F 15 ; 
 9129:          7F B1                ; 
-912B:    07 18                      ;   Section 7: IF_FIRST_NOUN, Length: 0x18
+;
+;              THERE IS A SPARE TIRE HERE.
+;
+912B:    07 18                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0018
 912D:       0D 16                   ;     WHILE PASS, Length: 0x0016
 912F:          0A 4B                ;       IS INPUT PHRASE, Phrase number: 0x4B
 9131:          14                   ;       EXECUTE AND REVERSE STATUS
-9132:          03 2E 2D             ;       IS LOCATED, Room number: 0x2E, Object number: 0x2D
+9132:          03 2E 2D             ;       IS LOCATED, room=obj_2E, obj=??2D??
 9135:          04 0E                ;       PRINT, Length: 0x000E
-;
-; YOU MUST USE A JACK. 
-;
 9137:             C7 DE 77 16 F3 B9 57 C6 7B 14 C5 7E 5B 89 ; 
-9145:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+;
+;                 YOU MUST USE A JACK. 
+;
+9145:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 9147:       23                      ; 
-9148:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+9148:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 914A:       29                      ; 
-914B:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x07
+914B:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x0007
 ;           SPARE TIRE
 914D:       5B B9 5B B1 94 BE 45    ; 
 
 ; Object 31
-9154: 1A 09                         ; Word Number: 0x1A "DESK", Length: 0x09
+9154: 1A 09                         ; Word Number: 0x1A "DESK", Length: 0x0009
 9156: 85 09 81                      ; Location: 0x85, Points: 9, Data Bits: 0b10000001
-9159:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+9159:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           SPHORX
 915B:       62 B9 C2 A0             ; 
 
 ; Object 32
-915F: 26 20                         ; Word Number: 0x26 "SHOVEL", Length: 0x20
+915F: 26 20                         ; Word Number: 0x26 "SHOVEL", Length: 0x0020
 9161: DC 03 E0                      ; Location: 0xDC, Points: 3, Data Bits: 0b11100000
-9164:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x12
+9164:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x0012
 9166:       04 10                   ;     PRINT, Length: 0x0010
-;
-; THERE IS A SHOVEL HERE. 
-;
 9168:          5F BE 5B B1 4B 7B 55 45 88 74 33 61 F4 72 DB 63 ; 
-9178:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;              THERE IS A SHOVEL HERE. 
+;
+9178:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 917A:       15                      ; 
-917B:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+917B:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           SHOVEL
 917D:       29 B8 6E CA             ; 
 
 ; Object 33
-9181: 0C 81 B2                      ; Word Number: 0x0C "SNAKE", Length: 0x1B2
+9181: 0C 81 B2                      ; Word Number: 0x0C "SNAKE", Length: 0x01B2
 9184: DC 03 90                      ; Location: 0xDC, Points: 3, Data Bits: 0b10010000
-9187:    03 2F                      ;   Section 3: DESCRIPTION, Length: 0x2F
+9187:    03 2F                      ;   Section 3: DESCRIPTION, Length: 0x002F
 9189:       04 2D                   ;     PRINT, Length: 0x002D
-;
-; THERE IS A NINE FOOT DIAMOND BACK RATTLE SNAKE COILED ON THE FLOOR.
-;
 918B:          5F BE 5B B1 4B 7B 50 45 8F 7A 59 15 F3 A0 83 5A ; 
 919B:          C0 93 04 58 DD 46 2B 17 46 C0 55 5E CD 97 45 5E ; 
 91AB:          4E 9F F3 5F 03 A0 5F BE 56 15 44 A0 2E ; 
-91B8:    09 02                      ;   Section 9: HIT_POINTS, Length: 0x02
+;
+;              THERE IS A NINE FOOT DIAMOND BACK RATTLE SNAKE COILED ON
+;              THE FLOOR.
+;
+91B8:    09 02                      ;   Section 9: HIT_POINTS, Length: 0x0002
 91BA:       46 46                   ;     Hit Points: 70/70
-91BC:    07 6E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x6E
+91BC:    07 6E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x006E
 91BE:       0E 6C                   ;     WHILE FAIL, Length: 0x006C
 91C0:          0D 3A                ;       WHILE PASS, Length: 0x003A
 91C2:             0A 09             ;         IS INPUT PHRASE, Phrase number: 0x09
@@ -5730,20 +5788,20 @@ ObjectData:
 91C8:                09 32          ;           COMPARE TO SECOND NOUN, Word number: 0x32
 91CA:                09 24          ;           COMPARE TO SECOND NOUN, Word number: 0x24
 91CC:             04 06             ;         PRINT, Length: 0x0006
-;
-; YOU RAISE
-;
 91CE:                C7 DE 2B 17 57 7B ; 
-91D4:             A9                ;         COMMAND 0xA9
+;
+;                    YOU RAISE
+;
+91D4:             A9                ;         ROUTINE 0xA9
 91D5:             04 22             ;         PRINT, Length: 0x0022
-;
-; OVER YOUR HEAD AND "WHAM!" DEAL HIM A FIERCE BLOW! 
-;
 91D7:                4F A1 9B AF 34 A1 9F 15 F3 46 8E 48 81 13 4F 72 ; 
 91E7:                E3 06 E3 59 0A 8A 5B 7A 48 45 34 79 9B 53 89 4E ; 
 91F7:                6B CE          ; 
+;
+;                    OVER YOUR HEAD AND "WHAM!" DEAL HIM A FIERCE BLOW! 
+;
 91F9:             1A                ;         SET VAR TO FIRST NOUN
-91FA:             1D 28             ;         ATTACK VAR, Points: 0x28
+91FA:             1D 28             ;         ATTACK VAR, Points: 40
 91FC:          0D 2E                ;       WHILE PASS, Length: 0x002E
 91FE:             0E 06             ;         WHILE FAIL, Length: 0x0006
 9200:                0A 09          ;           IS INPUT PHRASE, Phrase number: 0x09
@@ -5753,276 +5811,276 @@ ObjectData:
 9208:                09 5C          ;           COMPARE TO SECOND NOUN, Word number: 0x5C
 920A:                09 00          ;           COMPARE TO SECOND NOUN, Word number: 0x00
 920C:             04 1E             ;         PRINT, Length: 0x001E
-;
-; YOU GOT IT! YOU GOT IT! OOPS! YOU DROPPED IT.
-;
 920E:                C7 DE 81 15 0B BC AB BB C7 DE 81 15 0B BC AB BB ; 
 921E:                42 A0 6B B5 C7 DE 0C 15 6A A0 F3 5F 97 7B ; 
-922C:    08 80 D7                   ;   Section 8: ??UNKNOWN_08??, Length: 0xD7
+;
+;                    YOU GOT IT! YOU GOT IT! OOPS! YOU DROPPED IT.
+;
+922C:    08 80 D7                   ;   Section 8: ??UNKNOWN_08??, Length: 0x00D7
 922F:       0D 80 D4                ;     WHILE PASS, Length: 0x00D4
-9232:          01 01                ;       IS IN PACK OR CURRENT ROOM, Object number: 0x01
+9232:          01 01                ;       IS IN PACK OR CURRENT ROOM, obj=01_YOU
 9234:          14                   ;       EXECUTE AND REVERSE STATUS
 9235:          0E 04                ;       WHILE FAIL, Length: 0x0004
 9237:             0A 01             ;         IS INPUT PHRASE, Phrase number: 0x01
 9239:             0A 03             ;         IS INPUT PHRASE, Phrase number: 0x03
 923B:          0B 80 C5 05          ;       SWITCH, Length: 0x00C5, Function to call: 0x05
-923F:             55                ;         Phrase number: 0x55
+923F:             55                ;         Phrase 0x55: "CLIMB    *          DOWN        *"
 9240:             46                ;         ELSE go to: 0x9287
 9241:                1F 44          ;           PRINT, Length: 0x0044
-;
-; THE SERPENT FLINGS ITSELF TOWARDS YOU! BEFORE YOU CAN REACT, HIS NEEDLE SHARP FANGS PIERCE YOUR SKIN. 
-;
 9243:                   5F BE 57 17 1F B3 B3 9A 83 67 C5 98 D6 15 AE B7 ; 
 9253:                   96 64 73 A1 4D B1 51 18 EB C1 68 4D AF A0 51 18 ; 
 9263:                   45 C2 83 48 63 B1 16 56 A3 15 D0 B5 26 60 DB 8B ; 
 9273:                   1B B8 13 B3 D0 65 CB 6E 87 A5 17 B1 51 18 23 C6 ; 
 9283:                   9B B8 1B 9C ; 
-9287:             AA                ;         Phrase number: 0xAA
+;
+;                       THE SERPENT FLINGS ITSELF TOWARDS YOU! BEFORE YOU CAN
+;                       REACT, HIS NEEDLE SHARP FANGS PIERCE YOUR SKIN.
+;
+9287:             AA                ;         Phrase 0xAA: "??AA??"
 9288:             3C                ;         ELSE go to: 0x92C5
 9289:                1F 3A          ;           PRINT, Length: 0x003A
-;
-; YOUR EARS RING WITH THE SOUND OF YOUR SCREAM AS THE SNAKE'S TEETH PENETRATE YOUR FLESH!
-;
 928B:                   C7 DE 87 AF 3D 49 33 17 AB 98 56 D1 16 71 DB 72 ; 
 929B:                   47 B9 33 98 C3 9E C7 DE 95 AF AF 55 5B 48 4B 49 ; 
 92AB:                   5F BE 60 17 17 48 CB 23 E7 BD 53 BE F0 A4 8C 62 ; 
 92BB:                   7F 49 51 18 23 C6 7F 67 11 B8 ; 
-92C5:             FF                ;         Phrase number: 0xFF
+;
+;                       YOUR EARS RING WITH THE SOUND OF YOUR SCREAM AS THE SNAKE'S
+;                       TEETH PENETRATE YOUR FLESH!
+;
+92C5:             FF                ;         Phrase 0xFF: "??FF??"
 92C6:             3C                ;         ELSE go to: 0x9303
 92C7:                1F 3A          ;           PRINT, Length: 0x003A
-;
-; THE SNAKE STRIKES! YOU FEEL A SHOOTING PAIN IN YOUR LEG AS HIS FANGS PIERCE AN ARTERY. 
-;
 92C9:                   5F BE 60 17 17 48 66 17 0D B2 49 62 51 18 48 C2 ; 
 92D9:                   2E 60 7B 14 29 B8 03 A1 AB 98 4B A4 8B 96 9B 96 ; 
 92E9:                   34 A1 3F 16 C3 6A CA B5 4B 7B D0 65 CB 6E 87 A5 ; 
 92F9:                   17 B1 90 14 94 14 F4 BD DB E0 ; 
-9303:          17 35 01             ;       MOVE TO, Object number: 0x35, Destination room: 0x01
-9306:    0A 14                      ;   Section 10: UPON_DEATH, Length: 0x14
+;
+;                       THE SNAKE STRIKES! YOU FEEL A SHOOTING PAIN IN YOUR LEG AS
+;                       HIS FANGS PIERCE AN ARTERY.
+;
+9303:          17 35 01             ;       MOVE TO, obj=??35??, room=01_PLAYER
+9306:    0A 14                      ;   Section 10: UPON_DEATH, Length: 0x0014
 9308:       0D 12                   ;     WHILE PASS, Length: 0x0012
 930A:          04 0C                ;       PRINT, Length: 0x000C
-;
-; THE SNAKE IS DEAD.
-;
 930C:             5F BE 60 17 17 48 D5 15 FF 14 17 47 ; 
-9318:          38                   ;       UNKNOWN38
-9319:          1E 33 34             ;       SWAP, A: 0x33, B: 0x34
-931C:    02 18                      ;   Section 2: SHORT_NAME, Length: 0x18
+;
+;                 THE SNAKE IS DEAD.
+;
+9318:          38                   ;       BUMP SCORE 10%
+9319:          1E 33 34             ;       SWAP, obj1=??33??, obj2=??34??
+931C:    02 18                      ;   Section 2: SHORT_NAME, Length: 0x0018
 ;           NINE FOOT DIAMOND BACK RATTLE SNAKE 
 931E:       10 99 48 5E 46 A0 03 15 71 48 33 98 C5 4C D4 83 ; 
 932E:       8E 49 DB 8B 0B B9 9B 85 ; 
 
 ; Object 34
-9336: 0C 25                         ; Word Number: 0x0C "SNAKE", Length: 0x25
+9336: 0C 25                         ; Word Number: 0x0C "SNAKE", Length: 0x0025
 9338: 00 03 A0                      ; Location: 0x00, Points: 3, Data Bits: 0b10100000
-933B:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x14
+933B:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x0014
 933D:       04 12                   ;     PRINT, Length: 0x0012
-;
-; THERE IS A DEAD SNAKE HERE.
-;
 933F:          5F BE 5B B1 4B 7B 46 45 86 5F 60 17 17 48 9F 15 ; 
 934F:          7F B1                ; 
-9351:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;              THERE IS A DEAD SNAKE HERE.
+;
+9351:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 9353:       09                      ; 
-9354:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x07
+9354:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x0007
 ;           DEAD SNAKE
 9356:       E3 59 15 58 CD 97 45    ; 
 
 ; Object 35
-935D: 20 0D                         ; Word Number: 0x20 "??20??", Length: 0x0D
+935D: 20 0D                         ; Word Number: 0x20 "??20??", Length: 0x000D
 935F: 00 00 80                      ; Location: 0x00, Points: 0, Data Bits: 0b10000000
-9362:    08 08                      ;   Section 8: ??UNKNOWN_08??, Length: 0x08
+9362:    08 08                      ;   Section 8: ??UNKNOWN_08??, Length: 0x0008
 9364:       0D 06                   ;     WHILE PASS, Length: 0x0006
-9366:          01 01                ;       IS IN PACK OR CURRENT ROOM, Object number: 0x01
-9368:          1C 01                ;       SET VAR OBJECT, Object number: 0x01
-936A:          1D 11                ;       ATTACK VAR, Points: 0x11
+9366:          01 01                ;       IS IN PACK OR CURRENT ROOM, obj=01_YOU
+9368:          1C 01                ;       SET VAR OBJECT, obj=01_YOU
+936A:          1D 11                ;       ATTACK VAR, Points: 17
 
 ; Object 36
-936C: 1C 58                         ; Word Number: 0x1C "FOOD", Length: 0x58
+936C: 1C 58                         ; Word Number: 0x1C "FOOD", Length: 0x0058
 936E: 94 03 A0                      ; Location: 0x94, Points: 3, Data Bits: 0b10100000
-9371:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x12
+9371:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x0012
 9373:       04 10                   ;     PRINT, Length: 0x0010
-;
-; THERE IS SOME FOOD HERE.
-;
 9375:          5F BE 5B B1 4B 7B 3F B9 48 5E 36 A0 9F 15 7F B1 ; 
-9385:    07 2C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x2C
+;
+;              THERE IS SOME FOOD HERE.
+;
+9385:    07 2C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x002C
 9387:       0D 2A                   ;     WHILE PASS, Length: 0x002A
 9389:          0A 15                ;       IS INPUT PHRASE, Phrase number: 0x15
-938B:          A8                   ;       COMMAND 0xA8
+938B:          A8                   ;       ROUTINE 0xA8
 938C:          04 21                ;       PRINT, Length: 0x0021
-;
-; WAS STALE, BUT STILL OF HIGH NUTRITIONAL CONTENT.
-;
 938E:             15 D0 66 17 3F 48 04 EE 73 C6 03 BA F3 8C C3 9E ; 
 939E:             89 73 10 71 8C C6 83 7B 0B A0 05 8A 1E A0 9E 61 ; 
 93AE:             2E                ; 
-93AF:          1C 01                ;       SET VAR OBJECT, Object number: 0x01
-93B1:          23 23                ;       HEAL VAR, Points: 0x23
-93B3:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;                 WAS STALE, BUT STILL OF HIGH NUTRITIONAL CONTENT.
+;
+93AF:          1C 01                ;       SET VAR OBJECT, obj=01_YOU
+93B1:          23 23                ;       HEAL VAR, Points: 35
+93B3:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 93B5:       06                      ; 
-93B6:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x0E
+93B6:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x000E
 ;           SMALL AMOUNT OF FOOD 
 93B8:       E3 B8 F3 8C 71 48 9E C5 B8 16 59 15 73 9E ; 
 
 ; Object 37
-93C6: 1D 31                         ; Word Number: 0x1D "SAFE", Length: 0x31
+93C6: 1D 31                         ; Word Number: 0x1D "SAFE", Length: 0x0031
 93C8: 9A 64 8A                      ; Location: 0x9A, Points: 100, Data Bits: 0b10001010
-93CB:    03 24                      ;   Section 3: DESCRIPTION, Length: 0x24
+93CB:    03 24                      ;   Section 3: DESCRIPTION, Length: 0x0024
 93CD:       04 22                   ;     PRINT, Length: 0x0022
-;
-; IN THE SOUTH WALL, YOU CAN SEE A LARGE STEEL SAFE. 
-;
 93CF:          83 7A 5F BE 61 17 82 C6 F3 17 16 8D 51 18 45 C2 ; 
 93DF:          83 48 A7 B7 7B 14 54 8B 9B 6C FF B9 33 61 08 B7 ; 
 93EF:          DB 63                ; 
-93F1:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-93F3:       BA                      ;     COMMAND 0xBA
-93F4:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+;
+;              IN THE SOUTH WALL, YOU CAN SEE A LARGE STEEL SAFE. 
+;
+93F1:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+93F3:       BA                      ;     ROUTINE 0xBA
+93F4:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           SAFE
 93F6:       08 B7 45                ; 
 
 ; Object 38
-93F9: 27 49                         ; Word Number: 0x27 "MONEY", Length: 0x49
+93F9: 27 49                         ; Word Number: 0x27 "MONEY", Length: 0x0049
 93FB: 4C 00 A4                      ; Location: 0x4C, Points: 0, Data Bits: 0b10100100
-93FE:    03 13                      ;   Section 3: DESCRIPTION, Length: 0x13
+93FE:    03 13                      ;   Section 3: DESCRIPTION, Length: 0x0013
 9400:       04 11                   ;     PRINT, Length: 0x0011
-;
-; THERE IS SOME MONEY HERE.
-;
 9402:          5F BE 5B B1 4B 7B 3F B9 4F 5E 0F A0 4A DB 2F 62 ; 
 9412:          2E                   ; 
-9413:    07 1C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x1C
+;
+;              THERE IS SOME MONEY HERE.
+;
+9413:    07 1C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x001C
 9415:       0D 1A                   ;     WHILE PASS, Length: 0x001A
 9417:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 9419:          04 16                ;       PRINT, Length: 0x0016
-;
-; "IN GOD WE TRUST. TWENTY DOLLARS"
-;
 941B:             10 1C 81 15 19 58 56 5E F5 B3 9B C1 B7 C0 D3 9A ; 
 942B:             09 15 FB 8C 8C B3 ; 
-9431:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;                 "IN GOD WE TRUST. TWENTY DOLLARS"
+;
+9431:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 9433:       06                      ; 
-9434:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x0E
+9434:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x000E
 ;           LARGE AMOUNT OF MONEY
 9436:       54 8B 9B 6C 71 48 9E C5 B8 16 71 16 7B 98 ; 
 
 ; Object 39
-9444: 1E 81 21                      ; Word Number: 0x1E "DYNAMI", Length: 0x121
+9444: 1E 81 21                      ; Word Number: 0x1E "DYNAMI", Length: 0x0121
 9447: DB 02 A4                      ; Location: 0xDB, Points: 2, Data Bits: 0b10100100
-944A:    03 19                      ;   Section 3: DESCRIPTION, Length: 0x19
+944A:    03 19                      ;   Section 3: DESCRIPTION, Length: 0x0019
 944C:       04 17                   ;     PRINT, Length: 0x0017
-;
-; THERE IS A STICK OF DYNAMITE HERE.
-;
 944E:          5F BE 5B B1 4B 7B 55 45 85 BE D1 83 86 64 8B DE ; 
 945E:          D6 92 4A 5E 2F 62 2E ; 
-9465:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;              THERE IS A STICK OF DYNAMITE HERE.
+;
+9465:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 9467:       08                      ; 
-9468:    07 80 8A                   ;   Section 7: IF_FIRST_NOUN, Length: 0x8A
+9468:    07 80 8A                   ;   Section 7: IF_FIRST_NOUN, Length: 0x008A
 946B:       0B 80 87 0A             ;     SWITCH, Length: 0x0087, Function to call: 0x0A
-946F:          08                   ;       Phrase number: 0x08
+946F:          08                   ;       Phrase 0x08: "READ     .....?..   *           *"
 9470:          5C                   ;       ELSE go to: 0x94CD
 9471:             0D 5A             ;         WHILE PASS, Length: 0x005A
 9473:                04 12          ;           PRINT, Length: 0x0012
-;
-; "IGNOBLE ENTERPRISES, INC."
-;
 9475:                   09 1C F4 99 DB 8B 9E 61 3A 62 15 B2 6E 62 D0 15 ; 
 9485:                   5C 57       ; 
+;
+;                       "IGNOBLE ENTERPRISES, INC."
+;
 9487:                25             ;           PRINT LINEFEED
 9488:                25             ;           PRINT LINEFEED
 9489:                04 15          ;           PRINT, Length: 0x0015
-;
-; " << SELF IGNITING DYNAMITE >>"
-;
 948B:                   7E 19 15 26 40 61 C9 15 16 99 91 7A 13 15 CF 97 ; 
 949B:                   7F 7B DF 13 22 ; 
+;
+;                       " << SELF IGNITING DYNAMITE >>"
+;
 94A0:                25             ;           PRINT LINEFEED
 94A1:                04 0D          ;           PRINT, Length: 0x000D
-;
-; "HANDLE WITH CARE!"
-;
 94A3:                   DB 1B 46 98 59 5E 82 7B D3 14 59 B1 22 ; 
+;
+;                       "HANDLE WITH CARE!"
+;
 94B0:                25             ;           PRINT LINEFEED
 94B1:                04 1A          ;           PRINT, Length: 0x001A
-;
-; "TO USE, 'STRIKE FUSE' EVACUATE AREA!" 
-;
 94B3:                   C9 1D B5 17 B3 63 E6 23 0D B2 48 5E 57 C6 C7 1F ; 
 94C3:                   C5 C9 96 C3 43 5E 63 B1 E3 06 ; 
-94CD:          53                   ;       Phrase number: 0x53
+;
+;                       "TO USE, 'STRIKE FUSE' EVACUATE AREA!" 
+;
+94CD:          53                   ;       Phrase 0x53: "STRIKE   u.......   *           *"
 94CE:          26                   ;       ELSE go to: 0x94F5
 94CF:             0D 24             ;         WHILE PASS, Length: 0x0024
 94D1:                1A             ;           SET VAR TO FIRST NOUN
-94D2:                8F             ;           COMMAND 0x8F
+94D2:                8F             ;           ROUTINE 0x8F
 94D3:                04 1D          ;           PRINT, Length: 0x001D
-;
-; THE DYNAMITE BEGINS HISSING AND SPUTTERING!
-;
 94D5:                   5F BE 13 15 CF 97 7F 7B AF 14 50 6D CA B5 65 7B ; 
 94E5:                   91 7A 90 14 15 58 76 A7 F4 BD 91 7A 21 ; 
-94F2:                17 4B 39       ;           MOVE TO, Object number: 0x4B, Destination room: 0x39
-94F5:    08 63                      ;   Section 8: ??UNKNOWN_08??, Length: 0x63
+;
+;                       THE DYNAMITE BEGINS HISSING AND SPUTTERING!
+;
+94F2:                17 4B 39       ;           MOVE TO, obj=??4B??, room=obj_39
+94F5:    08 63                      ;   Section 8: ??UNKNOWN_08??, Length: 0x0063
 94F7:       0E 61                   ;     WHILE FAIL, Length: 0x0061
 94F9:          14                   ;       EXECUTE AND REVERSE STATUS
-94FA:          03 39 4B             ;       IS LOCATED, Room number: 0x39, Object number: 0x4B
+94FA:          03 39 4B             ;       IS LOCATED, room=obj_39, obj=??4B??
 94FD:          0D 14                ;       WHILE PASS, Length: 0x0014
 94FF:             0E 04             ;         WHILE FAIL, Length: 0x0004
 9501:                0A 53          ;           IS INPUT PHRASE, Phrase number: 0x53
 9503:                0A 06          ;           IS INPUT PHRASE, Phrase number: 0x06
 9505:             1F 0C             ;         PRINT, Length: 0x000C
-;
-; "HISSS, SPUTTER!" 
-;
 9507:                E3 1B E5 B9 15 EE 76 A7 F4 BD E3 06 ; 
+;
+;                    "HISSS, SPUTTER!" 
+;
 9513:          0D 27                ;       WHILE PASS, Length: 0x0027
-9515:             01 01             ;         IS IN PACK OR CURRENT ROOM, Object number: 0x01
-9517:             1C 01             ;         SET VAR OBJECT, Object number: 0x01
+9515:             01 01             ;         IS IN PACK OR CURRENT ROOM, obj=01_YOU
+9517:             1C 01             ;         SET VAR OBJECT, obj=01_YOU
 9519:             1F 19             ;         PRINT, Length: 0x0019
-;
-; BOOOOOM! YOU HAVE BEEN BLOWN TO BITS!
-;
 951B:                01 4F 41 A0 EB 8F C7 DE 9B 15 5B CA 67 4D 84 96 ; 
 952B:                89 8D 96 96 C4 9C 8D 7B 21 ; 
-9534:             1D 69             ;         ATTACK VAR, Points: 0x69
-9536:             17 39 00          ;         MOVE TO, Object number: 0x39, Destination room: 0x00
-9539:             17 4B 00          ;         MOVE TO, Object number: 0x4B, Destination room: 0x00
+;
+;                    BOOOOOM! YOU HAVE BEEN BLOWN TO BITS!
+;
+9534:             1D 69             ;         ATTACK VAR, Points: 105
+9536:             17 39 00          ;         MOVE TO, obj=??39??, room=00_nowhere
+9539:             17 4B 00          ;         MOVE TO, obj=??4B??, room=00_nowhere
 953C:          0D 0B                ;       WHILE PASS, Length: 0x000B
-953E:             01 37             ;         IS IN PACK OR CURRENT ROOM, Object number: 0x37
-9540:             1E 37 4C          ;         SWAP, A: 0x37, B: 0x4C
-9543:             17 39 00          ;         MOVE TO, Object number: 0x39, Destination room: 0x00
-9546:             17 4B 00          ;         MOVE TO, Object number: 0x4B, Destination room: 0x00
+953E:             01 37             ;         IS IN PACK OR CURRENT ROOM, obj=??37??
+9540:             1E 37 4C          ;         SWAP, obj1=??37??, obj2=??4C??
+9543:             17 39 00          ;         MOVE TO, obj=??39??, room=00_nowhere
+9546:             17 4B 00          ;         MOVE TO, obj=??4B??, room=00_nowhere
 9549:          0D 0C                ;       WHILE PASS, Length: 0x000C
-954B:             01 4E             ;         IS IN PACK OR CURRENT ROOM, Object number: 0x4E
-954D:             1E 4E 5A          ;         SWAP, A: 0x4E, B: 0x5A
-9550:             17 39 00          ;         MOVE TO, Object number: 0x39, Destination room: 0x00
-9553:             38                ;         UNKNOWN38
-9554:             17 4B 00          ;         MOVE TO, Object number: 0x4B, Destination room: 0x00
-9557:          17 4B 00             ;       MOVE TO, Object number: 0x4B, Destination room: 0x00
-955A:    02 0C                      ;   Section 2: SHORT_NAME, Length: 0x0C
+954B:             01 4E             ;         IS IN PACK OR CURRENT ROOM, obj=??4E??
+954D:             1E 4E 5A          ;         SWAP, obj1=??4E??, obj2=??5A??
+9550:             17 39 00          ;         MOVE TO, obj=??39??, room=00_nowhere
+9553:             38                ;         BUMP SCORE 10%
+9554:             17 4B 00          ;         MOVE TO, obj=??4B??, room=00_nowhere
+9557:          17 4B 00             ;       MOVE TO, obj=??4B??, room=00_nowhere
+955A:    02 0C                      ;   Section 2: SHORT_NAME, Length: 0x000C
 ;           STICK OF DYNAMITE 
 955C:       03 BA 8B 54 C3 9E 10 5D 6B 48 DB BD ; 
 
 ; Object 3A
-9568: 62 0E                         ; Word Number: 0x62 "CONSOL", Length: 0x0E
+9568: 62 0E                         ; Word Number: 0x62 "CONSOL", Length: 0x000E
 956A: 89 07 81                      ; Location: 0x89, Points: 7, Data Bits: 0b10000001
-956D:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+956D:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           CONTROL PANEL
 956F:       40 55 F9 BF 12 8A 8F 48 4C ; 
 
 ; Object 3B
-9578: 12 80 BB                      ; Word Number: 0x12 "RADIO", Length: 0xBB
+9578: 12 80 BB                      ; Word Number: 0x12 "RADIO", Length: 0x00BB
 957B: A2 02 80                      ; Location: 0xA2, Points: 2, Data Bits: 0b10000000
-957E:    03 01                      ;   Section 3: DESCRIPTION, Length: 0x01
-9580:       B9                      ;     COMMAND 0xB9
-9581:    07 80 AC                   ;   Section 7: IF_FIRST_NOUN, Length: 0xAC
+957E:    03 01                      ;   Section 3: DESCRIPTION, Length: 0x0001
+9580:       B9                      ;     ROUTINE 0xB9
+9581:    07 80 AC                   ;   Section 7: IF_FIRST_NOUN, Length: 0x00AC
 9584:       0D 80 A9                ;     WHILE PASS, Length: 0x00A9
 9587:          0A 50                ;       IS INPUT PHRASE, Phrase number: 0x50
 9589:          04 80 A0             ;       PRINT, Length: 0x00A0
-;
-; "CRAAAK SCREEE... AND THE FAMOUS DOCTOR ...VREEE FEEERRRRR... STILL INVESTIGATING THE STRANGE UFO LANDING IN THE DESERT. PEOPLE ARE EVACUATING THE AREA FOR MILES AROUND. WE NOW RETURN TO OUR REGULAR PROGRAM." THE RADIO BEGINS PLAYING MUSIC.
-;
 958C:             24 1B 83 46 D5 83 AF 55 3F 60 DB F9 8E 48 82 17 ; 
 959C:             48 5E 71 48 4B C6 75 5B 84 BF FF 18 DC F8 27 60 ; 
 95AC:             4F 15 34 60 7C B3 3F B5 55 F4 8E BE 0B 8A 0F 9B ; 
@@ -6033,361 +6091,371 @@ ObjectData:
 95FC:             59 F4 50 5E 6B A1 76 B1 38 C6 89 17 C7 16 94 AF ; 
 960C:             87 60 54 8B EC 16 04 9F 7F 48 96 19 DB 72 C6 B0 ; 
 961C:             AB 7A 69 4D 9D 7A E6 16 4B 4A AB 98 B5 94 EF 78 ; 
-962C:          1E 3B 3C             ;       SWAP, A: 0x3B, B: 0x3C
-962F:          38                   ;       UNKNOWN38
-9630:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+;
+;                 "CRAAAK SCREEE... AND THE FAMOUS DOCTOR ...VREEE
+;                 FEEERRRRR... STILL INVESTIGATING THE STRANGE UFO LANDING IN
+;                 THE DESERT. PEOPLE ARE EVACUATING THE AREA FOR MILES
+;                 AROUND. WE NOW RETURN TO OUR REGULAR PROGRAM." THE RADIO
+;                 BEGINS PLAYING MUSIC.
+;
+962C:          1E 3B 3C             ;       SWAP, obj1=??3B??, obj2=??3C??
+962F:          38                   ;       BUMP SCORE 10%
+9630:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           RADIO 
 9632:       C6 B0 AB 7A             ; 
 
 ; Object 3C
-9636: 12 64                         ; Word Number: 0x12 "RADIO", Length: 0x64
+9636: 12 64                         ; Word Number: 0x12 "RADIO", Length: 0x0064
 9638: 00 02 80                      ; Location: 0x00, Points: 2, Data Bits: 0b10000000
-963B:    03 1E                      ;   Section 3: DESCRIPTION, Length: 0x1E
+963B:    03 1E                      ;   Section 3: DESCRIPTION, Length: 0x001E
 963D:       04 1C                   ;     PRINT, Length: 0x001C
-;
-; THE RADIO IN THE CORNER IS PLAYING MUSIC. 
-;
 963F:          5F BE 2B 17 91 5A D0 15 82 17 45 5E B8 A0 23 62 ; 
 964F:          4B 7B FB A5 D0 DD CF 6A 5B C6 5B 57 ; 
-965B:    07 39                      ;   Section 7: IF_FIRST_NOUN, Length: 0x39
+;
+;              THE RADIO IN THE CORNER IS PLAYING MUSIC. 
+;
+965B:    07 39                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0039
 965D:       0E 37                   ;     WHILE FAIL, Length: 0x0037
 965F:          0D 17                ;       WHILE PASS, Length: 0x0017
 9661:             0A 51             ;         IS INPUT PHRASE, Phrase number: 0x51
 9663:             04 10             ;         PRINT, Length: 0x0010
-;
-; THE RADIO BECOMES QUIET.
-;
 9665:                5F BE 2B 17 91 5A AF 14 3F 55 4B 62 AB AD 97 62 ; 
-9675:             1E 3C 4F          ;         SWAP, A: 0x3C, B: 0x4F
+;
+;                    THE RADIO BECOMES QUIET.
+;
+9675:             1E 3C 4F          ;         SWAP, obj1=??3C??, obj2=??4F??
 9678:          0D 1C                ;       WHILE PASS, Length: 0x001C
 967A:             0A 50             ;         IS INPUT PHRASE, Phrase number: 0x50
 967C:             04 18             ;         PRINT, Length: 0x0018
-;
-; I ALREADY HEAR THE MUSIC, CAN'T YOU?
-;
 967E:                43 77 EF 8D 13 47 9F 15 23 49 5F BE 77 16 45 B8 ; 
 968E:                05 EE 85 48 1B BC 18 A1 ; 
-9696:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+;
+;                    I ALREADY HEAR THE MUSIC, CAN'T YOU?
+;
+9696:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           RADIO 
 9698:       C6 B0 AB 7A             ; 
 
 ; Object 3D
-969C: 11 38                         ; Word Number: 0x11 "BOTTLE", Length: 0x38
+969C: 11 38                         ; Word Number: 0x11 "BOTTLE", Length: 0x0038
 969E: 44 A0 AE                      ; Location: 0x44, Points: 160, Data Bits: 0b10101110
-96A1:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x12
+96A1:    03 12                      ;   Section 3: DESCRIPTION, Length: 0x0012
 96A3:       04 10                   ;     PRINT, Length: 0x0010
-;
-; THERE IS A BOTTLE HERE. 
-;
 96A5:          5F BE 5B B1 4B 7B 44 45 0E A1 DB 8B F4 72 DB 63 ; 
-96B5:    07 16                      ;   Section 7: IF_FIRST_NOUN, Length: 0x16
+;
+;              THERE IS A BOTTLE HERE. 
+;
+96B5:    07 16                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0016
 96B7:       0D 14                   ;     WHILE PASS, Length: 0x0014
 96B9:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 96BB:          04 10                ;       PRINT, Length: 0x0010
-;
-; "GOOD FOR WHAT AILS YA."
-;
 96BD:             C1 1B 73 9E 04 68 FA 17 73 49 CE 47 DB B5 DC 4A ; 
-96CD:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;                 "GOOD FOR WHAT AILS YA."
+;
+96CD:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 96CF:       06                      ; 
-96D0:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+96D0:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           BOTTLE
 96D2:       06 4F FF BE             ; 
 
 ; Object 3E
-96D6: 4A 06                         ; Word Number: 0x4A "BUTTON", Length: 0x06
+96D6: 4A 06                         ; Word Number: 0x4A "BUTTON", Length: 0x0006
 96D8: 00 07 00                      ; Location: 0x00, Points: 7, Data Bits: 0b00000000
-96DB:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+96DB:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 96DD:       15                      ; 
 
 ; Object 3F
-96DE: 4A 14                         ; Word Number: 0x4A "BUTTON", Length: 0x14
+96DE: 4A 14                         ; Word Number: 0x4A "BUTTON", Length: 0x0014
 96E0: FF 07 80                      ; Location: 0xFF, Points: 7, Data Bits: 0b10000000
-96E3:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-96E5:       AF                      ;     COMMAND 0xAF
-96E6:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+96E3:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+96E5:       AF                      ;     ROUTINE 0xAF
+96E6:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 96E8:       48                      ; 
-96E9:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+96E9:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           YELLOW BUTTON
 96EB:       2E DD 89 8D BF 14 49 C0 4E ; 
 
 ; Object 40
-96F4: 4A 12                         ; Word Number: 0x4A "BUTTON", Length: 0x12
+96F4: 4A 12                         ; Word Number: 0x4A "BUTTON", Length: 0x0012
 96F6: FF 07 80                      ; Location: 0xFF, Points: 7, Data Bits: 0b10000000
-96F9:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-96FB:       AF                      ;     COMMAND 0xAF
-96FC:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+96F9:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+96FB:       AF                      ;     ROUTINE 0xAF
+96FC:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 96FE:       13                      ; 
-96FF:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x07
+96FF:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x0007
 ;           RED BUTTON
 9701:       66 B1 BF 14 49 C0 4E    ; 
 
 ; Object 41
-9708: 4A 13                         ; Word Number: 0x4A "BUTTON", Length: 0x13
+9708: 4A 13                         ; Word Number: 0x4A "BUTTON", Length: 0x0013
 970A: FF 07 80                      ; Location: 0xFF, Points: 7, Data Bits: 0b10000000
-970D:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-970F:       AF                      ;     COMMAND 0xAF
-9710:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+970D:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+970F:       AF                      ;     ROUTINE 0xAF
+9710:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 9712:       0D                      ; 
-9713:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x08
+9713:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x0008
 ;           BLUE BUTTON 
 9715:       8F 4E 44 5E 8E C6 03 A0 ; 
 
 ; Object 42
-971D: 4A 14                         ; Word Number: 0x4A "BUTTON", Length: 0x14
+971D: 4A 14                         ; Word Number: 0x4A "BUTTON", Length: 0x0014
 971F: FF 07 80                      ; Location: 0xFF, Points: 7, Data Bits: 0b10000000
-9722:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-9724:       AF                      ;     COMMAND 0xAF
-9725:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+9722:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+9724:       AF                      ;     ROUTINE 0xAF
+9725:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 9727:       49                      ; 
-9728:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+9728:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           ORANGE BUTTON
 972A:       AB A0 B7 98 BF 14 49 C0 4E ; 
 
 ; Object 43
-9733: 4C 3B                         ; Word Number: 0x4C "WHISKE", Length: 0x3B
+9733: 4C 3B                         ; Word Number: 0x4C "WHISKE", Length: 0x003B
 9735: 3D 10 A0                      ; Location: 0x3D, Points: 16, Data Bits: 0b10100000
-9738:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x02
+9738:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0002
 973A:       74 73                   ; 
-973C:    07 22                      ;   Section 7: IF_FIRST_NOUN, Length: 0x22
+973C:    07 22                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0022
 973E:       0E 20                   ;     WHILE FAIL, Length: 0x0020
 9740:          0D 12                ;       WHILE PASS, Length: 0x0012
 9742:             0A 4F             ;         IS INPUT PHRASE, Phrase number: 0x4F
 9744:             04 0A             ;         PRINT, Length: 0x000A
-;
-; OH NO! POISON! 
-;
 9746:                13 9F E9 99 E9 16 61 7B 2B 96 ; 
-9750:             1C 01             ;         SET VAR OBJECT, Object number: 0x01
-9752:             1D 6E             ;         ATTACK VAR, Points: 0x6E
+;
+;                    OH NO! POISON! 
+;
+9750:             1C 01             ;         SET VAR OBJECT, obj=01_YOU
+9752:             1D 6E             ;         ATTACK VAR, Points: 110
 9754:          0D 0A                ;       WHILE PASS, Length: 0x000A
 9756:             0A 59             ;         IS INPUT PHRASE, Phrase number: 0x59
 9758:             04 06             ;         PRINT, Length: 0x0006
-;
-; WHISKEY! 
-;
 975A:                23 D1 97 B8 EB DA ; 
-9760:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x0E
+;
+;                    WHISKEY! 
+;
+9760:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x000E
 ;           CLEAR BROWN SOLUTION 
 9762:       BF 54 23 49 79 4F 03 D2 3E B9 83 C6 03 A0 ; 
 
 ; Object 44
-9770: 4D 07                         ; Word Number: 0x4D "BAR", Length: 0x07
+9770: 4D 07                         ; Word Number: 0x4D "BAR", Length: 0x0007
 9772: A2 02 81                      ; Location: 0xA2, Points: 2, Data Bits: 0b10000001
-9775:    02 02                      ;   Section 2: SHORT_NAME, Length: 0x02
+9775:    02 02                      ;   Section 2: SHORT_NAME, Length: 0x0002
 ;           BAR
 9777:       D4 4C                   ; 
 
 ; Object 45
-9779: 4E 25                         ; Word Number: 0x4E "SINK", Length: 0x25
+9779: 4E 25                         ; Word Number: 0x4E "SINK", Length: 0x0025
 977B: A2 02 82                      ; Location: 0xA2, Points: 2, Data Bits: 0b10000010
-977E:    03 1B                      ;   Section 3: DESCRIPTION, Length: 0x1B
+977E:    03 1B                      ;   Section 3: DESCRIPTION, Length: 0x001B
 9780:       04 19                   ;     PRINT, Length: 0x0019
-;
-; BEHIND THE BAR THERE IS A SMALL SINK.
-;
 9782:          6A 4D 8E 7A 82 17 44 5E 23 49 5F BE 5B B1 4B 7B ; 
 9792:          55 45 8E 91 15 8A 95 7A 2E ; 
-979B:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+;
+;              BEHIND THE BAR THERE IS A SMALL SINK.
+;
+979B:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           SINK
 979D:       50 B8 4B                ; 
 
 ; Object 46
-97A0: 4F 4E                         ; Word Number: 0x4F "WATER", Length: 0x4E
+97A0: 4F 4E                         ; Word Number: 0x4F "WATER", Length: 0x004E
 97A2: 45 10 A0                      ; Location: 0x45, Points: 16, Data Bits: 0b10100000
-97A5:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x02
+97A5:    01 02                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0002
 97A7:       72 74                   ; 
-97A9:    07 2D                      ;   Section 7: IF_FIRST_NOUN, Length: 0x2D
+97A9:    07 2D                      ;   Section 7: IF_FIRST_NOUN, Length: 0x002D
 97AB:       0E 2B                   ;     WHILE FAIL, Length: 0x002B
 97AD:          0D 12                ;       WHILE PASS, Length: 0x0012
 97AF:             0A 59             ;         IS INPUT PHRASE, Phrase number: 0x59
 97B1:             04 0E             ;         PRINT, Length: 0x000E
-;
-; HMM. TASTES OK TO ME.
-;
 97B3:                2F 74 56 F4 66 49 4B 62 8B 9F 6B BF 3F 92 ; 
+;
+;                    HMM. TASTES OK TO ME.
+;
 97C1:          0D 15                ;       WHILE PASS, Length: 0x0015
 97C3:             0A 4F             ;         IS INPUT PHRASE, Phrase number: 0x4F
 97C5:             04 0D             ;         PRINT, Length: 0x000D
-;
-; YOU FEEL REFRESHED.
-;
 97C7:                C7 DE 4F 15 33 61 68 B1 75 B1 E6 72 2E ; 
-97D4:             1C 01             ;         SET VAR OBJECT, Object number: 0x01
-97D6:             23 19             ;         HEAL VAR, Points: 0x19
-97D8:    02 16                      ;   Section 2: SHORT_NAME, Length: 0x16
+;
+;                    YOU FEEL REFRESHED.
+;
+97D4:             1C 01             ;         SET VAR OBJECT, obj=01_YOU
+97D6:             23 19             ;         HEAL VAR, Points: 25
+97D8:    02 16                      ;   Section 2: SHORT_NAME, Length: 0x0016
 ;           SMALL AMOUNT OF COOL CLEAR WATER 
 97DA:       E3 B8 F3 8C 71 48 9E C5 B8 16 E1 14 B3 9F BF 54 ; 
 97EA:       23 49 16 D0 23 62       ; 
 
 ; Object 47
-97F0: 50 0A                         ; Word Number: 0x50 "COUNTE", Length: 0x0A
+97F0: 50 0A                         ; Word Number: 0x50 "COUNTE", Length: 0x000A
 97F2: AA 04 81                      ; Location: 0xAA, Points: 4, Data Bits: 0b10000001
-97F5:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+97F5:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           COUNTER
 97F7:       47 55 BF 9A 52          ; 
 
 ; Object 48
-97FC: 51 0A                         ; Word Number: 0x51 "DRESSE", Length: 0x0A
+97FC: 51 0A                         ; Word Number: 0x51 "DRESSE", Length: 0x000A
 97FE: DE 24 8A                      ; Location: 0xDE, Points: 36, Data Bits: 0b10001010
-9801:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+9801:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           DRESSER
 9803:       EF 5B D7 B9 52          ; 
 
 ; Object 49
-9808: 1A 09                         ; Word Number: 0x1A "DESK", Length: 0x09
+9808: 1A 09                         ; Word Number: 0x1A "DESK", Length: 0x0009
 980A: 83 01 81                      ; Location: 0x83, Points: 1, Data Bits: 0b10000001
-980D:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+980D:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           TABLE 
 980F:       44 BD DB 8B             ; 
 
 ; Object 4A
-9813: 52 3E                         ; Word Number: 0x52 "HOOD", Length: 0x3E
+9813: 52 3E                         ; Word Number: 0x52 "HOOD", Length: 0x003E
 9815: 86 21 88                      ; Location: 0x86, Points: 33, Data Bits: 0b10001000
-9818:    07 34                      ;   Section 7: IF_FIRST_NOUN, Length: 0x34
+9818:    07 34                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0034
 981A:       0D 32                   ;     WHILE PASS, Length: 0x0032
 981C:          0E 04                ;       WHILE FAIL, Length: 0x0004
 981E:             0A 11             ;         IS INPUT PHRASE, Phrase number: 0x11
 9820:             0A 2D             ;         IS INPUT PHRASE, Phrase number: 0x2D
 9822:          04 2A                ;       PRINT, Length: 0x002A
-;
-; UPON OPENING THE HOOD YOU DISCOVER THAT THE ENGINE IS MISSING! 
-;
 9824:             E9 C5 91 96 F0 A4 91 7A 82 17 4A 5E 36 A0 51 18 ; 
 9834:             46 C2 55 7B 4F A1 96 AF 56 72 82 17 47 5E BB 98 ; 
 9844:             5B 98 4B 7B D5 92 50 B8 6B 6A ; 
-984E:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+;
+;                 UPON OPENING THE HOOD YOU DISCOVER THAT THE ENGINE IS
+;                 MISSING!
+;
+984E:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           HOOD
 9850:       81 74 44                ; 
 
 ; Object 4B
-9853: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x03
+9853: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x0003
 9855: 00 00 80                      ; Location: 0x00, Points: 0, Data Bits: 0b10000000
 
 ; Object 4C
-9858: 1D 3A                         ; Word Number: 0x1D "SAFE", Length: 0x3A
+9858: 1D 3A                         ; Word Number: 0x1D "SAFE", Length: 0x003A
 985A: 00 04 82                      ; Location: 0x00, Points: 4, Data Bits: 0b10000010
-985D:    03 2B                      ;   Section 3: DESCRIPTION, Length: 0x2B
+985D:    03 2B                      ;   Section 3: DESCRIPTION, Length: 0x002B
 985F:       04 29                   ;     PRINT, Length: 0x0029
-;
-; THE SAFE ON THE SOUTH SIDE OF THE ROOM HAS BEEN BLASTED OPEN.
-;
 9861:          5F BE 53 17 5B 66 03 A0 5F BE 61 17 82 C6 5B 17 ; 
 9871:          DB 59 C3 9E 5F BE 39 17 DB 9F 55 72 AF 14 83 61 ; 
 9881:          7B 4E FF B9 11 58 F0 A4 2E ; 
-988A:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x08
+;
+;              THE SAFE ON THE SOUTH SIDE OF THE ROOM HAS BEEN BLASTED
+;              OPEN.
+;
+988A:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x0008
 ;           BLASTED SAFE
 988C:       7B 4E FF B9 15 58 4F 47 ; 
 
 ; Object 4D
-9894: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x08
+9894: 10 08                         ; Word Number: 0x10 "DOOR", Length: 0x0008
 9896: 9D 05 88                      ; Location: 0x9D, Points: 5, Data Bits: 0b10001000
-9899:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+9899:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           DOOR
 989B:       81 5B 52                ; 
 
 ; Object 4E
-989E: 54 5F                         ; Word Number: 0x54 "BOULDE", Length: 0x5F
+989E: 54 5F                         ; Word Number: 0x54 "BOULDE", Length: 0x005F
 98A0: 9D 05 80                      ; Location: 0x9D, Points: 5, Data Bits: 0b10000000
-98A3:    03 25                      ;   Section 3: DESCRIPTION, Length: 0x25
+98A3:    03 25                      ;   Section 3: DESCRIPTION, Length: 0x0025
 98A5:       04 23                   ;     PRINT, Length: 0x0023
-;
-; A MASSIVE BOULDER BLOCKS THE ENTRANCE INTO THE SHIP.
-;
 98A7:          4F 45 65 49 CF 7B B9 14 3E C5 23 62 89 4E A5 54 ; 
 98B7:          82 17 47 5E CC 9A 8D 48 4B 5E C9 9A 82 17 55 5E ; 
 98C7:          92 73 2E             ; 
-98CA:    07 2C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x2C
+;
+;              A MASSIVE BOULDER BLOCKS THE ENTRANCE INTO THE SHIP.
+;
+98CA:    07 2C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x002C
 98CC:       0D 2A                   ;     WHILE PASS, Length: 0x002A
 98CE:          0E 04                ;       WHILE FAIL, Length: 0x0004
 98D0:             0A 09             ;         IS INPUT PHRASE, Phrase number: 0x09
 98D2:             0A 56             ;         IS INPUT PHRASE, Phrase number: 0x56
 98D4:          09 32                ;       COMPARE TO SECOND NOUN, Word number: 0x32
 98D6:          04 20                ;       PRINT, Length: 0x0020
-;
-; A SMALL PIECE OF THE BOULDER CRUMBLES INTO DUST.
-;
 98D8:             55 45 8E 91 12 8A 25 79 51 5E 96 64 DB 72 07 4F ; 
 98E8:             BF 8B 85 AF EF B3 7F 4E CB B5 C9 9A 0F 15 17 BA ; 
-98F8:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+;
+;                 A SMALL PIECE OF THE BOULDER CRUMBLES INTO DUST.
+;
+98F8:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           BOULDER
 98FA:       07 4F BF 8B 52          ; 
 
 ; Object 4F
-98FF: 12 2C                         ; Word Number: 0x12 "RADIO", Length: 0x2C
+98FF: 12 2C                         ; Word Number: 0x12 "RADIO", Length: 0x002C
 9901: 00 02 80                      ; Location: 0x00, Points: 2, Data Bits: 0b10000000
-9904:    03 01                      ;   Section 3: DESCRIPTION, Length: 0x01
-9906:       B9                      ;     COMMAND 0xB9
-9907:    07 1E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x1E
+9904:    03 01                      ;   Section 3: DESCRIPTION, Length: 0x0001
+9906:       B9                      ;     ROUTINE 0xB9
+9907:    07 1E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x001E
 9909:       0D 1C                   ;     WHILE PASS, Length: 0x001C
 990B:          0A 50                ;       IS INPUT PHRASE, Phrase number: 0x50
 990D:          04 15                ;       PRINT, Length: 0x0015
-;
-; THE RADIO BEGINS PLAYING MUSIC.
-;
 990F:             5F BE 2B 17 91 5A AF 14 50 6D D2 B5 5B 8B 91 7A ; 
 991F:             77 16 45 B8 2E    ; 
-9924:          1E 3C 4F             ;       SWAP, A: 0x3C, B: 0x4F
-9927:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+;
+;                 THE RADIO BEGINS PLAYING MUSIC.
+;
+9924:          1E 3C 4F             ;       SWAP, obj1=??3C??, obj2=??4F??
+9927:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           RADIO 
 9929:       C6 B0 AB 7A             ; 
 
 ; Object 50
-992D: 51 0A                         ; Word Number: 0x51 "DRESSE", Length: 0x0A
+992D: 51 0A                         ; Word Number: 0x51 "DRESSE", Length: 0x000A
 992F: DF 24 8A                      ; Location: 0xDF, Points: 36, Data Bits: 0b10001010
-9932:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+9932:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           DRESSER
 9934:       EF 5B D7 B9 52          ; 
 
 ; Object 51
-9939: 53 0C                         ; Word Number: 0x53 "CHAIR", Length: 0x0C
+9939: 53 0C                         ; Word Number: 0x53 "CHAIR", Length: 0x000C
 993B: DE 04 80                      ; Location: 0xDE, Points: 4, Data Bits: 0b10000000
-993E:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-9940:       C5                      ;     COMMAND 0xC5
-9941:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+993E:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+9940:       C5                      ;     ROUTINE 0xC5
+9941:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           CHAIR 
 9943:       1B 54 23 7B             ; 
 
 ; Object 52
-9947: 53 0C                         ; Word Number: 0x53 "CHAIR", Length: 0x0C
+9947: 53 0C                         ; Word Number: 0x53 "CHAIR", Length: 0x000C
 9949: DF 04 80                      ; Location: 0xDF, Points: 4, Data Bits: 0b10000000
-994C:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-994E:       C5                      ;     COMMAND 0xC5
-994F:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+994C:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+994E:       C5                      ;     ROUTINE 0xC5
+994F:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           CHAIR 
 9951:       1B 54 23 7B             ; 
 
 ; Object 53
-9955: 55 0A                         ; Word Number: 0x55 "BED", Length: 0x0A
+9955: 55 0A                         ; Word Number: 0x55 "BED", Length: 0x000A
 9957: DE 04 80                      ; Location: 0xDE, Points: 4, Data Bits: 0b10000000
-995A:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-995C:       C5                      ;     COMMAND 0xC5
-995D:    02 02                      ;   Section 2: SHORT_NAME, Length: 0x02
+995A:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+995C:       C5                      ;     ROUTINE 0xC5
+995D:    02 02                      ;   Section 2: SHORT_NAME, Length: 0x0002
 ;           BED
 995F:       66 4D                   ; 
 
 ; Object 54
-9961: 55 0A                         ; Word Number: 0x55 "BED", Length: 0x0A
+9961: 55 0A                         ; Word Number: 0x55 "BED", Length: 0x000A
 9963: DF 04 80                      ; Location: 0xDF, Points: 4, Data Bits: 0b10000000
-9966:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-9968:       C5                      ;     COMMAND 0xC5
-9969:    02 02                      ;   Section 2: SHORT_NAME, Length: 0x02
+9966:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+9968:       C5                      ;     ROUTINE 0xC5
+9969:    02 02                      ;   Section 2: SHORT_NAME, Length: 0x0002
 ;           BED
 996B:       66 4D                   ; 
 
 ; Object 55
-996D: 57 80 98                      ; Word Number: 0x57 "SAND", Length: 0x98
+996D: 57 80 98                      ; Word Number: 0x57 "SAND", Length: 0x0098
 9970: A0 02 80                      ; Location: 0xA0, Points: 2, Data Bits: 0b10000000
-9973:    03 34                      ;   Section 3: DESCRIPTION, Length: 0x34
+9973:    03 34                      ;   Section 3: DESCRIPTION, Length: 0x0034
 9975:       04 32                   ;     PRINT, Length: 0x0032
-;
-; THERE ARE NO VISIBLE ENTRANCES. THE DESERT SAND IS BANKED AGAINST THE WALL.
-;
 9977:          5F BE 5B B1 2F 49 99 16 D3 17 44 B8 DB 8B 9E 61 ; 
 9987:          D0 B0 B5 53 56 F4 DB 72 F5 59 3E 62 53 17 33 98 ; 
 9997:          4B 7B D0 4C A6 85 89 14 D0 47 F3 B9 5F BE F3 17 ; 
 99A7:          17 8D                ; 
-99A9:    07 52                      ;   Section 7: IF_FIRST_NOUN, Length: 0x52
+;
+;              THERE ARE NO VISIBLE ENTRANCES. THE DESERT SAND IS BANKED
+;              AGAINST THE WALL.
+;
+99A9:    07 52                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0052
 99AB:       0E 50                   ;     WHILE FAIL, Length: 0x0050
 99AD:          0D 2A                ;       WHILE PASS, Length: 0x002A
 99AF:             0E 04             ;         WHILE FAIL, Length: 0x0004
@@ -6395,427 +6463,437 @@ ObjectData:
 99B3:                0A 12          ;           IS INPUT PHRASE, Phrase number: 0x12
 99B5:             09 32             ;         COMPARE TO SECOND NOUN, Word number: 0x32
 99B7:             04 19             ;         PRINT, Length: 0x0019
-;
-; BENEATH THE SAND YOU DISCOVER A DOOR!
-;
 99B9:                70 4D 96 5F 16 71 DB 72 10 B7 1B 58 1B A1 95 5A ; 
 99C9:                48 55 23 62 46 45 44 A0 21 ; 
-99D2:             17 14 A0          ;         MOVE TO, Object number: 0x14, Destination room: 0xA0
-99D5:             17 55 00          ;         MOVE TO, Object number: 0x55, Destination room: 0x00
-99D8:             38                ;         UNKNOWN38
+;
+;                    BENEATH THE SAND YOU DISCOVER A DOOR!
+;
+99D2:             17 14 A0          ;         MOVE TO, obj=??14??, room=??A0??
+99D5:             17 55 00          ;         MOVE TO, obj=??55??, room=00_nowhere
+99D8:             38                ;         BUMP SCORE 10%
 99D9:          0D 22                ;       WHILE PASS, Length: 0x0022
 99DB:             0E 04             ;         WHILE FAIL, Length: 0x0004
 99DD:                0A 56          ;           IS INPUT PHRASE, Phrase number: 0x56
 99DF:                0A 12          ;           IS INPUT PHRASE, Phrase number: 0x12
 99E1:             09 00             ;         COMPARE TO SECOND NOUN, Word number: 0x00
 99E3:             04 18             ;         PRINT, Length: 0x0018
-;
-; THE SAND SIFTS THROUGH YOUR FINGERS.
-;
 99E5:                5F BE 53 17 33 98 48 B8 0B C0 6C BE 29 A1 1B 71 ; 
 99F5:                34 A1 53 15 B7 98 AF B3 ; 
-99FD:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+;
+;                    THE SAND SIFTS THROUGH YOUR FINGERS.
+;
+99FD:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           MOUND OF SAND
 99FF:       C7 93 33 98 C3 9E 10 B7 44 ; 
 
 ; Object 56
-9A08: 56 5F                         ; Word Number: 0x56 "SIGN", Length: 0x5F
+9A08: 56 5F                         ; Word Number: 0x56 "SIGN", Length: 0x005F
 9A0A: AA 04 84                      ; Location: 0xAA, Points: 4, Data Bits: 0b10000100
-9A0D:    07 55                      ;   Section 7: IF_FIRST_NOUN, Length: 0x55
+9A0D:    07 55                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0055
 9A0F:       0D 53                   ;     WHILE PASS, Length: 0x0053
 9A11:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 9A13:          04 4F                ;       PRINT, Length: 0x004F
-;
-; "WARNING, IN CASE OF TORNADO ALL HOTEL GUESTS SHOULD MEET AT THE WEST SIDE OF THE SALOON AND ENTER THE STORM SHELTER."
-;
 9A15:             33 1E D3 B2 CE 98 D0 15 D3 14 9B B7 C3 9E 84 BF ; 
 9A25:             C6 97 C3 9C F3 8C 86 74 33 61 27 6F 0D BA 5A 17 ; 
 9A35:             2E A1 0F 58 36 60 96 14 82 17 59 5E 66 62 5B 17 ; 
 9A45:             DB 59 C3 9E 5F BE 53 17 81 8D 83 96 33 98 9E 61 ; 
 9A55:             23 62 5F BE 66 17 B7 A0 5A 17 4E 61 47 62 22 ; 
-9A64:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+;
+;                 "WARNING, IN CASE OF TORNADO ALL HOTEL GUESTS SHOULD MEET
+;                 AT THE WEST SIDE OF THE SALOON AND ENTER THE STORM SHELTER."
+;
+9A64:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           SIGN
 9A66:       49 B8 4E                ; 
 
 ; Object 57
-9A69: 56 2A                         ; Word Number: 0x56 "SIGN", Length: 0x2A
+9A69: 56 2A                         ; Word Number: 0x56 "SIGN", Length: 0x002A
 9A6B: 81 01 84                      ; Location: 0x81, Points: 1, Data Bits: 0b10000100
-9A6E:    07 1E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x1E
+9A6E:    07 1E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x001E
 9A70:       0D 1C                   ;     WHILE PASS, Length: 0x001C
 9A72:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 9A74:          04 18                ;       PRINT, Length: 0x0018
-;
-; "LAST CHANCE, NEXT GAS SIXTY MILES."
-;
 9A76:             7B 1C F3 B9 1B 54 17 98 10 EE 2E 63 73 15 D5 B5 ; 
 9A86:             2E 7C 4F DB 3F 7A 5C BB ; 
-9A8E:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+;
+;                 "LAST CHANCE, NEXT GAS SIXTY MILES."
+;
+9A8E:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           MESSAGE
 9A90:       35 92 09 B7 45          ; 
 
 ; Object 58
-9A95: 56 17                         ; Word Number: 0x56 "SIGN", Length: 0x17
+9A95: 56 17                         ; Word Number: 0x56 "SIGN", Length: 0x0017
 9A97: 96 03 84                      ; Location: 0x96, Points: 3, Data Bits: 0b10000100
-9A9A:    07 0A                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0A
+9A9A:    07 0A                      ;   Section 7: IF_FIRST_NOUN, Length: 0x000A
 9A9C:       0D 08                   ;     WHILE PASS, Length: 0x0008
 9A9E:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 9AA0:          04 04                ;       PRINT, Length: 0x0004
-;
-; "BAR" 
-;
 9AA2:             EB 1A A3 AF       ; 
-9AA6:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+;
+;                 "BAR" 
+;
+9AA6:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           NEON SIGN
 9AA8:       71 98 95 96 80 79       ; 
 
 ; Object 59
-9AAE: 58 0B                         ; Word Number: 0x58 "AQUARI", Length: 0x0B
+9AAE: 58 0B                         ; Word Number: 0x58 "AQUARI", Length: 0x000B
 9AB0: A6 03 8A                      ; Location: 0xA6, Points: 3, Data Bits: 0b10001010
-9AB3:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+9AB3:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           AQUARIUM 
 9AB5:       17 49 33 49 5B C5       ; 
 
 ; Object 5A
-9ABB: 54 26                         ; Word Number: 0x54 "BOULDE", Length: 0x26
+9ABB: 54 26                         ; Word Number: 0x54 "BOULDE", Length: 0x0026
 9ABD: 00 05 80                      ; Location: 0x00, Points: 5, Data Bits: 0b10000000
-9AC0:    03 21                      ;   Section 3: DESCRIPTION, Length: 0x21
+9AC0:    03 21                      ;   Section 3: DESCRIPTION, Length: 0x0021
 9AC2:       04 1F                   ;     PRINT, Length: 0x001F
-;
-; THE ENTRANCE TO THE SHIP HAS BEEN BLOWN CLEAR.
-;
 9AC4:          5F BE 30 15 EB BF 17 98 89 17 82 17 55 5E 92 73 ; 
 9AD4:          9B 15 C4 B5 30 60 B6 14 80 A1 DE 14 94 5F 2E ; 
+;
+;              THE ENTRANCE TO THE SHIP HAS BEEN BLOWN CLEAR.
+;
 
 ; Object 5B
-9AE3: 56 18                         ; Word Number: 0x56 "SIGN", Length: 0x18
+9AE3: 56 18                         ; Word Number: 0x56 "SIGN", Length: 0x0018
 9AE5: 89 01 84                      ; Location: 0x89, Points: 1, Data Bits: 0b10000100
-9AE8:    07 0E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0E
+9AE8:    07 0E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x000E
 9AEA:       0D 0C                   ;     WHILE PASS, Length: 0x000C
 9AEC:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 9AEE:          04 08                ;       PRINT, Length: 0x0008
-;
-; "CITY LIMIT"
-;
 9AF0:             1B 1B FB C0 8F 8C 74 7B ; 
-9AF8:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+;
+;                 "CITY LIMIT"
+;
+9AF8:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           SIGN
 9AFA:       49 B8 4E                ; 
 
 ; Object 5C
-9AFD: 1F 2C                         ; Word Number: 0x1F "HAND", Length: 0x2C
+9AFD: 1F 2C                         ; Word Number: 0x1F "HAND", Length: 0x002C
 9AFF: 01 00 C0                      ; Location: 0x01, Points: 0, Data Bits: 0b11000000
-9B02:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+9B02:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           PAIR OF HANDS
 9B04:       4B A4 91 AF 8A 64 8E 48 53 ; 
-9B0D:    07 1C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x1C
+9B0D:    07 1C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x001C
 9B0F:       0D 1A                   ;     WHILE PASS, Length: 0x001A
 9B11:          0A 06                ;       IS INPUT PHRASE, Phrase number: 0x06
 9B13:          04 16                ;       PRINT, Length: 0x0016
-;
-; YOU LOWER YOUR HANDS IN DISGUST. 
-;
 9B15:             C7 DE 49 16 B4 D0 51 18 23 C6 50 72 0B 5C 83 7A ; 
 9B25:             95 5A 35 6F 9B C1 ; 
+;
+;                 YOU LOWER YOUR HANDS IN DISGUST. 
+;
 
 ; Object 5D
-9B2B: 59 47                         ; Word Number: 0x59 "WINDOW", Length: 0x47
+9B2B: 59 47                         ; Word Number: 0x59 "WINDOW", Length: 0x0047
 9B2D: 8F 02 80                      ; Location: 0x8F, Points: 2, Data Bits: 0b10000000
-9B30:    07 37                      ;   Section 7: IF_FIRST_NOUN, Length: 0x37
+9B30:    07 37                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0037
 9B32:       0D 35                   ;     WHILE PASS, Length: 0x0035
 9B34:          0E 04                ;       WHILE FAIL, Length: 0x0004
 9B36:             0A 10             ;         IS INPUT PHRASE, Phrase number: 0x10
 9B38:             0A 0B             ;         IS INPUT PHRASE, Phrase number: 0x0B
 9B3A:          04 2D                ;       PRINT, Length: 0x002D
-;
-; LOOKING IN THE WINDOW, YOU CAN BARELY SEE A DESK AND A GUN CABINET.
-;
 9B3C:             81 8D 50 86 CB 6A 96 96 DB 72 50 D1 89 5B 1B EE ; 
 9B4C:             1B A1 10 53 AB 14 6E B1 55 DB 1B 60 46 45 5D 62 ; 
 9B5C:             90 14 03 58 87 15 85 96 B3 46 76 98 2E ; 
-9B69:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+;
+;                 LOOKING IN THE WINDOW, YOU CAN BARELY SEE A DESK AND A GUN
+;                 CABINET.
+;
+9B69:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           BARRED WINDOW
 9B6B:       D4 4C 66 B1 FB 17 49 98 57 ; 
 
 ; Object 5E
-9B74: 59 3A                         ; Word Number: 0x59 "WINDOW", Length: 0x3A
+9B74: 59 3A                         ; Word Number: 0x59 "WINDOW", Length: 0x003A
 9B76: 8E 02 80                      ; Location: 0x8E, Points: 2, Data Bits: 0b10000000
-9B79:    07 2A                      ;   Section 7: IF_FIRST_NOUN, Length: 0x2A
+9B79:    07 2A                      ;   Section 7: IF_FIRST_NOUN, Length: 0x002A
 9B7B:       0D 28                   ;     WHILE PASS, Length: 0x0028
 9B7D:          0E 04                ;       WHILE FAIL, Length: 0x0004
 9B7F:             0A 10             ;         IS INPUT PHRASE, Phrase number: 0x10
 9B81:             0A 0B             ;         IS INPUT PHRASE, Phrase number: 0x0B
 9B83:          04 20                ;       PRINT, Length: 0x0020
-;
-; YOU SEE EMPTY DESERT STRETCHING TO THE HORIZON. 
-;
 9B85:             C7 DE 57 17 47 5E EE 93 46 DB 57 62 B3 B3 0C BA ; 
 9B95:             7D 62 90 73 D6 6A D6 9C DB 72 84 74 79 7C 1B 9C ; 
-9BA5:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+;
+;                 YOU SEE EMPTY DESERT STRETCHING TO THE HORIZON. 
+;
+9BA5:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           BARRED WINDOW
 9BA7:       D4 4C 66 B1 FB 17 49 98 57 ; 
 
 ; Object 5F
-9BB0: 5A 0D                         ; Word Number: 0x5A "SHELTE", Length: 0x0D
+9BB0: 5A 0D                         ; Word Number: 0x5A "SHELTE", Length: 0x000D
 9BB2: A0 02 80                      ; Location: 0xA0, Points: 2, Data Bits: 0b10000000
-9BB5:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-9BB7:       BB                      ;     COMMAND 0xBB
-9BB8:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+9BB5:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+9BB7:       BB                      ;     ROUTINE 0xBB
+9BB8:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           SHELTER
 9BBA:       1F B8 3F 8E 52          ; 
 
 ; Object 60
-9BBF: 5A 0D                         ; Word Number: 0x5A "SHELTE", Length: 0x0D
+9BBF: 5A 0D                         ; Word Number: 0x5A "SHELTE", Length: 0x000D
 9BC1: DB 02 80                      ; Location: 0xDB, Points: 2, Data Bits: 0b10000000
-9BC4:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-9BC6:       BB                      ;     COMMAND 0xBB
-9BC7:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+9BC4:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+9BC6:       BB                      ;     ROUTINE 0xBB
+9BC7:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           SHELTER
 9BC9:       1F B8 3F 8E 52          ; 
 
 ; Object 61
-9BCE: 2B 09                         ; Word Number: 0x2B "FLOOR", Length: 0x09
+9BCE: 2B 09                         ; Word Number: 0x2B "FLOOR", Length: 0x0009
 9BD0: 01 00 80                      ; Location: 0x01, Points: 0, Data Bits: 0b10000000
-9BD3:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+9BD3:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           GROUND
 9BD5:       B9 6E 8E C5             ; 
 
 ; Object 62
-9BD9: 5B 85 24                      ; Word Number: 0x5B "ALIEN", Length: 0x524
+9BD9: 5B 85 24                      ; Word Number: 0x5B "ALIEN", Length: 0x0524
 9BDC: C3 05 90                      ; Location: 0xC3, Points: 5, Data Bits: 0b10010000
-9BDF:    03 01                      ;   Section 3: DESCRIPTION, Length: 0x01
-9BE1:       BD                      ;     COMMAND 0xBD
-9BE2:    09 02                      ;   Section 9: HIT_POINTS, Length: 0x02
+9BDF:    03 01                      ;   Section 3: DESCRIPTION, Length: 0x0001
+9BE1:       BD                      ;     ROUTINE 0xBD
+9BE2:    09 02                      ;   Section 9: HIT_POINTS, Length: 0x0002
 9BE4:       14 14                   ;     Hit Points: 20/20
-9BE6:    0A 33                      ;   Section 10: UPON_DEATH, Length: 0x33
+9BE6:    0A 33                      ;   Section 10: UPON_DEATH, Length: 0x0033
 9BE8:       0D 31                   ;     WHILE PASS, Length: 0x0031
 9BEA:          1F 28                ;       PRINT, Length: 0x0028
-;
-; THE ALIEN DIES AND RAPIDLY DECAYS TO DUST BEFORE YOUR EYES. 
-;
 9BEC:             5F BE 8E 14 30 79 03 15 4B 62 8E 48 2B 17 86 A5 ; 
 9BFC:             FB 8E E5 59 55 4A 89 17 0F 15 F3 B9 68 4D AF A0 ; 
 9C0C:             51 18 23 C6 47 63 5B BB ; 
-9C14:          17 62 C3             ;       MOVE TO, Object number: 0x62, Destination room: 0xC3
-9C17:          1C 62                ;       SET VAR OBJECT, Object number: 0x62
-9C19:          23 4B                ;       HEAL VAR, Points: 0x4B
-9C1B:    07 82 DE                   ;   Section 7: IF_FIRST_NOUN, Length: 0x2DE
+;
+;                 THE ALIEN DIES AND RAPIDLY DECAYS TO DUST BEFORE YOUR EYES. 
+;
+9C14:          17 62 C3             ;       MOVE TO, obj=??62??, room=??C3??
+9C17:          1C 62                ;       SET VAR OBJECT, obj=??62??
+9C19:          23 4B                ;       HEAL VAR, Points: 75
+9C1B:    07 82 DE                   ;   Section 7: IF_FIRST_NOUN, Length: 0x02DE
 9C1E:       0D 82 DB                ;     WHILE PASS, Length: 0x02DB
 9C21:          0A 09                ;       IS INPUT PHRASE, Phrase number: 0x09
 9C23:          0E 82 D6             ;       WHILE FAIL, Length: 0x02D6
 9C26:             0D 81 65          ;         WHILE PASS, Length: 0x0165
 9C29:                09 5C          ;           COMPARE TO SECOND NOUN, Word number: 0x5C
 9C2B:                0B 81 60 05    ;           SWITCH, Length: 0x0160, Function to call: 0x05
-9C2F:                   26          ;             Phrase number: 0x26
+9C2F:                   26          ;             Phrase 0x26: "GO       *          AROUND   u......."
 9C30:                   44          ;             ELSE go to: 0x9C75
 9C31:                      0D 42    ;               WHILE PASS, Length: 0x0042
 9C33:                         04 3C ;                 PRINT, Length: 0x003C
-;
-; THE ALIEN STAGGERS BACK AS YOUR FISTS POUND INTO ITS FACE, GREEN ICHOR COVERS YOUR HANDS! 
-;
 9C35:                            5F BE 8E 14 30 79 66 17 79 47 3D 62 AB 14 8B 54 ; 
 9C45:                            4B 49 C7 DE 88 AF 66 7B D2 B5 30 A1 0B 58 C9 9A ; 
 9C55:                            D6 15 C8 B5 D7 46 09 EE 67 B1 8B 96 29 54 85 AF ; 
 9C65:                            4F A1 8B B3 C7 DE 8A AF 8E 48 6B B5 ; 
-9C71:                         1C 62 ;                 SET VAR OBJECT, Object number: 0x62
-9C73:                         1D 09 ;                 ATTACK VAR, Points: 0x09
-9C75:                   5A          ;             Phrase number: 0x5A
+;
+;                                THE ALIEN STAGGERS BACK AS YOUR FISTS POUND INTO ITS FACE,
+;                                GREEN ICHOR COVERS YOUR HANDS!
+;
+9C71:                         1C 62 ;                 SET VAR OBJECT, obj=??62??
+9C73:                         1D 09 ;                 ATTACK VAR, Points: 9
+9C75:                   5A          ;             Phrase 0x5A: "THUM     *          *           *"
 9C76:                   3E          ;             ELSE go to: 0x9CB5
 9C77:                      0D 3C    ;               WHILE PASS, Length: 0x003C
 9C79:                         04 36 ;                 PRINT, Length: 0x0036
-;
-; THE ALIEN IS SENT REELING BY A WELL PLACED KICK. YOU FEEL BONES CRUNCH WITHIN IT!
-;
 9C7B:                            5F BE 8E 14 30 79 D5 15 57 17 B3 9A 67 B1 90 8C ; 
 9C8B:                            C4 6A 43 DB F7 17 F3 8C FB A5 A6 53 1B 16 AF 54 ; 
 9C9B:                            51 18 48 C2 2E 60 B9 14 75 98 E4 14 8D C5 19 71 ; 
 9CAB:                            82 7B 83 7A 71 7B ; 
-9CB1:                         1C 62 ;                 SET VAR OBJECT, Object number: 0x62
-9CB3:                         1D 06 ;                 ATTACK VAR, Points: 0x06
-9CB5:                   8D          ;             Phrase number: 0x8D
+;
+;                                THE ALIEN IS SENT REELING BY A WELL PLACED KICK. YOU FEEL
+;                                BONES CRUNCH WITHIN IT!
+;
+9CB1:                         1C 62 ;                 SET VAR OBJECT, obj=??62??
+9CB3:                         1D 06 ;                 ATTACK VAR, Points: 6
+9CB5:                   8D          ;             Phrase 0x8D: "??8D??"
 9CB6:                   54          ;             ELSE go to: 0x9D0B
 9CB7:                      0D 52    ;               WHILE PASS, Length: 0x0052
 9CB9:                         04 4C ;                 PRINT, Length: 0x004C
-;
-; THE SHAGGY BROWN FUR GIVES YOU A FIRM GRIP AS YOU HOIST THE ALIEN OVER YOUR HEAD AND SMASH HIM AGAINST THE GROUND!
-;
 9CBB:                            5F BE 5A 17 79 47 44 DB 09 B3 88 96 23 C6 58 6D ; 
 9CCB:                            4B 62 C7 DE 7B 14 14 67 49 90 12 B2 95 14 51 18 ; 
 9CDB:                            4A C2 55 9F 16 BC DB 72 43 48 83 61 4F A1 9B AF ; 
 9CEB:                            34 A1 9F 15 F3 46 8E 48 5F 17 5A 49 A3 15 43 90 ; 
 9CFB:                            0B 6C A6 9A 82 17 49 5E 07 B3 31 98 ; 
-9D07:                         1C 62 ;                 SET VAR OBJECT, Object number: 0x62
-9D09:                         1D 04 ;                 ATTACK VAR, Points: 0x04
-9D0B:                   B3          ;             Phrase number: 0xB3
+;
+;                                THE SHAGGY BROWN FUR GIVES YOU A FIRM GRIP AS YOU HOIST THE
+;                                ALIEN OVER YOUR HEAD AND SMASH HIM AGAINST THE GROUND!
+;
+9D07:                         1C 62 ;                 SET VAR OBJECT, obj=??62??
+9D09:                         1D 04 ;                 ATTACK VAR, Points: 4
+9D0B:                   B3          ;             Phrase 0xB3: "??B3??"
 9D0C:                   2B          ;             ELSE go to: 0x9D38
 9D0D:                      04 29    ;               PRINT, Length: 0x0029
-;
-; YOUR SWING MISSES THE ALIEN AND YOU ALMOST LOSE YOUR BALANCE.
-;
 9D0F:                         C7 DE 95 AF 50 D1 CF 6A 65 7B 4B 62 5F BE 8E 14 ; 
 9D1F:                         30 79 90 14 1B 58 1B A1 47 48 E6 A0 49 16 9B B7 ; 
 9D2F:                         C7 DE 84 AF 3B 48 17 98 2E ; 
-9D38:                   D9          ;             Phrase number: 0xD9
+;
+;                             YOUR SWING MISSES THE ALIEN AND YOU ALMOST LOSE YOUR
+;                             BALANCE.
+;
+9D38:                   D9          ;             Phrase 0xD9: "??D9??"
 9D39:                   2B          ;             ELSE go to: 0x9D65
 9D3A:                      04 29    ;               PRINT, Length: 0x0029
-;
-; THE ALIEN BLOCKS YOUR BLOWS WITH HIS ARMS AND RUSHES FORWARD.
-;
 9D3C:                         5F BE 8E 14 30 79 B6 14 5D 9E DB B5 34 A1 B6 14 ; 
 9D4C:                         85 A1 FB 17 53 BE 95 73 94 14 4B 94 8E 48 3F 17 ; 
 9D5C:                         1F B8 C8 B5 C1 A0 2E 49 2E ; 
-9D65:                   FF          ;             Phrase number: 0xFF
+;
+;                             THE ALIEN BLOCKS YOUR BLOWS WITH HIS ARMS AND RUSHES
+;                             FORWARD.
+;
+9D65:                   FF          ;             Phrase 0xFF: "??FF??"
 9D66:                   27          ;             ELSE go to: 0x9D8E
 9D67:                      04 25    ;               PRINT, Length: 0x0025
-;
-; THE ALIEN DUCKS UNDER A WILD KICK. YOU RECOVER QUICKLY.
-;
 9D69:                         5F BE 8E 14 30 79 0F 15 A5 54 B0 17 F4 59 7B 14 ; 
 9D79:                         4E D1 0D 58 DD 78 5B F4 1B A1 65 B1 4F A1 93 AF ; 
 9D89:                         C5 C4 D3 86 2E ; 
+;
+;                             THE ALIEN DUCKS UNDER A WILD KICK. YOU RECOVER QUICKLY.
+;
 9D8E:             0D 81 6B          ;         WHILE PASS, Length: 0x016B
 9D91:                0E 06          ;           WHILE FAIL, Length: 0x0006
 9D93:                   09 32       ;             COMPARE TO SECOND NOUN, Word number: 0x32
 9D95:                   09 28       ;             COMPARE TO SECOND NOUN, Word number: 0x28
 9D97:                   09 24       ;             COMPARE TO SECOND NOUN, Word number: 0x24
 9D99:                0B 81 60 05    ;           SWITCH, Length: 0x0160, Function to call: 0x05
-9D9D:                   19          ;             Phrase number: 0x19
+9D9D:                   19          ;             Phrase 0x19: "DIAGNO   *          *           *"
 9D9E:                   3F          ;             ELSE go to: 0x9DDE
 9D9F:                      0D 3D    ;               WHILE PASS, Length: 0x003D
 9DA1:                         04 03 ;                 PRINT, Length: 0x0003
-;
-; YOUR
-;
 9DA3:                            C7 DE 52 ; 
+;
+;                                YOUR
+;
 9DA6:                         12    ;                 PRINT SECOND NOUN
 9DA7:                         04 31 ;                 PRINT, Length: 0x0031
-;
-; SMASHES DOWN UPON THE HEAD OF THE ALIEN, GREEN ICHOR SPRAYS YOUR CLOTHES!
-;
 9DA9:                            E3 B8 1F B8 C6 B5 80 A1 B2 17 03 A0 5F BE 9F 15 ; 
 9DB9:                            F3 46 C3 9E 5F BE 8E 14 30 79 09 EE 67 B1 8B 96 ; 
 9DC9:                            29 54 95 AF EB A6 4B DF C7 DE 85 AF 86 8D F5 72 ; 
 9DD9:                            21 ; 
-9DDA:                         1C 62 ;                 SET VAR OBJECT, Object number: 0x62
-9DDC:                         1D 15 ;                 ATTACK VAR, Points: 0x15
-9DDE:                   3F          ;             Phrase number: 0x3F
+;
+;                                SMASHES DOWN UPON THE HEAD OF THE ALIEN, GREEN ICHOR SPRAYS
+;                                YOUR CLOTHES!
+;
+9DDA:                         1C 62 ;                 SET VAR OBJECT, obj=??62??
+9DDC:                         1D 15 ;                 ATTACK VAR, Points: 21
+9DDE:                   3F          ;             Phrase 0x3F: "SAVE     *          *           *"
 9DDF:                   53          ;             ELSE go to: 0x9E33
 9DE0:                      0D 51    ;               WHILE PASS, Length: 0x0051
 9DE2:                         04 03 ;                 PRINT, Length: 0x0003
-;
-; YOUR
-;
 9DE4:                            C7 DE 52 ; 
+;
+;                                YOUR
+;
 9DE7:                         12    ;                 PRINT SECOND NOUN
 9DE8:                         04 45 ;                 PRINT, Length: 0x0045
-;
-; STRIKES THE ALIEN IN ITS SIDE, YOU FEEL BONES CRUNCH WITHIN IT. THE ALIEN SNORTS A MIST OF GREEN BLOOD.
-;
 9DEA:                            0C BA 17 7A D6 B5 DB 72 43 48 83 61 83 7A 8D 7B ; 
 9DFA:                            5B 17 FE 59 51 18 48 C2 2E 60 B9 14 75 98 E4 14 ; 
 9E0A:                            8D C5 19 71 82 7B 83 7A 97 7B 82 17 43 5E 87 8C ; 
 9E1A:                            95 96 04 9A 0B C0 4F 45 66 7B B8 16 84 15 30 60 ; 
 9E2A:                            B6 14 36 A0 2E ; 
-9E2F:                         1C 62 ;                 SET VAR OBJECT, Object number: 0x62
-9E31:                         1D 0B ;                 ATTACK VAR, Points: 0x0B
-9E33:                   72          ;             Phrase number: 0x72
+;
+;                                STRIKES THE ALIEN IN ITS SIDE, YOU FEEL BONES CRUNCH WITHIN
+;                                IT. THE ALIEN SNORTS A MIST OF GREEN BLOOD.
+;
+9E2F:                         1C 62 ;                 SET VAR OBJECT, obj=??62??
+9E31:                         1D 0B ;                 ATTACK VAR, Points: 11
+9E33:                   72          ;             Phrase 0x72: "??72??"
 9E34:                   48          ;             ELSE go to: 0x9E7D
 9E35:                      0D 46    ;               WHILE PASS, Length: 0x0046
 9E37:                         04 03 ;                 PRINT, Length: 0x0003
-;
-; YOUR
-;
 9E39:                            C7 DE 52 ; 
+;
+;                                YOUR
+;
 9E3C:                         12    ;                 PRINT SECOND NOUN
 9E3D:                         04 3A ;                 PRINT, Length: 0x003A
-;
-; HITS THE ALIEN'S ARM BURSTING THE FLESH OPEN. GREEN ICHOR FLOWS FREELY FROM THE WOUND! 
-;
 9E3F:                            96 73 D6 B5 DB 72 43 48 85 61 C3 B5 9B B2 F4 4F ; 
 9E4F:                            03 BA AB 98 5F BE 56 15 5A 62 C2 16 A7 61 84 15 ; 
 9E5F:                            30 60 C5 15 84 74 56 15 85 A1 5C 15 2E 60 48 DB ; 
 9E6F:                            FF B2 82 17 59 5E 30 A1 AB 57 ; 
-9E79:                         1C 62 ;                 SET VAR OBJECT, Object number: 0x62
-9E7B:                         1D 06 ;                 ATTACK VAR, Points: 0x06
-9E7D:                   A5          ;             Phrase number: 0xA5
+;
+;                                HITS THE ALIEN'S ARM BURSTING THE FLESH OPEN. GREEN ICHOR
+;                                FLOWS FREELY FROM THE WOUND!
+;
+9E79:                         1C 62 ;                 SET VAR OBJECT, obj=??62??
+9E7B:                         1D 06 ;                 ATTACK VAR, Points: 6
+9E7D:                   A5          ;             Phrase 0xA5: "??A5??"
 9E7E:                   25          ;             ELSE go to: 0x9EA4
 9E7F:                      0D 23    ;               WHILE PASS, Length: 0x0023
 9E81:                         04 03 ;                 PRINT, Length: 0x0003
-;
-; YOUR
-;
 9E83:                            C7 DE 52 ; 
+;
+;                                YOUR
+;
 9E86:                         12    ;                 PRINT SECOND NOUN
 9E87:                         04 1B ;                 PRINT, Length: 0x001B
-;
-; GLANCES HARMLESSLY OFF THE ALIEN'S BODY.
-;
 9E89:                            BB 6D 17 98 CA B5 37 49 F5 8B D3 B8 B8 16 96 64 ; 
 9E99:                            DB 72 43 48 85 61 C4 B5 93 9E 2E ; 
-9EA4:                   CB          ;             Phrase number: 0xCB
+;
+;                                GLANCES HARMLESSLY OFF THE ALIEN'S BODY.
+;
+9EA4:                   CB          ;             Phrase 0xCB: "??CB??"
 9EA5:                   26          ;             ELSE go to: 0x9ECC
 9EA6:                      0D 24    ;               WHILE PASS, Length: 0x0024
 9EA8:                         04 03 ;                 PRINT, Length: 0x0003
-;
-; YOUR
-;
 9EAA:                            C7 DE 52 ; 
+;
+;                                YOUR
+;
 9EAD:                         12    ;                 PRINT SECOND NOUN
 9EAE:                         04 1C ;                 PRINT, Length: 0x001C
-;
-; MISSES THE ALIEN AS IT TWISTS TO ONE SIDE.
-;
 9EB0:                            D5 92 B5 B7 82 17 43 5E 87 8C 83 96 CB B5 16 BC ; 
 9EC0:                            55 D1 0B C0 6B BF 0F A0 5B 17 FF 59 ; 
-9ECC:                   FF          ;             Phrase number: 0xFF
+;
+;                                MISSES THE ALIEN AS IT TWISTS TO ONE SIDE.
+;
+9ECC:                   FF          ;             Phrase 0xFF: "??FF??"
 9ECD:                   2E          ;             ELSE go to: 0x9EFC
 9ECE:                      0D 2C    ;               WHILE PASS, Length: 0x002C
 9ED0:                         04 23 ;                 PRINT, Length: 0x0023
-;
-; THE ALIEN ENTANGLES YOUR ARMS, PREVENTING THE USE OF
-;
 9ED2:                            5F BE 8E 14 30 79 30 15 50 BD BF 6D DB B5 34 A1 ; 
 9EE2:                            94 14 6E 94 EC 16 CF 62 C3 9A AB 98 5F BE B5 17 ; 
 9EF2:                            51 5E 46 ; 
-9EF5:                         A9    ;                 COMMAND 0xA9
+;
+;                                THE ALIEN ENTANGLES YOUR ARMS, PREVENTING THE USE OF
+;
+9EF5:                         A9    ;                 ROUTINE 0xA9
 9EF6:                         04 04 ;                 PRINT, Length: 0x0004
-;
-; ON IT.
-;
 9EF8:                            03 A0 97 7B ; 
-9EFC:    08 81 F1                   ;   Section 8: ??UNKNOWN_08??, Length: 0x1F1
+;
+;                                ON IT.
+;
+9EFC:    08 81 F1                   ;   Section 8: ??UNKNOWN_08??, Length: 0x01F1
 9EFF:       0E 81 EE                ;     WHILE FAIL, Length: 0x01EE
 9F02:          0D 47                ;       WHILE PASS, Length: 0x0047
 9F04:             14                ;         EXECUTE AND REVERSE STATUS
-9F05:             01 01             ;         IS IN PACK OR CURRENT ROOM, Object number: 0x01
+9F05:             01 01             ;         IS IN PACK OR CURRENT ROOM, obj=01_YOU
 9F07:             14                ;         EXECUTE AND REVERSE STATUS
-9F08:             03 C3 62          ;         IS LOCATED, Room number: 0xC3, Object number: 0x62
+9F08:             03 C3 62          ;         IS LOCATED, room=??C3??, obj=??62??
 9F0B:             14                ;         EXECUTE AND REVERSE STATUS
 9F0C:             0E 06             ;         WHILE FAIL, Length: 0x0006
-9F0E:                03 DB 01       ;           IS LOCATED, Room number: 0xDB, Object number: 0x01
-9F11:                03 E8 01       ;           IS LOCATED, Room number: 0xE8, Object number: 0x01
+9F0E:                03 DB 01       ;           IS LOCATED, room=??DB??, obj=01_YOU
+9F11:                03 E8 01       ;           IS LOCATED, room=??E8??, obj=01_YOU
 9F14:             0B 19 0A          ;         SWITCH, Length: 0x0019, Function to call: 0x0A
-9F17:                04             ;           Phrase number: 0x04
+9F17:                04             ;           Phrase 0x04: "WEST     *          *           *"
 9F18:                04             ;           ELSE go to: 0x9F1D
 9F19:                   21 04 00 00 ;             EXECUTE PHRASE, Phrase number: 0x04, First noun: 0x00, Second noun: 0x00
-9F1D:                03             ;           Phrase number: 0x03
+9F1D:                03             ;           Phrase 0x03: "EAST     *          *           *"
 9F1E:                04             ;           ELSE go to: 0x9F23
 9F1F:                   21 03 00 00 ;             EXECUTE PHRASE, Phrase number: 0x03, First noun: 0x00, Second noun: 0x00
-9F23:                01             ;           Phrase number: 0x01
+9F23:                01             ;           Phrase 0x01: "NORTH    *          *           *"
 9F24:                04             ;           ELSE go to: 0x9F29
 9F25:                   21 01 00 00 ;             EXECUTE PHRASE, Phrase number: 0x01, First noun: 0x00, Second noun: 0x00
-9F29:                02             ;           Phrase number: 0x02
+9F29:                02             ;           Phrase 0x02: "SOUTH    *          *           *"
 9F2A:                04             ;           ELSE go to: 0x9F2F
 9F2B:                   21 02 00 00 ;             EXECUTE PHRASE, Phrase number: 0x02, First noun: 0x00, Second noun: 0x00
-9F2F:             01 01             ;         IS IN PACK OR CURRENT ROOM, Object number: 0x01
+9F2F:             01 01             ;         IS IN PACK OR CURRENT ROOM, obj=01_YOU
 9F31:             1F 18             ;         PRINT, Length: 0x0018
-;
-; SOMETHING SEEMS TO BE FOLLOWING YOU.
-;
 9F33:                3F B9 82 62 91 7A 57 17 75 61 89 17 AF 14 59 15 ; 
 9F43:                09 8D 50 D1 DB 6A 3F A1 ; 
+;
+;                    SOMETHING SEEMS TO BE FOLLOWING YOU.
+;
 9F4B:          0D 1E                ;       WHILE PASS, Length: 0x001E
 9F4D:             14                ;         EXECUTE AND REVERSE STATUS
-9F4E:             01 01             ;         IS IN PACK OR CURRENT ROOM, Object number: 0x01
+9F4E:             01 01             ;         IS IN PACK OR CURRENT ROOM, obj=01_YOU
 9F50:             05 26             ;         IS LESS OR EQUAL TO LAST RANDOM, Value: 0x26
 9F52:             0E 08             ;         WHILE FAIL, Length: 0x0008
 9F54:                0A 01          ;           IS INPUT PHRASE, Phrase number: 0x01
@@ -6824,283 +6902,287 @@ ObjectData:
 9F5A:                0A 04          ;           IS INPUT PHRASE, Phrase number: 0x04
 9F5C:             14                ;         EXECUTE AND REVERSE STATUS
 9F5D:             0E 06             ;         WHILE FAIL, Length: 0x0006
-9F5F:                03 DB 01       ;           IS LOCATED, Room number: 0xDB, Object number: 0x01
-9F62:                03 E8 01       ;           IS LOCATED, Room number: 0xE8, Object number: 0x01
-9F65:             2C 01             ;         SET ACTIVE, Object number: 0x01
-9F67:             1C 62             ;         SET VAR OBJECT, Object number: 0x62
+9F5F:                03 DB 01       ;           IS LOCATED, room=??DB??, obj=01_YOU
+9F62:                03 E8 01       ;           IS LOCATED, room=??E8??, obj=01_YOU
+9F65:             2C 01             ;         SET ACTIVE, obj=01_YOU
+9F67:             1C 62             ;         SET VAR OBJECT, obj=??62??
 9F69:             10                ;         DROP VAR
-9F6A:             BD                ;         COMMAND 0xBD
+9F6A:             BD                ;         ROUTINE 0xBD
 9F6B:          14                   ;       EXECUTE AND REVERSE STATUS
-9F6C:          01 01                ;       IS IN PACK OR CURRENT ROOM, Object number: 0x01
+9F6C:          01 01                ;       IS IN PACK OR CURRENT ROOM, obj=01_YOU
 9F6E:          0B 81 7F 05          ;       SWITCH, Length: 0x017F, Function to call: 0x05
-9F72:             19                ;         Phrase number: 0x19
+9F72:             19                ;         Phrase 0x19: "DIAGNO   *          *           *"
 9F73:             46                ;         ELSE go to: 0x9FBA
 9F74:                0D 44          ;           WHILE PASS, Length: 0x0044
 9F76:                   1F 3B       ;             PRINT, Length: 0x003B
-;
-; A WAVE OF BLINDING PAIN FLOODS THROUGH YOUR BODY AS RAZOR SHARP TEETH PIERCE YOUR FLESH!
-;
 9F78:                      59 45 CF 49 B8 16 B6 14 8E 7A 91 7A DB 16 83 7A ; 
 9F88:                      89 67 8D 9E 82 17 07 B3 13 6D C7 DE 84 AF 93 9E ; 
 9F98:                      95 14 2B 17 04 E5 5A 17 3A 49 7F 17 82 62 E3 16 ; 
 9FA8:                      2D 62 5B 5E 34 A1 56 15 5A 62 21 ; 
-9FB3:                   1C 01       ;             SET VAR OBJECT, Object number: 0x01
-9FB5:                   1D 09       ;             ATTACK VAR, Points: 0x09
-9FB7:                   17 91 01    ;             MOVE TO, Object number: 0x91, Destination room: 0x01
-9FBA:             34                ;         Phrase number: 0x34
+;
+;                          A WAVE OF BLINDING PAIN FLOODS THROUGH YOUR BODY AS RAZOR
+;                          SHARP TEETH PIERCE YOUR FLESH!
+;
+9FB3:                   1C 01       ;             SET VAR OBJECT, obj=01_YOU
+9FB5:                   1D 09       ;             ATTACK VAR, Points: 9
+9FB7:                   17 91 01    ;             MOVE TO, obj=??91??, room=01_PLAYER
+9FBA:             34                ;         Phrase 0x34: "JUMP     *          OVER     u......."
 9FBB:             34                ;         ELSE go to: 0x9FF0
 9FBC:                0D 32          ;           WHILE PASS, Length: 0x0032
 9FBE:                   1F 29       ;             PRINT, Length: 0x0029
-;
-; YOU FEEL A SEARING PAIN AS THE ALIEN'S CLAWS REND YOUR FLESH!
-;
 9FC0:                      C7 DE 4F 15 33 61 55 45 94 5F 91 7A DB 16 83 7A ; 
 9FD0:                      4B 49 5F BE 8E 14 30 79 CB 23 BB 54 CB D2 70 B1 ; 
 9FE0:                      1B 58 34 A1 56 15 5A 62 21 ; 
-9FE9:                   1C 01       ;             SET VAR OBJECT, Object number: 0x01
-9FEB:                   1D 06       ;             ATTACK VAR, Points: 0x06
-9FED:                   17 91 01    ;             MOVE TO, Object number: 0x91, Destination room: 0x01
-9FF0:             5A                ;         Phrase number: 0x5A
+;
+;                          YOU FEEL A SEARING PAIN AS THE ALIEN'S CLAWS REND YOUR
+;                          FLESH!
+;
+9FE9:                   1C 01       ;             SET VAR OBJECT, obj=01_YOU
+9FEB:                   1D 06       ;             ATTACK VAR, Points: 6
+9FED:                   17 91 01    ;             MOVE TO, obj=??91??, room=01_PLAYER
+9FF0:             5A                ;         Phrase 0x5A: "THUM     *          *           *"
 9FF1:             4C                ;         ELSE go to: 0xA03E
 9FF2:                0D 4A          ;           WHILE PASS, Length: 0x004A
 9FF4:                   1F 44       ;             PRINT, Length: 0x0044
-;
-; THE ALIEN GRAPPLES YOU! AS ITS SLIMY ARMS TRY TO CRUSH THE LIFE OUT OF YOU, YOUR RIBS BEGIN TO BEND...
-;
 9FF6:                      5F BE 8E 14 30 79 84 15 EA 48 F5 8B 51 18 EB C1 ; 
 A006:                      4B 49 8D 7B 5E 17 7B 7A 94 14 4B 94 03 C0 89 17 ; 
 A016:                      E4 14 5A C6 82 17 4E 5E 4F 79 C7 16 11 BC 9B 64 ; 
 A026:                      3E A1 51 18 23 C6 04 B2 C4 B5 7B 60 96 96 C4 9C ; 
 A036:                      8E 61 FF F9 ; 
-A03A:                   1C 01       ;             SET VAR OBJECT, Object number: 0x01
-A03C:                   1D 03       ;             ATTACK VAR, Points: 0x03
-A03E:             8D                ;         Phrase number: 0x8D
+;
+;                          THE ALIEN GRAPPLES YOU! AS ITS SLIMY ARMS TRY TO CRUSH THE
+;                          LIFE OUT OF YOU, YOUR RIBS BEGIN TO BEND...
+;
+A03A:                   1C 01       ;             SET VAR OBJECT, obj=01_YOU
+A03C:                   1D 03       ;             ATTACK VAR, Points: 3
+A03E:             8D                ;         Phrase 0x8D: "??8D??"
 A03F:             43                ;         ELSE go to: 0xA083
 A040:                1F 41          ;           PRINT, Length: 0x0041
-;
-; THE ALIEN'S SLAVERING TEETH PUSH FORWARD TOWARDS YOU, BUT YOU TWIST TO THE SIDE AND KICK IT BACK.
-;
 A042:                   5F BE 8E 14 30 79 CB 23 BB B8 74 CA 91 7A 7F 17 ; 
 A052:                   82 62 EF 16 13 B8 04 68 14 D0 16 58 73 A1 4D B1 ; 
 A062:                   51 18 B3 C7 F6 4F 51 18 56 C2 55 D1 16 BC D6 9C ; 
 A072:                   DB 72 46 B8 43 5E 33 98 45 86 CB 83 04 BC DD 46 ; 
 A082:                   2E          ; 
-A083:             C0                ;         Phrase number: 0xC0
+;
+;                       THE ALIEN'S SLAVERING TEETH PUSH FORWARD TOWARDS YOU, BUT
+;                       YOU TWIST TO THE SIDE AND KICK IT BACK.
+;
+A083:             C0                ;         Phrase 0xC0: "??C0??"
 A084:             3C                ;         ELSE go to: 0xA0C1
 A085:                1F 3A          ;           PRINT, Length: 0x003A
-;
-; THE ALIEN'S CLAWS RIP THROUGH YOUR CLOTHES. BUT BY JUMPING BACKWARDS YOU AVOID INJURY. 
-;
 A087:                   5F BE 8E 14 30 79 CB 23 BB 54 CB D2 12 B2 82 17 ; 
 A097:                   07 B3 13 6D C7 DE 85 AF 86 8D F5 72 44 F4 73 C6 ; 
 A0A7:                   7B 50 EF 81 90 A5 C4 6A DD 46 14 D0 0B 5C C7 DE ; 
 A0B7:                   98 14 46 9F D0 15 F4 81 DB E0 ; 
-A0C1:             FF                ;         Phrase number: 0xFF
+;
+;                       THE ALIEN'S CLAWS RIP THROUGH YOUR CLOTHES. BUT BY JUMPING
+;                       BACKWARDS YOU AVOID INJURY.
+;
+A0C1:             FF                ;         Phrase 0xFF: "??FF??"
 A0C2:             2D                ;         ELSE go to: 0xA0F0
 A0C3:                1F 2B          ;           PRINT, Length: 0x002B
-;
-; THE ALIEN RUSHES PAST YOU IN ITS FRENZIED ATTEMPT TO ATTACK YOU.
-;
 A0C5:                   5F BE 8E 14 30 79 3F 17 1F B8 D2 B5 66 49 51 18 ; 
 A0D5:                   4B C2 8B 96 0B C0 6F 68 B3 9B F3 5F 8E 49 72 61 ; 
 A0E5:                   16 BC C3 9C 3B C0 8B 54 C7 DE 2E ; 
-A0F0:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x0E
+;
+;                       THE ALIEN RUSHES PAST YOU IN ITS FRENZIED ATTEMPT TO ATTACK
+;                       YOU.
+;
+A0F0:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x000E
 ;           SHORT SHAGGY CREATURE
 A0F2:       29 B8 B3 B3 1B B8 0B 6D E4 14 96 5F 2F C6 ; 
 
 ; Object 63
-A100: 5C 42                         ; Word Number: 0x5C "CUBE", Length: 0x42
+A100: 5C 42                         ; Word Number: 0x5C "CUBE", Length: 0x0042
 A102: 65 00 A0                      ; Location: 0x65, Points: 0, Data Bits: 0b10100000
-A105:    03 27                      ;   Section 3: DESCRIPTION, Length: 0x27
+A105:    03 27                      ;   Section 3: DESCRIPTION, Length: 0x0027
 A107:       04 25                   ;     PRINT, Length: 0x0025
-;
-; THERE IS A DARK GREY TWO INCH SQUARE METALIC CUBE HERE.
-;
 A109:          5F BE 5B B1 4B 7B 46 45 35 49 84 15 3B 63 C1 C0 ; 
 A119:          D0 15 13 54 97 B9 2F 49 67 16 4E BD CB 78 24 56 ; 
 A129:          4A 5E 2F 62 2E       ; 
-A12E:    01 03                      ;   Section 1: ??UNKNOWN_01??, Length: 0x03
+;
+;              THERE IS A DARK GREY TWO INCH SQUARE METALIC CUBE HERE.
+;
+A12E:    01 03                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0003
 A130:       6C 0F 6D                ; 
-A133:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+A133:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 A135:       04                      ; 
-A136:    02 0C                      ;   Section 2: SHORT_NAME, Length: 0x0C
+A136:    02 0C                      ;   Section 2: SHORT_NAME, Length: 0x000C
 ;           TWO INCH GREY CUBE
 A138:       C1 C0 D0 15 13 54 AF 6E 45 DB AF C3 ; 
 
 ; Object 64
-A144: 5C 3B                         ; Word Number: 0x5C "CUBE", Length: 0x3B
+A144: 5C 3B                         ; Word Number: 0x5C "CUBE", Length: 0x003B
 A146: 00 00 A0                      ; Location: 0x00, Points: 0, Data Bits: 0b10100000
-A149:    03 1F                      ;   Section 3: DESCRIPTION, Length: 0x1F
+A149:    03 1F                      ;   Section 3: DESCRIPTION, Length: 0x001F
 A14B:       04 1D                   ;     PRINT, Length: 0x001D
-;
-; THERE IS A WHITE TWO INCH SQUARE CUBE HERE.
-;
 A14D:          5F BE 5B B1 4B 7B 59 45 96 73 56 5E 2B D2 8D 7A ; 
 A15D:          15 71 A3 AD 5B B1 24 56 4A 5E 2F 62 2E ; 
-A16A:    01 03                      ;   Section 1: ??UNKNOWN_01??, Length: 0x03
+;
+;              THERE IS A WHITE TWO INCH SQUARE CUBE HERE.
+;
+A16A:    01 03                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0003
 A16C:       60 0F 6D                ; 
-A16F:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+A16F:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 A171:       06                      ; 
-A172:    02 0D                      ;   Section 2: SHORT_NAME, Length: 0x0D
+A172:    02 0D                      ;   Section 2: SHORT_NAME, Length: 0x000D
 ;           TWO INCH WHITE CUBE
 A174:       C1 C0 D0 15 13 54 23 D1 DB BD 24 56 45 ; 
 
 ; Object 65
-A181: 1A 09                         ; Word Number: 0x1A "DESK", Length: 0x09
+A181: 1A 09                         ; Word Number: 0x1A "DESK", Length: 0x0009
 A183: 86 08 81                      ; Location: 0x86, Points: 8, Data Bits: 0b10000001
-A186:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+A186:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           TABLE 
 A188:       44 BD DB 8B             ; 
 
 ; Object 66
-A18C: 2E 09                         ; Word Number: 0x2E "HOLE", Length: 0x09
+A18C: 2E 09                         ; Word Number: 0x2E "HOLE", Length: 0x0009
 A18E: 86 08 82                      ; Location: 0x86, Points: 8, Data Bits: 0b10000010
-A191:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+A191:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           RECESS
 A193:       65 B1 65 62             ; 
 
 ; Object 67
-A197: 2E 08                         ; Word Number: 0x2E "HOLE", Length: 0x08
+A197: 2E 08                         ; Word Number: 0x2E "HOLE", Length: 0x0008
 A199: 80 07 82                      ; Location: 0x80, Points: 7, Data Bits: 0b10000010
-A19C:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+A19C:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           HOLE
 A19E:       7E 74 45                ; 
 
 ; Object 68
-A1A1: 2E 62                         ; Word Number: 0x2E "HOLE", Length: 0x62
+A1A1: 2E 62                         ; Word Number: 0x2E "HOLE", Length: 0x0062
 A1A3: 9E 08 82                      ; Location: 0x9E, Points: 8, Data Bits: 0b10000010
-A1A6:    06 58                      ;   Section 6: ??UNKNOWN_06??, Length: 0x58
+A1A6:    06 58                      ;   Section 6: ??UNKNOWN_06??, Length: 0x0058
 A1A8:       0D 56                   ;     WHILE PASS, Length: 0x0056
 A1AA:          0A 0F                ;       IS INPUT PHRASE, Phrase number: 0x0F
 A1AC:          08 64                ;       IS FIRST NOUN, Word number: 0x64
 A1AE:          04 4C                ;       PRINT, Length: 0x004C
-;
-; THE CUBE BEGINS TO GLOW BRIGHTLY. ABOVE YOUR HEAD AN ESCAPE HATCH OPENS AND AN AVALANCHE OF BOULDERS CRUSHES YOU! 
-;
 A1B0:             5F BE E7 14 5B 4D 69 4D 9D 7A 89 17 7E 15 6B A1 ; 
 A1C0:             73 4F 2E 6D 1F 8F 84 14 4F A1 51 18 23 C6 E3 72 ; 
 A1D0:             03 58 87 96 53 B7 DB A4 56 72 13 54 5F A0 8B 9A ; 
 A1E0:             8E 48 90 14 98 14 3B 48 1A 98 51 5E 84 64 2E A1 ; 
 A1F0:             F4 59 C5 B5 F5 B3 F5 72 51 18 EB C1 ; 
-A1FC:          1C 01                ;       SET VAR OBJECT, Object number: 0x01
-A1FE:          1D 6E                ;       ATTACK VAR, Points: 0x6E
-A200:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+;
+;                 THE CUBE BEGINS TO GLOW BRIGHTLY. ABOVE YOUR HEAD AN ESCAPE
+;                 HATCH OPENS AND AN AVALANCHE OF BOULDERS CRUSHES YOU!
+;
+A1FC:          1C 01                ;       SET VAR OBJECT, obj=01_YOU
+A1FE:          1D 6E                ;       ATTACK VAR, Points: 110
+A200:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           HOLE
 A202:       7E 74 45                ; 
 
 ; Object 69
-A205: 5D 0A                         ; Word Number: 0x5D "PICTUR", Length: 0x0A
+A205: 5D 0A                         ; Word Number: 0x5D "PICTUR", Length: 0x000A
 A207: 82 07 80                      ; Location: 0x82, Points: 7, Data Bits: 0b10000000
-A20A:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+A20A:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           PICTURE
 A20C:       85 A5 74 C0 45          ; 
 
 ; Object 6A
-A211: 5E 80 82                      ; Word Number: 0x5E "CYLIND", Length: 0x82
+A211: 5E 80 82                      ; Word Number: 0x5E "CYLIND", Length: 0x0082
 A214: 85 87 8A                      ; Location: 0x85, Points: 135, Data Bits: 0b10001010
-A217:    07 71                      ;   Section 7: IF_FIRST_NOUN, Length: 0x71
+A217:    07 71                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0071
 A219:       0B 6F 0A                ;     SWITCH, Length: 0x006F, Function to call: 0x0A
-A21C:          11                   ;       Phrase number: 0x11
+A21C:          11                   ;       Phrase 0x11: "OPEN     u.......   *           *"
 A21D:          01                   ;       ELSE go to: 0xA21F
-A21E:             C2                ;         COMMAND 0xC2
-A21F:          40                   ;       Phrase number: 0x40
+A21E:             C2                ;         ROUTINE 0xC2
+A21F:          40                   ;       Phrase 0x40: "CLOSE    ....A...   *           *"
 A220:          01                   ;       ELSE go to: 0xA222
-A221:             C2                ;         COMMAND 0xC2
-A222:          36                   ;       Phrase number: 0x36
+A221:             C2                ;         ROUTINE 0xC2
+A222:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 A223:          35                   ;       ELSE go to: 0xA259
 A224:             0E 33             ;         WHILE FAIL, Length: 0x0033
 A226:                0D 21          ;           WHILE PASS, Length: 0x0021
 A228:                   1B          ;             SET VAR TO SECOND NOUN
 A229:                   14          ;             EXECUTE AND REVERSE STATUS
 A22A:                   2E 20       ;             UNKNOWN2E, Value: 0x20
-A22C:                   17 01 6A    ;             MOVE TO, Object number: 0x01, Destination room: 0x6A
+A22C:                   17 01 6A    ;             MOVE TO, obj=01_YOU, room=obj_6A
 A22F:                   04 18       ;             PRINT, Length: 0x0018
-;
-; YOU SLOWLY CLIMB INTO THE CYLINDER. 
-;
 A231:                      C7 DE 5E 17 7E A1 45 DB 8F 8C 8B 4B C9 9A 82 17 ; 
 A241:                      45 5E 43 DE 3F 98 1B B5 ; 
+;
+;                          YOU SLOWLY CLIMB INTO THE CYLINDER. 
+;
 A249:                0D 0E          ;           WHILE PASS, Length: 0x000E
 A24B:                   1B          ;             SET VAR TO SECOND NOUN
 A24C:                   2E 20       ;             UNKNOWN2E, Value: 0x20
 A24E:                   04 09       ;             PRINT, Length: 0x0009
-;
-; IT IS CLOSED.
-;
 A250:                      73 7B 4B 7B C9 54 A6 B7 2E ; 
-A259:          37                   ;       Phrase number: 0x37
+;
+;                          IT IS CLOSED.
+;
+A259:          37                   ;       Phrase 0x37: "CLIMB    *          OUT         *"
 A25A:          2F                   ;       ELSE go to: 0xA28A
 A25B:             0E 2D             ;         WHILE FAIL, Length: 0x002D
 A25D:                0D 1B          ;           WHILE PASS, Length: 0x001B
 A25F:                   1B          ;             SET VAR TO SECOND NOUN
 A260:                   14          ;             EXECUTE AND REVERSE STATUS
 A261:                   2E 20       ;             UNKNOWN2E, Value: 0x20
-A263:                   1C 01       ;             SET VAR OBJECT, Object number: 0x01
+A263:                   1C 01       ;             SET VAR OBJECT, obj=01_YOU
 A265:                   10          ;             DROP VAR
 A266:                   04 12       ;             PRINT, Length: 0x0012
-;
-; YOU NOW STAND ON THE FLOOR.
-;
 A268:                      C7 DE 99 16 D5 CE 50 BD 11 58 96 96 DB 72 89 67 ; 
 A278:                      C7 A0    ; 
+;
+;                          YOU NOW STAND ON THE FLOOR.
+;
 A27A:                0D 0E          ;           WHILE PASS, Length: 0x000E
 A27C:                   1B          ;             SET VAR TO SECOND NOUN
 A27D:                   2E 20       ;             UNKNOWN2E, Value: 0x20
 A27F:                   04 09       ;             PRINT, Length: 0x0009
-;
-; IT IS CLOSED.
-;
 A281:                      73 7B 4B 7B C9 54 A6 B7 2E ; 
-A28A:    02 0A                      ;   Section 2: SHORT_NAME, Length: 0x0A
+;
+;                          IT IS CLOSED.
+;
+A28A:    02 0A                      ;   Section 2: SHORT_NAME, Length: 0x000A
 ;           GLASS CYLINDER 
 A28C:       BB 6D CB B9 CE 56 8E 7A 23 62 ; 
 
 ; Object 6B
-A296: 4A 53                         ; Word Number: 0x4A "BUTTON", Length: 0x53
+A296: 4A 53                         ; Word Number: 0x4A "BUTTON", Length: 0x0053
 A298: 6A 00 80                      ; Location: 0x6A, Points: 0, Data Bits: 0b10000000
-A29B:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+A29B:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 A29D:       60                      ; 
-A29E:    07 41                      ;   Section 7: IF_FIRST_NOUN, Length: 0x41
+A29E:    07 41                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0041
 A2A0:       0D 3F                   ;     WHILE PASS, Length: 0x003F
 A2A2:          0A 12                ;       IS INPUT PHRASE, Phrase number: 0x12
 A2A4:          0E 3B                ;       WHILE FAIL, Length: 0x003B
 A2A6:             0D 1E             ;         WHILE PASS, Length: 0x001E
-A2A8:                03 85 6D       ;           IS LOCATED, Room number: 0x85, Object number: 0x6D
-A2AB:                17 6D 00       ;           MOVE TO, Object number: 0x6D, Destination room: 0x00
+A2A8:                03 85 6D       ;           IS LOCATED, room=85_1_SOUTHWEST_OF_STATION, obj=??6D??
+A2AB:                17 6D 00       ;           MOVE TO, obj=??6D??, room=00_nowhere
 A2AE:                04 16          ;           PRINT, Length: 0x0016
-;
-; CLICK. THE LIGHTS HAVE GONE OUT. 
-;
 A2B0:                   C3 54 AF 54 82 17 4E 5E 7A 79 0B C0 58 72 49 5E ; 
 A2C0:                   0F A0 C7 16 9B C1 ; 
+;
+;                       CLICK. THE LIGHTS HAVE GONE OUT. 
+;
 A2C6:             0D 19             ;         WHILE PASS, Length: 0x0019
-A2C8:                03 00 6D       ;           IS LOCATED, Room number: 0x00, Object number: 0x6D
-A2CB:                17 6D 85       ;           MOVE TO, Object number: 0x6D, Destination room: 0x85
+A2C8:                03 00 6D       ;           IS LOCATED, room=00_nowhere, obj=??6D??
+A2CB:                17 6D 85       ;           MOVE TO, obj=??6D??, room=85_1_SOUTHWEST_OF_STATION
 A2CE:                04 11          ;           PRINT, Length: 0x0011
-;
-; CLICK. THE LIGHT RETURNS.
-;
 A2D0:                   C3 54 AF 54 82 17 4E 5E 7A 79 14 BC 8F 62 DD B2 ; 
 A2E0:                   2E          ; 
-A2E1:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x08
+;
+;                       CLICK. THE LIGHT RETURNS.
+;
+A2E1:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x0008
 ;           WHITE BUTTON
 A2E3:       23 D1 DB BD F6 4F 80 BF ; 
 
 ; Object 6C
-A2EB: 4A 80 F2                      ; Word Number: 0x4A "BUTTON", Length: 0xF2
+A2EB: 4A 80 F2                      ; Word Number: 0x4A "BUTTON", Length: 0x00F2
 A2EE: 6A 00 80                      ; Location: 0x6A, Points: 0, Data Bits: 0b10000000
-A2F1:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+A2F1:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 A2F3:       61                      ; 
-A2F4:    07 80 DE                   ;   Section 7: IF_FIRST_NOUN, Length: 0xDE
+A2F4:    07 80 DE                   ;   Section 7: IF_FIRST_NOUN, Length: 0x00DE
 A2F7:       0D 80 DB                ;     WHILE PASS, Length: 0x00DB
 A2FA:          0A 12                ;       IS INPUT PHRASE, Phrase number: 0x12
 A2FC:          0E 80 D6             ;       WHILE FAIL, Length: 0x00D6
 A2FF:             0D 80 95          ;         WHILE PASS, Length: 0x0095
-A302:                03 85 01       ;           IS LOCATED, Room number: 0x85, Object number: 0x01
+A302:                03 85 01       ;           IS LOCATED, room=85_1_SOUTHWEST_OF_STATION, obj=01_YOU
 A305:                04 80 8B       ;           PRINT, Length: 0x008B
-;
-; CLICK. SHWONK! YOU NOTICE THAT THE CLEAR LID OF THE CYLINDER HAS CLOSED. WHILE DOING SO, IT SEVERED YOUR ARM. WHILE STARRING AT THE DISMEMBERED ARM IN THE CYLINDER, YOU PASS OUT AND EVENTUALLY BLEED TO DEATH.
-;
 A308:                   C3 54 AF 54 5A 17 40 D2 6B 83 C7 DE 99 16 85 BE ; 
 A318:                   56 5E 56 72 82 17 45 5E E3 8B 8E AF F3 78 C3 9E ; 
 A328:                   5F BE EB 14 90 8C F4 59 9B 15 C5 B5 85 8D 17 60 ; 
@@ -7110,164 +7192,169 @@ A358:                   10 B2 C3 6A 16 BC DB 72 95 5A 2F 92 74 4D F3 5F ;
 A368:                   37 49 D0 15 82 17 45 5E 43 DE 3F 98 F3 B4 C7 DE ; 
 A378:                   DB 16 CB B9 36 A1 90 14 07 58 70 CA 63 C0 13 8D ; 
 A388:                   B6 14 26 60 89 17 FF 14 82 49 2E ; 
-A393:                1C 01          ;           SET VAR OBJECT, Object number: 0x01
-A395:                1D 64          ;           ATTACK VAR, Points: 0x64
+;
+;                       CLICK. SHWONK! YOU NOTICE THAT THE CLEAR LID OF THE
+;                       CYLINDER HAS CLOSED. WHILE DOING SO, IT SEVERED YOUR ARM.
+;                       WHILE STARRING AT THE DISMEMBERED ARM IN THE CYLINDER, YOU
+;                       PASS OUT AND EVENTUALLY BLEED TO DEATH.
+;
+A393:                1C 01          ;           SET VAR OBJECT, obj=01_YOU
+A395:                1D 64          ;           ATTACK VAR, Points: 100
 A397:             0D 1E             ;         WHILE PASS, Length: 0x001E
-A399:                1C 6A          ;           SET VAR OBJECT, Object number: 0x6A
+A399:                1C 6A          ;           SET VAR OBJECT, obj=??6A??
 A39B:                2E 20          ;           UNKNOWN2E, Value: 0x20
 A39D:                29             ;           PRINT OPEN VAR
 A39E:                04 17          ;           PRINT, Length: 0x0017
-;
-; CLICK. SHWIPP! THE CYLINDER OPENS.
-;
 A3A0:                   C3 54 AF 54 5A 17 52 D1 AB A2 5F BE EB 14 90 8C ; 
 A3B0:                   F4 59 C2 16 9D 61 2E ; 
+;
+;                       CLICK. SHWIPP! THE CYLINDER OPENS.
+;
 A3B7:             0D 1C             ;         WHILE PASS, Length: 0x001C
 A3B9:                04 17          ;           PRINT, Length: 0x0017
-;
-; CLICK. SHWIK! THE CYLINDER CLOSES.
-;
 A3BB:                   C3 54 AF 54 5A 17 4D D1 D6 06 DB 72 CE 56 8E 7A ; 
 A3CB:                   23 62 C9 54 B5 B7 2E ; 
-A3D2:                1C 6A          ;           SET VAR OBJECT, Object number: 0x6A
+;
+;                       CLICK. SHWIK! THE CYLINDER CLOSES.
+;
+A3D2:                1C 6A          ;           SET VAR OBJECT, obj=??6A??
 A3D4:                29             ;           PRINT OPEN VAR
-A3D5:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+A3D5:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           MAROON BUTTON
 A3D7:       94 91 40 A0 BF 14 49 C0 4E ; 
 
 ; Object 6D
-A3E0: 5F 09                         ; Word Number: 0x5F "LIGHTS", Length: 0x09
+A3E0: 5F 09                         ; Word Number: 0x5F "LIGHTS", Length: 0x0009
 A3E2: 85 07 80                      ; Location: 0x85, Points: 7, Data Bits: 0b10000000
-A3E5:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+A3E5:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           LIGHTS
 A3E7:       89 8C 4D 75             ; 
 
 ; Object 6E
-A3EB: 62 0A                         ; Word Number: 0x62 "CONSOL", Length: 0x0A
+A3EB: 62 0A                         ; Word Number: 0x62 "CONSOL", Length: 0x000A
 A3ED: 9C 08 81                      ; Location: 0x9C, Points: 8, Data Bits: 0b10000001
-A3F0:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+A3F0:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           CONSOLE
 A3F2:       40 55 3E B9 45          ; 
 
 ; Object 6F
-A3F7: 53 0C                         ; Word Number: 0x53 "CHAIR", Length: 0x0C
+A3F7: 53 0C                         ; Word Number: 0x53 "CHAIR", Length: 0x000C
 A3F9: 9C 08 80                      ; Location: 0x9C, Points: 8, Data Bits: 0b10000000
-A3FC:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-A3FE:       C5                      ;     COMMAND 0xC5
-A3FF:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+A3FC:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+A3FE:       C5                      ;     ROUTINE 0xC5
+A3FF:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           CHAIR 
 A401:       1B 54 23 7B             ; 
 
 ; Object 70
-A405: 4A 5D                         ; Word Number: 0x4A "BUTTON", Length: 0x5D
+A405: 4A 5D                         ; Word Number: 0x4A "BUTTON", Length: 0x005D
 A407: 6E 00 80                      ; Location: 0x6E, Points: 0, Data Bits: 0b10000000
-A40A:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+A40A:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 A40C:       60                      ; 
-A40D:    07 4B                      ;   Section 7: IF_FIRST_NOUN, Length: 0x4B
+A40D:    07 4B                      ;   Section 7: IF_FIRST_NOUN, Length: 0x004B
 A40F:       0D 49                   ;     WHILE PASS, Length: 0x0049
 A411:          0A 12                ;       IS INPUT PHRASE, Phrase number: 0x12
 A413:          0E 45                ;       WHILE FAIL, Length: 0x0045
 A415:             0D 1D             ;         WHILE PASS, Length: 0x001D
-A417:                03 72 73       ;           IS LOCATED, Room number: 0x72, Object number: 0x73
+A417:                03 72 73       ;           IS LOCATED, room=obj_72, obj=??73??
 A41A:                04 0F          ;           PRINT, Length: 0x000F
-;
-; THE SCREEN GOES BLANK.
-;
 A41C:                   5F BE 55 17 67 B1 89 96 B5 9E B6 14 95 48 2E ; 
-A42B:                17 73 00       ;           MOVE TO, Object number: 0x73, Destination room: 0x00
-A42E:                17 74 00       ;           MOVE TO, Object number: 0x74, Destination room: 0x00
-A431:                17 75 00       ;           MOVE TO, Object number: 0x75, Destination room: 0x00
+;
+;                       THE SCREEN GOES BLANK.
+;
+A42B:                17 73 00       ;           MOVE TO, obj=??73??, room=00_nowhere
+A42E:                17 74 00       ;           MOVE TO, obj=??74??, room=00_nowhere
+A431:                17 75 00       ;           MOVE TO, obj=??75??, room=00_nowhere
 A434:             0D 24             ;         WHILE PASS, Length: 0x0024
 A436:                04 16          ;           PRINT, Length: 0x0016
-;
-; THE VIEWING SCREEN IS ACTIVATED. 
-;
 A438:                   5F BE D3 17 FB 62 AB 98 64 B7 30 60 D5 15 85 14 ; 
 A448:                   98 BE 7F 49 9B 5D ; 
-A44E:                17 73 72       ;           MOVE TO, Object number: 0x73, Destination room: 0x72
-A451:                17 74 72       ;           MOVE TO, Object number: 0x74, Destination room: 0x72
-A454:                17 75 72       ;           MOVE TO, Object number: 0x75, Destination room: 0x72
-A457:                1C 72          ;           SET VAR OBJECT, Object number: 0x72
+;
+;                       THE VIEWING SCREEN IS ACTIVATED. 
+;
+A44E:                17 73 72       ;           MOVE TO, obj=??73??, room=obj_72
+A451:                17 74 72       ;           MOVE TO, obj=??74??, room=obj_72
+A454:                17 75 72       ;           MOVE TO, obj=??75??, room=obj_72
+A457:                1C 72          ;           SET VAR OBJECT, obj=??72??
 A459:                33             ;           UNKNOWN33
-A45A:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x08
+A45A:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x0008
 ;           WHITE BUTTON
 A45C:       23 D1 DB BD F6 4F 80 BF ; 
 
 ; Object 71
-A464: 4A 80 80                      ; Word Number: 0x4A "BUTTON", Length: 0x80
+A464: 4A 80 80                      ; Word Number: 0x4A "BUTTON", Length: 0x0080
 A467: 6E 00 80                      ; Location: 0x6E, Points: 0, Data Bits: 0b10000000
-A46A:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+A46A:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 A46C:       6A                      ; 
-A46D:    07 6E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x6E
+A46D:    07 6E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x006E
 A46F:       0D 6C                   ;     WHILE PASS, Length: 0x006C
 A471:          0A 12                ;       IS INPUT PHRASE, Phrase number: 0x12
 A473:          0E 68                ;       WHILE FAIL, Length: 0x0068
 A475:             0D 10             ;         WHILE PASS, Length: 0x0010
-A477:                03 73 00       ;           IS LOCATED, Room number: 0x73, Object number: 0x00
+A477:                03 73 00       ;           IS LOCATED, room=obj_73, obj=??00??
 A47A:                04 0B          ;           PRINT, Length: 0x000B
-;
-; NOTHING HAPPENS.
-;
 A47C:                   06 9A 90 73 CA 6A EA 48 9D 61 2E ; 
+;
+;                       NOTHING HAPPENS.
+;
 A487:             0D 52             ;         WHILE PASS, Length: 0x0052
 A489:                04 14          ;           PRINT, Length: 0x0014
-;
-; "SPLURG RIFIC JORTRONO RUNGE."
-;
 A48B:                   A2 1D 74 8E D4 6A 53 79 CC 51 BE A0 00 B3 D4 9C ; 
 A49B:                   91 C5 DC 63 ; 
-A49F:                03 01 80       ;           IS LOCATED, Room number: 0x01, Object number: 0x80
+;
+;                       "SPLURG RIFIC JORTRONO RUNGE."
+;
+A49F:                03 01 80       ;           IS LOCATED, room=01_PLAYER, obj=??80??
 A4A2:                04 37          ;           PRINT, Length: 0x0037
-;
-; SOMEHOW YOU UNDERSTAND THIS TO MEAN, "WEAPON ACTIVATED - POINT TO DESIRED TARGET."
-;
 A4A4:                   3F B9 A9 60 DB CE 1B A1 8E C5 3D 62 50 BD 16 58 ; 
 A4B4:                   95 73 89 17 67 16 A6 48 81 13 92 5F 03 A0 E6 46 ; 
 A4C4:                   CB 7B E6 BD 8B 18 7B A6 B3 9A 6B BF F5 59 2F 7B ; 
 A4D4:                   16 58 31 49 97 62 22 ; 
+;
+;                       SOMEHOW YOU UNDERSTAND THIS TO MEAN, "WEAPON ACTIVATED -
+;                       POINT TO DESIRED TARGET."
+;
 A4DB:             14                ;         EXECUTE AND REVERSE STATUS
 A4DC:             0C                ;         FAIL
-A4DD:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x08
+A4DD:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x0008
 ;           GREEN BUTTON
 A4DF:       AF 6E 83 61 F6 4F 80 BF ; 
 
 ; Object 72
-A4E7: 63 0F                         ; Word Number: 0x63 "SCREEN", Length: 0x0F
+A4E7: 63 0F                         ; Word Number: 0x63 "SCREEN", Length: 0x000F
 A4E9: 9C 08 81                      ; Location: 0x9C, Points: 8, Data Bits: 0b10000001
-A4EC:    02 0A                      ;   Section 2: SHORT_NAME, Length: 0x0A
+A4EC:    02 0A                      ;   Section 2: SHORT_NAME, Length: 0x000A
 ;           VIEWING SCREEN 
 A4EE:       07 CB 50 D1 D5 6A AF 55 83 61 ; 
 
 ; Object 73
-A4F8: 64 57                         ; Word Number: 0x64 "EARTH", Length: 0x57
+A4F8: 64 57                         ; Word Number: 0x64 "EARTH", Length: 0x0057
 A4FA: 00 00 80                      ; Location: 0x00, Points: 0, Data Bits: 0b10000000
-A4FD:    07 42                      ;   Section 7: IF_FIRST_NOUN, Length: 0x42
+A4FD:    07 42                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0042
 A4FF:       0D 40                   ;     WHILE PASS, Length: 0x0040
 A501:          0A 58                ;       IS INPUT PHRASE, Phrase number: 0x58
 A503:          04 38                ;       PRINT, Length: 0x0038
-;
-; A WEAPON IN THE SHIP IS FIRED AND THE PLANET EARTH IS DESTROYED, NOT TO MENTION YOU.
-;
 A505:             59 45 92 5F 03 A0 83 7A 5F BE 5A 17 D3 7A 4B 7B ; 
 A515:             14 67 F3 5F 8E 48 82 17 52 5E 50 8B 73 62 94 5F ; 
 A525:             53 BE 4B 7B F5 59 F9 BF 26 DD 10 EE F3 A0 6B BF ; 
 A535:             30 92 91 BE 9B 96 3F A1 ; 
-A53D:          1C 01                ;       SET VAR OBJECT, Object number: 0x01
-A53F:          1D 6E                ;       ATTACK VAR, Points: 0x6E
-A541:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x0E
+;
+;                 A WEAPON IN THE SHIP IS FIRED AND THE PLANET EARTH IS
+;                 DESTROYED, NOT TO MENTION YOU.
+;
+A53D:          1C 01                ;       SET VAR OBJECT, obj=01_YOU
+A53F:          1D 6E                ;       ATTACK VAR, Points: 110
+A541:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x000E
 ;           DISPLAY OF THE EARTH 
 A543:       95 5A FB A5 51 DB 96 64 DB 72 94 5F 53 BE ; 
 
 ; Object 74
-A551: 65 80 92                      ; Word Number: 0x65 "MOON", Length: 0x92
+A551: 65 80 92                      ; Word Number: 0x65 "MOON", Length: 0x0092
 A554: 00 00 80                      ; Location: 0x00, Points: 0, Data Bits: 0b10000000
-A557:    07 7E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x7E
+A557:    07 7E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x007E
 A559:       0D 7C                   ;     WHILE PASS, Length: 0x007C
 A55B:          0A 58                ;       IS INPUT PHRASE, Phrase number: 0x58
 A55D:          04 74                ;       PRINT, Length: 0x0074
-;
-; THE SHIP'S WEAPON FIRES AND YOU NOTICE ON THE SCREEN THAT THE MOON IS DESTROYED. AN INSTANT LATER, LARGE FRAGMENTS OF MOON COLLIDE WITH THE EARTH, DESTROYING IT AND YOU, TOO.
-;
 A55F:             5F BE 5A 17 D5 7A D9 B5 92 5F 03 A0 14 67 4B 62 ; 
 A56F:             8E 48 51 18 50 C2 03 A1 9B 53 03 A0 5F BE 55 17 ; 
 A57F:             67 B1 96 96 56 72 82 17 4F 5E 40 A0 D5 15 FF 14 ; 
@@ -7276,22 +7363,24 @@ A59F:             F3 B4 54 8B 9B 6C 6B 68 E7 6D CD 9A B8 16 71 16 ;
 A5AF:             03 A0 3E 55 86 8C 59 5E 82 7B 82 17 47 5E 3E 49 ; 
 A5BF:             73 76 F5 59 F9 BF D0 DD CB 6A 03 BC 33 98 C7 DE ; 
 A5CF:             16 EE 4F A0       ; 
-A5D3:          1C 01                ;       SET VAR OBJECT, Object number: 0x01
-A5D5:          1D 6E                ;       ATTACK VAR, Points: 0x6E
-A5D7:    02 0D                      ;   Section 2: SHORT_NAME, Length: 0x0D
+;
+;                 THE SHIP'S WEAPON FIRES AND YOU NOTICE ON THE SCREEN THAT
+;                 THE MOON IS DESTROYED. AN INSTANT LATER, LARGE FRAGMENTS OF
+;                 MOON COLLIDE WITH THE EARTH, DESTROYING IT AND YOU, TOO.
+;
+A5D3:          1C 01                ;       SET VAR OBJECT, obj=01_YOU
+A5D5:          1D 6E                ;       ATTACK VAR, Points: 110
+A5D7:    02 0D                      ;   Section 2: SHORT_NAME, Length: 0x000D
 ;           DISPLAY OF THE MOON
 A5D9:       95 5A FB A5 51 DB 96 64 DB 72 C1 93 4E ; 
 
 ; Object 75
-A5E6: 66 80 91                      ; Word Number: 0x66 "SHIP", Length: 0x91
+A5E6: 66 80 91                      ; Word Number: 0x66 "SHIP", Length: 0x0091
 A5E9: 00 00 80                      ; Location: 0x00, Points: 0, Data Bits: 0b10000000
-A5EC:    07 78                      ;   Section 7: IF_FIRST_NOUN, Length: 0x78
+A5EC:    07 78                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0078
 A5EE:       0D 76                   ;     WHILE PASS, Length: 0x0076
 A5F0:          0A 58                ;       IS INPUT PHRASE, Phrase number: 0x58
 A5F2:          04 62                ;       PRINT, Length: 0x0062
-;
-; AN ENERGY BEAM APPEARS ON THE SCREEN AND YOU WATCH AS IT DESTROYS THE MOTHER SHIP! THE BUTTONS RECEDE INTO THE CONSOLE AND THE SCREEN DEACTIVATES. 
-;
 A5F4:             83 48 8F 61 CB B1 AF 14 5B 48 EA 48 94 5F D1 B5 ; 
 A604:             96 96 DB 72 64 B7 30 60 90 14 1B 58 1B A1 16 D0 ; 
 A614:             13 54 4B 49 73 7B F5 59 F9 BF 4B DF 5F BE 71 16 ; 
@@ -7299,30 +7388,35 @@ A624:             5F BE 95 AF 92 73 D6 06 DB 72 F6 4F 80 BF D4 B5 ;
 A634:             D7 5F DB 59 9E 7A D6 9C DB 72 40 55 3E B9 43 5E ; 
 A644:             33 98 5F BE 55 17 67 B1 86 96 85 5F 98 BE 7F 49 ; 
 A654:             5B BB             ; 
-A656:          17 73 00             ;       MOVE TO, Object number: 0x73, Destination room: 0x00
-A659:          17 74 00             ;       MOVE TO, Object number: 0x74, Destination room: 0x00
-A65C:          17 75 00             ;       MOVE TO, Object number: 0x75, Destination room: 0x00
-A65F:          17 70 00             ;       MOVE TO, Object number: 0x70, Destination room: 0x00
-A662:          17 71 00             ;       MOVE TO, Object number: 0x71, Destination room: 0x00
-A665:          38                   ;       UNKNOWN38
-A666:    02 12                      ;   Section 2: SHORT_NAME, Length: 0x12
+;
+;                 AN ENERGY BEAM APPEARS ON THE SCREEN AND YOU WATCH AS IT
+;                 DESTROYS THE MOTHER SHIP! THE BUTTONS RECEDE INTO THE
+;                 CONSOLE AND THE SCREEN DEACTIVATES.
+;
+A656:          17 73 00             ;       MOVE TO, obj=??73??, room=00_nowhere
+A659:          17 74 00             ;       MOVE TO, obj=??74??, room=00_nowhere
+A65C:          17 75 00             ;       MOVE TO, obj=??75??, room=00_nowhere
+A65F:          17 70 00             ;       MOVE TO, obj=??70??, room=00_nowhere
+A662:          17 71 00             ;       MOVE TO, obj=??71??, room=00_nowhere
+A665:          38                   ;       BUMP SCORE 10%
+A666:    02 12                      ;   Section 2: SHORT_NAME, Length: 0x0012
 ;           DISPLAY OF THE MOTHER SHIP 
 A668:       95 5A FB A5 51 DB 96 64 DB 72 C6 93 F4 72 5A 17 ; 
 A678:       D3 7A                   ; 
 
 ; Object 76
-A67A: 53 0C                         ; Word Number: 0x53 "CHAIR", Length: 0x0C
+A67A: 53 0C                         ; Word Number: 0x53 "CHAIR", Length: 0x000C
 A67C: 8A 08 82                      ; Location: 0x8A, Points: 8, Data Bits: 0b10000010
-A67F:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-A681:       C5                      ;     COMMAND 0xC5
-A682:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+A67F:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+A681:       C5                      ;     ROUTINE 0xC5
+A682:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           CHAIR 
 A684:       1B 54 23 7B             ; 
 
 ; Object 77
-A688: 67 77                         ; Word Number: 0x67 "HANDGR", Length: 0x77
+A688: 67 77                         ; Word Number: 0x67 "HANDGR", Length: 0x0077
 A68A: 8A 08 A0                      ; Location: 0x8A, Points: 8, Data Bits: 0b10100000
-A68D:    07 6A                      ;   Section 7: IF_FIRST_NOUN, Length: 0x6A
+A68D:    07 6A                      ;   Section 7: IF_FIRST_NOUN, Length: 0x006A
 A68F:       0E 68                   ;     WHILE FAIL, Length: 0x0068
 A691:          0D 4E                ;       WHILE PASS, Length: 0x004E
 A693:             0E 08             ;         WHILE FAIL, Length: 0x0008
@@ -7331,27 +7425,28 @@ A697:                0A 43          ;           IS INPUT PHRASE, Phrase number: 
 A699:                0A 2D          ;           IS INPUT PHRASE, Phrase number: 0x2D
 A69B:                0A 12          ;           IS INPUT PHRASE, Phrase number: 0x12
 A69D:             14                ;         EXECUTE AND REVERSE STATUS
-A69E:             A2                ;         COMMAND 0xA2
+A69E:             A2                ;         ROUTINE 0xA2
 A69F:             04 02             ;         PRINT, Length: 0x0002
-;
-; OH!
-;
 A6A1:                11 9F          ; 
+;
+;                    OH!
+;
 A6A3:             34                ;         UNKNOWN34
 A6A4:             1A                ;         SET VAR TO FIRST NOUN
-A6A5:             8F                ;         COMMAND 0x8F
+A6A5:             8F                ;         ROUTINE 0x8F
 A6A6:             25                ;         PRINT LINEFEED
 A6A7:             04 33             ;         PRINT, Length: 0x0033
-;
-; SUDDENLY, YOUR SURROUNDINGS BEGIN TO DISSOLVE AND NEW ONES TAKE THEIR PLACE!
-;
 A6A9:                26 BA F0 59 1E 8F 51 18 23 C6 34 BA 07 B3 43 98 ; 
 A6B9:                C5 98 AF 14 50 6D 89 17 03 15 E1 B9 8F 8E 90 14 ; 
 A6C9:                10 58 EB 62 0F A0 D6 B5 17 48 82 17 D4 60 E6 16 ; 
 A6D9:                D7 46 21       ; 
+;
+;                    SUDDENLY, YOUR SURROUNDINGS BEGIN TO DISSOLVE AND NEW ONES
+;                    TAKE THEIR PLACE!
+;
 A6DC:             25                ;         PRINT LINEFEED
-A6DD:             30 81             ;         UNKNOWN30, Data: 0x81
-A6DF:             2F 09             ;         UNKNOWN2F Data: 0x09
+A6DD:             30 81             ;         SET CURRENT ROOM, room=81_9_SURFACE
+A6DF:             2F 09             ;         LOAD SECTION FROM DISK, Section: 0x09
 A6E1:          0D 16                ;       WHILE PASS, Length: 0x0016
 A6E3:             0E 0C             ;         WHILE FAIL, Length: 0x000C
 A6E5:                0A 06          ;           IS INPUT PHRASE, Phrase number: 0x06
@@ -7360,345 +7455,348 @@ A6E9:                0A 0F          ;           IS INPUT PHRASE, Phrase number: 
 A6EB:                0A 4B          ;           IS INPUT PHRASE, Phrase number: 0x4B
 A6ED:                0A 0E          ;           IS INPUT PHRASE, Phrase number: 0x0E
 A6EF:                0A 39          ;           IS INPUT PHRASE, Phrase number: 0x39
-A6F1:             03 01 77          ;         IS LOCATED, Room number: 0x01, Object number: 0x77
+A6F1:             03 01 77          ;         IS LOCATED, room=01_PLAYER, obj=77_HANDGRIP
 A6F4:             35                ;         UNKNOWN35
-A6F5:             30 8A             ;         UNKNOWN30, Data: 0x8A
-A6F7:             2F 08             ;         UNKNOWN2F Data: 0x08
-A6F9:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+A6F5:             30 8A             ;         SET CURRENT ROOM, room=8A_8_SPLURB_RECREATION
+A6F7:             2F 08             ;         LOAD SECTION FROM DISK, Section: 0x08
+A6F9:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           HANDGRIP 
 A6FB:       50 72 44 5A D3 7A       ; 
 
 ; Object 78
-A701: 53 0C                         ; Word Number: 0x53 "CHAIR", Length: 0x0C
+A701: 53 0C                         ; Word Number: 0x53 "CHAIR", Length: 0x000C
 A703: 8D 07 80                      ; Location: 0x8D, Points: 7, Data Bits: 0b10000000
-A706:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-A708:       C5                      ;     COMMAND 0xC5
-A709:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+A706:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+A708:       C5                      ;     ROUTINE 0xC5
+A709:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           CHAIR 
 A70B:       1B 54 23 7B             ; 
 
 ; Object 79
-A70F: 5C 0F                         ; Word Number: 0x5C "CUBE", Length: 0x0F
+A70F: 5C 0F                         ; Word Number: 0x5C "CUBE", Length: 0x000F
 A711: 8D 07 81                      ; Location: 0x8D, Points: 7, Data Bits: 0b10000001
-A714:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+A714:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 A716:       0E                      ; 
-A717:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x07
+A717:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x0007
 ;           LARGE CUBE
 A719:       54 8B 9B 6C 24 56 45    ; 
 
 ; Object 7A
-A720: 2E 80 B2                      ; Word Number: 0x2E "HOLE", Length: 0xB2
+A720: 2E 80 B2                      ; Word Number: 0x2E "HOLE", Length: 0x00B2
 A723: 8D 07 82                      ; Location: 0x8D, Points: 7, Data Bits: 0b10000010
-A726:    06 80 A1                   ;   Section 6: ??UNKNOWN_06??, Length: 0xA1
+A726:    06 80 A1                   ;   Section 6: ??UNKNOWN_06??, Length: 0x00A1
 A729:       0E 80 9E                ;     WHILE FAIL, Length: 0x009E
 A72C:          0D 60                ;       WHILE PASS, Length: 0x0060
 A72E:             14                ;         EXECUTE AND REVERSE STATUS
-A72F:             03 01 80          ;         IS LOCATED, Room number: 0x01, Object number: 0x80
+A72F:             03 01 80          ;         IS LOCATED, room=01_PLAYER, obj=??80??
 A732:             0A 0F             ;         IS INPUT PHRASE, Phrase number: 0x0F
 A734:             08 64             ;         IS FIRST NOUN, Word number: 0x64
-A736:             17 64 00          ;         MOVE TO, Object number: 0x64, Destination room: 0x00
+A736:             17 64 00          ;         MOVE TO, obj=??64??, room=00_nowhere
 A739:             04 4C             ;         PRINT, Length: 0x004C
-;
-; A BRILLIANT FLASH OF LIGHT NEARLY BLINDS YOU AND YOU FEEL SOMEWHAT WISER THAN BEFORE! THE LITTLE CUBE TURNS GREY. 
-;
 A73B:                44 45 0E B2 83 8C B3 9A 7B 67 13 B8 C3 9E 89 8C ; 
 A74B:                33 75 63 98 93 B2 B6 14 8E 7A DB B5 1B A1 8E 48 ; 
 A75B:                51 18 48 C2 2E 60 61 17 39 92 56 72 FB 17 B4 B7 ; 
 A76B:                82 17 83 48 68 4D AF A0 D6 06 DB 72 96 8C FF BE ; 
 A77B:                E7 14 5B 4D 74 C0 8B 9A AF 6E DB E0 ; 
-A787:             17 80 01          ;         MOVE TO, Object number: 0x80, Destination room: 0x01
-A78A:             17 63 7A          ;         MOVE TO, Object number: 0x63, Destination room: 0x7A
-A78D:             38                ;         UNKNOWN38
+;
+;                    A BRILLIANT FLASH OF LIGHT NEARLY BLINDS YOU AND YOU FEEL
+;                    SOMEWHAT WISER THAN BEFORE! THE LITTLE CUBE TURNS GREY.
+;
+A787:             17 80 01          ;         MOVE TO, obj=??80??, room=01_PLAYER
+A78A:             17 63 7A          ;         MOVE TO, obj=??63??, room=obj_7A
+A78D:             38                ;         BUMP SCORE 10%
 A78E:          0D 3A                ;       WHILE PASS, Length: 0x003A
 A790:             0A 0F             ;         IS INPUT PHRASE, Phrase number: 0x0F
 A792:             08 64             ;         IS FIRST NOUN, Word number: 0x64
 A794:             04 30             ;         PRINT, Length: 0x0030
-;
-; YOU EXPERIENCE ANOTHER BRILLIANT FLASH OF LIGHT AS YOUR BRAIN EXPLODES! 
-;
 A796:                C7 DE 3A 15 F4 A4 30 79 9B 53 99 48 5F BE 84 AF ; 
 A7A6:                0E B2 83 8C B3 9A 7B 67 13 B8 C3 9E 89 8C 33 75 ; 
 A7B6:                4B 49 C7 DE 84 AF CB B0 87 96 A6 D8 7F 9E 6B B5 ; 
-A7C6:             1C 01             ;         SET VAR OBJECT, Object number: 0x01
-A7C8:             1D 64             ;         ATTACK VAR, Points: 0x64
-A7CA:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+;
+;                    YOU EXPERIENCE ANOTHER BRILLIANT FLASH OF LIGHT AS YOUR
+;                    BRAIN EXPLODES!
+;
+A7C6:             1C 01             ;         SET VAR OBJECT, obj=01_YOU
+A7C8:             1D 64             ;         ATTACK VAR, Points: 100
+A7CA:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           TWO INCH HOLE
 A7CC:       C1 C0 D0 15 13 54 7E 74 45 ; 
 
 ; Object 7B
-A7D5: 1A 09                         ; Word Number: 0x1A "DESK", Length: 0x09
+A7D5: 1A 09                         ; Word Number: 0x1A "DESK", Length: 0x0009
 A7D7: 8E 08 81                      ; Location: 0x8E, Points: 8, Data Bits: 0b10000001
-A7DA:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+A7DA:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           TABLE 
 A7DC:       44 BD DB 8B             ; 
 
 ; Object 7C
-A7E0: 68 31                         ; Word Number: 0x68 "VIAL", Length: 0x31
+A7E0: 68 31                         ; Word Number: 0x68 "VIAL", Length: 0x0031
 A7E2: 7B A0 AA                      ; Location: 0x7B, Points: 160, Data Bits: 0b10101010
-A7E5:    03 1C                      ;   Section 3: DESCRIPTION, Length: 0x1C
+A7E5:    03 1C                      ;   Section 3: DESCRIPTION, Length: 0x001C
 A7E7:       04 1A                   ;     PRINT, Length: 0x001A
-;
-; THERE IS A SMALL TRANSPARENT VIAL HERE.
-;
 A7E9:          5F BE 5B B1 4B 7B 55 45 8E 91 16 8A D0 B0 5B B9 ; 
 A7F9:          70 B1 18 BC 8E 78 9F 15 7F B1 ; 
-A803:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;              THERE IS A SMALL TRANSPARENT VIAL HERE.
+;
+A803:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 A805:       06                      ; 
-A806:    02 0B                      ;   Section 2: SHORT_NAME, Length: 0x0B
+A806:    02 0B                      ;   Section 2: SHORT_NAME, Length: 0x000B
 ;           TRANSPARENT VIAL
 A808:       EB BF A2 9A 2F 49 B3 9A 03 CB 4C ; 
 
 ; Object 7D
-A813: 4C 6C                         ; Word Number: 0x4C "WHISKE", Length: 0x6C
+A813: 4C 6C                         ; Word Number: 0x4C "WHISKE", Length: 0x006C
 A815: 7C 10 A0                      ; Location: 0x7C, Points: 16, Data Bits: 0b10100000
-A818:    07 59                      ;   Section 7: IF_FIRST_NOUN, Length: 0x59
+A818:    07 59                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0059
 A81A:       0E 57                   ;     WHILE FAIL, Length: 0x0057
 A81C:          0D 30                ;       WHILE PASS, Length: 0x0030
 A81E:             0A 59             ;         IS INPUT PHRASE, Phrase number: 0x59
 A820:             0E 2C             ;         WHILE FAIL, Length: 0x002C
 A822:                14             ;           EXECUTE AND REVERSE STATUS
-A823:                BF             ;           COMMAND 0xBF
+A823:                BF             ;           ROUTINE 0xBF
 A824:                0D 28          ;           WHILE PASS, Length: 0x0028
 A826:                   04 22       ;             PRINT, Length: 0x0022
-;
-; WHY, THE MERE TASTE OF THIS STUFF INVIGORATES YOU! 
-;
 A828:                      33 D1 16 EE DB 72 34 92 56 5E 66 49 51 5E 96 64 ; 
 A838:                      95 73 66 17 50 C4 D0 15 09 CB AB A0 F5 BD 51 18 ; 
 A848:                      EB C1    ; 
-A84A:                   1C 01       ;             SET VAR OBJECT, Object number: 0x01
-A84C:                   23 05       ;             HEAL VAR, Points: 0x05
+;
+;                          WHY, THE MERE TASTE OF THIS STUFF INVIGORATES YOU! 
+;
+A84A:                   1C 01       ;             SET VAR OBJECT, obj=01_YOU
+A84C:                   23 05       ;             HEAL VAR, Points: 5
 A84E:          0D 23                ;       WHILE PASS, Length: 0x0023
 A850:             0A 4F             ;         IS INPUT PHRASE, Phrase number: 0x4F
 A852:             0E 1F             ;         WHILE FAIL, Length: 0x001F
 A854:                14             ;           EXECUTE AND REVERSE STATUS
-A855:                BF             ;           COMMAND 0xBF
+A855:                BF             ;           ROUTINE 0xBF
 A856:                0D 1B          ;           WHILE PASS, Length: 0x001B
-A858:                   1C 01       ;             SET VAR OBJECT, Object number: 0x01
-A85A:                   23 64       ;             HEAL VAR, Points: 0x64
+A858:                   1C 01       ;             SET VAR OBJECT, obj=01_YOU
+A85A:                   23 64       ;             HEAL VAR, Points: 100
 A85C:                   04 12       ;             PRINT, Length: 0x0012
-;
-; WOW! THAT WAS REALLY GOOD! 
-;
 A85E:                      49 D2 D6 06 56 72 F3 17 D4 B5 8E 5F FB 8E 41 6E ; 
 A86E:                      AB 57    ; 
-A870:                   17 91 00    ;             MOVE TO, Object number: 0x91, Destination room: 0x00
-A873:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+;
+;                          WOW! THAT WAS REALLY GOOD! 
+;
+A870:                   17 91 00    ;             MOVE TO, obj=??91??, room=00_nowhere
+A873:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 A875:       6B                      ; 
-A876:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+A876:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           TSOM SOLUTION
 A878:       21 C0 55 90 CF 9F 91 BE 4E ; 
 
 ; Object 7E
-A881: 69 0B                         ; Word Number: 0x69 "PEDEST", Length: 0x0B
+A881: 69 0B                         ; Word Number: 0x69 "PEDEST", Length: 0x000B
 A883: 90 08 81                      ; Location: 0x90, Points: 8, Data Bits: 0b10000001
-A886:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+A886:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           PEDESTAL 
 A888:       E6 A4 66 62 33 48       ; 
 
 ; Object 7F
-A88E: 2E 5A                         ; Word Number: 0x2E "HOLE", Length: 0x5A
+A88E: 2E 5A                         ; Word Number: 0x2E "HOLE", Length: 0x005A
 A890: 90 08 82                      ; Location: 0x90, Points: 8, Data Bits: 0b10000010
-A893:    06 4A                      ;   Section 6: ??UNKNOWN_06??, Length: 0x4A
+A893:    06 4A                      ;   Section 6: ??UNKNOWN_06??, Length: 0x004A
 A895:       0D 48                   ;     WHILE PASS, Length: 0x0048
 A897:          0A 0F                ;       IS INPUT PHRASE, Phrase number: 0x0F
 A899:          08 63                ;       IS FIRST NOUN, Word number: 0x63
-A89B:          17 63 00             ;       MOVE TO, Object number: 0x63, Destination room: 0x00
+A89B:          17 63 00             ;       MOVE TO, obj=??63??, room=00_nowhere
 A89E:          04 3C                ;       PRINT, Length: 0x003C
-;
-; SNP-KRKL-PP! THE LITTLE CUBE BEGINS TO GLOW BRIGHTLY, THEN SETTLES INTO A SHADE OF WHITE. 
-;
 A8A0:             1A B9 A4 EA D5 86 91 A6 82 17 4E 5E 8E 7B DB 8B ; 
 A8B0:             24 56 44 5E 7B 60 8B 9A 6B BF C9 6D C4 CE 09 B2 ; 
 A8C0:             46 75 B3 E0 5F BE 95 96 8E 62 F5 8B D0 15 6B BF ; 
 A8D0:             55 45 46 72 51 5E 99 64 96 73 DB 63 ; 
-A8DC:          17 64 7F             ;       MOVE TO, Object number: 0x64, Destination room: 0x7F
-A8DF:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+;
+;                 SNP-KRKL-PP! THE LITTLE CUBE BEGINS TO GLOW BRIGHTLY, THEN
+;                 SETTLES INTO A SHADE OF WHITE.
+;
+A8DC:          17 64 7F             ;       MOVE TO, obj=??64??, room=obj_7F
+A8DF:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           TWO INCH HOLE
 A8E1:       C1 C0 D0 15 13 54 7E 74 45 ; 
 
 ; Object 80
-A8EA: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x03
+A8EA: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x0003
 A8EC: 00 00 80                      ; Location: 0x00, Points: 0, Data Bits: 0b10000000
 
 ; Object 81
-A8EF: 5C 55                         ; Word Number: 0x5C "CUBE", Length: 0x55
+A8EF: 5C 55                         ; Word Number: 0x5C "CUBE", Length: 0x0055
 A8F1: DB 05 A0                      ; Location: 0xDB, Points: 5, Data Bits: 0b10100000
-A8F4:    03 1A                      ;   Section 3: DESCRIPTION, Length: 0x1A
+A8F4:    03 1A                      ;   Section 3: DESCRIPTION, Length: 0x001A
 A8F6:       04 18                   ;     PRINT, Length: 0x0018
-;
-; THERE IS A TWO INCH GREEN CUBE HERE.
-;
 A8F8:          5F BE 5B B1 4B 7B 56 45 2B D2 8D 7A 09 71 67 B1 ; 
 A908:          85 96 AF C3 9F 15 7F B1 ; 
-A910:    07 1F                      ;   Section 7: IF_FIRST_NOUN, Length: 0x1F
+;
+;              THERE IS A TWO INCH GREEN CUBE HERE.
+;
+A910:    07 1F                      ;   Section 7: IF_FIRST_NOUN, Length: 0x001F
 A912:       0D 1D                   ;     WHILE PASS, Length: 0x001D
 A914:          0E 04                ;       WHILE FAIL, Length: 0x0004
 A916:             0A 05             ;         IS INPUT PHRASE, Phrase number: 0x05
 A918:             0A 43             ;         IS INPUT PHRASE, Phrase number: 0x43
-A91A:          03 67 81             ;       IS LOCATED, Room number: 0x67, Object number: 0x81
-A91D:          03 3F 3E             ;       IS LOCATED, Room number: 0x3F, Object number: 0x3E
+A91A:          03 67 81             ;       IS LOCATED, room=obj_67, obj=??81??
+A91D:          03 3F 3E             ;       IS LOCATED, room=obj_3F, obj=??3E??
 A920:          04 0D                ;       PRINT, Length: 0x000D
-;
-; THE OVAL CLOSES UP.
-;
 A922:             5F BE C8 16 33 48 C9 54 B5 B7 B2 17 2E ; 
-A92F:          9E                   ;       COMMAND 0x9E
+;
+;                 THE OVAL CLOSES UP.
+;
+A92F:          9E                   ;       ROUTINE 0x9E
 A930:          0C                   ;       FAIL
-A931:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+A931:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 A933:       06                      ; 
-A934:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+A934:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 A936:       6A                      ; 
-A937:    02 0D                      ;   Section 2: SHORT_NAME, Length: 0x0D
+A937:    02 0D                      ;   Section 2: SHORT_NAME, Length: 0x000D
 ;           TWO INCH GREEN CUBE
 A939:       C1 C0 D0 15 13 54 AF 6E 83 61 24 56 45 ; 
 
 ; Object 82
-A946: 6E 80 AE                      ; Word Number: 0x6E "ROD", Length: 0xAE
+A946: 6E 80 AE                      ; Word Number: 0x6E "ROD", Length: 0x00AE
 A949: DB 05 A0                      ; Location: 0xDB, Points: 5, Data Bits: 0b10100000
-A94C:    03 1D                      ;   Section 3: DESCRIPTION, Length: 0x1D
+A94C:    03 1D                      ;   Section 3: DESCRIPTION, Length: 0x001D
 A94E:       04 1B                   ;     PRINT, Length: 0x001B
-;
-; THERE IS A ROD WITH A GREEN SPHERE HERE.
-;
 A950:          5F BE 5B B1 4B 7B 54 45 73 9E 56 D1 03 71 84 15 ; 
 A960:          30 60 62 17 F4 72 4A 5E 2F 62 2E ; 
-A96B:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x01
+;
+;              THERE IS A ROD WITH A GREEN SPHERE HERE.
+;
+A96B:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
 A96D:       10                      ; 
-A96E:    08 77                      ;   Section 8: ??UNKNOWN_08??, Length: 0x77
+A96E:    08 77                      ;   Section 8: ??UNKNOWN_08??, Length: 0x0077
 A970:       0E 75                   ;     WHILE FAIL, Length: 0x0075
 A972:          0D 25                ;       WHILE PASS, Length: 0x0025
-A974:             03 90 01          ;         IS LOCATED, Room number: 0x90, Object number: 0x01
+A974:             03 90 01          ;         IS LOCATED, room=??90??, obj=01_YOU
 A977:             1F 20             ;         PRINT, Length: 0x0020
-;
-; THE GREEN SPHERE IS SLOWLY FLASHING AND BEEPING.
-;
 A979:                5F BE 84 15 30 60 62 17 F4 72 4B 5E D5 B5 89 8D ; 
 A989:                FB 8E 7B 67 23 B8 AB 98 8E 48 AF 14 E3 61 CF 98 ; 
+;
+;                    THE GREEN SPHERE IS SLOWLY FLASHING AND BEEPING.
+;
 A999:          0D 25                ;       WHILE PASS, Length: 0x0025
-A99B:             03 91 01          ;         IS LOCATED, Room number: 0x91, Object number: 0x01
+A99B:             03 91 01          ;         IS LOCATED, room=??91??, obj=01_YOU
 A99E:             1F 20             ;         PRINT, Length: 0x0020
-;
-; THE GREEN SPHERE IS FLASHING AND BEEPING LOUDER.
-;
 A9A0:                5F BE 84 15 30 60 62 17 F4 72 4B 5E C8 B5 55 8B ; 
 A9B0:                90 73 C3 6A 33 98 67 4D 90 A5 CE 6A 26 A1 47 62 ; 
+;
+;                    THE GREEN SPHERE IS FLASHING AND BEEPING LOUDER.
+;
 A9C0:          0D 25                ;       WHILE PASS, Length: 0x0025
-A9C2:             03 92 01          ;         IS LOCATED, Room number: 0x92, Object number: 0x01
+A9C2:             03 92 01          ;         IS LOCATED, room=??92??, obj=01_YOU
 A9C5:             1F 20             ;         PRINT, Length: 0x0020
-;
-; THE GREEN SPHERE IS FLASHING AND BEEPING WILDLY!
-;
 A9C7:                5F BE 84 15 30 60 62 17 F4 72 4B 5E C8 B5 55 8B ; 
 A9D7:                90 73 C3 6A 33 98 67 4D 90 A5 D9 6A 3E 7A F9 8E ; 
-A9E7:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x0E
+;
+;                    THE GREEN SPHERE IS FLASHING AND BEEPING WILDLY!
+;
+A9E7:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x000E
 ;           ROD WITH GREEN SPHERE
 A9E9:       F6 B2 FB 17 53 BE AF 6E 83 61 62 B9 2F 62 ; 
 
 ; Object 83
-A9F7: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x03
+A9F7: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x0003
 A9F9: 00 00 80                      ; Location: 0x00, Points: 0, Data Bits: 0b10000000
 
 ; Object 84
-A9FC: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x03
+A9FC: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x0003
 A9FE: 00 00 80                      ; Location: 0x00, Points: 0, Data Bits: 0b10000000
 
 ; Object 85
-AA01: 5E 2B                         ; Word Number: 0x5E "CYLIND", Length: 0x2B
+AA01: 5E 2B                         ; Word Number: 0x5E "CYLIND", Length: 0x002B
 AA03: 94 07 80                      ; Location: 0x94, Points: 7, Data Bits: 0b10000000
-AA06:    07 1E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x1E
+AA06:    07 1E                      ;   Section 7: IF_FIRST_NOUN, Length: 0x001E
 AA08:       0D 1C                   ;     WHILE PASS, Length: 0x001C
-AA0A:          C4                   ;       COMMAND 0xC4
+AA0A:          C4                   ;       ROUTINE 0xC4
 AA0B:          04 15                ;       PRINT, Length: 0x0015
-;
-; KA-BOOOOOM! YOU SET OFF A BOMB!
-;
 AA0D:             1D 85 01 4F 41 A0 EB 8F C7 DE 57 17 11 BC 83 66 ; 
 AA1D:             44 45 E4 9F 21    ; 
-AA22:          1C 01                ;       SET VAR OBJECT, Object number: 0x01
-AA24:          1D 4B                ;       ATTACK VAR, Points: 0x4B
-AA26:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+;
+;                 KA-BOOOOOM! YOU SET OFF A BOMB!
+;
+AA22:          1C 01                ;       SET VAR OBJECT, obj=01_YOU
+AA24:          1D 4B                ;       ATTACK VAR, Points: 75
+AA26:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           CYLINDER 
 AA28:       CE 56 8E 7A 23 62       ; 
 
 ; Object 86
-AA2E: 5E 5C                         ; Word Number: 0x5E "CYLIND", Length: 0x5C
+AA2E: 5E 5C                         ; Word Number: 0x5E "CYLIND", Length: 0x005C
 AA30: 95 07 80                      ; Location: 0x95, Points: 7, Data Bits: 0b10000000
-AA33:    07 4F                      ;   Section 7: IF_FIRST_NOUN, Length: 0x4F
+AA33:    07 4F                      ;   Section 7: IF_FIRST_NOUN, Length: 0x004F
 AA35:       0D 4D                   ;     WHILE PASS, Length: 0x004D
-AA37:          C4                   ;       COMMAND 0xC4
+AA37:          C4                   ;       ROUTINE 0xC4
 AA38:          04 46                ;       PRINT, Length: 0x0046
-;
-; OH NO! ONE OF THE CYLINDERS FELL TO THE FLOOR AND BROKE! IT IS RELEASING GAS! COUGH, COUGH, GASP! POISON!
-;
 AA3A:             13 9F E9 99 C0 16 51 5E 96 64 DB 72 CE 56 8E 7A ; 
 AA4A:             3D 62 4F 15 F3 8C 6B BF 5F BE 56 15 44 A0 90 14 ; 
 AA5A:             04 58 FD B2 EB 5D 73 7B 4B 7B 6E B1 95 5F 91 7A ; 
 AA6A:             73 15 6B B5 47 55 36 6D E1 14 7A C4 09 EE 62 49 ; 
 AA7A:             D2 06 55 9F 01 A0 ; 
-AA80:          1C 01                ;       SET VAR OBJECT, Object number: 0x01
-AA82:          1D 4B                ;       ATTACK VAR, Points: 0x4B
-AA84:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+;
+;                 OH NO! ONE OF THE CYLINDERS FELL TO THE FLOOR AND BROKE! IT
+;                 IS RELEASING GAS! COUGH, COUGH, GASP! POISON!
+;
+AA80:          1C 01                ;       SET VAR OBJECT, obj=01_YOU
+AA82:          1D 4B                ;       ATTACK VAR, Points: 75
+AA84:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           CYLINDER 
 AA86:       CE 56 8E 7A 23 62       ; 
 
 ; Object 87
-AA8C: 5E 69                         ; Word Number: 0x5E "CYLIND", Length: 0x69
+AA8C: 5E 69                         ; Word Number: 0x5E "CYLIND", Length: 0x0069
 AA8E: 97 07 80                      ; Location: 0x97, Points: 7, Data Bits: 0b10000000
-AA91:    07 5C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x5C
+AA91:    07 5C                      ;   Section 7: IF_FIRST_NOUN, Length: 0x005C
 AA93:       0D 5A                   ;     WHILE PASS, Length: 0x005A
-AA95:          C4                   ;       COMMAND 0xC4
+AA95:          C4                   ;       ROUTINE 0xC4
 AA96:          04 54                ;       PRINT, Length: 0x0054
-;
-; UPON BEING DISTURBED, THE GLOBE OPENS AND A HOARD OF THREE INCH LONG ANTS IS RELEASED! THEY BEGIN CRAWLING ALL OVER THE PLACE!
-;
 AA98:             E9 C5 84 96 D0 60 C6 6A 66 7B 2C C6 16 60 82 17 ; 
 AAA8:             49 5E 74 8D 51 5E F0 A4 C3 B5 33 98 4A 45 14 9E ; 
 AAB8:             11 58 96 64 EF 74 4B 5E 1A 98 49 16 AB 98 9E 48 ; 
 AAC8:             CB B5 D4 B5 3F 61 57 49 AB 57 5F BE 44 DB 7B 60 ; 
 AAD8:             85 96 D9 B0 90 8C C3 6A F3 8C 4F A1 96 AF DB 72 ; 
 AAE8:             FB A5 99 53       ; 
-AAEC:          17 89 97             ;       MOVE TO, Object number: 0x89, Destination room: 0x97
-AAEF:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+;
+;                 UPON BEING DISTURBED, THE GLOBE OPENS AND A HOARD OF THREE
+;                 INCH LONG ANTS IS RELEASED! THEY BEGIN CRAWLING ALL OVER
+;                 THE PLACE!
+;
+AAEC:          17 89 97             ;       MOVE TO, obj=??89??, room=??97??
+AAEF:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           CYLINDER 
 AAF1:       CE 56 8E 7A 23 62       ; 
 
 ; Object 88
-AAF7: 5E 2E                         ; Word Number: 0x5E "CYLIND", Length: 0x2E
+AAF7: 5E 2E                         ; Word Number: 0x5E "CYLIND", Length: 0x002E
 AAF9: 99 07 80                      ; Location: 0x99, Points: 7, Data Bits: 0b10000000
-AAFC:    07 21                      ;   Section 7: IF_FIRST_NOUN, Length: 0x21
+AAFC:    07 21                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0021
 AAFE:       0D 1F                   ;     WHILE PASS, Length: 0x001F
-AB00:          C4                   ;       COMMAND 0xC4
+AB00:          C4                   ;       ROUTINE 0xC4
 AB01:          04 1C                ;       PRINT, Length: 0x001C
-;
-; YOU ARE UNABLE TO AFFECT THESE CYLINDERS. 
-;
 AB03:             C7 DE 94 14 57 5E C4 97 DB 8B 6B BF 50 47 E6 5F ; 
 AB13:             82 17 57 62 EB 14 90 8C F4 59 5B BB ; 
-AB1F:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x06
+;
+;                 YOU ARE UNABLE TO AFFECT THESE CYLINDERS. 
+;
+AB1F:    02 06                      ;   Section 2: SHORT_NAME, Length: 0x0006
 ;           CYLINDER 
 AB21:       CE 56 8E 7A 23 62       ; 
 
 ; Object 89
-AB27: 5B 81 6B                      ; Word Number: 0x5B "ALIEN", Length: 0x16B
+AB27: 5B 81 6B                      ; Word Number: 0x5B "ALIEN", Length: 0x016B
 AB2A: 00 00 90                      ; Location: 0x00, Points: 0, Data Bits: 0b10010000
-AB2D:    03 22                      ;   Section 3: DESCRIPTION, Length: 0x22
+AB2D:    03 22                      ;   Section 3: DESCRIPTION, Length: 0x0022
 AB2F:       04 20                   ;     PRINT, Length: 0x0020
-;
-; THREE INCH ANTS ARE CRAWLING ALL OVER THE PLACE!
-;
 AB31:          6C BE 1B 60 8D 7A 03 71 CD 9A 94 14 45 5E D9 B0 ; 
 AB41:          90 8C C3 6A F3 8C 4F A1 96 AF DB 72 FB A5 99 53 ; 
-AB51:    07 81 1C                   ;   Section 7: IF_FIRST_NOUN, Length: 0x11C
+;
+;              THREE INCH ANTS ARE CRAWLING ALL OVER THE PLACE!
+;
+AB51:    07 81 1C                   ;   Section 7: IF_FIRST_NOUN, Length: 0x011C
 AB54:       0D 81 19                ;     WHILE PASS, Length: 0x0119
 AB57:          0A 09                ;       IS INPUT PHRASE, Phrase number: 0x09
 AB59:          0E 81 14             ;       WHILE FAIL, Length: 0x0114
 AB5C:             0D 80 81          ;         WHILE PASS, Length: 0x0081
 AB5F:                09 5C          ;           COMPARE TO SECOND NOUN, Word number: 0x5C
 AB61:                04 79          ;           PRINT, Length: 0x0079
-;
-; STOMPING AND SLAPPING AT THE THOUSANDS OF CREATURES YOU KILL MANY. BUT AS YOU FEEL THE VENOM OF THEIR STING, YOU REALIZE YOUR FOLLY. HOWEVER, IT IS TOO LATE TO DO ANYTHING ABOUT IT.
-;
 AB63:                   09 BA E3 93 AB 98 8E 48 5E 17 EA 48 91 7A 96 14 ; 
 AB73:                   82 17 56 5E 87 74 10 B7 0B 5C C3 9E AF 55 8F 49 ; 
 AB83:                   75 B1 51 18 4D C2 46 7A 63 16 9F 9B BF 14 03 BC ; 
@@ -7707,17 +7805,20 @@ ABA3:                   5F BE 23 7B 03 BA CE 98 51 18 54 C2 8E 5F 6F 7C ;
 ABB3:                   51 18 23 C6 FE 67 1F 8F A9 15 B8 D0 46 62 D6 15 ; 
 ABC3:                   D5 15 89 17 CE 9C 7F 49 89 17 09 15 90 14 82 DF ; 
 ABD3:                   91 7A 84 14 36 A1 D6 15 2E ; 
-ABDC:                1C 01          ;           SET VAR OBJECT, Object number: 0x01
-ABDE:                1D 4B          ;           ATTACK VAR, Points: 0x4B
+;
+;                       STOMPING AND SLAPPING AT THE THOUSANDS OF CREATURES YOU
+;                       KILL MANY. BUT AS YOU FEEL THE VENOM OF THEIR STING, YOU
+;                       REALIZE YOUR FOLLY. HOWEVER, IT IS TOO LATE TO DO ANYTHING
+;                       ABOUT IT.
+;
+ABDC:                1C 01          ;           SET VAR OBJECT, obj=01_YOU
+ABDE:                1D 4B          ;           ATTACK VAR, Points: 75
 ABE0:             0D 80 8D          ;         WHILE PASS, Length: 0x008D
 ABE3:                0E 06          ;           WHILE FAIL, Length: 0x0006
 ABE5:                   09 32       ;             COMPARE TO SECOND NOUN, Word number: 0x32
 ABE7:                   09 28       ;             COMPARE TO SECOND NOUN, Word number: 0x28
 ABE9:                   09 24       ;             COMPARE TO SECOND NOUN, Word number: 0x24
 ABEB:                04 7F          ;           PRINT, Length: 0x007F
-;
-; YOU RAIN BLOWS DOWN ON THE MANY CREATURES CRAWLING ON THE FLOOR. SUDDENLY YOU FEEL A BURNING PAIN ON YOUR LEG AS ONE OF THE CREATURES STINGS YOU. YOU PASS OUT SECONDS LATER, NEVER TO AWAKEN.
-;
 ABED:                   C7 DE 2B 17 83 7A 89 4E CB D2 89 5B 91 96 96 96 ; 
 ABFD:                   DB 72 90 91 45 DB 63 B1 74 C0 4B 62 AB 55 C3 D1 ; 
 AC0D:                   AB 98 03 A0 5F BE 56 15 44 A0 55 F4 FE C3 96 61 ; 
@@ -7726,45 +7827,48 @@ AC2D:                   91 96 9B 96 34 A1 3F 16 C3 6A D1 B5 5B 98 C3 9E ;
 AC3D:                   5F BE E4 14 96 5F 2F C6 D5 B5 90 BE CB 6E C7 DE ; 
 AC4D:                   5B F4 1B A1 55 A4 D1 B5 73 C6 A5 B7 0E A0 CE B5 ; 
 AC5D:                   7F 49 F3 B4 78 98 23 62 6B BF F3 49 B0 85 2E ; 
-AC6C:                1C 01          ;           SET VAR OBJECT, Object number: 0x01
-AC6E:                1D 4B          ;           ATTACK VAR, Points: 0x4B
-AC70:    08 18                      ;   Section 8: ??UNKNOWN_08??, Length: 0x18
+;
+;                       YOU RAIN BLOWS DOWN ON THE MANY CREATURES CRAWLING ON THE
+;                       FLOOR. SUDDENLY YOU FEEL A BURNING PAIN ON YOUR LEG AS ONE
+;                       OF THE CREATURES STINGS YOU. YOU PASS OUT SECONDS LATER,
+;                       NEVER TO AWAKEN.
+;
+AC6C:                1C 01          ;           SET VAR OBJECT, obj=01_YOU
+AC6E:                1D 4B          ;           ATTACK VAR, Points: 75
+AC70:    08 18                      ;   Section 8: ??UNKNOWN_08??, Length: 0x0018
 AC72:       1F 16                   ;     PRINT, Length: 0x0016
-;
-; THE ANTS ARE CRAWLING EVERYWHERE!
-;
 AC74:          5F BE 90 14 0B C0 2F 49 E4 14 FE 49 91 7A 38 15 ; 
 AC84:          43 62 1F D1 59 B1    ; 
-AC8A:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x09
+;
+;              THE ANTS ARE CRAWLING EVERYWHERE!
+;
+AC8A:    02 09                      ;   Section 2: SHORT_NAME, Length: 0x0009
 ;           HOARD OF ANTS
 AC8C:       73 74 33 B1 C3 9E 9E 48 53 ; 
 
 ; Object 8A
-AC95: 5B 22                         ; Word Number: 0x5B "ALIEN", Length: 0x22
+AC95: 5B 22                         ; Word Number: 0x5B "ALIEN", Length: 0x0022
 AC97: 00 00 80                      ; Location: 0x00, Points: 0, Data Bits: 0b10000000
-AC9A:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x14
+AC9A:    03 14                      ;   Section 3: DESCRIPTION, Length: 0x0014
 AC9C:       04 12                   ;     PRINT, Length: 0x0012
-;
-; THERE IS A DEAD ALIEN HERE.
-;
 AC9E:          5F BE 5B B1 4B 7B 46 45 86 5F 8E 14 30 79 9F 15 ; 
 ACAE:          7F B1                ; 
-ACB0:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x07
+;
+;              THERE IS A DEAD ALIEN HERE.
+;
+ACB0:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x0007
 ;           DEAD ALIEN
 ACB2:       E3 59 03 58 87 8C 4E    ; 
 
 ; Object 8B
-ACB9: 5B 7C                         ; Word Number: 0x5B "ALIEN", Length: 0x7C
+ACB9: 5B 7C                         ; Word Number: 0x5B "ALIEN", Length: 0x007C
 ACBB: DB 05 90                      ; Location: 0xDB, Points: 5, Data Bits: 0b10010000
-ACBE:    03 77                      ;   Section 3: DESCRIPTION, Length: 0x77
+ACBE:    03 77                      ;   Section 3: DESCRIPTION, Length: 0x0077
 ACC0:       0D 75                   ;     WHILE PASS, Length: 0x0075
-ACC2:          17 8B 00             ;       MOVE TO, Object number: 0x8B, Destination room: 0x00
-ACC5:          17 8A DB             ;       MOVE TO, Object number: 0x8A, Destination room: 0xDB
-ACC8:          38                   ;       UNKNOWN38
+ACC2:          17 8B 00             ;       MOVE TO, obj=??8B??, room=00_nowhere
+ACC5:          17 8A DB             ;       MOVE TO, obj=??8A??, room=??DB??
+ACC8:          38                   ;       BUMP SCORE 10%
 ACC9:          04 6C                ;       PRINT, Length: 0x006C
-;
-; NEARBY, AN ALIEN BEING IS SQUIRMING ON THE GROUND! IT LOOKS UP AT YOU AND SAYS "GLEEPOOP!" HE POINTS AT THE CUBE AND THEN POINTS WEST. HE THEN BECOMES VERY STILL.
-;
 ACCB:             63 98 03 B1 03 EE 83 96 87 8C 84 96 D0 60 CB 6A ; 
 ACDB:             D5 B5 AB AD AB B2 AB 98 03 A0 5F BE 84 15 30 A1 ; 
 ACEB:             AB 57 73 7B 81 8D CB 87 D3 C5 73 49 C7 DE 90 14 ; 
@@ -7772,46 +7876,54 @@ ACFB:             15 58 55 4A 71 13 E7 8B 81 A6 AC A2 9F 15 E9 16 ;
 AD0B:             9E 7A C3 B5 16 BC DB 72 24 56 43 5E 33 98 5F BE ; 
 AD1B:             92 96 50 9F 0B C0 B5 D0 9B C1 DB 72 5F BE 84 96 ; 
 AD2B:             E1 5F 35 92 CF 17 7B B4 03 BA 17 8D ; 
+;
+;                 NEARBY, AN ALIEN BEING IS SQUIRMING ON THE GROUND! IT LOOKS
+;                 UP AT YOU AND SAYS "GLEEPOOP!" HE POINTS AT THE CUBE AND
+;                 THEN POINTS WEST. HE THEN BECOMES VERY STILL.
+;
 
 ; Object 8C
-AD37: 70 81 BD                      ; Word Number: 0x70 "PROSPE", Length: 0x1BD
+AD37: 70 81 BD                      ; Word Number: 0x70 "PROSPE", Length: 0x01BD
 AD3A: E8 05 90                      ; Location: 0xE8, Points: 5, Data Bits: 0b10010000
-AD3D:    03 2C                      ;   Section 3: DESCRIPTION, Length: 0x2C
+AD3D:    03 2C                      ;   Section 3: DESCRIPTION, Length: 0x002C
 AD3F:       04 2A                   ;     PRINT, Length: 0x002A
-;
-; AN OLD PROSPECTOR STANDS HERE. HE SEEMS TO BE CLEANING HIS GUN.
-;
 AD41:          83 48 BE 9F EC 16 E2 A0 E6 5F A3 A0 FB B9 4D 98 ; 
 AD51:          9F 15 7F B1 9F 15 57 17 75 61 89 17 AF 14 DE 14 ; 
 AD61:          90 5F 91 7A A3 15 C9 B5 A7 C5 ; 
-AD6B:    07 62                      ;   Section 7: IF_FIRST_NOUN, Length: 0x62
+;
+;              AN OLD PROSPECTOR STANDS HERE. HE SEEMS TO BE CLEANING HIS
+;              GUN.
+;
+AD6B:    07 62                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0062
 AD6D:       0D 60                   ;     WHILE PASS, Length: 0x0060
 AD6F:          0E 05                ;       WHILE FAIL, Length: 0x0005
-AD71:             C4                ;         COMMAND 0xC4
+AD71:             C4                ;         ROUTINE 0xC4
 AD72:             0A 0E             ;         IS INPUT PHRASE, Phrase number: 0x0E
 AD74:             0A 57             ;         IS INPUT PHRASE, Phrase number: 0x57
 AD76:          04 53                ;       PRINT, Length: 0x0053
-;
-; AS YOU BEGIN TO MOVE, HE RAISES HIS GUN AND POINTS IT AT YOU! >> BLAM! << "GOT YA! DUMB CITY FOLK, I WASN'T BORN YESTERDEE!"
-;
 AD78:             4B 49 C7 DE AF 14 50 6D 89 17 71 16 7E CA 9F 15 ; 
 AD88:             2B 17 57 7B CA B5 4B 7B 30 6F 90 14 12 58 50 9F ; 
 AD98:             0B C0 73 7B 73 49 C7 DE BF 06 44 2C 4F 8B BE 06 ; 
 ADA8:             FC 25 46 6E 43 18 C6 06 64 C5 DB 14 FB C0 FE 67 ; 
 ADB8:             33 89 59 77 60 49 F3 23 04 4F 9B 96 66 62 2E 62 ; 
 ADC8:             19 60 22          ; 
-ADCB:          1C 01                ;       SET VAR OBJECT, Object number: 0x01
-ADCD:          1D 4B                ;       ATTACK VAR, Points: 0x4B
-ADCF:    08 81 1C                   ;   Section 8: ??UNKNOWN_08??, Length: 0x11C
+;
+;                 AS YOU BEGIN TO MOVE, HE RAISES HIS GUN AND POINTS IT AT
+;                 YOU! >> BLAM! << "GOT YA! DUMB CITY FOLK, I WASN'T BORN
+;                 YESTERDEE!"
+;
+ADCB:          1C 01                ;       SET VAR OBJECT, obj=01_YOU
+ADCD:          1D 4B                ;       ATTACK VAR, Points: 75
+ADCF:    08 81 1C                   ;   Section 8: ??UNKNOWN_08??, Length: 0x011C
 ADD2:       0E 81 19                ;     WHILE FAIL, Length: 0x0119
 ADD5:          0D 1F                ;       WHILE PASS, Length: 0x001F
-ADD7:             03 01 8D          ;         IS LOCATED, Room number: 0x01, Object number: 0x8D
+ADD7:             03 01 8D          ;         IS LOCATED, room=01_PLAYER, obj=??8D??
 ADDA:             1F 1A             ;         PRINT, Length: 0x001A
-;
-; "YOU STILL HERE?" SAYS THE PROSPECTOR. 
-;
 ADDC:                91 1E 55 C2 8E BE 0A 8A 2F 62 A3 00 1B B7 D6 B5 ; 
 ADEC:                DB 72 F9 A6 5F B9 09 56 1B B5 ; 
+;
+;                    "YOU STILL HERE?" SAYS THE PROSPECTOR. 
+;
 ADF6:          0D 80 F5             ;       WHILE PASS, Length: 0x00F5
 ADF9:             14                ;         EXECUTE AND REVERSE STATUS
 ADFA:             0E 08             ;         WHILE FAIL, Length: 0x0008
@@ -7819,11 +7931,8 @@ ADFC:                0A 03          ;           IS INPUT PHRASE, Phrase number: 
 ADFE:                0A 04          ;           IS INPUT PHRASE, Phrase number: 0x04
 AE00:                0A 01          ;           IS INPUT PHRASE, Phrase number: 0x01
 AE02:                0A 02          ;           IS INPUT PHRASE, Phrase number: 0x02
-AE04:             01 01             ;         IS IN PACK OR CURRENT ROOM, Object number: 0x01
+AE04:             01 01             ;         IS IN PACK OR CURRENT ROOM, obj=01_YOU
 AE06:             1F 80 E2          ;         PRINT, Length: 0x00E2
-;
-; THE PROSPECTOR LOOKS YOU DIRECTLY IN THE EYES AND SAYS, "I SEEN A STRANGE THING OUT WEST! SOME KIND OF CREATURE! I SHOT HIM WHEN I SEEN HIM. IF YOU ARE DUMB ENOUGH TO HEAD THAT WAY, LOOK OUT FOR THE MAGNETIC 'NOMALLY. YOU COULD SPEND THE REST OF YOUR LIFE IN THIS DESERT! NOW, MOVE ALONG A'FORE I SHOOT YOU!" HE DOESN'T SEEM VERY FRIENDLY.
-;
 AE09:                5F BE EC 16 E2 A0 E6 5F A3 A0 81 8D CB 87 C7 DE ; 
 AE19:                03 15 65 B1 13 BF D0 15 82 17 47 5E 35 DD 90 14 ; 
 AE29:                15 58 55 4A FC ED 55 77 30 60 7B 14 0C BA 91 48 ; 
@@ -7839,111 +7948,120 @@ AEB9:                F5 59 3E 62 D0 06 8E A1 71 16 5B CA 49 48 AB 98 ;
 AEC9:                98 45 AF A0 BB 15 29 B8 F3 A0 C7 DE E3 06 DB 72 ; 
 AED9:                77 5B 05 B9 15 BC 2F 60 CF 17 7B B4 73 68 8E 61 ; 
 AEE9:                1F 8F          ; 
-AEEB:             17 8D 01          ;         MOVE TO, Object number: 0x8D, Destination room: 0x01
-AEEE:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x07
+;
+;                    THE PROSPECTOR LOOKS YOU DIRECTLY IN THE EYES AND SAYS, "I
+;                    SEEN A STRANGE THING OUT WEST! SOME KIND OF CREATURE! I
+;                    SHOT HIM WHEN I SEEN HIM. IF YOU ARE DUMB ENOUGH TO HEAD
+;                    THAT WAY, LOOK OUT FOR THE MAGNETIC 'NOMALLY. YOU COULD
+;                    SPEND THE REST OF YOUR LIFE IN THIS DESERT! NOW, MOVE ALONG
+;                    A'FORE I SHOOT YOU!" HE DOESN'T SEEM VERY FRIENDLY.
+;
+AEEB:             17 8D 01          ;         MOVE TO, obj=??8D??, room=01_PLAYER
+AEEE:    02 07                      ;   Section 2: SHORT_NAME, Length: 0x0007
 ;           PROSPECTOR
 AEF0:       F9 A6 5F B9 09 56 52    ; 
 
 ; Object 8D
-AEF7: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x03
+AEF7: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x0003
 AEF9: 00 00 80                      ; Location: 0x00, Points: 0, Data Bits: 0b10000000
 
 ; Object 8E
-AEFC: 6F 0A                         ; Word Number: 0x6F "MACHIN", Length: 0x0A
+AEFC: 6F 0A                         ; Word Number: 0x6F "MACHIN", Length: 0x000A
 AEFE: 9B 08 80                      ; Location: 0x9B, Points: 8, Data Bits: 0b10000000
-AF01:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+AF01:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           MACHINE
 AF03:       85 91 90 73 45          ; 
 
 ; Object 8F
-AF08: 4A 80 87                      ; Word Number: 0x4A "BUTTON", Length: 0x87
+AF08: 4A 80 87                      ; Word Number: 0x4A "BUTTON", Length: 0x0087
 AF0B: 3A 00 80                      ; Location: 0x3A, Points: 0, Data Bits: 0b10000000
-AF0E:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x01
+AF0E:    01 01                      ;   Section 1: ??UNKNOWN_01??, Length: 0x0001
 AF10:       60                      ; 
-AF11:    07 75                      ;   Section 7: IF_FIRST_NOUN, Length: 0x75
+AF11:    07 75                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0075
 AF13:       0D 73                   ;     WHILE PASS, Length: 0x0073
 AF15:          0A 12                ;       IS INPUT PHRASE, Phrase number: 0x12
 AF17:          0E 6F                ;       WHILE FAIL, Length: 0x006F
 AF19:             0D 6B             ;         WHILE PASS, Length: 0x006B
 AF1B:                04 42          ;           PRINT, Length: 0x0042
-;
-; CLICK. YOU HEAR A LOUD RUMBLE AS THE SHIP LURCHES FOR A MOMENT. THEN A VOICE SAYS, "VREE BON SITZ!"
-;
 AF1D:                   C3 54 AF 54 51 18 4A C2 94 5F 7B 14 87 8D 14 58 ; 
 AF2D:                   64 C5 DB 8B 4B 49 5F BE 5A 17 D3 7A 74 8E 1F 54 ; 
 AF3D:                   C8 B5 A3 A0 4F 45 E7 9F D7 9A 82 17 83 61 58 45 ; 
 AF4D:                   45 9F 55 5E 55 4A FC ED 6F CC 44 5E 03 A0 56 B8 ; 
 AF5D:                   2C E1       ; 
-AF5F:                03 01 80       ;           IS LOCATED, Room number: 0x01, Object number: 0x80
+;
+;                       CLICK. YOU HEAR A LOUD RUMBLE AS THE SHIP LURCHES FOR A
+;                       MOMENT. THEN A VOICE SAYS, "VREE BON SITZ!"
+;
+AF5F:                03 01 80       ;           IS LOCATED, room=01_PLAYER, obj=??80??
 AF62:                04 22          ;           PRINT, Length: 0x0022
-;
-; YOU UNDERSTAND THIS TO MEAN, "ENGINES ARE DAMAGED."
-;
 AF64:                   C7 DE B0 17 F4 59 FB B9 33 98 63 BE D6 B5 CF 9C ; 
 AF74:                   90 5F FC ED 91 61 8F 7A C3 B5 5B B1 4F 59 77 47 ; 
 AF84:                   9C 5D       ; 
+;
+;                       YOU UNDERSTAND THIS TO MEAN, "ENGINES ARE DAMAGED."
+;
 AF86:             14                ;         EXECUTE AND REVERSE STATUS
 AF87:             0C                ;         FAIL
-AF88:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x08
+AF88:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x0008
 ;           WHITE BUTTON
 AF8A:       23 D1 DB BD F6 4F 80 BF ; 
 
 ; Object 90
-AF92: 53 0C                         ; Word Number: 0x53 "CHAIR", Length: 0x0C
+AF92: 53 0C                         ; Word Number: 0x53 "CHAIR", Length: 0x000C
 AF94: 89 07 80                      ; Location: 0x89, Points: 7, Data Bits: 0b10000000
-AF97:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x01
-AF99:       C5                      ;     COMMAND 0xC5
-AF9A:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+AF97:    07 01                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0001
+AF99:       C5                      ;     ROUTINE 0xC5
+AF9A:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           CHAIR 
 AF9C:       1B 54 23 7B             ; 
 
 ; Object 91
-AFA0: 00 09                         ; Word Number: 0x00 "??00??", Length: 0x09
+AFA0: 00 09                         ; Word Number: 0x00 "??00??", Length: 0x0009
 AFA2: 00 00 A0                      ; Location: 0x00, Points: 0, Data Bits: 0b10100000
-AFA5:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+AFA5:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           POISON
 AFA7:       7B A6 40 B9             ; 
 
 ; Object 92
-AFAB: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x03
+AFAB: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x0003
 AFAD: 00 00 00                      ; Location: 0x00, Points: 0, Data Bits: 0b00000000
 
 ; Object 93
-AFB0: 10 09                         ; Word Number: 0x10 "DOOR", Length: 0x09
+AFB0: 10 09                         ; Word Number: 0x10 "DOOR", Length: 0x0009
 AFB2: 83 29 88                      ; Location: 0x83, Points: 41, Data Bits: 0b10001000
-AFB5:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+AFB5:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           ESNEL 
 AFB7:       60 62 33 61             ; 
 
 ; Object 94
-AFBB: 71 32                         ; Word Number: 0x71 "GOOLUB", Length: 0x32
+AFBB: 71 32                         ; Word Number: 0x71 "GOOLUB", Length: 0x0032
 AFBD: 31 00 90                      ; Location: 0x31, Points: 0, Data Bits: 0b10010000
-AFC0:    07 27                      ;   Section 7: IF_FIRST_NOUN, Length: 0x27
+AFC0:    07 27                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0027
 AFC2:       0D 25                   ;     WHILE PASS, Length: 0x0025
 AFC4:          0E 05                ;       WHILE FAIL, Length: 0x0005
-AFC6:             C4                ;         COMMAND 0xC4
+AFC6:             C4                ;         ROUTINE 0xC4
 AFC7:             0A 09             ;         IS INPUT PHRASE, Phrase number: 0x09
 AFC9:             0A 57             ;         IS INPUT PHRASE, Phrase number: 0x57
 AFCB:          04 0E                ;       PRINT, Length: 0x000E
-;
-; UPON BEING DISTURBED,
-;
 AFCD:             E9 C5 84 96 D0 60 C6 6A 66 7B 2C C6 16 60 ; 
-AFDB:          A8                   ;       COMMAND 0xA8
+;
+;                 UPON BEING DISTURBED,
+;
+AFDB:          A8                   ;       ROUTINE 0xA8
 AFDC:          04 08                ;       PRINT, Length: 0x0008
-;
-; FLIES AWAY. 
-;
 AFDE:             83 67 4B 62 F3 49 DB E0 ; 
-AFE6:          17 94 00             ;       MOVE TO, Object number: 0x94, Destination room: 0x00
-AFE9:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+;
+;                 FLIES AWAY. 
+;
+AFE6:          17 94 00             ;       MOVE TO, obj=??94??, room=00_nowhere
+AFE9:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           GOOLUB
 AFEB:       41 6E 64 8E             ; 
 
 ; Object 95
-AFEF: 10 2C                         ; Word Number: 0x10 "DOOR", Length: 0x2C
+AFEF: 10 2C                         ; Word Number: 0x10 "DOOR", Length: 0x002C
 AFF1: 87 69 88                      ; Location: 0x87, Points: 105, Data Bits: 0b10001000
-AFF4:    07 21                      ;   Section 7: IF_FIRST_NOUN, Length: 0x21
+AFF4:    07 21                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0021
 AFF6:       0E 1F                   ;     WHILE FAIL, Length: 0x001F
 AFF8:          0D 0C                ;       WHILE PASS, Length: 0x000C
 AFFA:             0E 06             ;         WHILE FAIL, Length: 0x0006
@@ -7952,25 +8070,25 @@ AFFE:                0A 42          ;           IS INPUT PHRASE, Phrase number: 
 B000:                0A 41          ;           IS INPUT PHRASE, Phrase number: 0x41
 B002:             14                ;         EXECUTE AND REVERSE STATUS
 B003:             09 97             ;         COMPARE TO SECOND NOUN, Word number: 0x97
-B005:             BA                ;         COMMAND 0xBA
+B005:             BA                ;         ROUTINE 0xBA
 B006:          0D 0F                ;       WHILE PASS, Length: 0x000F
 B008:             0A 11             ;         IS INPUT PHRASE, Phrase number: 0x11
 B00A:             1A                ;         SET VAR TO FIRST NOUN
 B00B:             2E 40             ;         UNKNOWN2E, Value: 0x40
-B00D:             A8                ;         COMMAND 0xA8
+B00D:             A8                ;         ROUTINE 0xA8
 B00E:             04 07             ;         PRINT, Length: 0x0007
-;
-; IS KORKEN.
-;
 B010:                4B 7B 44 87 B0 85 2E ; 
-B017:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+;
+;                    IS KORKEN.
+;
+B017:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           ESNEL 
 B019:       60 62 33 61             ; 
 
 ; Object 96
-B01D: 10 2C                         ; Word Number: 0x10 "DOOR", Length: 0x2C
+B01D: 10 2C                         ; Word Number: 0x10 "DOOR", Length: 0x002C
 B01F: 89 69 88                      ; Location: 0x89, Points: 105, Data Bits: 0b10001000
-B022:    07 21                      ;   Section 7: IF_FIRST_NOUN, Length: 0x21
+B022:    07 21                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0021
 B024:       0E 1F                   ;     WHILE FAIL, Length: 0x001F
 B026:          0D 0C                ;       WHILE PASS, Length: 0x000C
 B028:             0E 06             ;         WHILE FAIL, Length: 0x0006
@@ -7979,68 +8097,66 @@ B02C:                0A 42          ;           IS INPUT PHRASE, Phrase number: 
 B02E:                0A 41          ;           IS INPUT PHRASE, Phrase number: 0x41
 B030:             14                ;         EXECUTE AND REVERSE STATUS
 B031:             09 97             ;         COMPARE TO SECOND NOUN, Word number: 0x97
-B033:             BA                ;         COMMAND 0xBA
+B033:             BA                ;         ROUTINE 0xBA
 B034:          0D 0F                ;       WHILE PASS, Length: 0x000F
 B036:             0A 11             ;         IS INPUT PHRASE, Phrase number: 0x11
 B038:             1A                ;         SET VAR TO FIRST NOUN
 B039:             2E 40             ;         UNKNOWN2E, Value: 0x40
-B03B:             A8                ;         COMMAND 0xA8
+B03B:             A8                ;         ROUTINE 0xA8
 B03C:             04 07             ;         PRINT, Length: 0x0007
-;
-; IS KORKEN.
-;
 B03E:                4B 7B 44 87 B0 85 2E ; 
-B045:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x04
+;
+;                    IS KORKEN.
+;
+B045:    02 04                      ;   Section 2: SHORT_NAME, Length: 0x0004
 ;           ESNEL 
 B047:       60 62 33 61             ; 
 
 ; Object 97
-B04B: 16 77                         ; Word Number: 0x16 "KEY", Length: 0x77
+B04B: 16 77                         ; Word Number: 0x16 "KEY", Length: 0x0077
 B04D: 86 09 A4                      ; Location: 0x86, Points: 9, Data Bits: 0b10100100
-B050:    03 15                      ;   Section 3: DESCRIPTION, Length: 0x15
+B050:    03 15                      ;   Section 3: DESCRIPTION, Length: 0x0015
 B052:       04 13                   ;     PRINT, Length: 0x0013
-;
-; THERE IS A SMALL UKORK HERE.
-;
 B054:          5F BE 5B B1 4B 7B 55 45 8E 91 17 8A 44 87 CA 83 ; 
 B064:          2F 62 2E             ; 
-B067:    07 51                      ;   Section 7: IF_FIRST_NOUN, Length: 0x51
+;
+;              THERE IS A SMALL UKORK HERE.
+;
+B067:    07 51                      ;   Section 7: IF_FIRST_NOUN, Length: 0x0051
 B069:       0D 4F                   ;     WHILE PASS, Length: 0x004F
 B06B:          0A 08                ;       IS INPUT PHRASE, Phrase number: 0x08
 B06D:          04 0F                ;       PRINT, Length: 0x000F
-;
-; "ORKELSMIT VREEBOSTAL"
-;
 B06F:             04 1D AE 85 EB B8 18 BC 67 B1 05 4F 4E BD 22 ; 
+;
+;                 "ORKELSMIT VREEBOSTAL"
+;
 B07E:          0E 3A                ;       WHILE FAIL, Length: 0x003A
 B080:             0D 36             ;         WHILE PASS, Length: 0x0036
-B082:                03 01 80       ;           IS LOCATED, Room number: 0x01, Object number: 0x80
+B082:                03 01 80       ;           IS LOCATED, room=01_PLAYER, obj=??80??
 B085:                04 31          ;           PRINT, Length: 0x0031
-;
-;  WHICH MEANS, "IF FOUND, DROP IN ANY MAILBOX. RETURN POSTAGE GUARUNTEED."
-;
 B087:                   FA 17 DA 78 67 16 9D 48 FC ED 43 79 07 68 56 98 ; 
 B097:                   0C 15 53 A0 83 7A A3 48 63 16 3C 7A B7 A1 2F 17 ; 
 B0A7:                   74 C0 92 96 E6 A0 77 47 87 15 3F 49 BF 9A 17 60 ; 
 B0B7:                   22          ; 
+;
+;                        WHICH MEANS, "IF FOUND, DROP IN ANY MAILBOX. RETURN
+;                       POSTAGE GUARUNTEED."
+;
 B0B8:             14                ;         EXECUTE AND REVERSE STATUS
 B0B9:             0C                ;         FAIL
-B0BA:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x08
+B0BA:    02 08                      ;   Section 2: SHORT_NAME, Length: 0x0008
 ;           SMALL UKORK 
 B0BC:       E3 B8 F3 8C 21 C5 4B B2 ; 
 
 ; Object 98
-B0C4: 12 81 87                      ; Word Number: 0x12 "RADIO", Length: 0x187
+B0C4: 12 81 87                      ; Word Number: 0x12 "RADIO", Length: 0x0187
 B0C7: 8B 09 80                      ; Location: 0x8B, Points: 9, Data Bits: 0b10000000
-B0CA:    07 81 7A                   ;   Section 7: IF_FIRST_NOUN, Length: 0x17A
+B0CA:    07 81 7A                   ;   Section 7: IF_FIRST_NOUN, Length: 0x017A
 B0CD:       0E 81 77                ;     WHILE FAIL, Length: 0x0177
 B0D0:          0D 73                ;       WHILE PASS, Length: 0x0073
 B0D2:             0A 50             ;         IS INPUT PHRASE, Phrase number: 0x50
-B0D4:             03 00 71          ;         IS LOCATED, Room number: 0x00, Object number: 0x71
+B0D4:             03 00 71          ;         IS LOCATED, room=00_nowhere, obj=??71??
 B0D7:             04 6C             ;         PRINT, Length: 0x006C
-;
-; "THE INVASION OF THE PLANET SCRIMJON IS GOING WELL. IT HAS BEEN DETERMINED THAT SCRIMJON IS MUCH MORE SUITABLE TO OUR NEEDS BECAUSE, UH, EARTH IS TOO, UH, SMALL."
-;
 B0D9:                C2 1D 4B 5E 0B 9B 51 B8 91 96 96 64 DB 72 FB A5 ; 
 B0E9:                76 98 55 17 0F B2 00 81 D5 15 81 15 91 7A F7 17 ; 
 B0F9:                17 8D D6 15 9B 15 C4 B5 30 60 FF 14 F4 BD D0 92 ; 
@@ -8048,14 +8164,16 @@ B109:                F3 5F 5B BE 15 BC B3 55 F9 92 8B 96 CF B5 DA C3 ;
 B119:                71 16 5B B1 2B BA 44 BD DB 8B 6B BF 34 A1 8F 16 ; 
 B129:                0D 60 AF 14 17 53 BE B7 AA 17 07 EE 3E 49 0B 71 ; 
 B139:                D6 B5 4E A0 AA 17 15 EE 8E 91 9C 8F ; 
+;
+;                    "THE INVASION OF THE PLANET SCRIMJON IS GOING WELL. IT HAS
+;                    BEEN DETERMINED THAT SCRIMJON IS MUCH MORE SUITABLE TO OUR
+;                    NEEDS BECAUSE, UH, EARTH IS TOO, UH, SMALL."
+;
 B145:          0D 80 9B             ;       WHILE PASS, Length: 0x009B
 B148:             0A 50             ;         IS INPUT PHRASE, Phrase number: 0x50
-B14A:             03 01 80          ;         IS LOCATED, Room number: 0x01, Object number: 0x80
+B14A:             03 01 80          ;         IS LOCATED, room=01_PLAYER, obj=??80??
 B14D:             0A 50             ;         IS INPUT PHRASE, Phrase number: 0x50
 B14F:             04 80 91          ;         PRINT, Length: 0x0091
-;
-; "EXCEPT FOR THE CRASH OF THE SCOUT SHIP, THE INVASION OF THE PLANET EARTH IS GOING WELL. THE MOTHER SHIP IS NOW IN ORBIT, AND WILL SOON BEGIN THE PURGE OF LIFE FORMS. REPORT TO YOUR SPLOONERBLAB IN THREE FLEEENSPOTS."
-;
 B152:                7A 1B B2 53 08 BC A3 A0 5F BE E4 14 5A 49 B8 16 ; 
 B162:                82 17 55 5E 47 55 15 BC 92 73 16 EE DB 72 A0 7A ; 
 B172:                5B 49 03 A0 C3 9E 5F BE E6 16 8F 48 07 BC 3E 49 ; 
@@ -8066,299 +8184,313 @@ B1B2:                52 5E 31 C6 51 5E 8E 64 4F 79 59 15 B5 B2 54 F4 ;
 B1C2:                E9 61 B3 B3 6B BF C7 DE 95 AF 09 A6 0F A0 F6 B0 ; 
 B1D2:                A3 46 83 7A 6C BE 1B 60 7F 67 30 60 69 B9 2F C0 ; 
 B1E2:                22             ; 
+;
+;                    "EXCEPT FOR THE CRASH OF THE SCOUT SHIP, THE INVASION OF
+;                    THE PLANET EARTH IS GOING WELL. THE MOTHER SHIP IS NOW IN
+;                    ORBIT, AND WILL SOON BEGIN THE PURGE OF LIFE FORMS. REPORT
+;                    TO YOUR SPLOONERBLAB IN THREE FLEEENSPOTS."
+;
 B1E3:          0D 56                ;       WHILE PASS, Length: 0x0056
 B1E5:             0A 50             ;         IS INPUT PHRASE, Phrase number: 0x50
 B1E7:             04 52             ;         PRINT, Length: 0x0052
-;
-; "XCPT CRSH SCT SHP, NVSN PLNT RTH GNG WLL. MTHR SHP N RBT ND WLL SN STRT PRG F LF FRMS. RPRT T YR SPLNRBLB N THR FLNSPTS." 
-;
 B1E9:                5D 1E 33 A7 BD 55 15 71 F3 55 2A B8 10 EE A0 CC ; 
 B1F9:                E6 16 B3 9A C2 B3 80 15 D9 6A 17 8D 76 16 E3 74 ; 
 B209:                2A B8 83 16 FE B0 8E 16 FE 17 15 8A 95 96 FE BF ; 
 B219:                EC 16 C8 6A 40 16 5C 15 6F 94 3A 17 B3 B3 1B BC ; 
 B229:                95 AF 08 A6 F6 B0 90 4B 82 17 88 AF 5D 8D 4D A7 ; 
 B239:                63 F4          ; 
+;
+;                    "XCPT CRSH SCT SHP, NVSN PLNT RTH GNG WLL. MTHR SHP N RBT
+;                    ND WLL SN STRT PRG F LF FRMS. RPRT T YR SPLNRBLB N THR
+;                    FLNSPTS."
+;
 B23B:          0D 0A                ;       WHILE PASS, Length: 0x000A
 B23D:             0A 0B             ;         IS INPUT PHRASE, Phrase number: 0x0B
-B23F:             A8                ;         COMMAND 0xA8
+B23F:             A8                ;         ROUTINE 0xA8
 B240:             04 05             ;         PRINT, Length: 0x0005
-;
-; IS OFF.
-;
 B242:                4B 7B D0 9E 2E ; 
-B247:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x05
+;
+;                    IS OFF.
+;
+B247:    02 05                      ;   Section 2: SHORT_NAME, Length: 0x0005
 ;           BLURNUM
 B249:       8F 4E DF B2 4D          ; 
 
 ; Object 99
-B24E: 66 08                         ; Word Number: 0x66 "SHIP", Length: 0x08
+B24E: 66 08                         ; Word Number: 0x66 "SHIP", Length: 0x0008
 B250: 9D 05 80                      ; Location: 0x9D, Points: 5, Data Bits: 0b10000000
-B253:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+B253:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           SHIP
 B255:       23 B8 50                ; 
 
 ; Object 9A
-B258: 25 08                         ; Word Number: 0x25 "WALL", Length: 0x08
+B258: 25 08                         ; Word Number: 0x25 "WALL", Length: 0x0008
 B25A: 01 00 80                      ; Location: 0x01, Points: 0, Data Bits: 0b10000000
-B25D:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+B25D:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           WALL
 B25F:       0E D0 4C                ; 
 
 ; Object 9B
-B262: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x03
+B262: 00 03                         ; Word Number: 0x00 "??00??", Length: 0x0003
 B264: 00 00 00                      ; Location: 0x00, Points: 0, Data Bits: 0b00000000
 
 ; Object 9C
-B267: 66 08                         ; Word Number: 0x66 "SHIP", Length: 0x08
+B267: 66 08                         ; Word Number: 0x66 "SHIP", Length: 0x0008
 B269: 80 07 80                      ; Location: 0x80, Points: 7, Data Bits: 0b10000000
-B26C:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x03
+B26C:    02 03                      ;   Section 2: SHORT_NAME, Length: 0x0003
 ;           SHIP
 B26E:       23 B8 50                ; 
 
 ; Object 9D
-B271: 00 81 3B                      ; Word Number: 0x00 "??00??", Length: 0x13B
+B271: 00 81 3B                      ; Word Number: 0x00 "??00??", Length: 0x013B
 B274: 00 00 80                      ; Location: 0x00, Points: 0, Data Bits: 0b10000000
-B277:    08 81 35                   ;   Section 8: ??UNKNOWN_08??, Length: 0x135
+B277:    08 81 35                   ;   Section 8: ??UNKNOWN_08??, Length: 0x0135
 B27A:       0D 81 32                ;     WHILE PASS, Length: 0x0132
-B27D:          1C 01                ;       SET VAR OBJECT, Object number: 0x01
-B27F:          1D 02                ;       ATTACK VAR, Points: 0x02
+B27D:          1C 01                ;       SET VAR OBJECT, obj=01_YOU
+B27F:          1D 02                ;       ATTACK VAR, Points: 2
 B281:          0B 81 2B 22          ;       SWITCH, Length: 0x012B, Function to call: 0x22
-B285:             01                ;         Phrase number: 0x01
+B285:             01                ;         Phrase 0x01: "NORTH    *          *           *"
 B286:             01                ;         ELSE go to: 0xB288
 B287:                1A             ;           SET VAR TO FIRST NOUN
-B288:             03                ;         Phrase number: 0x03
+B288:             03                ;         Phrase 0x03: "EAST     *          *           *"
 B289:             33                ;         ELSE go to: 0xB2BD
 B28A:                1F 31          ;           PRINT, Length: 0x0031
-;
-; YOU COLLAPSE WITH EXHAUSTION. IF YOU HAVE ANY WATER, BETTER DRINK IT NOW!
-;
 B28C:                   C7 DE E1 14 FB 8C 17 A7 FB 17 53 BE 22 63 B5 49 ; 
 B29C:                   91 BE 1B 9C 43 79 C7 DE 9B 15 5B CA A3 48 F3 17 ; 
 B2AC:                   F4 BD 04 EE 8E 62 23 62 F3 5B 4B 99 73 7B 09 9A ; 
 B2BC:                   21          ; 
-B2BD:             08                ;         Phrase number: 0x08
+;
+;                       YOU COLLAPSE WITH EXHAUSTION. IF YOU HAVE ANY WATER, BETTER
+;                       DRINK IT NOW!
+;
+B2BD:             08                ;         Phrase 0x08: "READ     .....?..   *           *"
 B2BE:             01                ;         ELSE go to: 0xB2C0
 B2BF:                1A             ;           SET VAR TO FIRST NOUN
-B2C0:             0A                ;         Phrase number: 0x0A
+B2C0:             0A                ;         Phrase 0x0A: "LOOK     *          *           *"
 B2C1:             22                ;         ELSE go to: 0xB2E4
 B2C2:                1F 20          ;           PRINT, Length: 0x0020
-;
-; YOU CAN NOT KEEP GOING WITHOUT SOME RELIEF SOON!
-;
 B2C4:                   C7 DE D3 14 90 96 F3 A0 A7 85 09 A3 50 9F D9 6A ; 
 B2D4:                   82 7B 36 A1 61 17 1B 92 6E B1 28 79 61 17 01 A0 ; 
-B2E4:             12                ;         Phrase number: 0x12
+;
+;                       YOU CAN NOT KEEP GOING WITHOUT SOME RELIEF SOON!
+;
+B2E4:             12                ;         Phrase 0x12: "PULL     u.......   *           *"
 B2E5:             01                ;         ELSE go to: 0xB2E7
 B2E6:                1A             ;           SET VAR TO FIRST NOUN
-B2E7:             14                ;         Phrase number: 0x14
+B2E7:             14                ;         Phrase 0x14: "LIGHT    ....A...   WITH     ....A..."
 B2E8:             0C                ;         ELSE go to: 0xB2F5
 B2E9:                1F 0A          ;           PRINT, Length: 0x000A
-;
-; GOSH I'M TIRED!
-;
 B2EB:                   45 6E 0B 71 DB 22 94 BE F1 5F ; 
-B2F5:             1C                ;         Phrase number: 0x1C
+;
+;                       GOSH I'M TIRED!
+;
+B2F5:             1C                ;         Phrase 0x1C: "LOOK     *          BEHIND   u......."
 B2F6:             01                ;         ELSE go to: 0xB2F8
 B2F7:                1A             ;           SET VAR TO FIRST NOUN
-B2F8:             1E                ;         Phrase number: 0x1E
+B2F8:             1E                ;         Phrase 0x1E: "YES      *          *           *"
 B2F9:             1C                ;         ELSE go to: 0xB316
 B2FA:                1F 1A          ;           PRINT, Length: 0x001A
-;
-; YOU CAN'T TAKE MUCH MORE OF THIS HEAT! 
-;
 B2FC:                   C7 DE D3 14 E6 96 7B 17 9B 85 A5 94 0F 71 AF A0 ; 
 B30C:                   B8 16 82 17 4B 7B E3 72 AB BB ; 
-B316:             26                ;         Phrase number: 0x26
+;
+;                       YOU CAN'T TAKE MUCH MORE OF THIS HEAT! 
+;
+B316:             26                ;         Phrase 0x26: "GO       *          AROUND   u......."
 B317:             01                ;         ELSE go to: 0xB319
 B318:                1A             ;           SET VAR TO FIRST NOUN
-B319:             28                ;         Phrase number: 0x28
+B319:             28                ;         Phrase 0x28: "FEED     ...P....   WITH     u......."
 B31A:             10                ;         ELSE go to: 0xB32B
 B31B:                1F 0E          ;           PRINT, Length: 0x000E
-;
-; BOY, I'M SO THIRSTY! 
-;
 B31D:                   0B 4F 0B EE DB 22 2B B9 63 BE A6 B3 EB DA ; 
-B32B:             30                ;         Phrase number: 0x30
+;
+;                       BOY, I'M SO THIRSTY! 
+;
+B32B:             30                ;         Phrase 0x30: "??30??"
 B32C:             01                ;         ELSE go to: 0xB32E
 B32D:                1A             ;           SET VAR TO FIRST NOUN
-B32E:             32                ;         Phrase number: 0x32
+B32E:             32                ;         Phrase 0x32: "??32??"
 B32F:             1E                ;         ELSE go to: 0xB34E
 B330:                1F 1C          ;           PRINT, Length: 0x001C
-;
-; I HOPE YOU BROUGHT LOTS OF FOOD AND WATER!
-;
 B332:                   4A 77 5F A0 51 18 44 C2 07 B3 2E 6D 49 16 0B C0 ; 
 B342:                   C3 9E 01 68 03 58 33 98 16 D0 21 62 ; 
-B34E:             3A                ;         Phrase number: 0x3A
+;
+;                       I HOPE YOU BROUGHT LOTS OF FOOD AND WATER!
+;
+B34E:             3A                ;         Phrase 0x3A: "OPEN     u.......   WITH     u......."
 B34F:             01                ;         ELSE go to: 0xB351
 B350:                1A             ;           SET VAR TO FIRST NOUN
-B351:             3C                ;         Phrase number: 0x3C
+B351:             3C                ;         Phrase 0x3C: "??3C??"
 B352:             34                ;         ELSE go to: 0xB387
 B353:                1F 32          ;           PRINT, Length: 0x0032
-;
-; YOU CAN REALLY FEEL THE HEAT OF THE SUN BURNING DOWN ON YOU IN THIS DESERT!
-;
 B355:                   C7 DE D3 14 94 96 8E 5F FB 8E 67 66 16 8A DB 72 ; 
 B365:                   E3 72 11 BC 96 64 DB 72 30 BA BF 14 D3 B2 AB 98 ; 
 B375:                   89 5B 91 96 9B 96 1B A1 83 7A 63 BE C6 B5 57 62 ; 
 B385:                   B1 B3       ; 
-B387:             41                ;         Phrase number: 0x41
+;
+;                       YOU CAN REALLY FEEL THE HEAT OF THE SUN BURNING DOWN ON YOU
+;                       IN THIS DESERT!
+;
+B387:             41                ;         Phrase 0x41: "LOCK     ....A...   WITH     u......."
 B388:             01                ;         ELSE go to: 0xB38A
 B389:                1A             ;           SET VAR TO FIRST NOUN
-B38A:             43                ;         Phrase number: 0x43
+B38A:             43                ;         Phrase 0x43: "GET      ..C.....   WITH     ..C....."
 B38B:             20                ;         ELSE go to: 0xB3AC
 B38C:                1F 1E          ;           PRINT, Length: 0x001E
-;
-; BOY, THIS DESERT IS GONNA BE TOUGH TO CROSS! 
-;
 B38E:                   0B 4F 16 EE 95 73 FF 14 B4 B7 0B BC C9 B5 18 A0 ; 
 B39E:                   44 45 56 5E 29 A1 16 71 C5 9C 05 B3 6B B5 ; 
-B3AC:             FF                ;         Phrase number: 0xFF
+;
+;                       BOY, THIS DESERT IS GONNA BE TOUGH TO CROSS! 
+;
+B3AC:             FF                ;         Phrase 0xFF: "??FF??"
 B3AD:             01                ;         ELSE go to: 0xB3AF
 B3AE:                1A             ;           SET VAR TO FIRST NOUN
 
+
 SubroutineCommands:
 B3AF: 00 89 BC  ; ID: 0x00, Length: 0x09BC
-; Routine ??81??
+;
+; Routine 81:PRINT_DOOR_HERE
 ;
 B3B2: 81 10                         ; Routine Number: 0x81, Length: 0x0010
 B3B4:       04 0E                   ;     PRINT, Length: 0x000E
-;
-; THERE IS A DOOR HERE.
-;
 B3B6:          5F BE 5B B1 4B 7B 46 45 44 A0 9F 15 7F B1 ; 
+;
+;              THERE IS A DOOR HERE.
+;
 
-; Routine ??80??
+; Routine 80:PRINT_SHOTGUN_HERE
 ;
 B3C4: 80 12                         ; Routine Number: 0x80, Length: 0x0012
 B3C6:       04 10                   ;     PRINT, Length: 0x0010
-;
-; THERE IS A SHOTGUN HERE.
-;
 B3C8:          5F BE 5B B1 4B 7B 55 45 86 74 30 6F 9F 15 7F B1 ; 
+;
+;              THERE IS A SHOTGUN HERE.
+;
 
-; Routine ??8B??
+; Routine 8B:PRINT_PERIOD
 ;
 B3D8: 8B 04                         ; Routine Number: 0x8B, Length: 0x0004
 B3DA:       04 02                   ;     PRINT, Length: 0x0002
-;
-; .  
-;
 B3DC:          3B F4                ; 
+;
+;              .  
+;
 
-; Routine ??AB??
+; Routine AB:PRINT_STILL_IN_DESERT
 ;
 B3DE: AB 15                         ; Routine Number: 0xAB, Length: 0x0015
 B3E0:       04 13                   ;     PRINT, Length: 0x0013
-;
-; YOU ARE STILL IN THE DESERT.
-;
 B3E2:          C7 DE 94 14 55 5E 8E BE 0B 8A 96 96 DB 72 F5 59 ; 
 B3F2:          3E 62 2E             ; 
+;
+;              YOU ARE STILL IN THE DESERT.
+;
 
-; Routine ??95??
+; Routine 95:PRINT_TRAIL_MEANDERS
 ;
 B3F5: 95 23                         ; Routine Number: 0x95, Length: 0x0023
 B3F7:       04 21                   ;     PRINT, Length: 0x0021
-;
-; A SMALL TRAIL MEANDERS FROM THE EAST TO THE WEST.
-;
 B3F9:          55 45 8E 91 16 8A CB B0 0F 8A 90 5F F4 59 C8 B5 ; 
 B409:          FF B2 82 17 47 5E 66 49 89 17 82 17 59 5E 66 62 ; 
 B419:          2E                   ; 
+;
+;              A SMALL TRAIL MEANDERS FROM THE EAST TO THE WEST.
+;
 
-; Routine ??96??
+; Routine 96:PRINT_VAST_CANYON
 ;
 B41A: 96 1E                         ; Routine Number: 0x96, Length: 0x001E
 B41C:       04 1C                   ;     PRINT, Length: 0x001C
-;
-; A VAST IMPASSABLE CANYON OPENS BEFORE YOU.
-;
 B41E:          58 45 66 49 CF 15 55 A4 04 B7 DB 8B 10 53 C0 DE ; 
 B42E:          C2 16 9D 61 AF 14 04 68 5B 5E 3F A1 ; 
+;
+;              A VAST IMPASSABLE CANYON OPENS BEFORE YOU.
+;
 
-; Routine ??97??
+; Routine 97:PRINT_CERTAIN_DEATH
 ;
 B43A: 97 1D                         ; Routine Number: 0x97, Length: 0x001D
 B43C:       04 1B                   ;     PRINT, Length: 0x001B
-;
-; TO GO THAT WAY WOULD MEAN CERTAIN DEATH!
-;
 B43E:          6B BF 2B 6E 5B BE 19 BC 3B 4A 47 D2 B3 8B 23 92 ; 
 B44E:          85 96 3E 62 D0 47 FF 14 82 49 21 ; 
+;
+;              TO GO THAT WAY WOULD MEAN CERTAIN DEATH!
+;
 
-; Routine ??99??
+; Routine 99:DIE_CANYON_PLUNGE
 ;
 B459: 99 50                         ; Routine Number: 0x99, Length: 0x0050
 B45B:       0D 4E                   ;     WHILE PASS, Length: 0x004E
 B45D:          04 46                ;       PRINT, Length: 0x0046
-;
-; AAAAARRRRRRRGGGGHHHHH! AARRGGHH!  ARRGHH! THE CANYON WALLS ECHO YOUR SCREAM AS YOU PLUNGE TO YOUR DEATH! 
-;
 B45F:             83 46 94 46 7C B3 7C B3 F9 6C 22 6D 62 73 C3 06 ; 
 B46F:             3C 49 FA 6C AB 70 94 14 BA B1 AB 70 5F BE D3 14 ; 
 B47F:             91 9B 99 96 46 48 C7 B5 29 54 51 18 23 C6 64 B7 ; 
 B48F:             8F 5F 95 14 51 18 52 C2 70 8E 9B 6C 6B BF C7 DE ; 
 B49F:             86 AF 96 5F AB 70 ; 
-B4A5:          20 01                ;       IS ACTIVE THIS, Object number: 0x01
-B4A7:          1C 01                ;       SET VAR OBJECT, Object number: 0x01
-B4A9:          1D 64                ;       ATTACK VAR, Points: 0x64
+;
+;                 AAAAARRRRRRRGGGGHHHHH! AARRGGHH!  ARRGHH! THE CANYON WALLS
+;                 ECHO YOUR SCREAM AS YOU PLUNGE TO YOUR DEATH!
+;
+B4A5:          20 01                ;       IS ACTIVE THIS, obj=01_YOU
+B4A7:          1C 01                ;       SET VAR OBJECT, obj=01_YOU
+B4A9:          1D 64                ;       ATTACK VAR, Points: 100
 
-; Routine ??9A??
+; Routine 9A:PRINT_CANYON_PREVENTS
 ;
 B4AB: 9A 31                         ; Routine Number: 0x9A, Length: 0x0031
 B4AD:       04 2F                   ;     PRINT, Length: 0x002F
-;
-; THE CANYON WALLS RISE ABOVE YOU PREVENTING MOVEMENT IN THIS DIRECTION.
-;
 B4AF:          5F BE D3 14 91 9B 99 96 46 48 D4 B5 57 7B 84 14 ; 
 B4BF:          4F A1 51 18 52 C2 78 B1 9E 61 91 7A 71 16 6F CA ; 
 B4CF:          9E 61 D0 15 82 17 4B 7B 94 5A E6 5F C0 7A 2E ; 
+;
+;              THE CANYON WALLS RISE ABOVE YOU PREVENTING MOVEMENT IN THIS
+;              DIRECTION.
+;
 
-; Routine ??98??
+; Routine 98:PRINT_LAKE
 ;
 B4DE: 98 28                         ; Routine Number: 0x98, Length: 0x0028
 B4E0:       04 26                   ;     PRINT, Length: 0x0026
-;
-; TO THE EAST YOU CAN SEE WHAT APPEARS TO BE A LARGE LAKE. 
-;
 B4E2:          6B BF 5F BE 23 15 F3 B9 C7 DE D3 14 95 96 1B 60 ; 
 B4F2:          1B D1 03 BC 9F A6 3D 49 89 17 AF 14 7B 14 54 8B ; 
 B502:          9B 6C 4D 8B DB 63    ; 
+;
+;              TO THE EAST YOU CAN SEE WHAT APPEARS TO BE A LARGE LAKE. 
+;
 
-; Routine ??9B??
+; Routine 9B:PRINT_EMPTY_HIGHWAY
 ;
 B508: 9B 1C                         ; Routine Number: 0x9B, Length: 0x001C
 B50A:       04 1A                   ;     PRINT, Length: 0x001A
-;
-; AN EMPTY HIGHWAY TRAVELS EAST AND WEST.
-;
 B50C:          83 48 72 61 FB C0 89 73 B3 75 56 DB D8 B0 4D 61 ; 
 B51C:          23 15 F3 B9 8E 48 F7 17 17 BA ; 
+;
+;              AN EMPTY HIGHWAY TRAVELS EAST AND WEST.
+;
 
 ; Routine ??8D??
 ;
 B526: 8D 0E                         ; Routine Number: 0x8D, Length: 0x000E
 B528:       0D 0C                   ;     WHILE PASS, Length: 0x000C
 B52A:          2E 20                ;       UNKNOWN2E, Value: 0x20
-B52C:          AA                   ;       COMMAND 0xAA
+B52C:          AA                   ;       ROUTINE 0xAA
 B52D:          04 07                ;       PRINT, Length: 0x0007
-;
-; IS CLOSED.
-;
 B52F:             4B 7B C9 54 A6 B7 2E ; 
+;
+;                 IS CLOSED.
+;
 
 ; Routine ??C7??
 ;
 B536: C7 0E                         ; Routine Number: 0xC7, Length: 0x000E
 B538:       0D 0C                   ;     WHILE PASS, Length: 0x000C
 B53A:          2E 20                ;       UNKNOWN2E, Value: 0x20
-B53C:          AA                   ;       COMMAND 0xAA
+B53C:          AA                   ;       ROUTINE 0xAA
 B53D:          04 07                ;       PRINT, Length: 0x0007
-;
-; IS RIBULN.
-;
 B53F:             4B 7B 04 B2 48 C5 2E ; 
+;
+;                 IS RIBULN.
+;
 
 ; Routine ??8F??
 ;
@@ -8366,58 +8498,58 @@ B546: 8F 80 94                      ; Routine Number: 0x8F, Length: 0x0094
 B549:       0D 80 91                ;     WHILE PASS, Length: 0x0091
 B54C:          0E 80 8D             ;       WHILE FAIL, Length: 0x008D
 B54F:             14                ;         EXECUTE AND REVERSE STATUS
-B550:             BF                ;         COMMAND 0xBF
+B550:             BF                ;         ROUTINE 0xBF
 B551:             0D 23             ;         WHILE PASS, Length: 0x0023
 B553:                2E 10          ;           UNKNOWN2E, Value: 0x10
-B555:                AA             ;           COMMAND 0xAA
+B555:                AA             ;           ROUTINE 0xAA
 B556:                04 1E          ;           PRINT, Length: 0x001E
-;
-; SLIPS THROUGH YOUR FINGERS, LEAVING THEM WET.
-;
 B558:                   C3 B8 0B A7 6C BE 29 A1 1B 71 34 A1 53 15 B7 98 ; 
 B568:                   AE B3 3F 16 D3 49 AB 98 5F BE 59 90 97 62 ; 
+;
+;                       SLIPS THROUGH YOUR FINGERS, LEAVING THEM WET.
+;
 B576:             0D 1A             ;         WHILE PASS, Length: 0x001A
 B578:                15 10          ;           CHECK VAR, Value: 0x10
 B57A:                04 16          ;           PRINT, Length: 0x0016
-;
-; I DON'T THINK HE WILL COOPERATE. 
-;
 B57C:                   46 77 05 A0 16 BC 90 73 CA 83 59 5E 46 7A E1 14 ; 
 B58C:                   5F A0 D6 B0 DB 63 ; 
+;
+;                       I DON'T THINK HE WILL COOPERATE. 
+;
 B592:             0D 22             ;         WHILE PASS, Length: 0x0022
 B594:                14             ;           EXECUTE AND REVERSE STATUS
 B595:                15 20          ;           CHECK VAR, Value: 0x20
 B597:                14             ;           EXECUTE AND REVERSE STATUS
 B598:                2D 5C          ;           UNKNOWN2D, Value: 0x5C
 B59A:                04 18          ;           PRINT, Length: 0x0018
-;
-; YOU ARE QUITE INCAPABLE OF REMOVING 
-;
 B59C:                   C7 DE 94 14 53 5E D6 C4 4B 5E 13 98 44 A4 DB 8B ; 
 B5AC:                   C3 9E 6F B1 53 A1 AB 98 ; 
-B5B4:                AA             ;           COMMAND 0xAA
-B5B5:                8B             ;           COMMAND 0x8B
+;
+;                       YOU ARE QUITE INCAPABLE OF REMOVING 
+;
+B5B4:                AA             ;           ROUTINE 0xAA
+B5B5:                8B             ;           ROUTINE 0x8B
 B5B6:             18                ;         IS VAR OWNED BY ACTIVE
 B5B7:             0D 18             ;         WHILE PASS, Length: 0x0018
 B5B9:                0F             ;           UNKNOWN0F
 B5BA:                14             ;           EXECUTE AND REVERSE STATUS
 B5BB:                39             ;           UNKNOWN39
 B5BC:                04 12          ;           PRINT, Length: 0x0012
-;
-; YOU CAN'T CARRY THAT MUCH. 
-;
 B5BE:                   C7 DE D3 14 E6 96 D3 14 83 B3 82 17 73 49 A5 94 ; 
 B5CE:                   9B 76       ; 
+;
+;                       YOU CAN'T CARRY THAT MUCH. 
+;
 B5D0:                10             ;           DROP VAR
 B5D1:             0D 08             ;         WHILE PASS, Length: 0x0008
 B5D3:                0F             ;           UNKNOWN0F
-B5D4:                AA             ;           COMMAND 0xAA
+B5D4:                AA             ;           ROUTINE 0xAA
 B5D5:                04 04          ;           PRINT, Length: 0x0004
-;
-; TAKEN.
-;
 B5D7:                   4D BD A7 61 ; 
-B5DB:             C1                ;         COMMAND 0xC1
+;
+;                       TAKEN.
+;
+B5DB:             C1                ;         ROUTINE 0xC1
 B5DC:          18                   ;       IS VAR OWNED BY ACTIVE
 
 ; Routine ??A2??
@@ -8427,33 +8559,33 @@ B5DF:       0D 11                   ;     WHILE PASS, Length: 0x0011
 B5E1:          1A                   ;       SET VAR TO FIRST NOUN
 B5E2:          18                   ;       IS VAR OWNED BY ACTIVE
 B5E3:          04 0B                ;       PRINT, Length: 0x000B
-;
-; YOU ALREADY HAVE
-;
 B5E5:             C7 DE 8E 14 63 B1 FB 5C 58 72 45 ; 
-B5F0:          AA                   ;       COMMAND 0xAA
-B5F1:          8B                   ;       COMMAND 0x8B
+;
+;                 YOU ALREADY HAVE
+;
+B5F0:          AA                   ;       ROUTINE 0xAA
+B5F1:          8B                   ;       ROUTINE 0x8B
 
 ; Routine ??90??
 ;
 B5F2: 90 09                         ; Routine Number: 0x90, Length: 0x0009
 B5F4:       0B 07 0A                ;     SWITCH, Length: 0x0007, Function to call: 0x0A
-B5F7:          36                   ;       Phrase number: 0x36
+B5F7:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 B5F8:          01                   ;       ELSE go to: 0xB5FA
-B5F9:             91                ;         COMMAND 0x91
-B5FA:          37                   ;       Phrase number: 0x37
+B5F9:             91                ;         ROUTINE 0x91
+B5FA:          37                   ;       Phrase 0x37: "CLIMB    *          OUT         *"
 B5FB:          01                   ;       ELSE go to: 0xB5FD
-B5FC:             91                ;         COMMAND 0x91
+B5FC:             91                ;         ROUTINE 0x91
 
-; Routine ??91??
+; Routine 91:PRINT_USE_DIRECTIONS
 ;
 B5FD: 91 19                         ; Routine Number: 0x91, Length: 0x0019
 B5FF:       1F 17                   ;     PRINT, Length: 0x0017
-;
-; PLEASE USE DIRECTIONS N,S,E, OR W.
-;
 B601:          FF A5 57 49 B5 17 46 5E 2F 7B 03 56 1D A0 A6 16 ; 
 B611:          3F BB 11 EE 99 AF 2E ; 
+;
+;              PLEASE USE DIRECTIONS N,S,E, OR W.
+;
 
 ; Routine ??92??
 ;
@@ -8463,39 +8595,39 @@ B61C:          1A                   ;       SET VAR TO FIRST NOUN
 B61D:          14                   ;       EXECUTE AND REVERSE STATUS
 B61E:          15 08                ;       CHECK VAR, Value: 0x08
 B620:          04 17                ;       PRINT, Length: 0x0017
-;
-; YOU TRIED, BUT YOU COULDN'T DO IT.
-;
 B622:             C7 DE 8C 17 26 79 04 EE 73 C6 C7 DE E1 14 3E C5 ; 
 B632:             E6 96 09 15 D6 15 2E ; 
+;
+;                 YOU TRIED, BUT YOU COULDN'T DO IT.
+;
 
-; Routine ??94??
+; Routine 94:INIT_GAME
 ;
 B639: 94 06                         ; Routine Number: 0x94, Length: 0x0006
 B63B:       0D 04                   ;     WHILE PASS, Length: 0x0004
-B63D:          30 80                ;       UNKNOWN30, Data: 0x80
-B63F:          2F 01                ;       UNKNOWN2F Data: 0x01
+B63D:          30 80                ;       SET CURRENT ROOM, room=80_1_HIGHWAY_WEST
+B63F:          2F 01                ;       LOAD SECTION FROM DISK, Section: 0x01
 
-; Routine ??A3??
+; Routine A3:PRINT_WELCOME_MESSAGE
 ;
 B641: A3 36                         ; Routine Number: 0xA3, Length: 0x0036
 B643:       0D 34                   ;     WHILE PASS, Length: 0x0034
 B645:          3A                   ;       CLEAR SCREEN
-B646:          2C 01                ;       SET ACTIVE, Object number: 0x01
-B648:          30 80                ;       UNKNOWN30, Data: 0x80
-B64A:          17 01 80             ;       MOVE TO, Object number: 0x01, Destination room: 0x80
+B646:          2C 01                ;       SET ACTIVE, obj=01_YOU
+B648:          30 80                ;       SET CURRENT ROOM, room=80_1_HIGHWAY_WEST
+B64A:          17 01 80             ;       MOVE TO, obj=01_YOU, room=80_1_HIGHWAY_WEST
 B64D:          1F 1A                ;       PRINT, Length: 0x001A
-;
-; >>>>>>>>>>>>>>>> XENOS <<<<<<<<<<<<<<<<
-;
 B64F:             DF 2C DF 2C DF 2C DF 2C DF 2C 5A 2C 99 61 BE B5 ; 
 B65F:             76 26 76 26 76 26 76 26 76 26 ; 
+;
+;                 >>>>>>>>>>>>>>>> XENOS <<<<<<<<<<<<<<<<
+;
 B669:          25                   ;       PRINT LINEFEED
 B66A:          1F 0C                ;       PRINT, Length: 0x000C
-;
-; STRANGER, BEWARE! 
-;
 B66C:             0C BA 91 48 46 62 AF 14 14 D0 EB 5D ; 
+;
+;                 STRANGER, BEWARE! 
+;
 B678:          25                   ;       PRINT LINEFEED
 
 ; Routine ??A5??
@@ -8504,12 +8636,12 @@ B679: A5 12                         ; Routine Number: 0xA5, Length: 0x0012
 B67B:       0D 10                   ;     WHILE PASS, Length: 0x0010
 B67D:          14                   ;       EXECUTE AND REVERSE STATUS
 B67E:          2E 20                ;       UNKNOWN2E, Value: 0x20
-B680:          A8                   ;       COMMAND 0xA8
+B680:          A8                   ;       ROUTINE 0xA8
 B681:          04 0A                ;       PRINT, Length: 0x000A
-;
-; IS NOT CLOSED. 
-;
 B683:             4B 7B 06 9A DE 14 D7 A0 9B 5D ; 
+;
+;                 IS NOT CLOSED. 
+;
 
 ; Routine ??A6??
 ;
@@ -8517,12 +8649,12 @@ B68D: A6 26                         ; Routine Number: 0xA6, Length: 0x0026
 B68F:       0E 24                   ;     WHILE FAIL, Length: 0x0024
 B691:          0D 0D                ;       WHILE PASS, Length: 0x000D
 B693:             29                ;         PRINT OPEN VAR
-B694:             A8                ;         COMMAND 0xA8
+B694:             A8                ;         ROUTINE 0xA8
 B695:             04 08             ;         PRINT, Length: 0x0008
-;
-; IS NOW OPEN.
-;
 B697:                4B 7B 09 9A C2 16 A7 61 ; 
+;
+;                    IS NOW OPEN.
+;
 B69F:             0C                ;         FAIL
 B6A0:          0D 11                ;       WHILE PASS, Length: 0x0011
 B6A2:             1A                ;         SET VAR TO FIRST NOUN
@@ -8531,12 +8663,12 @@ B6A5:             14                ;         EXECUTE AND REVERSE STATUS
 B6A6:             2E 80             ;         UNKNOWN2E, Value: 0x80
 B6A8:             14                ;         EXECUTE AND REVERSE STATUS
 B6A9:             33                ;         UNKNOWN33
-B6AA:             A8                ;         COMMAND 0xA8
+B6AA:             A8                ;         ROUTINE 0xA8
 B6AB:             04 06             ;         PRINT, Length: 0x0006
-;
-; IS EMPTY.
-;
 B6AD:                4B 7B 72 61 1F C1 ; 
+;
+;                    IS EMPTY.
+;
 B6B3:          14                   ;       EXECUTE AND REVERSE STATUS
 B6B4:          0C                   ;       FAIL
 
@@ -8548,10 +8680,10 @@ B6B9:          1A                   ;       SET VAR TO FIRST NOUN
 B6BA:          0E 06                ;       WHILE FAIL, Length: 0x0006
 B6BC:             15 10             ;         CHECK VAR, Value: 0x10
 B6BE:             1F 02             ;         PRINT, Length: 0x0002
-;
-; THE
-;
 B6C0:                5F BE          ; 
+;
+;                    THE
+;
 B6C2:          11                   ;       PRINT FIRST NOUN
 
 ; Routine ??A9??
@@ -8562,10 +8694,10 @@ B6C7:          1B                   ;       SET VAR TO SECOND NOUN
 B6C8:          0E 06                ;       WHILE FAIL, Length: 0x0006
 B6CA:             15 10             ;         CHECK VAR, Value: 0x10
 B6CC:             1F 02             ;         PRINT, Length: 0x0002
-;
-; THE
-;
 B6CE:                5F BE          ; 
+;
+;                    THE
+;
 B6D0:          12                   ;       PRINT SECOND NOUN
 
 ; Routine ??AA??
@@ -8575,10 +8707,10 @@ B6D3:       0D 09                   ;     WHILE PASS, Length: 0x0009
 B6D5:          0E 06                ;       WHILE FAIL, Length: 0x0006
 B6D7:             15 10             ;         CHECK VAR, Value: 0x10
 B6D9:             1F 02             ;         PRINT, Length: 0x0002
-;
-; THE
-;
 B6DB:                5F BE          ; 
+;
+;                    THE
+;
 B6DD:          16                   ;       PRINT VAR
 
 ; Routine ??9C??
@@ -8586,86 +8718,90 @@ B6DD:          16                   ;       PRINT VAR
 B6DE: 9C 53                         ; Routine Number: 0x9C, Length: 0x0053
 B6E0:       0D 51                   ;     WHILE PASS, Length: 0x0051
 B6E2:          04 04                ;       PRINT, Length: 0x0004
-;
-; KIPSPA
-;
 B6E4:             52 86 5B B9       ; 
+;
+;                 KIPSPA
+;
 B6E8:          0E 08                ;       WHILE FAIL, Length: 0x0008
-B6EA:             C3                ;         COMMAND 0xC3
+B6EA:             C3                ;         ROUTINE 0xC3
 B6EB:             04 05             ;         PRINT, Length: 0x0005
-;
-; AIRLOCK
-;
 B6ED:                D4 47 75 8D 4B ; 
-B6F2:          8B                   ;       COMMAND 0x8B
+;
+;                    AIRLOCK
+;
+B6F2:          8B                   ;       ROUTINE 0x8B
 B6F3:          04 3E                ;       PRINT, Length: 0x003E
-;
-; YOU ARE IN A SMALL GREY ROOM. THERE IS A PANEL WITH TWO BUTTONS, ONE IS RED AND ONE IS BLUE. 
-;
 B6F5:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 84 15 3B 63 ; 
 B705:             01 B3 DB 95 5F BE 5B B1 4B 7B 52 45 8F 48 19 8A ; 
 B715:             82 7B 91 17 C4 9C 8E C6 1D A0 11 EE 5B 98 4B 7B ; 
 B725:             66 B1 90 14 11 58 5B 98 4B 7B 8F 4E DB 63 ; 
+;
+;                 YOU ARE IN A SMALL GREY ROOM. THERE IS A PANEL WITH TWO
+;                 BUTTONS, ONE IS RED AND ONE IS BLUE.
+;
 
 ; Routine ??B0??
 ;
 B733: B0 5F                         ; Routine Number: 0xB0, Length: 0x005F
 B735:       0D 5D                   ;     WHILE PASS, Length: 0x005D
 B737:          04 04                ;       PRINT, Length: 0x0004
-;
-; KIPSPA
-;
 B739:             52 86 5B B9       ; 
+;
+;                 KIPSPA
+;
 B73D:          0E 08                ;       WHILE FAIL, Length: 0x0008
-B73F:             C3                ;         COMMAND 0xC3
+B73F:             C3                ;         ROUTINE 0xC3
 B740:             04 05             ;         PRINT, Length: 0x0005
-;
-; AIRLOCK
-;
 B742:                D4 47 75 8D 4B ; 
-B747:          8B                   ;       COMMAND 0x8B
+;
+;                    AIRLOCK
+;
+B747:          8B                   ;       ROUTINE 0x8B
 B748:          04 4A                ;       PRINT, Length: 0x004A
-;
-; YOU ARE IN A SMALL GRAY ROOM. THERE IS A PANEL WITH THREE BUTTONS, ONE IS RED, ONE IS BLUE, AND ONE IS YELLOW. 
-;
 B74A:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 84 15 3B 4A ; 
 B75A:             01 B3 DB 95 5F BE 5B B1 4B 7B 52 45 8F 48 19 8A ; 
 B76A:             82 7B 82 17 67 B1 BF 14 49 C0 AE 9A C0 16 4B 5E ; 
 B77A:             D4 B5 16 60 C0 16 4B 5E C4 B5 67 8E 03 EE 33 98 ; 
 B78A:             0F A0 D5 15 47 18 09 8D 5B D4 ; 
+;
+;                 YOU ARE IN A SMALL GRAY ROOM. THERE IS A PANEL WITH THREE
+;                 BUTTONS, ONE IS RED, ONE IS BLUE, AND ONE IS YELLOW.
+;
 
 ; Routine ??9D??
 ;
 B794: 9D 74                         ; Routine Number: 0x9D, Length: 0x0074
 B796:       0D 72                   ;     WHILE PASS, Length: 0x0072
 B798:          04 05                ;       PRINT, Length: 0x0005
-;
-; BLOKSPA
-;
 B79A:             89 4E E2 87 41    ; 
+;
+;                 BLOKSPA
+;
 B79F:          0E 06                ;       WHILE FAIL, Length: 0x0006
-B7A1:             C3                ;         COMMAND 0xC3
+B7A1:             C3                ;         ROUTINE 0xC3
 B7A2:             04 03             ;         PRINT, Length: 0x0003
-;
-; EXIT
-;
 B7A4:                23 63 54       ; 
-B7A7:          8B                   ;       COMMAND 0x8B
+;
+;                    EXIT
+;
+B7A7:          8B                   ;       ROUTINE 0x8B
 B7A8:          04 60                ;       PRINT, Length: 0x0060
-;
-; YOU ARE IN A SMALL CUBICLE. THERE IS A YELLOW BUTTON ON THE OPPOSITE WALL. ON THE NEAR WALL THERE IS A SMALL SQUARE HOLE ABOUT TWO INCHES DEEP. 
-;
 B7AA:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 E7 14 05 4E ; 
 B7BA:             FF 8B 82 17 2F 62 D5 15 7B 14 2E DD 89 8D BF 14 ; 
 B7CA:             49 C0 91 96 96 96 DB 72 6A A0 DB A0 DB BD 0E D0 ; 
 B7DA:             9B 8F 03 A0 5F BE 8F 16 23 49 0E D0 16 8A F4 72 ; 
 B7EA:             4B 5E C3 B5 5F 17 46 48 63 17 94 C3 4A 5E BF 9F ; 
 B7FA:             84 14 36 A1 91 17 CB 9C 1A 98 4B 62 E7 59 9B A8 ; 
+;
+;                 YOU ARE IN A SMALL CUBICLE. THERE IS A YELLOW BUTTON ON THE
+;                 OPPOSITE WALL. ON THE NEAR WALL THERE IS A SMALL SQUARE
+;                 HOLE ABOUT TWO INCHES DEEP.
+;
 
 ; Routine ??9E??
 ;
 B80A: 9E 03                         ; Routine Number: 0x9E, Length: 0x0003
-B80C:       17 3E 00                ;     MOVE TO, Object number: 0x3E, Destination room: 0x00
+B80C:       17 3E 00                ;     MOVE TO, obj=??3E??, room=00_nowhere
 
 ; Routine ??9F??
 ;
@@ -8673,8 +8809,8 @@ B80F: 9F 0A                         ; Routine Number: 0x9F, Length: 0x000A
 B811:       0D 08                   ;     WHILE PASS, Length: 0x0008
 B813:          0A 12                ;       IS INPUT PHRASE, Phrase number: 0x12
 B815:          08 3F                ;       IS FIRST NOUN, Word number: 0x3F
-B817:          AD                   ;       COMMAND 0xAD
-B818:          17 3E 3F             ;       MOVE TO, Object number: 0x3E, Destination room: 0x3F
+B817:          AD                   ;       ROUTINE 0xAD
+B818:          17 3E 3F             ;       MOVE TO, obj=??3E??, room=obj_3F
 
 ; Routine ??A0??
 ;
@@ -8682,8 +8818,8 @@ B81B: A0 0A                         ; Routine Number: 0xA0, Length: 0x000A
 B81D:       0D 08                   ;     WHILE PASS, Length: 0x0008
 B81F:          0A 12                ;       IS INPUT PHRASE, Phrase number: 0x12
 B821:          08 40                ;       IS FIRST NOUN, Word number: 0x40
-B823:          AD                   ;       COMMAND 0xAD
-B824:          17 3E 40             ;       MOVE TO, Object number: 0x3E, Destination room: 0x40
+B823:          AD                   ;       ROUTINE 0xAD
+B824:          17 3E 40             ;       MOVE TO, obj=??3E??, room=obj_40
 
 ; Routine ??A1??
 ;
@@ -8691,8 +8827,8 @@ B827: A1 0A                         ; Routine Number: 0xA1, Length: 0x000A
 B829:       0D 08                   ;     WHILE PASS, Length: 0x0008
 B82B:          0A 12                ;       IS INPUT PHRASE, Phrase number: 0x12
 B82D:          08 41                ;       IS FIRST NOUN, Word number: 0x41
-B82F:          AD                   ;       COMMAND 0xAD
-B830:          17 3E 41             ;       MOVE TO, Object number: 0x3E, Destination room: 0x41
+B82F:          AD                   ;       ROUTINE 0xAD
+B830:          17 3E 41             ;       MOVE TO, obj=??3E??, room=obj_41
 
 ; Routine ??AC??
 ;
@@ -8700,8 +8836,8 @@ B833: AC 0A                         ; Routine Number: 0xAC, Length: 0x000A
 B835:       0D 08                   ;     WHILE PASS, Length: 0x0008
 B837:          0A 12                ;       IS INPUT PHRASE, Phrase number: 0x12
 B839:          08 42                ;       IS FIRST NOUN, Word number: 0x42
-B83B:          AD                   ;       COMMAND 0xAD
-B83C:          17 3E 42             ;       MOVE TO, Object number: 0x3E, Destination room: 0x42
+B83B:          AD                   ;       ROUTINE 0xAD
+B83C:          17 3E 42             ;       MOVE TO, obj=??3E??, room=obj_42
 
 ; Routine ??AD??
 ;
@@ -8710,38 +8846,39 @@ B841:       0E 52                   ;     WHILE FAIL, Length: 0x0052
 B843:          0D 3B                ;       WHILE PASS, Length: 0x003B
 B845:             14                ;         EXECUTE AND REVERSE STATUS
 B846:             37                ;         UNKNOWN37
-B847:             03 00 3E          ;         IS LOCATED, Room number: 0x00, Object number: 0x3E
+B847:             03 00 3E          ;         IS LOCATED, room=00_nowhere, obj=??3E??
 B84A:             04 34             ;         PRINT, Length: 0x0034
-;
-; A BLACK OVAL APPEARS ON THE WALL AND EXPANDS TO ALMOST MAN SIZED PROPORTIONS. 
-;
 B84C:                44 45 45 8B D1 83 CE C9 92 14 E3 A4 8B B3 03 A0 ; 
 B85C:                5F BE F3 17 F3 8C 8E 48 3A 15 50 A4 0B 5C 6B BF ; 
 B86C:                47 48 E6 A0 63 16 95 96 6F 7C 12 58 02 B3 BE A0 ; 
 B87C:                C0 7A 5B BB    ; 
+;
+;                    A BLACK OVAL APPEARS ON THE WALL AND EXPANDS TO ALMOST MAN
+;                    SIZED PROPORTIONS.
+;
 B880:          0D 0F                ;       WHILE PASS, Length: 0x000F
 B882:             14                ;         EXECUTE AND REVERSE STATUS
 B883:             37                ;         UNKNOWN37
 B884:             04 0B             ;         PRINT, Length: 0x000B
-;
-; NOTHING HAPPENS.
-;
 B886:                06 9A 90 73 CA 6A EA 48 9D 61 2E ; 
+;
+;                    NOTHING HAPPENS.
+;
 B891:          0D 02                ;       WHILE PASS, Length: 0x0002
 B893:             1A                ;         SET VAR TO FIRST NOUN
-B894:             C1                ;         COMMAND 0xC1
+B894:             C1                ;         ROUTINE 0xC1
 
 ; Routine ??AE??
 ;
 B895: AE 21                         ; Routine Number: 0xAE, Length: 0x0021
 B897:       0D 1F                   ;     WHILE PASS, Length: 0x001F
-B899:          03 00 3E             ;       IS LOCATED, Room number: 0x00, Object number: 0x3E
+B899:          03 00 3E             ;       IS LOCATED, room=00_nowhere, obj=??3E??
 B89C:          04 1A                ;       PRINT, Length: 0x001A
-;
-; YOU WILL HAVE TO PUSH A BUTTON, DUMMY! 
-;
 B89E:             C7 DE FB 17 F3 8C 58 72 56 5E D2 9C 5A C6 7B 14 ; 
 B8AE:             F6 4F 80 BF 06 EE 6F C5 EB DA ; 
+;
+;                 YOU WILL HAVE TO PUSH A BUTTON, DUMMY! 
+;
 
 ; Routine ??AF??
 ;
@@ -8749,89 +8886,90 @@ B8B8: AF 13                         ; Routine Number: 0xAF, Length: 0x0013
 B8BA:       0D 11                   ;     WHILE PASS, Length: 0x0011
 B8BC:          0A 12                ;       IS INPUT PHRASE, Phrase number: 0x12
 B8BE:          04 06                ;       PRINT, Length: 0x0006
-;
-; I SEE NO 
-;
 B8C0:             55 77 1B 60 EB 99 ; 
+;
+;                 I SEE NO 
+;
 B8C6:          11                   ;       PRINT FIRST NOUN
 B8C7:          04 04                ;       PRINT, Length: 0x0004
-;
-; HERE. 
-;
 B8C9:             F4 72 DB 63       ; 
+;
+;                 HERE. 
+;
 
 ; Routine ??B1??
 ;
 B8CD: B1 0E                         ; Routine Number: 0xB1, Length: 0x000E
 B8CF:       0D 0C                   ;     WHILE PASS, Length: 0x000C
 B8D1:          04 01                ;       PRINT, Length: 0x0001
-;
-;  
-;
 B8D3:             20                ; 
-B8D4:          AA                   ;       COMMAND 0xAA
+;
+;                  
+;
+B8D4:          AA                   ;       ROUTINE 0xAA
 B8D5:          04 06                ;       PRINT, Length: 0x0006
-;
-; CONTAINS 
-;
 B8D7:             40 55 4B BD 8B 9A ; 
+;
+;                 CONTAINS 
+;
 
 ; Routine ??B2??
 ;
 B8DD: B2 11                         ; Routine Number: 0xB2, Length: 0x0011
 B8DF:       0D 0F                   ;     WHILE PASS, Length: 0x000F
 B8E1:          04 02                ;       PRINT, Length: 0x0002
-;
-;  ON
-;
 B8E3:             C0 16             ; 
-B8E5:          AA                   ;       COMMAND 0xAA
+;
+;                  ON
+;
+B8E5:          AA                   ;       ROUTINE 0xAA
 B8E6:          04 08                ;       PRINT, Length: 0x0008
-;
-; CAN BE SEEN 
-;
 B8E8:             10 53 AF 14 57 17 83 61 ; 
+;
+;                 CAN BE SEEN 
+;
 
-; Routine ??B3??
+; Routine B3:PRINT_DISK_ERROR
 ;
 B8F0: B3 0C                         ; Routine Number: 0xB3, Length: 0x000C
 B8F2:       0D 0A                   ;     WHILE PASS, Length: 0x000A
 B8F4:          1F 07                ;       PRINT, Length: 0x0007
-;
-; DISK ERROR
-;
 B8F6:             95 5A C7 83 79 B3 52 ; 
+;
+;                 DISK ERROR
+;
 B8FD:          25                   ;       PRINT LINEFEED
 
-; Routine ??B4??
+; Routine B4:PRINT_AND
 ;
 B8FE: B4 04                         ; Routine Number: 0xB4, Length: 0x0004
 B900:       04 02                   ;     PRINT, Length: 0x0002
-;
-; AND
-;
 B902:          8E 48                ; 
+;
+;              AND
+;
 
-; Routine ??B5??
+; Routine B5:PRINT_BY_YOUR_COMMAND
 ;
 B904: B5 0D                         ; Routine Number: 0xB5, Length: 0x000D
 B906:       04 0B                   ;     PRINT, Length: 0x000B
-;
-; BY YOUR COMMAND.
-;
 B908:          7B 50 C7 DE 85 AF EF 9F 8E 48 2E ; 
+;
+;              BY YOUR COMMAND.
+;
 
-; Routine ??B6??
+; Routine B6:PRINT_TWO_SAME_SPACE
 ;
 B913: B6 3C                         ; Routine Number: 0xB6, Length: 0x003C
 B915:       04 3A                   ;     PRINT, Length: 0x003A
-;
-; IT IS PHYSICALLY IMPOSSIBLE FOR TWO OBJECTS TO OCCUPY THE SAME SPACE AT THE SAME TIME. 
-;
 B917:          73 7B 4B 7B 73 A5 45 B8 46 48 4B DB E9 93 DB B9 ; 
 B927:          7F 4E 59 15 96 AF 2B D2 34 9E E6 5F D6 B5 D1 9C ; 
 B937:          67 53 FB A7 5F BE 53 17 1B 92 5B B9 9B 53 73 49 ; 
 B947:          5F BE 53 17 1B 92 8F BE DB 63 ; 
+;
+;              IT IS PHYSICALLY IMPOSSIBLE FOR TWO OBJECTS TO OCCUPY THE
+;              SAME SPACE AT THE SAME TIME.
+;
 
 ; Routine ??B7??
 ;
@@ -8839,34 +8977,35 @@ B951: B7 16                         ; Routine Number: 0xB7, Length: 0x0016
 B953:       0D 14                   ;     WHILE PASS, Length: 0x0014
 B955:          2E 20                ;       UNKNOWN2E, Value: 0x20
 B957:          04 0E                ;       PRINT, Length: 0x000E
-;
-; YOU WILL HAVE TO OPEN
-;
 B959:             C7 DE FB 17 F3 8C 58 72 56 5E D1 9C F0 A4 ; 
-B967:          AA                   ;       COMMAND 0xAA
-B968:          8B                   ;       COMMAND 0x8B
+;
+;                 YOU WILL HAVE TO OPEN
+;
+B967:          AA                   ;       ROUTINE 0xAA
+B968:          8B                   ;       ROUTINE 0x8B
 
-; Routine ??B8??
+; Routine B8:PRINT_GARBAGE_GAMES
 ;
 B969: B8 24                         ; Routine Number: 0xB8, Length: 0x0024
 B96B:       04 22                   ;     PRINT, Length: 0x0022
-;
-; YOU KNOW YOU CAN'T DO THAT GARBAGE IN THESE GAMES! 
-;
 B96D:          C7 DE 20 16 6B A1 C7 DE D3 14 E6 96 09 15 82 17 ; 
 B97D:          73 49 14 6C C9 4C 4B 5E 96 96 F5 72 49 5E 67 48 ; 
 B98D:          6B B5                ; 
+;
+;              YOU KNOW YOU CAN'T DO THAT GARBAGE IN THESE GAMES! 
+;
 
-; Routine ??B9??
+; Routine B9:PRINT_JUKEBOX
 ;
 B98F: B9 2E                         ; Routine Number: 0xB9, Length: 0x002E
 B991:       04 2C                   ;     PRINT, Length: 0x002C
-;
-; IN THE CORNER STANDS AN ANCIENT RADIO ABOUT THE SIZE OF A JUKEBOX.
-;
 B993:          83 7A 5F BE E1 14 CF B2 95 AF 50 BD 0B 5C 83 48 ; 
 B9A3:          8D 48 30 79 14 BC 03 47 C3 9C 07 4F 16 BC DB 72 ; 
 B9B3:          5C B8 51 5E 83 64 FF 15 A4 85 B7 A1 ; 
+;
+;              IN THE CORNER STANDS AN ANCIENT RADIO ABOUT THE SIZE OF A
+;              JUKEBOX.
+;
 
 ; Routine ??BA??
 ;
@@ -8882,30 +9021,30 @@ B9CF:                1A             ;           SET VAR TO FIRST NOUN
 B9D0:                14             ;           EXECUTE AND REVERSE STATUS
 B9D1:                2E 40          ;           UNKNOWN2E, Value: 0x40
 B9D3:                04 1A          ;           PRINT, Length: 0x001A
-;
-; NO NEED TO BE VIOLENT, ITS NOT LOCKED! 
-;
 B9D5:                   EB 99 67 98 16 58 C4 9C 58 5E BE 7A 9E 61 0B EE ; 
 B9E5:                   0B C0 06 9A 49 16 97 54 AB 57 ; 
+;
+;                       NO NEED TO BE VIOLENT, ITS NOT LOCKED! 
+;
 B9EF:                0E 04          ;           WHILE FAIL, Length: 0x0004
 B9F1:                   14          ;             EXECUTE AND REVERSE STATUS
 B9F2:                   2E 20       ;             UNKNOWN2E, Value: 0x20
-B9F4:                   A6          ;             COMMAND 0xA6
+B9F4:                   A6          ;             ROUTINE 0xA6
 B9F5:             0D 1C             ;         WHILE PASS, Length: 0x001C
 B9F7:                09 24          ;           COMPARE TO SECOND NOUN, Word number: 0x24
 B9F9:                04 18          ;           PRINT, Length: 0x0018
-;
-; YOUR TOOL IS TOO SMALL FOR THE JOB. 
-;
 B9FB:                   C7 DE 96 AF 3E A0 D5 15 89 17 D5 9C 8E 91 08 8A ; 
 BA0B:                   A3 A0 5F BE F9 15 1B 51 ; 
+;
+;                       YOUR TOOL IS TOO SMALL FOR THE JOB. 
+;
 BA13:             0D 11             ;         WHILE PASS, Length: 0x0011
-BA15:                A9             ;           COMMAND 0xA9
+BA15:                A9             ;           ROUTINE 0xA9
 BA16:                04 0E          ;           PRINT, Length: 0x000E
-;
-; DOESN'T SEEM TO WORK.
-;
 BA18:                   77 5B 05 B9 15 BC 2F 60 89 17 01 18 6F B2 ; 
+;
+;                       DOESN'T SEEM TO WORK.
+;
 
 ; Routine ??BB??
 ;
@@ -8915,11 +9054,11 @@ BA2A:          0E 04                ;       WHILE FAIL, Length: 0x0004
 BA2C:             0A 10             ;         IS INPUT PHRASE, Phrase number: 0x10
 BA2E:             0A 0B             ;         IS INPUT PHRASE, Phrase number: 0x0B
 BA30:          04 19                ;       PRINT, Length: 0x0019
-;
-; ITS TOO DARK TO SEE MUCH OF ANYTHING.
-;
 BA32:             8D 7B 89 17 C6 9C 35 49 89 17 57 17 4F 5E DA C3 ; 
 BA42:             B8 16 90 14 82 DF 91 7A 2E ; 
+;
+;                 ITS TOO DARK TO SEE MUCH OF ANYTHING.
+;
 
 ; Routine ??BC??
 ;
@@ -8929,28 +9068,29 @@ BA4F:          0A 57                ;       IS INPUT PHRASE, Phrase number: 0x57
 BA51:          09 28                ;       COMPARE TO SECOND NOUN, Word number: 0x28
 BA53:          10                   ;       DROP VAR
 
-; Routine ??BD??
+; Routine BD:PRINT_SHAGGY_CREATURE
 ;
 BA54: BD 42                         ; Routine Number: 0xBD, Length: 0x0042
 BA56:       1F 40                   ;     PRINT, Length: 0x0040
-;
-; A THREE FOOT TALL SHAGGY CREATURE WITH RAZOR SHARP CLAWS AND SLAVERING TEETH STANDS BEFORE YOU. 
-;
 BA58:          56 45 EF 74 48 5E 46 A0 7B 17 F3 8C 1B B8 0B 6D ; 
 BA68:          E4 14 96 5F 2F C6 FB 17 53 BE DC B0 A3 A0 1B B8 ; 
 BA78:          13 B3 BB 54 CB D2 8E 48 5E 17 CF 49 10 B2 D6 6A ; 
 BA88:          36 60 15 71 50 BD 0B 5C 68 4D AF A0 51 18 DB C7 ; 
+;
+;              A THREE FOOT TALL SHAGGY CREATURE WITH RAZOR SHARP CLAWS
+;              AND SLAVERING TEETH STANDS BEFORE YOU.
+;
 
-; Routine ??BE??
+; Routine BE:PRINT_FORCE_FIELD
 ;
 BA98: BE 26                         ; Routine Number: 0xBE, Length: 0x0026
 BA9A:       04 24                   ;     PRINT, Length: 0x0024
-;
-; A FORCE FIELD PREVENTS YOU FROM GOING THAT DIRECTION. 
-;
 BA9C:          48 45 AD A0 48 5E 2E 79 12 58 78 B1 9E 61 DB B5 ; 
 BAAC:          1B A1 79 68 49 90 50 9F D6 6A 56 72 03 15 65 B1 ; 
 BABC:          91 BE 1B 9C          ; 
+;
+;              A FORCE FIELD PREVENTS YOU FROM GOING THAT DIRECTION. 
+;
 
 ; Routine ??BF??
 ;
@@ -8958,12 +9098,12 @@ BAC0: BF 10                         ; Routine Number: 0xBF, Length: 0x0010
 BAC2:       0E 0E                   ;     WHILE FAIL, Length: 0x000E
 BAC4:          36                   ;       UNKNOWN36
 BAC5:          0D 0B                ;       WHILE PASS, Length: 0x000B
-BAC7:             AA                ;         COMMAND 0xAA
+BAC7:             AA                ;         ROUTINE 0xAA
 BAC8:             04 07             ;         PRINT, Length: 0x0007
-;
-; IS CLOSED.
-;
 BACA:                4B 7B C9 54 A6 B7 2E ; 
+;
+;                    IS CLOSED.
+;
 BAD1:             0C                ;         FAIL
 
 ; Routine ??C0??
@@ -8978,34 +9118,34 @@ BAD8:          09 00                ;       COMPARE TO SECOND NOUN, Word number:
 BADA: C1 18                         ; Routine Number: 0xC1, Length: 0x0018
 BADC:       0D 16                   ;     WHILE PASS, Length: 0x0016
 BADE:          04 0A                ;       PRINT, Length: 0x000A
-;
-; YOU CAN'T REACH
-;
 BAE0:             C7 DE D3 14 E6 96 2F 17 DA 46 ; 
-BAEA:          AA                   ;       COMMAND 0xAA
+;
+;                 YOU CAN'T REACH
+;
+BAEA:          AA                   ;       ROUTINE 0xAA
 BAEB:          04 07                ;       PRINT, Length: 0x0007
-;
-; FROM HERE.
-;
 BAED:             79 68 4A 90 2F 62 2E ; 
+;
+;                 FROM HERE.
+;
 
 ; Routine ??C2??
 ;
 BAF4: C2 10                         ; Routine Number: 0xC2, Length: 0x0010
 BAF6:       0D 0E                   ;     WHILE PASS, Length: 0x000E
 BAF8:          04 0A                ;       PRINT, Length: 0x000A
-;
-; YOU CAN'T BUDGE
-;
 BAFA:             C7 DE D3 14 E6 96 BF 14 37 5A ; 
-BB04:          A8                   ;       COMMAND 0xA8
-BB05:          8B                   ;       COMMAND 0x8B
+;
+;                 YOU CAN'T BUDGE
+;
+BB04:          A8                   ;       ROUTINE 0xA8
+BB05:          8B                   ;       ROUTINE 0x8B
 
 ; Routine ??C3??
 ;
 BB06: C3 04                         ; Routine Number: 0xC3, Length: 0x0004
 BB08:       14                      ;     EXECUTE AND REVERSE STATUS
-BB09:       03 01 80                ;     IS LOCATED, Room number: 0x01, Object number: 0x80
+BB09:       03 01 80                ;     IS LOCATED, room=01_PLAYER, obj=??80??
 
 ; Routine ??C4??
 ;
@@ -9029,37 +9169,37 @@ BB28:          0A 40                ;       IS INPUT PHRASE, Phrase number: 0x40
 ;
 BB2A: C5 28                         ; Routine Number: 0xC5, Length: 0x0028
 BB2C:       0B 26 0A                ;     SWITCH, Length: 0x0026, Function to call: 0x0A
-BB2F:          36                   ;       Phrase number: 0x36
+BB2F:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
 BB30:          0F                   ;       ELSE go to: 0xBB40
 BB31:             0D 0D             ;         WHILE PASS, Length: 0x000D
 BB33:                04 09          ;           PRINT, Length: 0x0009
-;
-; YOU'RE NOW IN
-;
 BB35:                   C7 DE AF 23 99 16 CB CE 4E ; 
-BB3E:                A8             ;           COMMAND 0xA8
-BB3F:                8B             ;           COMMAND 0x8B
-BB40:          37                   ;       Phrase number: 0x37
+;
+;                       YOU'RE NOW IN
+;
+BB3E:                A8             ;           ROUTINE 0xA8
+BB3F:                8B             ;           ROUTINE 0x8B
+BB40:          37                   ;       Phrase 0x37: "CLIMB    *          OUT         *"
 BB41:          12                   ;       ELSE go to: 0xBB54
 BB42:             0D 10             ;         WHILE PASS, Length: 0x0010
 BB44:                04 0C          ;           PRINT, Length: 0x000C
-;
-; YOU'RE NOW OUT OF 
-;
 BB46:                   C7 DE AF 23 99 16 D1 CE 73 C6 C3 9E ; 
-BB52:                A8             ;           COMMAND 0xA8
-BB53:                8B             ;           COMMAND 0x8B
+;
+;                       YOU'RE NOW OUT OF 
+;
+BB52:                A8             ;           ROUTINE 0xA8
+BB53:                8B             ;           ROUTINE 0x8B
 
-; Routine ??C6??
+; Routine C6:PROMPT_FOR_DRIVE_NUMBER
 ;
 BB54: C6 1E                         ; Routine Number: 0xC6, Length: 0x001E
 BB56:       0D 1C                   ;     WHILE PASS, Length: 0x001C
 BB58:          04 18                ;       PRINT, Length: 0x0018
-;
-; SAVE DISK IS IN WHICH DRIVE <0-3> ? 
-;
 BB5A:             18 B7 46 5E 5D 7B D5 15 D0 15 FA 17 DA 78 0C 15 ; 
 BB6A:             CF 7B B9 13 D7 E8 C3 12 ; 
+;
+;                 SAVE DISK IS IN WHICH DRIVE <0-3> ? 
+;
 BB72:          3B                   ;       WAIT FOR KEY 1, 2, OR 3
 BB73:          25                   ;       PRINT LINEFEED
 
@@ -9068,11 +9208,8 @@ BB73:          25                   ;       PRINT LINEFEED
 BB74: C8 81 80                      ; Routine Number: 0xC8, Length: 0x0180
 BB77:       0E 81 7D                ;     WHILE FAIL, Length: 0x017D
 BB7A:          0D 80 8C             ;       WHILE PASS, Length: 0x008C
-BB7D:             03 01 91          ;         IS LOCATED, Room number: 0x01, Object number: 0x91
+BB7D:             03 01 91          ;         IS LOCATED, room=01_PLAYER, obj=??91??
 BB80:             04 80 82          ;         PRINT, Length: 0x0082
-;
-; WELL, IT SEEMS YOU MADE IT ACROSS THE DESERT! HOWEVER, WHEN THAT NASTY CREATURE IN THE DESERT ATTACKED YOU, YOU WERE POISONED! PERHAPS SOME ANTIDOTE COULD HAVE SAVED YOU. BUT, IT IS TOO LATE NOW.
-;
 BB83:                AE D0 73 8F 73 7B A7 B7 4B 94 C7 DE 63 16 DB 59 ; 
 BB93:                73 7B E4 46 E5 A0 82 17 46 5E 57 62 B1 B3 A9 15 ; 
 BBA3:                B8 D0 46 62 FA 17 83 61 5B BE 10 BC 66 49 45 DB ; 
@@ -9082,14 +9219,17 @@ BBD3:                40 B9 F1 5F DF 16 DB B1 0B A7 3F B9 43 5E C3 9A ;
 BBE3:                86 5B 45 5E 2E A1 0A 58 CF 49 53 17 66 CA 51 18 ; 
 BBF3:                DB C7 F6 4F 0B EE 0B BC D6 B5 2B A0 56 8B 50 5E ; 
 BC03:                8F A1          ; 
-BC05:             1C 01             ;         SET VAR OBJECT, Object number: 0x01
-BC07:             1D 64             ;         ATTACK VAR, Points: 0x64
+;
+;                    WELL, IT SEEMS YOU MADE IT ACROSS THE DESERT! HOWEVER, WHEN
+;                    THAT NASTY CREATURE IN THE DESERT ATTACKED YOU, YOU WERE
+;                    POISONED! PERHAPS SOME ANTIDOTE COULD HAVE SAVED YOU. BUT,
+;                    IT IS TOO LATE NOW.
+;
+BC05:             1C 01             ;         SET VAR OBJECT, obj=01_YOU
+BC07:             1D 64             ;         ATTACK VAR, Points: 100
 BC09:          0D 80 E9             ;       WHILE PASS, Length: 0x00E9
-BC0C:             03 00 71          ;         IS LOCATED, Room number: 0x00, Object number: 0x71
+BC0C:             03 00 71          ;         IS LOCATED, room=00_nowhere, obj=??71??
 BC0F:             04 80 E2          ;         PRINT, Length: 0x00E2
-;
-; YOU HAVE MADE IT BACK TO TOWN! THE TOWNS FOLK HAVE RETURNED AND THEY CHEER YOUR SUCCESS. A BIG CELEBRATION IS PREPARED AND THE FESTIVITIES LAST ALL NIGHT. THE EARTH HAS BEEN SAVED! AH, WELL, NOW YOU MUST RETURN TO THE DOLDRUMS OF YOUR NORMAL BORING LIFE. PERHAPS, YOU THINK, SOMEDAY ANOTHER UFO WILL COME AND YOU CAN INVESTIGATE ONCE MORE.
-;
 BC12:                C7 DE 9B 15 5B CA 86 91 4B 5E 04 BC DD 46 89 17 ; 
 BC22:                89 17 01 D2 82 17 56 5E 80 A1 C8 B5 C5 9F 9B 15 ; 
 BC32:                5B CA 76 B1 38 C6 F3 5F 8E 48 82 17 3B 63 1F 54 ; 
@@ -9105,44 +9245,52 @@ BCC2:                C7 DE 82 17 95 7A 15 EE E7 9F 5B 59 90 14 02 A1 ;
 BCD2:                23 62 59 C4 FB 17 F3 8C 3F 55 43 5E 33 98 C7 DE ; 
 BCE2:                D3 14 8B 96 0F 9B 03 BA 16 6C 51 5E 17 98 71 16 ; 
 BCF2:                7F B1          ; 
+;
+;                    YOU HAVE MADE IT BACK TO TOWN! THE TOWNS FOLK HAVE RETURNED
+;                    AND THEY CHEER YOUR SUCCESS. A BIG CELEBRATION IS PREPARED
+;                    AND THE FESTIVITIES LAST ALL NIGHT. THE EARTH HAS BEEN
+;                    SAVED! AH, WELL, NOW YOU MUST RETURN TO THE DOLDRUMS OF
+;                    YOUR NORMAL BORING LIFE. PERHAPS, YOU THINK, SOMEDAY
+;                    ANOTHER UFO WILL COME AND YOU CAN INVESTIGATE ONCE MORE.
+;
 BCF4:             24                ;         EXIT PROGRAM
 BCF5:          14                   ;       EXECUTE AND REVERSE STATUS
 BCF6:          0C                   ;       FAIL
 
-; Routine ??C9??
+; Routine C9:PRINT_COMPLETED_PERCENT
 ;
 BCF7: C9 23                         ; Routine Number: 0xC9, Length: 0x0023
 BCF9:       0D 21                   ;     WHILE PASS, Length: 0x0021
 BCFB:          1F 0C                ;       PRINT, Length: 0x000C
-;
-; YOU HAVE COMPLETED
-;
 BCFD:             C7 DE 9B 15 5B CA 3F 55 FF A5 E6 BD ; 
+;
+;                 YOU HAVE COMPLETED
+;
 BD09:          26                   ;       PRINT SCORE
 BD0A:          1F 10                ;       PRINT, Length: 0x0010
-;
-; PERCENT OF YOUR MISSION.
-;
 BD0C:             F4 A4 B0 53 11 BC 9B 64 34 A1 6B 16 DB B9 27 A0 ; 
+;
+;                 PERCENT OF YOUR MISSION.
+;
 
-; Routine ??CA??
+; Routine CA:DIE_ENERGY_BEAM
 ;
 BD1C: CA 50                         ; Routine Number: 0xCA, Length: 0x0050
 BD1E:       0D 4E                   ;     WHILE PASS, Length: 0x004E
 BD20:          25                   ;       PRINT LINEFEED
 BD21:          25                   ;       PRINT LINEFEED
 BD22:          1F 46                ;       PRINT, Length: 0x0046
-;
-; SUDDENLY, FROM SEEMINGLY NOWHERE, AN ENERGY BEAM ENVELOPES YOU! YOUR VERY LIFE IS PURGED FROM YOUR BODY! 
-;
 BD24:             26 BA F0 59 1E 8F 5C 15 DB 9F A7 B7 D0 92 D3 6D ; 
 BD34:             99 16 1F D1 7E B1 90 14 30 15 31 62 44 DB 8F 5F ; 
 BD44:             30 15 6E CA 5F A0 DB B5 19 A1 51 18 23 C6 74 CA ; 
 BD54:             4E DB 4F 79 D5 15 EF 16 B7 B1 08 58 FF B2 51 18 ; 
 BD64:             23 C6 F6 4E EB DA ; 
-BD6A:          1C 01                ;       SET VAR OBJECT, Object number: 0x01
-BD6C:          1D 64                ;       ATTACK VAR, Points: 0x64
-
+;
+;                 SUDDENLY, FROM SEEMINGLY NOWHERE, AN ENERGY BEAM ENVELOPES
+;                 YOU! YOUR VERY LIFE IS PURGED FROM YOUR BODY!
+;
+BD6A:          1C 01                ;       SET VAR OBJECT, obj=01_YOU
+BD6C:          1D 64                ;       ATTACK VAR, Points: 100
 
 
 BD6E: 00                         
@@ -9508,7 +9656,7 @@ BEFD: 00
 BEFE: 00                         
 BEFF: 00                         
 BF00: B3              OR      E                   
-BF01: E2 EF EF        JP      PO,$EFEF            
+BF01: E2 EF EF         
 BF04: EF              RST     0X28                
 BF05: EF              RST     0X28                
 BF06: 63              LD      H,E                 
