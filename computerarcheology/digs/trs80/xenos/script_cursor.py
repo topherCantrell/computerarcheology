@@ -1,6 +1,7 @@
 import unpack
 import language
 import decode_object
+import decode_subroutines
 
 class ScriptCursor:
 
@@ -133,7 +134,7 @@ class ScriptCursor:
             0xEC: '5_??EC??',
             0xED: '5_??ED??',
             0xEE: '5_??EE??',
-            0xEF: '5_??EF??',
+            0xEF: '5_EMPTY_HIGHWAY',
             0xF0: '5_??F0??',
             0xF1: '5_SMALL_TRAIL1',
             0xF2: '5_TWISTY_TRAIL',
@@ -300,7 +301,8 @@ class ScriptCursor:
         
         if room_num<0x80:
             # TODO look up object name
-            return f'obj_{room_num:02X}'                
+            obj_name = decode_object.OBJECT_NAME.get(room_num, [f'??{room_num:02X}??'])
+            return f'obj_{room_num:02X}_{obj_name}'
         
         room_sec = self.ROOMS[str(disk_number)]
         
@@ -316,7 +318,9 @@ class ScriptCursor:
             return f'??{obj_num:02X}??'
 
     def desc_subroutine(self, sub_num):
-        pass
+        if sub_num in decode_subroutines.DESCRIPTIONS:
+            return decode_subroutines.DESCRIPTIONS[sub_num]
+        return f'??{sub_num:02X}??'
 
     def desc_section(self, com_num):
         pass
@@ -401,20 +405,45 @@ class ScriptCursor:
              print(";        "+" "*(prt_level*3)+gg_line)
         print(";")
 
+    SWITCH_WORDS = {
+        0x03: ['COM_03_is_located(room_num, obj_num)','??objnum??'],
+        0x05: ['COM_05_is_less_equal_last_random(value)','VALUE'],
+        0x08: ['COM_08_is_first_noun(word_num)','WORD'],
+        0x0A: ['COM_0A_is_input_phrase(phrase_num)','PHRASE'],
+        0x22: ['COM_22_is_less_equal_health(points)','HEALTH'],
+    }
+
     def decode_switch(self, origin, line, disk_number, prt_level):
         length = self.decode_length(line)
         end_of_command = self.pos+length
-        fn_to_call = self.get_byte(line)
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; SWITCH, Length: 0x{length:04X}, Function to call: 0x{fn_to_call:02X}', prt_level)
-        if fn_to_call != 0x0A and fn_to_call != 0x03 and fn_to_call != 0x05 and fn_to_call != 0x22 and fn_to_call != 0x08: # TODO different descript below
+        fn_to_call = self.get_byte(line)        
+        if fn_to_call != 0x0A and fn_to_call != 0x03 and fn_to_call != 0x05 and fn_to_call != 0x22 and fn_to_call != 0x08: 
             raise Exception(f"Unknown function to call in SWITCH command: 0x{fn_to_call:02X}")
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; SWITCH, Length: 0x{length:04X}, Function to call: {self.SWITCH_WORDS[fn_to_call][0]}', prt_level)
         
         while self.pos < end_of_command:
             line = []
             origin = self.origin+self.pos
-            phrase_num = self.get_byte(line)
-            phrase_text = language.PHRASES.get(phrase_num, [f'??{phrase_num:02X}??'])[0]
-            self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; Phrase 0x{phrase_num:02X}: "{phrase_text}"', prt_level+1)
+            value = self.get_byte(line)
+            if fn_to_call == 0x03:
+                # TODO does this work? The function wants two values ??
+                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x{value:02X}"', prt_level+1)
+            elif fn_to_call == 0x05:
+                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; COM_05_is_less_equal_last_random(value=0x{value:02X})', prt_level+1)
+            elif fn_to_call == 0x08:                
+                obj_text = decode_object.OBJECT_NAME.get(value, [f'??{value:02X}??'])[0]
+                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; COM_08_is_first_noun(object_num=0x{value:02X} "{obj_text}")', prt_level+1)
+            elif fn_to_call == 0x0A:
+                phrase_num = value
+                phrase_text = language.PHRASES.get(phrase_num, [f'??{phrase_num:02X}??'])[0]
+                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; COM_0A_is_input_phrase({phrase_num:02X}: "{phrase_text}")', prt_level+1)
+            elif fn_to_call == 0x22:
+                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; COM_22_is_less_equal_health(points={value})', prt_level+1)
+            
+            else:
+                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {self.SWITCH_WORDS[fn_to_call][1]}: 0x{value:02X}', prt_level+1)
+                raise Exception(f"Unknown function to call in SWITCH command: 0x{fn_to_call:02X}")
+            
             line = []
             origin = self.origin+self.pos
             length_of_phrase = self.decode_length(line)
@@ -453,7 +482,7 @@ class ScriptCursor:
         obj_num = self.get_byte(line)
         dest_room = self.get_byte(line)
         # The room is always in the current section (TODO excpet for the weird object case)
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; MOVE TO, obj={self.desc_object(obj_num)}, room={self.desc_room(disk_number, dest_room)}', prt_level)
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; MOVE TO, obj={self.desc_object(obj_num)}, destination={self.desc_room(disk_number, dest_room)}', prt_level)
 
     def decode_is_less_equal_last_random(self, origin, line, _, prt_level):
         value = self.get_byte(line)
@@ -483,7 +512,8 @@ class ScriptCursor:
         room_num = self.get_byte(line)
         obj_num = self.get_byte(line)
         # The room is always in the current section (TODO excpet for the weird object case)
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; IS LOCATED, room={self.desc_room(disk_number, room_num)}, obj={self.desc_object(obj_num)}', prt_level)
+        # TODO owner can be room or object
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; HAS OBJECT, owner={self.desc_room(disk_number, room_num)}, obj={self.desc_object(obj_num)}', prt_level)
 
     def decode_is_owned(self, origin, line, _, prt_level):
         obj_num = self.get_byte(line)
@@ -720,7 +750,7 @@ class ScriptCursor:
         command = self.get_byte(line)
         if command >= 0x80:
             # This command is a routine call
-            self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; ROUTINE 0x{command:02X}', prt_level)                
+            self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; ROUTINE 0x{command:02X} {self.desc_subroutine(command)}', prt_level)
             return
 
         if command not in self.COMMANDS:                

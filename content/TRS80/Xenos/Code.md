@@ -22,7 +22,7 @@ Start:
 5D09: 3E 01           LD      A,$01               ; Current section is SECTION1.DAT
 5D0B: 32 FA 71        LD      ($71FA),A           ; {code.currentLoadedSection}
 5D0E: 3E 01           LD      A,$01               ; ?? Player
-5D10: 32 1E 72        LD      ($721E),A           ; {}
+5D10: 32 1E 72        LD      ($721E),A           ; {code.activeObject}
 5D13: 47              LD      B,A                 
 5D14: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex} ?? Looking up player object ?
 5D17: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
@@ -56,14 +56,14 @@ GameLoop:
 5D51: 32 04 72        LD      ($7204),A           ; {}
 5D54: 32 00 72        LD      ($7200),A           ; {}
 5D57: 32 01 72        LD      ($7201),A           ; {}
-5D5A: 32 0B 72        LD      ($720B),A           ; {}
+5D5A: 32 0B 72        LD      ($720B),A           ; {code.varObject}
 5D5D: 32 0F 72        LD      ($720F),A           ; {}
 5D60: 32 15 72        LD      ($7215),A           ; {}
 5D63: 3E 01           LD      A,$01               
-5D65: 32 1E 72        LD      ($721E),A           ; {}
+5D65: 32 1E 72        LD      ($721E),A           ; {code.activeObject}
 5D68: 47              LD      B,A                 
 5D69: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-5D6C: 22 1F 72        LD      ($721F),HL          ; {}
+5D6C: 22 1F 72        LD      ($721F),HL          ; {code.activeObjectPtr}
 5D6F: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 5D72: 7E              LD      A,(HL)              
 5D73: A7              AND     A                   
@@ -78,7 +78,7 @@ GameLoop:
 5D86: 47              LD      B,A                 
 5D87: 21 00 52        LD      HL,$5200            ; {+ram.sectionData}
 5D8A: CD A5 61        CALL    $61A5               ; {code.FindCollectionItemByID}
-5D8D: 22 22 72        LD      ($7222),HL          ; {code.currentRoomData}
+5D8D: 22 22 72        LD      ($7222),HL          ; {code.currentRoomPtr}
 5D90: A7              AND     A                   
 5D91: C3 9A 5D        JP      $5D9A               ; {}
 5D94: 21 2B 76        LD      HL,$762B            ; {+code.KnownWords}
@@ -288,8 +288,8 @@ GameLoop:
 5F53: 2B              DEC     HL                  
 5F54: 77              LD      (HL),A              
 5F55: CD 99 5F        CALL    $5F99               ; {}
-5F58: 32 1E 72        LD      ($721E),A           ; {}
-5F5B: 22 1F 72        LD      ($721F),HL          ; {}
+5F58: 32 1E 72        LD      ($721E),A           ; {code.activeObject}
+5F5B: 22 1F 72        LD      ($721F),HL          ; {code.activeObjectPtr}
 5F5E: 3E 0D           LD      A,$0D               
 5F60: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces}
 5F63: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
@@ -297,7 +297,7 @@ GameLoop:
 5F67: 23              INC     HL                  
 5F68: 23              INC     HL                  
 5F69: 06 0B           LD      B,$0B               
-5F6B: CD AD 61        CALL    $61AD               ; {}
+5F6B: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 5F6E: DA 74 5F        JP      C,$5F74             ; {}
 5F71: C3 8B 5F        JP      $5F8B               ; {}
 5F74: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
@@ -314,7 +314,7 @@ GameLoop:
 5F93: 3A 1D 72        LD      A,($721D)           ; {}
 5F96: C3 38 5D        JP      $5D38               ; {code.GameLoop}
 5F99: 97              SUB     A                   
-5F9A: 32 0B 72        LD      ($720B),A           ; {}
+5F9A: 32 0B 72        LD      ($720B),A           ; {code.varObject}
 5F9D: 7E              LD      A,(HL)              
 5F9E: 32 FE 71        LD      ($71FE),A           ; {}
 5FA1: 47              LD      B,A                 
@@ -333,7 +333,7 @@ GameLoop:
 5FB8: E5              PUSH    HL                  
 5FB9: 3A F1 71        LD      A,($71F1)           ; {}
 5FBC: 32 F2 71        LD      ($71F2),A           ; {}
-5FBF: CD 23 60        CALL    $6023               ; {}
+5FBF: CD 23 60        CALL    $6023               ; {code.InInRoomOrPack}
 5FC2: C2 1F 60        JP      NZ,$601F            ; {}
 5FC5: 3A 03 72        LD      A,($7203)           ; {}
 5FC8: A7              AND     A                   
@@ -344,7 +344,7 @@ GameLoop:
 5FD1: 01 03 00        LD      BC,$0003            
 5FD4: 09              ADD     HL,BC               
 5FD5: 06 01           LD      B,$01               
-5FD7: CD AD 61        CALL    $61AD               ; {}
+5FD7: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 5FDA: D2 EE 5F        JP      NC,$5FEE            ; {}
 5FDD: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 5FE0: CD DC 61        CALL    $61DC               ; {code.CompareHLandDE}
@@ -354,12 +354,12 @@ GameLoop:
 5FEA: 23              INC     HL                  
 5FEB: C2 E0 5F        JP      NZ,$5FE0            ; {}
 5FEE: E1              POP     HL                  
-5FEF: 3A 0B 72        LD      A,($720B)           ; {}
+5FEF: 3A 0B 72        LD      A,($720B)           ; {code.varObject}
 5FF2: A7              AND     A                   
 5FF3: C2 34 61        JP      NZ,$6134            ; {}
 5FF6: 3A F2 71        LD      A,($71F2)           ; {}
-5FF9: 32 0B 72        LD      ($720B),A           ; {}
-5FFC: 22 0C 72        LD      ($720C),HL          ; {}
+5FF9: 32 0B 72        LD      ($720B),A           ; {code.varObject}
+5FFC: 22 0C 72        LD      ($720C),HL          ; {code.varObjectPtr}
 5FFF: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6002: EB              EX      DE,HL               
 6003: D1              POP     DE                  
@@ -367,32 +367,34 @@ GameLoop:
 6007: 47              LD      B,A                 
 6008: 3A F2 71        LD      A,($71F2)           ; {}
 600B: 32 F1 71        LD      ($71F1),A           ; {}
-600E: CD AD 61        CALL    $61AD               ; {}
+600E: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 6011: DA B7 5F        JP      C,$5FB7             ; {}
-6014: 3A 0B 72        LD      A,($720B)           ; {}
-6017: 2A 0C 72        LD      HL,($720C)          ; {}
+6014: 3A 0B 72        LD      A,($720B)           ; {code.varObject}
+6017: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
 601A: A7              AND     A                   
 601B: C0              RET     NZ                  
 601C: C3 EA 60        JP      $60EA               ; {}
 601F: E1              POP     HL                  
 6020: C3 FF 5F        JP      $5FFF               ; {}
 
-6023: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-6026: 3A 21 72        LD      A,($7221)           ; {code.currentRoom}
-6029: BE              CP      (HL)                
-602A: C2 41 60        JP      NZ,$6041            ; {}
-602D: 7E              LD      A,(HL)              
-602E: E6 80           AND     $80                 
+InInRoomOrPack:
+6023: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Skip to object data
+6026: 3A 21 72        LD      A,($7221)           ; {code.currentRoom} Is object ...
+6029: BE              CP      (HL)                ; ... in current room?
+602A: C2 41 60        JP      NZ,$6041            ; {} No ... look in pack
+602D: 7E              LD      A,(HL)              ; Object location
+602E: E6 80           AND     $80                 ; Is this object being held?
 6030: CA 41 60        JP      Z,$6041             ; {}
 6033: 23              INC     HL                  
 6034: 3A FA 71        LD      A,($71FA)           ; {code.currentLoadedSection}
 6037: 47              LD      B,A                 
 6038: 7E              LD      A,(HL)              
 6039: E6 0F           AND     $0F                 
-603B: B8              CP      B                   
+603B: B8              CP      B                   ; And the room's loaded section
 603C: 2B              DEC     HL                  
 603D: C8              RET     Z                   
 603E: C3 6D 60        JP      $606D               ; {}
+;
 6041: 7E              LD      A,(HL)              
 6042: A7              AND     A                   
 6043: CA 6D 60        JP      Z,$606D             ; {}
@@ -402,7 +404,7 @@ GameLoop:
 6049: E6 80           AND     $80                 
 604B: C2 6D 60        JP      NZ,$606D            ; {}
 604E: 46              LD      B,(HL)              
-604F: 3A 1E 72        LD      A,($721E)           ; {}
+604F: 3A 1E 72        LD      A,($721E)           ; {code.activeObject}
 6052: B8              CP      B                   
 6053: C8              RET     Z                   
 6054: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
@@ -418,8 +420,11 @@ GameLoop:
 6065: E6 20           AND     $20                 
 6067: C2 6D 60        JP      NZ,$606D            ; {}
 606A: C3 26 60        JP      $6026               ; {}
-606D: F6 01           OR      $01                 
+;
+606D: F6 01           OR      $01                 ; Z=0 FAIL
 606F: C9              RET                         
+
+
 6070: E5              PUSH    HL                  
 6071: 97              SUB     A                   
 6072: 32 FE 71        LD      ($71FE),A           ; {}
@@ -435,7 +440,7 @@ GameLoop:
 608A: 32 F1 71        LD      ($71F1),A           ; {}
 608D: D5              PUSH    DE                  
 608E: E5              PUSH    HL                  
-608F: CD 23 60        CALL    $6023               ; {}
+608F: CD 23 60        CALL    $6023               ; {code.InInRoomOrPack}
 6092: E1              POP     HL                  
 6093: C2 C5 60        JP      NZ,$60C5            ; {}
 6096: 46              LD      B,(HL)              
@@ -596,6 +601,9 @@ FindCollectionItemByID:
 61A6: CD C9 61        CALL    $61C9               ; {code.GetMultiByteLength}
 61A9: 97              SUB     A                   ; Keep up with ...
 61AA: 32 F1 71        LD      ($71F1),A           ; {} ... index of the object we are checking
+
+FindObjectField:
+; B is the field number
 61AD: CD DC 61        CALL    $61DC               ; {code.CompareHLandDE} Are we at the end of the list?
 61B0: D0              RET     NC                  ; Yes ... done with CF=0
 61B1: 3A F1 71        LD      A,($71F1)           ; {} Bump ...
@@ -608,7 +616,7 @@ FindCollectionItemByID:
 61BE: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} No ... get the length of this field
 61C1: EB              EX      DE,HL               ; Move to the start of the next item
 61C2: D1              POP     DE                  ; Restore
-61C3: C3 AD 61        JP      $61AD               ; {} Keep going
+61C3: C3 AD 61        JP      $61AD               ; {code.FindObjectField} Keep going
 ;
 61C6: 37              SCF                         ; CF=1 if we found
 61C7: C9              RET                         
@@ -797,7 +805,7 @@ GetKey:
 62F1: 1A              LD      A,(DE)              
 62F2: A7              AND     A                   
 62F3: C2 F9 62        JP      NZ,$62F9            ; {}
-62F6: F6 01           OR      $01                 
+62F6: F6 01           OR      $01                 ; Z=0 FAIL
 62F8: C9              RET                         
 62F9: 4F              LD      C,A                 
 62FA: 32 1C 72        LD      ($721C),A           ; {}
@@ -899,7 +907,7 @@ COM_0D_while_pass:
 639B: EB              EX      DE,HL               
 639C: C9              RET                         
 639D: EB              EX      DE,HL               
-639E: 97              SUB     A                   
+639E: 97              SUB     A                   ; Z=1 PASS
 639F: C9              RET                         
 
 COM_0E_while_fail:
@@ -915,7 +923,7 @@ COM_0E_while_fail:
 63B2: C9              RET                         
 ;
 63B3: EB              EX      DE,HL               ; Point script to next construct
-63B4: F6 01           OR      $01                 ; Return ??FAIL
+63B4: F6 01           OR      $01                 ; Z=0 FAIL
 63B6: C9              RET                         
 
 COM_0B_switch:
@@ -928,28 +936,29 @@ COM_0B_switch:
 63C2: D5              PUSH    DE                  
 63C3: C5              PUSH    BC                  
 63C4: 78              LD      A,B                 
-63C5: CD 74 63        CALL    $6374               ; {}
+63C5: CD 74 63        CALL    $6374               ; {} Execute the switch test command
 63C8: C1              POP     BC                  
-63C9: CA D4 63        JP      Z,$63D4             ; {}
-63CC: CD C9 61        CALL    $61C9               ; {code.GetMultiByteLength}
+63C9: CA D4 63        JP      Z,$63D4             ; {} Test passed ... this is our list
+63CC: CD C9 61        CALL    $61C9               ; {code.GetMultiByteLength} 
 63CF: EB              EX      DE,HL               
 63D0: D1              POP     DE                  
 63D1: C3 BC 63        JP      $63BC               ; {}
-63D4: CD C9 61        CALL    $61C9               ; {code.GetMultiByteLength}
-63D7: CD 57 63        CALL    $6357               ; {code.ExecuteCommand}
-63DA: E1              POP     HL                  
+;
+63D4: CD C9 61        CALL    $61C9               ; {code.GetMultiByteLength} Length of block to execute
+63D7: CD 57 63        CALL    $6357               ; {code.ExecuteCommand} Execute the  matching script
+63DA: E1              POP     HL                  ; Restore script pointer
 63DB: C9              RET                         
 
 COM_00_move_ACTIVE_and_look:
 63DC: CD F5 63        CALL    $63F5               ; {code.COM_19_move_ACTIVE} Move the active object
-63DF: E5              PUSH    HL                  
-63E0: 2A 22 72        LD      HL,($7222)          ; {code.currentRoomData}
-63E3: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-63E6: 7E              LD      A,(HL)              ; ?? byte from the script to indicate if
-63E7: 32 F0 71        LD      ($71F0),A           ; {code.stopAtPeriod} ... stop after short ??
-63EA: 36 01           LD      (HL),$01            
-63EC: CD C1 64        CALL    $64C1               ; {}
-63EF: E1              POP     HL                  
+63DF: E5              PUSH    HL                  ; Hold script pointer
+63E0: 2A 22 72        LD      HL,($7222)          ; {code.currentRoomPtr} Point to the room's ...
+63E3: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} ... data byte
+63E6: 7E              LD      A,(HL)              ; If we have been here before ...
+63E7: 32 F0 71        LD      ($71F0),A           ; {code.stopAtPeriod} ... stop at first period
+63EA: 36 01           LD      (HL),$01            ; Set the flag now that we have been here
+63EC: CD C1 64        CALL    $64C1               ; {code.PrintObjectsInRoom} Print objects in room
+63EF: E1              POP     HL                  ; Restore script pointer
 63F0: 97              SUB     A                   ; Clear stop printing after ...
 63F1: 32 F0 71        LD      ($71F0),A           ; {code.stopAtPeriod} ... period flag
 63F4: C9              RET                         
@@ -963,13 +972,13 @@ COM_19_move_ACTIVE:
 63FB: 47              LD      B,A                 ; To B for finding
 63FC: 21 00 52        LD      HL,$5200            ; {+ram.sectionData} Room descriptions
 63FF: CD A5 61        CALL    $61A5               ; {code.FindCollectionItemByID} Find the room data
-6402: 22 22 72        LD      ($7222),HL          ; {code.currentRoomData} Store pointer to current room
-6405: 2A 1F 72        LD      HL,($721F)          ; {}
+6402: 22 22 72        LD      ($7222),HL          ; {code.currentRoomPtr} Store pointer to current room
+6405: 2A 1F 72        LD      HL,($721F)          ; {code.activeObjectPtr}
 6408: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 640B: 3A 21 72        LD      A,($7221)           ; {code.currentRoom}
 640E: 77              LD      (HL),A              
 640F: E1              POP     HL                  
-6410: 97              SUB     A                   
+6410: 97              SUB     A                   ; Z=1 PASS
 6411: C9              RET                         
 
 COM_37__:
@@ -983,31 +992,31 @@ COM_37__:
 641E: F8              RET     M                   
 641F: 47              LD      B,A                 
 6420: E5              PUSH    HL                  
-6421: 32 0B 72        LD      ($720B),A           ; {} ?? Object the player is in?
+6421: 32 0B 72        LD      ($720B),A           ; {code.varObject} ?? Object the player is in?
 6424: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-6427: 22 0C 72        LD      ($720C),HL          ; {} ?? Object the player is in?
+6427: 22 0C 72        LD      ($720C),HL          ; {code.varObjectPtr} ?? Object the player is in?
 642A: E1              POP     HL                  
 642B: 97              SUB     A                   
 
-COM_1A__:
+COM_1A_set_var_to_first_noun:
 642C: E5              PUSH    HL                  
 642D: 2A 12 72        LD      HL,($7212)          ; {}
-6430: 22 0C 72        LD      ($720C),HL          ; {}
+6430: 22 0C 72        LD      ($720C),HL          ; {code.varObjectPtr}
 6433: 3A 0F 72        LD      A,($720F)           ; {}
-6436: 32 0B 72        LD      ($720B),A           ; {}
+6436: 32 0B 72        LD      ($720B),A           ; {code.varObject}
 6439: E1              POP     HL                  
-643A: 97              SUB     A                   
+643A: 97              SUB     A                   ; Z=1 PASS
 643B: C9              RET                         
 
 COM_1B_set_VAR_to_second_noun:
 ; set_VAR_to_second_noun()
 643C: E5              PUSH    HL                  
 643D: 2A 18 72        LD      HL,($7218)          ; {}
-6440: 22 0C 72        LD      ($720C),HL          ; {}
+6440: 22 0C 72        LD      ($720C),HL          ; {code.varObjectPtr}
 6443: 3A 15 72        LD      A,($7215)           ; {}
-6446: 32 0B 72        LD      ($720B),A           ; {}
+6446: 32 0B 72        LD      ($720B),A           ; {code.varObject}
 6449: E1              POP     HL                  
-644A: 97              SUB     A                   
+644A: 97              SUB     A                   ; Z=1 PASS
 644B: C9              RET                         
 
 COM_1C_setVAR:
@@ -1015,13 +1024,13 @@ COM_1C_setVAR:
 644D: 23              INC     HL                  
 644E: E5              PUSH    HL                  
 644F: 78              LD      A,B                 
-6450: 32 0B 72        LD      ($720B),A           ; {}
+6450: 32 0B 72        LD      ($720B),A           ; {code.varObject}
 6453: A7              AND     A                   
 6454: CA 5D 64        JP      Z,$645D             ; {}
 6457: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-645A: 22 0C 72        LD      ($720C),HL          ; {}
+645A: 22 0C 72        LD      ($720C),HL          ; {code.varObjectPtr}
 645D: E1              POP     HL                  
-645E: 97              SUB     A                   
+645E: 97              SUB     A                   ; Z=1 PASS
 645F: C9              RET                         
 
 COM_21_execute_phrase:
@@ -1080,42 +1089,46 @@ COM_21_execute_phrase:
 64BF: EB              EX      DE,HL               
 64C0: C9              RET                         
 
-64C1: 3A 1E 72        LD      A,($721E)           ; {}
-64C4: FE 38           CP      $38                 ; ?? Object 38 ??
-64C6: CA CC 64        JP      Z,$64CC             ; {}
-64C9: FE 01           CP      $01                 ; ?? Object 1 is the player ??
-64CB: C0              RET     NZ                  
-64CC: 06 01           LD      B,$01               
-64CE: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-64D1: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-64D4: 7E              LD      A,(HL)              
-64D5: E6 80           AND     $80                 
-64D7: C2 F6 64        JP      NZ,$64F6            ; {}
-64DA: 46              LD      B,(HL)              
-64DB: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-64DE: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-64E1: 23              INC     HL                  
-64E2: 23              INC     HL                  
+PrintObjectsInRoom: ; ??
+64C1: 3A 1E 72        LD      A,($721E)           ; {code.activeObject} Active object number
+64C4: FE 38           CP      $38                 ; Is this the system object number? !! From the BEDLAM code. Not used here.
+64C6: CA CC 64        JP      Z,$64CC             ; {} Yes ... keep going
+64C9: FE 01           CP      $01                 ; Is this the player object?
+64CB: C0              RET     NZ                  ; No ... print nothing
+;
+64CC: 06 01           LD      B,$01               ; Find the ...
+64CE: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex} ... first object ??player?? ...
+64D1: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} ... object
+64D4: 7E              LD      A,(HL)              ; Location of player
+64D5: E6 80           AND     $80                 ; ?? Owned by something??
+64D7: C2 F6 64        JP      NZ,$64F6            ; {} Skip printing the room description
+64DA: 46              LD      B,(HL)              ; Find the ...
+64DB: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex} ... player's room
+64DE: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Skip the length
+64E1: 23              INC     HL                  ; Skip ...
+64E2: 23              INC     HL                  ; ...
 64E3: 23              INC     HL                  
 64E4: 06 02           LD      B,$02               ; Find field number 2 ...
-64E6: CD AD 61        CALL    $61AD               ; {} ... the object short name
+64E6: CD AD 61        CALL    $61AD               ; {code.FindObjectField} ... the object short name
 64E9: D2 F6 64        JP      NC,$64F6            ; {} Skip this object if it has no short name
 64EC: 23              INC     HL                  ; Skip to the length
 64ED: CD 6F 70        CALL    $706F               ; {code.PrintPackedAutoWrap} Print the object's short name
 64F0: 21 7B 65        LD      HL,$657B            
 64F3: CD 57 63        CALL    $6357               ; {code.ExecuteCommand}
-64F6: 2A 22 72        LD      HL,($7222)          ; {code.currentRoomData}
+;
+64F6: 2A 22 72        LD      HL,($7222)          ; {code.currentRoomPtr}
 64F9: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 64FC: 23              INC     HL                  
-64FD: 06 03           LD      B,$03               
-64FF: CD AD 61        CALL    $61AD               ; {}
-6502: D2 10 65        JP      NC,$6510            ; {}
+64FD: 06 03           LD      B,$03               ; Get the object's ...
+64FF: CD AD 61        CALL    $61AD               ; {code.FindObjectField} ... "description" script
+6502: D2 10 65        JP      NC,$6510            ; {} No script, ignore this object
 6505: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6508: EB              EX      DE,HL               
 6509: 22 7E 65        LD      ($657E),HL          ; {}
 650C: EB              EX      DE,HL               
-650D: CD 57 63        CALL    $6357               ; {code.ExecuteCommand}
-6510: 21 7A 88        LD      HL,$887A            
+650D: CD 57 63        CALL    $6357               ; {code.ExecuteCommand} Execute the description script
+;
+6510: 21 7A 88        LD      HL,$887A            ; {+code.ObjectData}
 6513: 97              SUB     A                   
 6514: 32 F8 71        LD      ($71F8),A           ; {}
 6517: 32 F0 71        LD      ($71F0),A           ; {code.stopAtPeriod}
@@ -1124,8 +1137,8 @@ COM_21_execute_phrase:
 651E: 3A F8 71        LD      A,($71F8)           ; {}
 6521: 3C              INC     A                   
 6522: 32 F8 71        LD      ($71F8),A           ; {}
-6525: 32 0B 72        LD      ($720B),A           ; {}
-6528: 22 0C 72        LD      ($720C),HL          ; {}
+6525: 32 0B 72        LD      ($720B),A           ; {code.varObject}
+6528: 22 0C 72        LD      ($720C),HL          ; {code.varObjectPtr}
 652B: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 652E: 3A 21 72        LD      A,($7221)           ; {code.currentRoom}
 6531: BE              CP      (HL)                
@@ -1144,7 +1157,7 @@ COM_21_execute_phrase:
 6549: 23              INC     HL                  
 654A: 22 F3 71        LD      ($71F3),HL          ; {}
 654D: 06 03           LD      B,$03               
-654F: CD AD 61        CALL    $61AD               ; {}
+654F: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 6552: D2 5D 65        JP      NC,$655D            ; {}
 6555: D5              PUSH    DE                  
 6556: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
@@ -1153,7 +1166,7 @@ COM_21_execute_phrase:
 655D: 2A F3 71        LD      HL,($71F3)          ; {}
 6560: 06 02           LD      B,$02               
 6562: D5              PUSH    DE                  
-6563: CD AD 61        CALL    $61AD               ; {}
+6563: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 6566: D1              POP     DE                  
 6567: D2 71 65        JP      NC,$6571            ; {}
 656A: 23              INC     HL                  
@@ -1164,12 +1177,13 @@ COM_21_execute_phrase:
 6573: CD DC 61        CALL    $61DC               ; {code.CompareHLandDE}
 6576: DA 1D 65        JP      C,$651D             ; {}
 6579: C9              RET                         
-657A: B1              OR      C                   
-657B: 8B              ADC     A,E                 
-657C: B4              OR      H                   
-657D: B2              OR      D                   
-657E: 00                         
-657F: 00                         
+
+657A: B1 ; Routine B1 PRINT_SPACE
+657B: 8B ; Routine 8B PRINT_PERIOD
+657C: B4 ; Routine B4 PRINT_AND
+657D: B2 ; Routine B2: ?? " ON <THE VAR> CAN BE SEEN"
+
+657E: 00 00
 
 COM_33__:
 6580: E5              PUSH    HL                  
@@ -1178,7 +1192,7 @@ COM_33__:
 6585: 32 FA 66        LD      ($66FA),A           ; {}
 6588: 3C              INC     A                   
 6589: 32 FC 66        LD      ($66FC),A           ; {}
-658C: 2A 0C 72        LD      HL,($720C)          ; {}
+658C: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
 658F: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6592: 23              INC     HL                  
 6593: 7E              LD      A,(HL)              
@@ -1186,16 +1200,16 @@ COM_33__:
 6597: 23              INC     HL                  
 6598: 7E              LD      A,(HL)              
 6599: 32 F6 71        LD      ($71F6),A           ; {}
-659C: 3A 0B 72        LD      A,($720B)           ; {}
+659C: 3A 0B 72        LD      A,($720B)           ; {code.varObject}
 659F: 32 F8 71        LD      ($71F8),A           ; {}
 65A2: CD BC 65        CALL    $65BC               ; {}
 65A5: E1              POP     HL                  
 65A6: 3A FB 66        LD      A,($66FB)           ; {}
 65A9: A7              AND     A                   
 65AA: CA AF 65        JP      Z,$65AF             ; {}
-65AD: 97              SUB     A                   
+65AD: 97              SUB     A                   ; Z=1 PASS
 65AE: C9              RET                         
-65AF: F6 01           OR      $01                 
+65AF: F6 01           OR      $01                 ; Z=0 FAIL
 65B1: C9              RET                         
 65B2: 97              SUB     A                   
 65B3: 32 FA 66        LD      ($66FA),A           ; {}
@@ -1346,7 +1360,7 @@ COM_33__:
 6700: 23              INC     HL                  
 6701: 23              INC     HL                  
 6702: 06 02           LD      B,$02               
-6704: CD AD 61        CALL    $61AD               ; {}
+6704: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 6707: D2 7C 67        JP      NC,$677C            ; {}
 670A: 23              INC     HL                  
 670B: 3E 41           LD      A,$41               
@@ -1364,16 +1378,16 @@ COM_33__:
 6725: 3A F9 71        LD      A,($71F9)           ; {}
 6728: F5              PUSH    AF                  
 6729: 32 F8 71        LD      ($71F8),A           ; {}
-672C: 3A 0B 72        LD      A,($720B)           ; {}
+672C: 3A 0B 72        LD      A,($720B)           ; {code.varObject}
 672F: F5              PUSH    AF                  
-6730: 2A 0C 72        LD      HL,($720C)          ; {}
+6730: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
 6733: E5              PUSH    HL                  
 6734: 3A F8 71        LD      A,($71F8)           ; {}
 6737: 47              LD      B,A                 
-6738: 32 0B 72        LD      ($720B),A           ; {}
+6738: 32 0B 72        LD      ($720B),A           ; {code.varObject}
 673B: D5              PUSH    DE                  
 673C: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-673F: 22 0C 72        LD      ($720C),HL          ; {}
+673F: 22 0C 72        LD      ($720C),HL          ; {code.varObjectPtr}
 6742: D1              POP     DE                  
 6743: EB              EX      DE,HL               
 6744: 23              INC     HL                  
@@ -1387,9 +1401,9 @@ COM_33__:
 6752: 32 F7 71        LD      ($71F7),A           ; {}
 6755: CD BC 65        CALL    $65BC               ; {}
 6758: E1              POP     HL                  
-6759: 22 0C 72        LD      ($720C),HL          ; {}
+6759: 22 0C 72        LD      ($720C),HL          ; {code.varObjectPtr}
 675C: F1              POP     AF                  
-675D: 32 0B 72        LD      ($720B),A           ; {}
+675D: 32 0B 72        LD      ($720B),A           ; {code.varObject}
 6760: F1              POP     AF                  
 6761: 32 F9 71        LD      ($71F9),A           ; {}
 6764: E1              POP     HL                  
@@ -1407,29 +1421,29 @@ COM_33__:
 677C: E1              POP     HL                  
 677D: C9              RET                         
 
-COM_01__is_in_pack_or_current_room:
-677E: 46              LD      B,(HL)              
-677F: 23              INC     HL                  
-6780: E5              PUSH    HL                  
-6781: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-6784: CD 23 60        CALL    $6023               ; {}
-6787: E1              POP     HL                  
+COM_01_is_in_pack_or_current_room:
+677E: 46              LD      B,(HL)              ; Get the object number
+677F: 23              INC     HL                  ; Bump script pointer
+6780: E5              PUSH    HL                  ; Hold script pointer
+6781: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex} Find the requested object
+6784: CD 23 60        CALL    $6023               ; {code.InInRoomOrPack} Check if object is in room or pack
+6787: E1              POP     HL                  ; Restore script pointer
 6788: C9              RET                         
 
-COM_20__:
-6789: 3A 1E 72        LD      A,($721E)           ; {}
-678C: BE              CP      (HL)                
-678D: 23              INC     HL                  
+COM_20_is_active_this:
+6789: 3A 1E 72        LD      A,($721E)           ; {code.activeObject} Get the active object number
+678C: BE              CP      (HL)                ; Does it match target in script?
+678D: 23              INC     HL                  ; Bump script pointer
 678E: C9              RET                         
 
-COM_2C__:
-678F: 46              LD      B,(HL)              
-6790: 23              INC     HL                  
-6791: E5              PUSH    HL                  
-6792: 78              LD      A,B                 
-6793: 32 1E 72        LD      ($721E),A           ; {}
-6796: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-6799: 22 1F 72        LD      ($721F),HL          ; {}
+COM_2C_set_active:
+678F: 46              LD      B,(HL)              ; Get object number from script
+6790: 23              INC     HL                  ; Bump script
+6791: E5              PUSH    HL                  ; Hold
+6792: 78              LD      A,B                 ; Set the ...
+6793: 32 1E 72        LD      ($721E),A           ; {code.activeObject} ... active object number
+6796: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex} Find the object structure
+6799: 22 1F 72        LD      ($721F),HL          ; {code.activeObjectPtr} Hold the active object structure
 679C: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 679F: 7E              LD      A,(HL)              
 67A0: E6 80           AND     $80                 
@@ -1443,24 +1457,24 @@ COM_2C__:
 67B1: 47              LD      B,A                 
 67B2: 21 00 52        LD      HL,$5200            ; {+ram.sectionData}
 67B5: CD A5 61        CALL    $61A5               ; {code.FindCollectionItemByID}
-67B8: 22 22 72        LD      ($7222),HL          ; {code.currentRoomData}
+67B8: 22 22 72        LD      ($7222),HL          ; {code.currentRoomPtr}
 67BB: E1              POP     HL                  
-67BC: 97              SUB     A                   
+67BC: 97              SUB     A                   ; Z=1 PASS
 67BD: C9              RET                         
 
 COM_30_set_current_room:
 67BE: 7E              LD      A,(HL)              ; Value from the script
 67BF: 23              INC     HL                  ; Advance the script pointer
 67C0: 32 21 72        LD      ($7221),A           ; {code.currentRoom} Set the current room
-67C3: 97              SUB     A                   ; PASS
+67C3: 97              SUB     A                   ; Z=1 PASS
 67C4: C9              RET                         
 
-COM_02__:
+COM_02_is_owned:
 67C5: 46              LD      B,(HL)              
 67C6: 23              INC     HL                  
 67C7: C3 AB 6C        JP      $6CAB               ; {}
 
-COM_03__:
+COM_03_is_located:
 67CA: 4E              LD      C,(HL)              
 67CB: 23              INC     HL                  
 67CC: 46              LD      B,(HL)              
@@ -1476,22 +1490,22 @@ COM_03__:
 67DA: B9              CP      C                   
 67DB: C9              RET                         
 
-COM_0C__:
-67DC: F6 01           OR      $01                 ; ?? PASS?FAIL
+COM_0C_fail:
+67DC: F6 01           OR      $01                 ; Z=0 FAIL
 67DE: C9              RET                         
 
 COM_04_print_message:
-67DF: 3A 1E 72        LD      A,($721E)           ; {} Get the active object number
-67E2: FE 38           CP      $38                 ; Is this the system object?
+67DF: 3A 1E 72        LD      A,($721E)           ; {code.activeObject} Get the active object number
+67E2: FE 38           CP      $38                 ; Is this the system object? !! From the BEDLAM code. Not used here.
 67E4: CA 00 68        JP      Z,$6800             ; {} Yes ... print the message
 67E7: FE 01           CP      $01                 ; Is this the player object?
 67E9: C2 F9 67        JP      NZ,$67F9            ; {} No ...
 
-COM_1F__:
+COM_1F_print2:
 67EC: 06 01           LD      B,$01               ; Find field "1"
 67EE: E5              PUSH    HL                  ; Hold
 67EF: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-67F2: CD 23 60        CALL    $6023               ; {}
+67F2: CD 23 60        CALL    $6023               ; {code.InInRoomOrPack}
 67F5: E1              POP     HL                  
 67F6: CA 00 68        JP      Z,$6800             ; {}
 67F9: CD C9 61        CALL    $61C9               ; {code.GetMultiByteLength}
@@ -1499,11 +1513,11 @@ COM_1F__:
 67FD: C3 03 68        JP      $6803               ; {}
 ;
 6800: CD 6F 70        CALL    $706F               ; {code.PrintPackedAutoWrap}
-6803: 97              SUB     A                   
+6803: 97              SUB     A                   ; Z=1 PASS
 6804: C9              RET                         
 
-COM_07__:
-6805: CD C1 64        CALL    $64C1               ; {}
+COM_07_print_room_description:
+6805: CD C1 64        CALL    $64C1               ; {code.PrintObjectsInRoom}
 6808: 97              SUB     A                   
 6809: 32 F0 71        LD      ($71F0),A           ; {code.stopAtPeriod}
 680C: C9              RET                         
@@ -1522,12 +1536,12 @@ COM_06_print_inventory:
 6823: 3A F8 71        LD      A,($71F8)           ; {}
 6826: 3C              INC     A                   
 6827: 32 F8 71        LD      ($71F8),A           ; {}
-682A: 32 0B 72        LD      ($720B),A           ; {}
-682D: 22 0C 72        LD      ($720C),HL          ; {}
+682A: 32 0B 72        LD      ($720B),A           ; {code.varObject}
+682D: 22 0C 72        LD      ($720C),HL          ; {code.varObjectPtr}
 6830: D5              PUSH    DE                  
 6831: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6834: 46              LD      B,(HL)              
-6835: 3A 1E 72        LD      A,($721E)           ; {}
+6835: 3A 1E 72        LD      A,($721E)           ; {code.activeObject}
 6838: B8              CP      B                   
 6839: C2 78 68        JP      NZ,$6878            ; {}
 683C: 23              INC     HL                  
@@ -1540,7 +1554,7 @@ COM_06_print_inventory:
 6848: CA 78 68        JP      Z,$6878             ; {}
 684B: 23              INC     HL                  
 684C: 06 02           LD      B,$02               ; Get field 2 ...
-684E: CD AD 61        CALL    $61AD               ; {} ... the short name
+684E: CD AD 61        CALL    $61AD               ; {code.FindObjectField} ... the short name
 6851: D2 78 68        JP      NC,$6878            ; {} Skip object if it has no short name
 6854: 23              INC     HL                  ; Bump to length
 6855: 22 F3 71        LD      ($71F3),HL          ; {}
@@ -1563,11 +1577,11 @@ COM_06_print_inventory:
 6879: D1              POP     DE                  
 687A: C3 1D 68        JP      $681D               ; {}
 ;
-687D: 97              SUB     A                   ; PASS
+687D: 97              SUB     A                   ; Z=1 PASS
 687E: E1              POP     HL                  ; Restore script pointer
 687F: C9              RET                         
 
-COM_08__:
+COM_08_is_first_noun:
 6880: E5              PUSH    HL                  
 6881: 2A 12 72        LD      HL,($7212)          ; {}
 6884: 3A 0F 72        LD      A,($720F)           ; {}
@@ -1595,7 +1609,7 @@ COM_08__:
 68A8: B8              CP      B                   
 68A9: C9              RET                         
 
-COM_09__:
+COM_09_compare_to_second_noun:
 68AA: E5              PUSH    HL                  
 68AB: 2A 18 72        LD      HL,($7218)          ; {}
 68AE: 3A 15 72        LD      A,($7215)           ; {}
@@ -1603,11 +1617,11 @@ COM_09__:
 
 COM_2D__:
 68B4: E5              PUSH    HL                  
-68B5: 2A 0C 72        LD      HL,($720C)          ; {}
-68B8: 3A 0B 72        LD      A,($720B)           ; {}
+68B5: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
+68B8: 3A 0B 72        LD      A,($720B)           ; {code.varObject}
 68BB: C3 87 68        JP      $6887               ; {}
 
-COM_0A__:
+COM_0A_compare_to_second_noun:
 68BE: 46              LD      B,(HL)              
 68BF: 23              INC     HL                  
 68C0: 3A 1D 72        LD      A,($721D)           ; {}
@@ -1620,7 +1634,7 @@ COM_0F__:
 68C8: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex} ... the player object
 68CB: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Find end of player object
 68CE: 4E              LD      C,(HL)              ; Player's room number
-68CF: 2A 0C 72        LD      HL,($720C)          ; {}
+68CF: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
 68D2: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 68D5: 79              LD      A,C                 
 68D6: A7              AND     A                   
@@ -1629,43 +1643,43 @@ COM_0F__:
 68DB: A7              AND     A                   
 68DC: F2 E3 68        JP      P,$68E3             ; {}
 68DF: E1              POP     HL                  
-68E0: F6 01           OR      $01                 
+68E0: F6 01           OR      $01                 ; Z=0 FAIL
 68E2: C9              RET                         
 ;
-68E3: 3A 1E 72        LD      A,($721E)           ; {}
+68E3: 3A 1E 72        LD      A,($721E)           ; {code.activeObject}
 68E6: 77              LD      (HL),A              
 68E7: 23              INC     HL                  
 68E8: 7E              LD      A,(HL)              
 68E9: E6 F0           AND     $F0                 
 68EB: 77              LD      (HL),A              
-68EC: 97              SUB     A                   
+68EC: 97              SUB     A                   ; Z=1 PASS
 68ED: E1              POP     HL                  
 68EE: C9              RET                         
 
-COM_10__:
-68EF: E5              PUSH    HL                  
-68F0: 2A 0C 72        LD      HL,($720C)          ; {}
-68F3: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-68F6: 3A 21 72        LD      A,($7221)           ; {code.currentRoom}
-68F9: 77              LD      (HL),A              
-68FA: 23              INC     HL                  
-68FB: 7E              LD      A,(HL)              
-68FC: E6 F0           AND     $F0                 
-68FE: 47              LD      B,A                 
-68FF: 3A FA 71        LD      A,($71FA)           ; {code.currentLoadedSection}
-6902: B0              OR      B                   
-6903: 77              LD      (HL),A              
-6904: 97              SUB     A                   
-6905: E1              POP     HL                  
+COM_10_drop_var:
+68EF: E5              PUSH    HL                  ; Hold script pointer
+68F0: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr} The current VAR object ptr
+68F3: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Skip to the data
+68F6: 3A 21 72        LD      A,($7221)           ; {code.currentRoom} Store the ...
+68F9: 77              LD      (HL),A              ; ... current room number
+68FA: 23              INC     HL                  ; 2nd data is section number
+68FB: 7E              LD      A,(HL)              ; Get the section number
+68FC: E6 F0           AND     $F0                 ; We are replacing the lower nibble
+68FE: 47              LD      B,A                 ; Hold upper nibble ?? Must be other data in the upper nibble ... what ??
+68FF: 3A FA 71        LD      A,($71FA)           ; {code.currentLoadedSection} Currently loaded sector
+6902: B0              OR      B                   ; To the lower nibble (keeping object's upper nibble)
+6903: 77              LD      (HL),A              ; Remember which section (room numbers aren't unique)
+6904: 97              SUB     A                   ; Z=1 PASS
+6905: E1              POP     HL                  ; Restore script pointer
 6906: C9              RET                         
 
 COM_13__:
 6907: E5              PUSH    HL                  
-6908: 2A 22 72        LD      HL,($7222)          ; {code.currentRoomData}
+6908: 2A 22 72        LD      HL,($7222)          ; {code.currentRoomPtr}
 690B: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 690E: 23              INC     HL                  
 690F: 06 04           LD      B,$04               
-6911: CD AD 61        CALL    $61AD               ; {}
+6911: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 6914: D2 20 69        JP      NC,$6920            ; {}
 6917: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 691A: CD 57 63        CALL    $6357               ; {code.ExecuteCommand}
@@ -1679,7 +1693,7 @@ COM_13__:
 692E: 23              INC     HL                  
 692F: 23              INC     HL                  
 6930: 06 06           LD      B,$06               
-6932: CD AD 61        CALL    $61AD               ; {}
+6932: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 6935: D2 41 69        JP      NC,$6941            ; {}
 6938: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 693B: CD 57 63        CALL    $6357               ; {code.ExecuteCommand}
@@ -1688,7 +1702,7 @@ COM_13__:
 6944: A7              AND     A                   
 6945: C2 4C 69        JP      NZ,$694C            ; {}
 6948: E1              POP     HL                  
-6949: F6 01           OR      $01                 
+6949: F6 01           OR      $01                 ; Z=0 FAIL
 694B: C9              RET                         
 694C: 2A 12 72        LD      HL,($7212)          ; {}
 694F: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
@@ -1696,20 +1710,20 @@ COM_13__:
 6953: 23              INC     HL                  
 6954: 23              INC     HL                  
 6955: 06 07           LD      B,$07               
-6957: CD AD 61        CALL    $61AD               ; {}
+6957: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 695A: D2 48 69        JP      NC,$6948            ; {}
 695D: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6960: CD 57 63        CALL    $6357               ; {code.ExecuteCommand}
 6963: E1              POP     HL                  
 6964: C9              RET                         
 
-COM_16__:
+COM_16_print_var:
 6965: E5              PUSH    HL                  
-6966: 2A 0C 72        LD      HL,($720C)          ; {}
-6969: 3A 0B 72        LD      A,($720B)           ; {}
+6966: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
+6969: 3A 0B 72        LD      A,($720B)           ; {code.varObject}
 696C: C3 76 69        JP      $6976               ; {}
 
-COM_11__:
+COM_11_print_first_noun:
 696F: E5              PUSH    HL                  
 6970: 2A 12 72        LD      HL,($7212)          ; {}
 6973: 3A 0F 72        LD      A,($720F)           ; {}
@@ -1718,7 +1732,7 @@ COM_11__:
 697A: 06 01           LD      B,$01               
 697C: E5              PUSH    HL                  
 697D: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-6980: CD 23 60        CALL    $6023               ; {}
+6980: CD 23 60        CALL    $6023               ; {code.InInRoomOrPack}
 6983: E1              POP     HL                  
 6984: C2 99 69        JP      NZ,$6999            ; {}
 6987: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
@@ -1726,24 +1740,24 @@ COM_11__:
 698B: 23              INC     HL                  
 698C: 23              INC     HL                  
 698D: 06 02           LD      B,$02               
-698F: CD AD 61        CALL    $61AD               ; {}
+698F: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 6992: D2 99 69        JP      NC,$6999            ; {}
 6995: 23              INC     HL                  
 6996: CD 6F 70        CALL    $706F               ; {code.PrintPackedAutoWrap}
 6999: E1              POP     HL                  
-699A: 97              SUB     A                   
+699A: 97              SUB     A                   ; Z=1 PASS
 699B: C9              RET                         
 
-COM_12__:
+COM_12_print_second_noun:
 699C: E5              PUSH    HL                  
 699D: 3A 15 72        LD      A,($7215)           ; {}
 69A0: 2A 18 72        LD      HL,($7218)          ; {}
 69A3: C3 76 69        JP      $6976               ; {}
 
-COM_15__:
+COM_15_check_var:
 69A6: E5              PUSH    HL                  
-69A7: 2A 0C 72        LD      HL,($720C)          ; {}
-69AA: 3A 0B 72        LD      A,($720B)           ; {}
+69A7: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
+69AA: 3A 0B 72        LD      A,($720B)           ; {code.varObject}
 69AD: A7              AND     A                   
 69AE: CA BC 69        JP      Z,$69BC             ; {}
 69B1: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
@@ -1757,22 +1771,22 @@ COM_15__:
 69BB: C9              RET                         
 69BC: E1              POP     HL                  
 69BD: 23              INC     HL                  
-69BE: F6 01           OR      $01                 
+69BE: F6 01           OR      $01                 ; Z=0 FAIL
 69C0: C9              RET                         
 
 COM_2E__:
 69C1: E5              PUSH    HL                  
-69C2: 2A 0C 72        LD      HL,($720C)          ; {}
-69C5: 3A 0B 72        LD      A,($720B)           ; {}
+69C2: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
+69C5: 3A 0B 72        LD      A,($720B)           ; {code.varObject}
 69C8: A7              AND     A                   
 69C9: CA 48 69        JP      Z,$6948             ; {}
 69CC: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 69CF: C3 B5 69        JP      $69B5               ; {}
 
-COM_29__:
+COM_29_print_open_var:
 69D2: E5              PUSH    HL                  
-69D3: 2A 0C 72        LD      HL,($720C)          ; {}
-69D6: 3A 0B 72        LD      A,($720B)           ; {}
+69D3: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
+69D6: 3A 0B 72        LD      A,($720B)           ; {code.varObject}
 69D9: A7              AND     A                   
 69DA: CA 48 69        JP      Z,$6948             ; {}
 69DD: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
@@ -1781,13 +1795,13 @@ COM_29__:
 69E2: EE 20           XOR     $20                 
 69E4: 77              LD      (HL),A              
 69E5: E1              POP     HL                  
-69E6: 97              SUB     A                   
+69E6: 97              SUB     A                   ; Z=1 PASS
 69E7: C9              RET                         
 
 COM_2A__:
 69E8: E5              PUSH    HL                  
-69E9: 2A 0C 72        LD      HL,($720C)          ; {}
-69EC: 3A 0B 72        LD      A,($720B)           ; {}
+69E9: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
+69EC: 3A 0B 72        LD      A,($720B)           ; {code.varObject}
 69EF: A7              AND     A                   
 69F0: CA 48 69        JP      Z,$6948             ; {}
 69F3: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
@@ -1796,7 +1810,7 @@ COM_2A__:
 69F8: EE 40           XOR     $40                 
 69FA: 77              LD      (HL),A              
 69FB: E1              POP     HL                  
-69FC: 97              SUB     A                   
+69FC: 97              SUB     A                   ; Z=1 PASS
 69FD: C9              RET                         
 
 ; https://oldcomputers-ddns.org/public/pub/rechner/tandy/manuals/newdos-80%20manual.pdf
@@ -1865,7 +1879,7 @@ COM_2F_load_disk_section:
 6A72: 47              LD      B,A                 
 6A73: 21 00 52        LD      HL,$5200            ; {+ram.sectionData}
 6A76: CD A5 61        CALL    $61A5               ; {code.FindCollectionItemByID}
-6A79: 22 22 72        LD      ($7222),HL          ; {code.currentRoomData}
+6A79: 22 22 72        LD      ($7222),HL          ; {code.currentRoomPtr}
 6A7C: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6A7F: 7E              LD      A,(HL)              
 6A80: 32 F0 71        LD      ($71F0),A           ; {code.stopAtPeriod}
@@ -1882,7 +1896,7 @@ COM_2F_load_disk_section:
 6A96: 3A FA 71        LD      A,($71FA)           ; {code.currentLoadedSection}
 6A99: B0              OR      B                   
 6A9A: 77              LD      (HL),A              
-6A9B: CD C1 64        CALL    $64C1               ; {}
+6A9B: CD C1 64        CALL    $64C1               ; {code.PrintObjectsInRoom}
 6A9E: 97              SUB     A                   ; Don't stop at first period
 6A9F: 32 F0 71        LD      ($71F0),A           ; {code.stopAtPeriod} Print full description
 6AA2: 3E 0D           LD      A,$0D               ; Line feed before ...
@@ -1956,26 +1970,27 @@ sectorBuffer:
 6C29: 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF
 6C39: 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF 00 FF
 
-COM_14__:
-6C49: CD 57 63        CALL    $6357               ; {code.ExecuteCommand}
-6C4C: C2 52 6C        JP      NZ,$6C52            ; {}
-6C4F: F6 01           OR      $01                 
+COM_14_execute_and_reverse_status:
+6C49: CD 57 63        CALL    $6357               ; {code.ExecuteCommand} Execute the requested command
+6C4C: C2 52 6C        JP      NZ,$6C52            ; {} Command failed ... reverse it to passed
+6C4F: F6 01           OR      $01                 ; Z=0 FAIL
 6C51: C9              RET                         
-6C52: 97              SUB     A                   
+;
+6C52: 97              SUB     A                   ; Z=1 PASS
 6C53: C9              RET                         
 
 COM_31__:
 6C54: E5              PUSH    HL                  
 6C55: 2A 18 72        LD      HL,($7218)          ; {}
 6C58: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-6C5B: 3A 0B 72        LD      A,($720B)           ; {}
+6C5B: 3A 0B 72        LD      A,($720B)           ; {code.varObject}
 6C5E: 77              LD      (HL),A              
 6C5F: 23              INC     HL                  
 6C60: 7E              LD      A,(HL)              
 6C61: E6 F0           AND     $F0                 
 6C63: 77              LD      (HL),A              
 6C64: E1              POP     HL                  
-6C65: 97              SUB     A                   
+6C65: 97              SUB     A                   ; Z=1 PASS
 6C66: C9              RET                         
 
 COM_32__:
@@ -1983,7 +1998,7 @@ COM_32__:
 6C68: 2A 12 72        LD      HL,($7212)          ; {}
 6C6B: C3 58 6C        JP      $6C58               ; {}
 
-COM_17__: ; ?? move to
+COM_17_move_to: ; ?? move to
 6C6E: 46              LD      B,(HL)              
 6C6F: 23              INC     HL                  
 6C70: E5              PUSH    HL                  
@@ -2008,19 +2023,19 @@ COM_17__: ; ?? move to
 6C8F: 77              LD      (HL),A              
 6C90: EB              EX      DE,HL               
 6C91: 23              INC     HL                  
-6C92: 97              SUB     A                   
+6C92: 97              SUB     A                   ; Z=1 PASS
 6C93: C9              RET                         
 
-COM_18__:
+COM_18_is_var_owned_by_active:
 6C94: E5              PUSH    HL                  
-6C95: 2A 0C 72        LD      HL,($720C)          ; {}
+6C95: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
 6C98: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6C9B: 46              LD      B,(HL)              
 6C9C: 78              LD      A,B                 
 6C9D: A7              AND     A                   
 6C9E: E1              POP     HL                  
 6C9F: CA 6D 60        JP      Z,$606D             ; {}
-6CA2: 3A 1E 72        LD      A,($721E)           ; {}
+6CA2: 3A 1E 72        LD      A,($721E)           ; {code.activeObject}
 6CA5: B8              CP      B                   
 6CA6: C8              RET     Z                   
 6CA7: 78              LD      A,B                 
@@ -2077,16 +2092,16 @@ COM_18__:
 6D02: 23              INC     HL                  
 6D03: 23              INC     HL                  
 6D04: 06 08           LD      B,$08               
-6D06: CD AD 61        CALL    $61AD               ; {}
+6D06: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 6D09: D2 46 6D        JP      NC,$6D46            ; {}
 6D0C: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6D0F: E5              PUSH    HL                  
 6D10: CD C6 71        CALL    $71C6               ; {code.COM_2B_random}
 6D13: 3A 1C 72        LD      A,($721C)           ; {}
-6D16: 32 1E 72        LD      ($721E),A           ; {}
+6D16: 32 1E 72        LD      ($721E),A           ; {code.activeObject}
 6D19: 47              LD      B,A                 
 6D1A: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
-6D1D: 22 1F 72        LD      ($721F),HL          ; {}
+6D1D: 22 1F 72        LD      ($721F),HL          ; {code.activeObjectPtr}
 6D20: 79              LD      A,C                 
 6D21: A7              AND     A                   
 6D22: FA 35 6D        JP      M,$6D35             ; {}
@@ -2102,7 +2117,7 @@ COM_18__:
 6D38: 21 00 52        LD      HL,$5200            ; {+ram.sectionData}
 6D3B: 47              LD      B,A                 
 6D3C: CD A5 61        CALL    $61A5               ; {code.FindCollectionItemByID}
-6D3F: 22 22 72        LD      ($7222),HL          ; {code.currentRoomData}
+6D3F: 22 22 72        LD      ($7222),HL          ; {code.currentRoomPtr}
 6D42: E1              POP     HL                  
 6D43: CD 57 63        CALL    $6357               ; {code.ExecuteCommand}
 6D46: E1              POP     HL                  
@@ -2116,17 +2131,17 @@ COM_05_is_less_equal_last_random:
 6D50: DA 59 6D        JP      C,$6D59             ; {} If less, return 0
 6D53: CA 59 6D        JP      Z,$6D59             ; {} If same, return 0
 ;
-6D56: F6 01           OR      $01                 ; Return 1 if NOT less or equal ?? FAIL
+6D56: F6 01           OR      $01                 ; Z=0 FAIL
 6D58: C9              RET                         
 ;
-6D59: 97              SUB     A                   ; Return 0 ?? PASS
+6D59: 97              SUB     A                   ; Z=1 PASS
 6D5A: C9              RET                         
 
-COM_1D__:
+COM_1D_attack_VAR:
 6D5B: 4E              LD      C,(HL)              
 6D5C: 23              INC     HL                  
 6D5D: E5              PUSH    HL                  
-6D5E: 2A 0C 72        LD      HL,($720C)          ; {}
+6D5E: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
 6D61: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6D64: 23              INC     HL                  
 6D65: 23              INC     HL                  
@@ -2134,7 +2149,7 @@ COM_1D__:
 6D67: E5              PUSH    HL                  
 6D68: D5              PUSH    DE                  
 6D69: 06 09           LD      B,$09               
-6D6B: CD AD 61        CALL    $61AD               ; {}
+6D6B: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 6D6E: D2 96 6D        JP      NC,$6D96            ; {}
 6D71: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6D74: 23              INC     HL                  
@@ -2147,11 +2162,11 @@ COM_1D__:
 6D7D: E1              POP     HL                  
 6D7E: A7              AND     A                   
 6D7F: CA 85 6D        JP      Z,$6D85             ; {}
-6D82: 97              SUB     A                   
+6D82: 97              SUB     A                   ; Z=1 PASS
 6D83: E1              POP     HL                  
 6D84: C9              RET                         
 6D85: 06 0A           LD      B,$0A               
-6D87: CD AD 61        CALL    $61AD               ; {}
+6D87: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 6D8A: D2 82 6D        JP      NC,$6D82            ; {}
 6D8D: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6D90: CD 57 63        CALL    $6357               ; {code.ExecuteCommand}
@@ -2160,7 +2175,7 @@ COM_1D__:
 6D97: E1              POP     HL                  
 6D98: C3 82 6D        JP      $6D82               ; {}
 
-COM_1E__:
+COM_1E_swap:
 6D9B: 46              LD      B,(HL)              
 6D9C: 23              INC     HL                  
 6D9D: 4E              LD      C,(HL)              
@@ -2180,20 +2195,20 @@ COM_1E__:
 6DB3: E1              POP     HL                  
 6DB4: 77              LD      (HL),A              
 6DB5: E1              POP     HL                  
-6DB6: 97              SUB     A                   
+6DB6: 97              SUB     A                   ; Z=1 PASS
 6DB7: C9              RET                         
 
 COM_22__:
 6DB8: 4E              LD      C,(HL)              
 6DB9: 23              INC     HL                  
 6DBA: E5              PUSH    HL                  
-6DBB: 2A 0C 72        LD      HL,($720C)          ; {}
+6DBB: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
 6DBE: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6DC1: 23              INC     HL                  
 6DC2: 23              INC     HL                  
 6DC3: 23              INC     HL                  
 6DC4: 06 09           LD      B,$09               
-6DC6: CD AD 61        CALL    $61AD               ; {}
+6DC6: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 6DC9: D2 D8 6D        JP      NC,$6DD8            ; {}
 6DCC: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6DCF: 23              INC     HL                  
@@ -2202,23 +2217,24 @@ COM_22__:
 6DD2: DA DC 6D        JP      C,$6DDC             ; {}
 6DD5: CA DC 6D        JP      Z,$6DDC             ; {}
 6DD8: E1              POP     HL                  
-6DD9: F6 01           OR      $01                 
+6DD9: F6 01           OR      $01                 ; Z=0 FAIL
 6DDB: C9              RET                         
-6DDC: 97              SUB     A                   
+;
+6DDC: 97              SUB     A                   ; Z=1 PASS
 6DDD: E1              POP     HL                  
 6DDE: C9              RET                         
 
-COM_23__:
+COM_23_heal_var:
 6DDF: 4E              LD      C,(HL)              
 6DE0: 23              INC     HL                  
 6DE1: E5              PUSH    HL                  
-6DE2: 2A 0C 72        LD      HL,($720C)          ; {}
+6DE2: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
 6DE5: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6DE8: 23              INC     HL                  
 6DE9: 23              INC     HL                  
 6DEA: 23              INC     HL                  
 6DEB: 06 09           LD      B,$09               
-6DED: CD AD 61        CALL    $61AD               ; {}
+6DED: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 6DF0: D2 DC 6D        JP      NC,$6DDC            ; {}
 6DF3: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6DF6: 56              LD      D,(HL)              
@@ -2232,17 +2248,17 @@ COM_23__:
 6E00: C3 DC 6D        JP      $6DDC               ; {}
 
 COM_25_print_linefeed:
-6E03: 3A 1E 72        LD      A,($721E)           ; {} Is the player ...
+6E03: 3A 1E 72        LD      A,($721E)           ; {code.activeObject} Is the player ...
 6E06: FE 01           CP      $01                 ; ... the active object?
 6E08: C2 10 6E        JP      NZ,$6E10            ; {} No, ignore line feed
 6E0B: 3E 0D           LD      A,$0D               ; Print ...
 6E0D: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces} ... line feed
-6E10: 97              SUB     A                   
+6E10: 97              SUB     A                   ; Z=1 PASS
 6E11: C9              RET                         
 
 COM_36__: ; ??
 6E12: E5              PUSH    HL                  
-6E13: 2A 0C 72        LD      HL,($720C)          ; {}
+6E13: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
 6E16: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
 6E19: 7E              LD      A,(HL)              
 6E1A: E6 80           AND     $80                 
@@ -2260,17 +2276,17 @@ COM_36__: ; ??
 6E2D: E6 20           AND     $20                 
 6E2F: CA 3E 6E        JP      Z,$6E3E             ; {}
 6E32: 79              LD      A,C                 
-6E33: 32 0B 72        LD      ($720B),A           ; {}
+6E33: 32 0B 72        LD      ($720B),A           ; {code.varObject}
 6E36: EB              EX      DE,HL               
-6E37: 22 0C 72        LD      ($720C),HL          ; {}
+6E37: 22 0C 72        LD      ($720C),HL          ; {code.varObjectPtr}
 6E3A: E1              POP     HL                  
-6E3B: F6 01           OR      $01                 
+6E3B: F6 01           OR      $01                 ; Z=0 FAIL
 6E3D: C9              RET                         
 6E3E: E1              POP     HL                  
-6E3F: 97              SUB     A                   
+6E3F: 97              SUB     A                   ; Z=1 PASS
 6E40: C9              RET                         
 
-COM_24__end_program:
+COM_24_end_program:
 6E41: C3 2D 40        JP      $402D               ; {hard.EndProgram} Exit program normally
 
 COM_28__:
@@ -2394,7 +2410,7 @@ COM_35__:
 6F24: D1              POP     DE                  
 6F25: D5              PUSH    DE                  
 6F26: 06 09           LD      B,$09               ; Object 9 ?? Field 9 ??
-6F28: CD AD 61        CALL    $61AD               ; {}
+6F28: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 6F2B: D2 33 6F        JP      NC,$6F33            ; {}
 6F2E: D5              PUSH    DE                  
 6F2F: 23              INC     HL                  
@@ -2407,7 +2423,7 @@ COM_35__:
 6F3E: CD 28 44        CALL    $4428               ; {hard.CLOSE_FILE}
 6F41: C2 47 6F        JP      NZ,$6F47            ; {}
 6F44: E1              POP     HL                  
-6F45: 97              SUB     A                   
+6F45: 97              SUB     A                   ; Z=1 PASS
 6F46: C9              RET                         
 ;
 6F47: F6 80           OR      $80                 ; DOS prints the error and returns here
@@ -2500,7 +2516,7 @@ COM_26_print_score:
 6FD4: 47              LD      B,A                 ; ... trailing ...
 6FD5: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces} ... space on end
 6FD8: E1              POP     HL                  ; Restore
-6FD9: 97              SUB     A                   ; PASS
+6FD9: 97              SUB     A                   ; Z=1 PASS
 6FDA: C9              RET                         
 
 COM_38_bump_score:
@@ -2513,7 +2529,7 @@ COM_38_bump_score:
 6FE7: 27              DAA                         ; Adjust for BCD
 6FE8: 77              LD      (HL),A              ; Store new score
 6FE9: E1              POP     HL                  ; Restore
-6FEA: 97              SUB     A                   ; PASS
+6FEA: 97              SUB     A                   ; Z=1 PASS
 6FEB: C9              RET                         
 
 COM_39__:
@@ -2533,7 +2549,7 @@ COM_39__:
 7008: 23              INC     HL                  
 7009: 23              INC     HL                  
 700A: 06 0C           LD      B,$0C               
-700C: CD AD 61        CALL    $61AD               ; {}
+700C: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
 700F: D2 23 70        JP      NC,$7023            ; {}
 7012: D5              PUSH    DE                  
 7013: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
@@ -2548,25 +2564,25 @@ COM_39__:
 7025: C3 F7 6F        JP      $6FF7               ; {}
 7028: D1              POP     DE                  
 7029: E1              POP     HL                  
-702A: F6 01           OR      $01                 
+702A: F6 01           OR      $01                 ; Z=0 FAIL
 702C: C9              RET                         
 
 COM_3A_clear_screen:
-702D: E5              PUSH    HL                  
-702E: 21 00 3C        LD      HL,$3C00            
-7031: 11 00 04        LD      DE,$0400            
-7034: 36 20           LD      (HL),$20            
-7036: 23              INC     HL                  
-7037: 1B              DEC     DE                  
-7038: 7A              LD      A,D                 
-7039: B3              OR      E                   
-703A: C2 34 70        JP      NZ,$7034            ; {}
-703D: E1              POP     HL                  
-703E: 97              SUB     A                   
+702D: E5              PUSH    HL                  ; Hold script pointer
+702E: 21 00 3C        LD      HL,$3C00            ; Start of screen
+7031: 11 00 04        LD      DE,$0400            ; Number of bytes on the screen
+7034: 36 20           LD      (HL),$20            ; Set character ...
+7036: 23              INC     HL                  ; ... to space
+7037: 1B              DEC     DE                  ; Dec the count
+7038: 7A              LD      A,D                 ; Counter ...
+7039: B3              OR      E                   ; ... reached zero?
+703A: C2 34 70        JP      NZ,$7034            ; {} No ... clear the whole screen
+703D: E1              POP     HL                  ; Restore script pointer
+703E: 97              SUB     A                   ; Z=1 PASS
 703F: C9              RET                         
 
 COM_3B_wait_for_key_123:
-7040: E5              PUSH    HL                  ; Hold
+7040: E5              PUSH    HL                  ; Hold script pointer
 7041: CD 99 62        CALL    $6299               ; {code.GetKey} Wait for a key
 7044: FE 30           CP      $30                 ; Less than "0"?
 7046: DA 41 70        JP      C,$7041             ; {} Yes ... ignore
@@ -2574,8 +2590,8 @@ COM_3B_wait_for_key_123:
 704B: D2 41 70        JP      NC,$7041            ; {} No ... ignore
 704E: 32 A2 6F        LD      ($6FA2),A           ; {} Hold the player's choice
 7051: CD EB 70        CALL    $70EB               ; {code.PrintCharCullSpaces} Print the player's choice
-7054: E1              POP     HL                  ; Restore
-7055: 97              SUB     A                   ; PASS
+7054: E1              POP     HL                  ; Restore script pointer
+7055: 97              SUB     A                   ; Z=1 PASS
 7056: C9              RET                         
 
 GetObjectScriptByIndex:
@@ -2814,7 +2830,7 @@ COM_2B_random:
 71DD: 05              DEC     B                   ; 
 71DE: C2 CE 71        JP      NZ,$71CE            ; {}
 71E1: 22 EC 71        LD      ($71EC),HL          ; {code.RandomSeed2}
-71E4: 97              SUB     A                   ; 
+71E4: 97              SUB     A                   ; Z=1 PASS
 71E5: E1              POP     HL                  ; 
 71E6: C1              POP     BC                  ; 
 71E7: C9              RET                         
@@ -2862,9 +2878,11 @@ currentLoadedSection:
 lastChar:
 720A: 00  ; last character printed
 
-720B: 00                         
-720C: 00                         
-720D: 00                       
+varObject:
+720B: 00     
+varObjectPtr:
+720C: 00 00
+
 720E: 00                    
 720F: 00                      
 7210: 00                     
@@ -2882,14 +2900,14 @@ lastChar:
 721C: 00                         
 721D: 00
 
-721E: 01 
-721F: 00 
-7220: 00            
+activeObject:
+721E: 01 ; 1=player, 38=system
+activeObjectPtr:
+721F: 00 00
 
 currentRoom: 
 7221: 81          ; we start in room 81
-
-currentRoomData:
+currentRoomPtr:
 7222: 03 52       ; 5203 is first room loaded from SECTION1.DAT
 
 7224: 48              LD      C,B                 
@@ -2978,11 +2996,11 @@ CommandJumpTable:
 7280: DC 67        ; COM_0C_fail()
 7282: 8A 63        ; COM_0D_while_pass(mlength)
 7284: A0 63        ; COM_0E_while_fail(mlength)
-7286: C5 68        ; COM_0F__ ??
+7286: C5 68        ; COM_0F__ ?? pick up var
 7288: EF 68        ; COM_10_drop_var()
 728A: 6F 69        ; COM_11_print_first_noun()
 728C: 9C 69        ; COM_12_print_second_noun()
-728E: 07 69        ; COM_13__ ??
+728E: 07 69        ; COM_13__ ?? process_phrase_by_room_first_second
 7290: 49 6C        ; COM_14_execute_and_reverse_status()
 7292: A6 69        ; COM_15_check_var()
 7294: 65 69        ; COM_16_print_var()
@@ -2997,18 +3015,18 @@ CommandJumpTable:
 72A6: EC 67        ; COM_1F_print2(mlength)
 72A8: 89 67        ; COM_20_is_active_this(obj_num)
 72AA: 60 64        ; COM_21_execute_phrase(phrase_num, first_noun_num, second_noun_num)
-72AC: B8 6D        ; COM_22__ ??
+72AC: B8 6D        ; COM_22__is_less_equal_health(points)
 72AE: DF 6D        ; COM_23_heal_var(points)
 72B0: 41 6E        ; COM_24_end_program()
 72B2: 03 6E        ; COM_25_print_linefeed()
 72B4: B0 6F        ; COM_26_print_score()
 72B6: 6D 6E        ; COM_27__ ??
 72B8: 44 6E        ; COM_28__ ??
-72BA: D2 69        ; COM_29_print_open_var()
-72BC: E8 69        ; COM_2A__ ??
+72BA: D2 69        ; COM_29_print_open_var() ?? toggle_open_VAR()
+72BC: E8 69        ; COM_2A__ ?? toggle_lock_VAR()
 72BE: C6 71        ; COM_2B_random()
 72C0: 8F 67        ; COM_2C_set_active(obj_num)
-72C2: B4 68        ; COM_2D__ ??
+72C2: B4 68        ; COM_2D__ ?? is_VAR(object)
 ;
 72C4: C1 69        ; COM_2E__ ??
 72C6: FE 69        ; COM_2F_load_disk_section(section_num)
@@ -4820,7 +4838,7 @@ the room references in the object scripts. TODO investigate these.
 ```code
 ObjectData:
 887A: 00 AB 32  ; ID: 0x00, Length: 0x2B32
-; Object 01
+; Object 01:PLAYER
 887D: 01 80 87                      ; Word Number: 0x01 "??01??", Length: 0x0087
 8880: 80 01 80                      ; Location: 0x80, Points: 1, Data Bits: 0b10000000
 8883:    0A 35                      ;   Section 10: UPON_DEATH, Length: 0x0035
@@ -5963,7 +5981,7 @@ ObjectData:
 ;                 "IN GOD WE TRUST. TWENTY DOLLARS"
 ;
 9431:    0C 01                      ;   Section 12: ??UNKNOWN_0C??, Length: 0x0001
-9433:       06                      ; 
+9433:       06                      ;     PRINT INVENTORY ??
 9434:    02 0E                      ;   Section 2: SHORT_NAME, Length: 0x000E
 ;           LARGE AMOUNT OF MONEY
 9436:       54 8B 9B 6C 71 48 9E C5 B8 16 71 16 7B 98 ; 
@@ -8897,7 +8915,7 @@ B8C9:             F4 72 DB 63       ;
 ;                 HERE. 
 ;
 
-; Routine ??B1??
+; Routine B1:PRINT_SPACE
 ;
 B8CD: B1 0E                         ; Routine Number: 0xB1, Length: 0x000E
 B8CF:       0D 0C                   ;     WHILE PASS, Length: 0x000C
@@ -9794,37 +9812,40 @@ BF93: EF              RST     0X28
 BF94: EF              RST     0X28                
 BF95: EB              EX      DE,HL               
 BF96: EE E2           XOR     $E2                 
-BF98: EF              RST     0X28                
-BF99: EE 00           XOR     $00                 
-BF9B: EF              RST     0X28                
-BF9C: EF              RST     0X28                
-BF9D: EF              RST     0X28                
-BF9E: EF              RST     0X28                
-BF9F: EF              RST     0X28                
-BFA0: EC EE 6E        CALL    PE,$6EEE            ; {}
-BFA3: 6F              LD      L,A                 
-BFA4: EF              RST     0X28                
-BFA5: EF              RST     0X28                
-BFA6: EE CF           XOR     $CF                 
-BFA8: CF              RST     0X08                
-BFA9: CF              RST     0X08                
-BFAA: CF              RST     0X08                
-BFAB: CE CE           ADC     $CE                 
-BFAD: CA CA CE        JP      Z,$CECA             
-BFB0: CE CE           ADC     $CE                 
-BFB2: 4F              LD      C,A                 
-BFB3: 6F              LD      L,A                 
-BFB4: 67              LD      H,A                 
-BFB5: 6A              LD      L,D                 
-BFB6: 6F              LD      L,A                 
-BFB7: 42              LD      B,D                 
-BFB8: 4A              LD      C,D                 
-BFB9: 4B              LD      C,E                 
-BFBA: 4F              LD      C,A                 
-BFBB: 6A              LD      L,D                 
-BFBC: 6F              LD      L,A                 
-BFBD: EA EF EA        JP      PE,$EAEF            
-BFC0: 02              LD      (BC),A              
+BF98: EF           
+BF99: EE 
+BF9A: 00 ; Stack builds towards lower from here
+
+BF9B: EF               
+BF9C: EF                        
+BF9D: EF                      
+BF9E: EF                  
+BF9F: EF                   
+BFA0: EC EE 6E   
+BFA3: 6F                      
+BFA4: EF                   
+BFA5: EF                      
+BFA6: EE CF                       
+BFA8: CF                        
+BFA9: CF                          
+BFAA: CF                        
+BFAB: CE CE                    
+BFAD: CA CA CE             
+BFB0: CE CE                       
+BFB2: 4F                     
+BFB3: 6F                    
+BFB4: 67                       
+BFB5: 6A                              
+BFB6: 6F                           
+BFB7: 42                         
+BFB8: 4A                           
+BFB9: 4B                     
+BFBA: 4F                            
+BFBB: 6A                           
+BFBC: 6F                           
+BFBD: EA EF EA     
+
+BFC0: 02             
 BFC1: 00                         
 BFC2: 00                         
 BFC3: 00                         
@@ -9868,8 +9889,8 @@ BFE8: 00
 BFE9: 00                         
 BFEA: 00                         
 BFEB: 00                         
-BFEC: 80              ADD     A,B                 
-BFED: 80              ADD     A,B                 
+BFEC: 80                     
+BFED: 80                       
 BFEE: 00                         
 BFEF: 00                         
 BFF0: 00                         
