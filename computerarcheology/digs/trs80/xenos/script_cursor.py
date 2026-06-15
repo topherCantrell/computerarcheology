@@ -300,7 +300,6 @@ class ScriptCursor:
             return f'{room_num:02X}_nowhere'
         
         if room_num<0x80:
-            # TODO look up object name
             obj_name = decode_object.OBJECT_NAME.get(room_num, [f'??{room_num:02X}??'])
             return f'obj_{room_num:02X}_{obj_name}'
         
@@ -501,8 +500,8 @@ class ScriptCursor:
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; SET VAR OBJECT, obj={self.desc_object(obj_num)}', prt_level)
 
     def decode_compare_to_second_noun(self, origin, line, _, prt_level):
-        word_num = self.get_byte(line)
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; COMPARE TO SECOND NOUN, Word number: 0x{word_num:02X}', prt_level)
+        obj_num = self.get_byte(line)        
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; COMPARE TO SECOND NOUN, obj={self.desc_object(obj_num)}', prt_level)
 
     def decode_is_in_pack_or_current_room(self, origin, line, _, prt_level):
         obj_num = self.get_byte(line)
@@ -536,7 +535,8 @@ class ScriptCursor:
 
     def decode_is_input_phrase(self, origin, line, _, prt_level):
         phrase_num = self.get_byte(line)
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; IS INPUT PHRASE, Phrase number: 0x{phrase_num:02X}', prt_level)
+        phrase_text = language.PHRASES.get(phrase_num, [f'??{phrase_num:02X}??'])[0]
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; IS INPUT PHRASE, Phrase number: 0x{phrase_num:02X} "{phrase_text}"', prt_level)
 
     def decode_set_active(self, origin, line, _, prt_level):
         obj_num = self.get_byte(line)

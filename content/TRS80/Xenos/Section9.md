@@ -37,19 +37,19 @@
 ;
 ;
 52E7:    04 10                      ;   Section COMMANDS, Length: 0x0010
-52E9:       0B 0E 0A                ;     SWITCH, Length: 0x000E, Function to call: 0x0A
-52EC:          02                   ;       Phrase 0x02: "SOUTH    *          *           *"
+52E9:       0B 0E 0A                ;     SWITCH, Length: 0x000E, Function to call: COM_0A_is_input_phrase(phrase_num)
+52EC:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
 52ED:          02                   ;       ELSE go to: 0x52F0
 52EE:             00 83             ;         MOVE AND LOOK, room=83_9_GRAND CENTRAL STATION
-52F0:          03                   ;       Phrase 0x03: "EAST     *          *           *"
+52F0:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
 52F1:          01                   ;       ELSE go to: 0x52F3
-52F2:             BE                ;         ROUTINE 0xBE
-52F3:          01                   ;       Phrase 0x01: "NORTH    *          *           *"
+52F2:             BE                ;         ROUTINE 0xBE PRINT_FORCE_FIELD
+52F3:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
 52F4:          01                   ;       ELSE go to: 0x52F6
-52F5:             BE                ;         ROUTINE 0xBE
-52F6:          04                   ;       Phrase 0x04: "WEST     *          *           *"
+52F5:             BE                ;         ROUTINE 0xBE PRINT_FORCE_FIELD
+52F6:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
 52F7:          01                   ;       ELSE go to: 0x52F9
-52F8:             BE                ;         ROUTINE 0xBE
+52F8:             BE                ;         ROUTINE 0xBE PRINT_FORCE_FIELD
 
 52F9: 82 80 9A 00                   ; room=82_9_CARNEGIE HALL, Length: 0x009A, Data: 0x00
 ;
@@ -72,8 +72,8 @@
 ;
 ;
 538D:    04 07                      ;   Section COMMANDS, Length: 0x0007
-538F:       0B 05 0A                ;     SWITCH, Length: 0x0005, Function to call: 0x0A
-5392:          03                   ;       Phrase 0x03: "EAST     *          *           *"
+538F:       0B 05 0A                ;     SWITCH, Length: 0x0005, Function to call: COM_0A_is_input_phrase(phrase_num)
+5392:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
 5393:          02                   ;       ELSE go to: 0x5396
 5394:             00 83             ;         MOVE AND LOOK, room=83_9_GRAND CENTRAL STATION
 
@@ -107,21 +107,21 @@
 ;
 ;
 548C:    04 19                      ;   Section COMMANDS, Length: 0x0019
-548E:       0B 17 0A                ;     SWITCH, Length: 0x0017, Function to call: 0x0A
-5491:          01                   ;       Phrase 0x01: "NORTH    *          *           *"
+548E:       0B 17 0A                ;     SWITCH, Length: 0x0017, Function to call: COM_0A_is_input_phrase(phrase_num)
+5491:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
 5492:          02                   ;       ELSE go to: 0x5495
 5493:             00 81             ;         MOVE AND LOOK, room=81_9_SURFACE
-5495:          02                   ;       Phrase 0x02: "SOUTH    *          *           *"
+5495:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
 5496:          02                   ;       ELSE go to: 0x5499
 5497:             00 85             ;         MOVE AND LOOK, room=85_9_MUSEUM
-5499:          03                   ;       Phrase 0x03: "EAST     *          *           *"
+5499:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
 549A:          08                   ;       ELSE go to: 0x54A3
 549B:             0E 06             ;         WHILE FAIL, Length: 0x0006
 549D:                14             ;           EXECUTE AND REVERSE STATUS
-549E:                1C 93          ;           SET VAR OBJECT, obj=??93??
-54A0:                C7             ;           ROUTINE 0xC7
+549E:                1C 93          ;           SET VAR OBJECT, obj=93_DOOR_ESNEL
+54A0:                C7             ;           ROUTINE 0xC7 ??C7??
 54A1:                00 84          ;           MOVE AND LOOK, room=84_9_DISCO
-54A3:          04                   ;       Phrase 0x04: "WEST     *          *           *"
+54A3:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
 54A4:          02                   ;       ELSE go to: 0x54A7
 54A5:             00 82             ;         MOVE AND LOOK, room=82_9_CARNEGIE HALL
 
@@ -149,8 +149,8 @@
 ;
 ;
 5557:    04 07                      ;   Section COMMANDS, Length: 0x0007
-5559:       0B 05 0A                ;     SWITCH, Length: 0x0005, Function to call: 0x0A
-555C:          04                   ;       Phrase 0x04: "WEST     *          *           *"
+5559:       0B 05 0A                ;     SWITCH, Length: 0x0005, Function to call: COM_0A_is_input_phrase(phrase_num)
+555C:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
 555D:          02                   ;       ELSE go to: 0x5560
 555E:             00 83             ;         MOVE AND LOOK, room=83_9_GRAND CENTRAL STATION
 
@@ -177,11 +177,11 @@
 ;
 ;
 5609:    04 0B                      ;   Section COMMANDS, Length: 0x000B
-560B:       0B 09 0A                ;     SWITCH, Length: 0x0009, Function to call: 0x0A
-560E:          01                   ;       Phrase 0x01: "NORTH    *          *           *"
+560B:       0B 09 0A                ;     SWITCH, Length: 0x0009, Function to call: COM_0A_is_input_phrase(phrase_num)
+560E:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
 560F:          02                   ;       ELSE go to: 0x5612
 5610:             00 83             ;         MOVE AND LOOK, room=83_9_GRAND CENTRAL STATION
-5612:          02                   ;       Phrase 0x02: "SOUTH    *          *           *"
+5612:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
 5613:          02                   ;       ELSE go to: 0x5616
 5614:             00 86             ;         MOVE AND LOOK, room=86_9_BIOLOGICAL LABS
 
@@ -212,11 +212,11 @@
 ;
 ;
 56EC:    04 0B                      ;   Section COMMANDS, Length: 0x000B
-56EE:       0B 09 0A                ;     SWITCH, Length: 0x0009, Function to call: 0x0A
-56F1:          01                   ;       Phrase 0x01: "NORTH    *          *           *"
+56EE:       0B 09 0A                ;     SWITCH, Length: 0x0009, Function to call: COM_0A_is_input_phrase(phrase_num)
+56F1:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
 56F2:          02                   ;       ELSE go to: 0x56F5
 56F3:             00 85             ;         MOVE AND LOOK, room=85_9_MUSEUM
-56F5:          02                   ;       Phrase 0x02: "SOUTH    *          *           *"
+56F5:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
 56F6:          02                   ;       ELSE go to: 0x56F9
 56F7:             00 88             ;         MOVE AND LOOK, room=88_9_GREEN HOUSE
 
@@ -242,16 +242,16 @@
 ;
 ;
 579E:    04 11                      ;   Section COMMANDS, Length: 0x0011
-57A0:       0B 0F 0A                ;     SWITCH, Length: 0x000F, Function to call: 0x0A
-57A3:          03                   ;       Phrase 0x03: "EAST     *          *           *"
+57A0:       0B 0F 0A                ;     SWITCH, Length: 0x000F, Function to call: COM_0A_is_input_phrase(phrase_num)
+57A3:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
 57A4:          02                   ;       ELSE go to: 0x57A7
 57A5:             00 88             ;         MOVE AND LOOK, room=88_9_GREEN HOUSE
-57A7:          02                   ;       Phrase 0x02: "SOUTH    *          *           *"
+57A7:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
 57A8:          08                   ;       ELSE go to: 0x57B1
 57A9:             0E 06             ;         WHILE FAIL, Length: 0x0006
 57AB:                14             ;           EXECUTE AND REVERSE STATUS
-57AC:                1C 95          ;           SET VAR OBJECT, obj=??95??
-57AE:                C7             ;           ROUTINE 0xC7
+57AC:                1C 95          ;           SET VAR OBJECT, obj=95_DOOR_ESNEL
+57AE:                C7             ;           ROUTINE 0xC7 ??C7??
 57AF:                00 8A          ;           MOVE AND LOOK, room=8A_9_GENERATOR
 
 57B1: 88 80 FC 00                   ; room=88_9_GREEN HOUSE, Length: 0x00FC, Data: 0x00
@@ -283,14 +283,14 @@
 ;
 ;
 589F:    04 0F                      ;   Section COMMANDS, Length: 0x000F
-58A1:       0B 0D 0A                ;     SWITCH, Length: 0x000D, Function to call: 0x0A
-58A4:          04                   ;       Phrase 0x04: "WEST     *          *           *"
+58A1:       0B 0D 0A                ;     SWITCH, Length: 0x000D, Function to call: COM_0A_is_input_phrase(phrase_num)
+58A4:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
 58A5:          02                   ;       ELSE go to: 0x58A8
 58A6:             00 87             ;         MOVE AND LOOK, room=87_9_NURSERY
-58A8:          01                   ;       Phrase 0x01: "NORTH    *          *           *"
+58A8:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
 58A9:          02                   ;       ELSE go to: 0x58AC
 58AA:             00 86             ;         MOVE AND LOOK, room=86_9_BIOLOGICAL LABS
-58AC:          03                   ;       Phrase 0x03: "EAST     *          *           *"
+58AC:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
 58AD:          02                   ;       ELSE go to: 0x58B0
 58AE:             00 89             ;         MOVE AND LOOK, room=89_9_LIBRARY
 
@@ -317,16 +317,16 @@
 ;
 ;
 5954:    04 11                      ;   Section COMMANDS, Length: 0x0011
-5956:       0B 0F 0A                ;     SWITCH, Length: 0x000F, Function to call: 0x0A
-5959:          04                   ;       Phrase 0x04: "WEST     *          *           *"
+5956:       0B 0F 0A                ;     SWITCH, Length: 0x000F, Function to call: COM_0A_is_input_phrase(phrase_num)
+5959:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
 595A:          02                   ;       ELSE go to: 0x595D
 595B:             00 88             ;         MOVE AND LOOK, room=88_9_GREEN HOUSE
-595D:          02                   ;       Phrase 0x02: "SOUTH    *          *           *"
+595D:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
 595E:          08                   ;       ELSE go to: 0x5967
 595F:             0E 06             ;         WHILE FAIL, Length: 0x0006
 5961:                14             ;           EXECUTE AND REVERSE STATUS
-5962:                1C 96          ;           SET VAR OBJECT, obj=??96??
-5964:                C7             ;           ROUTINE 0xC7
+5962:                1C 96          ;           SET VAR OBJECT, obj=96_DOOR_ESNEL
+5964:                C7             ;           ROUTINE 0xC7 ??C7??
 5965:                00 8C          ;           MOVE AND LOOK, room=8C_9_DETROIT
 
 5967: 8A 80 C0 00                   ; room=8A_9_GENERATOR, Length: 0x00C0, Data: 0x00
@@ -353,11 +353,11 @@
 ;
 ;
 5A1D:    04 0B                      ;   Section COMMANDS, Length: 0x000B
-5A1F:       0B 09 0A                ;     SWITCH, Length: 0x0009, Function to call: 0x0A
-5A22:          03                   ;       Phrase 0x03: "EAST     *          *           *"
+5A1F:       0B 09 0A                ;     SWITCH, Length: 0x0009, Function to call: COM_0A_is_input_phrase(phrase_num)
+5A22:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
 5A23:          02                   ;       ELSE go to: 0x5A26
 5A24:             00 8B             ;         MOVE AND LOOK, room=8B_9_PITTSBURG
-5A26:          01                   ;       Phrase 0x01: "NORTH    *          *           *"
+5A26:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
 5A27:          02                   ;       ELSE go to: 0x5A2A
 5A28:             00 87             ;         MOVE AND LOOK, room=87_9_NURSERY
 
@@ -388,11 +388,11 @@
 ;
 ;
 5B00:    04 0B                      ;   Section COMMANDS, Length: 0x000B
-5B02:       0B 09 0A                ;     SWITCH, Length: 0x0009, Function to call: 0x0A
-5B05:          04                   ;       Phrase 0x04: "WEST     *          *           *"
+5B02:       0B 09 0A                ;     SWITCH, Length: 0x0009, Function to call: COM_0A_is_input_phrase(phrase_num)
+5B05:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
 5B06:          02                   ;       ELSE go to: 0x5B09
 5B07:             00 8A             ;         MOVE AND LOOK, room=8A_9_GENERATOR
-5B09:          03                   ;       Phrase 0x03: "EAST     *          *           *"
+5B09:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
 5B0A:          02                   ;       ELSE go to: 0x5B0D
 5B0B:             00 8C             ;         MOVE AND LOOK, room=8C_9_DETROIT
 
@@ -419,11 +419,11 @@
 ;
 ;
 5BB3:    04 0B                      ;   Section COMMANDS, Length: 0x000B
-5BB5:       0B 09 0A                ;     SWITCH, Length: 0x0009, Function to call: 0x0A
-5BB8:          04                   ;       Phrase 0x04: "WEST     *          *           *"
+5BB5:       0B 09 0A                ;     SWITCH, Length: 0x0009, Function to call: COM_0A_is_input_phrase(phrase_num)
+5BB8:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
 5BB9:          02                   ;       ELSE go to: 0x5BBC
 5BBA:             00 8B             ;         MOVE AND LOOK, room=8B_9_PITTSBURG
-5BBC:          01                   ;       Phrase 0x01: "NORTH    *          *           *"
+5BBC:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
 5BBD:          02                   ;       ELSE go to: 0x5BC0
 5BBE:             00 89             ;         MOVE AND LOOK, room=89_9_LIBRARY
 ```

@@ -12,36 +12,36 @@
 5203: 84 2B 00                      ; room=84_8_??84??, Length: 0x002B, Data: 0x00
 ;
 5206:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-5208:       9C                      ;     ROUTINE 0x9C
+5208:       9C                      ;     ROUTINE 0x9C ??9C??
 ;
 5209:    04 25                      ;   Section COMMANDS, Length: 0x0025
-520B:       0B 23 0A                ;     SWITCH, Length: 0x0023, Function to call: 0x0A
-520E:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+520B:       0B 23 0A                ;     SWITCH, Length: 0x0023, Function to call: COM_0A_is_input_phrase(phrase_num)
+520E:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 520F:          04                   ;       ELSE go to: 0x5214
 5210:             0E 02             ;         WHILE FAIL, Length: 0x0002
-5212:                A0             ;           ROUTINE 0xA0
-5213:                A1             ;           ROUTINE 0xA1
-5214:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+5212:                A0             ;           ROUTINE 0xA0 ??A0??
+5213:                A1             ;           ROUTINE 0xA1 ??A1??
+5214:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 5215:          1A                   ;       ELSE go to: 0x5230
 5216:             0D 18             ;         WHILE PASS, Length: 0x0018
-5218:                C0             ;           ROUTINE 0xC0
+5218:                C0             ;           ROUTINE 0xC0 ??C0??
 5219:                0E 15          ;           WHILE FAIL, Length: 0x0015
-521B:                   AE          ;             ROUTINE 0xAE
+521B:                   AE          ;             ROUTINE 0xAE ??AE??
 521C:                   14          ;             EXECUTE AND REVERSE STATUS
-521D:                   0B 10 03    ;             SWITCH, Length: 0x0010, Function to call: 0x03
-5220:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
+521D:                   0B 10 03    ;             SWITCH, Length: 0x0010, Function to call: COM_03_is_located(room_num, obj_num)
+5220:                      40       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x40"
 5221:                      3E       ;               ELSE go to: 0x5260
 5222:                         07    ;                 PRINT ROOM DESCRIPTION
-5223:                      0D       ;               Phrase 0x0D: "THROW    .vC.....   AT       ...P...."
+5223:                      0D       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x0D"
 5224:                      05       ;               ELSE go to: 0x522A
-5225:                         9E    ;                 ROUTINE 0x9E
-5226:                      30       ;               Phrase 0x30: "??30??"
+5225:                         9E    ;                 ROUTINE 0x9E ??9E??
+5226:                      30       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x30"
 5227:                      82 2F    ;               ELSE go to: 0x5458
 5229:                         07    ;                 PRINT ROOM DESCRIPTION
-522A:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
+522A:                      41       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x41"
 522B:                      3E       ;               ELSE go to: 0x526A
 522C:                         02 00 86 ;                 IS OWNED BY, A=0x86, obj=??00??
-522F:                   9E          ;             ROUTINE 0x9E
+522F:                   9E          ;             ROUTINE 0x9E ??9E??
 
 5230: 86 80 BF 00                   ; room=86_8_FOOGLURN_GALLEY, Length: 0x00BF, Data: 0x00
 ;
@@ -53,13 +53,13 @@
 ;                 FOOGLURN 
 ;
 5242:          0E 07                ;       WHILE FAIL, Length: 0x0007
-5244:             C3                ;         ROUTINE 0xC3
+5244:             C3                ;         ROUTINE 0xC3 PLAYER_LACKS_WISDOM
 5245:             04 04             ;         PRINT, Length: 0x0004
 5247:                0E 6C FB 8B    ; 
 ;
 ;                    GALLEY
 ;
-524B:          8B                   ;       ROUTINE 0x8B
+524B:          8B                   ;       ROUTINE 0x8B PRINT_PERIOD
 524C:          04 80 81             ;       PRINT, Length: 0x0081
 524F:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 84 15 3B 63 ; 
 525F:             01 B3 DB 95 5F BE 5B B1 4B 7B 4E 45 31 49 55 5E ; 
@@ -78,55 +78,55 @@
 ;
 ;
 52D0:    04 20                      ;   Section COMMANDS, Length: 0x0020
-52D2:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-52D5:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+52D2:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: COM_0A_is_input_phrase(phrase_num)
+52D5:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 52D6:          04                   ;       ELSE go to: 0x52DB
 52D7:             0E 02             ;         WHILE FAIL, Length: 0x0002
-52D9:                A0             ;           ROUTINE 0xA0
-52DA:                A1             ;           ROUTINE 0xA1
-52DB:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+52D9:                A0             ;           ROUTINE 0xA0 ??A0??
+52DA:                A1             ;           ROUTINE 0xA1 ??A1??
+52DB:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 52DC:          15                   ;       ELSE go to: 0x52F2
 52DD:             0D 13             ;         WHILE PASS, Length: 0x0013
-52DF:                C0             ;           ROUTINE 0xC0
+52DF:                C0             ;           ROUTINE 0xC0 ??C0??
 52E0:                0E 10          ;           WHILE FAIL, Length: 0x0010
-52E2:                   AE          ;             ROUTINE 0xAE
+52E2:                   AE          ;             ROUTINE 0xAE ??AE??
 52E3:                   14          ;             EXECUTE AND REVERSE STATUS
-52E4:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-52E7:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
+52E4:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: COM_03_is_located(room_num, obj_num)
+52E7:                      40       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x40"
 52E8:                      3E       ;               ELSE go to: 0x5327
 52E9:                         02 00 84 ;                 IS OWNED BY, A=0x84, obj=??00??
-52EC:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
+52EC:                      41       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x41"
 52ED:                      3E       ;               ELSE go to: 0x532C
 52EE:                         02 00 88 ;                 IS OWNED BY, A=0x88, obj=??00??
-52F1:                   9E          ;             ROUTINE 0x9E
+52F1:                   9E          ;             ROUTINE 0x9E ??9E??
 
 52F2: 88 26 00                      ; room=88_8_??88??, Length: 0x0026, Data: 0x00
 ;
 52F5:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-52F7:       9C                      ;     ROUTINE 0x9C
+52F7:       9C                      ;     ROUTINE 0x9C ??9C??
 ;
 52F8:    04 20                      ;   Section COMMANDS, Length: 0x0020
-52FA:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-52FD:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+52FA:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: COM_0A_is_input_phrase(phrase_num)
+52FD:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 52FE:          04                   ;       ELSE go to: 0x5303
 52FF:             0E 02             ;         WHILE FAIL, Length: 0x0002
-5301:                A0             ;           ROUTINE 0xA0
-5302:                A1             ;           ROUTINE 0xA1
-5303:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+5301:                A0             ;           ROUTINE 0xA0 ??A0??
+5302:                A1             ;           ROUTINE 0xA1 ??A1??
+5303:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 5304:          15                   ;       ELSE go to: 0x531A
 5305:             0D 13             ;         WHILE PASS, Length: 0x0013
-5307:                C0             ;           ROUTINE 0xC0
+5307:                C0             ;           ROUTINE 0xC0 ??C0??
 5308:                0E 10          ;           WHILE FAIL, Length: 0x0010
-530A:                   AE          ;             ROUTINE 0xAE
+530A:                   AE          ;             ROUTINE 0xAE ??AE??
 530B:                   14          ;             EXECUTE AND REVERSE STATUS
-530C:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-530F:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
+530C:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: COM_03_is_located(room_num, obj_num)
+530F:                      40       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x40"
 5310:                      3E       ;               ELSE go to: 0x534F
 5311:                         02 00 86 ;                 IS OWNED BY, A=0x86, obj=??00??
-5314:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
+5314:                      41       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x41"
 5315:                      3E       ;               ELSE go to: 0x5354
 5316:                         02 00 8A ;                 IS OWNED BY, A=0x8A, obj=??00??
-5319:                   9E          ;             ROUTINE 0x9E
+5319:                   9E          ;             ROUTINE 0x9E ??9E??
 
 531A: 8A 80 D4 00                   ; room=8A_8_SPLURB_RECREATION, Length: 0x00D4, Data: 0x00
 ;
@@ -138,13 +138,13 @@
 ;                 SPLURB
 ;
 532A:          0E 0A                ;       WHILE FAIL, Length: 0x000A
-532C:             C3                ;         ROUTINE 0xC3
+532C:             C3                ;         ROUTINE 0xC3 PLAYER_LACKS_WISDOM
 532D:             04 07             ;         PRINT, Length: 0x0007
 532F:                65 B1 63 B1 91 BE 4E ; 
 ;
 ;                    RECREATION
 ;
-5336:          8B                   ;       ROUTINE 0x8B
+5336:          8B                   ;       ROUTINE 0x8B PRINT_PERIOD
 5337:          04 80 95             ;       PRINT, Length: 0x0095
 533A:             C7 DE 94 14 4B 5E 83 96 FA 17 7F 7B 39 17 DB 9F ; 
 534A:             56 D1 03 71 DA 14 D4 47 FA 17 DA 78 4B 15 B5 53 ; 
@@ -164,59 +164,59 @@
 ;
 ;
 53CF:    04 20                      ;   Section COMMANDS, Length: 0x0020
-53D1:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-53D4:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+53D1:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: COM_0A_is_input_phrase(phrase_num)
+53D4:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 53D5:          04                   ;       ELSE go to: 0x53DA
 53D6:             0E 02             ;         WHILE FAIL, Length: 0x0002
-53D8:                A0             ;           ROUTINE 0xA0
-53D9:                A1             ;           ROUTINE 0xA1
-53DA:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+53D8:                A0             ;           ROUTINE 0xA0 ??A0??
+53D9:                A1             ;           ROUTINE 0xA1 ??A1??
+53DA:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 53DB:          15                   ;       ELSE go to: 0x53F1
 53DC:             0D 13             ;         WHILE PASS, Length: 0x0013
-53DE:                C0             ;           ROUTINE 0xC0
+53DE:                C0             ;           ROUTINE 0xC0 ??C0??
 53DF:                0E 10          ;           WHILE FAIL, Length: 0x0010
-53E1:                   AE          ;             ROUTINE 0xAE
+53E1:                   AE          ;             ROUTINE 0xAE ??AE??
 53E2:                   14          ;             EXECUTE AND REVERSE STATUS
-53E3:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-53E6:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
+53E3:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: COM_03_is_located(room_num, obj_num)
+53E6:                      40       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x40"
 53E7:                      3E       ;               ELSE go to: 0x5426
 53E8:                         02 00 88 ;                 IS OWNED BY, A=0x88, obj=??00??
-53EB:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
+53EB:                      41       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x41"
 53EC:                      3E       ;               ELSE go to: 0x542B
 53ED:                         02 00 8C ;                 IS OWNED BY, A=0x8C, obj=??00??
-53F0:                   9E          ;             ROUTINE 0x9E
+53F0:                   9E          ;             ROUTINE 0x9E ??9E??
 
 53F1: 8C 2C 00                      ; room=8C_8_??8C??, Length: 0x002C, Data: 0x00
 ;
 53F4:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-53F6:       B0                      ;     ROUTINE 0xB0
+53F6:       B0                      ;     ROUTINE 0xB0 ??B0??
 ;
 53F7:    04 26                      ;   Section COMMANDS, Length: 0x0026
-53F9:       0B 24 0A                ;     SWITCH, Length: 0x0024, Function to call: 0x0A
-53FC:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+53F9:       0B 24 0A                ;     SWITCH, Length: 0x0024, Function to call: COM_0A_is_input_phrase(phrase_num)
+53FC:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 53FD:          05                   ;       ELSE go to: 0x5403
 53FE:             0E 03             ;         WHILE FAIL, Length: 0x0003
-5400:                9F             ;           ROUTINE 0x9F
-5401:                A0             ;           ROUTINE 0xA0
-5402:                A1             ;           ROUTINE 0xA1
-5403:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+5400:                9F             ;           ROUTINE 0x9F ??9F??
+5401:                A0             ;           ROUTINE 0xA0 ??A0??
+5402:                A1             ;           ROUTINE 0xA1 ??A1??
+5403:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 5404:          1A                   ;       ELSE go to: 0x541F
 5405:             0D 18             ;         WHILE PASS, Length: 0x0018
-5407:                C0             ;           ROUTINE 0xC0
+5407:                C0             ;           ROUTINE 0xC0 ??C0??
 5408:                0E 15          ;           WHILE FAIL, Length: 0x0015
-540A:                   AE          ;             ROUTINE 0xAE
+540A:                   AE          ;             ROUTINE 0xAE ??AE??
 540B:                   14          ;             EXECUTE AND REVERSE STATUS
-540C:                   0B 10 03    ;             SWITCH, Length: 0x0010, Function to call: 0x03
-540F:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
+540C:                   0B 10 03    ;             SWITCH, Length: 0x0010, Function to call: COM_03_is_located(room_num, obj_num)
+540F:                      40       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x40"
 5410:                      3E       ;               ELSE go to: 0x544F
 5411:                         02 00 8A ;                 IS OWNED BY, A=0x8A, obj=??00??
-5414:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
+5414:                      41       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x41"
 5415:                      3E       ;               ELSE go to: 0x5454
 5416:                         02 00 8E ;                 IS OWNED BY, A=0x8E, obj=??00??
-5419:                      3F       ;               Phrase 0x3F: "SAVE     *          *           *"
+5419:                      3F       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x3F"
 541A:                      3E       ;               ELSE go to: 0x5459
 541B:                         02 00 9A ;                 IS OWNED BY, A=0x9A, obj=??00??
-541E:                   9E          ;             ROUTINE 0x9E
+541E:                   9E          ;             ROUTINE 0x9E ??9E??
 
 541F: 8E 80 9C 00                   ; room=8E_8_KURABEL_SICK_BAY, Length: 0x009C, Data: 0x00
 ;
@@ -228,13 +228,13 @@
 ;                 KURABEL
 ;
 542E:          0E 09                ;       WHILE FAIL, Length: 0x0009
-5430:             C3                ;         ROUTINE 0xC3
+5430:             C3                ;         ROUTINE 0xC3 PLAYER_LACKS_WISDOM
 5431:             04 06             ;         PRINT, Length: 0x0006
 5433:                45 B8 C4 83 3B 4A ; 
 ;
 ;                    SICK BAY 
 ;
-5439:          8B                   ;       ROUTINE 0x8B
+5439:          8B                   ;       ROUTINE 0x8B PRINT_PERIOD
 543A:          04 60                ;       PRINT, Length: 0x0060
 543C:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 39 17 FF 9F ; 
 544C:             82 17 2F 62 D5 15 7B 14 66 B1 7B 17 7F 4E 89 14 ; 
@@ -249,55 +249,55 @@
 ;
 ;
 549C:    04 20                      ;   Section COMMANDS, Length: 0x0020
-549E:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-54A1:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+549E:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: COM_0A_is_input_phrase(phrase_num)
+54A1:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 54A2:          04                   ;       ELSE go to: 0x54A7
 54A3:             0E 02             ;         WHILE FAIL, Length: 0x0002
-54A5:                A0             ;           ROUTINE 0xA0
-54A6:                A1             ;           ROUTINE 0xA1
-54A7:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+54A5:                A0             ;           ROUTINE 0xA0 ??A0??
+54A6:                A1             ;           ROUTINE 0xA1 ??A1??
+54A7:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 54A8:          15                   ;       ELSE go to: 0x54BE
 54A9:             0D 13             ;         WHILE PASS, Length: 0x0013
-54AB:                C0             ;           ROUTINE 0xC0
+54AB:                C0             ;           ROUTINE 0xC0 ??C0??
 54AC:                0E 10          ;           WHILE FAIL, Length: 0x0010
-54AE:                   AE          ;             ROUTINE 0xAE
+54AE:                   AE          ;             ROUTINE 0xAE ??AE??
 54AF:                   14          ;             EXECUTE AND REVERSE STATUS
-54B0:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-54B3:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
+54B0:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: COM_03_is_located(room_num, obj_num)
+54B3:                      40       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x40"
 54B4:                      3E       ;               ELSE go to: 0x54F3
 54B5:                         02 00 8C ;                 IS OWNED BY, A=0x8C, obj=??00??
-54B8:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
+54B8:                      41       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x41"
 54B9:                      3E       ;               ELSE go to: 0x54F8
 54BA:                         02 00 8F ;                 IS OWNED BY, A=0x8F, obj=??00??
-54BD:                   9E          ;             ROUTINE 0x9E
+54BD:                   9E          ;             ROUTINE 0x9E ??9E??
 
 54BE: 8F 26 00                      ; room=8F_8_??8F??, Length: 0x0026, Data: 0x00
 ;
 54C1:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-54C3:       9C                      ;     ROUTINE 0x9C
+54C3:       9C                      ;     ROUTINE 0x9C ??9C??
 ;
 54C4:    04 20                      ;   Section COMMANDS, Length: 0x0020
-54C6:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-54C9:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+54C6:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: COM_0A_is_input_phrase(phrase_num)
+54C9:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 54CA:          04                   ;       ELSE go to: 0x54CF
 54CB:             0E 02             ;         WHILE FAIL, Length: 0x0002
-54CD:                A0             ;           ROUTINE 0xA0
-54CE:                A1             ;           ROUTINE 0xA1
-54CF:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+54CD:                A0             ;           ROUTINE 0xA0 ??A0??
+54CE:                A1             ;           ROUTINE 0xA1 ??A1??
+54CF:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 54D0:          15                   ;       ELSE go to: 0x54E6
 54D1:             0D 13             ;         WHILE PASS, Length: 0x0013
-54D3:                C0             ;           ROUTINE 0xC0
+54D3:                C0             ;           ROUTINE 0xC0 ??C0??
 54D4:                0E 10          ;           WHILE FAIL, Length: 0x0010
-54D6:                   AE          ;             ROUTINE 0xAE
+54D6:                   AE          ;             ROUTINE 0xAE ??AE??
 54D7:                   14          ;             EXECUTE AND REVERSE STATUS
-54D8:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-54DB:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
+54D8:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: COM_03_is_located(room_num, obj_num)
+54DB:                      40       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x40"
 54DC:                      3E       ;               ELSE go to: 0x551B
 54DD:                         02 00 8E ;                 IS OWNED BY, A=0x8E, obj=??00??
-54E0:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
+54E0:                      41       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x41"
 54E1:                      3E       ;               ELSE go to: 0x5520
 54E2:                         02 00 90 ;                 IS OWNED BY, A=0x90, obj=??00??
-54E5:                   9E          ;             ROUTINE 0x9E
+54E5:                   9E          ;             ROUTINE 0x9E ??9E??
 
 54E6: 90 81 10 00                   ; room=90_8_ENURGLE_POWER, Length: 0x0110, Data: 0x00
 ;
@@ -309,13 +309,13 @@
 ;                 ENURGLE
 ;
 54F7:          0E 07                ;       WHILE FAIL, Length: 0x0007
-54F9:             C3                ;         ROUTINE 0xC3
+54F9:             C3                ;         ROUTINE 0xC3 PLAYER_LACKS_WISDOM
 54FA:             04 04             ;         PRINT, Length: 0x0004
 54FC:                89 A6 23 62    ; 
 ;
 ;                    POWER 
 ;
-5500:          8B                   ;       ROUTINE 0x8B
+5500:          8B                   ;       ROUTINE 0x8B PRINT_PERIOD
 5501:          04 80 D3             ;       PRINT, Length: 0x00D3
 5504:             C7 DE 94 14 4B 5E 83 96 39 17 DB 9F 56 D1 03 71 ; 
 5514:             77 15 C6 9A 58 5E BE 7A 73 62 89 8C 33 75 63 61 ; 
@@ -341,55 +341,55 @@
 ;
 ;
 55D7:    04 20                      ;   Section COMMANDS, Length: 0x0020
-55D9:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-55DC:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+55D9:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: COM_0A_is_input_phrase(phrase_num)
+55DC:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 55DD:          04                   ;       ELSE go to: 0x55E2
 55DE:             0E 02             ;         WHILE FAIL, Length: 0x0002
-55E0:                A0             ;           ROUTINE 0xA0
-55E1:                A1             ;           ROUTINE 0xA1
-55E2:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+55E0:                A0             ;           ROUTINE 0xA0 ??A0??
+55E1:                A1             ;           ROUTINE 0xA1 ??A1??
+55E2:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 55E3:          15                   ;       ELSE go to: 0x55F9
 55E4:             0D 13             ;         WHILE PASS, Length: 0x0013
-55E6:                C0             ;           ROUTINE 0xC0
+55E6:                C0             ;           ROUTINE 0xC0 ??C0??
 55E7:                0E 10          ;           WHILE FAIL, Length: 0x0010
-55E9:                   AE          ;             ROUTINE 0xAE
+55E9:                   AE          ;             ROUTINE 0xAE ??AE??
 55EA:                   14          ;             EXECUTE AND REVERSE STATUS
-55EB:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-55EE:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
+55EB:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: COM_03_is_located(room_num, obj_num)
+55EE:                      40       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x40"
 55EF:                      3E       ;               ELSE go to: 0x562E
 55F0:                         02 00 8F ;                 IS OWNED BY, A=0x8F, obj=??00??
-55F3:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
+55F3:                      41       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x41"
 55F4:                      3E       ;               ELSE go to: 0x5633
 55F5:                         02 00 91 ;                 IS OWNED BY, A=0x91, obj=??00??
-55F8:                   9E          ;             ROUTINE 0x9E
+55F8:                   9E          ;             ROUTINE 0x9E ??9E??
 
 55F9: 91 26 00                      ; room=91_8_??91??, Length: 0x0026, Data: 0x00
 ;
 55FC:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-55FE:       9C                      ;     ROUTINE 0x9C
+55FE:       9C                      ;     ROUTINE 0x9C ??9C??
 ;
 55FF:    04 20                      ;   Section COMMANDS, Length: 0x0020
-5601:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-5604:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+5601:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: COM_0A_is_input_phrase(phrase_num)
+5604:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 5605:          04                   ;       ELSE go to: 0x560A
 5606:             0E 02             ;         WHILE FAIL, Length: 0x0002
-5608:                A0             ;           ROUTINE 0xA0
-5609:                A1             ;           ROUTINE 0xA1
-560A:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+5608:                A0             ;           ROUTINE 0xA0 ??A0??
+5609:                A1             ;           ROUTINE 0xA1 ??A1??
+560A:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 560B:          15                   ;       ELSE go to: 0x5621
 560C:             0D 13             ;         WHILE PASS, Length: 0x0013
-560E:                C0             ;           ROUTINE 0xC0
+560E:                C0             ;           ROUTINE 0xC0 ??C0??
 560F:                0E 10          ;           WHILE FAIL, Length: 0x0010
-5611:                   AE          ;             ROUTINE 0xAE
+5611:                   AE          ;             ROUTINE 0xAE ??AE??
 5612:                   14          ;             EXECUTE AND REVERSE STATUS
-5613:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-5616:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
+5613:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: COM_03_is_located(room_num, obj_num)
+5616:                      40       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x40"
 5617:                      3E       ;               ELSE go to: 0x5656
 5618:                         02 00 90 ;                 IS OWNED BY, A=0x90, obj=??00??
-561B:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
+561B:                      41       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x41"
 561C:                      3E       ;               ELSE go to: 0x565B
 561D:                         02 00 92 ;                 IS OWNED BY, A=0x92, obj=??00??
-5620:                   9E          ;             ROUTINE 0x9E
+5620:                   9E          ;             ROUTINE 0x9E ??9E??
 
 5621: 92 81 2E 00                   ; room=92_8_MOTOVATOM_ENGINES, Length: 0x012E, Data: 0x00
 ;
@@ -401,13 +401,13 @@
 ;                 MOTOVATOM
 ;
 5633:          0E 08                ;       WHILE FAIL, Length: 0x0008
-5635:             C3                ;         ROUTINE 0xC3
+5635:             C3                ;         ROUTINE 0xC3 PLAYER_LACKS_WISDOM
 5636:             04 05             ;         PRINT, Length: 0x0005
 5638:                91 61 8F 7A 53 ; 
 ;
 ;                    ENGINES
 ;
-563D:          8B                   ;       ROUTINE 0x8B
+563D:          8B                   ;       ROUTINE 0x8B PRINT_PERIOD
 563E:          04 80 92             ;       PRINT, Length: 0x0092
 5641:             C7 DE 94 14 4B 5E 83 96 3B 16 B7 B1 39 17 DB 9F ; 
 5651:             56 D1 15 71 CF 62 CE B0 63 16 DB B9 5B CA 87 A5 ; 
@@ -431,26 +431,26 @@
 56D7:          0D 61                ;       WHILE PASS, Length: 0x0061
 56D9:             0E 5E             ;         WHILE FAIL, Length: 0x005E
 56DB:                0D 1A          ;           WHILE PASS, Length: 0x001A
-56DD:                   03 01 84    ;             IS LOCATED, room=01_PLAYER, obj=??84??
+56DD:                   03 01 84    ;             HAS OBJECT, owner=01_PLAYER, obj=??84??
 56E0:                   04 11       ;             PRINT, Length: 0x0011
 56E2:                      C6 B0 96 78 C0 7A 9B 15 CD B5 46 7A F3 5F C7 DE ; 
 56F2:                      21       ; 
 ;
 ;                          RADIATION HAS KILLED YOU!
 ;
-56F3:                   1C 01       ;             SET VAR OBJECT, obj=01_YOU
+56F3:                   1C 01       ;             SET VAR OBJECT, obj=01_PLAYER
 56F5:                   1D 4B       ;             ATTACK VAR, Points: 75
 56F7:                0D 1E          ;           WHILE PASS, Length: 0x001E
-56F9:                   03 01 83    ;             IS LOCATED, room=01_PLAYER, obj=??83??
+56F9:                   03 01 83    ;             HAS OBJECT, owner=01_PLAYER, obj=??83??
 56FC:                   04 12       ;             PRINT, Length: 0x0012
 56FE:                      09 9A 51 18 54 C2 8E 5F FB 8E 67 66 03 8A DF D0 ; 
 570E:                      AB 89    ; 
 ;
 ;                          NOW YOU REALLY FEEL AWFUL! 
 ;
-5710:                   1C 01       ;             SET VAR OBJECT, obj=01_YOU
+5710:                   1C 01       ;             SET VAR OBJECT, obj=01_PLAYER
 5712:                   1D 0A       ;             ATTACK VAR, Points: 10
-5714:                   17 84 01    ;             MOVE TO, obj=??84??, room=01_PLAYER
+5714:                   17 84 01    ;             MOVE TO, obj=??84??, destination=01_PLAYER
 5717:                0D 20          ;           WHILE PASS, Length: 0x0020
 5719:                   04 17       ;             PRINT, Length: 0x0017
 571B:                      C7 DE 94 14 48 5E 2E 60 91 7A 61 17 39 92 56 72 ; 
@@ -458,58 +458,58 @@
 ;
 ;                          YOU ARE FEELING SOMEWHAT NAUSEOUS.
 ;
-5732:                   17 83 01    ;             MOVE TO, obj=??83??, room=01_PLAYER
-5735:                   1C 01       ;             SET VAR OBJECT, obj=01_YOU
+5732:                   17 83 01    ;             MOVE TO, obj=??83??, destination=01_PLAYER
+5735:                   1C 01       ;             SET VAR OBJECT, obj=01_PLAYER
 5737:                   1D 0A       ;             ATTACK VAR, Points: 10
 5739:             0C                ;         FAIL
-573A:          0B 16 0A             ;       SWITCH, Length: 0x0016, Function to call: 0x0A
-573D:             12                ;         Phrase 0x12: "PULL     u.......   *           *"
+573A:          0B 16 0A             ;       SWITCH, Length: 0x0016, Function to call: COM_0A_is_input_phrase(phrase_num)
+573D:             12                ;         COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 573E:             01                ;         ELSE go to: 0x5740
-573F:                A0             ;           ROUTINE 0xA0
-5740:             36                ;         Phrase 0x36: "ENTER    *          *           *"
+573F:                A0             ;           ROUTINE 0xA0 ??A0??
+5740:             36                ;         COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 5741:             10                ;         ELSE go to: 0x5752
 5742:                0D 0E          ;           WHILE PASS, Length: 0x000E
-5744:                   C0          ;             ROUTINE 0xC0
+5744:                   C0          ;             ROUTINE 0xC0 ??C0??
 5745:                   0E 0B       ;             WHILE FAIL, Length: 0x000B
-5747:                      AE       ;               ROUTINE 0xAE
+5747:                      AE       ;               ROUTINE 0xAE ??AE??
 5748:                      14       ;               EXECUTE AND REVERSE STATUS
-5749:                      0B 06 03 ;               SWITCH, Length: 0x0006, Function to call: 0x03
-574C:                         40    ;                 Phrase 0x40: "CLOSE    ....A...   *           *"
+5749:                      0B 06 03 ;               SWITCH, Length: 0x0006, Function to call: COM_03_is_located(room_num, obj_num)
+574C:                         40    ;                 COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x40"
 574D:                         3E    ;                 ELSE go to: 0x578C
 574E:                            02 00 91 ;                   IS OWNED BY, A=0x91, obj=??00??
-5751:                      9E       ;               ROUTINE 0x9E
+5751:                      9E       ;               ROUTINE 0x9E ??9E??
 
 5752: 9A 2C 00                      ; room=9A_8_??9A??, Length: 0x002C, Data: 0x00
 ;
 5755:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-5757:       B0                      ;     ROUTINE 0xB0
+5757:       B0                      ;     ROUTINE 0xB0 ??B0??
 ;
 5758:    04 26                      ;   Section COMMANDS, Length: 0x0026
-575A:       0B 24 0A                ;     SWITCH, Length: 0x0024, Function to call: 0x0A
-575D:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+575A:       0B 24 0A                ;     SWITCH, Length: 0x0024, Function to call: COM_0A_is_input_phrase(phrase_num)
+575D:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 575E:          05                   ;       ELSE go to: 0x5764
 575F:             0E 03             ;         WHILE FAIL, Length: 0x0003
-5761:                A0             ;           ROUTINE 0xA0
-5762:                A1             ;           ROUTINE 0xA1
-5763:                9F             ;           ROUTINE 0x9F
-5764:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+5761:                A0             ;           ROUTINE 0xA0 ??A0??
+5762:                A1             ;           ROUTINE 0xA1 ??A1??
+5763:                9F             ;           ROUTINE 0x9F ??9F??
+5764:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 5765:          1A                   ;       ELSE go to: 0x5780
 5766:             0D 18             ;         WHILE PASS, Length: 0x0018
-5768:                C0             ;           ROUTINE 0xC0
+5768:                C0             ;           ROUTINE 0xC0 ??C0??
 5769:                0E 15          ;           WHILE FAIL, Length: 0x0015
-576B:                   AE          ;             ROUTINE 0xAE
+576B:                   AE          ;             ROUTINE 0xAE ??AE??
 576C:                   14          ;             EXECUTE AND REVERSE STATUS
-576D:                   0B 10 03    ;             SWITCH, Length: 0x0010, Function to call: 0x03
-5770:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
+576D:                   0B 10 03    ;             SWITCH, Length: 0x0010, Function to call: COM_03_is_located(room_num, obj_num)
+5770:                      40       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x40"
 5771:                      3E       ;               ELSE go to: 0x57B0
 5772:                         02 00 9B ;                 IS OWNED BY, A=0x9B, obj=??00??
-5775:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
+5775:                      41       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x41"
 5776:                      3E       ;               ELSE go to: 0x57B5
 5777:                         02 00 9C ;                 IS OWNED BY, A=0x9C, obj=??00??
-577A:                      3F       ;               Phrase 0x3F: "SAVE     *          *           *"
+577A:                      3F       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x3F"
 577B:                      3E       ;               ELSE go to: 0x57BA
 577C:                         02 00 8C ;                 IS OWNED BY, A=0x8C, obj=??00??
-577F:                   9E          ;             ROUTINE 0x9E
+577F:                   9E          ;             ROUTINE 0x9E ??9E??
 
 5780: 9B 80 DA 00                   ; room=9B_8_PLASTOTRO_GUN, Length: 0x00DA, Data: 0x00
 ;
@@ -521,13 +521,13 @@
 ;                 PLASTOTRO
 ;
 5792:          0E 05                ;       WHILE FAIL, Length: 0x0005
-5794:             C3                ;         ROUTINE 0xC3
+5794:             C3                ;         ROUTINE 0xC3 PLAYER_LACKS_WISDOM
 5795:             04 02             ;         PRINT, Length: 0x0002
 5797:                30 6F          ; 
 ;
 ;                    GUN
 ;
-5799:          8B                   ;       ROUTINE 0x8B
+5799:          8B                   ;       ROUTINE 0x8B PRINT_PERIOD
 579A:          04 80 A6             ;       PRINT, Length: 0x00A6
 579D:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 09 15 1B 92 ; 
 57AD:             1B B8 E6 A4 39 17 FF 9F D0 15 82 17 45 5E 9E 61 ; 
@@ -549,22 +549,22 @@
 ;
 ;
 5843:    04 18                      ;   Section COMMANDS, Length: 0x0018
-5845:       0B 16 0A                ;     SWITCH, Length: 0x0016, Function to call: 0x0A
-5848:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+5845:       0B 16 0A                ;     SWITCH, Length: 0x0016, Function to call: COM_0A_is_input_phrase(phrase_num)
+5848:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 5849:          01                   ;       ELSE go to: 0x584B
-584A:             A1                ;         ROUTINE 0xA1
-584B:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+584A:             A1                ;         ROUTINE 0xA1 ??A1??
+584B:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 584C:          10                   ;       ELSE go to: 0x585D
 584D:             0D 0E             ;         WHILE PASS, Length: 0x000E
-584F:                C0             ;           ROUTINE 0xC0
+584F:                C0             ;           ROUTINE 0xC0 ??C0??
 5850:                0E 0B          ;           WHILE FAIL, Length: 0x000B
-5852:                   AE          ;             ROUTINE 0xAE
+5852:                   AE          ;             ROUTINE 0xAE ??AE??
 5853:                   14          ;             EXECUTE AND REVERSE STATUS
-5854:                   0B 06 03    ;             SWITCH, Length: 0x0006, Function to call: 0x03
-5857:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
+5854:                   0B 06 03    ;             SWITCH, Length: 0x0006, Function to call: COM_03_is_located(room_num, obj_num)
+5857:                      41       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x41"
 5858:                      3E       ;               ELSE go to: 0x5897
 5859:                         02 00 9A ;                 IS OWNED BY, A=0x9A, obj=??00??
-585C:                   9E          ;             ROUTINE 0x9E
+585C:                   9E          ;             ROUTINE 0x9E ??9E??
 
 585D: 9C 80 E5 00                   ; room=9C_8_ARMSMITAN_WEAPONRY, Length: 0x00E5, Data: 0x00
 ;
@@ -576,13 +576,13 @@
 ;                 ARMSMITAN
 ;
 586F:          0E 09                ;       WHILE FAIL, Length: 0x0009
-5871:             C3                ;         ROUTINE 0xC3
+5871:             C3                ;         ROUTINE 0xC3 PLAYER_LACKS_WISDOM
 5872:             04 06             ;         PRINT, Length: 0x0006
 5874:                A3 D0 80 A6 7B B4 ; 
 ;
 ;                    WEAPONRY 
 ;
-587A:          8B                   ;       ROUTINE 0x8B
+587A:          8B                   ;       ROUTINE 0x8B PRINT_PERIOD
 587B:          04 80 A5             ;       PRINT, Length: 0x00A5
 587E:             C7 DE 94 14 55 5E 50 BD 90 5A CB 6A 83 96 3B 16 ; 
 588E:             B7 B1 39 17 FE 9F D0 15 82 17 45 5E 9E 61 23 62 ; 
@@ -604,78 +604,78 @@
 ;
 ;
 5923:    04 20                      ;   Section COMMANDS, Length: 0x0020
-5925:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-5928:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+5925:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: COM_0A_is_input_phrase(phrase_num)
+5928:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 5929:          04                   ;       ELSE go to: 0x592E
 592A:             0E 02             ;         WHILE FAIL, Length: 0x0002
-592C:                A0             ;           ROUTINE 0xA0
-592D:                A1             ;           ROUTINE 0xA1
-592E:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+592C:                A0             ;           ROUTINE 0xA0 ??A0??
+592D:                A1             ;           ROUTINE 0xA1 ??A1??
+592E:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 592F:          15                   ;       ELSE go to: 0x5945
 5930:             0D 13             ;         WHILE PASS, Length: 0x0013
-5932:                C0             ;           ROUTINE 0xC0
+5932:                C0             ;           ROUTINE 0xC0 ??C0??
 5933:                0E 10          ;           WHILE FAIL, Length: 0x0010
-5935:                   AE          ;             ROUTINE 0xAE
+5935:                   AE          ;             ROUTINE 0xAE ??AE??
 5936:                   14          ;             EXECUTE AND REVERSE STATUS
-5937:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-593A:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
+5937:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: COM_03_is_located(room_num, obj_num)
+593A:                      40       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x40"
 593B:                      3E       ;               ELSE go to: 0x597A
 593C:                         02 00 9A ;                 IS OWNED BY, A=0x9A, obj=??00??
-593F:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
+593F:                      41       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x41"
 5940:                      3E       ;               ELSE go to: 0x597F
 5941:                         02 00 9D ;                 IS OWNED BY, A=0x9D, obj=??00??
-5944:                   9E          ;             ROUTINE 0x9E
+5944:                   9E          ;             ROUTINE 0x9E ??9E??
 
 5945: 9D 26 00                      ; room=9D_8_??9D??, Length: 0x0026, Data: 0x00
 ;
 5948:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-594A:       9C                      ;     ROUTINE 0x9C
+594A:       9C                      ;     ROUTINE 0x9C ??9C??
 ;
 594B:    04 20                      ;   Section COMMANDS, Length: 0x0020
-594D:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: 0x0A
-5950:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+594D:       0B 1E 0A                ;     SWITCH, Length: 0x001E, Function to call: COM_0A_is_input_phrase(phrase_num)
+5950:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 5951:          04                   ;       ELSE go to: 0x5956
 5952:             0E 02             ;         WHILE FAIL, Length: 0x0002
-5954:                A0             ;           ROUTINE 0xA0
-5955:                A1             ;           ROUTINE 0xA1
-5956:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+5954:                A0             ;           ROUTINE 0xA0 ??A0??
+5955:                A1             ;           ROUTINE 0xA1 ??A1??
+5956:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 5957:          15                   ;       ELSE go to: 0x596D
 5958:             0D 13             ;         WHILE PASS, Length: 0x0013
-595A:                C0             ;           ROUTINE 0xC0
+595A:                C0             ;           ROUTINE 0xC0 ??C0??
 595B:                0E 10          ;           WHILE FAIL, Length: 0x0010
-595D:                   AE          ;             ROUTINE 0xAE
+595D:                   AE          ;             ROUTINE 0xAE ??AE??
 595E:                   14          ;             EXECUTE AND REVERSE STATUS
-595F:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: 0x03
-5962:                      40       ;               Phrase 0x40: "CLOSE    ....A...   *           *"
+595F:                   0B 0B 03    ;             SWITCH, Length: 0x000B, Function to call: COM_03_is_located(room_num, obj_num)
+5962:                      40       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x40"
 5963:                      3E       ;               ELSE go to: 0x59A2
 5964:                         02 00 9C ;                 IS OWNED BY, A=0x9C, obj=??00??
-5967:                      41       ;               Phrase 0x41: "LOCK     ....A...   WITH     u......."
+5967:                      41       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x41"
 5968:                      3E       ;               ELSE go to: 0x59A7
 5969:                         02 00 9E ;                 IS OWNED BY, A=0x9E, obj=??00??
-596C:                   9E          ;             ROUTINE 0x9E
+596C:                   9E          ;             ROUTINE 0x9E ??9E??
 
 596D: 9E 1E 00                      ; room=9E_8_??9E??, Length: 0x001E, Data: 0x00
 ;
 5970:    03 01                      ;   Section DESCRIPTION, Length: 0x0001
-5972:       9D                      ;     ROUTINE 0x9D
+5972:       9D                      ;     ROUTINE 0x9D ??9D??
 ;
 5973:    04 18                      ;   Section COMMANDS, Length: 0x0018
-5975:       0B 16 0A                ;     SWITCH, Length: 0x0016, Function to call: 0x0A
-5978:          12                   ;       Phrase 0x12: "PULL     u.......   *           *"
+5975:       0B 16 0A                ;     SWITCH, Length: 0x0016, Function to call: COM_0A_is_input_phrase(phrase_num)
+5978:          12                   ;       COM_0A_is_input_phrase(12: "PULL     u.......   *           *")
 5979:          01                   ;       ELSE go to: 0x597B
-597A:             9F                ;         ROUTINE 0x9F
-597B:          36                   ;       Phrase 0x36: "ENTER    *          *           *"
+597A:             9F                ;         ROUTINE 0x9F ??9F??
+597B:          36                   ;       COM_0A_is_input_phrase(36: "ENTER    *          *           *")
 597C:          10                   ;       ELSE go to: 0x598D
 597D:             0D 0E             ;         WHILE PASS, Length: 0x000E
-597F:                C0             ;           ROUTINE 0xC0
+597F:                C0             ;           ROUTINE 0xC0 ??C0??
 5980:                0E 0B          ;           WHILE FAIL, Length: 0x000B
-5982:                   AE          ;             ROUTINE 0xAE
+5982:                   AE          ;             ROUTINE 0xAE ??AE??
 5983:                   14          ;             EXECUTE AND REVERSE STATUS
-5984:                   0B 06 03    ;             SWITCH, Length: 0x0006, Function to call: 0x03
-5987:                      3F       ;               Phrase 0x3F: "SAVE     *          *           *"
+5984:                   0B 06 03    ;             SWITCH, Length: 0x0006, Function to call: COM_03_is_located(room_num, obj_num)
+5987:                      3F       ;               COM_03_is_located(room_num, obj_num) "??DOESTHISWORK0x3F"
 5988:                      3E       ;               ELSE go to: 0x59C7
 5989:                         02 00 9D ;                 IS OWNED BY, A=0x9D, obj=??00??
-598C:                   9E          ;             ROUTINE 0x9E
+598C:                   9E          ;             ROUTINE 0x9E ??9E??
 ```
 
 ```code
