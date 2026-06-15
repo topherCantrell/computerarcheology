@@ -25,7 +25,7 @@ DESCRIPTIONS = {
     # 0xA1
     0xA2: 'PRINT_ALREADY_HAVE_THE_var',
     0xA3: 'PRINT_WELCOME_MESSAGE',  # Moves to HIGHWAY_WEST in section 1
-    0xA5: 'ATTEMPT_TO_CLOSE',
+    0xA5: 'VERIFY_OPEN',
     0xA6: 'ATTEMPT_TO_OPEN',
     0xA8: 'PRINT_noun1',
     0xA9: 'PRINT_noun2',

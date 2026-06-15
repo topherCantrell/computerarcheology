@@ -3624,7 +3624,7 @@ GeneralScript:
 ;
 ;                       IS LOCKED.
 ;
-7E07:             A5                ;         ROUTINE 0xA5 ATTEMPT_TO_CLOSE
+7E07:             A5                ;         ROUTINE 0xA5 VERIFY_OPEN
 7E08:             A6                ;         ROUTINE 0xA6 ATTEMPT_TO_OPEN
 7E09:       3A                      ;     COM_0A_is_input_phrase(3A: "OPEN     u.......   WITH     u.......")
 7E0A:       11                      ;     ELSE go to: 0x7E1C
@@ -3635,7 +3635,7 @@ GeneralScript:
 7E11:                8F             ;           ROUTINE 0x8F TRY_TO_GET_OBJECT
 7E12:             13                ;         UNKNOWN13
 7E13:             92                ;         ROUTINE 0x92 PRINT_TRIED_BUT_COULDNT
-7E14:             A5                ;         ROUTINE 0xA5 ATTEMPT_TO_CLOSE
+7E14:             A5                ;         ROUTINE 0xA5 VERIFY_OPEN
 7E15:             0D 04             ;         WHILE PASS, Length: 0x0004
 7E17:                2E 40          ;           UNKNOWN2E, Value: 0x40
 7E19:                2A             ;           UNKNOWN2A
@@ -8369,9 +8369,6 @@ B3AE:                1A             ;           SET VAR TO FIRST NOUN
 
 
 
-; ?? The A5 subroutine is the "attempt to close" and if it succeeds it says "IS NOT CLOSED" instead of "IS NOW CLOSED.
-; ?? Bedlam does the same thing ... same typo ?? MAYBE?
-
 ; ?? Is CA:DIE_ENERGY_BEAM ever used?
 
 SubroutineCommands:
@@ -8658,7 +8655,7 @@ B66C:             0C BA 91 48 46 62 AF 14 14 D0 EB 5D ;
 ;
 B678:          25                   ;       PRINT LINEFEED
 
-; Routine A5:ATTEMPT_TO_CLOSE
+; Routine A5:VERIFY_OPEN
 ;
 B679: A5 12                         ; Routine Number: 0xA5, Length: 0x0012
 B67B:       0D 10                   ;     WHILE PASS, Length: 0x0010
@@ -9319,6 +9316,7 @@ BD64:             23 C6 F6 4E EB DA ;
 ;
 BD6A:          1C 01                ;       SET VAR OBJECT, obj=01_PLAYER
 BD6C:          1D 64                ;       ATTACK VAR, Points: 100
+
 
 
 
