@@ -59,3 +59,23 @@ with open("d:/git/computerarcheology/content/trs80/xenos/Code.md", "r") as f:
 
         g = f.readline()
         g = g.strip()
+
+def get_verb(num):
+    return WORDS[0][num][0]
+
+def get_noun(num):
+    if num not in WORDS[1]:
+        return f'??{num:02X}??'
+    return WORDS[1][num][0]
+
+def get_adjective(num):
+    return WORDS[2][num][0]
+
+def get_adverb(num):
+    return WORDS[3][num][0]
+
+def get_phrase(num):
+    if num not in PHRASES:
+        return f'??{num:02X}??'
+    ret = PHRASES[num][0]
+    return ' '.join(ret.split())    

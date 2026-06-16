@@ -7,5 +7,4 @@ with open(f'd:/git/computerarcheology/content/trs80/xenos/roms/section{SECTION_N
 cursor = script_cursor.ScriptCursor(RAW, 0x5200)
 cursor.set_pos(0x5200)
 
-# TODO look to see what section number
 cursor.decode_script(SECTION_NUMBER)

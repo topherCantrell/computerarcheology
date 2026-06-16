@@ -7,12 +7,12 @@
 >>> binary 5200:roms/section3.bin
 
 ```code
-5200: 00 89 FB                      ; List ID: 0x00, Length: 0x09FB
+5200: 00 89 FB                           ; List_ID=0x00, length=0x09FB
 
-5203: 90 80 8C 00                   ; room=90_3_WEST_ALLEY_INTERSECTION, Length: 0x008C, Data: 0x00
+5203: 90 80 8C 00                        ; ----- Room RM_3_WEST_ALLEY_INTERSECTION, Length: 0x008C, Data: 0x00
 ;
-5207:    03 6C                      ;   Section DESCRIPTION, Length: 0x006C
-5209:       04 6A                   ;     PRINT, Length: 0x006A
+5207:    03 6C                           ;   ---- Section SECTION_03_DESCRIPTION length=0x006C
+5209:       04 6A                        ;     COM_04_print_command length=0x006A
 520B:          B5 D0 03 BC FF 8C 4B DB BF 9A 97 B3 03 56 27 A0 ; 
 521B:          51 18 43 C2 5B B1 FB B9 43 98 AB 98 73 49 5F BE ; 
 522B:          D0 15 F4 BD A5 B7 91 BE 91 96 8F 64 D0 47 66 17 ; 
@@ -26,53 +26,53 @@
 ;              TOWN. TO THE SOUTH THE ALLEY LEADS TO THE DESERT.
 ;
 ;
-5275:    04 1B                      ;   Section COMMANDS, Length: 0x001B
-5277:       0B 19 0A                ;     SWITCH, Length: 0x0019, Function to call: COM_0A_is_input_phrase(phrase_num)
-527A:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-527B:          02                   ;       ELSE go to: 0x527E
-527C:             00 91             ;         MOVE AND LOOK, room=91_3_WEST_ALLEY_SOUTH
-527E:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-527F:          06                   ;       ELSE go to: 0x5286
-5280:             0D 04             ;         WHILE PASS, Length: 0x0004
-5282:                30 A4          ;           SET CURRENT ROOM, room=A4_2_WEST_ALLEY_NORTH
-5284:                2F 02          ;           LOAD SECTION FROM DISK, Section: 0x02
-5286:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
-5287:          02                   ;       ELSE go to: 0x528A
-5288:             00 93             ;         MOVE AND LOOK, room=93_3_TOWN_CENTER
-528A:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
-528B:          06                   ;       ELSE go to: 0x5292
-528C:             0D 04             ;         WHILE PASS, Length: 0x0004
-528E:                30 8D          ;           SET CURRENT ROOM, room=8D_2_MAIN_STREET_WEST
-5290:                2F 02          ;           LOAD SECTION FROM DISK, Section: 0x02
+5275:    04 1B                           ;   ---- Section SECTION_04_COMMANDS length=0x001B
+5277:       0B 19 0A                     ;     COM_0B_switch length=0x0019, function=COM_0A_is_input_phrase(phrase_num)
+527A:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+527B:          02                        ;       ELSE goto=0x527E
+527C:             00 91                  ;         COM_00_move_and_look(room=RM_3_WEST_ALLEY_SOUTH)
+527E:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+527F:          06                        ;       ELSE goto=0x5286
+5280:             0D 04                  ;         COM_0D_while_pass length=0x0004
+5282:                30 A4               ;           COM_30_set_current_room(room=RM_2_WEST_ALLEY_NORTH)
+5284:                2F 02               ;           COM_2F_load_section_from_disk(section=2)
+5286:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
+5287:          02                        ;       ELSE goto=0x528A
+5288:             00 93                  ;         COM_00_move_and_look(room=RM_3_TOWN_CENTER)
+528A:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
+528B:          06                        ;       ELSE goto=0x5292
+528C:             0D 04                  ;         COM_0D_while_pass length=0x0004
+528E:                30 8D               ;           COM_30_set_current_room(room=RM_2_MAIN_STREET_WEST)
+5290:                2F 02               ;           COM_2F_load_section_from_disk(section=2)
 
-5292: 91 4E 00                      ; room=91_3_WEST_ALLEY_SOUTH, Length: 0x004E, Data: 0x00
+5292: 91 4E 00                           ; ----- Room RM_3_WEST_ALLEY_SOUTH, Length: 0x004E, Data: 0x00
 ;
-5295:    03 3A                      ;   Section DESCRIPTION, Length: 0x003A
-5297:       04 38                   ;     PRINT, Length: 0x0038
+5295:    03 3A                           ;   ---- Section SECTION_03_DESCRIPTION length=0x003A
+5297:       04 38                        ;     COM_04_print_command length=0x0038
 5299:          B5 D0 03 BC FF 8C 55 DB 36 A1 9B 76 C7 DE 94 14 ; 
 52A9:          4B 5E 96 96 DB 72 46 48 3B 63 76 4D A7 D0 96 96 ; 
 52B9:          DB 72 1F B8 08 B2 E5 64 B8 16 05 67 43 5E 33 98 ; 
-52C9:          5F BE 84 15 57 9E 9F B4 ; 
+52C9:          5F BE 84 15 57 9E 9F B4   ; 
 ;
 ;              WEST ALLEY SOUTH. YOU ARE IN THE ALLEY BETWEEN THE
 ;              SHERIFF'S OFFICE AND THE GROCERY.
 ;
 ;
-52D1:    04 0F                      ;   Section COMMANDS, Length: 0x000F
-52D3:       0B 0D 0A                ;     SWITCH, Length: 0x000D, Function to call: COM_0A_is_input_phrase(phrase_num)
-52D6:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-52D7:          02                   ;       ELSE go to: 0x52DA
-52D8:             00 90             ;         MOVE AND LOOK, room=90_3_WEST_ALLEY_INTERSECTION
-52DA:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-52DB:          06                   ;       ELSE go to: 0x52E2
-52DC:             0D 04             ;         WHILE PASS, Length: 0x0004
-52DE:                30 92          ;           SET CURRENT ROOM, room=92_2_SOUTH_OF_WEST_ALLEY
-52E0:                2F 02          ;           LOAD SECTION FROM DISK, Section: 0x02
+52D1:    04 0F                           ;   ---- Section SECTION_04_COMMANDS length=0x000F
+52D3:       0B 0D 0A                     ;     COM_0B_switch length=0x000D, function=COM_0A_is_input_phrase(phrase_num)
+52D6:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+52D7:          02                        ;       ELSE goto=0x52DA
+52D8:             00 90                  ;         COM_00_move_and_look(room=RM_3_WEST_ALLEY_INTERSECTION)
+52DA:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+52DB:          06                        ;       ELSE goto=0x52E2
+52DC:             0D 04                  ;         COM_0D_while_pass length=0x0004
+52DE:                30 92               ;           COM_30_set_current_room(room=RM_2_SOUTH_OF_WEST_ALLEY)
+52E0:                2F 02               ;           COM_2F_load_section_from_disk(section=2)
 
-52E2: 93 81 1B 00                   ; room=93_3_TOWN_CENTER, Length: 0x011B, Data: 0x00
+52E2: 93 81 1B 00                        ; ----- Room RM_3_TOWN_CENTER, Length: 0x011B, Data: 0x00
 ;
-52E6:    03 80 F6                   ;   Section DESCRIPTION, Length: 0x00F6
-52E9:       04 80 F3                ;     PRINT, Length: 0x00F3
+52E6:    03 80 F6                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00F6
+52E9:       04 80 F3                     ;     COM_04_print_command length=0x00F3
 52EC:          89 BF 85 96 9E 61 47 62 51 18 43 C2 5B B1 09 9A ; 
 52FC:          66 17 8E 48 91 7A D0 15 82 17 45 5E 9E 61 23 62 ; 
 530C:          C3 9E 89 BF 1B 9C 6B BF 5F BE 99 16 C2 B3 D5 15 ; 
@@ -88,7 +88,7 @@
 53AC:          B3 6E 16 8D 91 19 A9 A6 50 B8 CB 6A 11 BC 96 96 ; 
 53BC:          DB 72 47 B9 53 BE 46 B8 51 5E 96 64 DB 72 0C BA ; 
 53CC:          36 60 D5 15 82 17 55 5E F4 72 50 79 CB 23 D0 9E ; 
-53DC:          D7 78 2E             ; 
+53DC:          D7 78 2E                  ; 
 ;
 ;              TOWN CENTER. YOU ARE NOW STANDING IN THE CENTER OF TOWN. TO
 ;              THE NORTH IS "BOB'S HARDWARE." TO THE SOUTH IS "SLIM'S
@@ -99,33 +99,33 @@
 ;              SHERIFF'S OFFICE.
 ;
 ;
-53DF:    04 1F                      ;   Section COMMANDS, Length: 0x001F
-53E1:       0B 1D 0A                ;     SWITCH, Length: 0x001D, Function to call: COM_0A_is_input_phrase(phrase_num)
-53E4:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-53E5:          08                   ;       ELSE go to: 0x53EE
-53E6:             0E 06             ;         WHILE FAIL, Length: 0x0006
-53E8:                14             ;           EXECUTE AND REVERSE STATUS
-53E9:                1C 0C          ;           SET VAR OBJECT, obj=0C_BOBS_DOOR
-53EB:                8D             ;           ROUTINE 0x8D PRINT_OBJECT_IS_CLOSED
-53EC:                00 A6          ;           MOVE AND LOOK, room=A6_3_HARDWARE_SOUTH
-53EE:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-53EF:          08                   ;       ELSE go to: 0x53F8
-53F0:             0E 06             ;         WHILE FAIL, Length: 0x0006
-53F2:                14             ;           EXECUTE AND REVERSE STATUS
-53F3:                1C 0B          ;           SET VAR OBJECT, obj=0B_SLIMS_DOOR
-53F5:                8D             ;           ROUTINE 0x8D PRINT_OBJECT_IS_CLOSED
-53F6:                00 94          ;           MOVE AND LOOK, room=94_3_SLIMS_GROCERY
-53F8:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
-53F9:          02                   ;       ELSE go to: 0x53FC
-53FA:             00 96             ;         MOVE AND LOOK, room=96_3_EAST_ALLEY_INTERSECTION
-53FC:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
-53FD:          02                   ;       ELSE go to: 0x5400
-53FE:             00 90             ;         MOVE AND LOOK, room=90_3_WEST_ALLEY_INTERSECTION
+53DF:    04 1F                           ;   ---- Section SECTION_04_COMMANDS length=0x001F
+53E1:       0B 1D 0A                     ;     COM_0B_switch length=0x001D, function=COM_0A_is_input_phrase(phrase_num)
+53E4:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+53E5:          08                        ;       ELSE goto=0x53EE
+53E6:             0E 06                  ;         COM_0E_while_fail length=0x0006
+53E8:                14                  ;           COM_14_execute_and_reverse_status next command
+53E9:                1C 0C               ;           COM_1C_set_var_object(obj=OBJ_0C_DOOR_TOWN_CENTER_BOBS)
+53EB:                8D                  ;           FN_8D_PRINT_OBJECT_IS_CLOSED
+53EC:                00 A6               ;           COM_00_move_and_look(room=RM_3_HARDWARE_SOUTH)
+53EE:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+53EF:          08                        ;       ELSE goto=0x53F8
+53F0:             0E 06                  ;         COM_0E_while_fail length=0x0006
+53F2:                14                  ;           COM_14_execute_and_reverse_status next command
+53F3:                1C 0B               ;           COM_1C_set_var_object(obj=OBJ_0B_DOOR_TOWN_CENTER_SLIMS)
+53F5:                8D                  ;           FN_8D_PRINT_OBJECT_IS_CLOSED
+53F6:                00 94               ;           COM_00_move_and_look(room=RM_3_SLIMS_GROCERY)
+53F8:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
+53F9:          02                        ;       ELSE goto=0x53FC
+53FA:             00 96                  ;         COM_00_move_and_look(room=RM_3_EAST_ALLEY_INTERSECTION)
+53FC:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
+53FD:          02                        ;       ELSE goto=0x5400
+53FE:             00 90                  ;         COM_00_move_and_look(room=RM_3_WEST_ALLEY_INTERSECTION)
 
-5400: 94 4E 00                      ; room=94_3_SLIMS_GROCERY, Length: 0x004E, Data: 0x00
+5400: 94 4E 00                           ; ----- Room RM_3_SLIMS_GROCERY, Length: 0x004E, Data: 0x00
 ;
-5403:    03 3C                      ;   Section DESCRIPTION, Length: 0x003C
-5405:       04 3A                   ;     PRINT, Length: 0x003A
+5403:    03 3C                           ;   ---- Section SECTION_03_DESCRIPTION length=0x003C
+5405:       04 3A                        ;     COM_04_print_command length=0x003A
 5407:          C3 B8 A5 90 84 15 57 9E 9F B4 51 18 43 C2 5B B1 ; 
 5417:          83 7A 5F BE 84 15 57 9E 7B B4 09 BA 7F B1 82 17 ; 
 5427:          55 5E 84 BF 43 5E 9F A6 3D 49 89 17 9B 15 5B CA ; 
@@ -135,20 +135,20 @@
 ;              APPEARS TO HAVE BEEN RANSACKED.
 ;
 ;
-5441:    04 0D                      ;   Section COMMANDS, Length: 0x000D
-5443:       0B 0B 0A                ;     SWITCH, Length: 0x000B, Function to call: COM_0A_is_input_phrase(phrase_num)
-5446:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-5447:          08                   ;       ELSE go to: 0x5450
-5448:             0E 06             ;         WHILE FAIL, Length: 0x0006
-544A:                14             ;           EXECUTE AND REVERSE STATUS
-544B:                1C 0D          ;           SET VAR OBJECT, obj=0D_DOOR
-544D:                8D             ;           ROUTINE 0x8D PRINT_OBJECT_IS_CLOSED
-544E:                00 93          ;           MOVE AND LOOK, room=93_3_TOWN_CENTER
+5441:    04 0D                           ;   ---- Section SECTION_04_COMMANDS length=0x000D
+5443:       0B 0B 0A                     ;     COM_0B_switch length=0x000B, function=COM_0A_is_input_phrase(phrase_num)
+5446:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+5447:          08                        ;       ELSE goto=0x5450
+5448:             0E 06                  ;         COM_0E_while_fail length=0x0006
+544A:                14                  ;           COM_14_execute_and_reverse_status next command
+544B:                1C 0D               ;           COM_1C_set_var_object(obj=OBJ_0D_DOOR_SLIMS_GROCERY)
+544D:                8D                  ;           FN_8D_PRINT_OBJECT_IS_CLOSED
+544E:                00 93               ;           COM_00_move_and_look(room=RM_3_TOWN_CENTER)
 
-5450: 95 80 E8 00                   ; room=95_3_SOUTH_OF_SLIMS, Length: 0x00E8, Data: 0x00
+5450: 95 80 E8 00                        ; ----- Room RM_3_SOUTH_OF_SLIMS, Length: 0x00E8, Data: 0x00
 ;
-5454:    03 80 CF                   ;   Section DESCRIPTION, Length: 0x00CF
-5457:       04 80 CC                ;     PRINT, Length: 0x00CC
+5454:    03 80 CF                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00CF
+5457:       04 80 CC                     ;     COM_04_print_command length=0x00CC
 545A:          47 B9 53 BE C3 9E C3 B8 A5 90 5B F4 1B A1 2F 49 ; 
 546A:          99 16 D5 CE 36 A1 11 71 96 64 DB 72 B9 6E B4 53 ; 
 547A:          55 DB 84 BF DB 63 6B BF 5F BE F7 17 F3 B9 C7 DE ; 
@@ -171,24 +171,24 @@
 ;              TO THE SOUTH.
 ;
 ;
-5526:    04 13                      ;   Section COMMANDS, Length: 0x0013
-5528:       0B 11 0A                ;     SWITCH, Length: 0x0011, Function to call: COM_0A_is_input_phrase(phrase_num)
-552B:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
-552C:          02                   ;       ELSE go to: 0x552F
-552D:             00 98             ;         MOVE AND LOOK, room=98_3_SOUTH_OF_EAST_ALLEY
-552F:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
-5530:          06                   ;       ELSE go to: 0x5537
-5531:             0D 04             ;         WHILE PASS, Length: 0x0004
-5533:                30 92          ;           SET CURRENT ROOM, room=92_2_SOUTH_OF_WEST_ALLEY
-5535:                2F 02          ;           LOAD SECTION FROM DISK, Section: 0x02
-5537:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-5538:          02                   ;       ELSE go to: 0x553B
-5539:             00 B1             ;         MOVE AND LOOK, room=B1_3_DESERT_SOUTH2
+5526:    04 13                           ;   ---- Section SECTION_04_COMMANDS length=0x0013
+5528:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
+552B:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
+552C:          02                        ;       ELSE goto=0x552F
+552D:             00 98                  ;         COM_00_move_and_look(room=RM_3_SOUTH_OF_EAST_ALLEY)
+552F:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
+5530:          06                        ;       ELSE goto=0x5537
+5531:             0D 04                  ;         COM_0D_while_pass length=0x0004
+5533:                30 92               ;           COM_30_set_current_room(room=RM_2_SOUTH_OF_WEST_ALLEY)
+5535:                2F 02               ;           COM_2F_load_section_from_disk(section=2)
+5537:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+5538:          02                        ;       ELSE goto=0x553B
+5539:             00 B1                  ;         COM_00_move_and_look(room=RM_3_DESERT_SOUTH2)
 
-553B: 96 81 98 00                   ; room=96_3_EAST_ALLEY_INTERSECTION, Length: 0x0198, Data: 0x00
+553B: 96 81 98 00                        ; ----- Room RM_3_EAST_ALLEY_INTERSECTION, Length: 0x0198, Data: 0x00
 ;
-553F:    03 81 7B                   ;   Section DESCRIPTION, Length: 0x017B
-5542:       04 81 78                ;     PRINT, Length: 0x0178
+553F:    03 81 7B                        ;   ---- Section SECTION_03_DESCRIPTION length=0x017B
+5542:       04 81 78                     ;     COM_04_print_command length=0x0178
 5545:          95 5F 03 BC FF 8C 4B DB BF 9A 97 B3 03 56 27 A0 ; 
 5555:          51 18 50 C2 6B A1 FB B9 33 98 73 49 5F BE D0 15 ; 
 5565:          F4 BD A5 B7 91 BE 91 96 8F 64 D0 47 66 17 67 B1 ; 
@@ -212,7 +212,7 @@
 5685:          EF BF 96 62 82 17 2F 62 D5 15 5E 17 5D 7A C9 B5 ; 
 5695:          F5 B2 43 62 48 F4 3E C6 F4 72 09 15 03 D2 5F BE ; 
 56A5:          66 17 67 B1 16 BC F4 72 4B 5E C3 B5 83 96 74 5B ; 
-56B5:          44 5E CE C4 90 5A 5B 70 ; 
+56B5:          44 5E CE C4 90 5A 5B 70   ; 
 ;
 ;              EAST ALLEY INTERSECTION. YOU NOW STAND AT THE INTERSECTION
 ;              OF MAIN STREET AND THE ALLEY AT THE EAST SIDE OF TOWN. A
@@ -226,27 +226,27 @@
 ;              DOWN THE STREET THERE IS AN ADOBE BUILDING.
 ;
 ;
-56BD:    04 17                      ;   Section COMMANDS, Length: 0x0017
-56BF:       0B 15 0A                ;     SWITCH, Length: 0x0015, Function to call: COM_0A_is_input_phrase(phrase_num)
-56C2:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-56C3:          02                   ;       ELSE go to: 0x56C6
-56C4:             00 97             ;         MOVE AND LOOK, room=97_3_EAST_ALLEY_SOUTH
-56C6:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-56C7:          02                   ;       ELSE go to: 0x56CA
-56C8:             00 A8             ;         MOVE AND LOOK, room=A8_3_EAST_ALLEY_NORTH
-56CA:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
-56CB:          02                   ;       ELSE go to: 0x56CE
-56CC:             00 93             ;         MOVE AND LOOK, room=93_3_TOWN_CENTER
-56CE:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
-56CF:          06                   ;       ELSE go to: 0x56D6
-56D0:             0D 04             ;         WHILE PASS, Length: 0x0004
-56D2:                30 99          ;           SET CURRENT ROOM, room=99_4_MAIN_STREET_EAST
-56D4:                2F 04          ;           LOAD SECTION FROM DISK, Section: 0x04
+56BD:    04 17                           ;   ---- Section SECTION_04_COMMANDS length=0x0017
+56BF:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
+56C2:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+56C3:          02                        ;       ELSE goto=0x56C6
+56C4:             00 97                  ;         COM_00_move_and_look(room=RM_3_EAST_ALLEY_SOUTH)
+56C6:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+56C7:          02                        ;       ELSE goto=0x56CA
+56C8:             00 A8                  ;         COM_00_move_and_look(room=RM_3_EAST_ALLEY_NORTH)
+56CA:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
+56CB:          02                        ;       ELSE goto=0x56CE
+56CC:             00 93                  ;         COM_00_move_and_look(room=RM_3_TOWN_CENTER)
+56CE:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
+56CF:          06                        ;       ELSE goto=0x56D6
+56D0:             0D 04                  ;         COM_0D_while_pass length=0x0004
+56D2:                30 99               ;           COM_30_set_current_room(room=RM_4_MAIN_STREET_EAST)
+56D4:                2F 04               ;           COM_2F_load_section_from_disk(section=4)
 
-56D6: 97 7F 00                      ; room=97_3_EAST_ALLEY_SOUTH, Length: 0x007F, Data: 0x00
+56D6: 97 7F 00                           ; ----- Room RM_3_EAST_ALLEY_SOUTH, Length: 0x007F, Data: 0x00
 ;
-56D9:    03 6F                      ;   Section DESCRIPTION, Length: 0x006F
-56DB:       04 6D                   ;     PRINT, Length: 0x006D
+56D9:    03 6F                           ;   ---- Section SECTION_03_DESCRIPTION length=0x006F
+56DB:       04 6D                        ;     COM_04_print_command length=0x006D
 56DD:          95 5F 03 BC FF 8C 55 DB 36 A1 9B 76 C7 DE 94 14 ; 
 56ED:          55 5E 50 BD 90 5A CB 6A 96 96 DB 72 46 48 3B 63 ; 
 56FD:          76 4D A7 D0 96 96 DB 72 B9 6E B4 53 43 DB 33 98 ; 
@@ -260,19 +260,19 @@
 ;              TO THE SOUTH THE ALLEY OPENS TO THE DESERT.
 ;
 ;
-574A:    04 0B                      ;   Section COMMANDS, Length: 0x000B
-574C:       0B 09 0A                ;     SWITCH, Length: 0x0009, Function to call: COM_0A_is_input_phrase(phrase_num)
-574F:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-5750:          02                   ;       ELSE go to: 0x5753
-5751:             00 96             ;         MOVE AND LOOK, room=96_3_EAST_ALLEY_INTERSECTION
-5753:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-5754:          02                   ;       ELSE go to: 0x5757
-5755:             00 98             ;         MOVE AND LOOK, room=98_3_SOUTH_OF_EAST_ALLEY
+574A:    04 0B                           ;   ---- Section SECTION_04_COMMANDS length=0x000B
+574C:       0B 09 0A                     ;     COM_0B_switch length=0x0009, function=COM_0A_is_input_phrase(phrase_num)
+574F:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+5750:          02                        ;       ELSE goto=0x5753
+5751:             00 96                  ;         COM_00_move_and_look(room=RM_3_EAST_ALLEY_INTERSECTION)
+5753:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+5754:          02                        ;       ELSE goto=0x5757
+5755:             00 98                  ;         COM_00_move_and_look(room=RM_3_SOUTH_OF_EAST_ALLEY)
 
-5757: 98 80 E8 00                   ; room=98_3_SOUTH_OF_EAST_ALLEY, Length: 0x00E8, Data: 0x00
+5757: 98 80 E8 00                        ; ----- Room RM_3_SOUTH_OF_EAST_ALLEY, Length: 0x00E8, Data: 0x00
 ;
-575B:    03 80 C7                   ;   Section DESCRIPTION, Length: 0x00C7
-575E:       04 80 C4                ;     PRINT, Length: 0x00C4
+575B:    03 80 C7                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00C7
+575E:       04 80 C4                     ;     COM_04_print_command length=0x00C4
 5761:          47 B9 53 BE C3 9E 95 5F 03 BC FF 8C DB E0 C7 DE ; 
 5771:          94 14 50 5E 6B A1 83 7A 5F BE FF 14 B4 B7 15 BC ; 
 5781:          36 A1 11 71 96 64 DB 72 46 48 3B 63 73 49 5F BE ; 
@@ -285,7 +285,7 @@
 57F1:          19 EE 85 73 0B 71 CF B5 35 49 F3 5F 4B 49 25 BA ; 
 5801:          9B 76 83 7A 5F BE 03 15 FB B9 17 98 7B 14 E3 B8 ; 
 5811:          F3 8C 09 47 5B 4D EB 4F C3 8B AB 98 10 53 AF 14 ; 
-5821:          57 17 A7 61          ; 
+5821:          57 17 A7 61               ; 
 ;
 ;              SOUTH OF EAST ALLEY. YOU ARE NOW IN THE DESERT SOUTH OF THE
 ;              ALLEY AT THE EAST END OF TOWN. TO THE EAST YOU CAN SEE THE
@@ -294,29 +294,29 @@
 ;              SUCH. IN THE DISTANCE A SMALL ADOBE BUILDING CAN BE SEEN.
 ;
 ;
-5825:    04 1B                      ;   Section COMMANDS, Length: 0x001B
-5827:       0B 19 0A                ;     SWITCH, Length: 0x0019, Function to call: COM_0A_is_input_phrase(phrase_num)
-582A:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
-582B:          02                   ;       ELSE go to: 0x582E
-582C:             00 95             ;         MOVE AND LOOK, room=95_3_SOUTH_OF_SLIMS
-582E:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-582F:          02                   ;       ELSE go to: 0x5832
-5830:             00 97             ;         MOVE AND LOOK, room=97_3_EAST_ALLEY_SOUTH
-5832:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-5833:          06                   ;       ELSE go to: 0x583A
-5834:             0D 04             ;         WHILE PASS, Length: 0x0004
-5836:                30 B2          ;           SET CURRENT ROOM, room=B2_4_DESERT_SOUTH3
-5838:                2F 04          ;           LOAD SECTION FROM DISK, Section: 0x04
-583A:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
-583B:          06                   ;       ELSE go to: 0x5842
-583C:             0D 04             ;         WHILE PASS, Length: 0x0004
-583E:                30 9B          ;           SET CURRENT ROOM, room=9B_4_SOUTH_OF_BANK
-5840:                2F 04          ;           LOAD SECTION FROM DISK, Section: 0x04
+5825:    04 1B                           ;   ---- Section SECTION_04_COMMANDS length=0x001B
+5827:       0B 19 0A                     ;     COM_0B_switch length=0x0019, function=COM_0A_is_input_phrase(phrase_num)
+582A:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
+582B:          02                        ;       ELSE goto=0x582E
+582C:             00 95                  ;         COM_00_move_and_look(room=RM_3_SOUTH_OF_SLIMS)
+582E:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+582F:          02                        ;       ELSE goto=0x5832
+5830:             00 97                  ;         COM_00_move_and_look(room=RM_3_EAST_ALLEY_SOUTH)
+5832:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+5833:          06                        ;       ELSE goto=0x583A
+5834:             0D 04                  ;         COM_0D_while_pass length=0x0004
+5836:                30 B2               ;           COM_30_set_current_room(room=RM_4_DESERT_SOUTH3)
+5838:                2F 04               ;           COM_2F_load_section_from_disk(section=4)
+583A:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
+583B:          06                        ;       ELSE goto=0x5842
+583C:             0D 04                  ;         COM_0D_while_pass length=0x0004
+583E:                30 9B               ;           COM_30_set_current_room(room=RM_4_SOUTH_OF_BANK)
+5840:                2F 04               ;           COM_2F_load_section_from_disk(section=4)
 
-5842: A5 80 92 00                   ; room=A5_3_NORTH_OF_BOBS, Length: 0x0092, Data: 0x00
+5842: A5 80 92 00                        ; ----- Room RM_3_NORTH_OF_BOBS, Length: 0x0092, Data: 0x00
 ;
-5846:    03 7A                      ;   Section DESCRIPTION, Length: 0x007A
-5848:       04 78                   ;     PRINT, Length: 0x0078
+5846:    03 7A                           ;   ---- Section SECTION_03_DESCRIPTION length=0x007A
+5848:       04 78                        ;     COM_04_print_command length=0x0078
 584A:          04 9A 53 BE C3 9E F4 4E EF 23 51 18 43 C2 5B B1 ; 
 585A:          FB B9 43 98 AB 98 04 9A 53 BE C3 9E 5F BE 9B 15 ; 
 586A:          51 B1 2F 49 66 17 AF A0 56 F4 D6 9C DB 72 95 5F ; 
@@ -324,7 +324,7 @@
 588A:          46 B8 51 5E 83 64 91 17 D5 9C 84 BF 44 DB CE C4 ; 
 589A:          90 5A 5B 70 6B BF 5F BE F7 17 F3 B9 C7 DE D3 14 ; 
 58AA:          95 96 1B 60 5F BE 99 16 C2 B3 5B 17 DB 59 C3 9E ; 
-58BA:          5F BE 53 17 81 8D 1B 9C ; 
+58BA:          5F BE 53 17 81 8D 1B 9C   ; 
 ;
 ;              NORTH OF BOB'S. YOU ARE STANDING NORTH OF THE HARDWARE
 ;              STORE. TO THE EAST YOU CAN SEE THE NORTH SIDE OF A TWO
@@ -332,53 +332,53 @@
 ;              THE SALOON.
 ;
 ;
-58C2:    04 13                      ;   Section COMMANDS, Length: 0x0013
-58C4:       0B 11 0A                ;     SWITCH, Length: 0x0011, Function to call: COM_0A_is_input_phrase(phrase_num)
-58C7:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-58C8:          02                   ;       ELSE go to: 0x58CB
-58C9:             00 B8             ;         MOVE AND LOOK, room=B8_3_DESERT_NORTH2
-58CB:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
-58CC:          02                   ;       ELSE go to: 0x58CF
-58CD:             00 A7             ;         MOVE AND LOOK, room=A7_3_NORTH_OF_EAST_ALLEY
-58CF:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
-58D0:          06                   ;       ELSE go to: 0x58D7
-58D1:             0D 04             ;         WHILE PASS, Length: 0x0004
-58D3:                30 A3          ;           SET CURRENT ROOM, room=A3_2_NORTH_OF_WEST_ALLEY
-58D5:                2F 02          ;           LOAD SECTION FROM DISK, Section: 0x02
+58C2:    04 13                           ;   ---- Section SECTION_04_COMMANDS length=0x0013
+58C4:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
+58C7:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+58C8:          02                        ;       ELSE goto=0x58CB
+58C9:             00 B8                  ;         COM_00_move_and_look(room=RM_3_DESERT_NORTH2)
+58CB:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
+58CC:          02                        ;       ELSE goto=0x58CF
+58CD:             00 A7                  ;         COM_00_move_and_look(room=RM_3_NORTH_OF_EAST_ALLEY)
+58CF:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
+58D0:          06                        ;       ELSE goto=0x58D7
+58D1:             0D 04                  ;         COM_0D_while_pass length=0x0004
+58D3:                30 A3               ;           COM_30_set_current_room(room=RM_2_NORTH_OF_WEST_ALLEY)
+58D5:                2F 02               ;           COM_2F_load_section_from_disk(section=2)
 
-58D7: A6 6C 00                      ; room=A6_3_HARDWARE_SOUTH, Length: 0x006C, Data: 0x00
+58D7: A6 6C 00                           ; ----- Room RM_3_HARDWARE_SOUTH, Length: 0x006C, Data: 0x00
 ;
-58DA:    03 56                      ;   Section DESCRIPTION, Length: 0x0056
-58DC:       04 54                   ;     PRINT, Length: 0x0054
+58DA:    03 56                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0056
+58DC:       04 54                        ;     COM_04_print_command length=0x0054
 58DE:          54 72 B3 5C 5B B1 47 B9 77 BE 51 18 43 C2 5B B1 ; 
 58EE:          09 9A D0 15 82 17 48 5E 00 B3 0A BC 40 48 B8 16 ; 
 58FE:          82 17 4A 5E 2E 49 14 D0 55 5E 84 BF DB 63 5F BE ; 
 590E:          5B B1 4B 7B 4E 45 31 49 43 5E A3 AD 17 B2 55 90 ; 
 591E:          8E 7B 91 7A C0 16 82 17 48 5E 81 8D 90 AF 94 5F ; 
-592E:          51 18 DB C7          ; 
+592E:          51 18 DB C7               ; 
 ;
 ;              HARDWARE SOUTH. YOU ARE NOW IN THE FRONT HALF OF THE
 ;              HARDWARE STORE. THERE IS A LARGE AQUARIUM SITTING ON THE
 ;              FLOOR NEAR YOU.
 ;
 ;
-5932:    04 11                      ;   Section COMMANDS, Length: 0x0011
-5934:       0B 0F 0A                ;     SWITCH, Length: 0x000F, Function to call: COM_0A_is_input_phrase(phrase_num)
-5937:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-5938:          02                   ;       ELSE go to: 0x593B
-5939:             00 DC             ;         MOVE AND LOOK, room=DC_3_HARDWARE_NORTH
-593B:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-593C:          08                   ;       ELSE go to: 0x5945
-593D:             0E 06             ;         WHILE FAIL, Length: 0x0006
-593F:                14             ;           EXECUTE AND REVERSE STATUS
-5940:                1C 0A          ;           SET VAR OBJECT, obj=0A_DOOR
-5942:                8D             ;           ROUTINE 0x8D PRINT_OBJECT_IS_CLOSED
-5943:                00 93          ;           MOVE AND LOOK, room=93_3_TOWN_CENTER
+5932:    04 11                           ;   ---- Section SECTION_04_COMMANDS length=0x0011
+5934:       0B 0F 0A                     ;     COM_0B_switch length=0x000F, function=COM_0A_is_input_phrase(phrase_num)
+5937:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+5938:          02                        ;       ELSE goto=0x593B
+5939:             00 DC                  ;         COM_00_move_and_look(room=RM_3_HARDWARE_NORTH)
+593B:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+593C:          08                        ;       ELSE goto=0x5945
+593D:             0E 06                  ;         COM_0E_while_fail length=0x0006
+593F:                14                  ;           COM_14_execute_and_reverse_status next command
+5940:                1C 0A               ;           COM_1C_set_var_object(obj=OBJ_0A_DOOR_HARDWARE_SOUTH)
+5942:                8D                  ;           FN_8D_PRINT_OBJECT_IS_CLOSED
+5943:                00 93               ;           COM_00_move_and_look(room=RM_3_TOWN_CENTER)
 
-5945: A7 80 DE 00                   ; room=A7_3_NORTH_OF_EAST_ALLEY, Length: 0x00DE, Data: 0x00
+5945: A7 80 DE 00                        ; ----- Room RM_3_NORTH_OF_EAST_ALLEY, Length: 0x00DE, Data: 0x00
 ;
-5949:    03 80 C1                   ;   Section DESCRIPTION, Length: 0x00C1
-594C:       04 80 BE                ;     PRINT, Length: 0x00BE
+5949:    03 80 C1                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00C1
+594C:       04 80 BE                     ;     COM_04_print_command length=0x00BE
 594F:          04 9A 53 BE C3 9E 95 5F 03 BC FF 8C DB E0 C7 DE ; 
 595F:          94 14 4B 5E 96 96 DB 72 F5 59 3E 62 99 16 C2 B3 ; 
 596F:          B8 16 82 17 43 5E FF 8C 43 DB 16 BC DB 72 95 5F ; 
@@ -399,27 +399,27 @@
 ;              BUILDING. TO YOUR WEST THERE IS THE BACK OF A SMALL STORE.
 ;
 ;
-5A0D:    04 17                      ;   Section COMMANDS, Length: 0x0017
-5A0F:       0B 15 0A                ;     SWITCH, Length: 0x0015, Function to call: COM_0A_is_input_phrase(phrase_num)
-5A12:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-5A13:          02                   ;       ELSE go to: 0x5A16
-5A14:             00 B8             ;         MOVE AND LOOK, room=B8_3_DESERT_NORTH2
-5A16:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-5A17:          02                   ;       ELSE go to: 0x5A1A
-5A18:             00 A8             ;         MOVE AND LOOK, room=A8_3_EAST_ALLEY_NORTH
-5A1A:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
-5A1B:          06                   ;       ELSE go to: 0x5A22
-5A1C:             0D 04             ;         WHILE PASS, Length: 0x0004
-5A1E:                30 A9          ;           SET CURRENT ROOM, room=A9_4_NORTH_OF_HOTEL
-5A20:                2F 04          ;           LOAD SECTION FROM DISK, Section: 0x04
-5A22:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
-5A23:          02                   ;       ELSE go to: 0x5A26
-5A24:             00 A5             ;         MOVE AND LOOK, room=A5_3_NORTH_OF_BOBS
+5A0D:    04 17                           ;   ---- Section SECTION_04_COMMANDS length=0x0017
+5A0F:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
+5A12:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+5A13:          02                        ;       ELSE goto=0x5A16
+5A14:             00 B8                  ;         COM_00_move_and_look(room=RM_3_DESERT_NORTH2)
+5A16:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+5A17:          02                        ;       ELSE goto=0x5A1A
+5A18:             00 A8                  ;         COM_00_move_and_look(room=RM_3_EAST_ALLEY_NORTH)
+5A1A:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
+5A1B:          06                        ;       ELSE goto=0x5A22
+5A1C:             0D 04                  ;         COM_0D_while_pass length=0x0004
+5A1E:                30 A9               ;           COM_30_set_current_room(room=RM_4_NORTH_OF_HOTEL)
+5A20:                2F 04               ;           COM_2F_load_section_from_disk(section=4)
+5A22:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
+5A23:          02                        ;       ELSE goto=0x5A26
+5A24:             00 A5                  ;         COM_00_move_and_look(room=RM_3_NORTH_OF_BOBS)
 
-5A26: A8 80 80 00                   ; room=A8_3_EAST_ALLEY_NORTH, Length: 0x0080, Data: 0x00
+5A26: A8 80 80 00                        ; ----- Room RM_3_EAST_ALLEY_NORTH, Length: 0x0080, Data: 0x00
 ;
-5A2A:    03 70                      ;   Section DESCRIPTION, Length: 0x0070
-5A2C:       04 6E                   ;     PRINT, Length: 0x006E
+5A2A:    03 70                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0070
+5A2C:       04 6E                        ;     COM_04_print_command length=0x006E
 5A2E:          95 5F 03 BC FF 8C 50 DB BE A0 9B 76 C7 DE 94 14 ; 
 5A3E:          4B 5E 96 96 DB 72 46 48 3B 63 04 9A 53 BE C3 9E ; 
 5A4E:          8B 91 95 96 EF BF 73 62 73 49 5F BE 23 15 F3 B9 ; 
@@ -433,51 +433,51 @@
 ;              IS NOT VISIBLE FROM THE STREET OR THE DESERT.
 ;
 ;
-5A9C:    04 0B                      ;   Section COMMANDS, Length: 0x000B
-5A9E:       0B 09 0A                ;     SWITCH, Length: 0x0009, Function to call: COM_0A_is_input_phrase(phrase_num)
-5AA1:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-5AA2:          02                   ;       ELSE go to: 0x5AA5
-5AA3:             00 A7             ;         MOVE AND LOOK, room=A7_3_NORTH_OF_EAST_ALLEY
-5AA5:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-5AA6:          02                   ;       ELSE go to: 0x5AA9
-5AA7:             00 96             ;         MOVE AND LOOK, room=96_3_EAST_ALLEY_INTERSECTION
+5A9C:    04 0B                           ;   ---- Section SECTION_04_COMMANDS length=0x000B
+5A9E:       0B 09 0A                     ;     COM_0B_switch length=0x0009, function=COM_0A_is_input_phrase(phrase_num)
+5AA1:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+5AA2:          02                        ;       ELSE goto=0x5AA5
+5AA3:             00 A7                  ;         COM_00_move_and_look(room=RM_3_NORTH_OF_EAST_ALLEY)
+5AA5:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+5AA6:          02                        ;       ELSE goto=0x5AA9
+5AA7:             00 96                  ;         COM_00_move_and_look(room=RM_3_EAST_ALLEY_INTERSECTION)
 
-5AA9: B1 4A 00                      ; room=B1_3_DESERT_SOUTH2, Length: 0x004A, Data: 0x00
+5AA9: B1 4A 00                           ; ----- Room RM_3_DESERT_SOUTH2, Length: 0x004A, Data: 0x00
 ;
-5AAC:    03 26                      ;   Section DESCRIPTION, Length: 0x0026
-5AAE:       04 24                   ;     PRINT, Length: 0x0024
+5AAC:    03 26                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0026
+5AAE:       04 24                        ;     COM_04_print_command length=0x0024
 5AB0:          F5 59 3E 62 61 17 82 C6 5B F4 1B A1 2F 49 D0 15 ; 
 5AC0:          82 17 46 5E 57 62 B3 B3 47 B9 53 BE C3 9E 5F BE ; 
-5AD0:          89 17 27 D2          ; 
+5AD0:          89 17 27 D2               ; 
 ;
 ;              DESERT SOUTH. YOU ARE IN THE DESERT SOUTH OF THE TOWN.
 ;
 ;
-5AD4:    04 1F                      ;   Section COMMANDS, Length: 0x001F
-5AD6:       0B 1D 0A                ;     SWITCH, Length: 0x001D, Function to call: COM_0A_is_input_phrase(phrase_num)
-5AD9:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-5ADA:          06                   ;       ELSE go to: 0x5AE1
-5ADB:             0D 04             ;         WHILE PASS, Length: 0x0004
-5ADD:                30 92          ;           SET CURRENT ROOM, room=92_2_SOUTH_OF_WEST_ALLEY
-5ADF:                2F 02          ;           LOAD SECTION FROM DISK, Section: 0x02
-5AE1:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-5AE2:          02                   ;       ELSE go to: 0x5AE5
-5AE3:             00 B3             ;         MOVE AND LOOK, room=B3_3_DESERT
-5AE5:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
-5AE6:          06                   ;       ELSE go to: 0x5AED
-5AE7:             0D 04             ;         WHILE PASS, Length: 0x0004
-5AE9:                30 B2          ;           SET CURRENT ROOM, room=B2_4_DESERT_SOUTH3
-5AEB:                2F 04          ;           LOAD SECTION FROM DISK, Section: 0x04
-5AED:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
-5AEE:          06                   ;       ELSE go to: 0x5AF5
-5AEF:             0D 04             ;         WHILE PASS, Length: 0x0004
-5AF1:                30 B0          ;           SET CURRENT ROOM, room=B0_1_DESERT_SOUTH1
-5AF3:                2F 01          ;           LOAD SECTION FROM DISK, Section: 0x01
+5AD4:    04 1F                           ;   ---- Section SECTION_04_COMMANDS length=0x001F
+5AD6:       0B 1D 0A                     ;     COM_0B_switch length=0x001D, function=COM_0A_is_input_phrase(phrase_num)
+5AD9:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+5ADA:          06                        ;       ELSE goto=0x5AE1
+5ADB:             0D 04                  ;         COM_0D_while_pass length=0x0004
+5ADD:                30 92               ;           COM_30_set_current_room(room=RM_2_SOUTH_OF_WEST_ALLEY)
+5ADF:                2F 02               ;           COM_2F_load_section_from_disk(section=2)
+5AE1:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+5AE2:          02                        ;       ELSE goto=0x5AE5
+5AE3:             00 B3                  ;         COM_00_move_and_look(room=RM_3_DESERT)
+5AE5:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
+5AE6:          06                        ;       ELSE goto=0x5AED
+5AE7:             0D 04                  ;         COM_0D_while_pass length=0x0004
+5AE9:                30 B2               ;           COM_30_set_current_room(room=RM_4_DESERT_SOUTH3)
+5AEB:                2F 04               ;           COM_2F_load_section_from_disk(section=4)
+5AED:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
+5AEE:          06                        ;       ELSE goto=0x5AF5
+5AEF:             0D 04                  ;         COM_0D_while_pass length=0x0004
+5AF1:                30 B0               ;           COM_30_set_current_room(room=RM_1_DESERT_SOUTH1)
+5AF3:                2F 01               ;           COM_2F_load_section_from_disk(section=1)
 
-5AF5: B3 5C 00                      ; room=B3_3_DESERT, Length: 0x005C, Data: 0x00
+5AF5: B3 5C 00                           ; ----- Room RM_3_DESERT, Length: 0x005C, Data: 0x00
 ;
-5AF8:    03 2F                      ;   Section DESCRIPTION, Length: 0x002F
-5AFA:       04 2D                   ;     PRINT, Length: 0x002D
+5AF8:    03 2F                           ;   ---- Section SECTION_03_DESCRIPTION length=0x002F
+5AFA:       04 2D                        ;     COM_04_print_command length=0x002D
 5AFC:          F5 59 3E 62 5B F4 1B A1 2F 49 D0 15 82 17 46 5E ; 
 5B0C:          57 62 D7 B3 4B 15 96 AF D6 9C DB 72 04 9A 53 BE ; 
 5B1C:          C7 DE D3 14 95 96 1B 60 56 45 80 A1 2E ; 
@@ -486,34 +486,34 @@
 ;              A TOWN.
 ;
 ;
-5B29:    04 28                      ;   Section COMMANDS, Length: 0x0028
-5B2B:       0B 26 0A                ;     SWITCH, Length: 0x0026, Function to call: COM_0A_is_input_phrase(phrase_num)
-5B2E:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-5B2F:          09                   ;       ELSE go to: 0x5B39
-5B30:             0D 07             ;         WHILE PASS, Length: 0x0007
-5B32:                30 E1          ;           SET CURRENT ROOM, room=E1_5_??E1??
-5B34:                17 9D 01       ;           MOVE TO, obj=9D_THIRST_TRACKER, destination=01_PLAYER
-5B37:                2F 05          ;           LOAD SECTION FROM DISK, Section: 0x05
-5B39:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
-5B3A:          09                   ;       ELSE go to: 0x5B44
-5B3B:             0D 07             ;         WHILE PASS, Length: 0x0007
-5B3D:                30 E2          ;           SET CURRENT ROOM, room=E2_5_??E2??
-5B3F:                17 9D 01       ;           MOVE TO, obj=9D_THIRST_TRACKER, destination=01_PLAYER
-5B42:                2F 05          ;           LOAD SECTION FROM DISK, Section: 0x05
-5B44:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
-5B45:          09                   ;       ELSE go to: 0x5B4F
-5B46:             0D 07             ;         WHILE PASS, Length: 0x0007
-5B48:                30 E0          ;           SET CURRENT ROOM, room=E0_5_??E0??
-5B4A:                17 9D 01       ;           MOVE TO, obj=9D_THIRST_TRACKER, destination=01_PLAYER
-5B4D:                2F 05          ;           LOAD SECTION FROM DISK, Section: 0x05
-5B4F:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-5B50:          02                   ;       ELSE go to: 0x5B53
-5B51:             00 B1             ;         MOVE AND LOOK, room=B1_3_DESERT_SOUTH2
+5B29:    04 28                           ;   ---- Section SECTION_04_COMMANDS length=0x0028
+5B2B:       0B 26 0A                     ;     COM_0B_switch length=0x0026, function=COM_0A_is_input_phrase(phrase_num)
+5B2E:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+5B2F:          09                        ;       ELSE goto=0x5B39
+5B30:             0D 07                  ;         COM_0D_while_pass length=0x0007
+5B32:                30 E1               ;           COM_30_set_current_room(room=RM_5_DESERT22)
+5B34:                17 9D 01            ;           COM_17_move_to(obj=OBJ_9D_THIRST_TRACKER, destination=OBJ_01_PLAYER)
+5B37:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
+5B39:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
+5B3A:          09                        ;       ELSE goto=0x5B44
+5B3B:             0D 07                  ;         COM_0D_while_pass length=0x0007
+5B3D:                30 E2               ;           COM_30_set_current_room(room=RM_5_DESERT23)
+5B3F:                17 9D 01            ;           COM_17_move_to(obj=OBJ_9D_THIRST_TRACKER, destination=OBJ_01_PLAYER)
+5B42:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
+5B44:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
+5B45:          09                        ;       ELSE goto=0x5B4F
+5B46:             0D 07                  ;         COM_0D_while_pass length=0x0007
+5B48:                30 E0               ;           COM_30_set_current_room(room=RM_5_DESERT21)
+5B4A:                17 9D 01            ;           COM_17_move_to(obj=OBJ_9D_THIRST_TRACKER, destination=OBJ_01_PLAYER)
+5B4D:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
+5B4F:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+5B50:          02                        ;       ELSE goto=0x5B53
+5B51:             00 B1                  ;         COM_00_move_and_look(room=RM_3_DESERT_SOUTH2)
 
-5B53: B8 72 00                      ; room=B8_3_DESERT_NORTH2, Length: 0x0072, Data: 0x00
+5B53: B8 72 00                           ; ----- Room RM_3_DESERT_NORTH2, Length: 0x0072, Data: 0x00
 ;
-5B56:    03 4B                      ;   Section DESCRIPTION, Length: 0x004B
-5B58:       04 49                   ;     PRINT, Length: 0x0049
+5B56:    03 4B                           ;   ---- Section SECTION_03_DESCRIPTION length=0x004B
+5B58:       04 49                        ;     COM_04_print_command length=0x0049
 5B5A:          F5 59 3E 62 99 16 C2 B3 5B F4 1B A1 2F 49 99 16 ; 
 5B6A:          D5 CE 50 BD 90 5A D1 6A 83 96 DB 16 53 BE 6B BF ; 
 5B7A:          5F BE 99 16 C2 B3 B8 16 89 17 27 D2 82 17 52 5E ; 
@@ -524,45 +524,47 @@
 ;              OF TOWN. THE PATH RUNS FROM THE SOUTH TO THE NORTH.
 ;
 ;
-5BA3:    04 22                      ;   Section COMMANDS, Length: 0x0022
-5BA5:       0B 20 0A                ;     SWITCH, Length: 0x0020, Function to call: COM_0A_is_input_phrase(phrase_num)
-5BA8:          01                   ;       COM_0A_is_input_phrase(01: "NORTH    *          *           *")
-5BA9:          06                   ;       ELSE go to: 0x5BB0
-5BAA:             0D 04             ;         WHILE PASS, Length: 0x0004
-5BAC:                30 B7          ;           SET CURRENT ROOM, room=B7_2_DESERT_PATH
-5BAE:                2F 02          ;           LOAD SECTION FROM DISK, Section: 0x02
-5BB0:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-5BB1:          02                   ;       ELSE go to: 0x5BB4
-5BB2:             00 A7             ;         MOVE AND LOOK, room=A7_3_NORTH_OF_EAST_ALLEY
-5BB4:          03                   ;       COM_0A_is_input_phrase(03: "EAST     *          *           *")
-5BB5:          09                   ;       ELSE go to: 0x5BBF
-5BB6:             0D 07             ;         WHILE PASS, Length: 0x0007
-5BB8:                30 F1          ;           SET CURRENT ROOM, room=F1_5_SMALL_TRAIL1
-5BBA:                17 9D 01       ;           MOVE TO, obj=9D_THIRST_TRACKER, destination=01_PLAYER
-5BBD:                2F 05          ;           LOAD SECTION FROM DISK, Section: 0x05
-5BBF:          04                   ;       COM_0A_is_input_phrase(04: "WEST     *          *           *")
-5BC0:          06                   ;       ELSE go to: 0x5BC7
-5BC1:             0D 04             ;         WHILE PASS, Length: 0x0004
-5BC3:                30 B6          ;           SET CURRENT ROOM, room=B6_2_DESERT_NORTH1
-5BC5:                2F 02          ;           LOAD SECTION FROM DISK, Section: 0x02
+5BA3:    04 22                           ;   ---- Section SECTION_04_COMMANDS length=0x0022
+5BA5:       0B 20 0A                     ;     COM_0B_switch length=0x0020, function=COM_0A_is_input_phrase(phrase_num)
+5BA8:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
+5BA9:          06                        ;       ELSE goto=0x5BB0
+5BAA:             0D 04                  ;         COM_0D_while_pass length=0x0004
+5BAC:                30 B7               ;           COM_30_set_current_room(room=RM_2_DESERT_PATH)
+5BAE:                2F 02               ;           COM_2F_load_section_from_disk(section=2)
+5BB0:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+5BB1:          02                        ;       ELSE goto=0x5BB4
+5BB2:             00 A7                  ;         COM_00_move_and_look(room=RM_3_NORTH_OF_EAST_ALLEY)
+5BB4:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
+5BB5:          09                        ;       ELSE goto=0x5BBF
+5BB6:             0D 07                  ;         COM_0D_while_pass length=0x0007
+5BB8:                30 F1               ;           COM_30_set_current_room(room=RM_5_SMALL_TRAIL1)
+5BBA:                17 9D 01            ;           COM_17_move_to(obj=OBJ_9D_THIRST_TRACKER, destination=OBJ_01_PLAYER)
+5BBD:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
+5BBF:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
+5BC0:          06                        ;       ELSE goto=0x5BC7
+5BC1:             0D 04                  ;         COM_0D_while_pass length=0x0004
+5BC3:                30 B6               ;           COM_30_set_current_room(room=RM_2_DESERT_NORTH1)
+5BC5:                2F 02               ;           COM_2F_load_section_from_disk(section=2)
 
-5BC7: DC 35 00                      ; room=DC_3_HARDWARE_NORTH, Length: 0x0035, Data: 0x00
+5BC7: DC 35 00                           ; ----- Room RM_3_HARDWARE_NORTH, Length: 0x0035, Data: 0x00
 ;
-5BCA:    03 29                      ;   Section DESCRIPTION, Length: 0x0029
-5BCC:       04 27                   ;     PRINT, Length: 0x0027
+5BCA:    03 29                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0029
+5BCC:       04 27                        ;     COM_04_print_command length=0x0027
 5BCE:          54 72 B3 5C 5B B1 04 9A 77 BE 51 18 43 C2 5B B1 ; 
 5BDE:          83 7A 5F BE AB 14 8B 54 C3 9E 5F BE 9B 15 51 B1 ; 
-5BEE:          2F 49 66 17 AF A0 2E ; 
+5BEE:          2F 49 66 17 AF A0 2E      ; 
 ;
 ;              HARDWARE NORTH. YOU ARE IN THE BACK OF THE HARDWARE STORE.
 ;
 ;
-5BF5:    04 07                      ;   Section COMMANDS, Length: 0x0007
-5BF7:       0B 05 0A                ;     SWITCH, Length: 0x0005, Function to call: COM_0A_is_input_phrase(phrase_num)
-5BFA:          02                   ;       COM_0A_is_input_phrase(02: "SOUTH    *          *           *")
-5BFB:          02                   ;       ELSE go to: 0x5BFE
-5BFC:             00 A6             ;         MOVE AND LOOK, room=A6_3_HARDWARE_SOUTH
+5BF5:    04 07                           ;   ---- Section SECTION_04_COMMANDS length=0x0007
+5BF7:       0B 05 0A                     ;     COM_0B_switch length=0x0005, function=COM_0A_is_input_phrase(phrase_num)
+5BFA:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
+5BFB:          02                        ;       ELSE goto=0x5BFE
+5BFC:             00 A6                  ;         COM_00_move_and_look(room=RM_3_HARDWARE_SOUTH)
 ```
+
+# Unitialized data
 
 ```code
 5BFE: 1D 0A 37 10 0D 0E 0E 04 09 00 09 60 0E 06 14 1C ; ..7.............
