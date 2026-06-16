@@ -490,7 +490,9 @@ class ScriptCursor:
         length = self.decode_length(line)
         datab = self.get_byte(line)
         print()        
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; ----- Room {room_text}, Length: 0x{length:04X}, Data: 0x{datab:02X}', prt_level)
+        print('; --------------------------------------------------------------------------------------------------------------------')
+        print(';')
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; ----- Room 0x{room_num:02X} {room_text}, Length: 0x{length:04X}, Data: 0x{datab:02X}', prt_level)
         end_of_room = self.pos+length-1  # We already read one of these bytes       
 
         while self.pos < end_of_room:

@@ -9,10 +9,12 @@
 ```code
 5200: 00 87 8A                           ; List_ID=0x00, length=0x078A
 
-5203: 84 2B 00                           ; ----- Room RM_8_??84??, Length: 0x002B, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5203: 84 2B 00                           ; ----- Room 0x84 RM_8_AIRLOCK7, Length: 0x002B, Data: 0x00
 ;
 5206:    03 01                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0001
-5208:       9C                           ;     FN_9C_??
+5208:       9C                           ;     FN_9C_PRINT_AIRLOCK_TWO_BUTTONS
 ;
 5209:    04 25                           ;   ---- Section SECTION_04_COMMANDS length=0x0025
 520B:       0B 23 0A                     ;     COM_0B_switch length=0x0023, function=COM_0A_is_input_phrase(phrase_num)
@@ -24,23 +26,25 @@
 5214:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 5215:          1A                        ;       ELSE goto=0x5230
 5216:             0D 18                  ;         COM_0D_while_pass length=0x0018
-5218:                C0                  ;           FN_C0_??
+5218:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 5219:                0E 15               ;           COM_0E_while_fail length=0x0015
-521B:                   AE               ;             FN_AE_??
+521B:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 521C:                   14               ;             COM_14_execute_and_reverse_status next command
 521D:                   0B 10 03         ;             COM_0B_switch length=0x0010, function=COM_03_is_located(room_num, obj_num)
 5220:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
 5222:                      07            ;               ELSE goto=0x522A
 5223:                         0D 05      ;                 COM_0D_while_pass length=0x0005
 5225:                            9E      ;                   FN_9E_??
-5226:                            30 82   ;                   COM_30_set_current_room(room=RM_7_??82??)
+5226:                            30 82   ;                   COM_30_set_current_room(room=RM_7_LOUNGE)
 5228:                            2F 07   ;                   COM_2F_load_section_from_disk(section=7)
 522A:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
 522C:                      02            ;               ELSE goto=0x522F
-522D:                         00 86      ;                 COM_00_move_and_look(room=RM_8_??86??)
+522D:                         00 86      ;                 COM_00_move_and_look(room=RM_8_GALLEY)
 522F:                   9E               ;             FN_9E_??
 
-5230: 86 80 BF 00                        ; ----- Room RM_8_??86??, Length: 0x00BF, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5230: 86 80 BF 00                        ; ----- Room 0x86 RM_8_GALLEY, Length: 0x00BF, Data: 0x00
 ;
 5234:    03 80 99                        ;   ---- Section SECTION_03_DESCRIPTION length=0x0099
 5237:       0D 80 96                     ;     COM_0D_while_pass length=0x0096
@@ -84,23 +88,25 @@
 52DB:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 52DC:          15                        ;       ELSE goto=0x52F2
 52DD:             0D 13                  ;         COM_0D_while_pass length=0x0013
-52DF:                C0                  ;           FN_C0_??
+52DF:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 52E0:                0E 10               ;           COM_0E_while_fail length=0x0010
-52E2:                   AE               ;             FN_AE_??
+52E2:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 52E3:                   14               ;             COM_14_execute_and_reverse_status next command
 52E4:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
 52E7:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
 52E9:                      02            ;               ELSE goto=0x52EC
-52EA:                         00 84      ;                 COM_00_move_and_look(room=RM_8_??84??)
+52EA:                         00 84      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK7)
 52EC:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
 52EE:                      02            ;               ELSE goto=0x52F1
-52EF:                         00 88      ;                 COM_00_move_and_look(room=RM_8_??88??)
+52EF:                         00 88      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK8)
 52F1:                   9E               ;             FN_9E_??
 
-52F2: 88 26 00                           ; ----- Room RM_8_??88??, Length: 0x0026, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+52F2: 88 26 00                           ; ----- Room 0x88 RM_8_AIRLOCK8, Length: 0x0026, Data: 0x00
 ;
 52F5:    03 01                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0001
-52F7:       9C                           ;     FN_9C_??
+52F7:       9C                           ;     FN_9C_PRINT_AIRLOCK_TWO_BUTTONS
 ;
 52F8:    04 20                           ;   ---- Section SECTION_04_COMMANDS length=0x0020
 52FA:       0B 1E 0A                     ;     COM_0B_switch length=0x001E, function=COM_0A_is_input_phrase(phrase_num)
@@ -112,20 +118,22 @@
 5303:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 5304:          15                        ;       ELSE goto=0x531A
 5305:             0D 13                  ;         COM_0D_while_pass length=0x0013
-5307:                C0                  ;           FN_C0_??
+5307:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 5308:                0E 10               ;           COM_0E_while_fail length=0x0010
-530A:                   AE               ;             FN_AE_??
+530A:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 530B:                   14               ;             COM_14_execute_and_reverse_status next command
 530C:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
 530F:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
 5311:                      02            ;               ELSE goto=0x5314
-5312:                         00 86      ;                 COM_00_move_and_look(room=RM_8_??86??)
+5312:                         00 86      ;                 COM_00_move_and_look(room=RM_8_GALLEY)
 5314:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
 5316:                      02            ;               ELSE goto=0x5319
-5317:                         00 8A      ;                 COM_00_move_and_look(room=RM_8_??8A??)
+5317:                         00 8A      ;                 COM_00_move_and_look(room=RM_8_RECREATION)
 5319:                   9E               ;             FN_9E_??
 
-531A: 8A 80 D4 00                        ; ----- Room RM_8_??8A??, Length: 0x00D4, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+531A: 8A 80 D4 00                        ; ----- Room 0x8A RM_8_RECREATION, Length: 0x00D4, Data: 0x00
 ;
 531E:    03 80 AE                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00AE
 5321:       0D 80 AB                     ;     COM_0D_while_pass length=0x00AB
@@ -170,23 +178,25 @@
 53DA:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 53DB:          15                        ;       ELSE goto=0x53F1
 53DC:             0D 13                  ;         COM_0D_while_pass length=0x0013
-53DE:                C0                  ;           FN_C0_??
+53DE:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 53DF:                0E 10               ;           COM_0E_while_fail length=0x0010
-53E1:                   AE               ;             FN_AE_??
+53E1:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 53E2:                   14               ;             COM_14_execute_and_reverse_status next command
 53E3:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
 53E6:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
 53E8:                      02            ;               ELSE goto=0x53EB
-53E9:                         00 88      ;                 COM_00_move_and_look(room=RM_8_??88??)
+53E9:                         00 88      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK8)
 53EB:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
 53ED:                      02            ;               ELSE goto=0x53F0
-53EE:                         00 8C      ;                 COM_00_move_and_look(room=RM_8_??8C??)
+53EE:                         00 8C      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK9)
 53F0:                   9E               ;             FN_9E_??
 
-53F1: 8C 2C 00                           ; ----- Room RM_8_??8C??, Length: 0x002C, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+53F1: 8C 2C 00                           ; ----- Room 0x8C RM_8_AIRLOCK9, Length: 0x002C, Data: 0x00
 ;
 53F4:    03 01                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0001
-53F6:       B0                           ;     FN_B0_??
+53F6:       B0                           ;     FN_B0_PRINT_AIRLOCK_THREE_BUTTONS
 ;
 53F7:    04 26                           ;   ---- Section SECTION_04_COMMANDS length=0x0026
 53F9:       0B 24 0A                     ;     COM_0B_switch length=0x0024, function=COM_0A_is_input_phrase(phrase_num)
@@ -199,23 +209,25 @@
 5403:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 5404:          1A                        ;       ELSE goto=0x541F
 5405:             0D 18                  ;         COM_0D_while_pass length=0x0018
-5407:                C0                  ;           FN_C0_??
+5407:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 5408:                0E 15               ;           COM_0E_while_fail length=0x0015
-540A:                   AE               ;             FN_AE_??
+540A:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 540B:                   14               ;             COM_14_execute_and_reverse_status next command
 540C:                   0B 10 03         ;             COM_0B_switch length=0x0010, function=COM_03_is_located(room_num, obj_num)
 540F:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
 5411:                      02            ;               ELSE goto=0x5414
-5412:                         00 8A      ;                 COM_00_move_and_look(room=RM_8_??8A??)
+5412:                         00 8A      ;                 COM_00_move_and_look(room=RM_8_RECREATION)
 5414:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
 5416:                      02            ;               ELSE goto=0x5419
-5417:                         00 8E      ;                 COM_00_move_and_look(room=RM_8_??8E??)
+5417:                         00 8E      ;                 COM_00_move_and_look(room=RM_8_SICK_BAY)
 5419:                      3F 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_3F_YELLOW_BUTTON, obj_num=OBJ_3E_??
 541B:                      02            ;               ELSE goto=0x541E
-541C:                         00 9A      ;                 COM_00_move_and_look(room=RM_8_??9A??)
+541C:                         00 9A      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK12)
 541E:                   9E               ;             FN_9E_??
 
-541F: 8E 80 9C 00                        ; ----- Room RM_8_??8E??, Length: 0x009C, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+541F: 8E 80 9C 00                        ; ----- Room 0x8E RM_8_SICK_BAY, Length: 0x009C, Data: 0x00
 ;
 5423:    03 77                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0077
 5425:       0D 75                        ;     COM_0D_while_pass length=0x0075
@@ -255,23 +267,25 @@
 54A7:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 54A8:          15                        ;       ELSE goto=0x54BE
 54A9:             0D 13                  ;         COM_0D_while_pass length=0x0013
-54AB:                C0                  ;           FN_C0_??
+54AB:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 54AC:                0E 10               ;           COM_0E_while_fail length=0x0010
-54AE:                   AE               ;             FN_AE_??
+54AE:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 54AF:                   14               ;             COM_14_execute_and_reverse_status next command
 54B0:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
 54B3:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
 54B5:                      02            ;               ELSE goto=0x54B8
-54B6:                         00 8C      ;                 COM_00_move_and_look(room=RM_8_??8C??)
+54B6:                         00 8C      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK9)
 54B8:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
 54BA:                      02            ;               ELSE goto=0x54BD
-54BB:                         00 8F      ;                 COM_00_move_and_look(room=RM_8_??8F??)
+54BB:                         00 8F      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK10)
 54BD:                   9E               ;             FN_9E_??
 
-54BE: 8F 26 00                           ; ----- Room RM_8_??8F??, Length: 0x0026, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+54BE: 8F 26 00                           ; ----- Room 0x8F RM_8_AIRLOCK10, Length: 0x0026, Data: 0x00
 ;
 54C1:    03 01                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0001
-54C3:       9C                           ;     FN_9C_??
+54C3:       9C                           ;     FN_9C_PRINT_AIRLOCK_TWO_BUTTONS
 ;
 54C4:    04 20                           ;   ---- Section SECTION_04_COMMANDS length=0x0020
 54C6:       0B 1E 0A                     ;     COM_0B_switch length=0x001E, function=COM_0A_is_input_phrase(phrase_num)
@@ -283,20 +297,22 @@
 54CF:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 54D0:          15                        ;       ELSE goto=0x54E6
 54D1:             0D 13                  ;         COM_0D_while_pass length=0x0013
-54D3:                C0                  ;           FN_C0_??
+54D3:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 54D4:                0E 10               ;           COM_0E_while_fail length=0x0010
-54D6:                   AE               ;             FN_AE_??
+54D6:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 54D7:                   14               ;             COM_14_execute_and_reverse_status next command
 54D8:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
 54DB:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
 54DD:                      02            ;               ELSE goto=0x54E0
-54DE:                         00 8E      ;                 COM_00_move_and_look(room=RM_8_??8E??)
+54DE:                         00 8E      ;                 COM_00_move_and_look(room=RM_8_SICK_BAY)
 54E0:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
 54E2:                      02            ;               ELSE goto=0x54E5
-54E3:                         00 90      ;                 COM_00_move_and_look(room=RM_8_ENURGLE_POWER)
+54E3:                         00 90      ;                 COM_00_move_and_look(room=RM_8_POWER)
 54E5:                   9E               ;             FN_9E_??
 
-54E6: 90 81 10 00                        ; ----- Room RM_8_ENURGLE_POWER, Length: 0x0110, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+54E6: 90 81 10 00                        ; ----- Room 0x90 RM_8_POWER, Length: 0x0110, Data: 0x00
 ;
 54EA:    03 80 EA                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00EA
 54ED:       0D 80 E7                     ;     COM_0D_while_pass length=0x00E7
@@ -347,23 +363,25 @@
 55E2:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 55E3:          15                        ;       ELSE goto=0x55F9
 55E4:             0D 13                  ;         COM_0D_while_pass length=0x0013
-55E6:                C0                  ;           FN_C0_??
+55E6:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 55E7:                0E 10               ;           COM_0E_while_fail length=0x0010
-55E9:                   AE               ;             FN_AE_??
+55E9:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 55EA:                   14               ;             COM_14_execute_and_reverse_status next command
 55EB:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
 55EE:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
 55F0:                      02            ;               ELSE goto=0x55F3
-55F1:                         00 8F      ;                 COM_00_move_and_look(room=RM_8_??8F??)
+55F1:                         00 8F      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK10)
 55F3:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
 55F5:                      02            ;               ELSE goto=0x55F8
-55F6:                         00 91      ;                 COM_00_move_and_look(room=RM_8_??91??)
+55F6:                         00 91      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK11)
 55F8:                   9E               ;             FN_9E_??
 
-55F9: 91 26 00                           ; ----- Room RM_8_??91??, Length: 0x0026, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+55F9: 91 26 00                           ; ----- Room 0x91 RM_8_AIRLOCK11, Length: 0x0026, Data: 0x00
 ;
 55FC:    03 01                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0001
-55FE:       9C                           ;     FN_9C_??
+55FE:       9C                           ;     FN_9C_PRINT_AIRLOCK_TWO_BUTTONS
 ;
 55FF:    04 20                           ;   ---- Section SECTION_04_COMMANDS length=0x0020
 5601:       0B 1E 0A                     ;     COM_0B_switch length=0x001E, function=COM_0A_is_input_phrase(phrase_num)
@@ -375,20 +393,22 @@
 560A:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 560B:          15                        ;       ELSE goto=0x5621
 560C:             0D 13                  ;         COM_0D_while_pass length=0x0013
-560E:                C0                  ;           FN_C0_??
+560E:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 560F:                0E 10               ;           COM_0E_while_fail length=0x0010
-5611:                   AE               ;             FN_AE_??
+5611:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 5612:                   14               ;             COM_14_execute_and_reverse_status next command
 5613:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
 5616:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
 5618:                      02            ;               ELSE goto=0x561B
-5619:                         00 90      ;                 COM_00_move_and_look(room=RM_8_ENURGLE_POWER)
+5619:                         00 90      ;                 COM_00_move_and_look(room=RM_8_POWER)
 561B:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
 561D:                      02            ;               ELSE goto=0x5620
-561E:                         00 92      ;                 COM_00_move_and_look(room=RM_8_MOTOVATOM_ENGINES)
+561E:                         00 92      ;                 COM_00_move_and_look(room=RM_8_ENGINES)
 5620:                   9E               ;             FN_9E_??
 
-5621: 92 81 2E 00                        ; ----- Room RM_8_MOTOVATOM_ENGINES, Length: 0x012E, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5621: 92 81 2E 00                        ; ----- Room 0x92 RM_8_ENGINES, Length: 0x012E, Data: 0x00
 ;
 5625:    03 80 AB                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00AB
 5628:       0D 80 A8                     ;     COM_0D_while_pass length=0x00A8
@@ -466,20 +486,22 @@
 5740:             36                     ;         COM_0A_is_input_phrase("ENTER * * *")
 5741:             10                     ;         ELSE goto=0x5752
 5742:                0D 0E               ;           COM_0D_while_pass length=0x000E
-5744:                   C0               ;             FN_C0_??
+5744:                   C0               ;             FN_C0_ASSERT_NO_NOUNS_GIVEN
 5745:                   0E 0B            ;             COM_0E_while_fail length=0x000B
-5747:                      AE            ;               FN_AE_??
+5747:                      AE            ;               FN_AE_PRINT_PUSH_BUTTON
 5748:                      14            ;               COM_14_execute_and_reverse_status next command
 5749:                      0B 06 03      ;               COM_0B_switch length=0x0006, function=COM_03_is_located(room_num, obj_num)
 574C:                         40 3E      ;                 COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
 574E:                         02         ;                 ELSE goto=0x5751
-574F:                            00 91   ;                   COM_00_move_and_look(room=RM_8_??91??)
+574F:                            00 91   ;                   COM_00_move_and_look(room=RM_8_AIRLOCK11)
 5751:                      9E            ;               FN_9E_??
 
-5752: 9A 2C 00                           ; ----- Room RM_8_??9A??, Length: 0x002C, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5752: 9A 2C 00                           ; ----- Room 0x9A RM_8_AIRLOCK12, Length: 0x002C, Data: 0x00
 ;
 5755:    03 01                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0001
-5757:       B0                           ;     FN_B0_??
+5757:       B0                           ;     FN_B0_PRINT_AIRLOCK_THREE_BUTTONS
 ;
 5758:    04 26                           ;   ---- Section SECTION_04_COMMANDS length=0x0026
 575A:       0B 24 0A                     ;     COM_0B_switch length=0x0024, function=COM_0A_is_input_phrase(phrase_num)
@@ -492,23 +514,25 @@
 5764:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 5765:          1A                        ;       ELSE goto=0x5780
 5766:             0D 18                  ;         COM_0D_while_pass length=0x0018
-5768:                C0                  ;           FN_C0_??
+5768:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 5769:                0E 15               ;           COM_0E_while_fail length=0x0015
-576B:                   AE               ;             FN_AE_??
+576B:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 576C:                   14               ;             COM_14_execute_and_reverse_status next command
 576D:                   0B 10 03         ;             COM_0B_switch length=0x0010, function=COM_03_is_located(room_num, obj_num)
 5770:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
 5772:                      02            ;               ELSE goto=0x5775
-5773:                         00 9B      ;                 COM_00_move_and_look(room=RM_8_PLASTOTRO_GUN)
+5773:                         00 9B      ;                 COM_00_move_and_look(room=RM_8_GUN)
 5775:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
 5777:                      02            ;               ELSE goto=0x577A
-5778:                         00 9C      ;                 COM_00_move_and_look(room=RM_8_ARMSMITAN_WEAPONRY)
+5778:                         00 9C      ;                 COM_00_move_and_look(room=RM_8_WEAPONRY)
 577A:                      3F 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_3F_YELLOW_BUTTON, obj_num=OBJ_3E_??
 577C:                      02            ;               ELSE goto=0x577F
-577D:                         00 8C      ;                 COM_00_move_and_look(room=RM_8_??8C??)
+577D:                         00 8C      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK9)
 577F:                   9E               ;             FN_9E_??
 
-5780: 9B 80 DA 00                        ; ----- Room RM_8_PLASTOTRO_GUN, Length: 0x00DA, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5780: 9B 80 DA 00                        ; ----- Room 0x9B RM_8_GUN, Length: 0x00DA, Data: 0x00
 ;
 5784:    03 80 BC                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00BC
 5787:       0D 80 B9                     ;     COM_0D_while_pass length=0x00B9
@@ -553,17 +577,19 @@
 584B:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 584C:          10                        ;       ELSE goto=0x585D
 584D:             0D 0E                  ;         COM_0D_while_pass length=0x000E
-584F:                C0                  ;           FN_C0_??
+584F:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 5850:                0E 0B               ;           COM_0E_while_fail length=0x000B
-5852:                   AE               ;             FN_AE_??
+5852:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 5853:                   14               ;             COM_14_execute_and_reverse_status next command
 5854:                   0B 06 03         ;             COM_0B_switch length=0x0006, function=COM_03_is_located(room_num, obj_num)
 5857:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
 5859:                      02            ;               ELSE goto=0x585C
-585A:                         00 9A      ;                 COM_00_move_and_look(room=RM_8_??9A??)
+585A:                         00 9A      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK12)
 585C:                   9E               ;             FN_9E_??
 
-585D: 9C 80 E5 00                        ; ----- Room RM_8_ARMSMITAN_WEAPONRY, Length: 0x00E5, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+585D: 9C 80 E5 00                        ; ----- Room 0x9C RM_8_WEAPONRY, Length: 0x00E5, Data: 0x00
 ;
 5861:    03 80 BF                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00BF
 5864:       0D 80 BC                     ;     COM_0D_while_pass length=0x00BC
@@ -610,23 +636,25 @@
 592E:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 592F:          15                        ;       ELSE goto=0x5945
 5930:             0D 13                  ;         COM_0D_while_pass length=0x0013
-5932:                C0                  ;           FN_C0_??
+5932:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 5933:                0E 10               ;           COM_0E_while_fail length=0x0010
-5935:                   AE               ;             FN_AE_??
+5935:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 5936:                   14               ;             COM_14_execute_and_reverse_status next command
 5937:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
 593A:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
 593C:                      02            ;               ELSE goto=0x593F
-593D:                         00 9A      ;                 COM_00_move_and_look(room=RM_8_??9A??)
+593D:                         00 9A      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK12)
 593F:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
 5941:                      02            ;               ELSE goto=0x5944
-5942:                         00 9D      ;                 COM_00_move_and_look(room=RM_8_??9D??)
+5942:                         00 9D      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK13)
 5944:                   9E               ;             FN_9E_??
 
-5945: 9D 26 00                           ; ----- Room RM_8_??9D??, Length: 0x0026, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5945: 9D 26 00                           ; ----- Room 0x9D RM_8_AIRLOCK13, Length: 0x0026, Data: 0x00
 ;
 5948:    03 01                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0001
-594A:       9C                           ;     FN_9C_??
+594A:       9C                           ;     FN_9C_PRINT_AIRLOCK_TWO_BUTTONS
 ;
 594B:    04 20                           ;   ---- Section SECTION_04_COMMANDS length=0x0020
 594D:       0B 1E 0A                     ;     COM_0B_switch length=0x001E, function=COM_0A_is_input_phrase(phrase_num)
@@ -638,23 +666,25 @@
 5956:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 5957:          15                        ;       ELSE goto=0x596D
 5958:             0D 13                  ;         COM_0D_while_pass length=0x0013
-595A:                C0                  ;           FN_C0_??
+595A:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 595B:                0E 10               ;           COM_0E_while_fail length=0x0010
-595D:                   AE               ;             FN_AE_??
+595D:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 595E:                   14               ;             COM_14_execute_and_reverse_status next command
 595F:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
 5962:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
 5964:                      02            ;               ELSE goto=0x5967
-5965:                         00 9C      ;                 COM_00_move_and_look(room=RM_8_ARMSMITAN_WEAPONRY)
+5965:                         00 9C      ;                 COM_00_move_and_look(room=RM_8_WEAPONRY)
 5967:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
 5969:                      02            ;               ELSE goto=0x596C
-596A:                         00 9E      ;                 COM_00_move_and_look(room=RM_8_??9E??)
+596A:                         00 9E      ;                 COM_00_move_and_look(room=RM_8_EXIT2)
 596C:                   9E               ;             FN_9E_??
 
-596D: 9E 1E 00                           ; ----- Room RM_8_??9E??, Length: 0x001E, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+596D: 9E 1E 00                           ; ----- Room 0x9E RM_8_EXIT2, Length: 0x001E, Data: 0x00
 ;
 5970:    03 01                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0001
-5972:       9D                           ;     FN_9D_??
+5972:       9D                           ;     FN_9D_PRINT_EXIT_YELLOW_BUTTON
 ;
 5973:    04 18                           ;   ---- Section SECTION_04_COMMANDS length=0x0018
 5975:       0B 16 0A                     ;     COM_0B_switch length=0x0016, function=COM_0A_is_input_phrase(phrase_num)
@@ -664,14 +694,14 @@
 597B:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
 597C:          10                        ;       ELSE goto=0x598D
 597D:             0D 0E                  ;         COM_0D_while_pass length=0x000E
-597F:                C0                  ;           FN_C0_??
+597F:                C0                  ;           FN_C0_ASSERT_NO_NOUNS_GIVEN
 5980:                0E 0B               ;           COM_0E_while_fail length=0x000B
-5982:                   AE               ;             FN_AE_??
+5982:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 5983:                   14               ;             COM_14_execute_and_reverse_status next command
 5984:                   0B 06 03         ;             COM_0B_switch length=0x0006, function=COM_03_is_located(room_num, obj_num)
 5987:                      3F 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_3F_YELLOW_BUTTON, obj_num=OBJ_3E_??
 5989:                      02            ;               ELSE goto=0x598C
-598A:                         00 9D      ;                 COM_00_move_and_look(room=RM_8_??9D??)
+598A:                         00 9D      ;                 COM_00_move_and_look(room=RM_8_AIRLOCK13)
 598C:                   9E               ;             FN_9E_??
 ```
 

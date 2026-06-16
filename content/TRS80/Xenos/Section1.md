@@ -9,7 +9,9 @@
 ```code
 5200: 00 89 24                           ; List_ID=0x00, length=0x0924
 
-5203: 80 80 DC 00                        ; ----- Room RM_1_HIGHWAY_WEST, Length: 0x00DC, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5203: 80 80 DC 00                        ; ----- Room 0x80 RM_1_HIGHWAY_WEST, Length: 0x00DC, Data: 0x00
 ;
 5207:    03 80 AE                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00AE
 520A:       04 80 AB                     ;     COM_04_print_command length=0x00AB
@@ -56,7 +58,9 @@
 52DF:          02                        ;       ELSE goto=0x52E2
 52E0:             00 81                  ;         COM_00_move_and_look(room=RM_1_WEST_OF_STATION1)
 
-52E2: 81 76 00                           ; ----- Room RM_1_WEST_OF_STATION1, Length: 0x0076, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+52E2: 81 76 00                           ; ----- Room 0x81 RM_1_WEST_OF_STATION1, Length: 0x0076, Data: 0x00
 ;
 52E5:    03 5E                           ;   ---- Section SECTION_03_DESCRIPTION length=0x005E
 52E7:       04 5C                        ;     COM_04_print_command length=0x005C
@@ -87,7 +91,9 @@
 5357:          02                        ;       ELSE goto=0x535A
 5358:             00 84                  ;         COM_00_move_and_look(room=RM_1_WEST_OF_STATION2)
 
-535A: 82 80 C0 00                        ; ----- Room RM_1_FRONT_OF_STATION, Length: 0x00C0, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+535A: 82 80 C0 00                        ; ----- Room 0x82 RM_1_FRONT_OF_STATION, Length: 0x00C0, Data: 0x00
 ;
 535E:    03 80 A1                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00A1
 5361:       04 80 9E                     ;     COM_04_print_command length=0x009E
@@ -119,7 +125,7 @@
 540D:             0E 06                  ;         COM_0E_while_fail length=0x0006
 540F:                14                  ;           COM_14_execute_and_reverse_status next command
 5410:                1C 03               ;           COM_1C_set_var_object(obj=OBJ_03_DOOR_FRONT_OF_STATION)
-5412:                8D                  ;           FN_8D_PRINT_OBJECT_IS_CLOSED
+5412:                8D                  ;           FN_8D_ASSERT_OBJECT_IS_CLOSED
 5413:                00 83               ;           COM_00_move_and_look(room=RM_1_GAS_STATION)
 5415:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5416:          02                        ;       ELSE goto=0x5419
@@ -128,7 +134,9 @@
 541A:          02                        ;       ELSE goto=0x541D
 541B:             00 89                  ;         COM_00_move_and_look(room=RM_1_CITY_LIMIT)
 
-541D: 83 77 00                           ; ----- Room RM_1_GAS_STATION, Length: 0x0077, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+541D: 83 77 00                           ; ----- Room 0x83 RM_1_GAS_STATION, Length: 0x0077, Data: 0x00
 ;
 5420:    03 65                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0065
 5422:       04 63                        ;     COM_04_print_command length=0x0063
@@ -152,10 +160,12 @@
 548E:             0E 06                  ;         COM_0E_while_fail length=0x0006
 5490:                14                  ;           COM_14_execute_and_reverse_status next command
 5491:                1C 02               ;           COM_1C_set_var_object(obj=OBJ_02_DOOR_GAS_STATION)
-5493:                8D                  ;           FN_8D_PRINT_OBJECT_IS_CLOSED
+5493:                8D                  ;           FN_8D_ASSERT_OBJECT_IS_CLOSED
 5494:                00 82               ;           COM_00_move_and_look(room=RM_1_FRONT_OF_STATION)
 
-5496: 84 80 B7 00                        ; ----- Room RM_1_WEST_OF_STATION2, Length: 0x00B7, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5496: 84 80 B7 00                        ; ----- Room 0x84 RM_1_WEST_OF_STATION2, Length: 0x00B7, Data: 0x00
 ;
 549A:    03 80 9B                        ;   ---- Section SECTION_03_DESCRIPTION length=0x009B
 549D:       04 80 98                     ;     COM_04_print_command length=0x0098
@@ -192,7 +202,9 @@
 554D:          02                        ;       ELSE goto=0x5550
 554E:             00 85                  ;         COM_00_move_and_look(room=RM_1_SOUTHWEST_OF_STATION)
 
-5550: 85 80 85 00                        ; ----- Room RM_1_SOUTHWEST_OF_STATION, Length: 0x0085, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5550: 85 80 85 00                        ; ----- Room 0x85 RM_1_SOUTHWEST_OF_STATION, Length: 0x0085, Data: 0x00
 ;
 5554:    03 66                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0066
 5556:       04 64                        ;     COM_04_print_command length=0x0064
@@ -227,7 +239,9 @@
 55D5:          02                        ;       ELSE goto=0x55D8
 55D6:             00 B0                  ;         COM_00_move_and_look(room=RM_1_DESERT_SOUTH1)
 
-55D8: 86 41 00                           ; ----- Room RM_1_JUNKYARD, Length: 0x0041, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+55D8: 86 41 00                           ; ----- Room 0x86 RM_1_JUNKYARD, Length: 0x0041, Data: 0x00
 ;
 55DB:    03 2D                           ;   ---- Section SECTION_03_DESCRIPTION length=0x002D
 55DD:       04 2B                        ;     COM_04_print_command length=0x002B
@@ -251,7 +265,9 @@
 5618:          02                        ;       ELSE goto=0x561B
 5619:             00 B0                  ;         COM_00_move_and_look(room=RM_1_DESERT_SOUTH1)
 
-561B: 87 7A 00                           ; ----- Room RM_1_SOUTHEAST_OF_STATION, Length: 0x007A, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+561B: 87 7A 00                           ; ----- Room 0x87 RM_1_SOUTHEAST_OF_STATION, Length: 0x007A, Data: 0x00
 ;
 561E:    03 62                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0062
 5620:       04 60                        ;     COM_04_print_command length=0x0060
@@ -282,7 +298,9 @@
 5694:          02                        ;       ELSE goto=0x5697
 5695:             00 B0                  ;         COM_00_move_and_look(room=RM_1_DESERT_SOUTH1)
 
-5697: 88 80 84 00                        ; ----- Room RM_1_EAST_OF_STATION, Length: 0x0084, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5697: 88 80 84 00                        ; ----- Room 0x88 RM_1_EAST_OF_STATION, Length: 0x0084, Data: 0x00
 ;
 569B:    03 62                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0062
 569D:       04 60                        ;     COM_04_print_command length=0x0060
@@ -313,13 +331,15 @@
 5712:             0E 06                  ;         COM_0E_while_fail length=0x0006
 5714:                14                  ;           COM_14_execute_and_reverse_status next command
 5715:                1C 04               ;           COM_1C_set_var_object(obj=OBJ_04_DOOR_EAST_OF_STATION)
-5717:                8D                  ;           FN_8D_PRINT_OBJECT_IS_CLOSED
+5717:                8D                  ;           FN_8D_ASSERT_OBJECT_IS_CLOSED
 5718:                00 DA               ;           COM_00_move_and_look(room=RM_1_RESTROOM)
 571A:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 571B:          02                        ;       ELSE goto=0x571E
 571C:             00 87                  ;         COM_00_move_and_look(room=RM_1_SOUTHEAST_OF_STATION)
 
-571E: 89 6D 00                           ; ----- Room RM_1_CITY_LIMIT, Length: 0x006D, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+571E: 89 6D 00                           ; ----- Room 0x89 RM_1_CITY_LIMIT, Length: 0x006D, Data: 0x00
 ;
 5721:    03 51                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0051
 5723:       04 4F                        ;     COM_04_print_command length=0x004F
@@ -351,7 +371,9 @@
 578A:          02                        ;       ELSE goto=0x578D
 578B:             00 AF                  ;         COM_00_move_and_look(room=RM_1_NORTH_OF_HIGHWAY3)
 
-578D: 8C 80 C7 00                        ; ----- Room RM_1_SOUTHWEST_OF_SHERIFF, Length: 0x00C7, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+578D: 8C 80 C7 00                        ; ----- Room 0x8C RM_1_SOUTHWEST_OF_SHERIFF, Length: 0x00C7, Data: 0x00
 ;
 5791:    03 80 A6                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00A6
 5794:       04 80 A3                     ;     COM_04_print_command length=0x00A3
@@ -393,7 +415,9 @@
 5853:                30 8B               ;           COM_30_set_current_room(room=RM_2_WEST_OF_SHERIFF)
 5855:                2F 02               ;           COM_2F_load_section_from_disk(section=2)
 
-5857: AD 80 9A 00                        ; ----- Room RM_1_NORTH_OF_HIGHWAY1, Length: 0x009A, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5857: AD 80 9A 00                        ; ----- Room 0xAD RM_1_NORTH_OF_HIGHWAY1, Length: 0x009A, Data: 0x00
 ;
 585B:    03 74                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0074
 585D:       04 72                        ;     COM_04_print_command length=0x0072
@@ -432,7 +456,9 @@
 58F1:          02                        ;       ELSE goto=0x58F4
 58F2:             00 AE                  ;         COM_00_move_and_look(room=RM_1_NORTH_OF_HIGHWAY2)
 
-58F4: AE 80 89 00                        ; ----- Room RM_1_NORTH_OF_HIGHWAY2, Length: 0x0089, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+58F4: AE 80 89 00                        ; ----- Room 0xAE RM_1_NORTH_OF_HIGHWAY2, Length: 0x0089, Data: 0x00
 ;
 58F8:    03 6A                           ;   ---- Section SECTION_03_DESCRIPTION length=0x006A
 58FA:       04 68                        ;     COM_04_print_command length=0x0068
@@ -467,7 +493,9 @@
 597D:          02                        ;       ELSE goto=0x5980
 597E:             00 AD                  ;         COM_00_move_and_look(room=RM_1_NORTH_OF_HIGHWAY1)
 
-5980: AF 80 B7 00                        ; ----- Room RM_1_NORTH_OF_HIGHWAY3, Length: 0x00B7, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5980: AF 80 B7 00                        ; ----- Room 0xAF RM_1_NORTH_OF_HIGHWAY3, Length: 0x00B7, Data: 0x00
 ;
 5984:    03 80 93                        ;   ---- Section SECTION_03_DESCRIPTION length=0x0093
 5987:       04 80 90                     ;     COM_04_print_command length=0x0090
@@ -507,7 +535,9 @@
 5A37:          02                        ;       ELSE goto=0x5A3A
 5A38:             00 AE                  ;         COM_00_move_and_look(room=RM_1_NORTH_OF_HIGHWAY2)
 
-5A3A: B0 79 00                           ; ----- Room RM_1_DESERT_SOUTH1, Length: 0x0079, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5A3A: B0 79 00                           ; ----- Room 0xB0 RM_1_DESERT_SOUTH1, Length: 0x0079, Data: 0x00
 ;
 5A3D:    03 52                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0052
 5A3F:       04 50                        ;     COM_04_print_command length=0x0050
@@ -530,7 +560,7 @@
 5A9A:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5A9B:          06                        ;       ELSE goto=0x5AA2
 5A9C:             0D 04                  ;         COM_0D_while_pass length=0x0004
-5A9E:                30 B3               ;           COM_30_set_current_room(room=RM_3_DESERT)
+5A9E:                30 B3               ;           COM_30_set_current_room(room=RM_3_DESERT1)
 5AA0:                2F 03               ;           COM_2F_load_section_from_disk(section=3)
 5AA2:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5AA3:          09                        ;       ELSE goto=0x5AAD
@@ -544,7 +574,9 @@
 5AB1:                30 B1               ;           COM_30_set_current_room(room=RM_3_DESERT_SOUTH2)
 5AB3:                2F 03               ;           COM_2F_load_section_from_disk(section=3)
 
-5AB5: DA 70 00                           ; ----- Room RM_1_RESTROOM, Length: 0x0070, Data: 0x00
+; --------------------------------------------------------------------------------------------------------------------
+;
+5AB5: DA 70 00                           ; ----- Room 0xDA RM_1_RESTROOM, Length: 0x0070, Data: 0x00
 ;
 5AB8:    03 5E                           ;   ---- Section SECTION_03_DESCRIPTION length=0x005E
 5ABA:       04 5C                        ;     COM_04_print_command length=0x005C
@@ -567,7 +599,7 @@
 5B1F:             0E 06                  ;         COM_0E_while_fail length=0x0006
 5B21:                14                  ;           COM_14_execute_and_reverse_status next command
 5B22:                1C 05               ;           COM_1C_set_var_object(obj=OBJ_05_DOOR_RESTROOM)
-5B24:                8D                  ;           FN_8D_PRINT_OBJECT_IS_CLOSED
+5B24:                8D                  ;           FN_8D_ASSERT_OBJECT_IS_CLOSED
 5B25:                00 88               ;           COM_00_move_and_look(room=RM_1_EAST_OF_STATION)
 ```
 

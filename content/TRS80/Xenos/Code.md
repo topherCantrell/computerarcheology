@@ -1791,9 +1791,9 @@ COM_15_check_var:
 
 COM_2E__:
 69C1: E5              PUSH    HL                  ; Hold script pointer
-69C2: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
-69C5: 3A 0B 72        LD      A,($720B)           ; {code.varObject}
-69C8: A7              AND     A                   ; If the "nowhere" ...
+69C2: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr} Pointer to the VAR object
+69C5: 3A 0B 72        LD      A,($720B)           ; {code.varObject} Number of the VAR object
+69C8: A7              AND     A                   ; If there is no VAR ...
 69C9: CA 48 69        JP      Z,$6948             ; {} ... object, FAIL
 69CC: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Point to data
 69CF: C3 B5 69        JP      $69B5               ; {} Skip to the health-points byte
@@ -4543,7 +4543,7 @@ GeneralScript:
 85E3:                14                  ;           COM_14_execute_and_reverse_status next command
 85E4:                8F                  ;           FN_8F_TRY_TO_GET_OBJECT
 85E5:             14                     ;         COM_14_execute_and_reverse_status next command
-85E6:             BF                     ;         FN_BF_??
+85E6:             BF                     ;         FN_BF_ASSERT_VAR_IS_CLOSED
 85E7:             0D 05                  ;         COM_0D_while_pass length=0x0005
 85E9:                1B                  ;           COM_1B_set_var_to_second_noun()
 85EA:                14                  ;           COM_14_execute_and_reverse_status next command
@@ -4567,7 +4567,7 @@ GeneralScript:
 8600:                2E 10               ;           UNKNOWN2E, Value: 0x10
 8602:                B8                  ;           FN_B8_PRINT_GARBAGE_GAMES
 8603:             14                     ;         COM_14_execute_and_reverse_status next command
-8604:             BF                     ;         FN_BF_??
+8604:             BF                     ;         FN_BF_ASSERT_VAR_IS_CLOSED
 8605:             0D 05                  ;         COM_0D_while_pass length=0x0005
 8607:                1A                  ;           COM_1A_set_var_to_first_noun()
 8608:                14                  ;           COM_14_execute_and_reverse_status next command
@@ -4601,7 +4601,7 @@ GeneralScript:
 ;
 862C:                11                  ;           COM_11_print_first_noun()
 862D:             14                     ;         COM_14_execute_and_reverse_status next command
-862E:             BF                     ;         FN_BF_??
+862E:             BF                     ;         FN_BF_ASSERT_VAR_IS_CLOSED
 862F:             0D 10                  ;         COM_0D_while_pass length=0x0010
 8631:                09 00               ;           COM_09_compare_to_second_noun(obj=nothing)
 8633:                1C 00               ;           COM_1C_set_var_object(obj=nothing)
@@ -4650,7 +4650,7 @@ GeneralScript:
 8694:                A8                  ;           FN_A8_PRINT_noun1
 8695:                8B                  ;           FN_8B_PRINT_PERIOD
 8696:             14                     ;         COM_14_execute_and_reverse_status next command
-8697:             BF                     ;         FN_BF_??
+8697:             BF                     ;         FN_BF_ASSERT_VAR_IS_CLOSED
 8698:             0D 04                  ;         COM_0D_while_pass length=0x0004
 869A:                13                  ;           UNKNOWN13
 869B:                1C 00               ;           COM_1C_set_var_object(obj=nothing)
@@ -4677,7 +4677,7 @@ GeneralScript:
 86C1:                2E 10               ;           UNKNOWN2E, Value: 0x10
 86C3:                0E 12               ;           COM_0E_while_fail length=0x0012
 86C5:                   14               ;             COM_14_execute_and_reverse_status next command
-86C6:                   BF               ;             FN_BF_??
+86C6:                   BF               ;             FN_BF_ASSERT_VAR_IS_CLOSED
 86C7:                   0D 0E            ;             COM_0D_while_pass length=0x000E
 86C9:                      A9            ;               FN_A9_PRINT_noun2
 86CA:                      04 08         ;               COM_04_print_command length=0x0008
@@ -4836,13 +4836,7 @@ If an object has no formal description, it won't be shown in a room. But
 the player could still interact with it even if it doesn't show up. The
 player just needs to know where to look! Check and document these ghosts.
 
-For instance, the handgrip is in room 0x8A but has no description. The description
-for one of room 8A talks about the handgrip. Sections 2, 6, 8, and 9 all have
-a room 8A. The check for the handgrip might work in all of them.
-
-Hopefully, the object that references the room is stuck in a particular
-room and can't be moved to another room with the same ID. Here are
-the room references in the object scripts. TODO investigate these.
+Objects have a room number and a section number.
 
 ```
 # Room 85 could be 1, 6, 7, 9
@@ -4860,6 +4854,11 @@ the room references in the object scripts. TODO investigate these.
 ```
 
 ```code
+
+; Objects have attribute bits: .... ....
+
+; Might be two bytes ?? State and Capability
+
 ObjectData:
 887A: 00 AB 32  ; List_ID=0x00, length=0x2B32
 
@@ -4944,7 +4943,7 @@ ObjectData:
 892A:                0A 42               ;           COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
 892C:             14                     ;         COM_14_execute_and_reverse_status next command
 892D:             09 1C                  ;         COM_09_compare_to_second_noun(obj=OBJ_1C_SKELETON_KEY)
-892F:             BA                     ;         FN_BA_??
+892F:             BA                     ;         FN_BA_OPEN_UNLOCK
 8930:          0D 14                     ;       COM_0D_while_pass length=0x0014
 8932:             0A 08                  ;         COM_0A_is_input_phrase(phrase=READ .....?.. * *)
 8934:             04 10                  ;         COM_04_print_command length=0x0010
@@ -5004,7 +5003,7 @@ ObjectData:
 89B7:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
 89B9:          14                        ;       COM_14_execute_and_reverse_status next command
 89BA:          09 1B                     ;       COM_09_compare_to_second_noun(obj=OBJ_1B_BRASS_KEY_SHERIFF)
-89BC:          BA                        ;       FN_BA_??
+89BC:          BA                        ;       FN_BA_OPEN_UNLOCK
 89BD:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
 89BF:       42                           ;     SHERIF
 89C0:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E
@@ -5041,7 +5040,7 @@ ObjectData:
 8A05:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
 8A07:          14                        ;       COM_14_execute_and_reverse_status next command
 8A08:          09 1E                     ;       COM_09_compare_to_second_noun(obj=OBJ_1E_RED_KEY_SLIMS)
-8A0A:          BA                        ;       FN_BA_??
+8A0A:          BA                        ;       FN_BA_OPEN_UNLOCK
 8A0B:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
 8A0D:       43                           ;     SLIM'S
 8A0E:    02 0A                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000A
@@ -5107,7 +5106,7 @@ ObjectData:
 8A9F:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
 8AA1:          14                        ;       COM_14_execute_and_reverse_status next command
 8AA2:          09 1D                     ;       COM_09_compare_to_second_noun(obj=OBJ_1D_STEEL_KEY_BANK)
-8AA4:          BA                        ;       FN_BA_??
+8AA4:          BA                        ;       FN_BA_OPEN_UNLOCK
 8AA5:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002
 8AA7:       3F                           ;     MASSIV
 8AA8:       40                           ;     BANK
@@ -5171,7 +5170,7 @@ ObjectData:
 8B21:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
 8B23:          14                        ;       COM_14_execute_and_reverse_status next command
 8B24:          09 1A                     ;       COM_09_compare_to_second_noun(obj=OBJ_1A_MASTER_KEY)
-8B26:          BA                        ;       FN_BA_??
+8B26:          BA                        ;       FN_BA_OPEN_UNLOCK
 8B27:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
 8B29:       13                           ;     RED
 8B2A:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
@@ -5203,7 +5202,7 @@ ObjectData:
 8B60:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
 8B62:          14                        ;       COM_14_execute_and_reverse_status next command
 8B63:          09 1A                     ;       COM_09_compare_to_second_noun(obj=OBJ_1A_MASTER_KEY)
-8B65:          BA                        ;       FN_BA_??
+8B65:          BA                        ;       FN_BA_OPEN_UNLOCK
 8B66:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
 ;           BLUE DOOR
 8B68:       8F 4E 46 5E 44 A0            ; 
@@ -5412,7 +5411,7 @@ ObjectData:
 8D3E:             2A                     ;         UNKNOWN2A
 8D3F:             A6                     ;         FN_A6_ATTEMPT_TO_OPEN
 8D40:             38                     ;         COM_38_bump_score()
-8D41:          BA                        ;       FN_BA_??
+8D41:          BA                        ;       FN_BA_OPEN_UNLOCK
 8D42:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
 8D44:       28                           ;     TOP
 8D45:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007
@@ -5441,7 +5440,7 @@ ObjectData:
 8D81:             1A                     ;         COM_1A_set_var_to_first_noun()
 8D82:             2A                     ;         UNKNOWN2A
 8D83:             A6                     ;         FN_A6_ATTEMPT_TO_OPEN
-8D84:          BA                        ;       FN_BA_??
+8D84:          BA                        ;       FN_BA_OPEN_UNLOCK
 8D85:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
 8D87:       3C                           ;     MIDDLE
 8D88:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
@@ -5456,7 +5455,7 @@ ObjectData:
 8D9C:          0E 04                     ;       COM_0E_while_fail length=0x0004
 8D9E:             0A 3A                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 8DA0:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
-8DA2:          BA                        ;       FN_BA_??
+8DA2:          BA                        ;       FN_BA_OPEN_UNLOCK
 8DA3:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
 8DA5:       3E                           ;     BOTTOM
 8DA6:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
@@ -5549,7 +5548,7 @@ ObjectData:
 8EC3:                0A 42               ;           COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
 8EC5:             14                     ;         COM_14_execute_and_reverse_status next command
 8EC6:             09 1F                  ;         COM_09_compare_to_second_noun(obj=OBJ_1F_SMALL_KEY_CAB)
-8EC8:             BA                     ;         FN_BA_??
+8EC8:             BA                     ;         FN_BA_OPEN_UNLOCK
 8EC9:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008
 ;           GUN CABINET 
 8ECB:       30 6F D3 14 10 4E 73 62      ; 
@@ -5614,7 +5613,7 @@ ObjectData:
 8F61:          14                        ;       COM_14_execute_and_reverse_status next command
 8F62:          03 28 2A                  ;       COM_03_is_located(owner=OBJ_28_SHOTGUN, obj=OBJ_2A_??)
 8F65:          1C 29                     ;       COM_1C_set_var_object(obj=OBJ_29_??)
-8F67:          BC                        ;       FN_BC_??
+8F67:          BC                        ;       FN_BC_SHOOT_DROP_SHOTGUN
 
 ; -------------- Object OBJ_2A_?? --------------
 8F68: 00 0A                              ; Word_num=0x00 -none-, length=0x000A
@@ -5622,7 +5621,7 @@ ObjectData:
 8F6D:    08 05                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0005
 8F6F:       0D 03                        ;     COM_0D_while_pass length=0x0003
 8F71:          1C 2A                     ;       COM_1C_set_var_object(obj=OBJ_2A_??)
-8F73:          BC                        ;       FN_BC_??
+8F73:          BC                        ;       FN_BC_SHOOT_DROP_SHOTGUN
 
 ; -------------- Object OBJ_2B_GAS_PUMP --------------
 8F74: 3A 6C                              ; Word_num=0x3A PUMP, length=0x006C
@@ -5656,7 +5655,7 @@ ObjectData:
 8FE2: 29 0D                              ; Word_num=0x29 PADLOC, length=0x000D
 8FE4: 2B 60 88                           ; Location=0x2B, disk_section=0, data=6, attributes=0b10001000
 8FE7:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
-8FE9:       BA                           ;     FN_BA_??
+8FE9:       BA                           ;     FN_BA_OPEN_UNLOCK
 8FEA:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
 ;           PADLOCK
 8FEC:       46 A4 75 8D 4B               ; 
@@ -5989,7 +5988,7 @@ ObjectData:
 ;              IN THE SOUTH WALL, YOU CAN SEE A LARGE STEEL SAFE. 
 ;
 93F1:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
-93F3:       BA                           ;     FN_BA_??
+93F3:       BA                           ;     FN_BA_OPEN_UNLOCK
 93F4:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
 ;           SAFE
 93F6:       08 B7 45                     ; 
@@ -6463,7 +6462,7 @@ ObjectData:
 9939: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C
 993B: DE 04 80                           ; Location=0xDE, disk_section=4, data=0, attributes=0b10000000
 993E:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
-9940:       C5                           ;     FN_C5_??
+9940:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
 9941:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
 ;           CHAIR 
 9943:       1B 54 23 7B                  ; 
@@ -6472,7 +6471,7 @@ ObjectData:
 9947: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C
 9949: DF 04 80                           ; Location=0xDF, disk_section=4, data=0, attributes=0b10000000
 994C:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
-994E:       C5                           ;     FN_C5_??
+994E:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
 994F:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
 ;           CHAIR 
 9951:       1B 54 23 7B                  ; 
@@ -6481,7 +6480,7 @@ ObjectData:
 9955: 55 0A                              ; Word_num=0x55 BED, length=0x000A
 9957: DE 04 80                           ; Location=0xDE, disk_section=4, data=0, attributes=0b10000000
 995A:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
-995C:       C5                           ;     FN_C5_??
+995C:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
 995D:    02 02                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0002
 ;           BED
 995F:       66 4D                        ; 
@@ -6490,7 +6489,7 @@ ObjectData:
 9961: 55 0A                              ; Word_num=0x55 BED, length=0x000A
 9963: DF 04 80                           ; Location=0xDF, disk_section=4, data=0, attributes=0b10000000
 9966:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
-9968:       C5                           ;     FN_C5_??
+9968:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
 9969:    02 02                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0002
 ;           BED
 996B:       66 4D                        ; 
@@ -7298,7 +7297,7 @@ A3F2:       40 55 3E B9 45               ;
 A3F7: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C
 A3F9: 9C 08 80                           ; Location=0x9C, disk_section=8, data=0, attributes=0b10000000
 A3FC:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
-A3FE:       C5                           ;     FN_C5_??
+A3FE:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
 A3FF:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
 ;           CHAIR 
 A401:       1B 54 23 7B                  ; 
@@ -7465,7 +7464,7 @@ A678:       D3 7A                        ;
 A67A: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C
 A67C: 8A 08 82                           ; Location=0x8A, disk_section=8, data=0, attributes=0b10000010
 A67F:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
-A681:       C5                           ;     FN_C5_??
+A681:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
 A682:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
 ;           CHAIR 
 A684:       1B 54 23 7B                  ; 
@@ -7514,7 +7513,7 @@ A6ED:                0A 0E               ;           COM_0A_is_input_phrase(phra
 A6EF:                0A 39               ;           COM_0A_is_input_phrase(phrase=THROW ..C..... IN u.......)
 A6F1:             03 01 77               ;         COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_77_HANDGRIP)
 A6F4:             35                     ;         UNKNOWN35
-A6F5:             30 8A                  ;         COM_30_set_current_room(room=RM_8_??8A??)
+A6F5:             30 8A                  ;         COM_30_set_current_room(room=RM_8_RECREATION)
 A6F7:             2F 08                  ;         COM_2F_load_section_from_disk(section=8)
 A6F9:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
 ;           HANDGRIP 
@@ -7524,7 +7523,7 @@ A6FB:       50 72 44 5A D3 7A            ;
 A701: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C
 A703: 8D 07 80                           ; Location=0x8D, disk_section=7, data=0, attributes=0b10000000
 A706:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
-A708:       C5                           ;     FN_C5_??
+A708:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
 A709:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
 ;           CHAIR 
 A70B:       1B 54 23 7B                  ; 
@@ -7611,7 +7610,7 @@ A81C:          0D 30                     ;       COM_0D_while_pass length=0x0030
 A81E:             0A 59                  ;         COM_0A_is_input_phrase(phrase=TASTE u....... * *)
 A820:             0E 2C                  ;         COM_0E_while_fail length=0x002C
 A822:                14                  ;           COM_14_execute_and_reverse_status next command
-A823:                BF                  ;           FN_BF_??
+A823:                BF                  ;           FN_BF_ASSERT_VAR_IS_CLOSED
 A824:                0D 28               ;           COM_0D_while_pass length=0x0028
 A826:                   04 22            ;             COM_04_print_command length=0x0022
 A828:                      33 D1 16 EE DB 72 34 92 56 5E 66 49 51 5E 96 64 ; 
@@ -7626,7 +7625,7 @@ A84E:          0D 23                     ;       COM_0D_while_pass length=0x0023
 A850:             0A 4F                  ;         COM_0A_is_input_phrase(phrase=DRINK u....... * *)
 A852:             0E 1F                  ;         COM_0E_while_fail length=0x001F
 A854:                14                  ;           COM_14_execute_and_reverse_status next command
-A855:                BF                  ;           FN_BF_??
+A855:                BF                  ;           FN_BF_ASSERT_VAR_IS_CLOSED
 A856:                0D 1B               ;           COM_0D_while_pass length=0x001B
 A858:                   1C 01            ;             COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 A85A:                   23 64            ;             COM_23_heal_var(points=100)
@@ -8067,7 +8066,7 @@ AF8A:       23 D1 DB BD F6 4F 80 BF      ;
 AF92: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C
 AF94: 89 07 80                           ; Location=0x89, disk_section=7, data=0, attributes=0b10000000
 AF97:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
-AF99:       C5                           ;     FN_C5_??
+AF99:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
 AF9A:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
 ;           CHAIR 
 AF9C:       1B 54 23 7B                  ; 
@@ -8127,7 +8126,7 @@ AFFE:                0A 42               ;           COM_0A_is_input_phrase(phra
 B000:                0A 41               ;           COM_0A_is_input_phrase(phrase=LOCK ....A... WITH u.......)
 B002:             14                     ;         COM_14_execute_and_reverse_status next command
 B003:             09 97                  ;         COM_09_compare_to_second_noun(obj=OBJ_97_SMALL_UKORK_KEY)
-B005:             BA                     ;         FN_BA_??
+B005:             BA                     ;         FN_BA_OPEN_UNLOCK
 B006:          0D 0F                     ;       COM_0D_while_pass length=0x000F
 B008:             0A 11                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... * *)
 B00A:             1A                     ;         COM_1A_set_var_to_first_noun()
@@ -8154,7 +8153,7 @@ B02C:                0A 42               ;           COM_0A_is_input_phrase(phra
 B02E:                0A 41               ;           COM_0A_is_input_phrase(phrase=LOCK ....A... WITH u.......)
 B030:             14                     ;         COM_14_execute_and_reverse_status next command
 B031:             09 97                  ;         COM_09_compare_to_second_noun(obj=OBJ_97_SMALL_UKORK_KEY)
-B033:             BA                     ;         FN_BA_??
+B033:             BA                     ;         FN_BA_OPEN_UNLOCK
 B034:          0D 0F                     ;       COM_0D_while_pass length=0x000F
 B036:             0A 11                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... * *)
 B038:             1A                     ;         COM_1A_set_var_to_first_noun()
@@ -8411,6 +8410,11 @@ B3AE:                1A                  ;           COM_1A_set_var_to_first_nou
 
 
 
+
+
+
+
+
 ; ?? Is CA:DIE_ENERGY_BEAM ever used?
 
 SubroutineCommands:
@@ -8535,7 +8539,7 @@ B51C:          23 15 F3 B9 8E 48 F7 17 17 BA ;
 ;              AN EMPTY HIGHWAY TRAVELS EAST AND WEST.
 ;
 
-; -------------- Routine FN_8D_PRINT_OBJECT_IS_CLOSED
+; -------------- Routine FN_8D_ASSERT_OBJECT_IS_CLOSED
 ;
 B526: 8D 0E                              ; Routine Number: 0x8D, Length: 0x000E
 B528:       0D 0C                        ;     COM_0D_while_pass length=0x000C
@@ -8547,7 +8551,7 @@ B52F:             4B 7B C9 54 A6 B7 2E   ;
 ;                 IS CLOSED.
 ;
 
-; -------------- Routine FN_C7_??
+; -------------- Routine FN_C7_ASSERT_OBJECT_IS_RIBULN
 ;
 B536: C7 0E                              ; Routine Number: 0xC7, Length: 0x000E
 B538:       0D 0C                        ;     COM_0D_while_pass length=0x000C
@@ -8565,7 +8569,7 @@ B546: 8F 80 94                           ; Routine Number: 0x8F, Length: 0x0094
 B549:       0D 80 91                     ;     COM_0D_while_pass length=0x0091
 B54C:          0E 80 8D                  ;       COM_0E_while_fail length=0x008D
 B54F:             14                     ;         COM_14_execute_and_reverse_status next command
-B550:             BF                     ;         FN_BF_??
+B550:             BF                     ;         FN_BF_ASSERT_VAR_IS_CLOSED
 B551:             0D 23                  ;         COM_0D_while_pass length=0x0023
 B553:                2E 10               ;           UNKNOWN2E, Value: 0x10
 B555:                AA                  ;           FN_AA_PRINT_THE_var
@@ -8780,7 +8784,7 @@ B6DB:                5F BE               ;
 ;
 B6DD:          16                        ;       COM_16_print_var()
 
-; -------------- Routine FN_9C_??
+; -------------- Routine FN_9C_PRINT_AIRLOCK_TWO_BUTTONS
 ;
 B6DE: 9C 53                              ; Routine Number: 0x9C, Length: 0x0053
 B6E0:       0D 51                        ;     COM_0D_while_pass length=0x0051
@@ -8807,7 +8811,7 @@ B725:             66 B1 90 14 11 58 5B 98 4B 7B 8F 4E DB 63 ;
 ;                 BUTTONS, ONE IS RED AND ONE IS BLUE.
 ;
 
-; -------------- Routine FN_B0_??
+; -------------- Routine FN_B0_PRINT_AIRLOCK_THREE_BUTTONS
 ;
 B733: B0 5F                              ; Routine Number: 0xB0, Length: 0x005F
 B735:       0D 5D                        ;     COM_0D_while_pass length=0x005D
@@ -8835,7 +8839,7 @@ B78A:             0F A0 D5 15 47 18 09 8D 5B D4 ;
 ;                 BUTTONS, ONE IS RED, ONE IS BLUE, AND ONE IS YELLOW.
 ;
 
-; -------------- Routine FN_9D_??
+; -------------- Routine FN_9D_PRINT_EXIT_YELLOW_BUTTON
 ;
 B794: 9D 74                              ; Routine Number: 0x9D, Length: 0x0074
 B796:       0D 72                        ;     COM_0D_while_pass length=0x0072
@@ -8876,7 +8880,7 @@ B80F: 9F 0A                              ; Routine Number: 0x9F, Length: 0x000A
 B811:       0D 08                        ;     COM_0D_while_pass length=0x0008
 B813:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
 B815:          08 3F                     ;       COM_08_is_first_noun(obj=OBJ_3F_YELLOW_BUTTON)
-B817:          AD                        ;       FN_AD_??
+B817:          AD                        ;       FN_AD_HANDLE_OVAL
 B818:          17 3E 3F                  ;       COM_17_move_to(obj=OBJ_3E_??, destination=OBJ_3F_YELLOW_BUTTON)
 
 ; -------------- Routine FN_A0_??
@@ -8885,7 +8889,7 @@ B81B: A0 0A                              ; Routine Number: 0xA0, Length: 0x000A
 B81D:       0D 08                        ;     COM_0D_while_pass length=0x0008
 B81F:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
 B821:          08 40                     ;       COM_08_is_first_noun(obj=OBJ_40_RED_BUTTON)
-B823:          AD                        ;       FN_AD_??
+B823:          AD                        ;       FN_AD_HANDLE_OVAL
 B824:          17 3E 40                  ;       COM_17_move_to(obj=OBJ_3E_??, destination=OBJ_40_RED_BUTTON)
 
 ; -------------- Routine FN_A1_??
@@ -8894,7 +8898,7 @@ B827: A1 0A                              ; Routine Number: 0xA1, Length: 0x000A
 B829:       0D 08                        ;     COM_0D_while_pass length=0x0008
 B82B:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
 B82D:          08 41                     ;       COM_08_is_first_noun(obj=OBJ_41_BLUE_BUTTON)
-B82F:          AD                        ;       FN_AD_??
+B82F:          AD                        ;       FN_AD_HANDLE_OVAL
 B830:          17 3E 41                  ;       COM_17_move_to(obj=OBJ_3E_??, destination=OBJ_41_BLUE_BUTTON)
 
 ; -------------- Routine FN_AC_??
@@ -8903,10 +8907,10 @@ B833: AC 0A                              ; Routine Number: 0xAC, Length: 0x000A
 B835:       0D 08                        ;     COM_0D_while_pass length=0x0008
 B837:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
 B839:          08 42                     ;       COM_08_is_first_noun(obj=OBJ_42_ORANGE_BUTTON)
-B83B:          AD                        ;       FN_AD_??
+B83B:          AD                        ;       FN_AD_HANDLE_OVAL
 B83C:          17 3E 42                  ;       COM_17_move_to(obj=OBJ_3E_??, destination=OBJ_42_ORANGE_BUTTON)
 
-; -------------- Routine FN_AD_??
+; -------------- Routine FN_AD_HANDLE_OVAL
 ;
 B83F: AD 54                              ; Routine Number: 0xAD, Length: 0x0054
 B841:       0E 52                        ;     COM_0E_while_fail length=0x0052
@@ -8935,7 +8939,7 @@ B891:          0D 02                     ;       COM_0D_while_pass length=0x0002
 B893:             1A                     ;         COM_1A_set_var_to_first_noun()
 B894:             C1                     ;         FN_C1_PRINT_CANT_REACH_var
 
-; -------------- Routine FN_AE_??
+; -------------- Routine FN_AE_PRINT_PUSH_BUTTON
 ;
 B895: AE 21                              ; Routine Number: 0xAE, Length: 0x0021
 B897:       0D 1F                        ;     COM_0D_while_pass length=0x001F
@@ -9074,7 +9078,7 @@ B9B3:          5C B8 51 5E 83 64 FF 15 A4 85 B7 A1 ;
 ;              JUKEBOX.
 ;
 
-; -------------- Routine FN_BA_??
+; -------------- Routine FN_BA_OPEN_UNLOCK
 ;
 B9BF: BA 65                              ; Routine Number: 0xBA, Length: 0x0065
 B9C1:       0D 63                        ;     COM_0D_while_pass length=0x0063
@@ -9127,7 +9131,7 @@ BA42:             B8 16 90 14 82 DF 91 7A 2E ;
 ;                 ITS TOO DARK TO SEE MUCH OF ANYTHING.
 ;
 
-; -------------- Routine FN_BC_??
+; -------------- Routine FN_BC_SHOOT_DROP_SHOTGUN
 ;
 BA4B: BC 07                              ; Routine Number: 0xBC, Length: 0x0007
 BA4D:       0D 05                        ;     COM_0D_while_pass length=0x0005
@@ -9159,7 +9163,7 @@ BABC:          91 BE 1B 9C               ;
 ;              A FORCE FIELD PREVENTS YOU FROM GOING THAT DIRECTION. 
 ;
 
-; -------------- Routine FN_BF_??
+; -------------- Routine FN_BF_ASSERT_VAR_IS_CLOSED
 ;
 BAC0: BF 10                              ; Routine Number: 0xBF, Length: 0x0010
 BAC2:       0E 0E                        ;     COM_0E_while_fail length=0x000E
@@ -9173,7 +9177,7 @@ BACA:                4B 7B C9 54 A6 B7 2E ;
 ;
 BAD1:             0C                     ;         COM_0C_fail()
 
-; -------------- Routine FN_C0_??
+; -------------- Routine FN_C0_ASSERT_NO_NOUNS_GIVEN
 ;
 BAD2: C0 06                              ; Routine Number: 0xC0, Length: 0x0006
 BAD4:       0D 04                        ;     COM_0D_while_pass length=0x0004
@@ -9232,7 +9236,7 @@ BB24:          0A 4B                     ;       COM_0A_is_input_phrase(phrase=D
 BB26:          0A 4D                     ;       COM_0A_is_input_phrase(phrase=FILL ......O. WITH u.......)
 BB28:          0A 40                     ;       COM_0A_is_input_phrase(phrase=CLOSE ....A... * *)
 
-; -------------- Routine FN_C5_??
+; -------------- Routine FN_C5_ENTER_CLIMB_OUT
 ;
 BB2A: C5 28                              ; Routine Number: 0xC5, Length: 0x0028
 BB2C:       0B 26 0A                     ;     COM_0B_switch length=0x0026, function=COM_0A_is_input_phrase(phrase_num)
@@ -9358,6 +9362,11 @@ BD64:             23 C6 F6 4E EB DA      ;
 ;
 BD6A:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 BD6C:          1D 64                     ;       COM_1D_attack_var(points=100)
+
+
+
+
+
 
 
 
