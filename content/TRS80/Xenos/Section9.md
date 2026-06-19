@@ -14,7 +14,7 @@
 5203: 81 80 F3 00                        ; ----- Room 0x81 RM_9_SURFACE, Length: 0x00F3, Data: 0x00
 ;
 5207:    03 80 DD                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00DD
-520A:       04 80 DA                     ;     COM_04_print_command length=0x00DA
+520A:       04 80 DA                     ;     COM_04_print_message length=0x00DA
 520D:          34 BA C5 65 DB 63 C7 DE 53 15 33 98 C7 DE 97 B3 ; 
 521D:          03 8C FB B9 43 98 AB 98 83 7A 4E 45 31 49 45 5E ; 
 522D:          2D 7B DB 8B C3 9E 79 4F 03 D2 3B B9 03 8A 07 4F ; 
@@ -42,7 +42,7 @@
 52E9:       0B 0E 0A                     ;     COM_0B_switch length=0x000E, function=COM_0A_is_input_phrase(phrase_num)
 52EC:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 52ED:          02                        ;       ELSE goto=0x52F0
-52EE:             00 83                  ;         COM_00_move_and_look(room=RM_9_GRAND_CENTRAL)
+52EE:             00 83                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_GRAND_CENTRAL)
 52F0:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 52F1:          01                        ;       ELSE goto=0x52F3
 52F2:             BE                     ;         FN_BE_PRINT_FORCE_FIELD
@@ -58,7 +58,7 @@
 52F9: 82 80 9A 00                        ; ----- Room 0x82 RM_9_CARNEGIE, Length: 0x009A, Data: 0x00
 ;
 52FD:    03 80 8D                        ;   ---- Section SECTION_03_DESCRIPTION length=0x008D
-5300:       04 80 8A                     ;     COM_04_print_command length=0x008A
+5300:       04 80 8A                     ;     COM_04_print_message length=0x008A
 5303:          14 53 69 98 1B 79 4E 72 9B 8F C7 DE 94 14 4B 5E ; 
 5313:          83 96 AF 15 9B 6C 01 B3 56 90 56 72 D5 15 53 15 ; 
 5323:          FF 8C 19 58 82 7B 7B 14 0C BA 91 48 43 5E 33 98 ; 
@@ -79,14 +79,14 @@
 538F:       0B 05 0A                     ;     COM_0B_switch length=0x0005, function=COM_0A_is_input_phrase(phrase_num)
 5392:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5393:          02                        ;       ELSE goto=0x5396
-5394:             00 83                  ;         COM_00_move_and_look(room=RM_9_GRAND_CENTRAL)
+5394:             00 83                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_GRAND_CENTRAL)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
 5396: 83 81 0E 00                        ; ----- Room 0x83 RM_9_GRAND_CENTRAL, Length: 0x010E, Data: 0x00
 ;
 539A:    03 80 EF                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00EF
-539D:       04 80 EC                     ;     COM_04_print_command length=0x00EC
+539D:       04 80 EC                     ;     COM_04_print_message length=0x00EC
 53A0:          AB 6E 33 98 B0 53 EB BF 15 8A 56 BD C0 7A 5B F4 ; 
 53B0:          1B A1 2F 49 D0 15 7B 14 69 75 51 5E F0 A4 D3 14 ; 
 53C0:          74 CA 99 96 82 7B 57 17 74 CA 33 48 69 BE 53 C6 ; 
@@ -116,27 +116,27 @@
 548E:       0B 17 0A                     ;     COM_0B_switch length=0x0017, function=COM_0A_is_input_phrase(phrase_num)
 5491:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5492:          02                        ;       ELSE goto=0x5495
-5493:             00 81                  ;         COM_00_move_and_look(room=RM_9_SURFACE)
+5493:             00 81                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_SURFACE)
 5495:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5496:          02                        ;       ELSE goto=0x5499
-5497:             00 85                  ;         COM_00_move_and_look(room=RM_9_MUSEUM)
+5497:             00 85                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_MUSEUM)
 5499:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 549A:          08                        ;       ELSE goto=0x54A3
 549B:             0E 06                  ;         COM_0E_while_fail length=0x0006
 549D:                14                  ;           COM_14_execute_and_reverse_status next command
 549E:                1C 93               ;           COM_1C_set_var_object(obj=OBJ_93_DOOR_ESNEL)
 54A0:                C7                  ;           FN_C7_ASSERT_OBJECT_IS_RIBULN
-54A1:                00 84               ;           COM_00_move_and_look(room=RM_9_DISCO)
+54A1:                00 84               ;           COM_00_move_ACTIVE_and_look(room=RM_9_DISCO)
 54A3:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 54A4:          02                        ;       ELSE goto=0x54A7
-54A5:             00 82                  ;         COM_00_move_and_look(room=RM_9_CARNEGIE)
+54A5:             00 82                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_CARNEGIE)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
 54A7: 84 80 B6 00                        ; ----- Room 0x84 RM_9_DISCO, Length: 0x00B6, Data: 0x00
 ;
 54AB:    03 80 A9                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00A9
-54AE:       04 80 A6                     ;     COM_04_print_command length=0x00A6
+54AE:       04 80 A6                     ;     COM_04_print_message length=0x00A6
 54B1:          95 5A 4F 55 51 18 43 C2 5B B1 83 7A 4E 45 31 49 ; 
 54C1:          54 5E 3F A0 82 17 73 49 4B 7B EE 68 11 8A 83 64 ; 
 54D1:          87 8C 8B 9A F4 A4 04 68 D0 92 D6 6A DB 72 B4 53 ; 
@@ -160,14 +160,14 @@
 5559:       0B 05 0A                     ;     COM_0B_switch length=0x0005, function=COM_0A_is_input_phrase(phrase_num)
 555C:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 555D:          02                        ;       ELSE goto=0x5560
-555E:             00 83                  ;         COM_00_move_and_look(room=RM_9_GRAND_CENTRAL)
+555E:             00 83                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_GRAND_CENTRAL)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
 5560: 85 80 B3 00                        ; ----- Room 0x85 RM_9_MUSEUM, Length: 0x00B3, Data: 0x00
 ;
 5564:    03 80 A2                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00A2
-5567:       04 80 9F                     ;     COM_04_print_command length=0x009F
+5567:       04 80 9F                     ;     COM_04_print_message length=0x009F
 556A:          B5 94 AF 62 5B F4 1B A1 2F 49 D0 15 7B 14 D5 C9 ; 
 557A:          11 BC F0 A4 D3 14 74 CA 88 96 46 7A F3 5F 56 D1 ; 
 558A:          07 71 86 D8 CB 78 85 91 90 73 4B 62 8E 48 FF 14 ; 
@@ -190,17 +190,17 @@
 560B:       0B 09 0A                     ;     COM_0B_switch length=0x0009, function=COM_0A_is_input_phrase(phrase_num)
 560E:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 560F:          02                        ;       ELSE goto=0x5612
-5610:             00 83                  ;         COM_00_move_and_look(room=RM_9_GRAND_CENTRAL)
+5610:             00 83                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_GRAND_CENTRAL)
 5612:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5613:          02                        ;       ELSE goto=0x5616
-5614:             00 86                  ;         COM_00_move_and_look(room=RM_9_BIOLOGICAL)
+5614:             00 86                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_BIOLOGICAL)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
 5616: 86 80 E0 00                        ; ----- Room 0x86 RM_9_BIOLOGICAL, Length: 0x00E0, Data: 0x00
 ;
 561A:    03 80 CF                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00CF
-561D:       04 80 CC                     ;     COM_04_print_command length=0x00CC
+561D:       04 80 CC                     ;     COM_04_print_message length=0x00CC
 5620:          11 4E 79 8D D3 78 0E 8A BD 46 5B F4 1B A1 2F 49 ; 
 5630:          99 16 CB CE 83 96 83 96 C3 9A B2 B7 85 BE 14 EE ; 
 5640:          F3 5F 01 B3 DB 95 5F BE 5B B1 2F 49 57 17 74 CA ; 
@@ -227,17 +227,17 @@
 56EE:       0B 09 0A                     ;     COM_0B_switch length=0x0009, function=COM_0A_is_input_phrase(phrase_num)
 56F1:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 56F2:          02                        ;       ELSE goto=0x56F5
-56F3:             00 85                  ;         COM_00_move_and_look(room=RM_9_MUSEUM)
+56F3:             00 85                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_MUSEUM)
 56F5:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 56F6:          02                        ;       ELSE goto=0x56F9
-56F7:             00 88                  ;         COM_00_move_and_look(room=RM_9_GREEN_HOUSE)
+56F7:             00 88                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_GREEN_HOUSE)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
 56F9: 87 80 B5 00                        ; ----- Room 0x87 RM_9_NURSERY, Length: 0x00B5, Data: 0x00
 ;
 56FD:    03 80 9E                        ;   ---- Section SECTION_03_DESCRIPTION length=0x009E
-5700:       04 80 9B                     ;     COM_04_print_command length=0x009B
+5700:       04 80 9B                     ;     COM_04_print_message length=0x009B
 5703:          F4 9A B4 B7 DB E0 5F BE 39 17 DB 9F 5B BE 1B BC ; 
 5713:          1B A1 2F 49 99 16 D5 CE 50 BD 90 5A CB 6A 83 96 ; 
 5723:          9F A6 3D 49 89 17 AF 14 7B 14 69 75 50 5E 3D C6 ; 
@@ -259,21 +259,21 @@
 57A0:       0B 0F 0A                     ;     COM_0B_switch length=0x000F, function=COM_0A_is_input_phrase(phrase_num)
 57A3:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 57A4:          02                        ;       ELSE goto=0x57A7
-57A5:             00 88                  ;         COM_00_move_and_look(room=RM_9_GREEN_HOUSE)
+57A5:             00 88                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_GREEN_HOUSE)
 57A7:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 57A8:          08                        ;       ELSE goto=0x57B1
 57A9:             0E 06                  ;         COM_0E_while_fail length=0x0006
 57AB:                14                  ;           COM_14_execute_and_reverse_status next command
 57AC:                1C 95               ;           COM_1C_set_var_object(obj=OBJ_95_DOOR_ESNEL)
 57AE:                C7                  ;           FN_C7_ASSERT_OBJECT_IS_RIBULN
-57AF:                00 8A               ;           COM_00_move_and_look(room=RM_9_GENERATOR)
+57AF:                00 8A               ;           COM_00_move_ACTIVE_and_look(room=RM_9_GENERATOR)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
 57B1: 88 80 FC 00                        ; ----- Room 0x88 RM_9_GREEN_HOUSE, Length: 0x00FC, Data: 0x00
 ;
 57B5:    03 80 E7                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00E7
-57B8:       04 80 E4                     ;     COM_04_print_command length=0x00E4
+57B8:       04 80 E4                     ;     COM_04_print_message length=0x00E4
 57BB:          AF 6E 83 61 87 74 BF B7 51 18 43 C2 5B B1 FB B9 ; 
 57CB:          43 98 AB 98 83 7A 4E 45 31 49 45 5E CF 49 C3 B2 ; 
 57DB:          23 D1 13 54 4B 7B EE 68 11 8A 96 64 AF C3 07 B3 ; 
@@ -302,20 +302,20 @@
 58A1:       0B 0D 0A                     ;     COM_0B_switch length=0x000D, function=COM_0A_is_input_phrase(phrase_num)
 58A4:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 58A5:          02                        ;       ELSE goto=0x58A8
-58A6:             00 87                  ;         COM_00_move_and_look(room=RM_9_NURSERY)
+58A6:             00 87                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_NURSERY)
 58A8:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 58A9:          02                        ;       ELSE goto=0x58AC
-58AA:             00 86                  ;         COM_00_move_and_look(room=RM_9_BIOLOGICAL)
+58AA:             00 86                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_BIOLOGICAL)
 58AC:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 58AD:          02                        ;       ELSE goto=0x58B0
-58AE:             00 89                  ;         COM_00_move_and_look(room=RM_9_LIBRARY2)
+58AE:             00 89                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_LIBRARY2)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
 58B0: 89 80 B4 00                        ; ----- Room 0x89 RM_9_LIBRARY2, Length: 0x00B4, Data: 0x00
 ;
 58B4:    03 80 9D                        ;   ---- Section SECTION_03_DESCRIPTION length=0x009D
-58B7:       04 80 9A                     ;     COM_04_print_command length=0x009A
+58B7:       04 80 9A                     ;     COM_04_print_message length=0x009A
 58BA:          84 8C D4 B0 DB E0 69 75 45 5E F2 9F 7F C6 84 AF ; 
 58CA:          95 48 C8 B5 46 7A 82 17 4B 7B 1B 54 AF 91 1B B5 ; 
 58DA:          4A 45 8E 48 EE 68 B8 16 8E 14 30 79 C3 B5 5B B1 ; 
@@ -338,21 +338,21 @@
 5956:       0B 0F 0A                     ;     COM_0B_switch length=0x000F, function=COM_0A_is_input_phrase(phrase_num)
 5959:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 595A:          02                        ;       ELSE goto=0x595D
-595B:             00 88                  ;         COM_00_move_and_look(room=RM_9_GREEN_HOUSE)
+595B:             00 88                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_GREEN_HOUSE)
 595D:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 595E:          08                        ;       ELSE goto=0x5967
 595F:             0E 06                  ;         COM_0E_while_fail length=0x0006
 5961:                14                  ;           COM_14_execute_and_reverse_status next command
 5962:                1C 96               ;           COM_1C_set_var_object(obj=OBJ_96_DOOR_ESNEL)
 5964:                C7                  ;           FN_C7_ASSERT_OBJECT_IS_RIBULN
-5965:                00 8C               ;           COM_00_move_and_look(room=RM_9_DETROIT)
+5965:                00 8C               ;           COM_00_move_ACTIVE_and_look(room=RM_9_DETROIT)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
 5967: 8A 80 C0 00                        ; ----- Room 0x8A RM_9_GENERATOR, Length: 0x00C0, Data: 0x00
 ;
 596B:    03 80 AF                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00AF
-596E:       04 80 AC                     ;     COM_04_print_command length=0x00AC
+596E:       04 80 AC                     ;     COM_04_print_message length=0x00AC
 5971:          B0 6C 2B 62 84 BF 4A F4 77 C4 77 15 74 98 89 49 ; 
 5981:          8B B3 0E 67 16 8A 95 73 39 17 FF 9F 82 17 3B 63 ; 
 5991:          2F 49 82 17 52 5E 77 A1 95 AF EA C5 FB 8E C3 9E ; 
@@ -376,17 +376,17 @@
 5A1F:       0B 09 0A                     ;     COM_0B_switch length=0x0009, function=COM_0A_is_input_phrase(phrase_num)
 5A22:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5A23:          02                        ;       ELSE goto=0x5A26
-5A24:             00 8B                  ;         COM_00_move_and_look(room=RM_9_PITTSBURG)
+5A24:             00 8B                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_PITTSBURG)
 5A26:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5A27:          02                        ;       ELSE goto=0x5A2A
-5A28:             00 87                  ;         COM_00_move_and_look(room=RM_9_NURSERY)
+5A28:             00 87                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_NURSERY)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
 5A2A: 8B 80 E0 00                        ; ----- Room 0x8B RM_9_PITTSBURG, Length: 0x00E0, Data: 0x00
 ;
 5A2E:    03 80 CF                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00CF
-5A31:       04 80 CC                     ;     COM_04_print_command length=0x00CC
+5A31:       04 80 CC                     ;     COM_04_print_message length=0x00CC
 5A34:          96 A5 14 C0 31 C6 5B F4 1B A1 FB B9 5B B1 83 7A ; 
 5A44:          F7 49 96 14 7B 14 57 B7 5B 98 0C BA C9 47 33 75 ; 
 5A54:          36 A1 B8 16 FB 14 BF 9A 0B B6 90 7A 38 62 5B A2 ; 
@@ -413,17 +413,17 @@
 5B02:       0B 09 0A                     ;     COM_0B_switch length=0x0009, function=COM_0A_is_input_phrase(phrase_num)
 5B05:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5B06:          02                        ;       ELSE goto=0x5B09
-5B07:             00 8A                  ;         COM_00_move_and_look(room=RM_9_GENERATOR)
+5B07:             00 8A                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_GENERATOR)
 5B09:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5B0A:          02                        ;       ELSE goto=0x5B0D
-5B0B:             00 8C                  ;         COM_00_move_and_look(room=RM_9_DETROIT)
+5B0B:             00 8C                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_DETROIT)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
 5B0D: 8C 80 B0 00                        ; ----- Room 0x8C RM_9_DETROIT, Length: 0x00B0, Data: 0x00
 ;
 5B11:    03 80 9F                        ;   ---- Section SECTION_03_DESCRIPTION length=0x009F
-5B14:       04 80 9C                     ;     COM_04_print_command length=0x009C
+5B14:       04 80 9C                     ;     COM_04_print_message length=0x009C
 5B17:          F6 59 FB B2 9B C1 69 75 43 5E D7 B9 B6 91 4E DB ; 
 5B27:          8F 7A C8 B5 46 7A 82 17 4B 7B 01 B3 B3 95 85 5F ; 
 5B37:          0F 71 9F 48 C5 65 74 C0 91 7A 61 17 1B 92 29 63 ; 
@@ -446,10 +446,10 @@
 5BB5:       0B 09 0A                     ;     COM_0B_switch length=0x0009, function=COM_0A_is_input_phrase(phrase_num)
 5BB8:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5BB9:          02                        ;       ELSE goto=0x5BBC
-5BBA:             00 8B                  ;         COM_00_move_and_look(room=RM_9_PITTSBURG)
+5BBA:             00 8B                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_PITTSBURG)
 5BBC:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5BBD:          02                        ;       ELSE goto=0x5BC0
-5BBE:             00 89                  ;         COM_00_move_and_look(room=RM_9_LIBRARY2)
+5BBE:             00 89                  ;         COM_00_move_ACTIVE_and_look(room=RM_9_LIBRARY2)
 ```
 
 # Unitialized data

@@ -43,6 +43,34 @@ def decode_generic_section(cursor, end_of_sec):
     cursor.print_data_run(origin, line,2)        
     
 
+def decode_attributes(dbits):    
+    # TODO upper bit means something
+    atts = []
+    if dbits & 64:
+        atts.append('WEAPON')
+    if dbits & 32:
+        atts.append('GETTABLE')
+    if dbits & 16:
+        atts.append('ALIVE')
+    if dbits & 8:
+        atts.append('CLOSEABLE')
+    if dbits & 4:
+        atts.append('??LOCKABLE')
+    if dbits & 2:
+        atts.append('CLOSED')
+    if dbits & 1:
+        atts.append('LOCKED')
+
+    ret = f'{dbits:08b}'
+    ret = ret[0:4]+'_'+ret[4:]
+    ret = f'{ret} ({", ".join(atts)})'
+    return ret
+
+def decode_extended_attributes(dbits):
+    ret = f'{dbits:08b}'
+    ret = ret[0:4]+'....'
+    return ret
+
 def decode_object(cursor):
 
     # Object header (word, length)
@@ -64,10 +92,10 @@ def decode_object(cursor):
     origin, line = cursor.start_new_line()
     location = cursor.get_byte(line)
     data = cursor.get_byte(line)
-    dbits = cursor.get_byte(line)
-    # TODO decode attributes
-    # TODO data -- what is this nibble
-    cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Location=0x{location:02X}, disk_section={data&15}, data={(data>>4)}, attributes=0b{dbits:08b}',0)
+    dbits = cursor.get_byte(line)    
+    attributes_text = decode_attributes(dbits)
+    ext_text = decode_extended_attributes(data&0xF0)
+    cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Location=0x{location:02X}, disk_section={data&15}, ext_attr={ext_text}, attributes={attributes_text}',0)
 
     # Multiple sections
 

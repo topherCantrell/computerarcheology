@@ -20,16 +20,16 @@
 520B:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 520E:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 520F:          02                        ;       ELSE goto=0x5212
-5210:             00 82                  ;         COM_00_move_and_look(room=RM_6_DESERT33)
+5210:             00 82                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT33)
 5212:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5213:          02                        ;       ELSE goto=0x5216
-5214:             00 83                  ;         COM_00_move_and_look(room=RM_6_DESERT34)
+5214:             00 83                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT34)
 5216:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5217:          02                        ;       ELSE goto=0x521A
-5218:             00 A8                  ;         COM_00_move_and_look(room=RM_6_DESERT49)
+5218:             00 A8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT49)
 521A:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 521B:          02                        ;       ELSE goto=0x521E
-521C:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+521C:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -42,16 +42,16 @@
 5226:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5229:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 522A:          02                        ;       ELSE goto=0x522D
-522B:             00 83                  ;         COM_00_move_and_look(room=RM_6_DESERT34)
+522B:             00 83                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT34)
 522D:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 522E:          02                        ;       ELSE goto=0x5231
-522F:             00 81                  ;         COM_00_move_and_look(room=RM_6_DESERT32)
+522F:             00 81                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT32)
 5231:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5232:          02                        ;       ELSE goto=0x5235
-5233:             00 A9                  ;         COM_00_move_and_look(room=RM_6_DESERT50)
+5233:             00 A9                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT50)
 5235:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5236:          02                        ;       ELSE goto=0x5239
-5237:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+5237:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -64,16 +64,16 @@
 5241:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5244:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5245:          02                        ;       ELSE goto=0x5248
-5246:             00 84                  ;         COM_00_move_and_look(room=RM_6_DESERT35)
+5246:             00 84                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT35)
 5248:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5249:          02                        ;       ELSE goto=0x524C
-524A:             00 82                  ;         COM_00_move_and_look(room=RM_6_DESERT33)
+524A:             00 82                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT33)
 524C:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 524D:          02                        ;       ELSE goto=0x5250
-524E:             00 AA                  ;         COM_00_move_and_look(room=RM_6_DESERT51)
+524E:             00 AA                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT51)
 5250:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5251:          02                        ;       ELSE goto=0x5254
-5252:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+5252:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -86,16 +86,16 @@
 525C:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 525F:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5260:          02                        ;       ELSE goto=0x5263
-5261:             00 85                  ;         COM_00_move_and_look(room=RM_6_DESERT36)
+5261:             00 85                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT36)
 5263:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5264:          02                        ;       ELSE goto=0x5267
-5265:             00 83                  ;         COM_00_move_and_look(room=RM_6_DESERT34)
+5265:             00 83                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT34)
 5267:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5268:          02                        ;       ELSE goto=0x526B
-5269:             00 AB                  ;         COM_00_move_and_look(room=RM_6_DESERT52)
+5269:             00 AB                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT52)
 526B:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 526C:          02                        ;       ELSE goto=0x526F
-526D:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+526D:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -108,16 +108,16 @@
 5277:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 527A:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 527B:          02                        ;       ELSE goto=0x527E
-527C:             00 86                  ;         COM_00_move_and_look(room=RM_6_DESERT37)
+527C:             00 86                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT37)
 527E:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 527F:          02                        ;       ELSE goto=0x5282
-5280:             00 84                  ;         COM_00_move_and_look(room=RM_6_DESERT35)
+5280:             00 84                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT35)
 5282:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5283:          02                        ;       ELSE goto=0x5286
-5284:             00 AC                  ;         COM_00_move_and_look(room=RM_6_DESERT53)
+5284:             00 AC                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT53)
 5286:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5287:          02                        ;       ELSE goto=0x528A
-5288:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+5288:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -130,16 +130,16 @@
 5292:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5295:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5296:          02                        ;       ELSE goto=0x5299
-5297:             00 87                  ;         COM_00_move_and_look(room=RM_6_DESERT38)
+5297:             00 87                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT38)
 5299:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 529A:          02                        ;       ELSE goto=0x529D
-529B:             00 85                  ;         COM_00_move_and_look(room=RM_6_DESERT36)
+529B:             00 85                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT36)
 529D:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 529E:          02                        ;       ELSE goto=0x52A1
-529F:             00 AD                  ;         COM_00_move_and_look(room=RM_6_DESERT54)
+529F:             00 AD                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT54)
 52A1:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 52A2:          02                        ;       ELSE goto=0x52A5
-52A3:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+52A3:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -152,16 +152,16 @@
 52AD:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 52B0:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 52B1:          02                        ;       ELSE goto=0x52B4
-52B2:             00 88                  ;         COM_00_move_and_look(room=RM_6_DESERT39)
+52B2:             00 88                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT39)
 52B4:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 52B5:          02                        ;       ELSE goto=0x52B8
-52B6:             00 86                  ;         COM_00_move_and_look(room=RM_6_DESERT37)
+52B6:             00 86                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT37)
 52B8:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 52B9:          02                        ;       ELSE goto=0x52BC
-52BA:             00 AE                  ;         COM_00_move_and_look(room=RM_6_DESERT55)
+52BA:             00 AE                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT55)
 52BC:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 52BD:          02                        ;       ELSE goto=0x52C0
-52BE:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+52BE:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -174,16 +174,16 @@
 52C8:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 52CB:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 52CC:          02                        ;       ELSE goto=0x52CF
-52CD:             00 89                  ;         COM_00_move_and_look(room=RM_6_DESERT40)
+52CD:             00 89                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT40)
 52CF:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 52D0:          02                        ;       ELSE goto=0x52D3
-52D1:             00 87                  ;         COM_00_move_and_look(room=RM_6_DESERT38)
+52D1:             00 87                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT38)
 52D3:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 52D4:          02                        ;       ELSE goto=0x52D7
-52D5:             00 AF                  ;         COM_00_move_and_look(room=RM_6_DESERT56)
+52D5:             00 AF                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT56)
 52D7:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 52D8:          02                        ;       ELSE goto=0x52DB
-52D9:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+52D9:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -196,16 +196,16 @@
 52E3:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 52E6:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 52E7:          02                        ;       ELSE goto=0x52EA
-52E8:             00 8A                  ;         COM_00_move_and_look(room=RM_6_DESERT41)
+52E8:             00 8A                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT41)
 52EA:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 52EB:          02                        ;       ELSE goto=0x52EE
-52EC:             00 88                  ;         COM_00_move_and_look(room=RM_6_DESERT39)
+52EC:             00 88                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT39)
 52EE:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 52EF:          02                        ;       ELSE goto=0x52F2
-52F0:             00 B0                  ;         COM_00_move_and_look(room=RM_6_DESERT_SMALL_OASIS)
+52F0:             00 B0                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_SMALL_OASIS)
 52F2:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 52F3:          02                        ;       ELSE goto=0x52F6
-52F4:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+52F4:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -218,16 +218,16 @@
 52FE:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5301:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5302:          02                        ;       ELSE goto=0x5305
-5303:             00 8B                  ;         COM_00_move_and_look(room=RM_6_DESERT42)
+5303:             00 8B                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT42)
 5305:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5306:          02                        ;       ELSE goto=0x5309
-5307:             00 89                  ;         COM_00_move_and_look(room=RM_6_DESERT40)
+5307:             00 89                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT40)
 5309:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 530A:          02                        ;       ELSE goto=0x530D
-530B:             00 B1                  ;         COM_00_move_and_look(room=RM_6_DESERT57)
+530B:             00 B1                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT57)
 530D:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 530E:          02                        ;       ELSE goto=0x5311
-530F:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+530F:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -240,16 +240,16 @@
 5319:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 531C:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 531D:          02                        ;       ELSE goto=0x5320
-531E:             00 89                  ;         COM_00_move_and_look(room=RM_6_DESERT40)
+531E:             00 89                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT40)
 5320:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5321:          02                        ;       ELSE goto=0x5324
-5322:             00 8A                  ;         COM_00_move_and_look(room=RM_6_DESERT41)
+5322:             00 8A                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT41)
 5324:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5325:          02                        ;       ELSE goto=0x5328
-5326:             00 8C                  ;         COM_00_move_and_look(room=RM_6_DESERT43)
+5326:             00 8C                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT43)
 5328:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5329:          02                        ;       ELSE goto=0x532C
-532A:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+532A:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -262,16 +262,16 @@
 5334:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5337:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5338:          02                        ;       ELSE goto=0x533B
-5339:             00 AF                  ;         COM_00_move_and_look(room=RM_6_DESERT56)
+5339:             00 AF                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT56)
 533B:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 533C:          02                        ;       ELSE goto=0x533F
-533D:             00 B1                  ;         COM_00_move_and_look(room=RM_6_DESERT57)
+533D:             00 B1                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT57)
 533F:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5340:          02                        ;       ELSE goto=0x5343
-5341:             00 8D                  ;         COM_00_move_and_look(room=RM_6_DESERT44)
+5341:             00 8D                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT44)
 5343:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5344:          02                        ;       ELSE goto=0x5347
-5345:             00 8B                  ;         COM_00_move_and_look(room=RM_6_DESERT42)
+5345:             00 8B                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT42)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -284,16 +284,16 @@
 534F:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5352:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5353:          02                        ;       ELSE goto=0x5356
-5354:             00 CC                  ;         COM_00_move_and_look(room=RM_6_DESERT67)
+5354:             00 CC                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT67)
 5356:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5357:          02                        ;       ELSE goto=0x535A
-5358:             00 B2                  ;         COM_00_move_and_look(room=RM_6_DESERT58)
+5358:             00 B2                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT58)
 535A:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 535B:          02                        ;       ELSE goto=0x535E
-535C:             00 8E                  ;         COM_00_move_and_look(room=RM_6_DESERT45)
+535C:             00 8E                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT45)
 535E:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 535F:          02                        ;       ELSE goto=0x5362
-5360:             00 8C                  ;         COM_00_move_and_look(room=RM_6_DESERT43)
+5360:             00 8C                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT43)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -306,16 +306,16 @@
 536A:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 536D:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 536E:          02                        ;       ELSE goto=0x5371
-536F:             00 CD                  ;         COM_00_move_and_look(room=RM_6_DESERT68)
+536F:             00 CD                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT68)
 5371:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5372:          02                        ;       ELSE goto=0x5375
-5373:             00 B3                  ;         COM_00_move_and_look(room=RM_6_DESERT59)
+5373:             00 B3                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT59)
 5375:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5376:          02                        ;       ELSE goto=0x5379
-5377:             00 8F                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY3)
+5377:             00 8F                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY3)
 5379:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 537A:          02                        ;       ELSE goto=0x537D
-537B:             00 8D                  ;         COM_00_move_and_look(room=RM_6_DESERT44)
+537B:             00 8D                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT44)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -330,16 +330,16 @@
 5388:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 538B:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 538C:          02                        ;       ELSE goto=0x538F
-538D:             00 CE                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY7)
+538D:             00 CE                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY7)
 538F:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5390:          02                        ;       ELSE goto=0x5393
-5391:             00 B4                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY5)
+5391:             00 B4                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY5)
 5393:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5394:          02                        ;       ELSE goto=0x5397
-5395:             00 90                  ;         COM_00_move_and_look(room=RM_6_DESERT46)
+5395:             00 90                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT46)
 5397:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5398:          02                        ;       ELSE goto=0x539B
-5399:             00 8E                  ;         COM_00_move_and_look(room=RM_6_DESERT45)
+5399:             00 8E                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT45)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -352,16 +352,16 @@
 53A3:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 53A6:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 53A7:          02                        ;       ELSE goto=0x53AA
-53A8:             00 CF                  ;         COM_00_move_and_look(room=RM_6_DESERT69)
+53A8:             00 CF                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT69)
 53AA:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 53AB:          02                        ;       ELSE goto=0x53AE
-53AC:             00 B5                  ;         COM_00_move_and_look(room=RM_6_DESERT60)
+53AC:             00 B5                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT60)
 53AE:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 53AF:          02                        ;       ELSE goto=0x53B2
-53B0:             00 91                  ;         COM_00_move_and_look(room=RM_6_DESERT47)
+53B0:             00 91                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT47)
 53B2:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 53B3:          02                        ;       ELSE goto=0x53B6
-53B4:             00 8F                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY3)
+53B4:             00 8F                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY3)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -374,16 +374,16 @@
 53BE:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 53C1:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 53C2:          02                        ;       ELSE goto=0x53C5
-53C3:             00 D0                  ;         COM_00_move_and_look(room=RM_6_DESERT70)
+53C3:             00 D0                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT70)
 53C5:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 53C6:          02                        ;       ELSE goto=0x53C9
-53C7:             00 B6                  ;         COM_00_move_and_look(room=RM_6_DESERT61)
+53C7:             00 B6                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT61)
 53C9:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 53CA:          02                        ;       ELSE goto=0x53CD
-53CB:             00 92                  ;         COM_00_move_and_look(room=RM_6_DESERT48)
+53CB:             00 92                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT48)
 53CD:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 53CE:          02                        ;       ELSE goto=0x53D1
-53CF:             00 90                  ;         COM_00_move_and_look(room=RM_6_DESERT46)
+53CF:             00 90                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT46)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -396,16 +396,16 @@
 53D9:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 53DC:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 53DD:          02                        ;       ELSE goto=0x53E0
-53DE:             00 D1                  ;         COM_00_move_and_look(room=RM_6_DESERT71)
+53DE:             00 D1                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT71)
 53E0:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 53E1:          02                        ;       ELSE goto=0x53E4
-53E2:             00 B7                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE2)
+53E2:             00 B7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE2)
 53E4:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 53E5:          02                        ;       ELSE goto=0x53E8
-53E6:             00 93                  ;         COM_00_move_and_look(room=RM_6_DESERT_CANYON_LAKE1)
+53E6:             00 93                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_CANYON_LAKE1)
 53E8:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 53E9:          02                        ;       ELSE goto=0x53EC
-53EA:             00 91                  ;         COM_00_move_and_look(room=RM_6_DESERT47)
+53EA:             00 91                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT47)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -421,16 +421,16 @@
 53F8:       0B 10 0A                     ;     COM_0B_switch length=0x0010, function=COM_0A_is_input_phrase(phrase_num)
 53FB:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 53FC:          02                        ;       ELSE goto=0x53FF
-53FD:             00 B8                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE3)
+53FD:             00 B8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE3)
 53FF:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5400:          02                        ;       ELSE goto=0x5403
-5401:             00 94                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE1)
+5401:             00 94                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE1)
 5403:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5404:          01                        ;       ELSE goto=0x5406
 5405:             97                     ;         FN_97_PRINT_CERTAIN_DEATH
 5406:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5407:          02                        ;       ELSE goto=0x540A
-5408:             00 92                  ;         COM_00_move_and_look(room=RM_6_DESERT48)
+5408:             00 92                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT48)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -445,16 +445,16 @@
 5415:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5418:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5419:          02                        ;       ELSE goto=0x541C
-541A:             00 93                  ;         COM_00_move_and_look(room=RM_6_DESERT_CANYON_LAKE1)
+541A:             00 93                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_CANYON_LAKE1)
 541C:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 541D:          02                        ;       ELSE goto=0x5420
-541E:             00 B8                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE3)
+541E:             00 B8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE3)
 5420:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5421:          02                        ;       ELSE goto=0x5424
-5422:             00 95                  ;         COM_00_move_and_look(room=RM_6_DESERT_CANYON_LAKE2)
+5422:             00 95                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_CANYON_LAKE2)
 5424:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5425:          02                        ;       ELSE goto=0x5428
-5426:             00 B7                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE2)
+5426:             00 B7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE2)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -473,13 +473,13 @@
 5439:             97                     ;         FN_97_PRINT_CERTAIN_DEATH
 543A:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 543B:          02                        ;       ELSE goto=0x543E
-543C:             00 96                  ;         COM_00_move_and_look(room=RM_6_DESERT_CANYON_LAKE3)
+543C:             00 96                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_CANYON_LAKE3)
 543E:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 543F:          01                        ;       ELSE goto=0x5441
 5440:             97                     ;         FN_97_PRINT_CERTAIN_DEATH
 5441:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5442:          02                        ;       ELSE goto=0x5445
-5443:             00 94                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE1)
+5443:             00 94                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE1)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -495,16 +495,16 @@
 5451:       0B 10 0A                     ;     COM_0B_switch length=0x0010, function=COM_0A_is_input_phrase(phrase_num)
 5454:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5455:          02                        ;       ELSE goto=0x5458
-5456:             00 95                  ;         COM_00_move_and_look(room=RM_6_DESERT_CANYON_LAKE2)
+5456:             00 95                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_CANYON_LAKE2)
 5458:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5459:          02                        ;       ELSE goto=0x545C
-545A:             00 B9                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE4)
+545A:             00 B9                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE4)
 545C:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 545D:          01                        ;       ELSE goto=0x545F
 545E:             97                     ;         FN_97_PRINT_CERTAIN_DEATH
 545F:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5460:          02                        ;       ELSE goto=0x5463
-5461:             00 B8                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE3)
+5461:             00 B8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE3)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -530,7 +530,7 @@
 547E:             97                     ;         FN_97_PRINT_CERTAIN_DEATH
 547F:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5480:          02                        ;       ELSE goto=0x5483
-5481:             00 B9                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE4)
+5481:             00 B9                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE4)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -545,10 +545,10 @@
 548E:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 5491:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5492:          02                        ;       ELSE goto=0x5495
-5493:             00 C5                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY6)
+5493:             00 C5                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY6)
 5495:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5496:          02                        ;       ELSE goto=0x5499
-5497:             00 A7                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY4)
+5497:             00 A7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY4)
 5499:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 549A:          06                        ;       ELSE goto=0x54A1
 549B:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -556,7 +556,7 @@
 549F:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 54A1:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 54A2:          02                        ;       ELSE goto=0x54A5
-54A3:             00 A8                  ;         COM_00_move_and_look(room=RM_6_DESERT49)
+54A3:             00 A8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT49)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -569,16 +569,16 @@
 54AD:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 54B0:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 54B1:          02                        ;       ELSE goto=0x54B4
-54B2:             00 A9                  ;         COM_00_move_and_look(room=RM_6_DESERT50)
+54B2:             00 A9                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT50)
 54B4:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 54B5:          02                        ;       ELSE goto=0x54B8
-54B6:             00 84                  ;         COM_00_move_and_look(room=RM_6_DESERT35)
+54B6:             00 84                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT35)
 54B8:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 54B9:          02                        ;       ELSE goto=0x54BC
-54BA:             00 A7                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY4)
+54BA:             00 A7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY4)
 54BC:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 54BD:          02                        ;       ELSE goto=0x54C0
-54BE:             00 81                  ;         COM_00_move_and_look(room=RM_6_DESERT32)
+54BE:             00 81                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT32)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -591,16 +591,16 @@
 54C8:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 54CB:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 54CC:          02                        ;       ELSE goto=0x54CF
-54CD:             00 AA                  ;         COM_00_move_and_look(room=RM_6_DESERT51)
+54CD:             00 AA                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT51)
 54CF:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 54D0:          02                        ;       ELSE goto=0x54D3
-54D1:             00 A8                  ;         COM_00_move_and_look(room=RM_6_DESERT49)
+54D1:             00 A8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT49)
 54D3:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 54D4:          02                        ;       ELSE goto=0x54D7
-54D5:             00 C5                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY6)
+54D5:             00 C5                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY6)
 54D7:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 54D8:          02                        ;       ELSE goto=0x54DB
-54D9:             00 82                  ;         COM_00_move_and_look(room=RM_6_DESERT33)
+54D9:             00 82                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT33)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -613,16 +613,16 @@
 54E3:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 54E6:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 54E7:          02                        ;       ELSE goto=0x54EA
-54E8:             00 AB                  ;         COM_00_move_and_look(room=RM_6_DESERT52)
+54E8:             00 AB                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT52)
 54EA:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 54EB:          02                        ;       ELSE goto=0x54EE
-54EC:             00 A9                  ;         COM_00_move_and_look(room=RM_6_DESERT50)
+54EC:             00 A9                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT50)
 54EE:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 54EF:          02                        ;       ELSE goto=0x54F2
-54F0:             00 C6                  ;         COM_00_move_and_look(room=RM_6_DESERT_HIGHWAY_TURNS)
+54F0:             00 C6                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_HIGHWAY_TURNS)
 54F2:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 54F3:          02                        ;       ELSE goto=0x54F6
-54F4:             00 83                  ;         COM_00_move_and_look(room=RM_6_DESERT34)
+54F4:             00 83                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT34)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -635,16 +635,16 @@
 54FE:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5501:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5502:          02                        ;       ELSE goto=0x5505
-5503:             00 AC                  ;         COM_00_move_and_look(room=RM_6_DESERT53)
+5503:             00 AC                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT53)
 5505:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5506:          02                        ;       ELSE goto=0x5509
-5507:             00 AA                  ;         COM_00_move_and_look(room=RM_6_DESERT51)
+5507:             00 AA                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT51)
 5509:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 550A:          02                        ;       ELSE goto=0x550D
-550B:             00 C7                  ;         COM_00_move_and_look(room=RM_6_DESERT62)
+550B:             00 C7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT62)
 550D:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 550E:          02                        ;       ELSE goto=0x5511
-550F:             00 84                  ;         COM_00_move_and_look(room=RM_6_DESERT35)
+550F:             00 84                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT35)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -657,16 +657,16 @@
 5519:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 551C:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 551D:          02                        ;       ELSE goto=0x5520
-551E:             00 AD                  ;         COM_00_move_and_look(room=RM_6_DESERT54)
+551E:             00 AD                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT54)
 5520:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5521:          02                        ;       ELSE goto=0x5524
-5522:             00 AB                  ;         COM_00_move_and_look(room=RM_6_DESERT52)
+5522:             00 AB                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT52)
 5524:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5525:          02                        ;       ELSE goto=0x5528
-5526:             00 C8                  ;         COM_00_move_and_look(room=RM_6_DESERT63)
+5526:             00 C8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT63)
 5528:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5529:          02                        ;       ELSE goto=0x552C
-552A:             00 85                  ;         COM_00_move_and_look(room=RM_6_DESERT36)
+552A:             00 85                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT36)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -679,16 +679,16 @@
 5534:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5537:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5538:          02                        ;       ELSE goto=0x553B
-5539:             00 AE                  ;         COM_00_move_and_look(room=RM_6_DESERT55)
+5539:             00 AE                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT55)
 553B:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 553C:          02                        ;       ELSE goto=0x553F
-553D:             00 AC                  ;         COM_00_move_and_look(room=RM_6_DESERT53)
+553D:             00 AC                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT53)
 553F:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5540:          02                        ;       ELSE goto=0x5543
-5541:             00 C9                  ;         COM_00_move_and_look(room=RM_6_DESERT64)
+5541:             00 C9                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT64)
 5543:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5544:          02                        ;       ELSE goto=0x5547
-5545:             00 86                  ;         COM_00_move_and_look(room=RM_6_DESERT37)
+5545:             00 86                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT37)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -701,16 +701,16 @@
 554F:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5552:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5553:          02                        ;       ELSE goto=0x5556
-5554:             00 AF                  ;         COM_00_move_and_look(room=RM_6_DESERT56)
+5554:             00 AF                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT56)
 5556:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5557:          02                        ;       ELSE goto=0x555A
-5558:             00 AD                  ;         COM_00_move_and_look(room=RM_6_DESERT54)
+5558:             00 AD                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT54)
 555A:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 555B:          02                        ;       ELSE goto=0x555E
-555C:             00 CA                  ;         COM_00_move_and_look(room=RM_6_DESERT65)
+555C:             00 CA                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT65)
 555E:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 555F:          02                        ;       ELSE goto=0x5562
-5560:             00 87                  ;         COM_00_move_and_look(room=RM_6_DESERT38)
+5560:             00 87                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT38)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -723,16 +723,16 @@
 556A:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 556D:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 556E:          02                        ;       ELSE goto=0x5571
-556F:             00 B0                  ;         COM_00_move_and_look(room=RM_6_DESERT_SMALL_OASIS)
+556F:             00 B0                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_SMALL_OASIS)
 5571:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5572:          02                        ;       ELSE goto=0x5575
-5573:             00 AE                  ;         COM_00_move_and_look(room=RM_6_DESERT55)
+5573:             00 AE                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT55)
 5575:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5576:          02                        ;       ELSE goto=0x5579
-5577:             00 CB                  ;         COM_00_move_and_look(room=RM_6_DESERT66)
+5577:             00 CB                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT66)
 5579:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 557A:          02                        ;       ELSE goto=0x557D
-557B:             00 88                  ;         COM_00_move_and_look(room=RM_6_DESERT39)
+557B:             00 88                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT39)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -741,7 +741,7 @@
 5580:    03 2B                           ;   ---- Section SECTION_03_DESCRIPTION length=0x002B
 5582:       0D 29                        ;     COM_0D_while_pass length=0x0029
 5584:          AB                        ;       FN_AB_PRINT_STILL_IN_DESERT
-5585:          04 26                     ;       COM_04_print_command length=0x0026
+5585:          04 26                     ;       COM_04_print_message length=0x0026
 5587:             5F BE 5B B1 4B 7B 55 45 8E 91 11 8A 5B 49 CA B5 ; 
 5597:             2F 62 44 F4 96 C6 8E 14 6E 49 D6 15 9B 15 C6 B5 ; 
 55A7:             07 B2 17 58 AB A2      ; 
@@ -753,16 +753,16 @@
 55AF:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 55B2:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 55B3:          02                        ;       ELSE goto=0x55B6
-55B4:             00 B1                  ;         COM_00_move_and_look(room=RM_6_DESERT57)
+55B4:             00 B1                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT57)
 55B6:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 55B7:          02                        ;       ELSE goto=0x55BA
-55B8:             00 AF                  ;         COM_00_move_and_look(room=RM_6_DESERT56)
+55B8:             00 AF                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT56)
 55BA:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 55BB:          02                        ;       ELSE goto=0x55BE
-55BC:             00 CC                  ;         COM_00_move_and_look(room=RM_6_DESERT67)
+55BC:             00 CC                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT67)
 55BE:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 55BF:          02                        ;       ELSE goto=0x55C2
-55C0:             00 89                  ;         COM_00_move_and_look(room=RM_6_DESERT40)
+55C0:             00 89                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT40)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -775,16 +775,16 @@
 55CA:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 55CD:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 55CE:          02                        ;       ELSE goto=0x55D1
-55CF:             00 8C                  ;         COM_00_move_and_look(room=RM_6_DESERT43)
+55CF:             00 8C                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT43)
 55D1:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 55D2:          02                        ;       ELSE goto=0x55D5
-55D3:             00 B0                  ;         COM_00_move_and_look(room=RM_6_DESERT_SMALL_OASIS)
+55D3:             00 B0                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_SMALL_OASIS)
 55D5:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 55D6:          02                        ;       ELSE goto=0x55D9
-55D7:             00 B2                  ;         COM_00_move_and_look(room=RM_6_DESERT58)
+55D7:             00 B2                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT58)
 55D9:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 55DA:          02                        ;       ELSE goto=0x55DD
-55DB:             00 8A                  ;         COM_00_move_and_look(room=RM_6_DESERT41)
+55DB:             00 8A                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT41)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -797,16 +797,16 @@
 55E5:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 55E8:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 55E9:          02                        ;       ELSE goto=0x55EC
-55EA:             00 8D                  ;         COM_00_move_and_look(room=RM_6_DESERT44)
+55EA:             00 8D                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT44)
 55EC:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 55ED:          02                        ;       ELSE goto=0x55F0
-55EE:             00 CC                  ;         COM_00_move_and_look(room=RM_6_DESERT67)
+55EE:             00 CC                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT67)
 55F0:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 55F1:          02                        ;       ELSE goto=0x55F4
-55F2:             00 B3                  ;         COM_00_move_and_look(room=RM_6_DESERT59)
+55F2:             00 B3                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT59)
 55F4:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 55F5:          02                        ;       ELSE goto=0x55F8
-55F6:             00 B1                  ;         COM_00_move_and_look(room=RM_6_DESERT57)
+55F6:             00 B1                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT57)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -819,16 +819,16 @@
 5600:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5603:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5604:          02                        ;       ELSE goto=0x5607
-5605:             00 8E                  ;         COM_00_move_and_look(room=RM_6_DESERT45)
+5605:             00 8E                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT45)
 5607:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5608:          02                        ;       ELSE goto=0x560B
-5609:             00 CD                  ;         COM_00_move_and_look(room=RM_6_DESERT68)
+5609:             00 CD                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT68)
 560B:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 560C:          02                        ;       ELSE goto=0x560F
-560D:             00 B4                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY5)
+560D:             00 B4                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY5)
 560F:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5610:          02                        ;       ELSE goto=0x5613
-5611:             00 B2                  ;         COM_00_move_and_look(room=RM_6_DESERT58)
+5611:             00 B2                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT58)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -843,16 +843,16 @@
 561E:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5621:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5622:          02                        ;       ELSE goto=0x5625
-5623:             00 8F                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY3)
+5623:             00 8F                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY3)
 5625:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5626:          02                        ;       ELSE goto=0x5629
-5627:             00 CE                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY7)
+5627:             00 CE                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY7)
 5629:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 562A:          02                        ;       ELSE goto=0x562D
-562B:             00 B5                  ;         COM_00_move_and_look(room=RM_6_DESERT60)
+562B:             00 B5                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT60)
 562D:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 562E:          02                        ;       ELSE goto=0x5631
-562F:             00 B3                  ;         COM_00_move_and_look(room=RM_6_DESERT59)
+562F:             00 B3                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT59)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -865,16 +865,16 @@
 5639:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 563C:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 563D:          02                        ;       ELSE goto=0x5640
-563E:             00 90                  ;         COM_00_move_and_look(room=RM_6_DESERT46)
+563E:             00 90                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT46)
 5640:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5641:          02                        ;       ELSE goto=0x5644
-5642:             00 CF                  ;         COM_00_move_and_look(room=RM_6_DESERT69)
+5642:             00 CF                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT69)
 5644:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5645:          02                        ;       ELSE goto=0x5648
-5646:             00 B6                  ;         COM_00_move_and_look(room=RM_6_DESERT61)
+5646:             00 B6                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT61)
 5648:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5649:          02                        ;       ELSE goto=0x564C
-564A:             00 B4                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY5)
+564A:             00 B4                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY5)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -887,16 +887,16 @@
 5654:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5657:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5658:          02                        ;       ELSE goto=0x565B
-5659:             00 91                  ;         COM_00_move_and_look(room=RM_6_DESERT47)
+5659:             00 91                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT47)
 565B:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 565C:          02                        ;       ELSE goto=0x565F
-565D:             00 D0                  ;         COM_00_move_and_look(room=RM_6_DESERT70)
+565D:             00 D0                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT70)
 565F:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5660:          02                        ;       ELSE goto=0x5663
-5661:             00 B7                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE2)
+5661:             00 B7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE2)
 5663:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5664:          02                        ;       ELSE goto=0x5667
-5665:             00 B5                  ;         COM_00_move_and_look(room=RM_6_DESERT60)
+5665:             00 B5                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT60)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -911,16 +911,16 @@
 5672:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5675:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5676:          02                        ;       ELSE goto=0x5679
-5677:             00 92                  ;         COM_00_move_and_look(room=RM_6_DESERT48)
+5677:             00 92                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT48)
 5679:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 567A:          02                        ;       ELSE goto=0x567D
-567B:             00 D1                  ;         COM_00_move_and_look(room=RM_6_DESERT71)
+567B:             00 D1                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT71)
 567D:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 567E:          02                        ;       ELSE goto=0x5681
-567F:             00 94                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE1)
+567F:             00 94                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE1)
 5681:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5682:          02                        ;       ELSE goto=0x5685
-5683:             00 B6                  ;         COM_00_move_and_look(room=RM_6_DESERT61)
+5683:             00 B6                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT61)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -935,16 +935,16 @@
 5690:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5693:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5694:          02                        ;       ELSE goto=0x5697
-5695:             00 94                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE1)
+5695:             00 94                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE1)
 5697:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5698:          02                        ;       ELSE goto=0x569B
-5699:             00 D2                  ;         COM_00_move_and_look(room=RM_6_DESERT72)
+5699:             00 D2                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT72)
 569B:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 569C:          02                        ;       ELSE goto=0x569F
-569D:             00 96                  ;         COM_00_move_and_look(room=RM_6_DESERT_CANYON_LAKE3)
+569D:             00 96                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_CANYON_LAKE3)
 569F:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 56A0:          02                        ;       ELSE goto=0x56A3
-56A1:             00 D1                  ;         COM_00_move_and_look(room=RM_6_DESERT71)
+56A1:             00 D1                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT71)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -959,7 +959,7 @@
 56AE:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 56B1:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 56B2:          02                        ;       ELSE goto=0x56B5
-56B3:             00 96                  ;         COM_00_move_and_look(room=RM_6_DESERT_CANYON_LAKE3)
+56B3:             00 96                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_CANYON_LAKE3)
 56B5:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 56B6:          06                        ;       ELSE goto=0x56BD
 56B7:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -967,10 +967,10 @@
 56BB:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 56BD:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 56BE:          02                        ;       ELSE goto=0x56C1
-56BF:             00 97                  ;         COM_00_move_and_look(room=RM_6_DESERT_CANYON4)
+56BF:             00 97                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_CANYON4)
 56C1:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 56C2:          02                        ;       ELSE goto=0x56C5
-56C3:             00 D2                  ;         COM_00_move_and_look(room=RM_6_DESERT72)
+56C3:             00 D2                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT72)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -985,10 +985,10 @@
 56D0:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 56D3:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 56D4:          02                        ;       ELSE goto=0x56D7
-56D5:             00 C6                  ;         COM_00_move_and_look(room=RM_6_DESERT_HIGHWAY_TURNS)
+56D5:             00 C6                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_HIGHWAY_TURNS)
 56D7:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 56D8:          02                        ;       ELSE goto=0x56DB
-56D9:             00 A7                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY4)
+56D9:             00 A7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY4)
 56DB:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 56DC:          06                        ;       ELSE goto=0x56E3
 56DD:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -996,7 +996,7 @@
 56E1:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 56E3:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 56E4:          02                        ;       ELSE goto=0x56E7
-56E5:             00 A9                  ;         COM_00_move_and_look(room=RM_6_DESERT50)
+56E5:             00 A9                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT50)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1005,7 +1005,7 @@
 56EA:    03 27                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0027
 56EC:       0D 25                        ;     COM_0D_while_pass length=0x0025
 56EE:          AB                        ;       FN_AB_PRINT_STILL_IN_DESERT
-56EF:          04 22                     ;       COM_04_print_command length=0x0022
+56EF:          04 22                     ;       COM_04_print_message length=0x0022
 56F1:             5F BE A3 15 31 6D 3B 4A 74 C0 8B 9A 3B 6E AB 98 ; 
 5701:             79 68 56 90 DB 72 04 9A 53 BE 6B BF 5F BE F7 17 ; 
 5711:             17 BA                  ; 
@@ -1017,10 +1017,10 @@
 5715:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 5718:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5719:          02                        ;       ELSE goto=0x571C
-571A:             00 C7                  ;         COM_00_move_and_look(room=RM_6_DESERT62)
+571A:             00 C7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT62)
 571C:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 571D:          02                        ;       ELSE goto=0x5720
-571E:             00 C5                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY6)
+571E:             00 C5                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY6)
 5720:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5721:          06                        ;       ELSE goto=0x5728
 5722:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -1028,7 +1028,7 @@
 5726:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 5728:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5729:          02                        ;       ELSE goto=0x572C
-572A:             00 AA                  ;         COM_00_move_and_look(room=RM_6_DESERT51)
+572A:             00 AA                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT51)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1041,10 +1041,10 @@
 5734:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 5737:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5738:          02                        ;       ELSE goto=0x573B
-5739:             00 C8                  ;         COM_00_move_and_look(room=RM_6_DESERT63)
+5739:             00 C8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT63)
 573B:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 573C:          02                        ;       ELSE goto=0x573F
-573D:             00 C6                  ;         COM_00_move_and_look(room=RM_6_DESERT_HIGHWAY_TURNS)
+573D:             00 C6                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_HIGHWAY_TURNS)
 573F:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5740:          06                        ;       ELSE goto=0x5747
 5741:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -1052,7 +1052,7 @@
 5745:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 5747:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5748:          02                        ;       ELSE goto=0x574B
-5749:             00 AB                  ;         COM_00_move_and_look(room=RM_6_DESERT52)
+5749:             00 AB                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT52)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1065,10 +1065,10 @@
 5753:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 5756:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5757:          02                        ;       ELSE goto=0x575A
-5758:             00 C9                  ;         COM_00_move_and_look(room=RM_6_DESERT64)
+5758:             00 C9                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT64)
 575A:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 575B:          02                        ;       ELSE goto=0x575E
-575C:             00 C7                  ;         COM_00_move_and_look(room=RM_6_DESERT62)
+575C:             00 C7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT62)
 575E:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 575F:          06                        ;       ELSE goto=0x5766
 5760:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -1076,7 +1076,7 @@
 5764:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 5766:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5767:          02                        ;       ELSE goto=0x576A
-5768:             00 AC                  ;         COM_00_move_and_look(room=RM_6_DESERT53)
+5768:             00 AC                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT53)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1089,10 +1089,10 @@
 5772:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 5775:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5776:          02                        ;       ELSE goto=0x5779
-5777:             00 CA                  ;         COM_00_move_and_look(room=RM_6_DESERT65)
+5777:             00 CA                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT65)
 5779:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 577A:          02                        ;       ELSE goto=0x577D
-577B:             00 C8                  ;         COM_00_move_and_look(room=RM_6_DESERT63)
+577B:             00 C8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT63)
 577D:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 577E:          06                        ;       ELSE goto=0x5785
 577F:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -1100,7 +1100,7 @@
 5783:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 5785:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5786:          02                        ;       ELSE goto=0x5789
-5787:             00 AD                  ;         COM_00_move_and_look(room=RM_6_DESERT54)
+5787:             00 AD                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT54)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1113,10 +1113,10 @@
 5791:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 5794:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5795:          02                        ;       ELSE goto=0x5798
-5796:             00 CB                  ;         COM_00_move_and_look(room=RM_6_DESERT66)
+5796:             00 CB                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT66)
 5798:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5799:          02                        ;       ELSE goto=0x579C
-579A:             00 C9                  ;         COM_00_move_and_look(room=RM_6_DESERT64)
+579A:             00 C9                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT64)
 579C:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 579D:          06                        ;       ELSE goto=0x57A4
 579E:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -1124,7 +1124,7 @@
 57A2:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 57A4:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 57A5:          02                        ;       ELSE goto=0x57A8
-57A6:             00 AE                  ;         COM_00_move_and_look(room=RM_6_DESERT55)
+57A6:             00 AE                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT55)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1137,16 +1137,16 @@
 57B0:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 57B3:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 57B4:          02                        ;       ELSE goto=0x57B7
-57B5:             00 CC                  ;         COM_00_move_and_look(room=RM_6_DESERT67)
+57B5:             00 CC                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT67)
 57B7:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 57B8:          02                        ;       ELSE goto=0x57BB
-57B9:             00 CA                  ;         COM_00_move_and_look(room=RM_6_DESERT65)
+57B9:             00 CA                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT65)
 57BB:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 57BC:          02                        ;       ELSE goto=0x57BF
-57BD:             00 E3                  ;         COM_00_move_and_look(room=RM_6_DESERT73)
+57BD:             00 E3                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT73)
 57BF:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 57C0:          02                        ;       ELSE goto=0x57C3
-57C1:             00 AF                  ;         COM_00_move_and_look(room=RM_6_DESERT56)
+57C1:             00 AF                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT56)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1159,16 +1159,16 @@
 57CB:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 57CE:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 57CF:          02                        ;       ELSE goto=0x57D2
-57D0:             00 B2                  ;         COM_00_move_and_look(room=RM_6_DESERT58)
+57D0:             00 B2                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT58)
 57D2:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 57D3:          02                        ;       ELSE goto=0x57D6
-57D4:             00 CB                  ;         COM_00_move_and_look(room=RM_6_DESERT66)
+57D4:             00 CB                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT66)
 57D6:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 57D7:          02                        ;       ELSE goto=0x57DA
-57D8:             00 CD                  ;         COM_00_move_and_look(room=RM_6_DESERT68)
+57D8:             00 CD                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT68)
 57DA:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 57DB:          02                        ;       ELSE goto=0x57DE
-57DC:             00 B0                  ;         COM_00_move_and_look(room=RM_6_DESERT_SMALL_OASIS)
+57DC:             00 B0                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_SMALL_OASIS)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1181,16 +1181,16 @@
 57E6:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 57E9:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 57EA:          02                        ;       ELSE goto=0x57ED
-57EB:             00 B3                  ;         COM_00_move_and_look(room=RM_6_DESERT59)
+57EB:             00 B3                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT59)
 57ED:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 57EE:          02                        ;       ELSE goto=0x57F1
-57EF:             00 E3                  ;         COM_00_move_and_look(room=RM_6_DESERT73)
+57EF:             00 E3                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT73)
 57F1:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 57F2:          02                        ;       ELSE goto=0x57F5
-57F3:             00 CE                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY7)
+57F3:             00 CE                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY7)
 57F5:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 57F6:          02                        ;       ELSE goto=0x57F9
-57F7:             00 CC                  ;         COM_00_move_and_look(room=RM_6_DESERT67)
+57F7:             00 CC                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT67)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1205,16 +1205,16 @@
 5804:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5807:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5808:          02                        ;       ELSE goto=0x580B
-5809:             00 B4                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY5)
+5809:             00 B4                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY5)
 580B:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 580C:          02                        ;       ELSE goto=0x580F
-580D:             00 E4                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY8)
+580D:             00 E4                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY8)
 580F:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5810:          02                        ;       ELSE goto=0x5813
-5811:             00 CF                  ;         COM_00_move_and_look(room=RM_6_DESERT69)
+5811:             00 CF                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT69)
 5813:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5814:          02                        ;       ELSE goto=0x5817
-5815:             00 CD                  ;         COM_00_move_and_look(room=RM_6_DESERT68)
+5815:             00 CD                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT68)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1227,16 +1227,16 @@
 581F:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5822:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5823:          02                        ;       ELSE goto=0x5826
-5824:             00 B5                  ;         COM_00_move_and_look(room=RM_6_DESERT60)
+5824:             00 B5                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT60)
 5826:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5827:          02                        ;       ELSE goto=0x582A
-5828:             00 E5                  ;         COM_00_move_and_look(room=RM_6_DESERT74)
+5828:             00 E5                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT74)
 582A:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 582B:          02                        ;       ELSE goto=0x582E
-582C:             00 D0                  ;         COM_00_move_and_look(room=RM_6_DESERT70)
+582C:             00 D0                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT70)
 582E:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 582F:          02                        ;       ELSE goto=0x5832
-5830:             00 CE                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY7)
+5830:             00 CE                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY7)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1249,16 +1249,16 @@
 583A:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 583D:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 583E:          02                        ;       ELSE goto=0x5841
-583F:             00 B6                  ;         COM_00_move_and_look(room=RM_6_DESERT61)
+583F:             00 B6                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT61)
 5841:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5842:          02                        ;       ELSE goto=0x5845
-5843:             00 E6                  ;         COM_00_move_and_look(room=RM_6_DESERT75)
+5843:             00 E6                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT75)
 5845:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5846:          02                        ;       ELSE goto=0x5849
-5847:             00 D1                  ;         COM_00_move_and_look(room=RM_6_DESERT71)
+5847:             00 D1                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT71)
 5849:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 584A:          02                        ;       ELSE goto=0x584D
-584B:             00 CF                  ;         COM_00_move_and_look(room=RM_6_DESERT69)
+584B:             00 CF                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT69)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1271,16 +1271,16 @@
 5855:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5858:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5859:          02                        ;       ELSE goto=0x585C
-585A:             00 B7                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE2)
+585A:             00 B7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE2)
 585C:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 585D:          02                        ;       ELSE goto=0x5860
-585E:             00 E7                  ;         COM_00_move_and_look(room=RM_6_DESERT76)
+585E:             00 E7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT76)
 5860:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5861:          02                        ;       ELSE goto=0x5864
-5862:             00 B8                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE3)
+5862:             00 B8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE3)
 5864:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5865:          02                        ;       ELSE goto=0x5868
-5866:             00 D0                  ;         COM_00_move_and_look(room=RM_6_DESERT70)
+5866:             00 D0                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT70)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1293,7 +1293,7 @@
 5870:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 5873:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5874:          02                        ;       ELSE goto=0x5877
-5875:             00 B8                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE3)
+5875:             00 B8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE3)
 5877:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5878:          06                        ;       ELSE goto=0x587F
 5879:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -1301,10 +1301,10 @@
 587D:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 587F:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5880:          02                        ;       ELSE goto=0x5883
-5881:             00 B9                  ;         COM_00_move_and_look(room=RM_6_DESERT_LAKE4)
+5881:             00 B9                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_LAKE4)
 5883:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5884:          02                        ;       ELSE goto=0x5887
-5885:             00 E7                  ;         COM_00_move_and_look(room=RM_6_DESERT76)
+5885:             00 E7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT76)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1317,7 +1317,7 @@
 588F:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 5892:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5893:          02                        ;       ELSE goto=0x5896
-5894:             00 CD                  ;         COM_00_move_and_look(room=RM_6_DESERT68)
+5894:             00 CD                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT68)
 5896:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5897:          06                        ;       ELSE goto=0x589E
 5898:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -1325,10 +1325,10 @@
 589C:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 589E:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 589F:          02                        ;       ELSE goto=0x58A2
-58A0:             00 E4                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY8)
+58A0:             00 E4                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY8)
 58A2:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 58A3:          02                        ;       ELSE goto=0x58A6
-58A4:             00 CB                  ;         COM_00_move_and_look(room=RM_6_DESERT66)
+58A4:             00 CB                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT66)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1343,7 +1343,7 @@
 58B1:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 58B4:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 58B5:          02                        ;       ELSE goto=0x58B8
-58B6:             00 CE                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY7)
+58B6:             00 CE                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY7)
 58B8:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 58B9:          06                        ;       ELSE goto=0x58C0
 58BA:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -1351,10 +1351,10 @@
 58BE:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 58C0:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 58C1:          02                        ;       ELSE goto=0x58C4
-58C2:             00 E5                  ;         COM_00_move_and_look(room=RM_6_DESERT74)
+58C2:             00 E5                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT74)
 58C4:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 58C5:          02                        ;       ELSE goto=0x58C8
-58C6:             00 E3                  ;         COM_00_move_and_look(room=RM_6_DESERT73)
+58C6:             00 E3                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT73)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1367,7 +1367,7 @@
 58D0:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 58D3:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 58D4:          02                        ;       ELSE goto=0x58D7
-58D5:             00 CF                  ;         COM_00_move_and_look(room=RM_6_DESERT69)
+58D5:             00 CF                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT69)
 58D7:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 58D8:          06                        ;       ELSE goto=0x58DF
 58D9:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -1375,10 +1375,10 @@
 58DD:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 58DF:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 58E0:          02                        ;       ELSE goto=0x58E3
-58E1:             00 E6                  ;         COM_00_move_and_look(room=RM_6_DESERT75)
+58E1:             00 E6                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT75)
 58E3:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 58E4:          02                        ;       ELSE goto=0x58E7
-58E5:             00 E4                  ;         COM_00_move_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY8)
+58E5:             00 E4                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT_EMPTY_HIGHWAY8)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1391,7 +1391,7 @@
 58EF:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 58F2:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 58F3:          02                        ;       ELSE goto=0x58F6
-58F4:             00 D0                  ;         COM_00_move_and_look(room=RM_6_DESERT70)
+58F4:             00 D0                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT70)
 58F6:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 58F7:          06                        ;       ELSE goto=0x58FE
 58F8:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -1399,10 +1399,10 @@
 58FC:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 58FE:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 58FF:          02                        ;       ELSE goto=0x5902
-5900:             00 E7                  ;         COM_00_move_and_look(room=RM_6_DESERT76)
+5900:             00 E7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT76)
 5902:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5903:          02                        ;       ELSE goto=0x5906
-5904:             00 E5                  ;         COM_00_move_and_look(room=RM_6_DESERT74)
+5904:             00 E5                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT74)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1415,7 +1415,7 @@
 590E:       0B 15 0A                     ;     COM_0B_switch length=0x0015, function=COM_0A_is_input_phrase(phrase_num)
 5911:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5912:          02                        ;       ELSE goto=0x5915
-5913:             00 D1                  ;         COM_00_move_and_look(room=RM_6_DESERT71)
+5913:             00 D1                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT71)
 5915:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5916:          06                        ;       ELSE goto=0x591D
 5917:             0D 04                  ;         COM_0D_while_pass length=0x0004
@@ -1423,10 +1423,10 @@
 591B:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 591D:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 591E:          02                        ;       ELSE goto=0x5921
-591F:             00 D2                  ;         COM_00_move_and_look(room=RM_6_DESERT72)
+591F:             00 D2                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT72)
 5921:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5922:          02                        ;       ELSE goto=0x5925
-5923:             00 E6                  ;         COM_00_move_and_look(room=RM_6_DESERT75)
+5923:             00 E6                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT75)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1439,16 +1439,16 @@
 592D:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5930:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 5931:          02                        ;       ELSE goto=0x5934
-5932:             00 FA                  ;         COM_00_move_and_look(room=RM_6_DESERT80)
+5932:             00 FA                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT80)
 5934:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5935:          02                        ;       ELSE goto=0x5938
-5936:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+5936:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 5938:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5939:          02                        ;       ELSE goto=0x593C
-593A:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+593A:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 593C:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 593D:          02                        ;       ELSE goto=0x5940
-593E:             00 F8                  ;         COM_00_move_and_look(room=RM_6_DESERT78)
+593E:             00 F8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT78)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1461,16 +1461,16 @@
 5948:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 594B:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 594C:          02                        ;       ELSE goto=0x594F
-594D:             00 F8                  ;         COM_00_move_and_look(room=RM_6_DESERT78)
+594D:             00 F8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT78)
 594F:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5950:          02                        ;       ELSE goto=0x5953
-5951:             00 F9                  ;         COM_00_move_and_look(room=RM_6_DESERT79)
+5951:             00 F9                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT79)
 5953:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5954:          02                        ;       ELSE goto=0x5957
-5955:             00 F8                  ;         COM_00_move_and_look(room=RM_6_DESERT78)
+5955:             00 F8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT78)
 5957:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5958:          02                        ;       ELSE goto=0x595B
-5959:             00 F8                  ;         COM_00_move_and_look(room=RM_6_DESERT78)
+5959:             00 F8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT78)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1486,17 +1486,17 @@
 5968:             0E 08                  ;         COM_0E_while_fail length=0x0008
 596A:                0D 04               ;           COM_0D_while_pass length=0x0004
 596C:                   05 3E            ;             COM_05_is_less_equal_last_random(value=62)
-596E:                   00 86            ;             COM_00_move_and_look(room=RM_6_DESERT37)
-5970:                00 F9               ;           COM_00_move_and_look(room=RM_6_DESERT79)
+596E:                   00 86            ;             COM_00_move_ACTIVE_and_look(room=RM_6_DESERT37)
+5970:                00 F9               ;           COM_00_move_ACTIVE_and_look(room=RM_6_DESERT79)
 5972:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 5973:          02                        ;       ELSE goto=0x5976
-5974:             00 F8                  ;         COM_00_move_and_look(room=RM_6_DESERT78)
+5974:             00 F8                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT78)
 5976:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5977:          02                        ;       ELSE goto=0x597A
-5978:             00 FA                  ;         COM_00_move_and_look(room=RM_6_DESERT80)
+5978:             00 FA                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT80)
 597A:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 597B:          02                        ;       ELSE goto=0x597E
-597C:             00 F9                  ;         COM_00_move_and_look(room=RM_6_DESERT79)
+597C:             00 F9                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT79)
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -1509,16 +1509,16 @@
 5986:       0B 11 0A                     ;     COM_0B_switch length=0x0011, function=COM_0A_is_input_phrase(phrase_num)
 5989:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 598A:          02                        ;       ELSE goto=0x598D
-598B:             00 FA                  ;         COM_00_move_and_look(room=RM_6_DESERT80)
+598B:             00 FA                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT80)
 598D:          04                        ;       COM_0A_is_input_phrase("WEST * * *")
 598E:          02                        ;       ELSE goto=0x5991
-598F:             00 F7                  ;         COM_00_move_and_look(room=RM_6_DESERT77)
+598F:             00 F7                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT77)
 5991:          01                        ;       COM_0A_is_input_phrase("NORTH * * *")
 5992:          02                        ;       ELSE goto=0x5995
-5993:             00 FA                  ;         COM_00_move_and_look(room=RM_6_DESERT80)
+5993:             00 FA                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT80)
 5995:          02                        ;       COM_0A_is_input_phrase("SOUTH * * *")
 5996:          02                        ;       ELSE goto=0x5999
-5997:             00 F9                  ;         COM_00_move_and_look(room=RM_6_DESERT79)
+5997:             00 F9                  ;         COM_00_move_ACTIVE_and_look(room=RM_6_DESERT79)
 ```
 
 # Unitialized data

@@ -22,13 +22,13 @@
 520F:          09                        ;       ELSE goto=0x5219
 5210:             0D 07                  ;         COM_0D_while_pass length=0x0007
 5212:                30 9D               ;           COM_30_set_current_room(room=RM_5_UFO_CRATER)
-5214:                17 9D 01            ;           COM_17_move_to(obj=OBJ_9D_THIRST_TRACKER, destination=OBJ_01_PLAYER)
+5214:                17 9D 01            ;           COM_17_move_object_to_destination(obj=OBJ_9D_THIRST_TRACKER, destination=OBJ_01_PLAYER)
 5217:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 5219:          03                        ;       COM_0A_is_input_phrase("EAST * * *")
 521A:          09                        ;       ELSE goto=0x5224
 521B:             0D 07                  ;         COM_0D_while_pass length=0x0007
 521D:                30 9D               ;           COM_30_set_current_room(room=RM_5_UFO_CRATER)
-521F:                17 9D 01            ;           COM_17_move_to(obj=OBJ_9D_THIRST_TRACKER, destination=OBJ_01_PLAYER)
+521F:                17 9D 01            ;           COM_17_move_object_to_destination(obj=OBJ_9D_THIRST_TRACKER, destination=OBJ_01_PLAYER)
 5222:                2F 05               ;           COM_2F_load_section_from_disk(section=5)
 5224:          12                        ;       COM_0A_is_input_phrase("PULL u....... * *")
 5225:          16                        ;       ELSE goto=0x523C
@@ -36,7 +36,7 @@
 5228:                0D 11               ;           COM_0D_while_pass length=0x0011
 522A:                   14               ;             COM_14_execute_and_reverse_status next command
 522B:                   03 67 81         ;             COM_03_is_located(owner=OBJ_67_HOLE, obj=OBJ_81_GREEN_CUBE)
-522E:                   04 0B            ;             COM_04_print_command length=0x000B
+522E:                   04 0B            ;             COM_04_print_message length=0x000B
 5230:                      06 9A 90 73 CA 6A EA 48 9D 61 2E ; 
 ;
 ;                          NOTHING HAPPENS.
@@ -50,10 +50,10 @@
 5243:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 5244:                   14               ;             COM_14_execute_and_reverse_status next command
 5245:                   0B 06 03         ;             COM_0B_switch length=0x0006, function=COM_03_is_located(room_num, obj_num)
-5248:                      3F 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_3F_YELLOW_BUTTON, obj_num=OBJ_3E_??
+5248:                      3F 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_3F_YELLOW_BUTTON, obj_num=OBJ_3E_OVAL
 524A:                      02            ;               ELSE goto=0x524D
-524B:                         00 82      ;                 COM_00_move_and_look(room=RM_7_LOUNGE)
-524D:                   9E               ;             FN_9E_??
+524B:                         00 82      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_LOUNGE)
+524D:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -61,20 +61,20 @@
 ;
 5252:    03 80 AF                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00AF
 5255:       0D 80 AC                     ;     COM_0D_while_pass length=0x00AC
-5258:          04 07                     ;       COM_04_print_command length=0x0007
+5258:          04 07                     ;       COM_04_print_message length=0x0007
 525A:             AF B9 94 61 37 49 41   ; 
 ;
 ;                 SREENJARMA
 ;
 5261:          0E 07                     ;       COM_0E_while_fail length=0x0007
 5263:             C3                     ;         FN_C3_PLAYER_LACKS_WISDOM
-5264:             04 04                  ;         COM_04_print_command length=0x0004
+5264:             04 04                  ;         COM_04_print_message length=0x0004
 5266:                87 8D B7 98         ; 
 ;
 ;                    LOUNGE
 ;
 526A:          8B                        ;       FN_8B_PRINT_PERIOD
-526B:          04 80 96                  ;       COM_04_print_command length=0x0096
+526B:          04 80 96                  ;       COM_04_print_message length=0x0096
 526E:             51 18 43 C2 5B B1 09 9A D0 15 7B 14 54 8B 9B 6C ; 
 527E:             65 B1 50 BD 2E 6F 23 49 01 B3 DB 95 83 48 34 60 ; 
 528E:             1B 79 C8 93 91 7A E3 16 0F 56 5B B1 C5 65 4B 62 ; 
@@ -108,19 +108,19 @@
 5317:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 5318:                   14               ;             COM_14_execute_and_reverse_status next command
 5319:                   0B 15 03         ;             COM_0B_switch length=0x0015, function=COM_03_is_located(room_num, obj_num)
-531C:                      3F 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_3F_YELLOW_BUTTON, obj_num=OBJ_3E_??
+531C:                      3F 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_3F_YELLOW_BUTTON, obj_num=OBJ_3E_OVAL
 531E:                      02            ;               ELSE goto=0x5321
-531F:                         00 80      ;                 COM_00_move_and_look(room=RM_7_EXIT1)
-5321:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
+531F:                         00 80      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_EXIT1)
+5321:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_OVAL
 5323:                      02            ;               ELSE goto=0x5326
-5324:                         00 83      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK1)
-5326:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
+5324:                         00 83      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK1)
+5326:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_OVAL
 5328:                      07            ;               ELSE goto=0x5330
 5329:                         0D 05      ;                 COM_0D_while_pass length=0x0005
-532B:                            9E      ;                   FN_9E_??
+532B:                            9E      ;                   FN_9E_REMOVE_OVAL_FROM_ROOM
 532C:                            30 84   ;                   COM_30_set_current_room(room=RM_8_AIRLOCK7)
 532E:                            2F 08   ;                   COM_2F_load_section_from_disk(section=8)
-5330:                   9E               ;             FN_9E_??
+5330:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -145,16 +145,16 @@
 534A:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 534B:                   14               ;             COM_14_execute_and_reverse_status next command
 534C:                   0B 10 03         ;             COM_0B_switch length=0x0010, function=COM_03_is_located(room_num, obj_num)
-534F:                      3F 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_3F_YELLOW_BUTTON, obj_num=OBJ_3E_??
+534F:                      3F 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_3F_YELLOW_BUTTON, obj_num=OBJ_3E_OVAL
 5351:                      02            ;               ELSE goto=0x5354
-5352:                         00 93      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK4)
-5354:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
+5352:                         00 93      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK4)
+5354:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_OVAL
 5356:                      02            ;               ELSE goto=0x5359
-5357:                         00 85      ;                 COM_00_move_and_look(room=RM_7_SLEEPING)
-5359:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
+5357:                         00 85      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_SLEEPING)
+5359:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_OVAL
 535B:                      02            ;               ELSE goto=0x535E
-535C:                         00 82      ;                 COM_00_move_and_look(room=RM_7_LOUNGE)
-535E:                   9E               ;             FN_9E_??
+535C:                         00 82      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_LOUNGE)
+535E:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -162,20 +162,20 @@
 ;
 5363:    03 80 AC                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00AC
 5366:       0D 80 A9                     ;     COM_0D_while_pass length=0x00A9
-5369:          04 07                     ;       COM_04_print_command length=0x0007
+5369:          04 07                     ;       COM_04_print_message length=0x0007
 536B:             74 A7 7F 4E B6 5F 45   ; 
 ;
 ;                 PURBLEEBLE
 ;
 5372:          0E 09                     ;       COM_0E_while_fail length=0x0009
 5374:             C3                     ;         FN_C3_PLAYER_LACKS_WISDOM
-5375:             04 06                  ;         COM_04_print_command length=0x0006
+5375:             04 06                  ;         COM_04_print_message length=0x0006
 5377:                BF B8 E3 61 AB 98   ; 
 ;
 ;                    SLEEPING 
 ;
 537D:          8B                        ;       FN_8B_PRINT_PERIOD
-537E:          04 80 91                  ;       COM_04_print_command length=0x0091
+537E:          04 80 91                  ;       COM_04_print_message length=0x0091
 5381:             C7 DE 99 16 C8 CE 8E 7A 51 18 3D C6 40 61 D0 15 ; 
 5391:             7B 14 8F 5A FB 8E 96 8C E7 14 05 4E FF 8B 82 17 ; 
 53A1:             2F 62 D5 15 7B 14 CE 56 8E 7A 23 62 56 D1 03 71 ; 
@@ -208,13 +208,13 @@
 5424:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 5425:                   14               ;             COM_14_execute_and_reverse_status next command
 5426:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
-5429:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
+5429:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_OVAL
 542B:                      02            ;               ELSE goto=0x542E
-542C:                         00 87      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK2)
-542E:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
+542C:                         00 87      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK2)
+542E:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_OVAL
 5430:                      02            ;               ELSE goto=0x5433
-5431:                         00 83      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK1)
-5433:                   9E               ;             FN_9E_??
+5431:                         00 83      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK1)
+5433:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -238,13 +238,13 @@
 544C:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 544D:                   14               ;             COM_14_execute_and_reverse_status next command
 544E:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
-5451:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
+5451:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_OVAL
 5453:                      02            ;               ELSE goto=0x5456
-5454:                         00 89      ;                 COM_00_move_and_look(room=RM_7_CONTROL)
-5456:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
+5454:                         00 89      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_CONTROL)
+5456:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_OVAL
 5458:                      02            ;               ELSE goto=0x545B
-5459:                         00 85      ;                 COM_00_move_and_look(room=RM_7_SLEEPING)
-545B:                   9E               ;             FN_9E_??
+5459:                         00 85      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_SLEEPING)
+545B:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -252,20 +252,20 @@
 ;
 5460:    03 80 A3                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00A3
 5463:       0D 80 A0                     ;     COM_0D_while_pass length=0x00A0
-5466:          04 04                     ;       COM_04_print_command length=0x0004
+5466:          04 04                     ;       COM_04_print_message length=0x0004
 5468:             8B 91 01 86            ; 
 ;
 ;                 MAIKGO
 ;
 546C:          0E 08                     ;       COM_0E_while_fail length=0x0008
 546E:             C3                     ;         FN_C3_PLAYER_LACKS_WISDOM
-546F:             04 05                  ;         COM_04_print_command length=0x0005
+546F:             04 05                  ;         COM_04_print_message length=0x0005
 5471:                40 55 F9 BF 4C      ; 
 ;
 ;                    CONTROL
 ;
 5476:          8B                        ;       FN_8B_PRINT_PERIOD
-5477:          04 80 8C                  ;       COM_04_print_command length=0x008C
+5477:          04 80 8C                  ;       COM_04_print_message length=0x008C
 547A:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 39 17 DB 9F ; 
 548A:             56 D1 04 71 45 8B D9 83 46 48 5B BB 83 7A 5F BE ; 
 549A:             D7 14 BF 9A 91 AF 96 64 DB 72 01 B3 4B 90 C3 B5 ; 
@@ -297,13 +297,13 @@
 5518:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 5519:                   14               ;             COM_14_execute_and_reverse_status next command
 551A:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
-551D:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
+551D:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_OVAL
 551F:                      02            ;               ELSE goto=0x5522
-5520:                         00 8B      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK3)
-5522:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
+5520:                         00 8B      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK3)
+5522:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_OVAL
 5524:                      02            ;               ELSE goto=0x5527
-5525:                         00 87      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK2)
-5527:                   9E               ;             FN_9E_??
+5525:                         00 87      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK2)
+5527:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -327,13 +327,13 @@
 5540:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 5541:                   14               ;             COM_14_execute_and_reverse_status next command
 5542:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
-5545:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
+5545:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_OVAL
 5547:                      02            ;               ELSE goto=0x554A
-5548:                         00 8D      ;                 COM_00_move_and_look(room=RM_7_LIBRARY1)
-554A:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
+5548:                         00 8D      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_LIBRARY1)
+554A:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_OVAL
 554C:                      02            ;               ELSE goto=0x554F
-554D:                         00 89      ;                 COM_00_move_and_look(room=RM_7_CONTROL)
-554F:                   9E               ;             FN_9E_??
+554D:                         00 89      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_CONTROL)
+554F:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -341,20 +341,20 @@
 ;
 5554:    03 80 C0                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00C0
 5557:       0D 80 BD                     ;     COM_0D_while_pass length=0x00BD
-555A:          04 05                     ;       COM_04_print_command length=0x0005
+555A:          04 05                     ;       COM_04_print_message length=0x0005
 555C:             CA 97 66 8E 4A         ; 
 ;
 ;                 NAHLUDJ
 ;
 5561:          0E 08                     ;       COM_0E_while_fail length=0x0008
 5563:             C3                     ;         FN_C3_PLAYER_LACKS_WISDOM
-5564:             04 05                  ;         COM_04_print_command length=0x0005
+5564:             04 05                  ;         COM_04_print_message length=0x0005
 5566:                84 8C D4 B0 59      ; 
 ;
 ;                    LIBRARY
 ;
 556B:          8B                        ;       FN_8B_PRINT_PERIOD
-556C:          04 80 A8                  ;       COM_04_print_command length=0x00A8
+556C:          04 80 A8                  ;       COM_04_print_message length=0x00A8
 556F:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 2F 17 FB 55 ; 
 557F:             C7 98 54 8B 39 17 FF 9F D0 15 82 17 45 5E 9E 61 ; 
 558F:             23 62 C3 9E 5F BE 39 17 DB 9F 4B 7B 45 45 4B 72 ; 
@@ -387,10 +387,10 @@
 5626:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 5627:                   14               ;             COM_14_execute_and_reverse_status next command
 5628:                   0B 06 03         ;             COM_0B_switch length=0x0006, function=COM_03_is_located(room_num, obj_num)
-562B:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
+562B:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_OVAL
 562D:                      02            ;               ELSE goto=0x5630
-562E:                         00 8B      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK3)
-5630:                   9E               ;             FN_9E_??
+562E:                         00 8B      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK3)
+5630:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -415,16 +415,16 @@
 564A:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 564B:                   14               ;             COM_14_execute_and_reverse_status next command
 564C:                   0B 10 03         ;             COM_0B_switch length=0x0010, function=COM_03_is_located(room_num, obj_num)
-564F:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
+564F:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_OVAL
 5651:                      02            ;               ELSE goto=0x5654
-5652:                         00 95      ;                 COM_00_move_and_look(room=RM_7_GAS)
-5654:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
+5652:                         00 95      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_GAS)
+5654:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_OVAL
 5656:                      02            ;               ELSE goto=0x5659
-5657:                         00 94      ;                 COM_00_move_and_look(room=RM_7_BOMBS)
-5659:                      3F 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_3F_YELLOW_BUTTON, obj_num=OBJ_3E_??
+5657:                         00 94      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_BOMBS)
+5659:                      3F 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_3F_YELLOW_BUTTON, obj_num=OBJ_3E_OVAL
 565B:                      02            ;               ELSE goto=0x565E
-565C:                         00 83      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK1)
-565E:                   9E               ;             FN_9E_??
+565C:                         00 83      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK1)
+565E:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -432,20 +432,20 @@
 ;
 5663:    03 80 8B                        ;   ---- Section SECTION_03_DESCRIPTION length=0x008B
 5666:       0D 80 88                     ;     COM_0D_while_pass length=0x0088
-5669:          04 05                     ;       COM_04_print_command length=0x0005
+5669:          04 05                     ;       COM_04_print_message length=0x0005
 566B:             7A 63 F0 B3 4A         ; 
 ;
 ;                 EZPRUNJ
 ;
 5670:          0E 07                     ;       COM_0E_while_fail length=0x0007
 5672:             C3                     ;         FN_C3_PLAYER_LACKS_WISDOM
-5673:             04 04                  ;         COM_04_print_command length=0x0004
+5673:             04 04                  ;         COM_04_print_message length=0x0004
 5675:                FF 4E 8B 4F         ; 
 ;
 ;                    BOMBS 
 ;
 5679:          8B                        ;       FN_8B_PRINT_PERIOD
-567A:          04 75                     ;       COM_04_print_command length=0x0075
+567A:          04 75                     ;       COM_04_print_message length=0x0075
 567C:             C7 DE 94 14 4B 5E 83 96 49 16 CE 98 8B 16 79 B3 ; 
 568C:             D4 CE 3F A0 82 17 73 49 4B 7B EE 68 11 8A 85 64 ; 
 569C:             43 DE 3F 98 8B B3 5B BE 03 BC 5B B1 83 7A 55 45 ; 
@@ -473,10 +473,10 @@
 5700:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 5701:                   14               ;             COM_14_execute_and_reverse_status next command
 5702:                   0B 06 03         ;             COM_0B_switch length=0x0006, function=COM_03_is_located(room_num, obj_num)
-5705:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
+5705:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_OVAL
 5707:                      02            ;               ELSE goto=0x570A
-5708:                         00 93      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK4)
-570A:                   9E               ;             FN_9E_??
+5708:                         00 93      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK4)
+570A:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -484,20 +484,20 @@
 ;
 570F:    03 80 B3                        ;   ---- Section SECTION_03_DESCRIPTION length=0x00B3
 5712:       0D 80 B0                     ;     COM_0D_while_pass length=0x00B0
-5715:          04 06                     ;       COM_04_print_command length=0x0006
+5715:          04 06                     ;       COM_04_print_message length=0x0006
 5717:             19 B9 9C A1 23 C6      ; 
 ;
 ;                 SNOOXBUR 
 ;
 571D:          0E 05                     ;       COM_0E_while_fail length=0x0005
 571F:             C3                     ;         FN_C3_PLAYER_LACKS_WISDOM
-5720:             04 02                  ;         COM_04_print_command length=0x0002
+5720:             04 02                  ;         COM_04_print_message length=0x0002
 5722:                15 6C               ; 
 ;
 ;                    GAS
 ;
 5724:          8B                        ;       FN_8B_PRINT_PERIOD
-5725:          04 80 9D                  ;       COM_04_print_command length=0x009D
+5725:          04 80 9D                  ;       COM_04_print_message length=0x009D
 5728:             C7 DE 94 14 4B 5E 83 96 49 16 CE 98 8B 16 79 B3 ; 
 5738:             D4 CE 3F A0 82 17 73 49 4B 7B EE 68 11 8A 85 64 ; 
 5748:             43 DE 3F 98 8B B3 5B BE 03 BC 5B B1 83 7A 55 45 ; 
@@ -531,13 +531,13 @@
 57D7:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 57D8:                   14               ;             COM_14_execute_and_reverse_status next command
 57D9:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
-57DC:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
+57DC:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_OVAL
 57DE:                      02            ;               ELSE goto=0x57E1
-57DF:                         00 96      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK5)
-57E1:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
+57DF:                         00 96      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK5)
+57E1:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_OVAL
 57E3:                      02            ;               ELSE goto=0x57E6
-57E4:                         00 93      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK4)
-57E6:                   9E               ;             FN_9E_??
+57E4:                         00 93      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK4)
+57E6:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -561,13 +561,13 @@
 57FF:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 5800:                   14               ;             COM_14_execute_and_reverse_status next command
 5801:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
-5804:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
+5804:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_OVAL
 5806:                      02            ;               ELSE goto=0x5809
-5807:                         00 97      ;                 COM_00_move_and_look(room=RM_7_BIO)
-5809:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
+5807:                         00 97      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_BIO)
+5809:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_OVAL
 580B:                      02            ;               ELSE goto=0x580E
-580C:                         00 95      ;                 COM_00_move_and_look(room=RM_7_GAS)
-580E:                   9E               ;             FN_9E_??
+580C:                         00 95      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_GAS)
+580E:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -575,20 +575,20 @@
 ;
 5813:    03 80 87                        ;   ---- Section SECTION_03_DESCRIPTION length=0x0087
 5816:       0D 80 84                     ;     COM_0D_while_pass length=0x0084
-5819:          04 06                     ;       COM_04_print_command length=0x0006
+5819:          04 06                     ;       COM_04_print_message length=0x0006
 581B:             E6 5F 36 9E 5F 49      ; 
 ;
 ;                 ECTOBLASM
 ;
 5821:          0E 05                     ;       COM_0E_while_fail length=0x0005
 5823:             C3                     ;         FN_C3_PLAYER_LACKS_WISDOM
-5824:             04 02                  ;         COM_04_print_command length=0x0002
+5824:             04 02                  ;         COM_04_print_message length=0x0002
 5826:                11 4E               ; 
 ;
 ;                    BIO
 ;
 5828:          8B                        ;       FN_8B_PRINT_PERIOD
-5829:          04 72                     ;       COM_04_print_command length=0x0072
+5829:          04 72                     ;       COM_04_print_message length=0x0072
 582B:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 39 17 FE 9F ; 
 583B:             82 17 2F 62 94 14 55 5E CF 62 CE B0 B6 14 DD 46 ; 
 584B:             7E 15 2F 9E CB B5 95 96 45 BD CB 87 73 47 9D 7A ; 
@@ -618,13 +618,13 @@
 58AF:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 58B0:                   14               ;             COM_14_execute_and_reverse_status next command
 58B1:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
-58B4:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
+58B4:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_OVAL
 58B6:                      02            ;               ELSE goto=0x58B9
-58B7:                         00 98      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK6)
-58B9:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
+58B7:                         00 98      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK6)
+58B9:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_OVAL
 58BB:                      02            ;               ELSE goto=0x58BE
-58BC:                         00 96      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK5)
-58BE:                   9E               ;             FN_9E_??
+58BC:                         00 96      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK5)
+58BE:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -648,13 +648,13 @@
 58D7:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 58D8:                   14               ;             COM_14_execute_and_reverse_status next command
 58D9:                   0B 0B 03         ;             COM_0B_switch length=0x000B, function=COM_03_is_located(room_num, obj_num)
-58DC:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_??
+58DC:                      40 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_40_RED_BUTTON, obj_num=OBJ_3E_OVAL
 58DE:                      02            ;               ELSE goto=0x58E1
-58DF:                         00 99      ;                 COM_00_move_and_look(room=RM_7_STORAGE)
-58E1:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
+58DF:                         00 99      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_STORAGE)
+58E1:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_OVAL
 58E3:                      02            ;               ELSE goto=0x58E6
-58E4:                         00 97      ;                 COM_00_move_and_look(room=RM_7_BIO)
-58E6:                   9E               ;             FN_9E_??
+58E4:                         00 97      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_BIO)
+58E6:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 
 ; --------------------------------------------------------------------------------------------------------------------
 ;
@@ -662,20 +662,20 @@
 ;
 58EB:    03 78                           ;   ---- Section SECTION_03_DESCRIPTION length=0x0078
 58ED:       0D 76                        ;     COM_0D_while_pass length=0x0076
-58EF:          04 06                     ;       COM_04_print_command length=0x0006
+58EF:          04 06                     ;       COM_04_print_message length=0x0006
 58F1:             A7 85 F3 A6 23 99      ; 
 ;
 ;                 KEEPRINJ 
 ;
 58F7:          0E 08                     ;       COM_0E_while_fail length=0x0008
 58F9:             C3                     ;         FN_C3_PLAYER_LACKS_WISDOM
-58FA:             04 05                  ;         COM_04_print_command length=0x0005
+58FA:             04 05                  ;         COM_04_print_message length=0x0005
 58FC:                09 BA C9 B0 45      ; 
 ;
 ;                    STORAGE
 ;
 5901:          8B                        ;       FN_8B_PRINT_PERIOD
-5902:          04 61                     ;       COM_04_print_command length=0x0061
+5902:          04 61                     ;       COM_04_print_message length=0x0061
 5904:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 39 17 FE 9F ; 
 5914:             82 17 2F 62 94 14 55 5E CF 62 CE B0 EB 14 90 8C ; 
 5924:             F4 59 D5 B5 84 BF F3 5F 83 7A 55 45 45 BD D1 83 ; 
@@ -702,10 +702,10 @@
 5974:                   AE               ;             FN_AE_PRINT_PUSH_BUTTON
 5975:                   14               ;             COM_14_execute_and_reverse_status next command
 5976:                   0B 06 03         ;             COM_0B_switch length=0x0006, function=COM_03_is_located(room_num, obj_num)
-5979:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_??
+5979:                      41 3E         ;               COM_03_is_located(room_num, obj_num) room_num=OBJ_41_BLUE_BUTTON, obj_num=OBJ_3E_OVAL
 597B:                      02            ;               ELSE goto=0x597E
-597C:                         00 98      ;                 COM_00_move_and_look(room=RM_7_AIRLOCK6)
-597E:                   9E               ;             FN_9E_??
+597C:                         00 98      ;                 COM_00_move_ACTIVE_and_look(room=RM_7_AIRLOCK6)
+597E:                   9E               ;             FN_9E_REMOVE_OVAL_FROM_ROOM
 ```
 
 # Unitialized data

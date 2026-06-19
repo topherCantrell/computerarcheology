@@ -248,6 +248,9 @@ class ScriptCursor:
     def decode_exit_program(self, cmd_name, origin, line, _, prt_level):
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
 
+    def decode_process_phrase_by_room_first_second(self, cmd_name, origin, line, _, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
+
     def decode_print2(self, cmd_name, origin, line, _, prt_level):
         length = self.decode_length(line)
         end_of_command = self.pos+length
@@ -276,39 +279,15 @@ class ScriptCursor:
     def decode_bump_score(self, cmd_name, origin, line, _, prt_level):
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
 
-    def decode_unknown2D(self, cmd_name, origin, line, _, prt_level):
-        value = self.get_byte(line)
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN2D, Value: 0x{value:02X}', prt_level)
-    def decode_unknown2E(self, cmd_name, origin, line, _, prt_level):
-        value = self.get_byte(line)
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN2E, Value: 0x{value:02X}', prt_level)
-    def decode_unknown2A(self, cmd_name, origin, line, _, prt_level):
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN2A', prt_level)
-    def decode_unknown31(self, cmd_name, origin, line, _, prt_level):
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN31', prt_level)
-    def decode_unknown32(self, cmd_name, origin, line, _, prt_level):
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN32', prt_level)
-    def decode_unknown33(self, cmd_name, origin, line, _, prt_level):
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN33', prt_level)
-    def decode_unknown34(self, cmd_name, origin, line, _, prt_level):
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN34', prt_level)
-    def decode_unknown35(self, cmd_name, origin, line, _, prt_level):
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN35', prt_level)
-    def decode_unknown0F(self, cmd_name, origin, line, _, prt_level):        
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN0F', prt_level)
-    def decode_unknown39(self, cmd_name, origin, line, _, prt_level):
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN39', prt_level)
-    def decode_unknown36(self, cmd_name, origin, line, _, prt_level):
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN36', prt_level)
-    def decode_unknown37(self, cmd_name, origin, line, _, prt_level):
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN37', prt_level)
-    def decode_unknown13(self, cmd_name, origin, line, _, prt_level):
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN13', prt_level)
-    def decode_unknown27(self, cmd_name, origin, line, _, prt_level):
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN27', prt_level)
-    def decode_unknown28(self, cmd_name, origin, line, _, prt_level):
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN28', prt_level)
+    def decode_assert_player_is_in_an_object(self, cmd_name, origin, line, _, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
 
+    def decode_pick_up_var_object(self, cmd_name, origin, line, _, prt_level):        
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
+
+    def decode_check_weight_70_or_less(self, cmd_name, origin, line, _, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
+    
     def decode_swap(self, cmd_name, origin, line, _, prt_level):
         a = self.get_byte(line)
         a_text = names_of_things.get_object_name(a)
@@ -365,6 +344,38 @@ class ScriptCursor:
     def decode_print_inventory(self, cmd_name, origin, line, _, prt_level):
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
 
+    def decode_compare_to_var_object(self, cmd_name, origin, line, _, prt_level):
+        obj_num = self.get_byte(line)        
+        obj_text = names_of_things.get_object_name(obj_num)
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}(obj_num=0x{obj_num:02X}, obj_text="{obj_text}")', prt_level)
+
+    def decode_toggle_lock_var(self, cmd_name, origin, line, _, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
+
+    def decode_load_game(self, cmd_name, origin, line, _, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
+    def decode_save_game(self, cmd_name, origin, line, _, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
+    def decode_move_active_object(self, cmd_name, origin, line, _, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
+    def decode_save_system_objects_to_disk(self, cmd_name, origin, line, _, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
+    def decode_load_system_objects_from_disk(self, cmd_name, origin, line, _, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
+
+    def decode_move_second_noun_to_var_object(self, cmd_name, origin, line, _, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
+    def decode_move_first_noun_to_var_object(self, cmd_name, origin, line, _, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
+    def decode_print_objects_on_var_object(self, cmd_name, origin, line, _, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
+
+    def decode_unknown2E(self, cmd_name, origin, line, _, prt_level):
+        value = self.get_byte(line)
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN_COM_2E, Value: 0x{value:02X}', prt_level)              
+    def decode_unknown36(self, cmd_name, origin, line, _, prt_level):
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN_COM_36', prt_level)        
+
     COMMANDS = {
         0x00: decode_move_and_look,
         0x01: decode_is_in_pack_or_current_room,
@@ -381,17 +392,17 @@ class ScriptCursor:
         0x0C: decode_fail,
         0x0D: decode_while_pass,
         0x0E: decode_while_fail,
-        0x0F: decode_unknown0F,
+        0x0F: decode_pick_up_var_object,
         0x10: decode_drop_var,
         0x11: decode_print_first_noun,
         0x12: decode_print_second_noun,
-        0x13: decode_unknown13,
+        0x13: decode_process_phrase_by_room_first_second,
         0x14: decode_execute_and_reverse_status,
         0x15: decode_check_var, 
         0x16: decode_print_var,
         0x17: decode_move_to,
         0x18: decode_is_var_owned_by_active,
-        # 0x19
+        0x19: decode_move_active_object,
         0x1A: decode_set_var_to_first_noun,
         0x1B: decode_set_var_to_second_noun,
         0x1C: decode_set_var_object,
@@ -405,25 +416,25 @@ class ScriptCursor:
         0x24: decode_exit_program,
         0x25: decode_print_linefeed,
         0x26: decode_print_score,
-        0x27: decode_unknown27,
-        0x28: decode_unknown28,
+        0x27: decode_load_game,
+        0x28: decode_save_game,
         0x29: decode_print_open_var,
-        0x2A: decode_unknown2A,
+        0x2A: decode_toggle_lock_var,
         # 0x2B
         0x2C: decode_set_active,
-        0x2D: decode_unknown2D,
+        0x2D: decode_compare_to_var_object,
         0x2E: decode_unknown2E,
         0x2F: decode_load_section_from_disk,
         0x30: decode_set_current_room,
-        0x31: decode_unknown31,
-        0x32: decode_unknown32,
-        0x33: decode_unknown33,
-        0x34: decode_unknown34,
-        0x35: decode_unknown35,
+        0x31: decode_move_second_noun_to_var_object,
+        0x32: decode_move_first_noun_to_var_object,
+        0x33: decode_print_objects_on_var_object,
+        0x34: decode_save_system_objects_to_disk,
+        0x35: decode_load_system_objects_from_disk,
         0x36: decode_unknown36,
-        0x37: decode_unknown37,
+        0x37: decode_assert_player_is_in_an_object,
         0x38: decode_bump_score,
-        0x39: decode_unknown39,
+        0x39: decode_check_weight_70_or_less,
         0x3A: decode_clear_screen,
         0x3B: decode_wait_for_key123,
     } 
