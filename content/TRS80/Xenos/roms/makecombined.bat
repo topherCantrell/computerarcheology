@@ -1,0 +1,1 @@
+copy /b xenos.bin+section1.bin+section2.bin+section3.bin+section4.bin+section5.bin+section6.bin+section7.bin+section8.bin+section9.bin combined.bin

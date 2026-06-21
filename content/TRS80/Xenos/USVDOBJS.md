@@ -7,35 +7,162 @@
 >>> binary 0:roms/usvdobjs.dat
 
 ```code
-0000: 80 01 80 02 46 46 83 01 88 82 21 88 88 61 8C DA
-0010: 01 88 8D 22 88 A2 02 88 8D 62 88 8E 02 88 A6 03
-0020: 88 93 23 88 93 23 88 94 03 88 99 24 88 AA 04 88
-0030: 99 64 88 9A 04 88 00 00 00 00 00 00 00 22 88 DB
-0040: 02 88 DD 64 88 DE 04 88 DD 64 88 DF 04 88 47 00
-0050: A4 48 00 A4 49 00 A0 21 00 A4 21 00 A4 21 00 A4
-0060: 8E 02 81 8E 62 8A 8E 62 8A 8E 22 8A 49 00 E0 22
-0070: 00 A4 8E E2 8A 8E 02 C0 00 00 E0 28 00 A0 28 00
-0080: A0 82 01 81 2B 60 88 83 01 A4 86 01 81 2E 00 A0
-0090: 86 01 A0 85 09 81 DC 03 E0 DC 03 90 02 46 46 00
-00A0: 03 A0 00 00 80 94 03 A0 9A 64 8A 4C 00 A4 DB 02
-00B0: A4 89 07 81 A2 02 80 00 02 80 44 A0 AE 00 07 00
-00C0: FF 07 80 FF 07 80 FF 07 80 FF 07 80 3D 10 A0 A2
-00D0: 02 81 A2 02 82 45 10 A0 AA 04 81 DE 24 8A 83 01
-00E0: 81 86 21 88 00 00 80 00 04 82 9D 05 88 9D 05 80
-00F0: 00 02 80 DF 24 8A DE 04 80 DF 04 80 DE 04 80 DF
-0100: 04 80 A0 02 80 AA 04 84 81 01 84 96 03 84 A6 03
-0110: 8A 00 05 80 89 01 84 01 00 C0 8F 02 80 8E 02 80
-0120: A0 02 80 DB 02 80 01 00 80 C3 05 90 02 14 14 65
-0130: 00 A0 00 00 A0 86 08 81 86 08 82 80 07 82 9E 08
-0140: 82 82 07 80 85 87 8A 6A 00 80 6A 00 80 85 07 80
-0150: 9C 08 81 9C 08 80 6E 00 80 6E 00 80 9C 08 81 00
-0160: 00 80 00 00 80 00 00 80 8A 08 82 8A 08 A0 8D 07
-0170: 80 8D 07 81 8D 07 82 8E 08 81 7B A0 AA 7C 10 A0
-0180: 90 08 81 90 08 82 00 00 80 DB 05 A0 DB 05 A0 00
-0190: 00 80 00 00 80 94 07 80 95 07 80 97 07 80 99 07
-01A0: 80 00 00 90 00 00 80 DB 05 90 E8 05 90 00 00 80
-01B0: 9B 08 80 3A 00 80 89 07 80 00 00 A0 00 01 00 83
-01C0: 29 88 31 00 90 87 69 88 89 69 88 86 09 A4 8B 09
-01D0: 80 9D 05 80 01 00 80 00 00 00 80 07 80 00 00 80
+0000: 80 01 80 02 46 46  ; OBJ_01_PLAYER                       Location: 80 RM_1_HIGHWAY_WEST              ext_atts=0000.... attributes=10000000
+0006: 83 01 88           ; OBJ_02_DOOR_GAS_STATION             Location: 83 RM_1_GAS_STATION               ext_atts=0000.... attributes=10001000
+0009: 82 21 88           ; OBJ_03_DOOR_FRONT_OF_STATION        Location: 82 RM_1_FRONT_OF_STATION          ext_atts=0010.... attributes=10001000
+000C: 88 61 8C           ; OBJ_04_DOOR_EAST_OF_STATION         Location: 88 RM_1_EAST_OF_STATION           ext_atts=0110.... attributes=10001100
+000F: DA 01 88           ; OBJ_05_DOOR_RESTROOM                Location: DA RM_1_RESTROOM                  ext_atts=0000.... attributes=10001000
+0012: 8D 22 88           ; OBJ_06_DOOR_MAIN_STREET_WEST        Location: 8D RM_2_MAIN_STREET_WEST          ext_atts=0010.... attributes=10001000
+0015: A2 02 88           ; OBJ_07_DOOR_SALOON                  Location: A2 RM_2_SALOON                    ext_atts=0000.... attributes=10001000
+0018: 8D 62 88           ; OBJ_08_DOOR_MAIN_STREET_WEST        Location: 8D RM_2_MAIN_STREET_WEST          ext_atts=0110.... attributes=10001000
+001B: 8E 02 88           ; OBJ_09_DOOR_SHERIFFS_OFFICE         Location: 8E RM_2_SHERIFFS_OFFICE           ext_atts=0000.... attributes=10001000
+001E: A6 03 88           ; OBJ_0A_DOOR_HARDWARE_SOUTH          Location: A6 RM_3_HARDWARE_SOUTH            ext_atts=0000.... attributes=10001000
+0021: 93 23 88           ; OBJ_0B_DOOR_TOWN_CENTER_SLIMS       Location: 93 RM_3_TOWN_CENTER               ext_atts=0010.... attributes=10001000
+0024: 93 23 88           ; OBJ_0C_DOOR_TOWN_CENTER_BOBS        Location: 93 RM_3_TOWN_CENTER               ext_atts=0010.... attributes=10001000
+0027: 94 03 88           ; OBJ_0D_DOOR_SLIMS_GROCERY           Location: 94 RM_3_SLIMS_GROCERY             ext_atts=0000.... attributes=10001000
+002A: 99 24 88           ; OBJ_0E_DOOR_MAIN_STREET_EAST_HOTEL  Location: 99 RM_4_MAIN_STREET_EAST          ext_atts=0010.... attributes=10001000
+002D: AA 04 88           ; OBJ_0F_DOOR_HOTEL_LOBBY             Location: AA RM_4_HOTEL_LOBBY               ext_atts=0000.... attributes=10001000
+0030: 99 64 88           ; OBJ_10_DOOR_MAIN_STREET_EAST_BANK   Location: 99 RM_4_MAIN_STREET_EAST          ext_atts=0110.... attributes=10001000
+0033: 9A 04 88           ; OBJ_11_DOOR_BANK                    Location: 9A RM_4_BANK                      ext_atts=0000.... attributes=10001000
+0036: 00 00 00           ; OBJ_12_DOOR                         Location: 00 nowhere                        ext_atts=0000.... attributes=00000000
+0039: 00 00 00           ; OBJ_13_DOOR                         Location: 00 nowhere                        ext_atts=0000.... attributes=00000000
+003C: 00 22 88           ; OBJ_14_DOOR_COVERED_SHELTER         Location: 00 nowhere                        ext_atts=0010.... attributes=10001000
+003F: DB 02 88           ; OBJ_15_DOOR_SHELTER                 Location: DB RM_2_STORM_SHELTER             ext_atts=0000.... attributes=10001000
+0042: DD 64 88           ; OBJ_16_RED_DOOR_HALLWAY             Location: DD RM_4_HALLWAY                   ext_atts=0110.... attributes=10001000
+0045: DE 04 88           ; OBJ_17_DOOR_NORTH_ROOM              Location: DE RM_4_NORTH_ROOM                ext_atts=0000.... attributes=10001000
+0048: DD 64 88           ; OBJ_18_BLUE_DOOR_HALLWAY            Location: DD RM_4_HALLWAY                   ext_atts=0110.... attributes=10001000
+004B: DF 04 88           ; OBJ_19_DOOR_SOUTH_ROOM              Location: DF RM_4_SOUTH_ROOM                ext_atts=0000.... attributes=10001000
+004E: 47 00 A4           ; OBJ_1A_MASTER_KEY                   Location: 47 OBJ_47_COUNTER                 ext_atts=0000.... attributes=10100100
+0051: 48 00 A4           ; OBJ_1B_BRASS_KEY_SHERIFF            Location: 48 OBJ_48_DRESSER                 ext_atts=0000.... attributes=10100100
+0054: 49 00 A0           ; OBJ_1C_SKELETON_KEY                 Location: 49 OBJ_49_TABLE                   ext_atts=0000.... attributes=10100000
+0057: 21 00 A4           ; OBJ_1D_STEEL_KEY_BANK               Location: 21 OBJ_21_TOP_DRAWER              ext_atts=0000.... attributes=10100100
+005A: 21 00 A4           ; OBJ_1E_RED_KEY_SLIMS                Location: 21 OBJ_21_TOP_DRAWER              ext_atts=0000.... attributes=10100100
+005D: 21 00 A4           ; OBJ_1F_SMALL_KEY_CAB                Location: 21 OBJ_21_TOP_DRAWER              ext_atts=0000.... attributes=10100100
+0060: 8E 02 81           ; OBJ_20_DESK                         Location: 8E RM_2_SHERIFFS_OFFICE           ext_atts=0000.... attributes=10000001
+0063: 8E 62 8A           ; OBJ_21_TOP_DRAWER                   Location: 8E RM_2_SHERIFFS_OFFICE           ext_atts=0110.... attributes=10001010
+0066: 8E 62 8A           ; OBJ_22_MIDDLE_DRAWER                Location: 8E RM_2_SHERIFFS_OFFICE           ext_atts=0110.... attributes=10001010
+0069: 8E 22 8A           ; OBJ_23_BOTTOM_DRAWER                Location: 8E RM_2_SHERIFFS_OFFICE           ext_atts=0010.... attributes=10001010
+006C: 49 00 E0           ; OBJ_24_CROWBAR                      Location: 49 OBJ_49_TABLE                   ext_atts=0000.... attributes=11100000
+006F: 22 00 A4           ; OBJ_25_WANTED_POSTER                Location: 22 OBJ_22_MIDDLE_DRAWER           ext_atts=0000.... attributes=10100100
+0072: 8E E2 8A           ; OBJ_26_GUN_CABINET                  Location: 8E RM_2_SHERIFFS_OFFICE           ext_atts=1110.... attributes=10001010
+0075: 8E 02 C0           ; OBJ_27_SHOTGUN                      Location: 8E RM_2_SHERIFFS_OFFICE           ext_atts=0000.... attributes=11000000
+0078: 00 00 E0           ; OBJ_28_SHOTGUN                      Location: 00 nowhere                        ext_atts=0000.... attributes=11100000
+007B: 28 00 A0           ; OBJ_29_??                           Location: 28 OBJ_28_SHOTGUN                 ext_atts=0000.... attributes=10100000
+007E: 28 00 A0           ; OBJ_2A_??                           Location: 28 OBJ_28_SHOTGUN                 ext_atts=0000.... attributes=10100000
+0081: 82 01 81           ; OBJ_2B_GAS_PUMP                     Location: 82 RM_1_FRONT_OF_STATION          ext_atts=0000.... attributes=10000001
+0084: 2B 60 88           ; OBJ_2C_PADLOCK                      Location: 2B OBJ_2B_GAS_PUMP                ext_atts=0110.... attributes=10001000
+0087: 83 01 A4           ; OBJ_2D_JACK-O-MATIC                 Location: 83 RM_1_GAS_STATION               ext_atts=0000.... attributes=10100100
+008A: 86 01 81           ; OBJ_2E_RUSTY_JEEP                   Location: 86 RM_1_JUNKYARD                  ext_atts=0000.... attributes=10000001
+008D: 2E 00 A0           ; OBJ_2F_FLAT_TIRE                    Location: 2E OBJ_2E_RUSTY_JEEP              ext_atts=0000.... attributes=10100000
+0090: 86 01 A0           ; OBJ_30_SPARE_TIRE                   Location: 86 RM_1_JUNKYARD                  ext_atts=0000.... attributes=10100000
+0093: 85 09 81           ; OBJ_31_SPHORX                       Location: 85 RM_9_MUSEUM                    ext_atts=0000.... attributes=10000001
+0096: DC 03 E0           ; OBJ_32_SHOVEL                       Location: DC RM_3_HARDWARE_NORTH            ext_atts=0000.... attributes=11100000
+0099: DC 03 90 02 46 46  ; OBJ_33_RATTLE_SNAKE                 Location: DC RM_3_HARDWARE_NORTH            ext_atts=0000.... attributes=10010000
+009F: 00 03 A0           ; OBJ_34_DEAD_SNAKE                   Location: 00 nowhere                        ext_atts=0000.... attributes=10100000
+00A2: 00 00 80           ; OBJ_35_??                           Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
+00A5: 94 03 A0           ; OBJ_36_FOOD                         Location: 94 RM_3_SLIMS_GROCERY             ext_atts=0000.... attributes=10100000
+00A8: 9A 64 8A           ; OBJ_37_STEEL_SAFE                   Location: 9A RM_4_BANK                      ext_atts=0110.... attributes=10001010
+00AB: 4C 00 A4           ; OBJ_38_MONEY                        Location: 4C OBJ_4C_BLASTED_SAFE            ext_atts=0000.... attributes=10100100
+00AE: DB 02 A4           ; OBJ_39_DYNAMITE                     Location: DB RM_2_STORM_SHELTER             ext_atts=0000.... attributes=10100100
+00B1: 89 07 81           ; OBJ_3A_CONTROL_PANEL                Location: 89 RM_7_CONTROL                   ext_atts=0000.... attributes=10000001
+00B4: A2 02 80           ; OBJ_3B_RADIO                        Location: A2 RM_2_SALOON                    ext_atts=0000.... attributes=10000000
+00B7: 00 02 80           ; OBJ_3C_RADIO                        Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
+00BA: 44 A0 AE           ; OBJ_3D_BOTTLE                       Location: 44 OBJ_44_BAR                     ext_atts=1010.... attributes=10101110
+00BD: 00 07 00           ; OBJ_3E_OVAL                         Location: 00 nowhere                        ext_atts=0000.... attributes=00000000
+00C0: FF 07 80           ; OBJ_3F_YELLOW_BUTTON                Location: FF RM_7_FF_??                     ext_atts=0000.... attributes=10000000
+00C3: FF 07 80           ; OBJ_40_RED_BUTTON                   Location: FF RM_7_FF_??                     ext_atts=0000.... attributes=10000000
+00C6: FF 07 80           ; OBJ_41_BLUE_BUTTON                  Location: FF RM_7_FF_??                     ext_atts=0000.... attributes=10000000
+00C9: FF 07 80           ; OBJ_42_ORANGE_BUTTON                Location: FF RM_7_FF_??                     ext_atts=0000.... attributes=10000000
+00CC: 3D 10 A0           ; OBJ_43_BROWN_LIQUID                 Location: 3D OBJ_3D_BOTTLE                  ext_atts=0001.... attributes=10100000
+00CF: A2 02 81           ; OBJ_44_BAR                          Location: A2 RM_2_SALOON                    ext_atts=0000.... attributes=10000001
+00D2: A2 02 82           ; OBJ_45_SINK                         Location: A2 RM_2_SALOON                    ext_atts=0000.... attributes=10000010
+00D5: 45 10 A0           ; OBJ_46_WATER                        Location: 45 OBJ_45_SINK                    ext_atts=0001.... attributes=10100000
+00D8: AA 04 81           ; OBJ_47_COUNTER                      Location: AA RM_4_HOTEL_LOBBY               ext_atts=0000.... attributes=10000001
+00DB: DE 24 8A           ; OBJ_48_DRESSER                      Location: DE RM_4_NORTH_ROOM                ext_atts=0010.... attributes=10001010
+00DE: 83 01 81           ; OBJ_49_TABLE                        Location: 83 RM_1_GAS_STATION               ext_atts=0000.... attributes=10000001
+00E1: 86 21 88           ; OBJ_4A_HOOD                         Location: 86 RM_1_JUNKYARD                  ext_atts=0010.... attributes=10001000
+00E4: 00 00 80           ; OBJ_4B_??                           Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
+00E7: 00 04 82           ; OBJ_4C_BLASTED_SAFE                 Location: 00 nowhere                        ext_atts=0000.... attributes=10000010
+00EA: 9D 05 88           ; OBJ_4D_DOOR                         Location: 9D RM_5_UFO_CRATER                ext_atts=0000.... attributes=10001000
+00ED: 9D 05 80           ; OBJ_4E_BOULDER                      Location: 9D RM_5_UFO_CRATER                ext_atts=0000.... attributes=10000000
+00F0: 00 02 80           ; OBJ_4F_RADIO                        Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
+00F3: DF 24 8A           ; OBJ_50_DRESSER                      Location: DF RM_4_SOUTH_ROOM                ext_atts=0010.... attributes=10001010
+00F6: DE 04 80           ; OBJ_51_CHAIR                        Location: DE RM_4_NORTH_ROOM                ext_atts=0000.... attributes=10000000
+00F9: DF 04 80           ; OBJ_52_CHAIR                        Location: DF RM_4_SOUTH_ROOM                ext_atts=0000.... attributes=10000000
+00FC: DE 04 80           ; OBJ_53_BED                          Location: DE RM_4_NORTH_ROOM                ext_atts=0000.... attributes=10000000
+00FF: DF 04 80           ; OBJ_54_BED                          Location: DF RM_4_SOUTH_ROOM                ext_atts=0000.... attributes=10000000
+0102: A0 02 80           ; OBJ_55_MOUND_SAND                   Location: A0 RM_2_WEST_SIDE_OF_SALOON       ext_atts=0000.... attributes=10000000
+0105: AA 04 84           ; OBJ_56_SIGN                         Location: AA RM_4_HOTEL_LOBBY               ext_atts=0000.... attributes=10000100
+0108: 81 01 84           ; OBJ_57_MESSAGE                      Location: 81 RM_1_WEST_OF_STATION1          ext_atts=0000.... attributes=10000100
+010B: 96 03 84           ; OBJ_58_NEON_SIGN                    Location: 96 RM_3_EAST_ALLEY_INTERSECTION   ext_atts=0000.... attributes=10000100
+010E: A6 03 8A           ; OBJ_59_AQUARIUM                     Location: A6 RM_3_HARDWARE_SOUTH            ext_atts=0000.... attributes=10001010
+0111: 00 05 80           ; OBJ_5A_ENTRANCE_CLEAR               Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
+0114: 89 01 84           ; OBJ_5B_LIMIT_SIGN                   Location: 89 RM_1_CITY_LIMIT                ext_atts=0000.... attributes=10000100
+0117: 01 00 C0           ; OBJ_5C_PAIR_HANDS                   Location: 01 OBJ_01_PLAYER                  ext_atts=0000.... attributes=11000000
+011A: 8F 02 80           ; OBJ_5D_BARRED_WINDOW_OUTSIDE        Location: 8F RM_2_SOUTH_OF_SHERIFF          ext_atts=0000.... attributes=10000000
+011D: 8E 02 80           ; OBJ_5E_BARRED_WINDOW_INSIDE         Location: 8E RM_2_SHERIFFS_OFFICE           ext_atts=0000.... attributes=10000000
+0120: A0 02 80           ; OBJ_5F_SHELTER                      Location: A0 RM_2_WEST_SIDE_OF_SALOON       ext_atts=0000.... attributes=10000000
+0123: DB 02 80           ; OBJ_60_SHELTER                      Location: DB RM_2_STORM_SHELTER             ext_atts=0000.... attributes=10000000
+0126: 01 00 80           ; OBJ_61_GROUND                       Location: 01 OBJ_01_PLAYER                  ext_atts=0000.... attributes=10000000
+0129: C3 05 90 02 14 14  ; OBJ_62_SHAGGY_CREATURE              Location: C3 RM_5_DESERT11                  ext_atts=0000.... attributes=10010000
+012F: 65 00 A0           ; OBJ_63_GREY_CUBE                    Location: 65 OBJ_65_TABLE                   ext_atts=0000.... attributes=10100000
+0132: 00 00 A0           ; OBJ_64_WHITE_CUBE                   Location: 00 nowhere                        ext_atts=0000.... attributes=10100000
+0135: 86 08 81           ; OBJ_65_TABLE                        Location: 86 RM_8_GALLEY                    ext_atts=0000.... attributes=10000001
+0138: 86 08 82           ; OBJ_66_RECESS                       Location: 86 RM_8_GALLEY                    ext_atts=0000.... attributes=10000010
+013B: 80 07 82           ; OBJ_67_HOLE                         Location: 80 RM_7_EXIT1                     ext_atts=0000.... attributes=10000010
+013E: 9E 08 82           ; OBJ_68_HOLE_BOULDERS                Location: 9E RM_8_EXIT2                     ext_atts=0000.... attributes=10000010
+0141: 82 07 80           ; OBJ_69_PICTURE                      Location: 82 RM_7_LOUNGE                    ext_atts=0000.... attributes=10000000
+0144: 85 87 8A           ; OBJ_6A_GLASS_CYLINDER               Location: 85 RM_7_SLEEPING                  ext_atts=1000.... attributes=10001010
+0147: 6A 00 80           ; OBJ_6B_WHITE_BUTTON_LIGHTS          Location: 6A OBJ_6A_GLASS_CYLINDER          ext_atts=0000.... attributes=10000000
+014A: 6A 00 80           ; OBJ_6C_MAROON_BUTTON                Location: 6A OBJ_6A_GLASS_CYLINDER          ext_atts=0000.... attributes=10000000
+014D: 85 07 80           ; OBJ_6D_LIGHTS                       Location: 85 RM_7_SLEEPING                  ext_atts=0000.... attributes=10000000
+0150: 9C 08 81           ; OBJ_6E_CONSOLE                      Location: 9C RM_8_WEAPONRY                  ext_atts=0000.... attributes=10000001
+0153: 9C 08 80           ; OBJ_6F_CHAIR                        Location: 9C RM_8_WEAPONRY                  ext_atts=0000.... attributes=10000000
+0156: 6E 00 80           ; OBJ_70_WHITE_BUTTON_SCREEN          Location: 6E OBJ_6E_CONSOLE                 ext_atts=0000.... attributes=10000000
+0159: 6E 00 80           ; OBJ_71_GREEN_BUTTON_WEAPON          Location: 6E OBJ_6E_CONSOLE                 ext_atts=0000.... attributes=10000000
+015C: 9C 08 81           ; OBJ_72_VIEWING_SCREEN               Location: 9C RM_8_WEAPONRY                  ext_atts=0000.... attributes=10000001
+015F: 00 00 80           ; OBJ_73_DISPLAY_EARTH                Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
+0162: 00 00 80           ; OBJ_74_DISPLAY_MOON                 Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
+0165: 00 00 80           ; OBJ_75_DISPLAY_MOTHER_SHIP          Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
+0168: 8A 08 82           ; OBJ_76_CHAIR                        Location: 8A RM_8_RECREATION                ext_atts=0000.... attributes=10000010
+016B: 8A 08 A0           ; OBJ_77_HANDGRIP                     Location: 8A RM_8_RECREATION                ext_atts=0000.... attributes=10100000
+016E: 8D 07 80           ; OBJ_78_CHAIR                        Location: 8D RM_7_LIBRARY1                  ext_atts=0000.... attributes=10000000
+0171: 8D 07 81           ; OBJ_79_LARGE_CUBE                   Location: 8D RM_7_LIBRARY1                  ext_atts=0000.... attributes=10000001
+0174: 8D 07 82           ; OBJ_7A_HOLE_WISER                   Location: 8D RM_7_LIBRARY1                  ext_atts=0000.... attributes=10000010
+0177: 8E 08 81           ; OBJ_7B_TABLE                        Location: 8E RM_8_SICK_BAY                  ext_atts=0000.... attributes=10000001
+017A: 7B A0 AA           ; OBJ_7C_TRANSPARENT_VIAL             Location: 7B OBJ_7B_TABLE                   ext_atts=1010.... attributes=10101010
+017D: 7C 10 A0           ; OBJ_7D_TSOM_SOLUTION                Location: 7C OBJ_7C_TRANSPARENT_VIAL        ext_atts=0001.... attributes=10100000
+0180: 90 08 81           ; OBJ_7E_PEDESTAL                     Location: 90 RM_8_POWER                     ext_atts=0000.... attributes=10000001
+0183: 90 08 82           ; OBJ_7F_TWO_INCH_HOLE                Location: 90 RM_8_POWER                     ext_atts=0000.... attributes=10000010
+0186: 00 00 80           ; OBJ_80_WISDOM                       Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
+0189: DB 05 A0           ; OBJ_81_GREEN_CUBE                   Location: DB RM_5_DESERT18                  ext_atts=0000.... attributes=10100000
+018C: DB 05 A0           ; OBJ_82_ROD_WITH_SPHERE              Location: DB RM_5_DESERT18                  ext_atts=0000.... attributes=10100000
+018F: 00 00 80           ; OBJ_83_??                           Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
+0192: 00 00 80           ; OBJ_84_??                           Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
+0195: 94 07 80           ; OBJ_85_CYLINDER_BOMB                Location: 94 RM_7_BOMBS                     ext_atts=0000.... attributes=10000000
+0198: 95 07 80           ; OBJ_86_CYLINDER_POISON              Location: 95 RM_7_GAS                       ext_atts=0000.... attributes=10000000
+019B: 97 07 80           ; OBJ_87_CYLINDER_ANTS                Location: 97 RM_7_BIO                       ext_atts=0000.... attributes=10000000
+019E: 99 07 80           ; OBJ_88_CYLINDERS_UNABLE             Location: 99 RM_7_STORAGE                   ext_atts=0000.... attributes=10000000
+01A1: 00 00 90           ; OBJ_89_ALIEN_ANTS                   Location: 00 nowhere                        ext_atts=0000.... attributes=10010000
+01A4: 00 00 80           ; OBJ_8A_DEAD_ALIEN                   Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
+01A7: DB 05 90           ; OBJ_8B_SQUIRMING_ALIEN              Location: DB RM_5_DESERT18                  ext_atts=0000.... attributes=10010000
+01AA: E8 05 90           ; OBJ_8C_PROSPECTOR                   Location: E8 RM_5_DESERT24                  ext_atts=0000.... attributes=10010000
+01AD: 00 00 80           ; OBJ_8D_??                           Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
+01B0: 9B 08 80           ; OBJ_8E_MACHINE                      Location: 9B RM_8_GUN                       ext_atts=0000.... attributes=10000000
+01B3: 3A 00 80           ; OBJ_8F_WHITE_BUTTON_ENGINES         Location: 3A OBJ_3A_CONTROL_PANEL           ext_atts=0000.... attributes=10000000
+01B6: 89 07 80           ; OBJ_90_CHAIR                        Location: 89 RM_7_CONTROL                   ext_atts=0000.... attributes=10000000
+01B9: 00 00 A0           ; OBJ_91_POISON                       Location: 00 nowhere                        ext_atts=0000.... attributes=10100000
+01BC: 00 01 00           ; OBJ_92_SCORE                        Location: 00 nowhere                        ext_atts=0000.... attributes=00000000
+01BF: 83 29 88           ; OBJ_93_DOOR_ESNEL                   Location: 83 RM_9_GRAND_CENTRAL             ext_atts=0010.... attributes=10001000
+01C2: 31 00 90           ; OBJ_94_GOOLUB                       Location: 31 OBJ_31_SPHORX                  ext_atts=0000.... attributes=10010000
+01C5: 87 69 88           ; OBJ_95_DOOR_ESNEL                   Location: 87 RM_9_NURSERY                   ext_atts=0110.... attributes=10001000
+01C8: 89 69 88           ; OBJ_96_DOOR_ESNEL                   Location: 89 RM_9_LIBRARY2                  ext_atts=0110.... attributes=10001000
+01CB: 86 09 A4           ; OBJ_97_SMALL_UKORK_KEY              Location: 86 RM_9_BIOLOGICAL                ext_atts=0000.... attributes=10100100
+01CE: 8B 09 80           ; OBJ_98_BLURNUM_RADIO                Location: 8B RM_9_PITTSBURG                 ext_atts=0000.... attributes=10000000
+01D1: 9D 05 80           ; OBJ_99_SHIP                         Location: 9D RM_5_UFO_CRATER                ext_atts=0000.... attributes=10000000
+01D4: 01 00 80           ; OBJ_9A_WALL                         Location: 01 OBJ_01_PLAYER                  ext_atts=0000.... attributes=10000000
+01D7: 00 00 00           ; OBJ_9B_??                           Location: 00 nowhere                        ext_atts=0000.... attributes=00000000
+01DA: 80 07 80           ; OBJ_9C_SHIP                         Location: 80 RM_7_EXIT1                     ext_atts=0000.... attributes=10000000
+01DD: 00 00 80           ; OBJ_9D_THIRST_TRACKER               Location: 00 nowhere                        ext_atts=0000.... attributes=10000000
 ```
 
