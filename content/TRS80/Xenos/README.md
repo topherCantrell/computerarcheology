@@ -28,7 +28,7 @@
 Play the game in a TRS80 emulator. Click on the black console and press any key.
 
 ```html
-<textarea id="xenosConsole" rows="16" style="overflow:hidden;background-color: black;color: white;font-family: monospace;font-size:12px;width:65ch;" ></textarea>
+<textarea id="xenosConsole" rows="16" style="overflow:hidden;background-color: black;color: white;font-family: monospace;font-size:12px;width:65ch;" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false"></textarea>
 
 <div id="xenosTapeArea" style="display:none">
 The text area below is the virtual disk file. Instead of writing to disk, the emulator writes data as two-digit hex
@@ -40,7 +40,7 @@ in a text file for later use. </p>
 
 Before the LOAD command you must paste the desired saved-data back into the text area.</p>
 
-<textarea id="xenosTape" rows="12" style="font-size:8px;width:100ch;" ></textarea>
+<textarea id="xenosTape" rows="12" style="font-size:8px;width:100ch;" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false"></textarea>
 </div>
 ```
 

@@ -1840,7 +1840,7 @@ COM_15_check_var: ; ?? 2nd byte is abilities?
 69B1: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Point to data
 69B4: 23              INC     HL                  ; Point to ...
 ;
-69B5: 23              INC     HL                  ; ... attributes
+69B5: 23              INC     HL                  ; ... attributes (or extended attributes if coming from COM_2E)
 69B6: 7E              LD      A,(HL)              ; Attributes from object
 69B7: E1              POP     HL                  ; Restore script pointer
 69B8: A6              AND     (HL)                ; Mask off all but target bits
@@ -1860,7 +1860,7 @@ COM_2E_check_extended_attributes:
 69C8: A7              AND     A                   ; If there is no VAR ...
 69C9: CA 48 69        JP      Z,$6948             ; {} ... object, FAIL
 69CC: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Point to data
-69CF: C3 B5 69        JP      $69B5               ; {} Skip to the ??
+69CF: C3 B5 69        JP      $69B5               ; {} Read the 2nd byte -- the extended attributes
 
 COM_29_toggle_open_var:
 69D2: E5              PUSH    HL                  ; Save script pointer
@@ -1869,7 +1869,7 @@ COM_29_toggle_open_var:
 69D9: A7              AND     A                   ; Is there a var object set?
 69DA: CA 48 69        JP      Z,$6948             ; {} No, error out
 69DD: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Skip to data
-69E0: 23              INC     HL                  ; Point to the object state
+69E0: 23              INC     HL                  ; Point to the object ext state
 69E1: 7E              LD      A,(HL)              ; Get the state bits
 69E2: EE 20           XOR     $20                 ; Flip the OPEN bit
 69E4: 77              LD      (HL),A              ; Set the state bits
@@ -2166,29 +2166,29 @@ COM_18_is_var_owned_by_active:
 6CF2: E1              POP     HL                  
 6CF3: C3 46 6D        JP      $6D46               ; {}
 ;
-6CF6: 23              INC     HL                  
-6CF7: 7E              LD      A,(HL)              
-6CF8: E6 0F           AND     $0F                 
-6CFA: 47              LD      B,A                 
-6CFB: 3A FA 71        LD      A,($71FA)           ; {code.currentLoadedSection}
-6CFE: B8              CP      B                   
-6CFF: C2 46 6D        JP      NZ,$6D46            ; {}
-6D02: 23              INC     HL                  
-6D03: 23              INC     HL                  
+6CF6: 23              INC     HL                  ; 2nd byte ...
+6CF7: 7E              LD      A,(HL)              ; ... of object data
+6CF8: E6 0F           AND     $0F                 ; Keep just the disk section nibble
+6CFA: 47              LD      B,A                 ; To B
+6CFB: 3A FA 71        LD      A,($71FA)           ; {code.currentLoadedSection} The current disk section
+6CFE: B8              CP      B                   ; Is this object in the loaded section?
+6CFF: C2 46 6D        JP      NZ,$6D46            ; {} No, skip this object
+6D02: 23              INC     HL                  ; Skip to ...
+6D03: 23              INC     HL                  ; ... object data
 6D04: 06 08           LD      B,$08               ; EVERY_TURN section
 6D06: CD AD 61        CALL    $61AD               ; {code.FindObjectField} Find the object's turn script
-6D09: D2 46 6D        JP      NC,$6D46            ; {} No turn script, then next object
-6D0C: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-6D0F: E5              PUSH    HL                  
-6D10: CD C6 71        CALL    $71C6               ; {code.COM_2B_random}
-6D13: 3A 1C 72        LD      A,($721C)           ; {}
-6D16: 32 1E 72        LD      ($721E),A           ; {code.activeObject}
-6D19: 47              LD      B,A                 
-6D1A: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
+6D09: D2 46 6D        JP      NC,$6D46            ; {} No EVERY_TURN script, then skip this object
+6D0C: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Get start/length of section
+6D0F: E5              PUSH    HL                  ; Hold pointer to section script
+6D10: CD C6 71        CALL    $71C6               ; {code.COM_2B_random} Get a fresh random number
+6D13: 3A 1C 72        LD      A,($721C)           ; {} Our current object ...
+6D16: 32 1E 72        LD      ($721E),A           ; {code.activeObject} ... is now the active object
+6D19: 47              LD      B,A                 ; To B for lookup
+6D1A: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex} Find the object
 6D1D: 22 1F 72        LD      ($721F),HL          ; {code.activeObjectPtr}
 6D20: 79              LD      A,C                 
 6D21: A7              AND     A                   
-6D22: FA 35 6D        JP      M,$6D35             ; {}
+6D22: FA 35 6D        JP      M,$6D35             ; {} This object is in a room, we can run its script
 6D25: 47              LD      B,A                 
 6D26: CD 57 70        CALL    $7057               ; {code.GetObjectScriptByIndex}
 6D29: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
@@ -2204,7 +2204,7 @@ COM_18_is_var_owned_by_active:
 6D3C: CD A5 61        CALL    $61A5               ; {code.FindCollectionItemByID}
 6D3F: 22 22 72        LD      ($7222),HL          ; {code.currentRoomPtr}
 6D42: E1              POP     HL                  
-6D43: CD 57 63        CALL    $6357               ; {code.ExecuteCommand}
+6D43: CD 57 63        CALL    $6357               ; {code.ExecuteCommand} Run the EVERY_TURN script
 ;
 6D46: E1              POP     HL                  ; Restore object pointer
 6D47: D1              POP     DE                  ; Restore end of objects
@@ -2311,27 +2311,30 @@ COM_22__:
 6DDE: C9              RET                         
 
 COM_23_heal_var:
-6DDF: 4E              LD      C,(HL)              
-6DE0: 23              INC     HL                  
-6DE1: E5              PUSH    HL                  
-6DE2: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr}
-6DE5: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-6DE8: 23              INC     HL                  
-6DE9: 23              INC     HL                  
-6DEA: 23              INC     HL                  
+; First value of HP section is max points
+; Second is current hit points
+; This command adds a value to the current, but clamps the value at the max
+6DDF: 4E              LD      C,(HL)              ; Heal points
+6DE0: 23              INC     HL                  ; Advance ...
+6DE1: E5              PUSH    HL                  ; ... script
+6DE2: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr} Get active object structure
+6DE5: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Get data and end
+6DE8: 23              INC     HL                  ; Skip ...
+6DE9: 23              INC     HL                  ; ... object ...
+6DEA: 23              INC     HL                  ; ... data
 6DEB: 06 09           LD      B,$09               ; HIT_POINTS section
-6DED: CD AD 61        CALL    $61AD               ; {code.FindObjectField}
-6DF0: D2 DC 6D        JP      NC,$6DDC            ; {}
-6DF3: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd}
-6DF6: 56              LD      D,(HL)              
-6DF7: 23              INC     HL                  
-6DF8: 7E              LD      A,(HL)              
-6DF9: 81              ADD     A,C                 
-6DFA: BA              CP      D                   
-6DFB: DA FF 6D        JP      C,$6DFF             ; {}
-6DFE: 7A              LD      A,D                 
-6DFF: 77              LD      (HL),A              
-6E00: C3 DC 6D        JP      $6DDC               ; {}
+6DED: CD AD 61        CALL    $61AD               ; {code.FindObjectField} Point to object's hit points
+6DF0: D2 DC 6D        JP      NC,$6DDC            ; {} There are no hit points, just ignore
+6DF3: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Skip to the data
+6DF6: 56              LD      D,(HL)              ; D=max hit points
+6DF7: 23              INC     HL                  ; Skip to current
+6DF8: 7E              LD      A,(HL)              ; A=current hit points
+6DF9: 81              ADD     A,C                 ; Add health to current
+6DFA: BA              CP      D                   ; More than allowed?
+6DFB: DA FF 6D        JP      C,$6DFF             ; {} No, use this new value
+6DFE: 7A              LD      A,D                 ; Use the max allowed
+6DFF: 77              LD      (HL),A              ; New health
+6E00: C3 DC 6D        JP      $6DDC               ; {} PASS
 
 COM_25_print_linefeed:
 6E03: 3A 1E 72        LD      A,($721E)           ; {code.activeObject} Is the player ...
@@ -2343,6 +2346,9 @@ COM_25_print_linefeed:
 6E11: C9              RET                         
 
 COM_36__: ; ??
+; If var object is in a room, PASS
+; If var's container is open, PASS
+; Else set the var to the var's container and FAIL
 6E12: E5              PUSH    HL                  ; Hold script pointer
 6E13: 2A 0C 72        LD      HL,($720C)          ; {code.varObjectPtr} Var object structure
 6E16: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Skip to the data
@@ -2357,14 +2363,14 @@ COM_36__: ; ??
 6E26: D5              PUSH    DE                  ; Hold ptr to owning object
 6E27: CD C8 61        CALL    $61C8               ; {code.SkipIDCalcEnd} Skip to the data (in HL)
 6E2A: D1              POP     DE                  ; DE is the owning object
-6E2B: 23              INC     HL                  ; ?? extended attributes
-6E2C: 7E              LD      A,(HL)              
-6E2D: E6 20           AND     $20                 ; ?? check bit
-6E2F: CA 3E 6E        JP      Z,$6E3E             ; {} Bit is clear, this command passes
-6E32: 79              LD      A,C                 ; ?? set var object to the owner of var object
-6E33: 32 0B 72        LD      ($720B),A           ; {code.varObject}
-6E36: EB              EX      DE,HL               
-6E37: 22 0C 72        LD      ($720C),HL          ; {code.varObjectPtr}
+6E2B: 23              INC     HL                  ; Get the ...
+6E2C: 7E              LD      A,(HL)              ; ... extended attributes
+6E2D: E6 20           AND     $20                 ; Is the containing object OPEN?
+6E2F: CA 3E 6E        JP      Z,$6E3E             ; {} Yes, this PASSes
+6E32: 79              LD      A,C                 ; Set var object to the ...
+6E33: 32 0B 72        LD      ($720B),A           ; {code.varObject} ... owner of the var
+6E36: EB              EX      DE,HL               ; And set the varObject ...
+6E37: 22 0C 72        LD      ($720C),HL          ; {code.varObjectPtr} ... pointer
 ;
 6E3A: E1              POP     HL                  ; Restore the script pointer
 6E3B: F6 01           OR      $01                 ; Z=0 FAIL
@@ -3617,969 +3623,1102 @@ KnownWords:
 
 GeneralScript:
 7D4E: 00 8B 29        ; End+1 = 887A
-;
-7D51: 0E 8B 26                           ; COM_0E_while_fail length=0x0B26
-7D54:    0D 3F                           ;   COM_0D_while_pass length=0x003F
-7D56:       0E 08                        ;     COM_0E_while_fail length=0x0008
+;;
+;; ------------------------------------------------------------------------------------------------
+;; General movement commands.
+;; If the player is in an object, error with "YOU ARE STILL IN THE <object>."
+;; If the room doesn't handle it, error with "YOU WALK AIMLESSLY INTO A WALL."
+;;
+7D51: 0E 8B 26                           ; COM_0E_group_OR length=0x0B26 (to 0x887A)
+7D54:    0D 3F                           ;   COM_0D_group_AND length=0x003F (to 0x7D95)
+7D56:       0E 08                        ;     COM_0E_group_OR length=0x0008 (to 0x7D60)
 7D58:          0A 01                     ;       COM_0A_is_input_phrase(phrase=NORTH * * *)
 7D5A:          0A 02                     ;       COM_0A_is_input_phrase(phrase=SOUTH * * *)
 7D5C:          0A 03                     ;       COM_0A_is_input_phrase(phrase=EAST * * *)
 7D5E:          0A 04                     ;       COM_0A_is_input_phrase(phrase=WEST * * *)
-7D60:       0E 33                        ;     COM_0E_while_fail length=0x0033
-7D62:          0D 20                     ;       COM_0D_while_pass length=0x0020
-7D64:             14                     ;         COM_14_execute_and_reverse_status next command
-7D65:             37                     ;         COM_37_assert_player_is_in_an_object()
-7D66:             0E 1C                  ;         COM_0E_while_fail length=0x001C
-7D68:                13                  ;           COM_13_process_phrase_by_room_first_second()
-7D69:                0D 19               ;           COM_0D_while_pass length=0x0019
-7D6B:                   20 01            ;             COM_20_is_active_this(obj=OBJ_01_PLAYER)
-7D6D:                   04 15            ;             COM_04_print_message length=0x0015
-7D6F:                      C7 DE F3 17 CB 8C CF 47 F5 8B D3 B8 D0 15 6B BF ;
-7D7F:                      59 45 46 48 2E ;
+;                                        ;     end group_OR at 0x7D56
+7D60:       0E 33                        ;     COM_0E_group_OR length=0x0033 (to 0x7D95)
+7D62:          0D 20                     ;       COM_0D_group_AND length=0x0020 (to 0x7D84)
+7D64:             14                     ;         COM_14_reverse_status next command
+7D65:             37                     ;         COM_37_is_player_in_an_object()
+7D66:             0E 1C                  ;         COM_0E_group_OR length=0x001C (to 0x7D84)
+7D68:                13                  ;           COM_13_process_phrase_by_room()
+7D69:                0D 19               ;           COM_0D_group_AND length=0x0019 (to 0x7D84)
+7D6B:                   20 01            ;             COM_20_is_active_object(obj=OBJ_01_PLAYER)
+7D6D:                   04 15            ;             COM_04_print_message length=0x0015 (to 0x7D84)
+7D6F:                      C7 DE F3 17 CB 8C CF 47 F5 8B D3 B8 D0 15 6B BF
+7D7F:                      59 45 46 48 2E
 ;
 ;                          YOU WALK AIMLESSLY INTO A WALL.
 ;
-7D84:          0D 0F                     ;       COM_0D_while_pass length=0x000F
-7D86:             04 0B                  ;         COM_04_print_message length=0x000B
-7D88:                C7 DE 94 14 55 5E 8E BE 0B 8A 4E ;
+;                                        ;           end group_AND at 0x7D69
+;                                        ;         end group_OR at 0x7D66
+;                                        ;       end group_AND at 0x7D62
+7D84:          0D 0F                     ;       COM_0D_group_AND length=0x000F (to 0x7D95)
+7D86:             04 0B                  ;         COM_04_print_message length=0x000B (to 0x7D93)
+7D88:                C7 DE 94 14 55 5E 8E BE 0B 8A 4E
 ;
 ;                    YOU ARE STILL IN
 ;
 7D93:             AA                     ;         FN_AA_PRINT_THE_var
 7D94:             8B                     ;         FN_8B_PRINT_PERIOD
-7D95:    0B 8A E2 0A                     ;   COM_0B_switch length=0x0AE2, function=COM_0A_is_input_phrase(phrase_num)
-7D99:       05                           ;     COM_0A_is_input_phrase("GET ..C..... * *")
-7D9A:       0A                           ;     ELSE goto=0x7DA5
-7D9B:          0E 08                     ;       COM_0E_while_fail length=0x0008
+;                                        ;       end group_AND at 0x7D84
+;                                        ;     end group_OR at 0x7D60
+;                                        ;   end group_AND at 0x7D54
+;;
+;; ------------------------------------------------------------------------------------------------
+;; General GET
+;;
+7D95:    0B 8A E2 0A                     ;   COM_0B_switch length=0x0AE2 (to 0x887B), function=COM_0A_is_input_phrase(phrase_num)
+7D99:       05 0A                        ;     case COM_0A_is_input_phrase("GET ..C..... * *"), length=0x000A
+7D9B:          0E 08                     ;       COM_0E_group_OR length=0x0008 (to 0x7DA5)
 7D9D:             A2                     ;         FN_A2_PRINT_ALREADY_HAVE_THE_var
-7D9E:             13                     ;         COM_13_process_phrase_by_room_first_second()
-7D9F:             0D 02                  ;         COM_0D_while_pass length=0x0002
-7DA1:                1A                  ;           COM_1A_set_var_to_first_noun()
-7DA2:                8F                  ;           FN_8F_TRY_TO_GET_OBJECT
-7DA3:             14                     ;         COM_14_execute_and_reverse_status next command
+7D9E:             13                     ;         COM_13_process_phrase_by_room()
+7D9F:             0D 02                  ;         COM_0D_group_AND length=0x0002 (to 0x7DA3)
+7DA1:                1A                  ;           COM_1A_set_var_to_noun1()
+7DA2:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x7D9F
+7DA3:             14                     ;         COM_14_reverse_status next command
 7DA4:             0C                     ;         COM_0C_fail()
-7DA5:       43                           ;     COM_0A_is_input_phrase("GET ..C..... WITH ..C.....")
-7DA6:       0D                           ;     ELSE goto=0x7DB4
-7DA7:          0E 0B                     ;       COM_0E_while_fail length=0x000B
+;                                        ;       end group_OR at 0x7D9B
+;                                        ;     end case
+7DA5:       43 0D                        ;     case COM_0A_is_input_phrase("GET ..C..... WITH ..C....."), length=0x000D
+7DA7:          0E 0B                     ;       COM_0E_group_OR length=0x000B (to 0x7DB4)
 7DA9:             A2                     ;         FN_A2_PRINT_ALREADY_HAVE_THE_var
-7DAA:             13                     ;         COM_13_process_phrase_by_room_first_second()
-7DAB:             0D 03                  ;         COM_0D_while_pass length=0x0003
-7DAD:                1B                  ;           COM_1B_set_var_to_second_noun()
-7DAE:                14                  ;           COM_14_execute_and_reverse_status next command
-7DAF:                8F                  ;           FN_8F_TRY_TO_GET_OBJECT
-7DB0:             0D 02                  ;         COM_0D_while_pass length=0x0002
-7DB2:                1A                  ;           COM_1A_set_var_to_first_noun()
-7DB3:                8F                  ;           FN_8F_TRY_TO_GET_OBJECT
-7DB4:       06                           ;     COM_0A_is_input_phrase("DROP ..C..... * *")
-7DB5:       23                           ;     ELSE goto=0x7DD9
-7DB6:          0E 21                     ;       COM_0E_while_fail length=0x0021
-7DB8:             13                     ;         COM_13_process_phrase_by_room_first_second()
-7DB9:             0D 13                  ;         COM_0D_while_pass length=0x0013
-7DBB:                1A                  ;           COM_1A_set_var_to_first_noun()
-7DBC:                14                  ;           COM_14_execute_and_reverse_status next command
-7DBD:                15 20               ;           COM_15_check_var(value=0x20)
-7DBF:                04 0B               ;           COM_04_print_message length=0x000B
-7DC1:                   89 74 D3 14 9B 96 1B A1 F9 5B 50 ;
+7DAA:             13                     ;         COM_13_process_phrase_by_room()
+7DAB:             0D 03                  ;         COM_0D_group_AND length=0x0003 (to 0x7DB0)
+7DAD:                1B                  ;           COM_1B_set_var_to_noun2()
+7DAE:                14                  ;           COM_14_reverse_status next command
+7DAF:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x7DAB
+7DB0:             0D 02                  ;         COM_0D_group_AND length=0x0002 (to 0x7DB4)
+7DB2:                1A                  ;           COM_1A_set_var_to_noun1()
+7DB3:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x7DB0
+;                                        ;       end group_OR at 0x7DA7
+;                                        ;     end case
+7DB4:       06 23                        ;     case COM_0A_is_input_phrase("DROP ..C..... * *"), length=0x0023
+7DB6:          0E 21                     ;       COM_0E_group_OR length=0x0021 (to 0x7DD9)
+7DB8:             13                     ;         COM_13_process_phrase_by_room()
+7DB9:             0D 13                  ;         COM_0D_group_AND length=0x0013 (to 0x7DCE)
+7DBB:                1A                  ;           COM_1A_set_var_to_noun1()
+7DBC:                14                  ;           COM_14_reverse_status next command
+7DBD:                15 20               ;           COM_15_is_var_attributes(value=0x20)
+7DBF:                04 0B               ;           COM_04_print_message length=0x000B (to 0x7DCC)
+7DC1:                   89 74 D3 14 9B 96 1B A1 F9 5B 50
 ;
 ;                       HOW CAN YOU DROP
 ;
 7DCC:                A8                  ;           FN_A8_PRINT_noun1
 7DCD:                8B                  ;           FN_8B_PRINT_PERIOD
-7DCE:             0D 09                  ;         COM_0D_while_pass length=0x0009
+;                                        ;         end group_AND at 0x7DB9
+7DCE:             0D 09                  ;         COM_0D_group_AND length=0x0009 (to 0x7DD9)
 7DD0:                10                  ;           COM_10_drop_var()
-7DD1:                04 06               ;           COM_04_print_message length=0x0006
-7DD3:                   F9 5B 9F A6 9B 5D ;
+7DD1:                04 06               ;           COM_04_print_message length=0x0006 (to 0x7DD9)
+7DD3:                   F9 5B 9F A6 9B 5D
 ;
-;                       DROPPED.
+;                       DROPPED. 
 ;
-7DD9:       08                           ;     COM_0A_is_input_phrase("READ .....?.. * *")
-7DDA:       17                           ;     ELSE goto=0x7DF2
-7DDB:          0E 15                     ;       COM_0E_while_fail length=0x0015
-7DDD:             13                     ;         COM_13_process_phrase_by_room_first_second()
-7DDE:             0D 12                  ;         COM_0D_while_pass length=0x0012
-7DE0:                04 0E               ;           COM_04_print_message length=0x000E
-7DE2:                   5F BE 5D B1 D0 B5 D9 9C 16 B2 91 7A C0 16 ;
+;                                        ;         end group_AND at 0x7DCE
+;                                        ;       end group_OR at 0x7DB6
+;                                        ;     end case
+7DD9:       08 17                        ;     case COM_0A_is_input_phrase("READ .....?.. * *"), length=0x0017
+7DDB:          0E 15                     ;       COM_0E_group_OR length=0x0015 (to 0x7DF2)
+7DDD:             13                     ;         COM_13_process_phrase_by_room()
+7DDE:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x7DF2)
+7DE0:                04 0E               ;           COM_04_print_message length=0x000E (to 0x7DF0)
+7DE2:                   5F BE 5D B1 D0 B5 D9 9C 16 B2 91 7A C0 16
 ;
 ;                       THERE'S NO WRITING ON
 ;
 7DF0:                A8                  ;           FN_A8_PRINT_noun1
 7DF1:                8B                  ;           FN_8B_PRINT_PERIOD
-7DF2:       11                           ;     COM_0A_is_input_phrase("OPEN u....... * *")
-7DF3:       15                           ;     ELSE goto=0x7E09
-7DF4:          0E 13                     ;       COM_0E_while_fail length=0x0013
-7DF6:             13                     ;         COM_13_process_phrase_by_room_first_second()
+;                                        ;         end group_AND at 0x7DDE
+;                                        ;       end group_OR at 0x7DDB
+;                                        ;     end case
+7DF2:       11 15                        ;     case COM_0A_is_input_phrase("OPEN u....... * *"), length=0x0015
+7DF4:          0E 13                     ;       COM_0E_group_OR length=0x0013 (to 0x7E09)
+7DF6:             13                     ;         COM_13_process_phrase_by_room()
 7DF7:             92                     ;         FN_92_PRINT_TRIED_BUT_COULDNT
-7DF8:             0D 0D                  ;         COM_0D_while_pass length=0x000D
-7DFA:                1A                  ;           COM_1A_set_var_to_first_noun()
-7DFB:                2E 40               ;           UNKNOWN_COM_2E, Value: 0x40
+7DF8:             0D 0D                  ;         COM_0D_group_AND length=0x000D (to 0x7E07)
+7DFA:                1A                  ;           COM_1A_set_var_to_noun1()
+7DFB:                2E 40               ;           COM_2E_is_var_ext_attributes(value=0x40)
 7DFD:                A8                  ;           FN_A8_PRINT_noun1
-7DFE:                04 07               ;           COM_04_print_message length=0x0007
-7E00:                   4B 7B 75 8D A6 85 2E ;
+7DFE:                04 07               ;           COM_04_print_message length=0x0007 (to 0x7E07)
+7E00:                   4B 7B 75 8D A6 85 2E
 ;
 ;                       IS LOCKED.
 ;
-7E07:             A5                     ;         FN_A5_VERIFY_OPEN
-7E08:             A6                     ;         FN_A6_ATTEMPT_TO_OPEN
-7E09:       3A                           ;     COM_0A_is_input_phrase("OPEN u....... WITH u.......")
-7E0A:       11                           ;     ELSE goto=0x7E1C
-7E0B:          0E 0F                     ;       COM_0E_while_fail length=0x000F
-7E0D:             0D 03                  ;         COM_0D_while_pass length=0x0003
-7E0F:                1B                  ;           COM_1B_set_var_to_second_noun()
-7E10:                14                  ;           COM_14_execute_and_reverse_status next command
-7E11:                8F                  ;           FN_8F_TRY_TO_GET_OBJECT
-7E12:             13                     ;         COM_13_process_phrase_by_room_first_second()
+;                                        ;         end group_AND at 0x7DF8
+7E07:             A5                     ;         FN_A5_IS_OPEN
+7E08:             A6                     ;         FN_A6_OPEN
+;                                        ;       end group_OR at 0x7DF4
+;                                        ;     end case
+7E09:       3A 11                        ;     case COM_0A_is_input_phrase("OPEN u....... WITH u......."), length=0x0011
+7E0B:          0E 0F                     ;       COM_0E_group_OR length=0x000F (to 0x7E1C)
+7E0D:             0D 03                  ;         COM_0D_group_AND length=0x0003 (to 0x7E12)
+7E0F:                1B                  ;           COM_1B_set_var_to_noun2()
+7E10:                14                  ;           COM_14_reverse_status next command
+7E11:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x7E0D
+7E12:             13                     ;         COM_13_process_phrase_by_room()
 7E13:             92                     ;         FN_92_PRINT_TRIED_BUT_COULDNT
-7E14:             A5                     ;         FN_A5_VERIFY_OPEN
-7E15:             0D 04                  ;         COM_0D_while_pass length=0x0004
-7E17:                2E 40               ;           UNKNOWN_COM_2E, Value: 0x40
+7E14:             A5                     ;         FN_A5_IS_OPEN
+7E15:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x7E1B)
+7E17:                2E 40               ;           COM_2E_is_var_ext_attributes(value=0x40)
 7E19:                2A                  ;           COM_2A_toggle_lock_VAR()
 7E1A:                0C                  ;           COM_0C_fail()
-7E1B:             A6                     ;         FN_A6_ATTEMPT_TO_OPEN
-7E1C:       40                           ;     COM_0A_is_input_phrase("CLOSE ....A... * *")
-7E1D:       24                           ;     ELSE goto=0x7E42
-7E1E:          0E 22                     ;       COM_0E_while_fail length=0x0022
-7E20:             13                     ;         COM_13_process_phrase_by_room_first_second()
+;                                        ;         end group_AND at 0x7E15
+7E1B:             A6                     ;         FN_A6_OPEN
+;                                        ;       end group_OR at 0x7E0B
+;                                        ;     end case
+7E1C:       40 24                        ;     case COM_0A_is_input_phrase("CLOSE ....A... * *"), length=0x0024
+7E1E:          0E 22                     ;       COM_0E_group_OR length=0x0022 (to 0x7E42)
+7E20:             13                     ;         COM_13_process_phrase_by_room()
 7E21:             92                     ;         FN_92_PRINT_TRIED_BUT_COULDNT
-7E22:             0D 0E                  ;         COM_0D_while_pass length=0x000E
-7E24:                1A                  ;           COM_1A_set_var_to_first_noun()
-7E25:                2E 20               ;           UNKNOWN_COM_2E, Value: 0x20
+7E22:             0D 0E                  ;         COM_0D_group_AND length=0x000E (to 0x7E32)
+7E24:                1A                  ;           COM_1A_set_var_to_noun1()
+7E25:                2E 20               ;           COM_2E_is_var_ext_attributes(value=0x20)
 7E27:                A8                  ;           FN_A8_PRINT_noun1
-7E28:                04 08               ;           COM_04_print_message length=0x0008
-7E2A:                   4B 7B 06 9A C2 16 A7 61 ;
+7E28:                04 08               ;           COM_04_print_message length=0x0008 (to 0x7E32)
+7E2A:                   4B 7B 06 9A C2 16 A7 61
 ;
 ;                       IS NOT OPEN.
 ;
-7E32:             0D 0E                  ;         COM_0D_while_pass length=0x000E
+;                                        ;         end group_AND at 0x7E22
+7E32:             0D 0E                  ;         COM_0D_group_AND length=0x000E (to 0x7E42)
 7E34:                29                  ;           COM_29_toggle_open_VAR()
 7E35:                A8                  ;           FN_A8_PRINT_noun1
-7E36:                04 0A               ;           COM_04_print_message length=0x000A
-7E38:                   4B 7B 09 9A DE 14 D7 A0 9B 5D ;
+7E36:                04 0A               ;           COM_04_print_message length=0x000A (to 0x7E42)
+7E38:                   4B 7B 09 9A DE 14 D7 A0 9B 5D
 ;
-;                       IS NOW CLOSED.
+;                       IS NOW CLOSED. 
 ;
-7E42:       42                           ;     COM_0A_is_input_phrase("UNLOCK u....... WITH u.......")
-7E43:       2D                           ;     ELSE goto=0x7E71
-7E44:          0E 2B                     ;       COM_0E_while_fail length=0x002B
-7E46:             0D 03                  ;         COM_0D_while_pass length=0x0003
-7E48:                1B                  ;           COM_1B_set_var_to_second_noun()
-7E49:                14                  ;           COM_14_execute_and_reverse_status next command
-7E4A:                8F                  ;           FN_8F_TRY_TO_GET_OBJECT
-7E4B:             13                     ;         COM_13_process_phrase_by_room_first_second()
+;                                        ;         end group_AND at 0x7E32
+;                                        ;       end group_OR at 0x7E1E
+;                                        ;     end case
+7E42:       42 2D                        ;     case COM_0A_is_input_phrase("UNLOCK u....... WITH u......."), length=0x002D
+7E44:          0E 2B                     ;       COM_0E_group_OR length=0x002B (to 0x7E71)
+7E46:             0D 03                  ;         COM_0D_group_AND length=0x0003 (to 0x7E4B)
+7E48:                1B                  ;           COM_1B_set_var_to_noun2()
+7E49:                14                  ;           COM_14_reverse_status next command
+7E4A:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x7E46
+7E4B:             13                     ;         COM_13_process_phrase_by_room()
 7E4C:             92                     ;         FN_92_PRINT_TRIED_BUT_COULDNT
-7E4D:             0D 11                  ;         COM_0D_while_pass length=0x0011
-7E4F:                1A                  ;           COM_1A_set_var_to_first_noun()
-7E50:                14                  ;           COM_14_execute_and_reverse_status next command
-7E51:                2E 40               ;           UNKNOWN_COM_2E, Value: 0x40
+7E4D:             0D 11                  ;         COM_0D_group_AND length=0x0011 (to 0x7E60)
+7E4F:                1A                  ;           COM_1A_set_var_to_noun1()
+7E50:                14                  ;           COM_14_reverse_status next command
+7E51:                2E 40               ;           COM_2E_is_var_ext_attributes(value=0x40)
 7E53:                A8                  ;           FN_A8_PRINT_noun1
-7E54:                04 0A               ;           COM_04_print_message length=0x000A
-7E56:                   4B 7B 06 9A 49 16 97 54 9B 5D ;
+7E54:                04 0A               ;           COM_04_print_message length=0x000A (to 0x7E60)
+7E56:                   4B 7B 06 9A 49 16 97 54 9B 5D
 ;
-;                       IS NOT LOCKED.
+;                       IS NOT LOCKED. 
 ;
-7E60:             0D 0F                  ;         COM_0D_while_pass length=0x000F
+;                                        ;         end group_AND at 0x7E4D
+7E60:             0D 0F                  ;         COM_0D_group_AND length=0x000F (to 0x7E71)
 7E62:                2A                  ;           COM_2A_toggle_lock_VAR()
 7E63:                A8                  ;           FN_A8_PRINT_noun1
-7E64:                04 0B               ;           COM_04_print_message length=0x000B
-7E66:                   4B 7B 09 9A B0 17 75 8D A6 85 2E ;
+7E64:                04 0B               ;           COM_04_print_message length=0x000B (to 0x7E71)
+7E66:                   4B 7B 09 9A B0 17 75 8D A6 85 2E
 ;
 ;                       IS NOW UNLOCKED.
 ;
-7E71:       41                           ;     COM_0A_is_input_phrase("LOCK ....A... WITH u.......")
-7E72:       45                           ;     ELSE goto=0x7EB8
-7E73:          0E 43                     ;       COM_0E_while_fail length=0x0043
-7E75:             0D 03                  ;         COM_0D_while_pass length=0x0003
-7E77:                1B                  ;           COM_1B_set_var_to_second_noun()
-7E78:                14                  ;           COM_14_execute_and_reverse_status next command
-7E79:                8F                  ;           FN_8F_TRY_TO_GET_OBJECT
-7E7A:             13                     ;         COM_13_process_phrase_by_room_first_second()
+;                                        ;         end group_AND at 0x7E60
+;                                        ;       end group_OR at 0x7E44
+;                                        ;     end case
+7E71:       41 45                        ;     case COM_0A_is_input_phrase("LOCK ....A... WITH u......."), length=0x0045
+7E73:          0E 43                     ;       COM_0E_group_OR length=0x0043 (to 0x7EB8)
+7E75:             0D 03                  ;         COM_0D_group_AND length=0x0003 (to 0x7E7A)
+7E77:                1B                  ;           COM_1B_set_var_to_noun2()
+7E78:                14                  ;           COM_14_reverse_status next command
+7E79:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x7E75
+7E7A:             13                     ;         COM_13_process_phrase_by_room()
 7E7B:             92                     ;         FN_92_PRINT_TRIED_BUT_COULDNT
-7E7C:             0D 17                  ;         COM_0D_while_pass length=0x0017
-7E7E:                14                  ;           COM_14_execute_and_reverse_status next command
-7E7F:                09 14               ;           COM_09_compare_to_second_noun(obj=OBJ_14_DOOR_COVERED_SHELTER)
-7E81:                04 0A               ;           COM_04_print_message length=0x000A
-7E83:                   C7 DE D3 14 E6 96 49 16 8B 54 ;
+7E7C:             0D 17                  ;         COM_0D_group_AND length=0x0017 (to 0x7E95)
+7E7E:                14                  ;           COM_14_reverse_status next command
+7E7F:                09 14               ;           COM_09_is_noun2(obj=OBJ_14_DOOR_COVERED_SHELTER)
+7E81:                04 0A               ;           COM_04_print_message length=0x000A (to 0x7E8D)
+7E83:                   C7 DE D3 14 E6 96 49 16 8B 54
 ;
-;                       YOU CAN'T LOCK
+;                       YOU CAN'T LOCK 
 ;
 7E8D:                A8                  ;           FN_A8_PRINT_noun1
-7E8E:                04 03               ;           COM_04_print_message length=0x0003
-7E90:                   56 D1 48         ;
+7E8E:                04 03               ;           COM_04_print_message length=0x0003 (to 0x7E93)
+7E90:                   56 D1 48        
 ;
 ;                       WITH
 ;
 7E93:                A9                  ;           FN_A9_PRINT_noun2
 7E94:                8B                  ;           FN_8B_PRINT_PERIOD
-7E95:             0D 11                  ;         COM_0D_while_pass length=0x0011
-7E97:                1A                  ;           COM_1A_set_var_to_first_noun()
-7E98:                2E 40               ;           UNKNOWN_COM_2E, Value: 0x40
+;                                        ;         end group_AND at 0x7E7C
+7E95:             0D 11                  ;         COM_0D_group_AND length=0x0011 (to 0x7EA8)
+7E97:                1A                  ;           COM_1A_set_var_to_noun1()
+7E98:                2E 40               ;           COM_2E_is_var_ext_attributes(value=0x40)
 7E9A:                A8                  ;           FN_A8_PRINT_noun1
-7E9B:                04 0B               ;           COM_04_print_message length=0x000B
-7E9D:                   4B 7B 06 9A B0 17 75 8D A6 85 2E ;
+7E9B:                04 0B               ;           COM_04_print_message length=0x000B (to 0x7EA8)
+7E9D:                   4B 7B 06 9A B0 17 75 8D A6 85 2E
 ;
 ;                       IS NOT UNLOCKED.
 ;
-7EA8:             0D 0E                  ;         COM_0D_while_pass length=0x000E
+;                                        ;         end group_AND at 0x7E95
+7EA8:             0D 0E                  ;         COM_0D_group_AND length=0x000E (to 0x7EB8)
 7EAA:                2A                  ;           COM_2A_toggle_lock_VAR()
 7EAB:                A8                  ;           FN_A8_PRINT_noun1
-7EAC:                04 0A               ;           COM_04_print_message length=0x000A
-7EAE:                   4B 7B 09 9A 49 16 97 54 9B 5D ;
+7EAC:                04 0A               ;           COM_04_print_message length=0x000A (to 0x7EB8)
+7EAE:                   4B 7B 09 9A 49 16 97 54 9B 5D
 ;
-;                       IS NOW LOCKED.
+;                       IS NOW LOCKED. 
 ;
-7EB8:       12                           ;     COM_0A_is_input_phrase("PULL u....... * *")
-7EB9:       28                           ;     ELSE goto=0x7EE2
-7EBA:          0E 26                     ;       COM_0E_while_fail length=0x0026
-7EBC:             13                     ;         COM_13_process_phrase_by_room_first_second()
-7EBD:             0D 05                  ;         COM_0D_while_pass length=0x0005
-7EBF:                1A                  ;           COM_1A_set_var_to_first_noun()
-7EC0:                14                  ;           COM_14_execute_and_reverse_status next command
-7EC1:                15 20               ;           COM_15_check_var(value=0x20)
+;                                        ;         end group_AND at 0x7EA8
+;                                        ;       end group_OR at 0x7E73
+;                                        ;     end case
+7EB8:       12 28                        ;     case COM_0A_is_input_phrase("PULL u....... * *"), length=0x0028
+7EBA:          0E 26                     ;       COM_0E_group_OR length=0x0026 (to 0x7EE2)
+7EBC:             13                     ;         COM_13_process_phrase_by_room()
+7EBD:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x7EC4)
+7EBF:                1A                  ;           COM_1A_set_var_to_noun1()
+7EC0:                14                  ;           COM_14_reverse_status next command
+7EC1:                15 20               ;           COM_15_is_var_attributes(value=0x20)
 7EC3:                C2                  ;           FN_C2_PRINT_CANT_BUDGE_noun1
-7EC4:             0D 1C                  ;         COM_0D_while_pass length=0x001C
-7EC6:                04 13               ;           COM_04_print_message length=0x0013
-7EC8:                   33 D1 09 15 E6 96 51 18 4E C2 98 5F 56 5E DB 72 ;
-7ED8:                   81 A6 52         ;
+;                                        ;         end group_AND at 0x7EBD
+7EC4:             0D 1C                  ;         COM_0D_group_AND length=0x001C (to 0x7EE2)
+7EC6:                04 13               ;           COM_04_print_message length=0x0013 (to 0x7EDB)
+7EC8:                   33 D1 09 15 E6 96 51 18 4E C2 98 5F 56 5E DB 72
+7ED8:                   81 A6 52        
 ;
 ;                       WHY DON'T YOU LEAVE THE POOR
 ;
-7EDB:                11                  ;           COM_11_print_first_noun()
-7EDC:                04 04               ;           COM_04_print_message length=0x0004
-7EDE:                   49 48 7F 98      ;
+7EDB:                11                  ;           COM_11_print_noun1()
+7EDC:                04 04               ;           COM_04_print_message length=0x0004 (to 0x7EE2)
+7EDE:                   49 48 7F 98     
 ;
 ;                       ALONE.
 ;
-7EE2:       09                           ;     COM_0A_is_input_phrase("ATTACK ...P.... WITH .v......")
-7EE3:       57                           ;     ELSE goto=0x7F3B
-7EE4:          0E 55                     ;       COM_0E_while_fail length=0x0055
-7EE6:             14                     ;         COM_14_execute_and_reverse_status next command
-7EE7:             1B                     ;         COM_1B_set_var_to_second_noun()
-7EE8:             14                     ;         COM_14_execute_and_reverse_status next command
-7EE9:             0E 03                  ;         COM_0E_while_fail length=0x0003
-7EEB:                09 37               ;           COM_09_compare_to_second_noun(obj=OBJ_37_STEEL_SAFE)
-7EED:                8F                  ;           FN_8F_TRY_TO_GET_OBJECT
-7EEE:             0E 3E                  ;         COM_0E_while_fail length=0x003E
-7EF0:                0D 17               ;           COM_0D_while_pass length=0x0017
-7EF2:                   14               ;             COM_14_execute_and_reverse_status next command
-7EF3:                   15 40            ;             COM_15_check_var(value=0x40)
-7EF5:                   04 0A            ;             COM_04_print_message length=0x000A
-7EF7:                      C7 DE D3 14 E6 96 AF 15 B3 B3 ;
+;                                        ;         end group_AND at 0x7EC4
+;                                        ;       end group_OR at 0x7EBA
+;                                        ;     end case
+7EE2:       09 57                        ;     case COM_0A_is_input_phrase("ATTACK ...P.... WITH .v......"), length=0x0057
+7EE4:          0E 55                     ;       COM_0E_group_OR length=0x0055 (to 0x7F3B)
+7EE6:             14                     ;         COM_14_reverse_status next command
+7EE7:             1B                     ;         COM_1B_set_var_to_noun2()
+7EE8:             14                     ;         COM_14_reverse_status next command
+7EE9:             0E 03                  ;         COM_0E_group_OR length=0x0003 (to 0x7EEE)
+7EEB:                09 37               ;           COM_09_is_noun2(obj=OBJ_37_STEEL_SAFE)
+7EED:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_OR at 0x7EE9
+7EEE:             0E 3E                  ;         COM_0E_group_OR length=0x003E (to 0x7F2E)
+7EF0:                0D 17               ;           COM_0D_group_AND length=0x0017 (to 0x7F09)
+7EF2:                   14               ;             COM_14_reverse_status next command
+7EF3:                   15 40            ;             COM_15_is_var_attributes(value=0x40)
+7EF5:                   04 0A            ;             COM_04_print_message length=0x000A (to 0x7F01)
+7EF7:                      C7 DE D3 14 E6 96 AF 15 B3 B3
 ;
-;                          YOU CAN'T HURT
+;                          YOU CAN'T HURT 
 ;
 7F01:                   A8               ;             FN_A8_PRINT_noun1
-7F02:                   04 03            ;             COM_04_print_message length=0x0003
-7F04:                      56 D1 48      ;
+7F02:                   04 03            ;             COM_04_print_message length=0x0003 (to 0x7F07)
+7F04:                      56 D1 48     
 ;
 ;                          WITH
 ;
 7F07:                   A9               ;             FN_A9_PRINT_noun2
 7F08:                   8B               ;             FN_8B_PRINT_PERIOD
-7F09:                13                  ;           COM_13_process_phrase_by_room_first_second()
-7F0A:                0D 22               ;           COM_0D_while_pass length=0x0022
-7F0C:                   1A               ;             COM_1A_set_var_to_first_noun()
-7F0D:                   14               ;             COM_14_execute_and_reverse_status next command
-7F0E:                   15 10            ;             COM_15_check_var(value=0x10)
-7F10:                   04 13            ;             COM_04_print_message length=0x0013
-7F12:                      73 7B 77 5B D0 B5 C9 9C 36 A0 89 17 AF 14 73 49 ;
-7F22:                      03 A0 41      ;
+;                                        ;           end group_AND at 0x7EF0
+7F09:                13                  ;           COM_13_process_phrase_by_room()
+7F0A:                0D 22               ;           COM_0D_group_AND length=0x0022 (to 0x7F2E)
+7F0C:                   1A               ;             COM_1A_set_var_to_noun1()
+7F0D:                   14               ;             COM_14_reverse_status next command
+7F0E:                   15 10            ;             COM_15_is_var_attributes(value=0x10)
+7F10:                   04 13            ;             COM_04_print_message length=0x0013 (to 0x7F25)
+7F12:                      73 7B 77 5B D0 B5 C9 9C 36 A0 89 17 AF 14 73 49
+7F22:                      03 A0 41     
 ;
 ;                          IT DOES NO GOOD TO BEAT ON A
 ;
-7F25:                   11               ;             COM_11_print_first_noun()
-7F26:                   04 04            ;             COM_04_print_message length=0x0004
-7F28:                      56 D1 03 71   ;
+7F25:                   11               ;             COM_11_print_noun1()
+7F26:                   04 04            ;             COM_04_print_message length=0x0004 (to 0x7F2C)
+7F28:                      56 D1 03 71  
 ;
 ;                          WITH A
 ;
-7F2C:                   12               ;             COM_12_print_second_noun()
+7F2C:                   12               ;             COM_12_print_noun2()
 7F2D:                   8B               ;             FN_8B_PRINT_PERIOD
-7F2E:             0D 0B                  ;         COM_0D_while_pass length=0x000B
+;                                        ;           end group_AND at 0x7F0A
+;                                        ;         end group_OR at 0x7EEE
+7F2E:             0D 0B                  ;         COM_0D_group_AND length=0x000B (to 0x7F3B)
 7F30:                A8                  ;           FN_A8_PRINT_noun1
-7F31:                04 08               ;           COM_04_print_message length=0x0008
-7F33:                   4B 7B 92 C5 37 49 17 60 ;
+7F31:                04 08               ;           COM_04_print_message length=0x0008 (to 0x7F3B)
+7F33:                   4B 7B 92 C5 37 49 17 60
 ;
 ;                       IS UNHARMED.
 ;
-7F3B:       0A                           ;     COM_0A_is_input_phrase("LOOK * * *")
-7F3C:       01                           ;     ELSE goto=0x7F3E
+;                                        ;         end group_AND at 0x7F2E
+;                                        ;       end group_OR at 0x7EE4
+;                                        ;     end case
+7F3B:       0A 01                        ;     case COM_0A_is_input_phrase("LOOK * * *"), length=0x0001
 7F3D:          07                        ;       COM_07_print_room_description()
-7F3E:       15                           ;     COM_0A_is_input_phrase("EAT u....... * *")
-7F3F:       26                           ;     ELSE goto=0x7F66
-7F40:          0E 24                     ;       COM_0E_while_fail length=0x0024
-7F42:             13                     ;         COM_13_process_phrase_by_room_first_second()
-7F43:             0D 21                  ;         COM_0D_while_pass length=0x0021
-7F45:                04 0A               ;           COM_04_print_message length=0x000A
-7F47:                   80 5B F3 23 5B 4D 4E B8 F9 8E ;
+;                                        ;     end case
+7F3E:       15 26                        ;     case COM_0A_is_input_phrase("EAT u....... * *"), length=0x0026
+7F40:          0E 24                     ;       COM_0E_group_OR length=0x0024 (to 0x7F66)
+7F42:             13                     ;         COM_13_process_phrase_by_room()
+7F43:             0D 21                  ;         COM_0D_group_AND length=0x0021 (to 0x7F66)
+7F45:                04 0A               ;           COM_04_print_message length=0x000A (to 0x7F51)
+7F47:                   80 5B F3 23 5B 4D 4E B8 F9 8E
 ;
 ;                       DON'T BE SILLY!
 ;
 7F51:                A8                  ;           FN_A8_PRINT_noun1
-7F52:                04 12               ;           COM_04_print_message length=0x0012
-7F54:                   47 D2 C8 8B F3 23 55 BD DB BD 41 6E 03 58 99 9B ;
-7F64:                   5F 4A            ;
+7F52:                04 12               ;           COM_04_print_message length=0x0012 (to 0x7F66)
+7F54:                   47 D2 C8 8B F3 23 55 BD DB BD 41 6E 03 58 99 9B
+7F64:                   5F 4A           
 ;
 ;                       WOULDN'T TASTE GOOD ANYWAY.
 ;
-7F66:       59                           ;     COM_0A_is_input_phrase("TASTE u....... * *")
-7F67:       13                           ;     ELSE goto=0x7F7B
-7F68:          0E 11                     ;       COM_0E_while_fail length=0x0011
-7F6A:             13                     ;         COM_13_process_phrase_by_room_first_second()
-7F6B:             0D 0E                  ;         COM_0D_while_pass length=0x000E
-7F6D:                04 0B               ;           COM_04_print_message length=0x000B
-7F6F:                   73 7B 55 BD F5 BD 43 16 9B 85 41 ;
+;                                        ;         end group_AND at 0x7F43
+;                                        ;       end group_OR at 0x7F40
+;                                        ;     end case
+7F66:       59 13                        ;     case COM_0A_is_input_phrase("TASTE u....... * *"), length=0x0013
+7F68:          0E 11                     ;       COM_0E_group_OR length=0x0011 (to 0x7F7B)
+7F6A:             13                     ;         COM_13_process_phrase_by_room()
+7F6B:             0D 0E                  ;         COM_0D_group_AND length=0x000E (to 0x7F7B)
+7F6D:                04 0B               ;           COM_04_print_message length=0x000B (to 0x7F7A)
+7F6F:                   73 7B 55 BD F5 BD 43 16 9B 85 41
 ;
 ;                       IT TASTES LIKE A
 ;
-7F7A:                11                  ;           COM_11_print_first_noun()
-7F7B:       17                           ;     COM_0A_is_input_phrase("CLIMB u....... * *")
-7F7C:       4C                           ;     ELSE goto=0x7FC9
-7F7D:          0E 4A                     ;       COM_0E_while_fail length=0x004A
-7F7F:             13                     ;         COM_13_process_phrase_by_room_first_second()
-7F80:             0D 22                  ;         COM_0D_while_pass length=0x0022
-7F82:                1A                  ;           COM_1A_set_var_to_first_noun()
-7F83:                15 10               ;           COM_15_check_var(value=0x10)
-7F85:                04 09               ;           COM_04_print_message length=0x0009
-7F87:                   46 77 05 A0 16 BC 90 73 4B ;
+7F7A:                11                  ;           COM_11_print_noun1()
+;                                        ;         end group_AND at 0x7F6B
+;                                        ;       end group_OR at 0x7F68
+;                                        ;     end case
+7F7B:       17 4C                        ;     case COM_0A_is_input_phrase("CLIMB u....... * *"), length=0x004C
+7F7D:          0E 4A                     ;       COM_0E_group_OR length=0x004A (to 0x7FC9)
+7F7F:             13                     ;         COM_13_process_phrase_by_room()
+7F80:             0D 22                  ;         COM_0D_group_AND length=0x0022 (to 0x7FA4)
+7F82:                1A                  ;           COM_1A_set_var_to_noun1()
+7F83:                15 10               ;           COM_15_is_var_attributes(value=0x10)
+7F85:                04 09               ;           COM_04_print_message length=0x0009 (to 0x7F90)
+7F87:                   46 77 05 A0 16 BC 90 73 4B
 ;
 ;                       I DON'T THINK
 ;
 7F90:                A8                  ;           FN_A8_PRINT_noun1
-7F91:                04 11               ;           COM_04_print_message length=0x0011
-7F93:                   4E D1 15 8A 50 BD 15 58 8E BE 08 8A BE A0 56 72 ;
-7FA3:                   2E               ;
+7F91:                04 11               ;           COM_04_print_message length=0x0011 (to 0x7FA4)
+7F93:                   4E D1 15 8A 50 BD 15 58 8E BE 08 8A BE A0 56 72
+7FA3:                   2E              
 ;
 ;                       WILL STAND STILL FORTHAT.
 ;
-7FA4:             0D 23                  ;         COM_0D_while_pass length=0x0023
-7FA6:                04 10               ;           COM_04_print_message length=0x0010
-7FA8:                   CF 62 8B 96 9B 64 1B A1 47 55 B3 8B C3 54 A3 91 ;
+;                                        ;         end group_AND at 0x7F80
+7FA4:             0D 23                  ;         COM_0D_group_AND length=0x0023 (to 0x7FC9)
+7FA6:                04 10               ;           COM_04_print_message length=0x0010 (to 0x7FB8)
+7FA8:                   CF 62 8B 96 9B 64 1B A1 47 55 B3 8B C3 54 A3 91
 ;
-;                       EVEN IF YOU COULD CLIMB
+;                       EVEN IF YOU COULD CLIMB 
 ;
 7FB8:                A8                  ;           FN_A8_PRINT_noun1
-7FB9:                04 0E               ;           COM_04_print_message length=0x000E
-7FBB:                   73 7B 47 D2 C8 8B F3 23 EE 72 1B A3 3F A1 ;
+7FB9:                04 0E               ;           COM_04_print_message length=0x000E (to 0x7FC9)
+7FBB:                   73 7B 47 D2 C8 8B F3 23 EE 72 1B A3 3F A1
 ;
 ;                       IT WOULDN'T HELP YOU.
 ;
-7FC9:       16                           ;     COM_0A_is_input_phrase("DROP * OUT ....A...")
-7FCA:       12                           ;     ELSE goto=0x7FDD
-7FCB:          0E 10                     ;       COM_0E_while_fail length=0x0010
-7FCD:             13                     ;         COM_13_process_phrase_by_room_first_second()
-7FCE:             0D 0D                  ;         COM_0D_while_pass length=0x000D
+;                                        ;         end group_AND at 0x7FA4
+;                                        ;       end group_OR at 0x7F7D
+;                                        ;     end case
+7FC9:       16 12                        ;     case COM_0A_is_input_phrase("DROP * OUT ....A..."), length=0x0012
+7FCB:          0E 10                     ;       COM_0E_group_OR length=0x0010 (to 0x7FDD)
+7FCD:             13                     ;         COM_13_process_phrase_by_room()
+7FCE:             0D 0D                  ;         COM_0D_group_AND length=0x000D (to 0x7FDD)
 7FD0:                A8                  ;           FN_A8_PRINT_noun1
-7FD1:                04 0A               ;           COM_04_print_message length=0x000A
-7FD3:                   4B 7B 06 9A BF 14 D3 B2 CF 98 ;
+7FD1:                04 0A               ;           COM_04_print_message length=0x000A (to 0x7FDD)
+7FD3:                   4B 7B 06 9A BF 14 D3 B2 CF 98
 ;
 ;                       IS NOT BURNING.
 ;
-7FDD:       18                           ;     COM_0A_is_input_phrase("RUB u....... * *")
-7FDE:       2E                           ;     ELSE goto=0x800D
-7FDF:          0E 2C                     ;       COM_0E_while_fail length=0x002C
-7FE1:             13                     ;         COM_13_process_phrase_by_room_first_second()
-7FE2:             0D 15                  ;         COM_0D_while_pass length=0x0015
-7FE4:                1A                  ;           COM_1A_set_var_to_first_noun()
-7FE5:                15 10               ;           COM_15_check_var(value=0x10)
-7FE7:                04 0E               ;           COM_04_print_message length=0x000E
-7FE9:                   5B BE 65 BC 99 16 F3 17 56 DB CA 9C 3E C6 ;
+;                                        ;         end group_AND at 0x7FCE
+;                                        ;       end group_OR at 0x7FCB
+;                                        ;     end case
+7FDD:       18 2E                        ;     case COM_0A_is_input_phrase("RUB u....... * *"), length=0x002E
+7FDF:          0E 2C                     ;       COM_0E_group_OR length=0x002C (to 0x800D)
+7FE1:             13                     ;         COM_13_process_phrase_by_room()
+7FE2:             0D 15                  ;         COM_0D_group_AND length=0x0015 (to 0x7FF9)
+7FE4:                1A                  ;           COM_1A_set_var_to_noun1()
+7FE5:                15 10               ;           COM_15_is_var_attributes(value=0x10)
+7FE7:                04 0E               ;           COM_04_print_message length=0x000E (to 0x7FF7)
+7FE9:                   5B BE 65 BC 99 16 F3 17 56 DB CA 9C 3E C6
 ;
 ;                       THAT'S NO WAY TO HURT
 ;
 7FF7:                AA                  ;           FN_AA_PRINT_THE_var
 7FF8:                8B                  ;           FN_8B_PRINT_PERIOD
-7FF9:             0D 12                  ;         COM_0D_while_pass length=0x0012
+;                                        ;         end group_AND at 0x7FE2
+7FF9:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x800D)
 7FFB:                A8                  ;           FN_A8_PRINT_noun1
-7FFC:                04 0F               ;           COM_04_print_message length=0x000F
-7FFE:                   81 8D CB 87 A5 94 04 71 8E 62 23 62 09 9A 2E ;
+7FFC:                04 0F               ;           COM_04_print_message length=0x000F (to 0x800D)
+7FFE:                   81 8D CB 87 A5 94 04 71 8E 62 23 62 09 9A 2E
 ;
 ;                       LOOKS MUCH BETTER NOW.
 ;
-800D:       0B                           ;     COM_0A_is_input_phrase("LOOK * AT u.......")
-800E:       65                           ;     ELSE goto=0x8074
-800F:          0E 63                     ;       COM_0E_while_fail length=0x0063
-8011:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8012:             0D 17                  ;         COM_0D_while_pass length=0x0017
-8014:                1A                  ;           COM_1A_set_var_to_first_noun()
-8015:                15 04               ;           COM_15_check_var(value=0x04)
-8017:                04 10               ;           COM_04_print_message length=0x0010
-8019:                   3F B9 82 62 91 7A D5 15 04 18 8E 7B 83 61 03 A0 ;
+;                                        ;         end group_AND at 0x7FF9
+;                                        ;       end group_OR at 0x7FDF
+;                                        ;     end case
+800D:       0B 65                        ;     case COM_0A_is_input_phrase("LOOK * AT u......."), length=0x0065
+800F:          0E 63                     ;       COM_0E_group_OR length=0x0063 (to 0x8074)
+8011:             13                     ;         COM_13_process_phrase_by_room()
+8012:             0D 17                  ;         COM_0D_group_AND length=0x0017 (to 0x802B)
+8014:                1A                  ;           COM_1A_set_var_to_noun1()
+8015:                15 04               ;           COM_15_is_var_attributes(value=0x04)
+8017:                04 10               ;           COM_04_print_message length=0x0010 (to 0x8029)
+8019:                   3F B9 82 62 91 7A D5 15 04 18 8E 7B 83 61 03 A0
 ;
-;                       SOMETHING IS WRITTEN ON
+;                       SOMETHING IS WRITTEN ON 
 ;
 8029:                AA                  ;           FN_AA_PRINT_THE_var
 802A:                8B                  ;           FN_8B_PRINT_PERIOD
-802B:             0D 0D                  ;         COM_0D_while_pass length=0x000D
-802D:                2E 20               ;           UNKNOWN_COM_2E, Value: 0x20
-802F:                04 09               ;           COM_04_print_message length=0x0009
-8031:                   73 7B 4B 7B C9 54 A6 B7 2E ;
+;                                        ;         end group_AND at 0x8012
+802B:             0D 0D                  ;         COM_0D_group_AND length=0x000D (to 0x803A)
+802D:                2E 20               ;           COM_2E_is_var_ext_attributes(value=0x20)
+802F:                04 09               ;           COM_04_print_message length=0x0009 (to 0x803A)
+8031:                   73 7B 4B 7B C9 54 A6 B7 2E
 ;
 ;                       IT IS CLOSED.
 ;
-803A:             0D 0D                  ;         COM_0D_while_pass length=0x000D
-803C:                2E 40               ;           UNKNOWN_COM_2E, Value: 0x40
-803E:                04 09               ;           COM_04_print_message length=0x0009
-8040:                   73 7B 4B 7B 75 8D A6 85 2E ;
+;                                        ;         end group_AND at 0x802B
+803A:             0D 0D                  ;         COM_0D_group_AND length=0x000D (to 0x8049)
+803C:                2E 40               ;           COM_2E_is_var_ext_attributes(value=0x40)
+803E:                04 09               ;           COM_04_print_message length=0x0009 (to 0x8049)
+8040:                   73 7B 4B 7B 75 8D A6 85 2E
 ;
 ;                       IT IS LOCKED.
 ;
-8049:             0D 0A                  ;         COM_0D_while_pass length=0x000A
-804B:                15 02               ;           COM_15_check_var(value=0x02)
-804D:                0E 05               ;           COM_0E_while_fail length=0x0005
-804F:                   2E 80            ;             UNKNOWN_COM_2E, Value: 0x80
-8051:                   14               ;             COM_14_execute_and_reverse_status next command
-8052:                   2E 20            ;             UNKNOWN_COM_2E, Value: 0x20
+;                                        ;         end group_AND at 0x803A
+8049:             0D 0A                  ;         COM_0D_group_AND length=0x000A (to 0x8055)
+804B:                15 02               ;           COM_15_is_var_attributes(value=0x02)
+804D:                0E 05               ;           COM_0E_group_OR length=0x0005 (to 0x8054)
+804F:                   2E 80            ;             COM_2E_is_var_ext_attributes(value=0x80)
+8051:                   14               ;             COM_14_reverse_status next command
+8052:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=0x20)
+;                                        ;           end group_OR at 0x804D
 8054:                33                  ;           COM_33_print_objects_on_var_object()
-8055:             0D 03                  ;         COM_0D_while_pass length=0x0003
-8057:                15 01               ;           COM_15_check_var(value=0x01)
+;                                        ;         end group_AND at 0x8049
+8055:             0D 03                  ;         COM_0D_group_AND length=0x0003 (to 0x805A)
+8057:                15 01               ;           COM_15_is_var_attributes(value=0x01)
 8059:                33                  ;           COM_33_print_objects_on_var_object()
-805A:             0D 18                  ;         COM_0D_while_pass length=0x0018
-805C:                04 14               ;           COM_04_print_message length=0x0014
-805E:                   5F BE 5D B1 D0 B5 02 A1 91 7A 62 17 DB 5F 33 48 ;
-806E:                   B9 46 73 C6      ;
+;                                        ;         end group_AND at 0x8055
+805A:             0D 18                  ;         COM_0D_group_AND length=0x0018 (to 0x8074)
+805C:                04 14               ;           COM_04_print_message length=0x0014 (to 0x8072)
+805E:                   5F BE 5D B1 D0 B5 02 A1 91 7A 62 17 DB 5F 33 48
+806E:                   B9 46 73 C6     
 ;
-;                       THERE'S NOTHING SPECIAL ABOUT
+;                       THERE'S NOTHING SPECIAL ABOUT 
 ;
 8072:                A8                  ;           FN_A8_PRINT_noun1
 8073:                8B                  ;           FN_8B_PRINT_PERIOD
-8074:       0C                           ;     COM_0A_is_input_phrase("LOOK * UNDER u.......")
-8075:       17                           ;     ELSE goto=0x808D
-8076:          0E 15                     ;       COM_0E_while_fail length=0x0015
-8078:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8079:             0D 12                  ;         COM_0D_while_pass length=0x0012
-807B:                04 0E               ;           COM_04_print_message length=0x000E
-807D:                   5F BE 5D B1 D0 B5 02 A1 91 7A B0 17 F4 59 ;
+;                                        ;         end group_AND at 0x805A
+;                                        ;       end group_OR at 0x800F
+;                                        ;     end case
+8074:       0C 17                        ;     case COM_0A_is_input_phrase("LOOK * UNDER u......."), length=0x0017
+8076:          0E 15                     ;       COM_0E_group_OR length=0x0015 (to 0x808D)
+8078:             13                     ;         COM_13_process_phrase_by_room()
+8079:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x808D)
+807B:                04 0E               ;           COM_04_print_message length=0x000E (to 0x808B)
+807D:                   5F BE 5D B1 D0 B5 02 A1 91 7A B0 17 F4 59
 ;
 ;                       THERE'S NOTHING UNDER
 ;
 808B:                A8                  ;           FN_A8_PRINT_noun1
 808C:                8B                  ;           FN_8B_PRINT_PERIOD
-808D:       10                           ;     COM_0A_is_input_phrase("LOOK * IN ......O.")
-808E:       4C                           ;     ELSE goto=0x80DB
-808F:          0E 4A                     ;       COM_0E_while_fail length=0x004A
-8091:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8092:             0D 2A                  ;         COM_0D_while_pass length=0x002A
-8094:                1B                  ;           COM_1B_set_var_to_second_noun()
-8095:                14                  ;           COM_14_execute_and_reverse_status next command
-8096:                15 02               ;           COM_15_check_var(value=0x02)
-8098:                04 22               ;           COM_04_print_message length=0x0022
-809A:                   40 55 B0 53 EB BF DB BD 4B 49 C7 DE 63 16 B3 E0 ;
-80AA:                   C7 DE D3 14 90 96 F3 A0 A7 B7 90 14 82 DF 91 7A ;
-80BA:                   D0 15            ;
+;                                        ;         end group_AND at 0x8079
+;                                        ;       end group_OR at 0x8076
+;                                        ;     end case
+808D:       10 4C                        ;     case COM_0A_is_input_phrase("LOOK * IN ......O."), length=0x004C
+808F:          0E 4A                     ;       COM_0E_group_OR length=0x004A (to 0x80DB)
+8091:             13                     ;         COM_13_process_phrase_by_room()
+8092:             0D 2A                  ;         COM_0D_group_AND length=0x002A (to 0x80BE)
+8094:                1B                  ;           COM_1B_set_var_to_noun2()
+8095:                14                  ;           COM_14_reverse_status next command
+8096:                15 02               ;           COM_15_is_var_attributes(value=0x02)
+8098:                04 22               ;           COM_04_print_message length=0x0022 (to 0x80BC)
+809A:                   40 55 B0 53 EB BF DB BD 4B 49 C7 DE 63 16 B3 E0
+80AA:                   C7 DE D3 14 90 96 F3 A0 A7 B7 90 14 82 DF 91 7A
+80BA:                   D0 15           
 ;
 ;                       CONCENTRATE AS YOU MAY, YOU CAN NOT SEE ANYTHING IN
 ;
 80BC:                A9                  ;           FN_A9_PRINT_noun2
 80BD:                8B                  ;           FN_8B_PRINT_PERIOD
-80BE:             0D 0F                  ;         COM_0D_while_pass length=0x000F
-80C0:                14                  ;           COM_14_execute_and_reverse_status next command
-80C1:                2E 80               ;           UNKNOWN_COM_2E, Value: 0x80
-80C3:                2E 20               ;           UNKNOWN_COM_2E, Value: 0x20
+;                                        ;         end group_AND at 0x8092
+80BE:             0D 0F                  ;         COM_0D_group_AND length=0x000F (to 0x80CF)
+80C0:                14                  ;           COM_14_reverse_status next command
+80C1:                2E 80               ;           COM_2E_is_var_ext_attributes(value=0x80)
+80C3:                2E 20               ;           COM_2E_is_var_ext_attributes(value=0x20)
 80C5:                A9                  ;           FN_A9_PRINT_noun2
-80C6:                04 07               ;           COM_04_print_message length=0x0007
-80C8:                   4B 7B C9 54 A6 B7 2E ;
+80C6:                04 07               ;           COM_04_print_message length=0x0007 (to 0x80CF)
+80C8:                   4B 7B C9 54 A6 B7 2E
 ;
 ;                       IS CLOSED.
 ;
+;                                        ;         end group_AND at 0x80BE
 80CF:             33                     ;         COM_33_print_objects_on_var_object()
-80D0:             0D 09                  ;         COM_0D_while_pass length=0x0009
+80D0:             0D 09                  ;         COM_0D_group_AND length=0x0009 (to 0x80DB)
 80D2:                A9                  ;           FN_A9_PRINT_noun2
-80D3:                04 06               ;           COM_04_print_message length=0x0006
-80D5:                   4B 7B 72 61 1F C1 ;
+80D3:                04 06               ;           COM_04_print_message length=0x0006 (to 0x80DB)
+80D5:                   4B 7B 72 61 1F C1
 ;
 ;                       IS EMPTY.
 ;
-80DB:       4C                           ;     COM_0A_is_input_phrase("LOOK * ON .......L")
-80DC:       51                           ;     ELSE goto=0x812E
-80DD:          0E 4F                     ;       COM_0E_while_fail length=0x004F
-80DF:             13                     ;         COM_13_process_phrase_by_room_first_second()
-80E0:             0D 1A                  ;         COM_0D_while_pass length=0x001A
-80E2:                1B                  ;           COM_1B_set_var_to_second_noun()
-80E3:                15 04               ;           COM_15_check_var(value=0x04)
-80E5:                04 13               ;           COM_04_print_message length=0x0013
-80E7:                   5F BE 5D B1 D5 B5 E7 9F 63 BE AB 98 B3 D2 3F C0 ;
-80F7:                   91 96 4E         ;
+;                                        ;         end group_AND at 0x80D0
+;                                        ;       end group_OR at 0x808F
+;                                        ;     end case
+80DB:       4C 51                        ;     case COM_0A_is_input_phrase("LOOK * ON .......L"), length=0x0051
+80DD:          0E 4F                     ;       COM_0E_group_OR length=0x004F (to 0x812E)
+80DF:             13                     ;         COM_13_process_phrase_by_room()
+80E0:             0D 1A                  ;         COM_0D_group_AND length=0x001A (to 0x80FC)
+80E2:                1B                  ;           COM_1B_set_var_to_noun2()
+80E3:                15 04               ;           COM_15_is_var_attributes(value=0x04)
+80E5:                04 13               ;           COM_04_print_message length=0x0013 (to 0x80FA)
+80E7:                   5F BE 5D B1 D5 B5 E7 9F 63 BE AB 98 B3 D2 3F C0
+80F7:                   91 96 4E        
 ;
 ;                       THERE'S SOMETHING WRITTEN ON
 ;
 80FA:                A9                  ;           FN_A9_PRINT_noun2
 80FB:                8B                  ;           FN_8B_PRINT_PERIOD
-80FC:             0D 1D                  ;         COM_0D_while_pass length=0x001D
-80FE:                14                  ;           COM_14_execute_and_reverse_status next command
-80FF:                15 01               ;           COM_15_check_var(value=0x01)
-8101:                04 16               ;           COM_04_print_message length=0x0016
-8103:                   5F BE 5D B1 D0 B5 02 A1 91 7A 99 16 F9 BD BE A0 ;
-8113:                   FB 75 B9 46 73 C6 ;
+;                                        ;         end group_AND at 0x80E0
+80FC:             0D 1D                  ;         COM_0D_group_AND length=0x001D (to 0x811B)
+80FE:                14                  ;           COM_14_reverse_status next command
+80FF:                15 01               ;           COM_15_is_var_attributes(value=0x01)
+8101:                04 16               ;           COM_04_print_message length=0x0016 (to 0x8119)
+8103:                   5F BE 5D B1 D0 B5 02 A1 91 7A 99 16 F9 BD BE A0
+8113:                   FB 75 B9 46 73 C6
 ;
-;                       THERE'S NOTHING NOTEWORTHY ABOUT
+;                       THERE'S NOTHING NOTEWORTHY ABOUT 
 ;
 8119:                A9                  ;           FN_A9_PRINT_noun2
 811A:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x80FC
 811B:             33                     ;         COM_33_print_objects_on_var_object()
-811C:             0D 10                  ;         COM_0D_while_pass length=0x0010
-811E:                04 0C               ;           COM_04_print_message length=0x000C
-8120:                   5F BE 5D B1 D0 B5 02 A1 91 7A C0 16 ;
+811C:             0D 10                  ;         COM_0D_group_AND length=0x0010 (to 0x812E)
+811E:                04 0C               ;           COM_04_print_message length=0x000C (to 0x812C)
+8120:                   5F BE 5D B1 D0 B5 02 A1 91 7A C0 16
 ;
 ;                       THERE'S NOTHING ON
 ;
 812C:                A9                  ;           FN_A9_PRINT_noun2
 812D:                8B                  ;           FN_8B_PRINT_PERIOD
-812E:       1B                           ;     COM_0A_is_input_phrase("LOOK * AROUND u.......")
-812F:       1E                           ;     ELSE goto=0x814E
-8130:          0E 1C                     ;       COM_0E_while_fail length=0x001C
-8132:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8133:             0D 03                  ;         COM_0D_while_pass length=0x0003
-8135:                08 00               ;           COM_08_is_first_noun(obj=nothing)
+;                                        ;         end group_AND at 0x811C
+;                                        ;       end group_OR at 0x80DD
+;                                        ;     end case
+812E:       1B 1E                        ;     case COM_0A_is_input_phrase("LOOK * AROUND u......."), length=0x001E
+8130:          0E 1C                     ;       COM_0E_group_OR length=0x001C (to 0x814E)
+8132:             13                     ;         COM_13_process_phrase_by_room()
+8133:             0D 03                  ;         COM_0D_group_AND length=0x0003 (to 0x8138)
+8135:                08 00               ;           COM_08_is_noun1(obj=nothing)
 8137:                07                  ;           COM_07_print_room_description()
-8138:             0D 14                  ;         COM_0D_while_pass length=0x0014
-813A:                04 10               ;           COM_04_print_message length=0x0010
-813C:                   5F BE 5B B1 4B 7B 06 9A 90 73 C3 6A 07 B3 33 98 ;
+;                                        ;         end group_AND at 0x8133
+8138:             0D 14                  ;         COM_0D_group_AND length=0x0014 (to 0x814E)
+813A:                04 10               ;           COM_04_print_message length=0x0010 (to 0x814C)
+813C:                   5F BE 5B B1 4B 7B 06 9A 90 73 C3 6A 07 B3 33 98
 ;
-;                       THERE IS NOTHING AROUND
+;                       THERE IS NOTHING AROUND 
 ;
 814C:                A8                  ;           FN_A8_PRINT_noun1
 814D:                8B                  ;           FN_8B_PRINT_PERIOD
-814E:       1C                           ;     COM_0A_is_input_phrase("LOOK * BEHIND u.......")
-814F:       32                           ;     ELSE goto=0x8182
-8150:          0E 30                     ;       COM_0E_while_fail length=0x0030
-8152:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8153:             0D 17                  ;         COM_0D_while_pass length=0x0017
-8155:                08 00               ;           COM_08_is_first_noun(obj=nothing)
-8157:                04 13               ;           COM_04_print_message length=0x0013
-8159:                   5F BE 5B B1 4B 7B 06 9A 90 73 C4 6A A3 60 33 98 ;
-8169:                   C7 DE 2E         ;
+;                                        ;         end group_AND at 0x8138
+;                                        ;       end group_OR at 0x8130
+;                                        ;     end case
+814E:       1C 32                        ;     case COM_0A_is_input_phrase("LOOK * BEHIND u......."), length=0x0032
+8150:          0E 30                     ;       COM_0E_group_OR length=0x0030 (to 0x8182)
+8152:             13                     ;         COM_13_process_phrase_by_room()
+8153:             0D 17                  ;         COM_0D_group_AND length=0x0017 (to 0x816C)
+8155:                08 00               ;           COM_08_is_noun1(obj=nothing)
+8157:                04 13               ;           COM_04_print_message length=0x0013 (to 0x816C)
+8159:                   5F BE 5B B1 4B 7B 06 9A 90 73 C4 6A A3 60 33 98
+8169:                   C7 DE 2E        
 ;
 ;                       THERE IS NOTHING BEHIND YOU.
 ;
-816C:             0D 14                  ;         COM_0D_while_pass length=0x0014
-816E:                04 10               ;           COM_04_print_message length=0x0010
-8170:                   5F BE 5B B1 4B 7B 06 9A 90 73 C4 6A A3 60 33 98 ;
+;                                        ;         end group_AND at 0x8153
+816C:             0D 14                  ;         COM_0D_group_AND length=0x0014 (to 0x8182)
+816E:                04 10               ;           COM_04_print_message length=0x0010 (to 0x8180)
+8170:                   5F BE 5B B1 4B 7B 06 9A 90 73 C4 6A A3 60 33 98
 ;
-;                       THERE IS NOTHING BEHIND
+;                       THERE IS NOTHING BEHIND 
 ;
 8180:                A8                  ;           FN_A8_PRINT_noun1
 8181:                8B                  ;           FN_8B_PRINT_PERIOD
-8182:       1D                           ;     COM_0A_is_input_phrase("LOOK * OUT *")
-8183:       16                           ;     ELSE goto=0x819A
-8184:          04 14                     ;       COM_04_print_message length=0x0014
-8186:             9F 77 AF 14 91 7A 95 14 D3 14 68 B1 33 C5 4B 49 ;
-8196:             45 77 81 48            ;
+;                                        ;         end group_AND at 0x816C
+;                                        ;       end group_OR at 0x8150
+;                                        ;     end case
+8182:       1D 16                        ;     case COM_0A_is_input_phrase("LOOK * OUT *"), length=0x0016
+8184:          04 14                     ;       COM_04_print_message length=0x0014 (to 0x819A)
+8186:             9F 77 AF 14 91 7A 95 14 D3 14 68 B1 33 C5 4B 49
+8196:             45 77 81 48           
 ;
 ;                 I'M BEING AS CAREFUL AS I CAN!
 ;
-819A:       1E                           ;     COM_0A_is_input_phrase("YES * * *")
-819B:       04                           ;     ELSE goto=0x81A0
-819C:          04 02                     ;       COM_04_print_message length=0x0002
-819E:             E9 99                  ;
+;                                        ;     end case
+819A:       1E 04                        ;     case COM_0A_is_input_phrase("YES * * *"), length=0x0004
+819C:          04 02                     ;       COM_04_print_message length=0x0002 (to 0x81A0)
+819E:             E9 99                 
 ;
 ;                 NO!
 ;
-81A0:       1F                           ;     COM_0A_is_input_phrase("NO * * *")
-81A1:       05                           ;     ELSE goto=0x81A7
-81A2:          04 03                     ;       COM_04_print_message length=0x0003
-81A4:             35 DD 21               ;
+;                                        ;     end case
+81A0:       1F 05                        ;     case COM_0A_is_input_phrase("NO * * *"), length=0x0005
+81A2:          04 03                     ;       COM_04_print_message length=0x0003 (to 0x81A7)
+81A4:             35 DD 21              
 ;
 ;                 YES!
 ;
-81A7:       21                           ;     COM_0A_is_input_phrase("PLUGH * * *")
-81A8:       1C                           ;     ELSE goto=0x81C5
-81A9:          04 1A                     ;       COM_04_print_message length=0x001A
-81AB:             44 B9 9E B4 BB 15 80 5B F3 23 6E 4D 38 79 4B 5E ;
-81BB:             8F 96 7B 47 D9 51 AE A0 5B BB ;
+;                                        ;     end case
+81A7:       21 1C                        ;     case COM_0A_is_input_phrase("PLUGH * * *"), length=0x001C
+81A9:          04 1A                     ;       COM_04_print_message length=0x001A (to 0x81C5)
+81AB:             44 B9 9E B4 BB 15 80 5B F3 23 6E 4D 38 79 4B 5E
+81BB:             8F 96 7B 47 D9 51 AE A0 5B BB
 ;
-;                 SORRY, I DON'T BELIEVE IN MAGIC WORDS.
+;                 SORRY, I DON'T BELIEVE IN MAGIC WORDS. 
 ;
-81C5:       5A                           ;     COM_0A_is_input_phrase("THUM * * *")
-81C6:       1B                           ;     ELSE goto=0x81E2
-81C7:          04 19                     ;       COM_04_print_message length=0x0019
-81C9:             25 A1 AB 70 56 77 BE 9F 51 18 B3 C7 5B BE 0B C0 ;
-81D9:             06 9A E9 16 DB B9 7F 4E 21 ;
+;                                        ;     end case
+81C5:       5A 1B                        ;     case COM_0A_is_input_phrase("THUM * * *"), length=0x001B
+81C7:          04 19                     ;       COM_04_print_message length=0x0019 (to 0x81E2)
+81C9:             25 A1 AB 70 56 77 BE 9F 51 18 B3 C7 5B BE 0B C0
+81D9:             06 9A E9 16 DB B9 7F 4E 21
 ;
 ;                 OUCH! I TOLD YOU, THATS NOT POSSIBLE!
 ;
-81E2:       22                           ;     COM_0A_is_input_phrase("SCREAM * * *")
-81E3:       12                           ;     ELSE goto=0x81F6
-81E4:          04 10                     ;       COM_04_print_message length=0x0010
-81E6:             5B E0 27 60 31 60 41 A0 49 A0 89 D3 89 D3 69 CE ;
+;                                        ;     end case
+81E2:       22 12                        ;     case COM_0A_is_input_phrase("SCREAM * * *"), length=0x0012
+81E4:          04 10                     ;       COM_04_print_message length=0x0010 (to 0x81F6)
+81E6:             5B E0 27 60 31 60 41 A0 49 A0 89 D3 89 D3 69 CE
 ;
 ;                 YYYEEEEEOOOOOOWWWWWWWW!!
 ;
-81F6:       23                           ;     COM_0A_is_input_phrase("QUIT * * *")
-81F7:       01                           ;     ELSE goto=0x81F9
+;                                        ;     end case
+81F6:       23 01                        ;     case COM_0A_is_input_phrase("QUIT * * *"), length=0x0001
 81F8:          24                        ;       COM_24_exit_program()
-81F9:       2C                           ;     COM_0A_is_input_phrase("SCORE * * *")
-81FA:       01                           ;     ELSE goto=0x81FC
+;                                        ;     end case
+81F9:       2C 01                        ;     case COM_0A_is_input_phrase("SCORE * * *"), length=0x0001
 81FB:          C9                        ;       FN_C9_PRINT_COMPLETED_PERCENT
-81FC:       3E                           ;     COM_0A_is_input_phrase("LOAD * * *")
-81FD:       04                           ;     ELSE goto=0x8202
-81FE:          0D 02                     ;       COM_0D_while_pass length=0x0002
+;                                        ;     end case
+81FC:       3E 04                        ;     case COM_0A_is_input_phrase("LOAD * * *"), length=0x0004
+81FE:          0D 02                     ;       COM_0D_group_AND length=0x0002 (to 0x8202)
 8200:             C6                     ;         FN_C6_PROMPT_FOR_DRIVE_NUMBER
 8201:             27                     ;         COM_27_load_game()
-8202:       3F                           ;     COM_0A_is_input_phrase("SAVE * * *")
-8203:       04                           ;     ELSE goto=0x8208
-8204:          0D 02                     ;       COM_0D_while_pass length=0x0002
+;                                        ;       end group_AND at 0x81FE
+;                                        ;     end case
+8202:       3F 04                        ;     case COM_0A_is_input_phrase("SAVE * * *"), length=0x0004
+8204:          0D 02                     ;       COM_0D_group_AND length=0x0002 (to 0x8208)
 8206:             C6                     ;         FN_C6_PROMPT_FOR_DRIVE_NUMBER
 8207:             28                     ;         COM_28_save_game()
-8208:       25                           ;     COM_0A_is_input_phrase("LEAVE * * *")
-8209:       20                           ;     ELSE goto=0x822A
-820A:          04 1E                     ;       COM_04_print_message length=0x001E
-820C:             C7 DE AF 23 99 16 09 BC 8E 62 91 7A 90 14 FA DF ;
-821C:             2F 62 16 EE 7B B4 46 45 2F 7B 03 56 27 A0 ;
+;                                        ;       end group_AND at 0x8204
+;                                        ;     end case
+8208:       25 20                        ;     case COM_0A_is_input_phrase("LEAVE * * *"), length=0x0020
+820A:          04 1E                     ;       COM_04_print_message length=0x001E (to 0x822A)
+820C:             C7 DE AF 23 99 16 09 BC 8E 62 91 7A 90 14 FA DF
+821C:             2F 62 16 EE 7B B4 46 45 2F 7B 03 56 27 A0
 ;
 ;                 YOU'RE NOT GETTING ANYWHERE, TRY A DIRECTION.
 ;
-822A:       26                           ;     COM_0A_is_input_phrase("GO * AROUND u.......")
-822B:       20                           ;     ELSE goto=0x824C
-822C:          0E 1E                     ;       COM_0E_while_fail length=0x001E
-822E:             13                     ;         COM_13_process_phrase_by_room_first_second()
-822F:             0D 13                  ;         COM_0D_while_pass length=0x0013
-8231:                1A                  ;           COM_1A_set_var_to_first_noun()
-8232:                15 10               ;           COM_15_check_var(value=0x10)
+;                                        ;     end case
+822A:       26 20                        ;     case COM_0A_is_input_phrase("GO * AROUND u......."), length=0x0020
+822C:          0E 1E                     ;       COM_0E_group_OR length=0x001E (to 0x824C)
+822E:             13                     ;         COM_13_process_phrase_by_room()
+822F:             0D 13                  ;         COM_0D_group_AND length=0x0013 (to 0x8244)
+8231:                1A                  ;           COM_1A_set_var_to_noun1()
+8232:                15 10               ;           COM_15_is_var_attributes(value=0x10)
 8234:                A8                  ;           FN_A8_PRINT_noun1
-8235:                04 0D               ;           COM_04_print_message length=0x000D
-8237:                   40 D2 F3 23 F6 8B 51 18 52 C2 65 49 21 ;
+8235:                04 0D               ;           COM_04_print_message length=0x000D (to 0x8244)
+8237:                   40 D2 F3 23 F6 8B 51 18 52 C2 65 49 21
 ;
 ;                       WON'T LET YOU PASS!
 ;
-8244:             04 06                  ;         COM_04_print_message length=0x0006
-8246:                09 9A FA 17 70 49   ;
+;                                        ;         end group_AND at 0x822F
+8244:             04 06                  ;         COM_04_print_message length=0x0006 (to 0x824C)
+8246:                09 9A FA 17 70 49  
 ;
 ;                    NOW WHAT?
 ;
-824C:       3D                           ;     COM_0A_is_input_phrase("GO * TO u.......")
-824D:       01                           ;     ELSE goto=0x824F
+;                                        ;       end group_OR at 0x822C
+;                                        ;     end case
+824C:       3D 01                        ;     case COM_0A_is_input_phrase("GO * TO u......."), length=0x0001
 824E:          91                        ;       FN_91_PRINT_USE_DIRECTIONS
-824F:       27                           ;     COM_0A_is_input_phrase("KICK u....... * *")
-8250:       0E                           ;     ELSE goto=0x825F
-8251:          0E 0C                     ;       COM_0E_while_fail length=0x000C
-8253:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8254:             04 09                  ;         COM_04_print_message length=0x0009
-8256:                25 A1 AB 70 3B 95 77 BF 21 ;
+;                                        ;     end case
+824F:       27 0E                        ;     case COM_0A_is_input_phrase("KICK u....... * *"), length=0x000E
+8251:          0E 0C                     ;       COM_0E_group_OR length=0x000C (to 0x825F)
+8253:             13                     ;         COM_13_process_phrase_by_room()
+8254:             04 09                  ;         COM_04_print_message length=0x0009 (to 0x825F)
+8256:                25 A1 AB 70 3B 95 77 BF 21
 ;
 ;                    OUCH! MY TOE!
 ;
-825F:       44                           ;     COM_0A_is_input_phrase("HELLO * * *")
-8260:       09                           ;     ELSE goto=0x826A
-8261:          04 07                     ;       COM_04_print_message length=0x0007
-8263:             AF 6E 83 62 C5 98 21   ;
+;                                        ;       end group_OR at 0x8251
+;                                        ;     end case
+825F:       44 09                        ;     case COM_0A_is_input_phrase("HELLO * * *"), length=0x0009
+8261:          04 07                     ;       COM_04_print_message length=0x0007 (to 0x826A)
+8263:             AF 6E 83 62 C5 98 21  
 ;
 ;                 GREETINGS!
 ;
-826A:       45                           ;     COM_0A_is_input_phrase("HELLO ...P.... * *")
-826B:       30                           ;     ELSE goto=0x829C
-826C:          0E 2E                     ;       COM_0E_while_fail length=0x002E
-826E:             13                     ;         COM_13_process_phrase_by_room_first_second()
-826F:             0D 12                  ;         COM_0D_while_pass length=0x0012
-8271:                1A                  ;           COM_1A_set_var_to_first_noun()
-8272:                15 10               ;           COM_15_check_var(value=0x10)
+;                                        ;     end case
+;;
+;; !! Any living creature will reply with "hello". Try saying hello to the snake!
+;; This routine is mostly copy/pasted from BEDLAM. "Greetings!" and "Ouch! My Toe!" -- all the same. In
+;; BEDLAM, the "creatures" were all people that had names. You'd see NAPOLEAN REPLIES, "HELLO", which made
+;; sense. In Xenos we get talking snakes: NINE FOOT DIAMOND BACK RATTLE SNAKE REPLIES, "HELLO".
+826A:       45 30                        ;     case COM_0A_is_input_phrase("HELLO ...P.... * *"), length=0x0030
+826C:          0E 2E                     ;       COM_0E_group_OR length=0x002E (to 0x829C)
+826E:             13                     ;         COM_13_process_phrase_by_room()
+826F:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x8283)
+8271:                1A                  ;           COM_1A_set_var_to_noun1()
+8272:                15 10               ;           COM_15_is_var_attributes(value=0x10)
 8274:                A8                  ;           FN_A8_PRINT_noun1
-8275:                04 0C               ;           COM_04_print_message length=0x000C
-8277:                   72 B1 87 8C 33 BB DF 1B 09 8D 63 F4 ;
+8275:                04 0C               ;           COM_04_print_message length=0x000C (to 0x8283)
+8277:                   72 B1 87 8C 33 BB DF 1B 09 8D 63 F4
 ;
-;                       REPLIES, "HELLO."
+;                       REPLIES, "HELLO." 
 ;
-8283:             0D 17                  ;         COM_0D_while_pass length=0x0017
-8285:                04 13               ;           COM_04_print_message length=0x0013
-8287:                   16 A0 43 DB E4 14 83 4A 01 18 3E C5 7B 17 CB 8C ;
-8297:                   6B BF 41         ;
+;                                        ;         end group_AND at 0x826F
+8283:             0D 17                  ;         COM_0D_group_AND length=0x0017 (to 0x829C)
+8285:                04 13               ;           COM_04_print_message length=0x0013 (to 0x829A)
+8287:                   16 A0 43 DB E4 14 83 4A 01 18 3E C5 7B 17 CB 8C
+8297:                   6B BF 41        
 ;
 ;                       ONLY A CRAZY WOULD TALK TO A
 ;
-829A:                11                  ;           COM_11_print_first_noun()
+;; !! The word "CRAZY" fits better in BEDLAM where this was copy/pasted from.
+829A:                11                  ;           COM_11_print_noun1()
 829B:                8B                  ;           FN_8B_PRINT_PERIOD
-829C:       46                           ;     COM_0A_is_input_phrase("WHAT * * *")
-829D:       08                           ;     ELSE goto=0x82A6
-829E:          04 06                     ;       COM_04_print_message length=0x0006
-82A0:             46 77 98 C5 5B A2      ;
+;                                        ;         end group_AND at 0x8283
+;                                        ;       end group_OR at 0x826C
+;                                        ;     end case
+829C:       46 08                        ;     case COM_0A_is_input_phrase("WHAT * * *"), length=0x0008
+829E:          04 06                     ;       COM_04_print_message length=0x0006 (to 0x82A6)
+82A0:             46 77 98 C5 5B A2     
 ;
-;                 I DUNNO.
+;                 I DUNNO. 
 ;
-82A6:       47                           ;     COM_0A_is_input_phrase("WHAT u....... * *")
-82A7:       09                           ;     ELSE goto=0x82B1
-82A8:          04 07                     ;       COM_04_print_message length=0x0007
-82AA:             29 D1 20 16 85 A1 3F   ;
+;                                        ;     end case
+82A6:       47 09                        ;     case COM_0A_is_input_phrase("WHAT u....... * *"), length=0x0009
+82A8:          04 07                     ;       COM_04_print_message length=0x0007 (to 0x82B1)
+82AA:             29 D1 20 16 85 A1 3F  
 ;
 ;                 WHO KNOWS?
 ;
-82B1:       4A                           ;     COM_0A_is_input_phrase("COME * * *")
-82B2:       18                           ;     ELSE goto=0x82CB
-82B3:          0E 16                     ;       COM_0E_while_fail length=0x0016
-82B5:             13                     ;         COM_13_process_phrase_by_room_first_second()
-82B6:             0D 13                  ;         COM_0D_while_pass length=0x0013
-82B8:                04 11               ;           COM_04_print_message length=0x0011
-82BA:                   9E 77 08 8A C6 9F 6B A1 C7 DE 90 14 FA DF 2F 62 ;
-82CA:                   21               ;
+;                                        ;     end case
+82B1:       4A 18                        ;     case COM_0A_is_input_phrase("COME * * *"), length=0x0018
+82B3:          0E 16                     ;       COM_0E_group_OR length=0x0016 (to 0x82CB)
+82B5:             13                     ;         COM_13_process_phrase_by_room()
+82B6:             0D 13                  ;         COM_0D_group_AND length=0x0013 (to 0x82CB)
+82B8:                04 11               ;           COM_04_print_message length=0x0011 (to 0x82CB)
+82BA:                   9E 77 08 8A C6 9F 6B A1 C7 DE 90 14 FA DF 2F 62
+82CA:                   21              
 ;
 ;                       I'LL FOLLOW YOU ANYWHERE!
 ;
-82CB:       49                           ;     COM_0A_is_input_phrase("MEET u....... * *")
-82CC:       26                           ;     ELSE goto=0x82F3
-82CD:          0E 24                     ;       COM_0E_while_fail length=0x0024
-82CF:             13                     ;         COM_13_process_phrase_by_room_first_second()
-82D0:             0D 11                  ;         COM_0D_while_pass length=0x0011
-82D2:                09 00               ;           COM_09_compare_to_second_noun(obj=nothing)
+;                                        ;         end group_AND at 0x82B6
+;                                        ;       end group_OR at 0x82B3
+;                                        ;     end case
+82CB:       49 26                        ;     case COM_0A_is_input_phrase("MEET u....... * *"), length=0x0026
+82CD:          0E 24                     ;       COM_0E_group_OR length=0x0024 (to 0x82F3)
+82CF:             13                     ;         COM_13_process_phrase_by_room()
+82D0:             0D 11                  ;         COM_0D_group_AND length=0x0011 (to 0x82E3)
+82D2:                09 00               ;           COM_09_is_noun2(obj=nothing)
 82D4:                A8                  ;           FN_A8_PRINT_noun1
-82D5:                04 0C               ;           COM_04_print_message length=0x000C
-82D7:                   09 4F CB B5 89 96 67 B1 90 BE 5B 70 ;
+82D5:                04 0C               ;           COM_04_print_message length=0x000C (to 0x82E3)
+82D7:                   09 4F CB B5 89 96 67 B1 90 BE 5B 70
 ;
-;                       BOWS IN GREETING.
+;                       BOWS IN GREETING. 
 ;
-82E3:             04 0E                  ;         COM_04_print_message length=0x000E
-82E5:                5F BE 44 DB 6B A1 83 7A AF 6E 83 62 CF 98 ;
+;                                        ;         end group_AND at 0x82D0
+82E3:             04 0E                  ;         COM_04_print_message length=0x000E (to 0x82F3)
+82E5:                5F BE 44 DB 6B A1 83 7A AF 6E 83 62 CF 98
 ;
 ;                    THEY BOW IN GREETING.
 ;
-82F3:       28                           ;     COM_0A_is_input_phrase("FEED ...P.... WITH u.......")
-82F4:       36                           ;     ELSE goto=0x832B
-82F5:          0E 34                     ;       COM_0E_while_fail length=0x0034
-82F7:             13                     ;         COM_13_process_phrase_by_room_first_second()
-82F8:             0D 16                  ;         COM_0D_while_pass length=0x0016
-82FA:                1A                  ;           COM_1A_set_var_to_first_noun()
-82FB:                15 10               ;           COM_15_check_var(value=0x10)
+;                                        ;       end group_OR at 0x82CD
+;                                        ;     end case
+82F3:       28 36                        ;     case COM_0A_is_input_phrase("FEED ...P.... WITH u......."), length=0x0036
+82F5:          0E 34                     ;       COM_0E_group_OR length=0x0034 (to 0x832B)
+82F7:             13                     ;         COM_13_process_phrase_by_room()
+82F8:             0D 16                  ;         COM_0D_group_AND length=0x0016 (to 0x8310)
+82FA:                1A                  ;           COM_1A_set_var_to_noun1()
+82FB:                15 10               ;           COM_15_is_var_attributes(value=0x10)
 82FD:                A8                  ;           FN_A8_PRINT_noun1
-82FE:                04 10               ;           COM_04_print_message length=0x0010
-8300:                   60 7B F3 23 70 75 C3 6E 33 17 2E 6D 99 16 5B D4 ;
+82FE:                04 10               ;           COM_04_print_message length=0x0010 (to 0x8310)
+8300:                   60 7B F3 23 70 75 C3 6E 33 17 2E 6D 99 16 5B D4
 ;
-;                       ISN'T HUNGRY RIGHT NOW.
+;                       ISN'T HUNGRY RIGHT NOW. 
 ;
-8310:             0D 19                  ;         COM_0D_while_pass length=0x0019
-8312:                04 0D               ;           COM_04_print_message length=0x000D
-8314:                   80 5B F3 23 C7 DE 20 16 6B A1 5B BE 54 ;
+;                                        ;         end group_AND at 0x82F8
+8310:             0D 19                  ;         COM_0D_group_AND length=0x0019 (to 0x832B)
+8312:                04 0D               ;           COM_04_print_message length=0x000D (to 0x8321)
+8314:                   80 5B F3 23 C7 DE 20 16 6B A1 5B BE 54
 ;
 ;                       DON'T YOU KNOW THAT
 ;
 8321:                A8                  ;           FN_A8_PRINT_noun1
-8322:                04 07               ;           COM_04_print_message length=0x0007
-8324:                   10 53 F3 23 96 5F 21 ;
+8322:                04 07               ;           COM_04_print_message length=0x0007 (to 0x832B)
+8324:                   10 53 F3 23 96 5F 21
 ;
 ;                       CAN'T EAT!
 ;
-832B:       29                           ;     COM_0A_is_input_phrase("FEED u....... TO ...P....")
-832C:       34                           ;     ELSE goto=0x8361
-832D:          0E 32                     ;       COM_0E_while_fail length=0x0032
-832F:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8330:             0D 14                  ;         COM_0D_while_pass length=0x0014
-8332:                1B                  ;           COM_1B_set_var_to_second_noun()
-8333:                15 10               ;           COM_15_check_var(value=0x10)
+;                                        ;         end group_AND at 0x8310
+;                                        ;       end group_OR at 0x82F5
+;                                        ;     end case
+832B:       29 34                        ;     case COM_0A_is_input_phrase("FEED u....... TO ...P...."), length=0x0034
+832D:          0E 32                     ;       COM_0E_group_OR length=0x0032 (to 0x8361)
+832F:             13                     ;         COM_13_process_phrase_by_room()
+8330:             0D 14                  ;         COM_0D_group_AND length=0x0014 (to 0x8346)
+8332:                1B                  ;           COM_1B_set_var_to_noun2()
+8333:                15 10               ;           COM_15_is_var_attributes(value=0x10)
 8335:                A9                  ;           FN_A9_PRINT_noun2
-8336:                04 0E               ;           COM_04_print_message length=0x000E
-8338:                   47 D2 B3 8B D6 B0 F4 72 23 15 1B BC 19 A1 ;
+8336:                04 0E               ;           COM_04_print_message length=0x000E (to 0x8346)
+8338:                   47 D2 B3 8B D6 B0 F4 72 23 15 1B BC 19 A1
 ;
 ;                       WOULD RATHER EAT YOU!
 ;
-8346:             0D 19                  ;         COM_0D_while_pass length=0x0019
-8348:                04 17               ;           COM_04_print_message length=0x0017
-834A:                   43 79 C7 DE D3 14 88 96 8E 7A 7B 14 C7 93 76 BE ;
-835A:                   BD 15 49 90 67 48 21 ;
+;                                        ;         end group_AND at 0x8330
+8346:             0D 19                  ;         COM_0D_group_AND length=0x0019 (to 0x8361)
+8348:                04 17               ;           COM_04_print_message length=0x0017 (to 0x8361)
+834A:                   43 79 C7 DE D3 14 88 96 8E 7A 7B 14 C7 93 76 BE
+835A:                   BD 15 49 90 67 48 21
 ;
 ;                       IF YOU CAN FIND A MOUTH, I'M GAME!
 ;
-8361:       2F                           ;     COM_0A_is_input_phrase("WAIT * * *")
-8362:       07                           ;     ELSE goto=0x836A
-8363:          04 05                     ;       COM_04_print_message length=0x0005
-8365:             9B 29 57 C6 3E         ;
+;                                        ;         end group_AND at 0x8346
+;                                        ;       end group_OR at 0x832D
+;                                        ;     end case
+8361:       2F 07                        ;     case COM_0A_is_input_phrase("WAIT * * *"), length=0x0007
+8363:          04 05                     ;       COM_04_print_message length=0x0005 (to 0x836A)
+8365:             9B 29 57 C6 3E        
 ;
 ;                 <PAUSE>
 ;
-836A:       31                           ;     COM_0A_is_input_phrase("FIND u....... * *")
-836B:       17                           ;     ELSE goto=0x8383
-836C:          04 15                     ;       COM_04_print_message length=0x0015
-836E:             36 9F D6 15 CB 23 39 49 8E C5 9F 15 5B B1 3F B9 ;
-837E:             FA 62 2F 62 2E         ;
+;                                        ;     end case
+836A:       31 17                        ;     case COM_0A_is_input_phrase("FIND u....... * *"), length=0x0017
+836C:          04 15                     ;       COM_04_print_message length=0x0015 (to 0x8383)
+836E:             36 9F D6 15 CB 23 39 49 8E C5 9F 15 5B B1 3F B9
+837E:             FA 62 2F 62 2E        
 ;
 ;                 OH, IT'S AROUND HERE SOMEWHERE.
 ;
-8383:       2D                           ;     COM_0A_is_input_phrase("PULL * UP u.......")
-8384:       09                           ;     ELSE goto=0x838E
-8385:          0E 07                     ;       COM_0E_while_fail length=0x0007
-8387:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8388:             0D 02                  ;         COM_0D_while_pass length=0x0002
-838A:                1A                  ;           COM_1A_set_var_to_first_noun()
-838B:                8F                  ;           FN_8F_TRY_TO_GET_OBJECT
-838C:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;     end case
+8383:       2D 09                        ;     case COM_0A_is_input_phrase("PULL * UP u......."), length=0x0009
+8385:          0E 07                     ;       COM_0E_group_OR length=0x0007 (to 0x838E)
+8387:             13                     ;         COM_13_process_phrase_by_room()
+8388:             0D 02                  ;         COM_0D_group_AND length=0x0002 (to 0x838C)
+838A:                1A                  ;           COM_1A_set_var_to_noun1()
+838B:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x8388
+838C:             14                     ;         COM_14_reverse_status next command
 838D:             0C                     ;         COM_0C_fail()
-838E:       48                           ;     COM_0A_is_input_phrase("LOWER u....... * *")
-838F:       11                           ;     ELSE goto=0x83A1
-8390:          0E 0F                     ;       COM_0E_while_fail length=0x000F
-8392:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8393:             04 0C                  ;         COM_04_print_message length=0x000C
-8395:                C7 DE D3 14 E6 96 09 15 82 17 97 49 ;
+;                                        ;       end group_OR at 0x8385
+;                                        ;     end case
+838E:       48 11                        ;     case COM_0A_is_input_phrase("LOWER u....... * *"), length=0x0011
+8390:          0E 0F                     ;       COM_0E_group_OR length=0x000F (to 0x83A1)
+8392:             13                     ;         COM_13_process_phrase_by_room()
+8393:             04 0C                  ;         COM_04_print_message length=0x000C (to 0x83A1)
+8395:                C7 DE D3 14 E6 96 09 15 82 17 97 49
 ;
 ;                    YOU CAN'T DO THAT.
 ;
-83A1:       33                           ;     COM_0A_is_input_phrase("??33??")
-83A2:       27                           ;     ELSE goto=0x83CA
-83A3:          0E 25                     ;       COM_0E_while_fail length=0x0025
-83A5:             13                     ;         COM_13_process_phrase_by_room_first_second()
-83A6:             04 22                  ;         COM_04_print_message length=0x0022
-83A8:                0F A0 5F 17 46 48 66 17 D3 61 04 68 63 16 5B 99 ;
-83B8:                56 98 C0 16 49 5E 90 78 0E BC 92 5F 59 15 9B AF ;
-83C8:                19 A1               ;
+;                                        ;       end group_OR at 0x8390
+;                                        ;     end case
+83A1:       33 27                        ;     case COM_0A_is_input_phrase("??33??"), length=0x0027
+83A3:          0E 25                     ;       COM_0E_group_OR length=0x0025 (to 0x83CA)
+83A5:             13                     ;         COM_13_process_phrase_by_room()
+83A6:             04 22                  ;         COM_04_print_message length=0x0022 (to 0x83CA)
+83A8:                0F A0 5F 17 46 48 66 17 D3 61 04 68 63 16 5B 99
+83B8:                56 98 C0 16 49 5E 90 78 0E BC 92 5F 59 15 9B AF
+83C8:                19 A1              
 ;
 ;                    ONE SMALL STEP FOR MANKIND, ONE GIANT LEAP FOR YOU!
 ;
-83CA:       34                           ;     COM_0A_is_input_phrase("JUMP * OVER u.......")
-83CB:       23                           ;     ELSE goto=0x83EF
-83CC:          0E 21                     ;       COM_0E_while_fail length=0x0021
-83CE:             13                     ;         COM_13_process_phrase_by_room_first_second()
-83CF:             04 1E                  ;         COM_04_print_message length=0x001E
-83D1:                C7 DE 95 AF D5 C3 65 62 D5 15 67 16 67 49 66 B1 ;
-83E1:                D0 15 3F 16 ED 48 90 14 04 58 30 A1 09 5C ;
+;                                        ;       end group_OR at 0x83A3
+;                                        ;     end case
+83CA:       34 23                        ;     case COM_0A_is_input_phrase("JUMP * OVER u......."), length=0x0023
+83CC:          0E 21                     ;       COM_0E_group_OR length=0x0021 (to 0x83EF)
+83CE:             13                     ;         COM_13_process_phrase_by_room()
+83CF:             04 1E                  ;         COM_04_print_message length=0x001E (to 0x83EF)
+83D1:                C7 DE 95 AF D5 C3 65 62 D5 15 67 16 67 49 66 B1
+83E1:                D0 15 3F 16 ED 48 90 14 04 58 30 A1 09 5C
 ;
 ;                    YOUR SUCCESS IS MEASURED IN LEAPS AND BOUNDS!
 ;
-83EF:       35                           ;     COM_0A_is_input_phrase("JUMP * ON u.......")
-83F0:       1C                           ;     ELSE goto=0x840D
-83F1:          0E 1A                     ;       COM_0E_while_fail length=0x001A
-83F3:             13                     ;         COM_13_process_phrase_by_room_first_second()
-83F4:             04 17                  ;         COM_04_print_message length=0x0017
-83F6:                C7 DE 73 21 76 4D F4 BD F3 17 9A BD FA 17 2F 62 ;
-8406:                51 18 55 C2 F2 BD 21 ;
+;                                        ;       end group_OR at 0x83CC
+;                                        ;     end case
+83EF:       35 1C                        ;     case COM_0A_is_input_phrase("JUMP * ON u......."), length=0x001C
+83F1:          0E 1A                     ;       COM_0E_group_OR length=0x001A (to 0x840D)
+83F3:             13                     ;         COM_13_process_phrase_by_room()
+83F4:             04 17                  ;         COM_04_print_message length=0x0017 (to 0x840D)
+83F6:                C7 DE 73 21 76 4D F4 BD F3 17 9A BD FA 17 2F 62
+8406:                51 18 55 C2 F2 BD 21
 ;
 ;                    YOU'D BETTER WATCH WHERE YOU STEP!
 ;
-840D:       36                           ;     COM_0A_is_input_phrase("ENTER * * *")
-840E:       04                           ;     ELSE goto=0x8413
-840F:          0E 02                     ;       COM_0E_while_fail length=0x0002
-8411:             13                     ;         COM_13_process_phrase_by_room_first_second()
+;                                        ;       end group_OR at 0x83F1
+;                                        ;     end case
+840D:       36 04                        ;     case COM_0A_is_input_phrase("ENTER * * *"), length=0x0004
+840F:          0E 02                     ;       COM_0E_group_OR length=0x0002 (to 0x8413)
+8411:             13                     ;         COM_13_process_phrase_by_room()
 8412:             91                     ;         FN_91_PRINT_USE_DIRECTIONS
-8413:       37                           ;     COM_0A_is_input_phrase("CLIMB * OUT *")
-8414:       04                           ;     ELSE goto=0x8419
-8415:          0E 02                     ;       COM_0E_while_fail length=0x0002
-8417:             13                     ;         COM_13_process_phrase_by_room_first_second()
+;                                        ;       end group_OR at 0x840F
+;                                        ;     end case
+8413:       37 04                        ;     case COM_0A_is_input_phrase("CLIMB * OUT *"), length=0x0004
+8415:          0E 02                     ;       COM_0E_group_OR length=0x0002 (to 0x8419)
+8417:             13                     ;         COM_13_process_phrase_by_room()
 8418:             91                     ;         FN_91_PRINT_USE_DIRECTIONS
-8419:       54                           ;     COM_0A_is_input_phrase("CLIMB * UP *")
-841A:       17                           ;     ELSE goto=0x8432
-841B:          0E 15                     ;       COM_0E_while_fail length=0x0015
-841D:             13                     ;         COM_13_process_phrase_by_room_first_second()
-841E:             04 12                  ;         COM_04_print_message length=0x0012
-8420:                5F BE 5B B1 4B 7B EB 99 FB A5 9B 53 6B BF 2B 6E ;
-8430:                F7 C5               ;
+;                                        ;       end group_OR at 0x8415
+;                                        ;     end case
+8419:       54 17                        ;     case COM_0A_is_input_phrase("CLIMB * UP *"), length=0x0017
+841B:          0E 15                     ;       COM_0E_group_OR length=0x0015 (to 0x8432)
+841D:             13                     ;         COM_13_process_phrase_by_room()
+841E:             04 12                  ;         COM_04_print_message length=0x0012 (to 0x8432)
+8420:                5F BE 5B B1 4B 7B EB 99 FB A5 9B 53 6B BF 2B 6E
+8430:                F7 C5              
 ;
 ;                    THERE IS NO PLACE TO GO UP.
 ;
-8432:       55                           ;     COM_0A_is_input_phrase("CLIMB * DOWN *")
-8433:       19                           ;     ELSE goto=0x844D
-8434:          0E 17                     ;       COM_0E_while_fail length=0x0017
-8436:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8437:             04 14                  ;         COM_04_print_message length=0x0014
-8439:                5F BE 5B B1 4B 7B EB 99 FB A5 9B 53 6B BF 2B 6E ;
-8449:                89 5B 1B 9C         ;
+;                                        ;       end group_OR at 0x841B
+;                                        ;     end case
+8432:       55 19                        ;     case COM_0A_is_input_phrase("CLIMB * DOWN *"), length=0x0019
+8434:          0E 17                     ;       COM_0E_group_OR length=0x0017 (to 0x844D)
+8436:             13                     ;         COM_13_process_phrase_by_room()
+8437:             04 14                  ;         COM_04_print_message length=0x0014 (to 0x844D)
+8439:                5F BE 5B B1 4B 7B EB 99 FB A5 9B 53 6B BF 2B 6E
+8449:                89 5B 1B 9C        
 ;
-;                    THERE IS NO PLACE TO GO DOWN.
+;                    THERE IS NO PLACE TO GO DOWN. 
 ;
-844D:       38                           ;     COM_0A_is_input_phrase("CLIMB * UNDER u.......")
-844E:       1D                           ;     ELSE goto=0x846C
-844F:          0E 1B                     ;       COM_0E_while_fail length=0x001B
-8451:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8452:             0D 18                  ;         COM_0D_while_pass length=0x0018
-8454:                04 14               ;           COM_04_print_message length=0x0014
-8456:                   5F BE 5B B1 4B 7B 06 9A 30 15 29 A1 14 71 3F A0 ;
-8466:                   B0 17 F4 59      ;
+;                                        ;       end group_OR at 0x8434
+;                                        ;     end case
+844D:       38 1D                        ;     case COM_0A_is_input_phrase("CLIMB * UNDER u......."), length=0x001D
+844F:          0E 1B                     ;       COM_0E_group_OR length=0x001B (to 0x846C)
+8451:             13                     ;         COM_13_process_phrase_by_room()
+8452:             0D 18                  ;         COM_0D_group_AND length=0x0018 (to 0x846C)
+8454:                04 14               ;           COM_04_print_message length=0x0014 (to 0x846A)
+8456:                   5F BE 5B B1 4B 7B 06 9A 30 15 29 A1 14 71 3F A0
+8466:                   B0 17 F4 59     
 ;
 ;                       THERE IS NOT ENOUGH ROOM UNDER
 ;
 846A:                A8                  ;           FN_A8_PRINT_noun1
 846B:                8B                  ;           FN_8B_PRINT_PERIOD
-846C:       39                           ;     COM_0A_is_input_phrase("THROW ..C..... IN u.......")
-846D:       1D                           ;     ELSE goto=0x848B
-846E:          0E 1B                     ;       COM_0E_while_fail length=0x001B
-8470:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8471:             0D 18                  ;         COM_0D_while_pass length=0x0018
-8473:                04 16               ;           COM_04_print_message length=0x0016
-8475:                   C7 DE FB 17 F3 8C 58 72 56 5E D2 9C 73 C6 73 7B ;
-8485:                   83 7A 5F BE 7F B1 ;
+;                                        ;         end group_AND at 0x8452
+;                                        ;       end group_OR at 0x844F
+;                                        ;     end case
+846C:       39 1D                        ;     case COM_0A_is_input_phrase("THROW ..C..... IN u......."), length=0x001D
+846E:          0E 1B                     ;       COM_0E_group_OR length=0x001B (to 0x848B)
+8470:             13                     ;         COM_13_process_phrase_by_room()
+8471:             0D 18                  ;         COM_0D_group_AND length=0x0018 (to 0x848B)
+8473:                04 16               ;           COM_04_print_message length=0x0016 (to 0x848B)
+8475:                   C7 DE FB 17 F3 8C 58 72 56 5E D2 9C 73 C6 73 7B
+8485:                   83 7A 5F BE 7F B1
 ;
 ;                       YOU WILL HAVE TO PUT IT IN THERE.
 ;
-848B:       0D                           ;     COM_0A_is_input_phrase("THROW .vC..... AT ...P....")
-848C:       2B                           ;     ELSE goto=0x84B8
-848D:          0E 29                     ;       COM_0E_while_fail length=0x0029
-848F:             0D 25                  ;         COM_0D_while_pass length=0x0025
-8491:                1A                  ;           COM_1A_set_var_to_first_noun()
-8492:                8F                  ;           FN_8F_TRY_TO_GET_OBJECT
-8493:                0E 21               ;           COM_0E_while_fail length=0x0021
-8495:                   13               ;             COM_13_process_phrase_by_room_first_second()
-8496:                   0D 1E            ;             COM_0D_while_pass length=0x001E
-8498:                      0E 07         ;               COM_0E_while_fail length=0x0007
-849A:                         14         ;                 COM_14_execute_and_reverse_status next command
-849B:                         15 10      ;                 COM_15_check_var(value=0x10)
-849D:                         1B         ;                 COM_1B_set_var_to_second_noun()
-849E:                         14         ;                 COM_14_execute_and_reverse_status next command
-849F:                         15 40      ;                 COM_15_check_var(value=0x40)
+;                                        ;         end group_AND at 0x8471
+;                                        ;       end group_OR at 0x846E
+;                                        ;     end case
+848B:       0D 2B                        ;     case COM_0A_is_input_phrase("THROW .vC..... AT ...P...."), length=0x002B
+848D:          0E 29                     ;       COM_0E_group_OR length=0x0029 (to 0x84B8)
+848F:             0D 25                  ;         COM_0D_group_AND length=0x0025 (to 0x84B6)
+8491:                1A                  ;           COM_1A_set_var_to_noun1()
+8492:                8F                  ;           FN_8F_GET_OBJECT
+8493:                0E 21               ;           COM_0E_group_OR length=0x0021 (to 0x84B6)
+8495:                   13               ;             COM_13_process_phrase_by_room()
+8496:                   0D 1E            ;             COM_0D_group_AND length=0x001E (to 0x84B6)
+8498:                      0E 07         ;               COM_0E_group_OR length=0x0007 (to 0x84A1)
+849A:                         14         ;                 COM_14_reverse_status next command
+849B:                         15 10      ;                 COM_15_is_var_attributes(value=0x10)
+849D:                         1B         ;                 COM_1B_set_var_to_noun2()
+849E:                         14         ;                 COM_14_reverse_status next command
+849F:                         15 40      ;                 COM_15_is_var_attributes(value=0x40)
+;                                        ;               end group_OR at 0x8498
 84A1:                      A8            ;               FN_A8_PRINT_noun1
-84A2:                      04 0F         ;               COM_04_print_message length=0x000F
-84A4:                         07 4F 17 98 CA B5 37 49 F5 8B D3 B8 B8 16 46 ;
+84A2:                      04 0F         ;               COM_04_print_message length=0x000F (to 0x84B3)
+84A4:                         07 4F 17 98 CA B5 37 49 F5 8B D3 B8 B8 16 46
 ;
 ;                             BOUNCES HARMLESSLY OFF
 ;
 84B3:                      A9            ;               FN_A9_PRINT_noun2
 84B4:                      8B            ;               FN_8B_PRINT_PERIOD
 84B5:                      10            ;               COM_10_drop_var()
-84B6:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;             end group_AND at 0x8496
+;                                        ;           end group_OR at 0x8493
+;                                        ;         end group_AND at 0x848F
+84B6:             14                     ;         COM_14_reverse_status next command
 84B7:             0C                     ;         COM_0C_fail()
-84B8:       57                           ;     COM_0A_is_input_phrase("SHOOT u....... WITH u.......")
-84B9:       81 09                        ;     ELSE goto=0x85C4
-84BB:          0E 81 06                  ;       COM_0E_while_fail length=0x0106
-84BE:             13                     ;         COM_13_process_phrase_by_room_first_second()
-84BF:             0D 0F                  ;         COM_0D_while_pass length=0x000F
-84C1:                14                  ;           COM_14_execute_and_reverse_status next command
-84C2:                09 28               ;           COM_09_compare_to_second_noun(obj=OBJ_28_SHOTGUN)
+;                                        ;       end group_OR at 0x848D
+;                                        ;     end case
+84B8:       57 81 09                     ;     case COM_0A_is_input_phrase("SHOOT u....... WITH u......."), length=0x0109
+84BB:          0E 81 06                  ;       COM_0E_group_OR length=0x0106 (to 0x85C4)
+84BE:             13                     ;         COM_13_process_phrase_by_room()
+84BF:             0D 0F                  ;         COM_0D_group_AND length=0x000F (to 0x84D0)
+84C1:                14                  ;           COM_14_reverse_status next command
+84C2:                09 28               ;           COM_09_is_noun2(obj=OBJ_28_SHOTGUN)
 84C4:                A9                  ;           FN_A9_PRINT_noun2
-84C5:                04 09               ;           COM_04_print_message length=0x0009
-84C7:                   60 7B F3 23 73 8D E6 59 2E ;
+84C5:                04 09               ;           COM_04_print_message length=0x0009 (to 0x84D0)
+84C7:                   60 7B F3 23 73 8D E6 59 2E
 ;
 ;                       ISN'T LOADED.
 ;
-84D0:             0D 0A                  ;         COM_0D_while_pass length=0x000A
-84D2:                14                  ;           COM_14_execute_and_reverse_status next command
-84D3:                03 28 29            ;           COM_03_is_located(owner=OBJ_28_SHOTGUN, obj=OBJ_29_??)
-84D6:                04 04               ;           COM_04_print_message length=0x0004
-84D8:                   C3 54 AF 54      ;
+;                                        ;         end group_AND at 0x84BF
+84D0:             0D 0A                  ;         COM_0D_group_AND length=0x000A (to 0x84DC)
+84D2:                14                  ;           COM_14_reverse_status next command
+84D3:                03 28 29            ;           COM_03_is_located(owner=OBJ_28_SHOTGUN, obj=OBJ_29_SHOTGUN_SHELL1)
+84D6:                04 04               ;           COM_04_print_message length=0x0004 (to 0x84DC)
+84D8:                   C3 54 AF 54     
 ;
 ;                       CLICK.
 ;
-84DC:             0D 80 CB               ;         COM_0D_while_pass length=0x00CB
-84DF:                04 04               ;           COM_04_print_message length=0x0004
-84E1:                   7B 4E EB 8F      ;
+;                                        ;         end group_AND at 0x84D0
+84DC:             0D 80 CB               ;         COM_0D_group_AND length=0x00CB (to 0x85AA)
+84DF:                04 04               ;           COM_04_print_message length=0x0004 (to 0x84E5)
+84E1:                   7B 4E EB 8F     
 ;
-;                       BLAM!
+;                       BLAM! 
 ;
-84E5:                0B 80 C2 08         ;           COM_0B_switch length=0x00C2, function=COM_08_is_first_noun(word_num)
-84E9:                   33               ;             COM_08_is_first_noun(object_num=OBJ_33_RATTLE_SNAKE)
-84EA:                   0E               ;             ELSE goto=0x84F9
-84EB:                      0D 0C         ;               COM_0D_while_pass length=0x000C
-84ED:                         04 07      ;                 COM_04_print_message length=0x0007
-84EF:                            41 6E 15 58 86 74 21 ;
+84E5:                0B 80 C2 08         ;           COM_0B_switch length=0x00C2 (to 0x85AB), function=COM_08_is_first_noun(word_num)
+84E9:                   33 0E            ;             case COM_08_is_first_noun(object_num=OBJ_33_RATTLE_SNAKE), length=0x000E
+84EB:                      0D 0C         ;               COM_0D_group_AND length=0x000C (to 0x84F9)
+84ED:                         04 07      ;                 COM_04_print_message length=0x0007 (to 0x84F6)
+84EF:                            41 6E 15 58 86 74 21
 ;
 ;                                GOOD SHOT!
 ;
-84F6:                         1A         ;                 COM_1A_set_var_to_first_noun()
+84F6:                         1A         ;                 COM_1A_set_var_to_noun1()
 84F7:                         1D 64      ;                 COM_1D_attack_var(points=100)
-84F9:                   62               ;             COM_08_is_first_noun(object_num=OBJ_62_SHAGGY_CREATURE)
-84FA:                   4D               ;             ELSE goto=0x8548
-84FB:                      0D 4B         ;               COM_0D_while_pass length=0x004B
-84FD:                         04 45      ;                 COM_04_print_message length=0x0045
-84FF:                            5F BE 8E 14 30 79 D5 15 43 16 BF 68 03 58 33 98 ;
-850F:                            6C BE 80 A1 AB 14 A9 54 2E 49 C4 B5 56 DB DB 72 ;
-851F:                            72 7A E6 46 B8 16 82 17 44 5E 55 8B 9B C1 8D 7B ;
-852F:                            43 16 D3 93 F6 4E 48 DB 46 48 D6 B5 D6 9C DB 72 ;
-853F:                            B9 6E 8E C5 2E ;
+;                                        ;               end group_AND at 0x84EB
+;                                        ;             end case
+84F9:                   62 4D            ;             case COM_08_is_first_noun(object_num=OBJ_62_SHAGGY_CREATURE), length=0x004D
+84FB:                      0D 4B         ;               COM_0D_group_AND length=0x004B (to 0x8548)
+84FD:                         04 45      ;                 COM_04_print_message length=0x0045 (to 0x8544)
+84FF:                            5F BE 8E 14 30 79 D5 15 43 16 BF 68 03 58 33 98
+850F:                            6C BE 80 A1 AB 14 A9 54 2E 49 C4 B5 56 DB DB 72
+851F:                            72 7A E6 46 B8 16 82 17 44 5E 55 8B 9B C1 8D 7B
+852F:                            43 16 D3 93 F6 4E 48 DB 46 48 D6 B5 D6 9C DB 72
+853F:                            B9 6E 8E C5 2E
 ;
 ;                                THE ALIEN IS LIFTED AND THROWN BACKWARDS BY THE IMPACT OF
 ;                                THE BLAST. ITS LIMP BODY FALLS TO THE GROUND.
 ;
 8544:                         1C 62      ;                 COM_1C_set_var_object(obj=OBJ_62_SHAGGY_CREATURE)
 8546:                         1D 15      ;                 COM_1D_attack_var(points=21)
-8548:                   89               ;             COM_08_is_first_noun(object_num=OBJ_89_ALIEN_ANTS)
-8549:                   60               ;             ELSE goto=0x85AA
-854A:                      0D 5E         ;               COM_0D_while_pass length=0x005E
-854C:                         04 58      ;                 COM_04_print_message length=0x0058
-854E:                            5F BE 5A 17 01 A1 83 C5 F3 B2 8B B3 E3 59 70 66 ;
-855E:                            91 7A 1E 8F BF 14 0A BC 4B 49 96 8C FF BE 28 15 ;
-856E:                            65 66 11 BC 96 96 DB 72 18 D0 51 5E 95 64 8E 91 ;
-857E:                            04 8A 45 8B C5 83 63 B1 74 C0 4B 62 5B BE 19 BC ;
-858E:                            5A 49 C8 16 23 62 C7 DE 15 EE 90 BE 50 6D DB 6A ;
-859E:                            1B A1 6B BF E3 59 77 BE ;
+;                                        ;               end group_AND at 0x84FB
+;                                        ;             end case
+8548:                   89 60            ;             case COM_08_is_first_noun(object_num=OBJ_89_ALIEN_ANTS), length=0x0060
+854A:                      0D 5E         ;               COM_0D_group_AND length=0x005E (to 0x85AA)
+854C:                         04 58      ;                 COM_04_print_message length=0x0058 (to 0x85A6)
+854E:                            5F BE 5A 17 01 A1 83 C5 F3 B2 8B B3 E3 59 70 66
+855E:                            91 7A 1E 8F BF 14 0A BC 4B 49 96 8C FF BE 28 15
+856E:                            65 66 11 BC 96 96 DB 72 18 D0 51 5E 95 64 8E 91
+857E:                            04 8A 45 8B C5 83 63 B1 74 C0 4B 62 5B BE 19 BC
+858E:                            5A 49 C8 16 23 62 C7 DE 15 EE 90 BE 50 6D DB 6A
+859E:                            1B A1 6B BF E3 59 77 BE
 ;
 ;                                THE SHOTGUN ROARS DEAFENINGLY, BUT HAS LITTLE EFFECT ON THE
 ;                                WAVE OF SMALL BLACK CREATURES THAT WASH OVER YOU, STINGING
@@ -4587,317 +4726,366 @@ GeneralScript:
 ;
 85A6:                         1C 01      ;                 COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 85A8:                         1D 4B      ;                 COM_1D_attack_var(points=75)
-85AA:             0D 18                  ;         COM_0D_while_pass length=0x0018
-85AC:                04 14               ;           COM_04_print_message length=0x0014
-85AE:                   5F BE 5B B1 2F 49 57 17 74 CA 33 48 79 98 A9 15 ;
-85BE:                   F5 8B D0 15      ;
+;                                        ;               end group_AND at 0x854A
+;                                        ;             end case
+;                                        ;           end decode_switch at 0x84E5
+;                                        ;         end group_AND at 0x84DC
+85AA:             0D 18                  ;         COM_0D_group_AND length=0x0018 (to 0x85C4)
+85AC:                04 14               ;           COM_04_print_message length=0x0014 (to 0x85C2)
+85AE:                   5F BE 5B B1 2F 49 57 17 74 CA 33 48 79 98 A9 15
+85BE:                   F5 8B D0 15     
 ;
 ;                       THERE ARE SEVERAL NEW HOLES IN
 ;
 85C2:                A8                  ;           FN_A8_PRINT_noun1
 85C3:                8B                  ;           FN_8B_PRINT_PERIOD
-85C4:       0E                           ;     COM_0A_is_input_phrase("THROW u....... TO ...P....")
-85C5:       13                           ;     ELSE goto=0x85D9
-85C6:          0E 11                     ;       COM_0E_while_fail length=0x0011
-85C8:             13                     ;         COM_13_process_phrase_by_room_first_second()
-85C9:             0D 0E                  ;         COM_0D_while_pass length=0x000E
+;                                        ;         end group_AND at 0x85AA
+;                                        ;       end group_OR at 0x84BB
+;                                        ;     end case
+85C4:       0E 13                        ;     case COM_0A_is_input_phrase("THROW u....... TO ...P...."), length=0x0013
+85C6:          0E 11                     ;       COM_0E_group_OR length=0x0011 (to 0x85D9)
+85C8:             13                     ;         COM_13_process_phrase_by_room()
+85C9:             0D 0E                  ;         COM_0D_group_AND length=0x000E (to 0x85D9)
 85CB:                A9                  ;           FN_A9_PRINT_noun2
-85CC:                04 0B               ;           COM_04_print_message length=0x000B
-85CE:                   77 5B 05 B9 19 BC 9E 48 D6 15 2E ;
+85CC:                04 0B               ;           COM_04_print_message length=0x000B (to 0x85D9)
+85CE:                   77 5B 05 B9 19 BC 9E 48 D6 15 2E
 ;
 ;                       DOESN'T WANT IT.
 ;
-85D9:       0F                           ;     COM_0A_is_input_phrase("DROP ..C..... IN ......O.")
-85DA:       1D                           ;     ELSE goto=0x85F8
-85DB:          0E 1B                     ;       COM_0E_while_fail length=0x001B
-85DD:             0D 06                  ;         COM_0D_while_pass length=0x0006
-85DF:                1A                  ;           COM_1A_set_var_to_first_noun()
-85E0:                14                  ;           COM_14_execute_and_reverse_status next command
-85E1:                2E 10               ;           UNKNOWN_COM_2E, Value: 0x10
-85E3:                14                  ;           COM_14_execute_and_reverse_status next command
-85E4:                8F                  ;           FN_8F_TRY_TO_GET_OBJECT
-85E5:             14                     ;         COM_14_execute_and_reverse_status next command
-85E6:             BF                     ;         FN_BF_ASSERT_VAR_IS_CLOSED
-85E7:             0D 05                  ;         COM_0D_while_pass length=0x0005
-85E9:                1B                  ;           COM_1B_set_var_to_second_noun()
-85EA:                14                  ;           COM_14_execute_and_reverse_status next command
-85EB:                15 02               ;           COM_15_check_var(value=0x02)
+;                                        ;         end group_AND at 0x85C9
+;                                        ;       end group_OR at 0x85C6
+;                                        ;     end case
+85D9:       0F 1D                        ;     case COM_0A_is_input_phrase("DROP ..C..... IN ......O."), length=0x001D
+85DB:          0E 1B                     ;       COM_0E_group_OR length=0x001B (to 0x85F8)
+85DD:             0D 06                  ;         COM_0D_group_AND length=0x0006 (to 0x85E5)
+85DF:                1A                  ;           COM_1A_set_var_to_noun1()
+85E0:                14                  ;           COM_14_reverse_status next command
+85E1:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
+85E3:                14                  ;           COM_14_reverse_status next command
+85E4:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x85DD
+85E5:             14                     ;         COM_14_reverse_status next command
+85E6:             BF                     ;         FN_BF_IS_LIQUID_REACHABLE
+85E7:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x85EE)
+85E9:                1B                  ;           COM_1B_set_var_to_noun2()
+85EA:                14                  ;           COM_14_reverse_status next command
+85EB:                15 02               ;           COM_15_is_var_attributes(value=0x02)
 85ED:                B6                  ;           FN_B6_PRINT_TWO_SAME_SPACE
+;                                        ;         end group_AND at 0x85E7
 85EE:             B7                     ;         FN_B7_PRINT_HAVE_TO_OPEN_var
-85EF:             0D 04                  ;         COM_0D_while_pass length=0x0004
-85F1:                1B                  ;           COM_1B_set_var_to_second_noun()
-85F2:                32                  ;           COM_32_move_first_noun_to_var_object()
+85EF:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x85F5)
+85F1:                1B                  ;           COM_1B_set_var_to_noun2()
+85F2:                32                  ;           COM_32_move_noun1_to_var_object()
 85F3:                B5                  ;           FN_B5_PRINT_BY_YOUR_COMMAND
 85F4:                0C                  ;           COM_0C_fail()
-85F5:             13                     ;         COM_13_process_phrase_by_room_first_second()
-85F6:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;         end group_AND at 0x85EF
+85F5:             13                     ;         COM_13_process_phrase_by_room()
+85F6:             14                     ;         COM_14_reverse_status next command
 85F7:             0C                     ;         COM_0C_fail()
-85F8:       4D                           ;     COM_0A_is_input_phrase("FILL ......O. WITH u.......")
-85F9:       23                           ;     ELSE goto=0x861D
-85FA:          0E 21                     ;       COM_0E_while_fail length=0x0021
-85FC:             0D 05                  ;         COM_0D_while_pass length=0x0005
-85FE:                1B                  ;           COM_1B_set_var_to_second_noun()
-85FF:                14                  ;           COM_14_execute_and_reverse_status next command
-8600:                2E 10               ;           UNKNOWN_COM_2E, Value: 0x10
+;                                        ;       end group_OR at 0x85DB
+;                                        ;     end case
+85F8:       4D 23                        ;     case COM_0A_is_input_phrase("FILL ......O. WITH u......."), length=0x0023
+85FA:          0E 21                     ;       COM_0E_group_OR length=0x0021 (to 0x861D)
+85FC:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x8603)
+85FE:                1B                  ;           COM_1B_set_var_to_noun2()
+85FF:                14                  ;           COM_14_reverse_status next command
+8600:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
 8602:                B8                  ;           FN_B8_PRINT_GARBAGE_GAMES
-8603:             14                     ;         COM_14_execute_and_reverse_status next command
-8604:             BF                     ;         FN_BF_ASSERT_VAR_IS_CLOSED
-8605:             0D 05                  ;         COM_0D_while_pass length=0x0005
-8607:                1A                  ;           COM_1A_set_var_to_first_noun()
-8608:                14                  ;           COM_14_execute_and_reverse_status next command
-8609:                15 02               ;           COM_15_check_var(value=0x02)
+;                                        ;         end group_AND at 0x85FC
+8603:             14                     ;         COM_14_reverse_status next command
+8604:             BF                     ;         FN_BF_IS_LIQUID_REACHABLE
+8605:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x860C)
+8607:                1A                  ;           COM_1A_set_var_to_noun1()
+8608:                14                  ;           COM_14_reverse_status next command
+8609:                15 02               ;           COM_15_is_var_attributes(value=0x02)
 860B:                B6                  ;           FN_B6_PRINT_TWO_SAME_SPACE
+;                                        ;         end group_AND at 0x8605
 860C:             B7                     ;         FN_B7_PRINT_HAVE_TO_OPEN_var
-860D:             0D 05                  ;         COM_0D_while_pass length=0x0005
-860F:                1B                  ;           COM_1B_set_var_to_second_noun()
-8610:                14                  ;           COM_14_execute_and_reverse_status next command
-8611:                2E 10               ;           UNKNOWN_COM_2E, Value: 0x10
+860D:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x8614)
+860F:                1B                  ;           COM_1B_set_var_to_noun2()
+8610:                14                  ;           COM_14_reverse_status next command
+8611:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
 8613:                B8                  ;           FN_B8_PRINT_GARBAGE_GAMES
-8614:             0D 04                  ;         COM_0D_while_pass length=0x0004
-8616:                1A                  ;           COM_1A_set_var_to_first_noun()
-8617:                31                  ;           COM_31_move_second_noun_to_var_object()
+;                                        ;         end group_AND at 0x860D
+8614:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x861A)
+8616:                1A                  ;           COM_1A_set_var_to_noun1()
+8617:                31                  ;           COM_31_move_noun2_to_var_object()
 8618:                B5                  ;           FN_B5_PRINT_BY_YOUR_COMMAND
 8619:                0C                  ;           COM_0C_fail()
-861A:             13                     ;         COM_13_process_phrase_by_room_first_second()
-861B:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;         end group_AND at 0x8614
+861A:             13                     ;         COM_13_process_phrase_by_room()
+861B:             14                     ;         COM_14_reverse_status next command
 861C:             0C                     ;         COM_0C_fail()
-861D:       4E                           ;     COM_0A_is_input_phrase("POUR u....... * *")
-861E:       3F                           ;     ELSE goto=0x865E
-861F:          0E 3D                     ;       COM_0E_while_fail length=0x003D
-8621:             0D 0A                  ;         COM_0D_while_pass length=0x000A
-8623:                1A                  ;           COM_1A_set_var_to_first_noun()
-8624:                14                  ;           COM_14_execute_and_reverse_status next command
-8625:                2E 10               ;           UNKNOWN_COM_2E, Value: 0x10
-8627:                04 03               ;           COM_04_print_message length=0x0003
-8629:                   81 A6 52         ;
+;                                        ;       end group_OR at 0x85FA
+;                                        ;     end case
+861D:       4E 3F                        ;     case COM_0A_is_input_phrase("POUR u....... * *"), length=0x003F
+861F:          0E 3D                     ;       COM_0E_group_OR length=0x003D (to 0x865E)
+8621:             0D 0A                  ;         COM_0D_group_AND length=0x000A (to 0x862D)
+8623:                1A                  ;           COM_1A_set_var_to_noun1()
+8624:                14                  ;           COM_14_reverse_status next command
+8625:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
+8627:                04 03               ;           COM_04_print_message length=0x0003 (to 0x862C)
+8629:                   81 A6 52        
 ;
 ;                       POOR
 ;
-862C:                11                  ;           COM_11_print_first_noun()
-862D:             14                     ;         COM_14_execute_and_reverse_status next command
-862E:             BF                     ;         FN_BF_ASSERT_VAR_IS_CLOSED
-862F:             0D 10                  ;         COM_0D_while_pass length=0x0010
-8631:                09 00               ;           COM_09_compare_to_second_noun(obj=nothing)
+862C:                11                  ;           COM_11_print_noun1()
+;                                        ;         end group_AND at 0x8621
+862D:             14                     ;         COM_14_reverse_status next command
+862E:             BF                     ;         FN_BF_IS_LIQUID_REACHABLE
+862F:             0D 10                  ;         COM_0D_group_AND length=0x0010 (to 0x8641)
+8631:                09 00               ;           COM_09_is_noun2(obj=nothing)
 8633:                1C 00               ;           COM_1C_set_var_object(obj=nothing)
-8635:                32                  ;           COM_32_move_first_noun_to_var_object()
+8635:                32                  ;           COM_32_move_noun1_to_var_object()
 8636:                A8                  ;           FN_A8_PRINT_noun1
-8637:                04 08               ;           COM_04_print_message length=0x0008
-8639:                   4B 7B 09 9A 81 15 7F 98 ;
+8637:                04 08               ;           COM_04_print_message length=0x0008 (to 0x8641)
+8639:                   4B 7B 09 9A 81 15 7F 98
 ;
 ;                       IS NOW GONE.
 ;
-8641:             0D 12                  ;         COM_0D_while_pass length=0x0012
-8643:                1B                  ;           COM_1B_set_var_to_second_noun()
-8644:                14                  ;           COM_14_execute_and_reverse_status next command
-8645:                15 02               ;           COM_15_check_var(value=0x02)
+;                                        ;         end group_AND at 0x862F
+8641:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x8655)
+8643:                1B                  ;           COM_1B_set_var_to_noun2()
+8644:                14                  ;           COM_14_reverse_status next command
+8645:                15 02               ;           COM_15_is_var_attributes(value=0x02)
 8647:                A9                  ;           FN_A9_PRINT_noun2
-8648:                04 08               ;           COM_04_print_message length=0x0008
-864A:                   4B 7B 09 9A FB 14 F7 93 ;
+8648:                04 08               ;           COM_04_print_message length=0x0008 (to 0x8652)
+864A:                   4B 7B 09 9A FB 14 F7 93
 ;
 ;                       IS NOW DAMP.
 ;
 8652:                1C 00               ;           COM_1C_set_var_object(obj=nothing)
-8654:                32                  ;           COM_32_move_first_noun_to_var_object()
-8655:             0D 04                  ;         COM_0D_while_pass length=0x0004
-8657:                1B                  ;           COM_1B_set_var_to_second_noun()
-8658:                32                  ;           COM_32_move_first_noun_to_var_object()
+8654:                32                  ;           COM_32_move_noun1_to_var_object()
+;                                        ;         end group_AND at 0x8641
+8655:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x865B)
+8657:                1B                  ;           COM_1B_set_var_to_noun2()
+8658:                32                  ;           COM_32_move_noun1_to_var_object()
 8659:                B5                  ;           FN_B5_PRINT_BY_YOUR_COMMAND
 865A:                0C                  ;           COM_0C_fail()
-865B:             13                     ;         COM_13_process_phrase_by_room_first_second()
-865C:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;         end group_AND at 0x8655
+865B:             13                     ;         COM_13_process_phrase_by_room()
+865C:             14                     ;         COM_14_reverse_status next command
 865D:             0C                     ;         COM_0C_fail()
-865E:       4F                           ;     COM_0A_is_input_phrase("DRINK u....... * *")
-865F:       52                           ;     ELSE goto=0x86B2
-8660:          0E 50                     ;       COM_0E_while_fail length=0x0050
-8662:             0D 32                  ;         COM_0D_while_pass length=0x0032
-8664:                1A                  ;           COM_1A_set_var_to_first_noun()
-8665:                14                  ;           COM_14_execute_and_reverse_status next command
-8666:                2E 10               ;           UNKNOWN_COM_2E, Value: 0x10
-8668:                04 2A               ;           COM_04_print_message length=0x002A
-866A:                   C7 DE AF 23 5B 17 AE 54 BF 14 10 BC F3 A0 4E 72 ;
-867A:                   83 64 D5 B5 DD 78 95 14 51 18 59 C2 2E A1 04 58 ;
-868A:                   4B 5E 9B 64 1B A1 EB 5B 4B 99 ;
+;                                        ;       end group_OR at 0x861F
+;                                        ;     end case
+;;
+;; Drinking things
+865E:       4F 52                        ;     case COM_0A_is_input_phrase("DRINK u....... * *"), length=0x0052
+8660:          0E 50                     ;       COM_0E_group_OR length=0x0050 (to 0x86B2)
+8662:             0D 32                  ;         COM_0D_group_AND length=0x0032 (to 0x8696)
+8664:                1A                  ;           COM_1A_set_var_to_noun1()
+8665:                14                  ;           COM_14_reverse_status next command
+8666:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10);; ??Drinkable??
+8668:                04 2A               ;           COM_04_print_message length=0x002A (to 0x8694)
+866A:                   C7 DE AF 23 5B 17 AE 54 BF 14 10 BC F3 A0 4E 72
+867A:                   83 64 D5 B5 DD 78 95 14 51 18 59 C2 2E A1 04 58
+868A:                   4B 5E 9B 64 1B A1 EB 5B 4B 99
 ;
 ;                       YOU'RE SICK, BUT NOT HALF AS SICK AS YOU WOULD BE IF YOU
 ;                       DRANK
 ;
 8694:                A8                  ;           FN_A8_PRINT_noun1
 8695:                8B                  ;           FN_8B_PRINT_PERIOD
-8696:             14                     ;         COM_14_execute_and_reverse_status next command
-8697:             BF                     ;         FN_BF_ASSERT_VAR_IS_CLOSED
-8698:             0D 04                  ;         COM_0D_while_pass length=0x0004
-869A:                13                  ;           COM_13_process_phrase_by_room_first_second()
+;                                        ;         end group_AND at 0x8662
+8696:             14                     ;         COM_14_reverse_status next command
+8697:             BF                     ;         FN_BF_IS_LIQUID_REACHABLE
+8698:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x869E)
+869A:                13                  ;           COM_13_process_phrase_by_room()
 869B:                1C 00               ;           COM_1C_set_var_object(obj=nothing)
-869D:                32                  ;           COM_32_move_first_noun_to_var_object()
-869E:             0D 12                  ;         COM_0D_while_pass length=0x0012
+869D:                32                  ;           COM_32_move_noun1_to_var_object()
+;                                        ;         end group_AND at 0x8698
+869E:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x86B2)
 86A0:                1C 00               ;           COM_1C_set_var_object(obj=nothing)
-86A2:                32                  ;           COM_32_move_first_noun_to_var_object()
-86A3:                04 0D               ;           COM_04_print_message length=0x000D
-86A5:                   C7 DE 4F 15 33 61 68 B1 75 B1 E6 72 2E ;
+86A2:                32                  ;           COM_32_move_noun1_to_var_object()
+86A3:                04 0D               ;           COM_04_print_message length=0x000D (to 0x86B2)
+86A5:                   C7 DE 4F 15 33 61 68 B1 75 B1 E6 72 2E
 ;
 ;                       YOU FEEL REFRESHED.
 ;
-86B2:       4B                           ;     COM_0A_is_input_phrase("DROP ..C..... ON .......L")
-86B3:       43                           ;     ELSE goto=0x86F7
-86B4:          0E 41                     ;       COM_0E_while_fail length=0x0041
-86B6:             13                     ;         COM_13_process_phrase_by_room_first_second()
-86B7:             0D 06                  ;         COM_0D_while_pass length=0x0006
-86B9:                1A                  ;           COM_1A_set_var_to_first_noun()
-86BA:                14                  ;           COM_14_execute_and_reverse_status next command
-86BB:                2E 10               ;           UNKNOWN_COM_2E, Value: 0x10
-86BD:                14                  ;           COM_14_execute_and_reverse_status next command
-86BE:                8F                  ;           FN_8F_TRY_TO_GET_OBJECT
-86BF:             0D 16                  ;         COM_0D_while_pass length=0x0016
-86C1:                2E 10               ;           UNKNOWN_COM_2E, Value: 0x10
-86C3:                0E 12               ;           COM_0E_while_fail length=0x0012
-86C5:                   14               ;             COM_14_execute_and_reverse_status next command
-86C6:                   BF               ;             FN_BF_ASSERT_VAR_IS_CLOSED
-86C7:                   0D 0E            ;             COM_0D_while_pass length=0x000E
+;                                        ;         end group_AND at 0x869E
+;                                        ;       end group_OR at 0x8660
+;                                        ;     end case
+86B2:       4B 43                        ;     case COM_0A_is_input_phrase("DROP ..C..... ON .......L"), length=0x0043
+86B4:          0E 41                     ;       COM_0E_group_OR length=0x0041 (to 0x86F7)
+86B6:             13                     ;         COM_13_process_phrase_by_room()
+86B7:             0D 06                  ;         COM_0D_group_AND length=0x0006 (to 0x86BF)
+86B9:                1A                  ;           COM_1A_set_var_to_noun1()
+86BA:                14                  ;           COM_14_reverse_status next command
+86BB:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
+86BD:                14                  ;           COM_14_reverse_status next command
+86BE:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x86B7
+86BF:             0D 16                  ;         COM_0D_group_AND length=0x0016 (to 0x86D7)
+86C1:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
+86C3:                0E 12               ;           COM_0E_group_OR length=0x0012 (to 0x86D7)
+86C5:                   14               ;             COM_14_reverse_status next command
+86C6:                   BF               ;             FN_BF_IS_LIQUID_REACHABLE
+86C7:                   0D 0E            ;             COM_0D_group_AND length=0x000E (to 0x86D7)
 86C9:                      A9            ;               FN_A9_PRINT_noun2
-86CA:                      04 08         ;               COM_04_print_message length=0x0008
-86CC:                         4B 7B 09 9A F7 17 9B C1 ;
+86CA:                      04 08         ;               COM_04_print_message length=0x0008 (to 0x86D4)
+86CC:                         4B 7B 09 9A F7 17 9B C1
 ;
-;                             IS NOW WET.
+;                             IS NOW WET. 
 ;
 86D4:                      1C 00         ;               COM_1C_set_var_object(obj=nothing)
-86D6:                      32            ;               COM_32_move_first_noun_to_var_object()
-86D7:             0D 16                  ;         COM_0D_while_pass length=0x0016
-86D9:                1B                  ;           COM_1B_set_var_to_second_noun()
-86DA:                14                  ;           COM_14_execute_and_reverse_status next command
-86DB:                15 01               ;           COM_15_check_var(value=0x01)
-86DD:                04 10               ;           COM_04_print_message length=0x0010
-86DF:                   5F BE 5D B1 D0 B5 F3 A0 99 61 7A C4 39 17 FF 9F ;
+86D6:                      32            ;               COM_32_move_noun1_to_var_object()
+;                                        ;             end group_AND at 0x86C7
+;                                        ;           end group_OR at 0x86C3
+;                                        ;         end group_AND at 0x86BF
+86D7:             0D 16                  ;         COM_0D_group_AND length=0x0016 (to 0x86EF)
+86D9:                1B                  ;           COM_1B_set_var_to_noun2()
+86DA:                14                  ;           COM_14_reverse_status next command
+86DB:                15 01               ;           COM_15_is_var_attributes(value=0x01)
+86DD:                04 10               ;           COM_04_print_message length=0x0010 (to 0x86EF)
+86DF:                   5F BE 5D B1 D0 B5 F3 A0 99 61 7A C4 39 17 FF 9F
 ;
 ;                       THERE'S NOT ENOUGH ROOM.
 ;
-86EF:             0D 04                  ;         COM_0D_while_pass length=0x0004
-86F1:                1B                  ;           COM_1B_set_var_to_second_noun()
-86F2:                32                  ;           COM_32_move_first_noun_to_var_object()
+;                                        ;         end group_AND at 0x86D7
+86EF:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x86F5)
+86F1:                1B                  ;           COM_1B_set_var_to_noun2()
+86F2:                32                  ;           COM_32_move_noun1_to_var_object()
 86F3:                B5                  ;           FN_B5_PRINT_BY_YOUR_COMMAND
 86F4:                0C                  ;           COM_0C_fail()
-86F5:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;         end group_AND at 0x86EF
+86F5:             14                     ;         COM_14_reverse_status next command
 86F6:             0C                     ;         COM_0C_fail()
-86F7:       19                           ;     COM_0A_is_input_phrase("DIAGNO * * *")
-86F8:       80 EB                        ;     ELSE goto=0x87E5
-86FA:          0D 80 E8                  ;       COM_0D_while_pass length=0x00E8
+;                                        ;       end group_OR at 0x86B4
+;                                        ;     end case
+86F7:       19 80 EB                     ;     case COM_0A_is_input_phrase("DIAGNO * * *"), length=0x00EB
+86FA:          0D 80 E8                  ;       COM_0D_group_AND length=0x00E8 (to 0x87E5)
 86FD:             1C 01                  ;         COM_1C_set_var_object(obj=OBJ_01_PLAYER)
-86FF:             0B 80 E3 22            ;         COM_0B_switch length=0x00E3, function=COM_22_is_less_equal_health(points)
-8703:                05                  ;           COM_22_is_less_equal_health(points=5)
-8704:                24                  ;           ELSE goto=0x8729
-8705:                   04 22            ;             COM_04_print_message length=0x0022
-8707:                      C7 DE 94 14 51 5E 9B 96 34 A1 3B 16 F3 B9 E9 8B ;
-8717:                      5B BB A3 48 63 BE AB 98 47 55 B3 8B 4E 86 1B 8A ;
-8727:                      19 A1         ;
+86FF:             0B 80 E3 22            ;         COM_0B_switch length=0x00E3 (to 0x87E6), function=COM_22_is_less_equal_health(points)
+8703:                05 24               ;           case COM_22_is_less_equal_health(points=5), length=0x0024
+8705:                   04 22            ;             COM_04_print_message length=0x0022 (to 0x8729)
+8707:                      C7 DE 94 14 51 5E 9B 96 34 A1 3B 16 F3 B9 E9 8B
+8717:                      5B BB A3 48 63 BE AB 98 47 55 B3 8B 4E 86 1B 8A
+8727:                      19 A1        
 ;
 ;                          YOU ARE ON YOUR LAST LEGS. ANYTHING COULD KILL YOU!
 ;
-8729:                14                  ;           COM_22_is_less_equal_health(points=20)
-872A:                1C                  ;           ELSE goto=0x8747
-872B:                   04 1A            ;             COM_04_print_message length=0x001A
-872D:                      0F A0 71 16 5B B1 41 6E 0B 58 3F 99 7B B4 8E 48 ;
-873D:                      51 18 A8 C2 4A 5E F3 46 71 7B ;
+;                                        ;           end case
+8729:                14 1C               ;           case COM_22_is_less_equal_health(points=20), length=0x001C
+872B:                   04 1A            ;             COM_04_print_message length=0x001A (to 0x8747)
+872D:                      0F A0 71 16 5B B1 41 6E 0B 58 3F 99 7B B4 8E 48
+873D:                      51 18 A8 C2 4A 5E F3 46 71 7B
 ;
 ;                          ONE MORE GOOD INJURY AND YOU'VE HAD IT!
 ;
-8747:                23                  ;           COM_22_is_less_equal_health(points=35)
-8748:                22                  ;           ELSE goto=0x876B
-8749:                   04 20            ;             COM_04_print_message length=0x0020
-874B:                      C7 DE 94 14 48 5E 2E 60 91 7A 17 17 7F 7B CE 15 ;
-875B:                      9B 8F 52 77 75 B1 B3 55 5B 4D 17 53 91 BE 2B 96 ;
+;                                        ;           end case
+8747:                23 22               ;           case COM_22_is_less_equal_health(points=35), length=0x0022
+8749:                   04 20            ;             COM_04_print_message length=0x0020 (to 0x876B)
+874B:                      C7 DE 94 14 48 5E 2E 60 91 7A 17 17 7F 7B CE 15
+875B:                      9B 8F 52 77 75 B1 B3 55 5B 4D 17 53 91 BE 2B 96
 ;
-;                          YOU ARE FEELING QUITE ILL. I PRESCRIBE CAUTION!
+;                          YOU ARE FEELING QUITE ILL. I PRESCRIBE CAUTION! 
 ;
-876B:                33                  ;           COM_22_is_less_equal_health(points=51)
-876C:                32                  ;           ELSE goto=0x879F
-876D:                   04 30            ;             COM_04_print_message length=0x0030
-876F:                      C7 DE 94 14 50 5E F3 A0 67 66 90 8C D7 6A 16 A3 ;
-877F:                      D2 9C 47 49 51 18 55 C2 87 74 B3 8B 4D BD 44 5E ;
-878F:                      8E 62 23 62 14 53 51 5E 9B 64 34 A1 AE B7 1B 6A ;
+;                                        ;           end case
+876B:                33 32               ;           case COM_22_is_less_equal_health(points=51), length=0x0032
+876D:                   04 30            ;             COM_04_print_message length=0x0030 (to 0x879F)
+876F:                      C7 DE 94 14 50 5E F3 A0 67 66 90 8C D7 6A 16 A3
+877F:                      D2 9C 47 49 51 18 55 C2 87 74 B3 8B 4D BD 44 5E
+878F:                      8E 62 23 62 14 53 51 5E 9B 64 34 A1 AE B7 1B 6A
 ;
 ;                          YOU ARE NOT FEELING UP TO PAR. YOU SHOULD TAKE BETTER CARE
 ;                          OF YOURSELF.
 ;
-879F:                44                  ;           COM_22_is_less_equal_health(points=68)
-87A0:                24                  ;           ELSE goto=0x87C5
-87A1:                   04 22            ;             COM_04_print_message length=0x0022
-87A3:                      C7 DE AF 23 4F 15 43 61 AB 98 EF A6 53 C0 81 15 ;
-87B3:                      73 9E 8E C5 23 62 5F BE DB 14 27 B1 66 94 8D 48 ;
-87C3:                      6F 62         ;
+;                                        ;           end case
+879F:                44 24               ;           case COM_22_is_less_equal_health(points=68), length=0x0024
+87A1:                   04 22            ;             COM_04_print_message length=0x0022 (to 0x87C5)
+87A3:                      C7 DE AF 23 4F 15 43 61 AB 98 EF A6 53 C0 81 15
+87B3:                      73 9E 8E C5 23 62 5F BE DB 14 27 B1 66 94 8D 48
+87C3:                      6F 62        
 ;
 ;                          YOU'RE FEELING PRETTY GOOD UNDER THE CIRCUMSTANCES.
 ;
-87C5:                FF                  ;           COM_22_is_less_equal_health(points=255)
-87C6:                1E                  ;           ELSE goto=0x87E5
-87C7:                   04 1C            ;             COM_04_print_message length=0x001C
-87C9:                      C7 DE 4F 15 33 61 4B 49 41 6E 03 58 D6 B5 DB 72 ;
-87D9:                      5B 59 51 18 59 C2 2F 62 B9 14 E7 B2 ;
+;                                        ;           end case
+87C5:                FF 1E               ;           case COM_22_is_less_equal_health(points=255), length=0x001E
+87C7:                   04 1C            ;             COM_04_print_message length=0x001C (to 0x87E5)
+87C9:                      C7 DE 4F 15 33 61 4B 49 41 6E 03 58 D6 B5 DB 72
+87D9:                      5B 59 51 18 59 C2 2F 62 B9 14 E7 B2
 ;
 ;                          YOU FEEL AS GOOD AS THE DAY YOU WERE BORN.
 ;
-87E5:       52                           ;     COM_0A_is_input_phrase("START u....... * *")
-87E6:       04                           ;     ELSE goto=0x87EB
-87E7:          0E 02                     ;       COM_0E_while_fail length=0x0002
-87E9:             13                     ;         COM_13_process_phrase_by_room_first_second()
+;                                        ;           end case
+;                                        ;         end decode_switch at 0x86FF
+;                                        ;       end group_AND at 0x86FA
+;                                        ;     end case
+87E5:       52 04                        ;     case COM_0A_is_input_phrase("START u....... * *"), length=0x0004
+87E7:          0E 02                     ;       COM_0E_group_OR length=0x0002 (to 0x87EB)
+87E9:             13                     ;         COM_13_process_phrase_by_room()
 87EA:             B8                     ;         FN_B8_PRINT_GARBAGE_GAMES
-87EB:       56                           ;     COM_0A_is_input_phrase("DIG u....... WITH u.......")
-87EC:       11                           ;     ELSE goto=0x87FE
-87ED:          0E 0F                     ;       COM_0E_while_fail length=0x000F
-87EF:             13                     ;         COM_13_process_phrase_by_room_first_second()
-87F0:             04 0C                  ;         COM_04_print_message length=0x000C
-87F2:                46 77 6B 79 73 7B 81 BF 0F EE 81 48 ;
+;                                        ;       end group_OR at 0x87E7
+;                                        ;     end case
+87EB:       56 11                        ;     case COM_0A_is_input_phrase("DIG u....... WITH u......."), length=0x0011
+87ED:          0E 0F                     ;       COM_0E_group_OR length=0x000F (to 0x87FE)
+87EF:             13                     ;         COM_13_process_phrase_by_room()
+87F0:             04 0C                  ;         COM_04_print_message length=0x000C (to 0x87FE)
+87F2:                46 77 6B 79 73 7B 81 BF 0F EE 81 48
 ;
 ;                    I DIG IT TOO, MAN!
 ;
-87FE:       50                           ;     COM_0A_is_input_phrase("TURN * ON u.......")
-87FF:       11                           ;     ELSE goto=0x8811
-8800:          0E 0F                     ;       COM_0E_while_fail length=0x000F
-8802:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8803:             04 0C                  ;         COM_04_print_message length=0x000C
-8805:                C7 DE D3 14 E6 96 09 15 82 17 71 49 ;
+;                                        ;       end group_OR at 0x87ED
+;                                        ;     end case
+87FE:       50 11                        ;     case COM_0A_is_input_phrase("TURN * ON u......."), length=0x0011
+8800:          0E 0F                     ;       COM_0E_group_OR length=0x000F (to 0x8811)
+8802:             13                     ;         COM_13_process_phrase_by_room()
+8803:             04 0C                  ;         COM_04_print_message length=0x000C (to 0x8811)
+8805:                C7 DE D3 14 E6 96 09 15 82 17 71 49
 ;
 ;                    YOU CAN'T DO THAT!
 ;
-8811:       51                           ;     COM_0A_is_input_phrase("TURN * OFF u.......")
-8812:       2B                           ;     ELSE goto=0x883E
-8813:          0E 29                     ;       COM_0E_while_fail length=0x0029
-8815:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8816:             04 26                  ;         COM_04_print_message length=0x0026
-8818:                68 4D AF A0 51 18 45 C2 83 48 74 C0 95 96 E7 9F ;
-8828:                63 BE AB 98 D0 9E 0B EE 0F BC 66 C6 AF 14 8F 17 ;
-8838:                CF B2 11 58 1B 9C   ;
+;                                        ;       end group_OR at 0x8800
+;                                        ;     end case
+8811:       51 2B                        ;     case COM_0A_is_input_phrase("TURN * OFF u......."), length=0x002B
+8813:          0E 29                     ;       COM_0E_group_OR length=0x0029 (to 0x883E)
+8815:             13                     ;         COM_13_process_phrase_by_room()
+8816:             04 26                  ;         COM_04_print_message length=0x0026 (to 0x883E)
+8818:                68 4D AF A0 51 18 45 C2 83 48 74 C0 95 96 E7 9F
+8828:                63 BE AB 98 D0 9E 0B EE 0F BC 66 C6 AF 14 8F 17
+8838:                CF B2 11 58 1B 9C  
 ;
-;                    BEFORE YOU CAN TURN SOMETHING OFF, IT MUST BE TURNED ON.
+;                    BEFORE YOU CAN TURN SOMETHING OFF, IT MUST BE TURNED ON. 
 ;
-883E:       53                           ;     COM_0A_is_input_phrase("STRIKE u....... * *")
-883F:       0F                           ;     ELSE goto=0x884F
-8840:          0E 0D                     ;       COM_0E_while_fail length=0x000D
-8842:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8843:             0D 0A                  ;         COM_0D_while_pass length=0x000A
-8845:                04 08               ;           COM_04_print_message length=0x0008
-8847:                   57 C6 93 13 3B C0 8D 54 ;
+;                                        ;       end group_OR at 0x8813
+;                                        ;     end case
+883E:       53 0F                        ;     case COM_0A_is_input_phrase("STRIKE u....... * *"), length=0x000F
+8840:          0E 0D                     ;       COM_0E_group_OR length=0x000D (to 0x884F)
+8842:             13                     ;         COM_13_process_phrase_by_room()
+8843:             0D 0A                  ;         COM_0D_group_AND length=0x000A (to 0x884F)
+8845:                04 08               ;           COM_04_print_message length=0x0008 (to 0x884F)
+8847:                   57 C6 93 13 3B C0 8D 54
 ;
 ;                       USE 'ATTACK'
 ;
-884F:       58                           ;     COM_0A_is_input_phrase("POINT u....... * *")
-8850:       0D                           ;     ELSE goto=0x885E
-8851:          0E 0B                     ;       COM_0E_while_fail length=0x000B
-8853:             13                     ;         COM_13_process_phrase_by_room_first_second()
-8854:             0D 08                  ;         COM_0D_while_pass length=0x0008
-8856:                04 06               ;           COM_04_print_message length=0x0006
-8858:                   55 77 1B 60 97 7B ;
+;                                        ;         end group_AND at 0x8843
+;                                        ;       end group_OR at 0x8840
+;                                        ;     end case
+884F:       58 0D                        ;     case COM_0A_is_input_phrase("POINT u....... * *"), length=0x000D
+8851:          0E 0B                     ;       COM_0E_group_OR length=0x000B (to 0x885E)
+8853:             13                     ;         COM_13_process_phrase_by_room()
+8854:             0D 08                  ;         COM_0D_group_AND length=0x0008 (to 0x885E)
+8856:                04 06               ;           COM_04_print_message length=0x0006 (to 0x885E)
+8858:                   55 77 1B 60 97 7B
 ;
 ;                       I SEE IT.
 ;
-885E:       07                           ;     COM_0A_is_input_phrase("INVENT * * *")
-885F:       1A                           ;     ELSE goto=0x887A
-8860:          0D 18                     ;       COM_0D_while_pass length=0x0018
-8862:             04 15                  ;         COM_04_print_message length=0x0015
-8864:                C7 DE 94 14 45 5E 3C 49 D0 DD D6 6A DB 72 FE 67 ;
-8874:                89 8D 91 7A 3A      ;
+;                                        ;         end group_AND at 0x8854
+;                                        ;       end group_OR at 0x8851
+;                                        ;     end case
+885E:       07 1A                        ;     case COM_0A_is_input_phrase("INVENT * * *"), length=0x001A
+8860:          0D 18                     ;       COM_0D_group_AND length=0x0018 (to 0x887A)
+8862:             04 15                  ;         COM_04_print_message length=0x0015 (to 0x8879)
+8864:                C7 DE 94 14 45 5E 3C 49 D0 DD D6 6A DB 72 FE 67
+8874:                89 8D 91 7A 3A     
 ;
 ;                    YOU ARE CARRYING THE FOLLOWING:
 ;
 8879:             06                     ;         COM_06_print_inventory()
+;                                        ;       end group_AND at 0x8860
+;                                        ;     end case
+;                                        ;   end decode_switch at 0x7D95
+;                                        ; end group_OR at 0x7D51
 ```
 
 # Object Data
@@ -4945,1308 +5133,1560 @@ Objects have a room number and a section number.
 ; held. The room number is not unique, and the "where am I" tuple must include the disk number.
 ; Why isn't the room number unique? Because there are more than 128 rooms. Some numbers have to
 ; be reused.
-
-; Two data sections of objects:
 ;
-; 1st checked by COM 2E
-;  ?? 0x80 ?? look at
-;  ?? 0x40 ??
-;  ?? 0x20 ??
-;  ?? 0x10 ?? liquid
+; !! Talk about using dynamite in the wrong room etc but do that in the "is_located" function comments
 ;
-; 2nd checked by COM 15
-;   bWCP AXOL
-; u=1 if in game play ??
-; W=1 if can be a weapon
-; C=1 if can be carried (portable)
-; P=1 if living creature
-; A=1 if closable
-; X=1 if lockable
-; O=1 closed (??door)
-; L=1 locked (??door)
+; The upper nibble (extended attributes) is checked by COM_2E. The regular attributes are
+; checked by COM_15. Here is what they mean:
+;
+; GLCQ----  ?WPAORHS
+;
+;   G=1 GLASS    if transparent (vial, bottle, gun cabinet)
+;   L=1 LOCKED   if object is locked
+;   C=1 CLOSED   if object is closed
+;   Q=1 LIQUID   if object is a liquid (can be poured/drunk)
+;
+;   Upper bit ?? 
+;   W=1 WEAPON   if object is considered a weapon (gun, crowbar, shovel)
+;   P=1 PORTABLE if object is portable (gettable). Gettable objects have defined weight.
+;   A=1 ALIVE    if object is a living creature (prospector, snake, alien)
+;   O=1 OPENABLE if can be opened (doors, drawers, etc)
+;   R=1 READABLE if object is readable (signs and such)
+;   H=1 HOLDER   if object can hold things (drawers, dressers, safe, etc)
+;   S=1 SURFACE  if object is a surface you can place other objects on (desk, table, etc)
 
 ObjectData:
-887A: 00 AB 32  ; List_ID=0x00, length=0x2B32
+887A: 00 AB 32  ; List_ID=0x00, length=0x2B32 (to 0xB3AF)
 
 ; -------------- Object OBJ_01_PLAYER --------------
-887D: 01 80 87                           ; Word_num=0x01 -player-, length=0x0087
+887D: 01 80 87                           ; Word_num=0x01 -player-, length=0x0087 (to 0x8907)
 8880: 80 01 80                           ; Location=0x80, disk_section=1, ext_attr=0000...., attributes=1000_0000 ()
-8883:    0A 35                           ;   Section=0A:SECTION_0A_UPON_DEATH, length=0x0035
-8885:       0D 33                        ;     COM_0D_while_pass length=0x0033
-8887:          0E 24                     ;       COM_0E_while_fail length=0x0024
-8889:             0D 20                  ;         COM_0D_while_pass length=0x0020
-888B:                03 01 35            ;           COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_35_??)
-888E:                1F 1B               ;           COM_1F_print2 length=0x001B
-8890:                   5F BE 60 17 17 48 CF 17 FF 99 F3 17 C7 B5 4C D9 ;
-88A0:                   67 61 FB 8E 7B A6 40 B9 35 A1 21 ;
+;
+;; When the player dies, print the percent completed. Print a note if the
+;; player has the snake venom.
+8883:    0A 35                           ;   Section=0A:SECTION_0A_UPON_DEATH, length=0x0035 (to 0x88BA)
+8885:       0D 33                        ;     COM_0D_group_AND length=0x0033 (to 0x88BA)
+8887:          0E 24                     ;       COM_0E_group_OR length=0x0024 (to 0x88AD)
+8889:             0D 20                  ;         COM_0D_group_AND length=0x0020 (to 0x88AB)
+888B:                03 01 35            ;           COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_35_SNAKE_VENOM)
+888E:                1F 1B               ;           COM_1F_print2 length=0x001B (to 0x88AB)
+8890:                   5F BE 60 17 17 48 CF 17 FF 99 F3 17 C7 B5 4C D9
+88A0:                   67 61 FB 8E 7B A6 40 B9 35 A1 21
 ;
 ;                       THE SNAKE VENOM WAS EXTREMELY POISONOUS!
 ;
-88AB:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;         end group_AND at 0x8889
+88AB:             14                     ;         COM_14_reverse_status next command
 88AC:             0C                     ;         COM_0C_fail()
-88AD:          1F 09                     ;       COM_1F_print2 length=0x0009
-88AF:             C7 DE 94 14 46 5E 86 5F 2E ;
+;                                        ;       end group_OR at 0x8887
+88AD:          1F 09                     ;       COM_1F_print2 length=0x0009 (to 0x88B8)
+88AF:             C7 DE 94 14 46 5E 86 5F 2E
 ;
 ;                 YOU ARE DEAD.
 ;
 88B8:          C9                        ;       FN_C9_PRINT_COMPLETED_PERCENT
 88B9:          24                        ;       COM_24_exit_program()
-88BA:    08 43                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0043
-88BC:       0E 41                        ;     COM_0E_while_fail length=0x0041
-88BE:          0D 1E                     ;       COM_0D_while_pass length=0x001E
-88C0:             03 39 4B               ;         COM_03_is_located(owner=OBJ_39_DYNAMITE, obj=OBJ_4B_??)
-88C3:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;     end group_AND at 0x8885
+;
+88BA:    08 43                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0043 (to 0x88FF)
+88BC:       0E 41                        ;     COM_0E_group_OR length=0x0041 (to 0x88FF)
+88BE:          0D 1E                     ;       COM_0D_group_AND length=0x001E (to 0x88DE)
+88C0:             03 39 4B               ;         COM_03_is_located(owner=OBJ_39_DYNAMITE, obj=OBJ_4B_LIT_DYNAMITE_FUSE)
+88C3:             14                     ;         COM_14_reverse_status next command
 88C4:             01 39                  ;         COM_01_is_in_pack_or_room(obj=OBJ_39_DYNAMITE)
-88C6:             0E 06                  ;         COM_0E_while_fail length=0x0006
+88C6:             0E 06                  ;         COM_0E_group_OR length=0x0006 (to 0x88CE)
 88C8:                03 9C 01            ;           COM_03_is_located(owner=RM_1_9C_??, obj=OBJ_01_PLAYER)
 88CB:                03 99 01            ;           COM_03_is_located(owner=RM_1_99_??, obj=OBJ_01_PLAYER)
-88CE:             0E 06                  ;         COM_0E_while_fail length=0x0006
+;                                        ;         end group_OR at 0x88C6
+88CE:             0E 06                  ;         COM_0E_group_OR length=0x0006 (to 0x88D6)
 88D0:                03 9A 39            ;           COM_03_is_located(owner=RM_1_9A_??, obj=OBJ_39_DYNAMITE)
 88D3:                03 9D 39            ;           COM_03_is_located(owner=RM_1_9D_??, obj=OBJ_39_DYNAMITE)
-88D6:             1F 06                  ;         COM_1F_print2 length=0x0006
-88D8:                01 4F 41 A0 D9 9F   ;
+;                                        ;         end group_OR at 0x88CE
+88D6:             1F 06                  ;         COM_1F_print2 length=0x0006 (to 0x88DE)
+88D8:                01 4F 41 A0 D9 9F  
 ;
 ;                    BOOOOOOM!
 ;
-88DE:          0D 1F                     ;       COM_0D_while_pass length=0x001F
-88E0:             03 39 4B               ;         COM_03_is_located(owner=OBJ_39_DYNAMITE, obj=OBJ_4B_??)
-88E3:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;       end group_AND at 0x88BE
+88DE:          0D 1F                     ;       COM_0D_group_AND length=0x001F (to 0x88FF)
+88E0:             03 39 4B               ;         COM_03_is_located(owner=OBJ_39_DYNAMITE, obj=OBJ_4B_LIT_DYNAMITE_FUSE)
+88E3:             14                     ;         COM_14_reverse_status next command
 88E4:             01 39                  ;         COM_01_is_in_pack_or_room(obj=OBJ_39_DYNAMITE)
-88E6:             1F 17                  ;         COM_1F_print2 length=0x0017
-88E8:                5F BE 13 15 CF 97 7F 7B 77 16 F3 B9 58 72 44 5E ;
-88F8:                30 60 7B 14 66 5C 21 ;
+88E6:             1F 17                  ;         COM_1F_print2 length=0x0017 (to 0x88FF)
+88E8:                5F BE 13 15 CF 97 7F 7B 77 16 F3 B9 58 72 44 5E
+88F8:                30 60 7B 14 66 5C 21
 ;
 ;                    THE DYNAMITE MUST HAVE BEEN A DUD!
 ;
-88FF:    02 02                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0002
+;                                        ;       end group_AND at 0x88DE
+;                                        ;     end group_OR at 0x88BC
+;
+88FF:    02 02                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0002 (to 0x8903)
 ;           YOU
-8901:       C7 DE                        ;
-8903:    09 02                           ;   Section=09:SECTION_09_HIT_POINTS, length=0x0002
-8905:       46 46                        ;     Hit_points=70_of_70
+8901:       C7 DE                       
+;
+8903:    09 02                           ;   Section=09:SECTION_09_HIT_POINTS, length=0x0002 (to 0x8907)
+8905:       46 46                        ;     max_hit_points=70 current_hit_points=70
 
 ; -------------- Object OBJ_02_DOOR_GAS_STATION --------------
-8907: 10 08                              ; Word_num=0x10 DOOR, length=0x0008
+8907: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8911)
 8909: 83 01 88                           ; Location=0x83, disk_section=1, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
-890C:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+890C:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8911)
 ;           DOOR
-890E:       81 5B 52                     ;
+890E:       81 5B 52                    
 
 ; -------------- Object OBJ_03_DOOR_FRONT_OF_STATION --------------
-8911: 10 08                              ; Word_num=0x10 DOOR, length=0x0008
+8911: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x891B)
 8913: 82 21 88                           ; Location=0x82, disk_section=1, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
-8916:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+8916:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x891B)
 ;           DOOR
-8918:       81 5B 52                     ;
+8918:       81 5B 52                    
 
 ; -------------- Object OBJ_04_DOOR_EAST_OF_STATION --------------
-891B: 10 2E                              ; Word_num=0x10 DOOR, length=0x002E
+891B: 10 2E                              ; Word_num=0x10 DOOR, length=0x002E (to 0x894B)
 891D: 88 61 8C                           ; Location=0x88, disk_section=1, ext_attr=0110...., attributes=1000_1100 (CLOSEABLE, ??LOCKABLE)
-8920:    07 24                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0024
-8922:       0E 22                        ;     COM_0E_while_fail length=0x0022
-8924:          0D 0A                     ;       COM_0D_while_pass length=0x000A
-8926:             0E 04                  ;         COM_0E_while_fail length=0x0004
+;
+8920:    07 24                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0024 (to 0x8946)
+8922:       0E 22                        ;     COM_0E_group_OR length=0x0022 (to 0x8946)
+8924:          0D 0A                     ;       COM_0D_group_AND length=0x000A (to 0x8930)
+8926:             0E 04                  ;         COM_0E_group_OR length=0x0004 (to 0x892C)
 8928:                0A 3A               ;           COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 892A:                0A 42               ;           COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
-892C:             14                     ;         COM_14_execute_and_reverse_status next command
-892D:             09 1C                  ;         COM_09_compare_to_second_noun(obj=OBJ_1C_SKELETON_KEY)
+;                                        ;         end group_OR at 0x8926
+892C:             14                     ;         COM_14_reverse_status next command
+892D:             09 1C                  ;         COM_09_is_noun2(obj=OBJ_1C_SKELETON_KEY)
 892F:             BA                     ;         FN_BA_OPEN_UNLOCK
-8930:          0D 14                     ;       COM_0D_while_pass length=0x0014
+;                                        ;       end group_AND at 0x8924
+8930:          0D 14                     ;       COM_0D_group_AND length=0x0014 (to 0x8946)
 8932:             0A 08                  ;         COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-8934:             04 10                  ;         COM_04_print_message length=0x0010
-8936:                73 7B 4B 7B EB 99 80 8D B4 6C 3F 16 44 6D FF 8B ;
+8934:             04 10                  ;         COM_04_print_message length=0x0010 (to 0x8946)
+8936:                73 7B 4B 7B EB 99 80 8D B4 6C 3F 16 44 6D FF 8B
 ;
 ;                    IT IS NO LONGER LEGIBLE.
 ;
-8946:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;                                        ;       end group_AND at 0x8930
+;                                        ;     end group_OR at 0x8922
+;
+8946:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x894B)
 ;           DOOR
-8948:       81 5B 52                     ;
+8948:       81 5B 52                    
 
 ; -------------- Object OBJ_05_DOOR_RESTROOM --------------
-894B: 10 08                              ; Word_num=0x10 DOOR, length=0x0008
+894B: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8955)
 894D: DA 01 88                           ; Location=0xDA, disk_section=1, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
-8950:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+8950:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8955)
 ;           DOOR
-8952:       81 5B 52                     ;
+8952:       81 5B 52                    
 
 ; -------------- Object OBJ_06_DOOR_MAIN_STREET_WEST --------------
-8955: 10 2C                              ; Word_num=0x10 DOOR, length=0x002C
+8955: 10 2C                              ; Word_num=0x10 DOOR, length=0x002C (to 0x8983)
 8957: 8D 22 88                           ; Location=0x8D, disk_section=2, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
-895A:    03 19                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0019
-895C:       04 17                        ;     COM_04_print_message length=0x0017
-895E:          7B BA BB 98 AB 98 81 5B 8B B3 E3 8B 16 58 D6 9C ;
-896E:          DB 72 0E B7 40 A0 2E      ;
+;
+895A:    03 19                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0019 (to 0x8975)
+895C:       04 17                        ;     COM_04_print_message length=0x0017 (to 0x8975)
+895E:          7B BA BB 98 AB 98 81 5B 8B B3 E3 8B 16 58 D6 9C
+896E:          DB 72 0E B7 40 A0 2E     
 ;
 ;              SWINGING DOORS LEAD TO THE SALOON.
 ;
-8975:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002
+;
+8975:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002 (to 0x8979)
 8977:       41                           ;     SALOON
 8978:       46                           ;     SWINGI
-8979:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008
-;           SALOON DOOR
-897B:       0E B7 40 A0 09 15 A3 A0      ;
+;
+8979:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008 (to 0x8983)
+;           SALOON DOOR 
+897B:       0E B7 40 A0 09 15 A3 A0     
 
 ; -------------- Object OBJ_07_DOOR_SALOON --------------
-8983: 10 08                              ; Word_num=0x10 DOOR, length=0x0008
+8983: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x898D)
 8985: A2 02 88                           ; Location=0xA2, disk_section=2, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
-8988:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+8988:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x898D)
 ;           DOOR
-898A:       81 5B 52                     ;
+898A:       81 5B 52                    
 
 ; -------------- Object OBJ_08_DOOR_MAIN_STREET_WEST --------------
-898D: 10 41                              ; Word_num=0x10 DOOR, length=0x0041
+898D: 10 41                              ; Word_num=0x10 DOOR, length=0x0041 (to 0x89D0)
 898F: 8D 62 88                           ; Location=0x8D, disk_section=2, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
-8992:    03 1B                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001B
-8994:       04 19                        ;     COM_04_print_message length=0x0019
-8996:          46 45 44 A0 3F 16 0D 47 89 17 82 17 55 5E F4 72 ;
-89A6:          50 79 CB 23 D0 9E D7 78 2E ;
+;
+8992:    03 1B                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001B (to 0x89AF)
+8994:       04 19                        ;     COM_04_print_message length=0x0019 (to 0x89AF)
+8996:          46 45 44 A0 3F 16 0D 47 89 17 82 17 55 5E F4 72
+89A6:          50 79 CB 23 D0 9E D7 78 2E
 ;
 ;              A DOOR LEADS TO THE SHERIFF'S OFFICE.
 ;
-89AF:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C
-89B1:       0D 0A                        ;     COM_0D_while_pass length=0x000A
-89B3:          0E 04                     ;       COM_0E_while_fail length=0x0004
+;
+89AF:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C (to 0x89BD)
+89B1:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0x89BD)
+89B3:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x89B9)
 89B5:             0A 3A                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 89B7:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
-89B9:          14                        ;       COM_14_execute_and_reverse_status next command
-89BA:          09 1B                     ;       COM_09_compare_to_second_noun(obj=OBJ_1B_BRASS_KEY_SHERIFF)
+;                                        ;       end group_OR at 0x89B3
+89B9:          14                        ;       COM_14_reverse_status next command
+89BA:          09 1B                     ;       COM_09_is_noun2(obj=OBJ_1B_BRASS_KEY_SHERIFF)
 89BC:          BA                        ;       FN_BA_OPEN_UNLOCK
-89BD:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;                                        ;     end group_AND at 0x89B1
+;
+89BD:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x89C0)
 89BF:       42                           ;     SHERIF
-89C0:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E
+;
+89C0:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E (to 0x89D0)
 ;           SHERIFF'S OFFICE DOOR
-89C2:       1F B8 08 B2 E5 64 B8 16 05 67 46 5E 44 A0 ;
+89C2:       1F B8 08 B2 E5 64 B8 16 05 67 46 5E 44 A0
 
 ; -------------- Object OBJ_09_DOOR_SHERIFFS_OFFICE --------------
-89D0: 10 08                              ; Word_num=0x10 DOOR, length=0x0008
+89D0: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x89DA)
 89D2: 8E 02 88                           ; Location=0x8E, disk_section=2, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
-89D5:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+89D5:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x89DA)
 ;           DOOR
-89D7:       81 5B 52                     ;
+89D7:       81 5B 52                    
 
 ; -------------- Object OBJ_0A_DOOR_HARDWARE_SOUTH --------------
-89DA: 10 08                              ; Word_num=0x10 DOOR, length=0x0008
+89DA: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x89E4)
 89DC: A6 03 88                           ; Location=0xA6, disk_section=3, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
-89DF:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+89DF:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x89E4)
 ;           DOOR
-89E1:       81 5B 52                     ;
+89E1:       81 5B 52                    
 
 ; -------------- Object OBJ_0B_DOOR_TOWN_CENTER_SLIMS --------------
-89E4: 10 34                              ; Word_num=0x10 DOOR, length=0x0034
+89E4: 10 34                              ; Word_num=0x10 DOOR, length=0x0034 (to 0x8A1A)
 89E6: 93 23 88                           ; Location=0x93, disk_section=3, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
-89E9:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012
-89EB:       04 10                        ;     COM_04_print_message length=0x0010
-89ED:          46 45 44 A0 3F 16 0D 47 89 17 5E 17 5D 7A 5B BB ;
 ;
-;              A DOOR LEADS TO SLIM'S.
+89E9:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x89FD)
+89EB:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x89FD)
+89ED:          46 45 44 A0 3F 16 0D 47 89 17 5E 17 5D 7A 5B BB
 ;
-89FD:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C
-89FF:       0D 0A                        ;     COM_0D_while_pass length=0x000A
-8A01:          0E 04                     ;       COM_0E_while_fail length=0x0004
+;              A DOOR LEADS TO SLIM'S. 
+;
+;
+89FD:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C (to 0x8A0B)
+89FF:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0x8A0B)
+8A01:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x8A07)
 8A03:             0A 3A                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 8A05:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
-8A07:          14                        ;       COM_14_execute_and_reverse_status next command
-8A08:          09 1E                     ;       COM_09_compare_to_second_noun(obj=OBJ_1E_RED_KEY_SLIMS)
+;                                        ;       end group_OR at 0x8A01
+8A07:          14                        ;       COM_14_reverse_status next command
+8A08:          09 1E                     ;       COM_09_is_noun2(obj=OBJ_1E_RED_KEY_SLIMS)
 8A0A:          BA                        ;       FN_BA_OPEN_UNLOCK
-8A0B:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;                                        ;     end group_AND at 0x89FF
+;
+8A0B:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x8A0E)
 8A0D:       43                           ;     SLIM'S
-8A0E:    02 0A                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000A
-;           DOOR TO SLIM'S
-8A10:       81 5B 96 AF D5 9C 8F 8C CB 23 ;
+;
+8A0E:    02 0A                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000A (to 0x8A1A)
+;           DOOR TO SLIM'S 
+8A10:       81 5B 96 AF D5 9C 8F 8C CB 23
 
 ; -------------- Object OBJ_0C_DOOR_TOWN_CENTER_BOBS --------------
-8A1A: 10 24                              ; Word_num=0x10 DOOR, length=0x0024
+8A1A: 10 24                              ; Word_num=0x10 DOOR, length=0x0024 (to 0x8A40)
 8A1C: 93 23 88                           ; Location=0x93, disk_section=3, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
-8A1F:    03 11                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0011
-8A21:       04 0F                        ;     COM_04_print_message length=0x000F
-8A23:          46 45 44 A0 3F 16 0D 47 89 17 B9 14 E5 4B 2E ;
+;
+8A1F:    03 11                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0011 (to 0x8A32)
+8A21:       04 0F                        ;     COM_04_print_message length=0x000F (to 0x8A32)
+8A23:          46 45 44 A0 3F 16 0D 47 89 17 B9 14 E5 4B 2E
 ;
 ;              A DOOR LEADS TO BOB'S.
 ;
-8A32:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+8A32:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x8A35)
 8A34:       44                           ;     BOB'S
-8A35:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;
+8A35:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x8A40)
 ;           DOOR TO BOB'S
-8A37:       81 5B 96 AF C4 9C 25 9E 53   ;
+8A37:       81 5B 96 AF C4 9C 25 9E 53  
 
 ; -------------- Object OBJ_0D_DOOR_SLIMS_GROCERY --------------
-8A40: 10 08                              ; Word_num=0x10 DOOR, length=0x0008
+8A40: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8A4A)
 8A42: 94 03 88                           ; Location=0x94, disk_section=3, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
-8A45:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+8A45:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8A4A)
 ;           DOOR
-8A47:       81 5B 52                     ;
+8A47:       81 5B 52                    
 
 ; -------------- Object OBJ_0E_DOOR_MAIN_STREET_EAST_HOTEL --------------
-8A4A: 10 32                              ; Word_num=0x10 DOOR, length=0x0032
+8A4A: 10 32                              ; Word_num=0x10 DOOR, length=0x0032 (to 0x8A7E)
 8A4C: 99 24 88                           ; Location=0x99, disk_section=4, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
-8A4F:    03 20                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0020
-8A51:       04 1E                        ;     COM_04_print_message length=0x001E
-8A53:          5F BE 5B B1 2F 49 09 15 B6 C3 46 5E 44 A0 CE B5 ;
-8A63:          86 5F 91 7A 89 17 82 17 4A 5E FF A0 9B 8F ;
 ;
-;              THERE ARE DOUBLE DOORS LEADING TO THE HOTEL.
+8A4F:    03 20                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0020 (to 0x8A71)
+8A51:       04 1E                        ;     COM_04_print_message length=0x001E (to 0x8A71)
+8A53:          5F BE 5B B1 2F 49 09 15 B6 C3 46 5E 44 A0 CE B5
+8A63:          86 5F 91 7A 89 17 82 17 4A 5E FF A0 9B 8F
 ;
-8A71:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002
+;              THERE ARE DOUBLE DOORS LEADING TO THE HOTEL. 
+;
+;
+8A71:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002 (to 0x8A75)
 8A73:       45                           ;     DOUBLE
 8A74:       47                           ;     HOTEL
-8A75:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007
+;
+8A75:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007 (to 0x8A7E)
 ;           HOTEL DOOR
-8A77:       86 74 33 61 81 5B 52         ;
+8A77:       86 74 33 61 81 5B 52        
 
 ; -------------- Object OBJ_0F_DOOR_HOTEL_LOBBY --------------
-8A7E: 10 08                              ; Word_num=0x10 DOOR, length=0x0008
+8A7E: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8A88)
 8A80: AA 04 88                           ; Location=0xAA, disk_section=4, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
-8A83:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+8A83:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8A88)
 ;           DOOR
-8A85:       81 5B 52                     ;
+8A85:       81 5B 52                    
 
 ; -------------- Object OBJ_10_DOOR_MAIN_STREET_EAST_BANK --------------
-8A88: 10 39                              ; Word_num=0x10 DOOR, length=0x0039
+8A88: 10 39                              ; Word_num=0x10 DOOR, length=0x0039 (to 0x8AC3)
 8A8A: 99 64 88                           ; Location=0x99, disk_section=4, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
-8A8D:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008
+;
+8A8D:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008 (to 0x8A97)
 ;           MASSIVE DOOR
-8A8F:       95 91 58 B8 46 5E 44 A0      ;
-8A97:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C
-8A99:       0D 0A                        ;     COM_0D_while_pass length=0x000A
-8A9B:          0E 04                     ;       COM_0E_while_fail length=0x0004
+8A8F:       95 91 58 B8 46 5E 44 A0     
+;
+8A97:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C (to 0x8AA5)
+8A99:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0x8AA5)
+8A9B:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x8AA1)
 8A9D:             0A 3A                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 8A9F:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
-8AA1:          14                        ;       COM_14_execute_and_reverse_status next command
-8AA2:          09 1D                     ;       COM_09_compare_to_second_noun(obj=OBJ_1D_STEEL_KEY_BANK)
+;                                        ;       end group_OR at 0x8A9B
+8AA1:          14                        ;       COM_14_reverse_status next command
+8AA2:          09 1D                     ;       COM_09_is_noun2(obj=OBJ_1D_STEEL_KEY_BANK)
 8AA4:          BA                        ;       FN_BA_OPEN_UNLOCK
-8AA5:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002
+;                                        ;     end group_AND at 0x8A99
+;
+8AA5:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002 (to 0x8AA9)
 8AA7:       3F                           ;     MASSIV
 8AA8:       40                           ;     BANK
-8AA9:    03 18                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0018
-8AAB:       04 16                        ;     COM_04_print_message length=0x0016
-8AAD:          4F 45 65 49 CF 7B 09 15 A3 A0 E3 8B 0B 5C 6B BF ;
-8ABD:          5F BE AB 14 6F 99         ;
+;
+8AA9:    03 18                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0018 (to 0x8AC3)
+8AAB:       04 16                        ;     COM_04_print_message length=0x0016 (to 0x8AC3)
+8AAD:          4F 45 65 49 CF 7B 09 15 A3 A0 E3 8B 0B 5C 6B BF
+8ABD:          5F BE AB 14 6F 99        
 ;
 ;              A MASSIVE DOOR LEADS TO THE BANK.
 ;
 
 ; -------------- Object OBJ_11_DOOR_BANK --------------
-8AC3: 10 08                              ; Word_num=0x10 DOOR, length=0x0008
+8AC3: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8ACD)
 8AC5: 9A 04 88                           ; Location=0x9A, disk_section=4, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
-8AC8:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+8AC8:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8ACD)
 ;           DOOR
-8ACA:       81 5B 52                     ;
+8ACA:       81 5B 52                    
 
 ; -------------- Object OBJ_12_DOOR --------------
-8ACD: 10 03                              ; Word_num=0x10 DOOR, length=0x0003
+8ACD: 10 03                              ; Word_num=0x10 DOOR, length=0x0003 (to 0x8AD2)
 8ACF: 00 00 00                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=0000_0000 ()
 
 ; -------------- Object OBJ_13_DOOR --------------
-8AD2: 10 03                              ; Word_num=0x10 DOOR, length=0x0003
+8AD2: 10 03                              ; Word_num=0x10 DOOR, length=0x0003 (to 0x8AD7)
 8AD4: 00 00 00                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=0000_0000 ()
 
 ; -------------- Object OBJ_14_DOOR_COVERED_SHELTER --------------
-8AD7: 10 1D                              ; Word_num=0x10 DOOR, length=0x001D
+8AD7: 10 1D                              ; Word_num=0x10 DOOR, length=0x001D (to 0x8AF6)
 8AD9: 00 22 88                           ; Location=0x00, disk_section=2, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
-8ADC:    03 13                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0013
-8ADE:       04 11                        ;     COM_04_print_message length=0x0011
-8AE0:          46 45 44 A0 3F 16 0D 47 B0 17 F4 59 B9 6E 8E C5 ;
-8AF0:          2E                        ;
+;
+8ADC:    03 13                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0013 (to 0x8AF1)
+8ADE:       04 11                        ;     COM_04_print_message length=0x0011 (to 0x8AF1)
+8AE0:          46 45 44 A0 3F 16 0D 47 B0 17 F4 59 B9 6E 8E C5
+8AF0:          2E                       
 ;
 ;              A DOOR LEADS UNDERGROUND.
 ;
-8AF1:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+8AF1:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8AF6)
 ;           DOOR
-8AF3:       81 5B 52                     ;
+8AF3:       81 5B 52                    
 
 ; -------------- Object OBJ_15_DOOR_SHELTER --------------
-8AF6: 10 08                              ; Word_num=0x10 DOOR, length=0x0008
+8AF6: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8B00)
 8AF8: DB 02 88                           ; Location=0xDB, disk_section=2, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
-8AFB:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+8AFB:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8B00)
 ;           DOOR
-8AFD:       81 5B 52                     ;
+8AFD:       81 5B 52                    
 
 ; -------------- Object OBJ_16_RED_DOOR_HALLWAY --------------
-8B00: 10 30                              ; Word_num=0x10 DOOR, length=0x0030
+8B00: 10 30                              ; Word_num=0x10 DOOR, length=0x0030 (to 0x8B32)
 8B02: DD 64 88                           ; Location=0xDD, disk_section=4, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
-8B05:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012
-8B07:       04 10                        ;     COM_04_print_message length=0x0010
-8B09:          54 45 F3 5F 81 5B 8E AF 86 5F D0 B5 BE A0 9B 76 ;
 ;
-;              A RED DOOR LEADS NORTH.
+8B05:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x8B19)
+8B07:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x8B19)
+8B09:          54 45 F3 5F 81 5B 8E AF 86 5F D0 B5 BE A0 9B 76
 ;
-8B19:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C
-8B1B:       0D 0A                        ;     COM_0D_while_pass length=0x000A
-8B1D:          0E 04                     ;       COM_0E_while_fail length=0x0004
+;              A RED DOOR LEADS NORTH. 
+;
+;
+8B19:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C (to 0x8B27)
+8B1B:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0x8B27)
+8B1D:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x8B23)
 8B1F:             0A 3A                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 8B21:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
-8B23:          14                        ;       COM_14_execute_and_reverse_status next command
-8B24:          09 1A                     ;       COM_09_compare_to_second_noun(obj=OBJ_1A_MASTER_KEY)
+;                                        ;       end group_OR at 0x8B1D
+8B23:          14                        ;       COM_14_reverse_status next command
+8B24:          09 1A                     ;       COM_09_is_noun2(obj=OBJ_1A_MASTER_KEY)
 8B26:          BA                        ;       FN_BA_OPEN_UNLOCK
-8B27:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;                                        ;     end group_AND at 0x8B1B
+;
+8B27:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x8B2A)
 8B29:       13                           ;     RED
-8B2A:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
-;           RED DOOR
-8B2C:       66 B1 09 15 A3 A0            ;
+;
+8B2A:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0x8B32)
+;           RED DOOR 
+8B2C:       66 B1 09 15 A3 A0           
 
 ; -------------- Object OBJ_17_DOOR_NORTH_ROOM --------------
-8B32: 10 08                              ; Word_num=0x10 DOOR, length=0x0008
+8B32: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8B3C)
 8B34: DE 04 88                           ; Location=0xDE, disk_section=4, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
-8B37:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+8B37:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8B3C)
 ;           DOOR
-8B39:       81 5B 52                     ;
+8B39:       81 5B 52                    
 
 ; -------------- Object OBJ_18_BLUE_DOOR_HALLWAY --------------
-8B3C: 10 30                              ; Word_num=0x10 DOOR, length=0x0030
+8B3C: 10 30                              ; Word_num=0x10 DOOR, length=0x0030 (to 0x8B6E)
 8B3E: DD 64 88                           ; Location=0xDD, disk_section=4, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
-8B41:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012
-8B43:       04 10                        ;     COM_04_print_message length=0x0010
-8B45:          44 45 67 8E 09 15 A3 A0 E3 8B 0B 5C 47 B9 77 BE ;
+;
+8B41:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x8B55)
+8B43:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x8B55)
+8B45:          44 45 67 8E 09 15 A3 A0 E3 8B 0B 5C 47 B9 77 BE
 ;
 ;              A BLUE DOOR LEADS SOUTH.
 ;
-8B55:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+8B55:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x8B58)
 8B57:       0D                           ;     BLUE
-8B58:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C
-8B5A:       0D 0A                        ;     COM_0D_while_pass length=0x000A
-8B5C:          0E 04                     ;       COM_0E_while_fail length=0x0004
+;
+8B58:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C (to 0x8B66)
+8B5A:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0x8B66)
+8B5C:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x8B62)
 8B5E:             0A 3A                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 8B60:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
-8B62:          14                        ;       COM_14_execute_and_reverse_status next command
-8B63:          09 1A                     ;       COM_09_compare_to_second_noun(obj=OBJ_1A_MASTER_KEY)
+;                                        ;       end group_OR at 0x8B5C
+8B62:          14                        ;       COM_14_reverse_status next command
+8B63:          09 1A                     ;       COM_09_is_noun2(obj=OBJ_1A_MASTER_KEY)
 8B65:          BA                        ;       FN_BA_OPEN_UNLOCK
-8B66:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
+;                                        ;     end group_AND at 0x8B5A
+;
+8B66:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0x8B6E)
 ;           BLUE DOOR
-8B68:       8F 4E 46 5E 44 A0            ;
+8B68:       8F 4E 46 5E 44 A0           
 
 ; -------------- Object OBJ_19_DOOR_SOUTH_ROOM --------------
-8B6E: 10 08                              ; Word_num=0x10 DOOR, length=0x0008
+8B6E: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8B78)
 8B70: DF 04 88                           ; Location=0xDF, disk_section=4, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
-8B73:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+8B73:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8B78)
 ;           DOOR
-8B75:       81 5B 52                     ;
+8B75:       81 5B 52                    
 
 ; -------------- Object OBJ_1A_MASTER_KEY --------------
-8B78: 16 3E                              ; Word_num=0x16 KEY, length=0x003E
+8B78: 16 3E                              ; Word_num=0x16 KEY, length=0x003E (to 0x8BB8)
 8B7A: 47 00 A4                           ; Location=0x47, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
-8B7D:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014
-8B7F:       04 12                        ;     COM_04_print_message length=0x0012
-8B81:          5F BE 5B B1 4B 7B 4F 45 66 49 23 62 BB 85 9F 15 ;
-8B91:          7F B1                     ;
+;
+8B7D:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x8B93)
+8B7F:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x8B93)
+8B81:          5F BE 5B B1 4B 7B 4F 45 66 49 23 62 BB 85 9F 15
+8B91:          7F B1                    
 ;
 ;              THERE IS A MASTER KEY HERE.
 ;
-8B93:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+8B93:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x8B96)
 8B95:       14                           ;     MASTER
-8B96:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-8B98:       02                           ;     Weight=2
-8B99:    07 14                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0014
-8B9B:       0D 12                        ;     COM_0D_while_pass length=0x0012
+;
+8B96:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x8B99)
+8B98:       02                           ;     weight=2
+;
+8B99:    07 14                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0014 (to 0x8BAF)
+8B9B:       0D 12                        ;     COM_0D_group_AND length=0x0012 (to 0x8BAF)
 8B9D:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-8B9F:          04 0E                     ;       COM_04_print_message length=0x000E
-8BA1:             C5 1A 1B 92 95 91 F4 BD 17 16 45 DB 5C A2 ;
+8B9F:          04 0E                     ;       COM_04_print_message length=0x000E (to 0x8BAF)
+8BA1:             C5 1A 1B 92 95 91 F4 BD 17 16 45 DB 5C A2
 ;
 ;                 "ACME MASTER KEY CO."
 ;
-8BAF:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007
+;                                        ;     end group_AND at 0x8B9B
+;
+8BAF:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007 (to 0x8BB8)
 ;           MASTER KEY
-8BB1:       95 91 F4 BD 17 16 59         ;
+8BB1:       95 91 F4 BD 17 16 59        
 
 ; -------------- Object OBJ_1B_BRASS_KEY_SHERIFF --------------
-8BB8: 16 36                              ; Word_num=0x16 KEY, length=0x0036
+8BB8: 16 36                              ; Word_num=0x16 KEY, length=0x0036 (to 0x8BF0)
 8BBA: 48 00 A4                           ; Location=0x48, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
-8BBD:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014
-8BBF:       04 12                        ;     COM_04_print_message length=0x0012
-8BC1:          5F BE 5B B1 4B 7B 44 45 D5 B0 CD B5 3B 63 F4 72 ;
-8BD1:          DB 63                     ;
 ;
-;              THERE IS A BRASS KEY HERE.
+8BBD:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x8BD3)
+8BBF:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x8BD3)
+8BC1:          5F BE 5B B1 4B 7B 44 45 D5 B0 CD B5 3B 63 F4 72
+8BD1:          DB 63                    
 ;
-8BD3:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-8BD5:       02                           ;     Weight=2
-8BD6:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002
+;              THERE IS A BRASS KEY HERE. 
+;
+;
+8BD3:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x8BD6)
+8BD5:       02                           ;     weight=2
+;
+8BD6:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002 (to 0x8BDA)
 8BD8:       15                           ;     BRASS
 8BD9:       42                           ;     SHERIF
-8BDA:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C
-8BDC:       0D 0A                        ;     COM_0D_while_pass length=0x000A
+;
+8BDA:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C (to 0x8BE8)
+8BDC:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0x8BE8)
 8BDE:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-8BE0:          04 06                     ;       COM_04_print_message length=0x0006
-8BE2:             9A 1D 33 62 84 66      ;
+8BE0:          04 06                     ;       COM_04_print_message length=0x0006 (to 0x8BE8)
+8BE2:             9A 1D 33 62 84 66     
 ;
 ;                 "SHERIFF"
 ;
-8BE8:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
+;                                        ;     end group_AND at 0x8BDC
+;
+8BE8:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0x8BF0)
 ;           BRASS KEY
-8BEA:       6B 4F CB B9 BB 85            ;
+8BEA:       6B 4F CB B9 BB 85           
 
 ; -------------- Object OBJ_1C_SKELETON_KEY --------------
-8BF0: 16 2B                              ; Word_num=0x16 KEY, length=0x002B
+8BF0: 16 2B                              ; Word_num=0x16 KEY, length=0x002B (to 0x8C1D)
 8BF2: 49 00 A0                           ; Location=0x49, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
-8BF5:    03 16                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0016
-8BF7:       04 14                        ;     COM_04_print_message length=0x0014
-8BF9:          5F BE 5B B1 4B 7B 55 45 AE 85 89 62 8D 96 3B 63 ;
-8C09:          F4 72 DB 63               ;
 ;
-;              THERE IS A SKELETON KEY HERE.
+8BF5:    03 16                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0016 (to 0x8C0D)
+8BF7:       04 14                        ;     COM_04_print_message length=0x0014 (to 0x8C0D)
+8BF9:          5F BE 5B B1 4B 7B 55 45 AE 85 89 62 8D 96 3B 63
+8C09:          F4 72 DB 63              
 ;
-8C0D:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-8C0F:       02                           ;     Weight=2
-8C10:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;              THERE IS A SKELETON KEY HERE. 
+;
+;
+8C0D:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x8C10)
+8C0F:       02                           ;     weight=2
+;
+8C10:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x8C13)
 8C12:       17                           ;     SKELET
-8C13:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008
+;
+8C13:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008 (to 0x8C1D)
 ;           SKELETON KEY
-8C15:       97 B8 F6 8B 03 A0 BB 85      ;
+8C15:       97 B8 F6 8B 03 A0 BB 85     
 
 ; -------------- Object OBJ_1D_STEEL_KEY_BANK --------------
-8C1D: 16 3A                              ; Word_num=0x16 KEY, length=0x003A
+8C1D: 16 3A                              ; Word_num=0x16 KEY, length=0x003A (to 0x8C59)
 8C1F: 21 00 A4                           ; Location=0x21, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
-8C22:    03 16                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0016
-8C24:       04 14                        ;     COM_04_print_message length=0x0014
-8C26:          5F BE 5B B1 4B 7B 44 45 6B 79 FF B9 33 61 BB 85 ;
-8C36:          9F 15 7F B1               ;
+;
+8C22:    03 16                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0016 (to 0x8C3A)
+8C24:       04 14                        ;     COM_04_print_message length=0x0014 (to 0x8C3A)
+8C26:          5F BE 5B B1 4B 7B 44 45 6B 79 FF B9 33 61 BB 85
+8C36:          9F 15 7F B1              
 ;
 ;              THERE IS A BIG STEEL KEY HERE.
 ;
-8C3A:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-8C3C:       02                           ;     Weight=2
-8C3D:    01 03                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0003
+;
+8C3A:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x8C3D)
+8C3C:       02                           ;     weight=2
+;
+8C3D:    01 03                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0003 (to 0x8C42)
 8C3F:       40                           ;     BANK
 8C40:       18                           ;     STEEL
 8C41:       0E                           ;     BIG
-8C42:    07 0A                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000A
-8C44:       0D 08                        ;     COM_0D_while_pass length=0x0008
+;
+8C42:    07 0A                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000A (to 0x8C4E)
+8C44:       0D 08                        ;     COM_0D_group_AND length=0x0008 (to 0x8C4E)
 8C46:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-8C48:          04 04                     ;       COM_04_print_message length=0x0004
-8C4A:             EB 1A 4C 99            ;
+8C48:          04 04                     ;       COM_04_print_message length=0x0004 (to 0x8C4E)
+8C4A:             EB 1A 4C 99           
 ;
 ;                 "BANK"
 ;
-8C4E:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;                                        ;     end group_AND at 0x8C44
+;
+8C4E:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x8C59)
 ;           BIG STEEL KEY
-8C50:       09 4E 66 17 2E 60 17 16 59   ;
+8C50:       09 4E 66 17 2E 60 17 16 59  
 
 ; -------------- Object OBJ_1E_RED_KEY_SLIMS --------------
-8C59: 16 33                              ; Word_num=0x16 KEY, length=0x0033
+8C59: 16 33                              ; Word_num=0x16 KEY, length=0x0033 (to 0x8C8E)
 8C5B: 21 00 A4                           ; Location=0x21, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
-8C5E:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012
-8C60:       04 10                        ;     COM_04_print_message length=0x0010
-8C62:          5F BE 5B B1 4B 7B 54 45 F3 5F BB 85 9F 15 7F B1 ;
+;
+8C5E:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x8C72)
+8C60:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x8C72)
+8C62:          5F BE 5B B1 4B 7B 54 45 F3 5F BB 85 9F 15 7F B1
 ;
 ;              THERE IS A RED KEY HERE.
 ;
-8C72:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-8C74:       02                           ;     Weight=2
-8C75:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002
+;
+8C72:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x8C75)
+8C74:       02                           ;     weight=2
+;
+8C75:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002 (to 0x8C79)
 8C77:       43                           ;     SLIM'S
 8C78:       13                           ;     RED
-8C79:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C
-8C7B:       0D 0A                        ;     COM_0D_while_pass length=0x000A
+;
+8C79:    07 0C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000C (to 0x8C87)
+8C7B:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0x8C87)
 8C7D:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-8C7F:          04 06                     ;       COM_04_print_message length=0x0006
-8C81:             9E 1D 5D 7A E3 B5      ;
+8C7F:          04 06                     ;       COM_04_print_message length=0x0006 (to 0x8C87)
+8C81:             9E 1D 5D 7A E3 B5     
 ;
-;                 "SLIM'S"
+;                 "SLIM'S" 
 ;
-8C87:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;                                        ;     end group_AND at 0x8C7B
+;
+8C87:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x8C8E)
 ;           RED KEY
-8C89:       66 B1 17 16 59               ;
+8C89:       66 B1 17 16 59              
 
 ; -------------- Object OBJ_1F_SMALL_KEY_CAB --------------
-8C8E: 16 34                              ; Word_num=0x16 KEY, length=0x0034
+8C8E: 16 34                              ; Word_num=0x16 KEY, length=0x0034 (to 0x8CC4)
 8C90: 21 00 A4                           ; Location=0x21, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
-8C93:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014
-8C95:       04 12                        ;     COM_04_print_message length=0x0012
-8C97:          5F BE 5B B1 4B 7B 55 45 8E 91 0D 8A 3B 63 F4 72 ;
-8CA7:          DB 63                     ;
 ;
-;              THERE IS A SMALL KEY HERE.
+8C93:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x8CA9)
+8C95:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x8CA9)
+8C97:          5F BE 5B B1 4B 7B 55 45 8E 91 0D 8A 3B 63 F4 72
+8CA7:          DB 63                    
 ;
-8CA9:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-8CAB:       02                           ;     Weight=2
-8CAC:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002
+;              THERE IS A SMALL KEY HERE. 
+;
+;
+8CA9:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x8CAC)
+8CAB:       02                           ;     weight=2
+;
+8CAC:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002 (to 0x8CB0)
 8CAE:       4B                           ;     CAB
 8CAF:       0F                           ;     SMALL
-8CB0:    07 0A                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000A
-8CB2:       0D 08                        ;     COM_0D_while_pass length=0x0008
+;
+8CB0:    07 0A                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000A (to 0x8CBC)
+8CB2:       0D 08                        ;     COM_0D_group_AND length=0x0008 (to 0x8CBC)
 8CB4:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-8CB6:          04 04                     ;       COM_04_print_message length=0x0004
-8CB8:             13 1B A3 4B            ;
+8CB6:          04 04                     ;       COM_04_print_message length=0x0004 (to 0x8CBC)
+8CB8:             13 1B A3 4B           
 ;
-;                 "CAB"
+;                 "CAB" 
 ;
-8CBC:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
+;                                        ;     end group_AND at 0x8CB2
+;
+8CBC:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0x8CC4)
 ;           SMALL KEY
-8CBE:       E3 B8 F3 8C BB 85            ;
+8CBE:       E3 B8 F3 8C BB 85           
 
 ; -------------- Object OBJ_20_DESK --------------
-8CC4: 1A 32                              ; Word_num=0x1A DESK, length=0x0032
+8CC4: 1A 32                              ; Word_num=0x1A DESK, length=0x0032 (to 0x8CF8)
 8CC6: 8E 02 81                           ; Location=0x8E, disk_section=2, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-8CC9:    07 28                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0028
-8CCB:       0D 26                        ;     COM_0D_while_pass length=0x0026
-8CCD:          0E 08                     ;       COM_0E_while_fail length=0x0008
+;
+8CC9:    07 28                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0028 (to 0x8CF3)
+8CCB:       0D 26                        ;     COM_0D_group_AND length=0x0026 (to 0x8CF3)
+8CCD:          0E 08                     ;       COM_0E_group_OR length=0x0008 (to 0x8CD7)
 8CCF:             0A 11                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... * *)
 8CD1:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
 8CD3:             0A 40                  ;         COM_0A_is_input_phrase(phrase=CLOSE ....A... * *)
 8CD5:             0A 3A                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
-8CD7:          04 1A                     ;       COM_04_print_message length=0x001A
-8CD9:             03 C0 7B 14 EB 5B B4 D0 CE 13 76 A0 6B 16 C6 59 ;
-8CE9:             B3 63 A3 A0 06 4F 7F BF DB 31 ;
+;                                        ;       end group_OR at 0x8CCD
+8CD7:          04 1A                     ;       COM_04_print_message length=0x001A (to 0x8CF3)
+8CD9:             03 C0 7B 14 EB 5B B4 D0 CE 13 76 A0 6B 16 C6 59
+8CE9:             B3 63 A3 A0 06 4F 7F BF DB 31
 ;
-;                 TRY A DRAWER <TOP, MIDDLE, OR BOTTOM>.
+;                 TRY A DRAWER <TOP, MIDDLE, OR BOTTOM>. 
 ;
-8CF3:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;                                        ;     end group_AND at 0x8CCB
+;
+8CF3:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8CF8)
 ;           DESK
-8CF5:       F5 59 4B                     ;
+8CF5:       F5 59 4B                    
 
 ; -------------- Object OBJ_21_TOP_DRAWER --------------
-8CF8: 1B 54                              ; Word_num=0x1B DRAWER, length=0x0054
+8CF8: 1B 54                              ; Word_num=0x1B DRAWER, length=0x0054 (to 0x8D4E)
 8CFA: 8E 62 8A                           ; Location=0x8E, disk_section=2, ext_attr=0110...., attributes=1000_1010 (CLOSEABLE, CLOSED)
-8CFD:    07 43                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0043
-8CFF:       0E 41                        ;     COM_0E_while_fail length=0x0041
-8D01:          0D 3E                     ;       COM_0D_while_pass length=0x003E
-8D03:             0E 04                  ;         COM_0E_while_fail length=0x0004
+;
+8CFD:    07 43                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0043 (to 0x8D42)
+8CFF:       0E 41                        ;     COM_0E_group_OR length=0x0041 (to 0x8D42)
+8D01:          0D 3E                     ;       COM_0D_group_AND length=0x003E (to 0x8D41)
+8D03:             0E 04                  ;         COM_0E_group_OR length=0x0004 (to 0x8D09)
 8D05:                0A 3A               ;           COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 8D07:                0A 42               ;           COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
-8D09:             1A                     ;         COM_1A_set_var_to_first_noun()
-8D0A:             2E 40                  ;         UNKNOWN_COM_2E, Value: 0x40
-8D0C:             2E 20                  ;         UNKNOWN_COM_2E, Value: 0x20
-8D0E:             09 24                  ;         COM_09_compare_to_second_noun(obj=OBJ_24_CROWBAR)
-8D10:             04 2B                  ;         COM_04_print_message length=0x002B
-8D12:                5F BE 5B B1 4B 7B 55 45 AF 55 DA 5F B8 16 89 17 ;
-8D22:                CF B3 66 B1 67 16 4E BD 90 14 16 58 DB 72 EB 5B ;
-8D32:                B4 D0 BF 14 A6 B3 D1 B5 F0 A4 21 ;
+;                                        ;         end group_OR at 0x8D03
+8D09:             1A                     ;         COM_1A_set_var_to_noun1()
+8D0A:             2E 40                  ;         COM_2E_is_var_ext_attributes(value=0x40)
+8D0C:             2E 20                  ;         COM_2E_is_var_ext_attributes(value=0x20)
+8D0E:             09 24                  ;         COM_09_is_noun2(obj=OBJ_24_CROWBAR)
+8D10:             04 2B                  ;         COM_04_print_message length=0x002B (to 0x8D3D)
+8D12:                5F BE 5B B1 4B 7B 55 45 AF 55 DA 5F B8 16 89 17
+8D22:                CF B3 66 B1 67 16 4E BD 90 14 16 58 DB 72 EB 5B
+8D32:                B4 D0 BF 14 A6 B3 D1 B5 F0 A4 21
 ;
 ;                    THERE IS A SCREECH OF TORTURED METAL AND THE DRAWER BURSTS
 ;                    OPEN!
 ;
-8D3D:             1A                     ;         COM_1A_set_var_to_first_noun()
+8D3D:             1A                     ;         COM_1A_set_var_to_noun1()
 8D3E:             2A                     ;         COM_2A_toggle_lock_VAR()
-8D3F:             A6                     ;         FN_A6_ATTEMPT_TO_OPEN
+8D3F:             A6                     ;         FN_A6_OPEN
 8D40:             38                     ;         COM_38_bump_score()
+;                                        ;       end group_AND at 0x8D01
 8D41:          BA                        ;       FN_BA_OPEN_UNLOCK
-8D42:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;                                        ;     end group_OR at 0x8CFF
+;
+8D42:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x8D45)
 8D44:       28                           ;     TOP
-8D45:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007
+;
+8D45:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007 (to 0x8D4E)
 ;           TOP DRAWER
-8D47:       82 BF 0C 15 F7 49 52         ;
+8D47:       82 BF 0C 15 F7 49 52        
 
 ; -------------- Object OBJ_22_MIDDLE_DRAWER --------------
-8D4E: 1B 43                              ; Word_num=0x1B DRAWER, length=0x0043
+8D4E: 1B 43                              ; Word_num=0x1B DRAWER, length=0x0043 (to 0x8D93)
 8D50: 8E 62 8A                           ; Location=0x8E, disk_section=2, ext_attr=0110...., attributes=1000_1010 (CLOSEABLE, CLOSED)
-8D53:    07 30                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0030
-8D55:       0E 2E                        ;     COM_0E_while_fail length=0x002E
-8D57:          0D 2B                     ;       COM_0D_while_pass length=0x002B
-8D59:             0E 04                  ;         COM_0E_while_fail length=0x0004
+;
+8D53:    07 30                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0030 (to 0x8D85)
+8D55:       0E 2E                        ;     COM_0E_group_OR length=0x002E (to 0x8D85)
+8D57:          0D 2B                     ;       COM_0D_group_AND length=0x002B (to 0x8D84)
+8D59:             0E 04                  ;         COM_0E_group_OR length=0x0004 (to 0x8D5F)
 8D5B:                0A 3A               ;           COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 8D5D:                0A 42               ;           COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
-8D5F:             1A                     ;         COM_1A_set_var_to_first_noun()
-8D60:             2E 40                  ;         UNKNOWN_COM_2E, Value: 0x40
-8D62:             2E 20                  ;         UNKNOWN_COM_2E, Value: 0x20
-8D64:             09 24                  ;         COM_09_compare_to_second_noun(obj=OBJ_24_CROWBAR)
-8D66:             04 19                  ;         COM_04_print_message length=0x0019
-8D68:                56 D1 03 71 E4 14 8D C5 73 76 5F BE 0C 15 F7 49 ;
-8D78:                88 AF 87 8C D1 B5 F0 A4 21 ;
+;                                        ;         end group_OR at 0x8D59
+8D5F:             1A                     ;         COM_1A_set_var_to_noun1()
+8D60:             2E 40                  ;         COM_2E_is_var_ext_attributes(value=0x40)
+8D62:             2E 20                  ;         COM_2E_is_var_ext_attributes(value=0x20)
+8D64:             09 24                  ;         COM_09_is_noun2(obj=OBJ_24_CROWBAR)
+8D66:             04 19                  ;         COM_04_print_message length=0x0019 (to 0x8D81)
+8D68:                56 D1 03 71 E4 14 8D C5 73 76 5F BE 0C 15 F7 49
+8D78:                88 AF 87 8C D1 B5 F0 A4 21
 ;
 ;                    WITH A CRUNCH, THE DRAWER FLIES OPEN!
 ;
-8D81:             1A                     ;         COM_1A_set_var_to_first_noun()
+8D81:             1A                     ;         COM_1A_set_var_to_noun1()
 8D82:             2A                     ;         COM_2A_toggle_lock_VAR()
-8D83:             A6                     ;         FN_A6_ATTEMPT_TO_OPEN
+8D83:             A6                     ;         FN_A6_OPEN
+;                                        ;       end group_AND at 0x8D57
 8D84:          BA                        ;       FN_BA_OPEN_UNLOCK
-8D85:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;                                        ;     end group_OR at 0x8D55
+;
+8D85:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x8D88)
 8D87:       3C                           ;     MIDDLE
-8D88:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;
+8D88:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x8D93)
 ;           MIDDLE DRAWER
-8D8A:       C6 92 FF 5A 0C 15 F7 49 52   ;
+8D8A:       C6 92 FF 5A 0C 15 F7 49 52  
 
 ; -------------- Object OBJ_23_BOTTOM_DRAWER --------------
-8D93: 1B 1C                              ; Word_num=0x1B DRAWER, length=0x001C
+8D93: 1B 1C                              ; Word_num=0x1B DRAWER, length=0x001C (to 0x8DB1)
 8D95: 8E 22 8A                           ; Location=0x8E, disk_section=2, ext_attr=0010...., attributes=1000_1010 (CLOSEABLE, CLOSED)
-8D98:    07 09                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0009
-8D9A:       0D 07                        ;     COM_0D_while_pass length=0x0007
-8D9C:          0E 04                     ;       COM_0E_while_fail length=0x0004
+;
+8D98:    07 09                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0009 (to 0x8DA3)
+8D9A:       0D 07                        ;     COM_0D_group_AND length=0x0007 (to 0x8DA3)
+8D9C:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x8DA2)
 8D9E:             0A 3A                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 8DA0:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
+;                                        ;       end group_OR at 0x8D9C
 8DA2:          BA                        ;       FN_BA_OPEN_UNLOCK
-8DA3:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;                                        ;     end group_AND at 0x8D9A
+;
+8DA3:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x8DA6)
 8DA5:       3E                           ;     BOTTOM
-8DA6:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;
+8DA6:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x8DB1)
 ;           BOTTOM DRAWER
-8DA8:       06 4F 7F BF 0C 15 F7 49 52   ;
+8DA8:       06 4F 7F BF 0C 15 F7 49 52  
 
 ; -------------- Object OBJ_24_CROWBAR --------------
-8DB1: 37 29                              ; Word_num=0x37 CROWBA, length=0x0029
+8DB1: 37 29                              ; Word_num=0x37 CROWBA, length=0x0029 (to 0x8DDC)
 8DB3: 49 00 E0                           ; Location=0x49, disk_section=0, ext_attr=0000...., attributes=1110_0000 (WEAPON, GETTABLE)
-8DB6:    03 16                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0016
-8DB8:       04 14                        ;     COM_04_print_message length=0x0014
-8DBA:          5F BE 5B B1 4B 7B 55 45 8E 91 05 8A 09 B3 D4 4C ;
-8DCA:          9F 15 7F B1               ;
+;
+8DB6:    03 16                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0016 (to 0x8DCE)
+8DB8:       04 14                        ;     COM_04_print_message length=0x0014 (to 0x8DCE)
+8DBA:          5F BE 5B B1 4B 7B 55 45 8E 91 05 8A 09 B3 D4 4C
+8DCA:          9F 15 7F B1              
 ;
 ;              THERE IS A SMALL CROWBAR HERE.
 ;
-8DCE:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-8DD0:       10                           ;     Weight=16
-8DD1:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;
+8DCE:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x8DD1)
+8DD0:       10                           ;     weight=16
+;
+8DD1:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x8DDC)
 ;           SMALL CROWBAR
-8DD3:       E3 B8 F3 8C B9 55 2B D0 52   ;
+8DD3:       E3 B8 F3 8C B9 55 2B D0 52  
 
 ; -------------- Object OBJ_25_WANTED_POSTER --------------
-8DDC: 38 68                              ; Word_num=0x38 POSTER, length=0x0068
+8DDC: 38 68                              ; Word_num=0x38 POSTER, length=0x0068 (to 0x8E46)
 8DDE: 22 00 A4                           ; Location=0x22, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
-8DE1:    03 16                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0016
-8DE3:       04 14                        ;     COM_04_print_message length=0x0014
-8DE5:          5F BE 5B B1 4B 7B 59 45 9E 48 F3 5F 85 A6 F4 BD ;
-8DF5:          9F 15 7F B1               ;
+;
+8DE1:    03 16                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0016 (to 0x8DF9)
+8DE3:       04 14                        ;     COM_04_print_message length=0x0014 (to 0x8DF9)
+8DE5:          5F BE 5B B1 4B 7B 59 45 9E 48 F3 5F 85 A6 F4 BD
+8DF5:          9F 15 7F B1              
 ;
 ;              THERE IS A WANTED POSTER HERE.
 ;
-8DF9:    07 40                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0040
-8DFB:       0D 3E                        ;     COM_0D_while_pass length=0x003E
+;
+8DF9:    07 40                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0040 (to 0x8E3B)
+8DFB:       0D 3E                        ;     COM_0D_group_AND length=0x003E (to 0x8E3B)
 8DFD:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-8DFF:          04 3A                     ;       COM_04_print_message length=0x003A
-8E01:             33 1E BF 9A AB 57 86 91 09 15 D6 6A 74 75 90 91 ;
-8E11:             03 EE 83 8C CC B5 59 F4 56 F4 74 75 90 91 08 EE ;
-8E21:             A3 A0 87 5B 7F 4E DB 16 5B B2 AB 98 83 7A 4A 45 ;
-8E31:             E2 A0 7B 7B 1C 8A 0F A0 63 F4 ;
+8DFF:          04 3A                     ;       COM_04_print_message length=0x003A (to 0x8E3B)
+8E01:             33 1E BF 9A AB 57 86 91 09 15 D6 6A 74 75 90 91
+8E11:             03 EE 83 8C CC B5 59 F4 56 F4 74 75 90 91 08 EE
+8E21:             A3 A0 87 5B 7F 4E DB 16 5B B2 AB 98 83 7A 4A 45
+8E31:             E2 A0 7B 7B 1C 8A 0F A0 63 F4
 ;
 ;                 "WANTED! MAD DOG THURMAN, ALIAS J. W. THURMAN, FOR DOUBLE
 ;                 PARKING IN A HOSPITAL ZONE."
 ;
-8E3B:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;                                        ;     end group_AND at 0x8DFB
+;
+8E3B:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x8E46)
 ;           WANTED POSTER
-8E3D:       10 D0 E6 BD E9 16 FF B9 52   ;
+8E3D:       10 D0 E6 BD E9 16 FF B9 52  
 
 ; -------------- Object OBJ_26_GUN_CABINET --------------
-8E46: 19 80 8A                           ; Word_num=0x19 CABINE, length=0x008A
+8E46: 19 80 8A                           ; Word_num=0x19 CABINE, length=0x008A (to 0x8ED3)
 8E49: 8E E2 8A                           ; Location=0x8E, disk_section=2, ext_attr=1110...., attributes=1000_1010 (CLOSEABLE, CLOSED)
-8E4C:    07 7B                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x007B
-8E4E:       0E 79                        ;     COM_0E_while_fail length=0x0079
-8E50:          0D 41                     ;       COM_0D_while_pass length=0x0041
-8E52:             0E 04                  ;         COM_0E_while_fail length=0x0004
+;
+8E4C:    07 7B                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x007B (to 0x8EC9)
+8E4E:       0E 79                        ;     COM_0E_group_OR length=0x0079 (to 0x8EC9)
+8E50:          0D 41                     ;       COM_0D_group_AND length=0x0041 (to 0x8E93)
+8E52:             0E 04                  ;         COM_0E_group_OR length=0x0004 (to 0x8E58)
 8E54:                0A 3A               ;           COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 8E56:                0A 42               ;           COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
-8E58:             03 8E 27               ;         COM_03_is_located(owner=RM_1_8E_??, obj=OBJ_27_SHOTGUN)
-8E5B:             09 1F                  ;         COM_09_compare_to_second_noun(obj=OBJ_1F_SMALL_KEY_CAB)
-8E5D:             04 29                  ;         COM_04_print_message length=0x0029
-8E5F:                5F BE 17 16 56 DB 38 C6 33 BB 5F BE 49 16 8B 54 ;
-8E6F:                C3 54 A5 54 03 EE 33 98 5F BE D3 14 10 4E 73 62 ;
-8E7F:                6C B9 91 7A D1 B5 F0 A4 21 ;
+;                                        ;         end group_OR at 0x8E52
+8E58:             03 8E 27               ;         COM_03_is_located(owner=RM_1_8E_??, obj=OBJ_27_SHOTGUN_IN_CABINET)
+8E5B:             09 1F                  ;         COM_09_is_noun2(obj=OBJ_1F_SMALL_KEY_CAB)
+8E5D:             04 29                  ;         COM_04_print_message length=0x0029 (to 0x8E88)
+8E5F:                5F BE 17 16 56 DB 38 C6 33 BB 5F BE 49 16 8B 54
+8E6F:                C3 54 A5 54 03 EE 33 98 5F BE D3 14 10 4E 73 62
+8E7F:                6C B9 91 7A D1 B5 F0 A4 21
 ;
 ;                    THE KEY TURNS, THE LOCK CLICKS, AND THE CABINET SPRINGS
 ;                    OPEN!
 ;
-8E88:             17 27 00               ;         COM_17_move_object_to_destination(obj=OBJ_27_SHOTGUN, destination=nowhere)
-8E8B:             17 28 26               ;         COM_17_move_object_to_destination(obj=OBJ_28_SHOTGUN, destination=OBJ_26_GUN_CABINET)
+8E88:             17 27 00               ;         COM_17_move_object_to(obj=OBJ_27_SHOTGUN_IN_CABINET, destination=nowhere)
+8E8B:             17 28 26               ;         COM_17_move_object_to(obj=OBJ_28_SHOTGUN, destination=OBJ_26_GUN_CABINET)
 8E8E:             1C 26                  ;         COM_1C_set_var_object(obj=OBJ_26_GUN_CABINET)
 8E90:             29                     ;         COM_29_toggle_open_VAR()
 8E91:             2A                     ;         COM_2A_toggle_lock_VAR()
 8E92:             38                     ;         COM_38_bump_score()
-8E93:          0D 28                     ;       COM_0D_while_pass length=0x0028
-8E95:             0E 04                  ;         COM_0E_while_fail length=0x0004
+;                                        ;       end group_AND at 0x8E50
+8E93:          0D 28                     ;       COM_0D_group_AND length=0x0028 (to 0x8EBD)
+8E95:             0E 04                  ;         COM_0E_group_OR length=0x0004 (to 0x8E9B)
 8E97:                0A 3A               ;           COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 8E99:                0A 42               ;           COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
-8E9B:             09 24                  ;         COM_09_compare_to_second_noun(obj=OBJ_24_CROWBAR)
-8E9D:             04 1C                  ;         COM_04_print_message length=0x001C
-8E9F:                5F BE 49 16 8B 54 03 A0 5F BE D3 14 10 4E 73 62 ;
-8EAF:                4B 7B 81 BF 66 17 00 B3 C8 6A A3 A0 ;
+;                                        ;         end group_OR at 0x8E95
+8E9B:             09 24                  ;         COM_09_is_noun2(obj=OBJ_24_CROWBAR)
+8E9D:             04 1C                  ;         COM_04_print_message length=0x001C (to 0x8EBB)
+8E9F:                5F BE 49 16 8B 54 03 A0 5F BE D3 14 10 4E 73 62
+8EAF:                4B 7B 81 BF 66 17 00 B3 C8 6A A3 A0
 ;
-;                    THE LOCK ON THE CABINET IS TOO STRONG FOR
+;                    THE LOCK ON THE CABINET IS TOO STRONG FOR 
 ;
 8EBB:             A9                     ;         FN_A9_PRINT_noun2
 8EBC:             8B                     ;         FN_8B_PRINT_PERIOD
-8EBD:          0D 0A                     ;       COM_0D_while_pass length=0x000A
-8EBF:             0E 04                  ;         COM_0E_while_fail length=0x0004
+;                                        ;       end group_AND at 0x8E93
+8EBD:          0D 0A                     ;       COM_0D_group_AND length=0x000A (to 0x8EC9)
+8EBF:             0E 04                  ;         COM_0E_group_OR length=0x0004 (to 0x8EC5)
 8EC1:                0A 3A               ;           COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 8EC3:                0A 42               ;           COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
-8EC5:             14                     ;         COM_14_execute_and_reverse_status next command
-8EC6:             09 1F                  ;         COM_09_compare_to_second_noun(obj=OBJ_1F_SMALL_KEY_CAB)
+;                                        ;         end group_OR at 0x8EBF
+8EC5:             14                     ;         COM_14_reverse_status next command
+8EC6:             09 1F                  ;         COM_09_is_noun2(obj=OBJ_1F_SMALL_KEY_CAB)
 8EC8:             BA                     ;         FN_BA_OPEN_UNLOCK
-8EC9:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008
-;           GUN CABINET
-8ECB:       30 6F D3 14 10 4E 73 62      ;
+;                                        ;       end group_AND at 0x8EBD
+;                                        ;     end group_OR at 0x8E4E
+;
+8EC9:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008 (to 0x8ED3)
+;           GUN CABINET 
+8ECB:       30 6F D3 14 10 4E 73 62     
 
-; -------------- Object OBJ_27_SHOTGUN --------------
-8ED3: 39 53                              ; Word_num=0x39 SHOTGU, length=0x0053
+; -------------- Object OBJ_27_SHOTGUN_IN_CABINET --------------
+8ED3: 39 53                              ; Word_num=0x39 SHOTGU, length=0x0053 (to 0x8F28)
 8ED5: 8E 02 C0                           ; Location=0x8E, disk_section=2, ext_attr=0000...., attributes=1100_0000 (WEAPON)
-8ED8:    03 2C                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x002C
-8EDA:       04 2A                        ;     COM_04_print_message length=0x002A
-8EDC:          5F BE 5B B1 4B 7B 4E 45 06 9E F3 5F 87 5B 7F 4E ;
-8EEC:          AB 14 6F B3 15 8A 86 74 30 6F 49 16 97 54 0B 58 ;
-8EFC:          96 96 DB 72 04 53 8F 7A 9B C1 ;
+;
+8ED8:    03 2C                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x002C (to 0x8F06)
+8EDA:       04 2A                        ;     COM_04_print_message length=0x002A (to 0x8F06)
+8EDC:          5F BE 5B B1 4B 7B 4E 45 06 9E F3 5F 87 5B 7F 4E
+8EEC:          AB 14 6F B3 15 8A 86 74 30 6F 49 16 97 54 0B 58
+8EFC:          96 96 DB 72 04 53 8F 7A 9B C1
 ;
 ;              THERE IS A LOADED DOUBLE BARREL SHOTGUN LOCKED IN THE
 ;              CABINET.
 ;
-8F06:    07 19                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0019
-8F08:       0D 17                        ;     COM_0D_while_pass length=0x0017
-8F0A:          0E 04                     ;       COM_0E_while_fail length=0x0004
+;
+8F06:    07 19                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0019 (to 0x8F21)
+8F08:       0D 17                        ;     COM_0D_group_AND length=0x0017 (to 0x8F21)
+8F0A:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x8F10)
 8F0C:             0A 05                  ;         COM_0A_is_input_phrase(phrase=GET ..C..... * *)
 8F0E:             0A 43                  ;         COM_0A_is_input_phrase(phrase=GET ..C..... WITH ..C.....)
-8F10:          04 0F                     ;       COM_04_print_message length=0x000F
-8F12:             5F BE D3 14 10 4E 73 62 4B 7B 75 8D A6 85 2E ;
+;                                        ;       end group_OR at 0x8F0A
+8F10:          04 0F                     ;       COM_04_print_message length=0x000F (to 0x8F21)
+8F12:             5F BE D3 14 10 4E 73 62 4B 7B 75 8D A6 85 2E
 ;
 ;                 THE CABINET IS LOCKED.
 ;
-8F21:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;                                        ;     end group_AND at 0x8F08
+;
+8F21:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x8F28)
 ;           SHOTGUN
-8F23:       29 B8 47 BE 4E               ;
+8F23:       29 B8 47 BE 4E              
 
 ; -------------- Object OBJ_28_SHOTGUN --------------
-8F28: 39 2E                              ; Word_num=0x39 SHOTGU, length=0x002E
+8F28: 39 2E                              ; Word_num=0x39 SHOTGU, length=0x002E (to 0x8F58)
 8F2A: 00 00 E0                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1110_0000 (WEAPON, GETTABLE)
-8F2D:    03 01                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0001
+;
+8F2D:    03 01                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0001 (to 0x8F30)
 8F2F:       80                           ;     FN_80_PRINT_SHOTGUN_HERE
-8F30:    07 1C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001C
-8F32:       0D 1A                        ;     COM_0D_while_pass length=0x001A
-8F34:          0E 06                     ;       COM_0E_while_fail length=0x0006
+;
+8F30:    07 1C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001C (to 0x8F4E)
+8F32:       0D 1A                        ;     COM_0D_group_AND length=0x001A (to 0x8F4E)
+8F34:          0E 06                     ;       COM_0E_group_OR length=0x0006 (to 0x8F3C)
 8F36:             0A 0B                  ;         COM_0A_is_input_phrase(phrase=LOOK * AT u.......)
 8F38:             0A 10                  ;         COM_0A_is_input_phrase(phrase=LOOK * IN ......O.)
 8F3A:             0A 4C                  ;         COM_0A_is_input_phrase(phrase=LOOK * ON .......L)
-8F3C:          0E 06                     ;       COM_0E_while_fail length=0x0006
-8F3E:             03 28 29               ;         COM_03_is_located(owner=OBJ_28_SHOTGUN, obj=OBJ_29_??)
-8F41:             03 28 2A               ;         COM_03_is_located(owner=OBJ_28_SHOTGUN, obj=OBJ_2A_??)
+;                                        ;       end group_OR at 0x8F34
+8F3C:          0E 06                     ;       COM_0E_group_OR length=0x0006 (to 0x8F44)
+8F3E:             03 28 29               ;         COM_03_is_located(owner=OBJ_28_SHOTGUN, obj=OBJ_29_SHOTGUN_SHELL1)
+8F41:             03 28 2A               ;         COM_03_is_located(owner=OBJ_28_SHOTGUN, obj=OBJ_2A_SHOTGUN_SHELL2)
+;                                        ;       end group_OR at 0x8F3C
 8F44:          A8                        ;       FN_A8_PRINT_noun1
-8F45:          04 07                     ;       COM_04_print_message length=0x0007
-8F47:             4B 7B 73 8D E6 59 21   ;
+8F45:          04 07                     ;       COM_04_print_message length=0x0007 (to 0x8F4E)
+8F47:             4B 7B 73 8D E6 59 21  
 ;
 ;                 IS LOADED!
 ;
-8F4E:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-8F50:       15                           ;     Weight=21
-8F51:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;                                        ;     end group_AND at 0x8F32
+;
+8F4E:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x8F51)
+8F50:       15                           ;     weight=21
+;
+8F51:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x8F58)
 ;           SHOTGUN
-8F53:       29 B8 47 BE 4E               ;
+8F53:       29 B8 47 BE 4E              
 
-; -------------- Object OBJ_29_?? --------------
-8F58: 00 0E                              ; Word_num=0x00 -none-, length=0x000E
+; -------------- Object OBJ_29_SHOTGUN_SHELL1 --------------
+8F58: 00 0E                              ; Word_num=0x00 -none-, length=0x000E (to 0x8F68)
 8F5A: 28 00 A0                           ; Location=0x28, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
-8F5D:    08 09                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0009
-8F5F:       0D 07                        ;     COM_0D_while_pass length=0x0007
-8F61:          14                        ;       COM_14_execute_and_reverse_status next command
-8F62:          03 28 2A                  ;       COM_03_is_located(owner=OBJ_28_SHOTGUN, obj=OBJ_2A_??)
-8F65:          1C 29                     ;       COM_1C_set_var_object(obj=OBJ_29_??)
-8F67:          BC                        ;       FN_BC_SHOOT_DROP_SHOTGUN
+;
+8F5D:    08 09                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0009 (to 0x8F68)
+8F5F:       0D 07                        ;     COM_0D_group_AND length=0x0007 (to 0x8F68)
+8F61:          14                        ;       COM_14_reverse_status next command
+8F62:          03 28 2A                  ;       COM_03_is_located(owner=OBJ_28_SHOTGUN, obj=OBJ_2A_SHOTGUN_SHELL2)
+8F65:          1C 29                     ;       COM_1C_set_var_object(obj=OBJ_29_SHOTGUN_SHELL1)
+8F67:          BC                        ;       FN_BC_SHOOT_DROP_SHELL
+;                                        ;     end group_AND at 0x8F5F
 
-; -------------- Object OBJ_2A_?? --------------
-8F68: 00 0A                              ; Word_num=0x00 -none-, length=0x000A
+; -------------- Object OBJ_2A_SHOTGUN_SHELL2 --------------
+8F68: 00 0A                              ; Word_num=0x00 -none-, length=0x000A (to 0x8F74)
 8F6A: 28 00 A0                           ; Location=0x28, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
-8F6D:    08 05                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0005
-8F6F:       0D 03                        ;     COM_0D_while_pass length=0x0003
-8F71:          1C 2A                     ;       COM_1C_set_var_object(obj=OBJ_2A_??)
-8F73:          BC                        ;       FN_BC_SHOOT_DROP_SHOTGUN
+;
+8F6D:    08 05                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0005 (to 0x8F74)
+8F6F:       0D 03                        ;     COM_0D_group_AND length=0x0003 (to 0x8F74)
+8F71:          1C 2A                     ;       COM_1C_set_var_object(obj=OBJ_2A_SHOTGUN_SHELL2)
+8F73:          BC                        ;       FN_BC_SHOOT_DROP_SHELL
+;                                        ;     end group_AND at 0x8F6F
 
 ; -------------- Object OBJ_2B_GAS_PUMP --------------
-8F74: 3A 6C                              ; Word_num=0x3A PUMP, length=0x006C
+8F74: 3A 6C                              ; Word_num=0x3A PUMP, length=0x006C (to 0x8FE2)
 8F76: 82 01 81                           ; Location=0x82, disk_section=1, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-8F79:    03 22                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0022
-8F7B:       04 20                        ;     COM_04_print_message length=0x0020
-8F7D:          83 48 BE 9F 4B 15 23 B8 0F A0 09 58 55 8B D6 B5 ;
-8F8D:          53 A0 15 6C EF 16 D3 93 FB B9 4D 98 9F 15 7F B1 ;
+;
+8F79:    03 22                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0022 (to 0x8F9D)
+8F7B:       04 20                        ;     COM_04_print_message length=0x0020 (to 0x8F9D)
+8F7D:          83 48 BE 9F 4B 15 23 B8 0F A0 09 58 55 8B D6 B5
+8F8D:          53 A0 15 6C EF 16 D3 93 FB B9 4D 98 9F 15 7F B1
 ;
 ;              AN OLD FASHIONED GLASS TOP GAS PUMP STANDS HERE.
 ;
-8F9D:    07 3B                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x003B
-8F9F:       0D 39                        ;     COM_0D_while_pass length=0x0039
-8FA1:          0E 04                     ;       COM_0E_while_fail length=0x0004
+;
+8F9D:    07 3B                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x003B (to 0x8FDA)
+8F9F:       0D 39                        ;     COM_0D_group_AND length=0x0039 (to 0x8FDA)
+8FA1:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x8FA7)
 8FA3:             0A 08                  ;         COM_0A_is_input_phrase(phrase=READ .....?.. * *)
 8FA5:             0A 0B                  ;         COM_0A_is_input_phrase(phrase=LOOK * AT u.......)
-8FA7:          04 31                     ;       COM_04_print_message length=0x0031
-8FA9:             3B 95 41 6E 4F 5B C9 B9 D6 15 53 17 6E DF 6A 13 ;
-8FB9:             05 3F 9E 61 D2 B5 23 62 0E 6C 80 8D 63 F4 96 77 ;
-8FC9:             AF 14 16 BC F4 72 A5 5E 99 16 73 15 CE B5 5E 60 ;
-8FD9:             2E                     ;
+;                                        ;       end group_OR at 0x8FA1
+8FA7:          04 31                     ;       COM_04_print_message length=0x0031 (to 0x8FDA)
+8FA9:             3B 95 41 6E 4F 5B C9 B9 D6 15 53 17 6E DF 6A 13
+8FB9:             05 3F 9E 61 D2 B5 23 62 0E 6C 80 8D 63 F4 96 77
+8FC9:             AF 14 16 BC F4 72 A5 5E 99 16 73 15 CE B5 5E 60
+8FD9:             2E                    
 ;
 ;                 MY GOODNESS! IT SAYS, "33 CENTS PER GALLON." I'D BET
 ;                 THERE'S NO GAS LEFT.
 ;
-8FDA:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
-;           GAS PUMP
-8FDC:       15 6C EF 16 D3 93            ;
+;                                        ;     end group_AND at 0x8F9F
+;
+8FDA:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0x8FE2)
+;           GAS PUMP 
+8FDC:       15 6C EF 16 D3 93           
 
 ; -------------- Object OBJ_2C_PADLOCK --------------
-8FE2: 29 0D                              ; Word_num=0x29 PADLOC, length=0x000D
+8FE2: 29 0D                              ; Word_num=0x29 PADLOC, length=0x000D (to 0x8FF1)
 8FE4: 2B 60 88                           ; Location=0x2B, disk_section=0, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
-8FE7:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+8FE7:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x8FEA)
 8FE9:       BA                           ;     FN_BA_OPEN_UNLOCK
-8FEA:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;
+8FEA:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x8FF1)
 ;           PADLOCK
-8FEC:       46 A4 75 8D 4B               ;
+8FEC:       46 A4 75 8D 4B              
 
 ; -------------- Object OBJ_2D_JACK-O-MATIC --------------
-8FF1: 31 5D                              ; Word_num=0x31 JACK, length=0x005D
+8FF1: 31 5D                              ; Word_num=0x31 JACK, length=0x005D (to 0x9050)
 8FF3: 83 01 A4                           ; Location=0x83, disk_section=1, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
-8FF6:    03 10                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0010
-8FF8:       04 0E                        ;     COM_04_print_message length=0x000E
-8FFA:          5F BE 5B B1 4B 7B 4C 45 DD 46 9F 15 7F B1 ;
+;
+8FF6:    03 10                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0010 (to 0x9008)
+8FF8:       04 0E                        ;     COM_04_print_message length=0x000E (to 0x9008)
+8FFA:          5F BE 5B B1 4B 7B 4C 45 DD 46 9F 15 7F B1
 ;
 ;              THERE IS A JACK HERE.
 ;
-9008:    07 3E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x003E
-900A:       0D 3C                        ;     COM_0D_while_pass length=0x003C
+;
+9008:    07 3E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x003E (to 0x9048)
+900A:       0D 3C                        ;     COM_0D_group_AND length=0x003C (to 0x9048)
 900C:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-900E:          04 15                     ;       COM_04_print_message length=0x0015
-9010:             2B 1C AD 54 1F A2 83 49 C6 51 4F 61 DB D6 B6 93 ;
-9020:             33 61 1A 40 22         ;
+900E:          04 15                     ;       COM_04_print_message length=0x0015 (to 0x9025)
+9010:             2B 1C AD 54 1F A2 83 49 C6 51 4F 61 DB D6 B6 93
+9020:             33 61 1A 40 22        
 ;
 ;                 "JACK-O-MATIC DELUXE MODEL 333"
 ;
 9025:          25                        ;       COM_25_print_linefeed()
-9026:          04 20                     ;       COM_04_print_message length=0x0020
-9028:             2B 1C 8B 54 57 C6 D0 15 0C BA E6 C3 C0 7A 33 BB ;
-9038:             76 A7 EB 15 8B 54 03 A0 8F 2A 85 73 DF 8B 63 F4 ;
+9026:          04 20                     ;       COM_04_print_message length=0x0020 (to 0x9048)
+9028:             2B 1C 8B 54 57 C6 D0 15 0C BA E6 C3 C0 7A 33 BB
+9038:             76 A7 EB 15 8B 54 03 A0 8F 2A 85 73 DF 8B 63 F4
 ;
-;                 "JACK USE INSTRUCTIONS, PUT JACK ON <VEHICLE>."
+;                 "JACK USE INSTRUCTIONS, PUT JACK ON <VEHICLE>." 
 ;
-9048:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;                                        ;     end group_AND at 0x900A
+;
+9048:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x904B)
 904A:       29                           ;     COM_29_toggle_open_VAR()
-904B:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+904B:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x9050)
 ;           JACK
-904D:       C5 7E 4B                     ;
+904D:       C5 7E 4B                    
 
 ; -------------- Object OBJ_2E_RUSTY_JEEP --------------
-9050: 32 77                              ; Word_num=0x32 JEEP, length=0x0077
+9050: 32 77                              ; Word_num=0x32 JEEP, length=0x0077 (to 0x90C9)
 9052: 86 01 81                           ; Location=0x86, disk_section=1, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-9055:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014
-9057:       04 12                        ;     COM_04_print_message length=0x0012
-9059:          5F BE 5B B1 4B 7B 54 45 66 C6 4C DB 32 60 9F 15 ;
-9069:          7F B1                     ;
+;
+9055:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x906B)
+9057:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x906B)
+9059:          5F BE 5B B1 4B 7B 54 45 66 C6 4C DB 32 60 9F 15
+9069:          7F B1                    
 ;
 ;              THERE IS A RUSTY JEEP HERE.
 ;
-906B:    07 53                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0053
-906D:       0B 51 0A                     ;     COM_0B_switch length=0x0051, function=COM_0A_is_input_phrase(phrase_num)
-9070:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
-9071:          17                        ;       ELSE goto=0x9089
-9072:             0D 15                  ;         COM_0D_while_pass length=0x0015
-9074:                17 01 2E            ;           COM_17_move_object_to_destination(obj=OBJ_01_PLAYER, destination=OBJ_2E_RUSTY_JEEP)
-9077:                04 10               ;           COM_04_print_message length=0x0010
-9079:                   C7 DE 94 14 50 5E 6B A1 83 7A 5F BE EF 15 F7 61 ;
+;
+906B:    07 53                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0053 (to 0x90C0)
+906D:       0B 51 0A                     ;     COM_0B_switch length=0x0051 (to 0x90C1), function=COM_0A_is_input_phrase(phrase_num)
+9070:          36 17                     ;       case COM_0A_is_input_phrase("ENTER * * *"), length=0x0017
+9072:             0D 15                  ;         COM_0D_group_AND length=0x0015 (to 0x9089)
+9074:                17 01 2E            ;           COM_17_move_object_to(obj=OBJ_01_PLAYER, destination=OBJ_2E_RUSTY_JEEP)
+9077:                04 10               ;           COM_04_print_message length=0x0010 (to 0x9089)
+9079:                   C7 DE 94 14 50 5E 6B A1 83 7A 5F BE EF 15 F7 61
 ;
 ;                       YOU ARE NOW IN THE JEEP.
 ;
-9089:          37                        ;       COM_0A_is_input_phrase("CLIMB * OUT *")
-908A:          1A                        ;       ELSE goto=0x90A5
-908B:             0D 18                  ;         COM_0D_while_pass length=0x0018
+;                                        ;         end group_AND at 0x9072
+;                                        ;       end case
+9089:          37 1A                     ;       case COM_0A_is_input_phrase("CLIMB * OUT *"), length=0x001A
+908B:             0D 18                  ;         COM_0D_group_AND length=0x0018 (to 0x90A5)
 908D:                1C 01               ;           COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 908F:                10                  ;           COM_10_drop_var()
-9090:                04 13               ;           COM_04_print_message length=0x0013
-9092:                   C7 DE 94 14 50 5E 6B A1 36 A1 B8 16 82 17 4C 5E ;
-90A2:                   32 60 2E         ;
+9090:                04 13               ;           COM_04_print_message length=0x0013 (to 0x90A5)
+9092:                   C7 DE 94 14 50 5E 6B A1 36 A1 B8 16 82 17 4C 5E
+90A2:                   32 60 2E        
 ;
 ;                       YOU ARE NOW OUT OF THE JEEP.
 ;
-90A5:          52                        ;       COM_0A_is_input_phrase("START u....... * *")
-90A6:          19                        ;       ELSE goto=0x90C0
-90A7:             04 17                  ;         COM_04_print_message length=0x0017
-90A9:                06 9A 90 73 5B 70 5F BE AB 14 3F C0 7B B4 B5 94 ;
-90B9:                04 BC 46 5E 86 5F 21 ;
+;                                        ;         end group_AND at 0x908B
+;                                        ;       end case
+90A5:          52 19                     ;       case COM_0A_is_input_phrase("START u....... * *"), length=0x0019
+90A7:             04 17                  ;         COM_04_print_message length=0x0017 (to 0x90C0)
+90A9:                06 9A 90 73 5B 70 5F BE AB 14 3F C0 7B B4 B5 94
+90B9:                04 BC 46 5E 86 5F 21
 ;
 ;                    NOTHING. THE BATTERY MUST BE DEAD!
 ;
-90C0:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007
+;                                        ;       end case
+;                                        ;     end decode_switch at 0x906D
+;
+90C0:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007 (to 0x90C9)
 ;           RUSTY JEEP
-90C2:       F5 B3 FB C0 67 7F 50         ;
+90C2:       F5 B3 FB C0 67 7F 50        
 
 ; -------------- Object OBJ_2F_FLAT_TIRE --------------
-90C9: 21 45                              ; Word_num=0x21 TIRE, length=0x0045
+90C9: 21 45                              ; Word_num=0x21 TIRE, length=0x0045 (to 0x9110)
 90CB: 2E 00 A0                           ; Location=0x2E, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
-90CE:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014
-90D0:       04 12                        ;     COM_04_print_message length=0x0012
-90D2:          5F BE 5B B1 4B 7B 48 45 56 8B 83 17 5B B1 F4 72 ;
-90E2:          DB 63                     ;
 ;
-;              THERE IS A FLAT TIRE HERE.
+90CE:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x90E4)
+90D0:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x90E4)
+90D2:          5F BE 5B B1 4B 7B 48 45 56 8B 83 17 5B B1 F4 72
+90E2:          DB 63                    
 ;
-90E4:    07 1C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001C
-90E6:       0D 1A                        ;     COM_0D_while_pass length=0x001A
-90E8:          0E 04                     ;       COM_0E_while_fail length=0x0004
+;              THERE IS A FLAT TIRE HERE. 
+;
+;
+90E4:    07 1C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001C (to 0x9102)
+90E6:       0D 1A                        ;     COM_0D_group_AND length=0x001A (to 0x9102)
+90E8:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x90EE)
 90EA:             0A 05                  ;         COM_0A_is_input_phrase(phrase=GET ..C..... * *)
 90EC:             0A 43                  ;         COM_0A_is_input_phrase(phrase=GET ..C..... WITH ..C.....)
-90EE:          14                        ;       COM_14_execute_and_reverse_status next command
+;                                        ;       end group_OR at 0x90E8
+90EE:          14                        ;       COM_14_reverse_status next command
 90EF:          03 2E 2D                  ;       COM_03_is_located(owner=OBJ_2E_RUSTY_JEEP, obj=OBJ_2D_JACK-O-MATIC)
-90F2:          04 0E                     ;       COM_04_print_message length=0x000E
-90F4:             C7 DE 77 16 F3 B9 57 C6 7B 14 C5 7E 5B 89 ;
+90F2:          04 0E                     ;       COM_04_print_message length=0x000E (to 0x9102)
+90F4:             C7 DE 77 16 F3 B9 57 C6 7B 14 C5 7E 5B 89
 ;
-;                 YOU MUST USE A JACK.
+;                 YOU MUST USE A JACK. 
 ;
-9102:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;                                        ;     end group_AND at 0x90E6
+;
+9102:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x9105)
 9104:       22                           ;     FLAT
-9105:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-9107:       29                           ;     Weight=41
-9108:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
+;
+9105:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x9108)
+9107:       29                           ;     weight=41
+;
+9108:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0x9110)
 ;           FLAT TIRE
-910A:       7B 67 16 BC 2F 7B            ;
+910A:       7B 67 16 BC 2F 7B           
 
 ; -------------- Object OBJ_30_SPARE_TIRE --------------
-9110: 21 42                              ; Word_num=0x21 TIRE, length=0x0042
+9110: 21 42                              ; Word_num=0x21 TIRE, length=0x0042 (to 0x9154)
 9112: 86 01 A0                           ; Location=0x86, disk_section=1, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
-9115:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014
-9117:       04 12                        ;     COM_04_print_message length=0x0012
-9119:          5F BE 5B B1 4B 7B 55 45 54 A4 56 5E 2F 7B 9F 15 ;
-9129:          7F B1                     ;
+;
+9115:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x912B)
+9117:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x912B)
+9119:          5F BE 5B B1 4B 7B 55 45 54 A4 56 5E 2F 7B 9F 15
+9129:          7F B1                    
 ;
 ;              THERE IS A SPARE TIRE HERE.
 ;
-912B:    07 18                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0018
-912D:       0D 16                        ;     COM_0D_while_pass length=0x0016
+;
+912B:    07 18                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0018 (to 0x9145)
+912D:       0D 16                        ;     COM_0D_group_AND length=0x0016 (to 0x9145)
 912F:          0A 4B                     ;       COM_0A_is_input_phrase(phrase=DROP ..C..... ON .......L)
-9131:          14                        ;       COM_14_execute_and_reverse_status next command
+9131:          14                        ;       COM_14_reverse_status next command
 9132:          03 2E 2D                  ;       COM_03_is_located(owner=OBJ_2E_RUSTY_JEEP, obj=OBJ_2D_JACK-O-MATIC)
-9135:          04 0E                     ;       COM_04_print_message length=0x000E
-9137:             C7 DE 77 16 F3 B9 57 C6 7B 14 C5 7E 5B 89 ;
+9135:          04 0E                     ;       COM_04_print_message length=0x000E (to 0x9145)
+9137:             C7 DE 77 16 F3 B9 57 C6 7B 14 C5 7E 5B 89
 ;
-;                 YOU MUST USE A JACK.
+;                 YOU MUST USE A JACK. 
 ;
-9145:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;                                        ;     end group_AND at 0x912D
+;
+9145:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x9148)
 9147:       23                           ;     SPARE
-9148:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-914A:       29                           ;     Weight=41
-914B:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007
+;
+9148:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x914B)
+914A:       29                           ;     weight=41
+;
+914B:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007 (to 0x9154)
 ;           SPARE TIRE
-914D:       5B B9 5B B1 94 BE 45         ;
+914D:       5B B9 5B B1 94 BE 45        
 
 ; -------------- Object OBJ_31_SPHORX --------------
-9154: 1A 09                              ; Word_num=0x1A DESK, length=0x0009
+9154: 1A 09                              ; Word_num=0x1A DESK, length=0x0009 (to 0x915F)
 9156: 85 09 81                           ; Location=0x85, disk_section=9, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-9159:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
+;
+9159:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0x915F)
 ;           SPHORX
-915B:       62 B9 C2 A0                  ;
+915B:       62 B9 C2 A0                 
 
 ; -------------- Object OBJ_32_SHOVEL --------------
-915F: 26 20                              ; Word_num=0x26 SHOVEL, length=0x0020
+915F: 26 20                              ; Word_num=0x26 SHOVEL, length=0x0020 (to 0x9181)
 9161: DC 03 E0                           ; Location=0xDC, disk_section=3, ext_attr=0000...., attributes=1110_0000 (WEAPON, GETTABLE)
-9164:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012
-9166:       04 10                        ;     COM_04_print_message length=0x0010
-9168:          5F BE 5B B1 4B 7B 55 45 88 74 33 61 F4 72 DB 63 ;
 ;
-;              THERE IS A SHOVEL HERE.
+9164:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x9178)
+9166:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x9178)
+9168:          5F BE 5B B1 4B 7B 55 45 88 74 33 61 F4 72 DB 63
 ;
-9178:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-917A:       15                           ;     Weight=21
-917B:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
+;              THERE IS A SHOVEL HERE. 
+;
+;
+9178:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x917B)
+917A:       15                           ;     weight=21
+;
+917B:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0x9181)
 ;           SHOVEL
-917D:       29 B8 6E CA                  ;
+917D:       29 B8 6E CA                 
 
 ; -------------- Object OBJ_33_RATTLE_SNAKE --------------
-9181: 0C 81 B2                           ; Word_num=0x0C SNAKE, length=0x01B2
+9181: 0C 81 B2                           ; Word_num=0x0C SNAKE, length=0x01B2 (to 0x9336)
 9184: DC 03 90                           ; Location=0xDC, disk_section=3, ext_attr=0000...., attributes=1001_0000 (ALIVE)
-9187:    03 2F                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x002F
-9189:       04 2D                        ;     COM_04_print_message length=0x002D
-918B:          5F BE 5B B1 4B 7B 50 45 8F 7A 59 15 F3 A0 83 5A ;
-919B:          C0 93 04 58 DD 46 2B 17 46 C0 55 5E CD 97 45 5E ;
-91AB:          4E 9F F3 5F 03 A0 5F BE 56 15 44 A0 2E ;
+;
+9187:    03 2F                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x002F (to 0x91B8)
+9189:       04 2D                        ;     COM_04_print_message length=0x002D (to 0x91B8)
+918B:          5F BE 5B B1 4B 7B 50 45 8F 7A 59 15 F3 A0 83 5A
+919B:          C0 93 04 58 DD 46 2B 17 46 C0 55 5E CD 97 45 5E
+91AB:          4E 9F F3 5F 03 A0 5F BE 56 15 44 A0 2E
 ;
 ;              THERE IS A NINE FOOT DIAMOND BACK RATTLE SNAKE COILED ON
 ;              THE FLOOR.
 ;
-91B8:    09 02                           ;   Section=09:SECTION_09_HIT_POINTS, length=0x0002
-91BA:       46 46                        ;     Hit_points=70_of_70
-91BC:    07 6E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x006E
-91BE:       0E 6C                        ;     COM_0E_while_fail length=0x006C
-91C0:          0D 3A                     ;       COM_0D_while_pass length=0x003A
+;
+91B8:    09 02                           ;   Section=09:SECTION_09_HIT_POINTS, length=0x0002 (to 0x91BC)
+91BA:       46 46                        ;     max_hit_points=70 current_hit_points=70
+;
+91BC:    07 6E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x006E (to 0x922C)
+91BE:       0E 6C                        ;     COM_0E_group_OR length=0x006C (to 0x922C)
+91C0:          0D 3A                     ;       COM_0D_group_AND length=0x003A (to 0x91FC)
 91C2:             0A 09                  ;         COM_0A_is_input_phrase(phrase=ATTACK ...P.... WITH .v......)
-91C4:             0E 06                  ;         COM_0E_while_fail length=0x0006
-91C6:                09 28               ;           COM_09_compare_to_second_noun(obj=OBJ_28_SHOTGUN)
-91C8:                09 32               ;           COM_09_compare_to_second_noun(obj=OBJ_32_SHOVEL)
-91CA:                09 24               ;           COM_09_compare_to_second_noun(obj=OBJ_24_CROWBAR)
-91CC:             04 06                  ;         COM_04_print_message length=0x0006
-91CE:                C7 DE 2B 17 57 7B   ;
+91C4:             0E 06                  ;         COM_0E_group_OR length=0x0006 (to 0x91CC)
+91C6:                09 28               ;           COM_09_is_noun2(obj=OBJ_28_SHOTGUN)
+91C8:                09 32               ;           COM_09_is_noun2(obj=OBJ_32_SHOVEL)
+91CA:                09 24               ;           COM_09_is_noun2(obj=OBJ_24_CROWBAR)
+;                                        ;         end group_OR at 0x91C4
+91CC:             04 06                  ;         COM_04_print_message length=0x0006 (to 0x91D4)
+91CE:                C7 DE 2B 17 57 7B  
 ;
 ;                    YOU RAISE
 ;
 91D4:             A9                     ;         FN_A9_PRINT_noun2
-91D5:             04 22                  ;         COM_04_print_message length=0x0022
-91D7:                4F A1 9B AF 34 A1 9F 15 F3 46 8E 48 81 13 4F 72 ;
-91E7:                E3 06 E3 59 0A 8A 5B 7A 48 45 34 79 9B 53 89 4E ;
-91F7:                6B CE               ;
+91D5:             04 22                  ;         COM_04_print_message length=0x0022 (to 0x91F9)
+91D7:                4F A1 9B AF 34 A1 9F 15 F3 46 8E 48 81 13 4F 72
+91E7:                E3 06 E3 59 0A 8A 5B 7A 48 45 34 79 9B 53 89 4E
+91F7:                6B CE              
 ;
-;                    OVER YOUR HEAD AND "WHAM!" DEAL HIM A FIERCE BLOW!
+;                    OVER YOUR HEAD AND "WHAM!" DEAL HIM A FIERCE BLOW! 
 ;
-91F9:             1A                     ;         COM_1A_set_var_to_first_noun()
+91F9:             1A                     ;         COM_1A_set_var_to_noun1()
 91FA:             1D 28                  ;         COM_1D_attack_var(points=40)
-91FC:          0D 2E                     ;       COM_0D_while_pass length=0x002E
-91FE:             0E 06                  ;         COM_0E_while_fail length=0x0006
+;                                        ;       end group_AND at 0x91C0
+91FC:          0D 2E                     ;       COM_0D_group_AND length=0x002E (to 0x922C)
+91FE:             0E 06                  ;         COM_0E_group_OR length=0x0006 (to 0x9206)
 9200:                0A 09               ;           COM_0A_is_input_phrase(phrase=ATTACK ...P.... WITH .v......)
 9202:                0A 05               ;           COM_0A_is_input_phrase(phrase=GET ..C..... * *)
 9204:                0A 43               ;           COM_0A_is_input_phrase(phrase=GET ..C..... WITH ..C.....)
-9206:             0E 04                  ;         COM_0E_while_fail length=0x0004
-9208:                09 5C               ;           COM_09_compare_to_second_noun(obj=OBJ_5C_PAIR_HANDS)
-920A:                09 00               ;           COM_09_compare_to_second_noun(obj=nothing)
-920C:             04 1E                  ;         COM_04_print_message length=0x001E
-920E:                C7 DE 81 15 0B BC AB BB C7 DE 81 15 0B BC AB BB ;
-921E:                42 A0 6B B5 C7 DE 0C 15 6A A0 F3 5F 97 7B ;
+;                                        ;         end group_OR at 0x91FE
+9206:             0E 04                  ;         COM_0E_group_OR length=0x0004 (to 0x920C)
+9208:                09 5C               ;           COM_09_is_noun2(obj=OBJ_5C_PAIR_HANDS)
+920A:                09 00               ;           COM_09_is_noun2(obj=nothing)
+;                                        ;         end group_OR at 0x9206
+920C:             04 1E                  ;         COM_04_print_message length=0x001E (to 0x922C)
+920E:                C7 DE 81 15 0B BC AB BB C7 DE 81 15 0B BC AB BB
+921E:                42 A0 6B B5 C7 DE 0C 15 6A A0 F3 5F 97 7B
 ;
 ;                    YOU GOT IT! YOU GOT IT! OOPS! YOU DROPPED IT.
 ;
-922C:    08 80 D7                        ;   Section=08:SECTION_08_EVERY_TURN, length=0x00D7
-922F:       0D 80 D4                     ;     COM_0D_while_pass length=0x00D4
+;                                        ;       end group_AND at 0x91FC
+;                                        ;     end group_OR at 0x91BE
+;
+922C:    08 80 D7                        ;   Section=08:SECTION_08_EVERY_TURN, length=0x00D7 (to 0x9306)
+922F:       0D 80 D4                     ;     COM_0D_group_AND length=0x00D4 (to 0x9306)
 9232:          01 01                     ;       COM_01_is_in_pack_or_room(obj=OBJ_01_PLAYER)
-9234:          14                        ;       COM_14_execute_and_reverse_status next command
-9235:          0E 04                     ;       COM_0E_while_fail length=0x0004
+9234:          14                        ;       COM_14_reverse_status next command
+9235:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x923B)
 9237:             0A 01                  ;         COM_0A_is_input_phrase(phrase=NORTH * * *)
 9239:             0A 03                  ;         COM_0A_is_input_phrase(phrase=EAST * * *)
-923B:          0B 80 C5 05               ;       COM_0B_switch length=0x00C5, function=COM_05_is_less_equal_last_random(value)
-923F:             55                     ;         COM_05_is_less_equal_last_random(value=85)
-9240:             46                     ;         ELSE goto=0x9287
-9241:                1F 44               ;           COM_1F_print2 length=0x0044
-9243:                   5F BE 57 17 1F B3 B3 9A 83 67 C5 98 D6 15 AE B7 ;
-9253:                   96 64 73 A1 4D B1 51 18 EB C1 68 4D AF A0 51 18 ;
-9263:                   45 C2 83 48 63 B1 16 56 A3 15 D0 B5 26 60 DB 8B ;
-9273:                   1B B8 13 B3 D0 65 CB 6E 87 A5 17 B1 51 18 23 C6 ;
-9283:                   9B B8 1B 9C      ;
+;                                        ;       end group_OR at 0x9235
+923B:          0B 80 C5 05               ;       COM_0B_switch length=0x00C5 (to 0x9304), function=COM_05_is_less_equal_last_random(value)
+923F:             55 46                  ;         case COM_05_is_less_equal_last_random(value=85), length=0x0046
+9241:                1F 44               ;           COM_1F_print2 length=0x0044 (to 0x9287)
+9243:                   5F BE 57 17 1F B3 B3 9A 83 67 C5 98 D6 15 AE B7
+9253:                   96 64 73 A1 4D B1 51 18 EB C1 68 4D AF A0 51 18
+9263:                   45 C2 83 48 63 B1 16 56 A3 15 D0 B5 26 60 DB 8B
+9273:                   1B B8 13 B3 D0 65 CB 6E 87 A5 17 B1 51 18 23 C6
+9283:                   9B B8 1B 9C     
 ;
 ;                       THE SERPENT FLINGS ITSELF TOWARDS YOU! BEFORE YOU CAN
 ;                       REACT, HIS NEEDLE SHARP FANGS PIERCE YOUR SKIN.
 ;
-9287:             AA                     ;         COM_05_is_less_equal_last_random(value=170)
-9288:             3C                     ;         ELSE goto=0x92C5
-9289:                1F 3A               ;           COM_1F_print2 length=0x003A
-928B:                   C7 DE 87 AF 3D 49 33 17 AB 98 56 D1 16 71 DB 72 ;
-929B:                   47 B9 33 98 C3 9E C7 DE 95 AF AF 55 5B 48 4B 49 ;
-92AB:                   5F BE 60 17 17 48 CB 23 E7 BD 53 BE F0 A4 8C 62 ;
-92BB:                   7F 49 51 18 23 C6 7F 67 11 B8 ;
+;                                        ;         end case
+9287:             AA 3C                  ;         case COM_05_is_less_equal_last_random(value=170), length=0x003C
+9289:                1F 3A               ;           COM_1F_print2 length=0x003A (to 0x92C5)
+928B:                   C7 DE 87 AF 3D 49 33 17 AB 98 56 D1 16 71 DB 72
+929B:                   47 B9 33 98 C3 9E C7 DE 95 AF AF 55 5B 48 4B 49
+92AB:                   5F BE 60 17 17 48 CB 23 E7 BD 53 BE F0 A4 8C 62
+92BB:                   7F 49 51 18 23 C6 7F 67 11 B8
 ;
 ;                       YOUR EARS RING WITH THE SOUND OF YOUR SCREAM AS THE SNAKE'S
 ;                       TEETH PENETRATE YOUR FLESH!
 ;
-92C5:             FF                     ;         COM_05_is_less_equal_last_random(value=255)
-92C6:             3C                     ;         ELSE goto=0x9303
-92C7:                1F 3A               ;           COM_1F_print2 length=0x003A
-92C9:                   5F BE 60 17 17 48 66 17 0D B2 49 62 51 18 48 C2 ;
-92D9:                   2E 60 7B 14 29 B8 03 A1 AB 98 4B A4 8B 96 9B 96 ;
-92E9:                   34 A1 3F 16 C3 6A CA B5 4B 7B D0 65 CB 6E 87 A5 ;
-92F9:                   17 B1 90 14 94 14 F4 BD DB E0 ;
+;                                        ;         end case
+92C5:             FF 3C                  ;         case COM_05_is_less_equal_last_random(value=255), length=0x003C
+92C7:                1F 3A               ;           COM_1F_print2 length=0x003A (to 0x9303)
+92C9:                   5F BE 60 17 17 48 66 17 0D B2 49 62 51 18 48 C2
+92D9:                   2E 60 7B 14 29 B8 03 A1 AB 98 4B A4 8B 96 9B 96
+92E9:                   34 A1 3F 16 C3 6A CA B5 4B 7B D0 65 CB 6E 87 A5
+92F9:                   17 B1 90 14 94 14 F4 BD DB E0
 ;
 ;                       THE SNAKE STRIKES! YOU FEEL A SHOOTING PAIN IN YOUR LEG AS
 ;                       HIS FANGS PIERCE AN ARTERY.
 ;
-9303:          17 35 01                  ;       COM_17_move_object_to_destination(obj=OBJ_35_??, destination=OBJ_01_PLAYER)
-9306:    0A 14                           ;   Section=0A:SECTION_0A_UPON_DEATH, length=0x0014
-9308:       0D 12                        ;     COM_0D_while_pass length=0x0012
-930A:          04 0C                     ;       COM_04_print_message length=0x000C
-930C:             5F BE 60 17 17 48 D5 15 FF 14 17 47 ;
+;                                        ;         end case
+;                                        ;       end decode_switch at 0x923B
+9303:          17 35 01                  ;       COM_17_move_object_to(obj=OBJ_35_SNAKE_VENOM, destination=OBJ_01_PLAYER)
+;                                        ;     end group_AND at 0x922F
+;
+9306:    0A 14                           ;   Section=0A:SECTION_0A_UPON_DEATH, length=0x0014 (to 0x931C)
+9308:       0D 12                        ;     COM_0D_group_AND length=0x0012 (to 0x931C)
+930A:          04 0C                     ;       COM_04_print_message length=0x000C (to 0x9318)
+930C:             5F BE 60 17 17 48 D5 15 FF 14 17 47
 ;
 ;                 THE SNAKE IS DEAD.
 ;
 9318:          38                        ;       COM_38_bump_score()
-9319:          1E 33 34                  ;       COM_1E_swap(obj1=OBJ_33_RATTLE_SNAKE, obj2=OBJ_34_DEAD_SNAKE)
-931C:    02 18                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0018
-;           NINE FOOT DIAMOND BACK RATTLE SNAKE
-931E:       10 99 48 5E 46 A0 03 15 71 48 33 98 C5 4C D4 83 ;
-932E:       8E 49 DB 8B 0B B9 9B 85      ;
+9319:          1E 33 34                  ;       COM_1E_swap_object_locations(obj1=OBJ_33_RATTLE_SNAKE, obj2=OBJ_34_DEAD_SNAKE)
+;                                        ;     end group_AND at 0x9308
+;
+931C:    02 18                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0018 (to 0x9336)
+;           NINE FOOT DIAMOND BACK RATTLE SNAKE 
+931E:       10 99 48 5E 46 A0 03 15 71 48 33 98 C5 4C D4 83
+932E:       8E 49 DB 8B 0B B9 9B 85     
 
 ; -------------- Object OBJ_34_DEAD_SNAKE --------------
-9336: 0C 25                              ; Word_num=0x0C SNAKE, length=0x0025
+9336: 0C 25                              ; Word_num=0x0C SNAKE, length=0x0025 (to 0x935D)
 9338: 00 03 A0                           ; Location=0x00, disk_section=3, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
-933B:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014
-933D:       04 12                        ;     COM_04_print_message length=0x0012
-933F:          5F BE 5B B1 4B 7B 46 45 86 5F 60 17 17 48 9F 15 ;
-934F:          7F B1                     ;
+;
+933B:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x9351)
+933D:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x9351)
+933F:          5F BE 5B B1 4B 7B 46 45 86 5F 60 17 17 48 9F 15
+934F:          7F B1                    
 ;
 ;              THERE IS A DEAD SNAKE HERE.
 ;
-9351:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-9353:       09                           ;     Weight=9
-9354:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007
+;
+9351:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x9354)
+9353:       09                           ;     weight=9
+;
+9354:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007 (to 0x935D)
 ;           DEAD SNAKE
-9356:       E3 59 15 58 CD 97 45         ;
+9356:       E3 59 15 58 CD 97 45        
 
-; -------------- Object OBJ_35_?? --------------
-935D: 20 0D                              ; Word_num=0x20 ??20??, length=0x000D
+; -------------- Object OBJ_35_SNAKE_VENOM --------------
+;; The user gets this object when the snake attacks successfully. The object does 17 points of damage 
+;; every turn. There is no way to cure the snake bite. The user's UPON_DEATH section includes a note 
+;; about the user being poisoned.
+935D: 20 0D                              ; Word_num=0x20 ??20??, length=0x000D (to 0x936C)
 935F: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
-9362:    08 08                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0008
-9364:       0D 06                        ;     COM_0D_while_pass length=0x0006
+;
+9362:    08 08                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0008 (to 0x936C)
+9364:       0D 06                        ;     COM_0D_group_AND length=0x0006 (to 0x936C)
 9366:          01 01                     ;       COM_01_is_in_pack_or_room(obj=OBJ_01_PLAYER)
 9368:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 936A:          1D 11                     ;       COM_1D_attack_var(points=17)
+;                                        ;     end group_AND at 0x9364
 
 ; -------------- Object OBJ_36_FOOD --------------
-936C: 1C 58                              ; Word_num=0x1C FOOD, length=0x0058
+;; The food heals 35 hit points (that iss half the player's max)
+936C: 1C 58                              ; Word_num=0x1C FOOD, length=0x0058 (to 0x93C6)
 936E: 94 03 A0                           ; Location=0x94, disk_section=3, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
-9371:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012
-9373:       04 10                        ;     COM_04_print_message length=0x0010
-9375:          5F BE 5B B1 4B 7B 3F B9 48 5E 36 A0 9F 15 7F B1 ;
+;
+9371:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x9385)
+9373:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x9385)
+9375:          5F BE 5B B1 4B 7B 3F B9 48 5E 36 A0 9F 15 7F B1
 ;
 ;              THERE IS SOME FOOD HERE.
 ;
-9385:    07 2C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x002C
-9387:       0D 2A                        ;     COM_0D_while_pass length=0x002A
+;
+9385:    07 2C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x002C (to 0x93B3)
+9387:       0D 2A                        ;     COM_0D_group_AND length=0x002A (to 0x93B3)
 9389:          0A 15                     ;       COM_0A_is_input_phrase(phrase=EAT u....... * *)
 938B:          A8                        ;       FN_A8_PRINT_noun1
-938C:          04 21                     ;       COM_04_print_message length=0x0021
-938E:             15 D0 66 17 3F 48 04 EE 73 C6 03 BA F3 8C C3 9E ;
-939E:             89 73 10 71 8C C6 83 7B 0B A0 05 8A 1E A0 9E 61 ;
-93AE:             2E                     ;
+938C:          04 21                     ;       COM_04_print_message length=0x0021 (to 0x93AF)
+938E:             15 D0 66 17 3F 48 04 EE 73 C6 03 BA F3 8C C3 9E
+939E:             89 73 10 71 8C C6 83 7B 0B A0 05 8A 1E A0 9E 61
+93AE:             2E                    
 ;
 ;                 WAS STALE, BUT STILL OF HIGH NUTRITIONAL CONTENT.
 ;
 93AF:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 93B1:          23 23                     ;       COM_23_heal_var(points=35)
-93B3:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-93B5:       06                           ;     Weight=6
-93B6:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E
-;           SMALL AMOUNT OF FOOD
-93B8:       E3 B8 F3 8C 71 48 9E C5 B8 16 59 15 73 9E ;
+;                                        ;     end group_AND at 0x9387
+;
+93B3:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x93B6)
+93B5:       06                           ;     weight=6
+;
+93B6:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E (to 0x93C6)
+;           SMALL AMOUNT OF FOOD 
+93B8:       E3 B8 F3 8C 71 48 9E C5 B8 16 59 15 73 9E
 
 ; -------------- Object OBJ_37_STEEL_SAFE --------------
-93C6: 1D 31                              ; Word_num=0x1D SAFE, length=0x0031
+93C6: 1D 31                              ; Word_num=0x1D SAFE, length=0x0031 (to 0x93F9)
 93C8: 9A 64 8A                           ; Location=0x9A, disk_section=4, ext_attr=0110...., attributes=1000_1010 (CLOSEABLE, CLOSED)
-93CB:    03 24                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0024
-93CD:       04 22                        ;     COM_04_print_message length=0x0022
-93CF:          83 7A 5F BE 61 17 82 C6 F3 17 16 8D 51 18 45 C2 ;
-93DF:          83 48 A7 B7 7B 14 54 8B 9B 6C FF B9 33 61 08 B7 ;
-93EF:          DB 63                     ;
 ;
-;              IN THE SOUTH WALL, YOU CAN SEE A LARGE STEEL SAFE.
+93CB:    03 24                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0024 (to 0x93F1)
+93CD:       04 22                        ;     COM_04_print_message length=0x0022 (to 0x93F1)
+93CF:          83 7A 5F BE 61 17 82 C6 F3 17 16 8D 51 18 45 C2
+93DF:          83 48 A7 B7 7B 14 54 8B 9B 6C FF B9 33 61 08 B7
+93EF:          DB 63                    
 ;
-93F1:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;              IN THE SOUTH WALL, YOU CAN SEE A LARGE STEEL SAFE. 
+;
+;
+93F1:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x93F4)
 93F3:       BA                           ;     FN_BA_OPEN_UNLOCK
-93F4:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+93F4:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x93F9)
 ;           SAFE
-93F6:       08 B7 45                     ;
+93F6:       08 B7 45                    
 
 ; -------------- Object OBJ_38_MONEY --------------
-93F9: 27 49                              ; Word_num=0x27 MONEY, length=0x0049
+93F9: 27 49                              ; Word_num=0x27 MONEY, length=0x0049 (to 0x9444)
 93FB: 4C 00 A4                           ; Location=0x4C, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
-93FE:    03 13                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0013
-9400:       04 11                        ;     COM_04_print_message length=0x0011
-9402:          5F BE 5B B1 4B 7B 3F B9 4F 5E 0F A0 4A DB 2F 62 ;
-9412:          2E                        ;
+;
+93FE:    03 13                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0013 (to 0x9413)
+9400:       04 11                        ;     COM_04_print_message length=0x0011 (to 0x9413)
+9402:          5F BE 5B B1 4B 7B 3F B9 4F 5E 0F A0 4A DB 2F 62
+9412:          2E                       
 ;
 ;              THERE IS SOME MONEY HERE.
 ;
-9413:    07 1C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001C
-9415:       0D 1A                        ;     COM_0D_while_pass length=0x001A
+;
+9413:    07 1C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001C (to 0x9431)
+9415:       0D 1A                        ;     COM_0D_group_AND length=0x001A (to 0x9431)
 9417:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-9419:          04 16                     ;       COM_04_print_message length=0x0016
-941B:             10 1C 81 15 19 58 56 5E F5 B3 9B C1 B7 C0 D3 9A ;
-942B:             09 15 FB 8C 8C B3      ;
+9419:          04 16                     ;       COM_04_print_message length=0x0016 (to 0x9431)
+941B:             10 1C 81 15 19 58 56 5E F5 B3 9B C1 B7 C0 D3 9A
+942B:             09 15 FB 8C 8C B3     
 ;
 ;                 "IN GOD WE TRUST. TWENTY DOLLARS"
 ;
-9431:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-9433:       06                           ;     Weight=6
-9434:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E
+;                                        ;     end group_AND at 0x9415
+;
+9431:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x9434)
+9433:       06                           ;     weight=6
+;
+9434:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E (to 0x9444)
 ;           LARGE AMOUNT OF MONEY
-9436:       54 8B 9B 6C 71 48 9E C5 B8 16 71 16 7B 98 ;
+9436:       54 8B 9B 6C 71 48 9E C5 B8 16 71 16 7B 98
 
 ; -------------- Object OBJ_39_DYNAMITE --------------
-9444: 1E 81 21                           ; Word_num=0x1E DYNAMI, length=0x0121
+9444: 1E 81 21                           ; Word_num=0x1E DYNAMI, length=0x0121 (to 0x9568)
 9447: DB 02 A4                           ; Location=0xDB, disk_section=2, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
-944A:    03 19                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0019
-944C:       04 17                        ;     COM_04_print_message length=0x0017
-944E:          5F BE 5B B1 4B 7B 55 45 85 BE D1 83 86 64 8B DE ;
-945E:          D6 92 4A 5E 2F 62 2E      ;
+;
+944A:    03 19                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0019 (to 0x9465)
+944C:       04 17                        ;     COM_04_print_message length=0x0017 (to 0x9465)
+944E:          5F BE 5B B1 4B 7B 55 45 85 BE D1 83 86 64 8B DE
+945E:          D6 92 4A 5E 2F 62 2E     
 ;
 ;              THERE IS A STICK OF DYNAMITE HERE.
 ;
-9465:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-9467:       08                           ;     Weight=8
-9468:    07 80 8A                        ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x008A
-946B:       0B 80 87 0A                  ;     COM_0B_switch length=0x0087, function=COM_0A_is_input_phrase(phrase_num)
-946F:          08                        ;       COM_0A_is_input_phrase("READ .....?.. * *")
-9470:          5C                        ;       ELSE goto=0x94CD
-9471:             0D 5A                  ;         COM_0D_while_pass length=0x005A
-9473:                04 12               ;           COM_04_print_message length=0x0012
-9475:                   09 1C F4 99 DB 8B 9E 61 3A 62 15 B2 6E 62 D0 15 ;
-9485:                   5C 57            ;
+;
+9465:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x9468)
+9467:       08                           ;     weight=8
+;
+9468:    07 80 8A                        ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x008A (to 0x94F5)
+946B:       0B 80 87 0A                  ;     COM_0B_switch length=0x0087 (to 0x94F6), function=COM_0A_is_input_phrase(phrase_num)
+946F:          08 5C                     ;       case COM_0A_is_input_phrase("READ .....?.. * *"), length=0x005C
+9471:             0D 5A                  ;         COM_0D_group_AND length=0x005A (to 0x94CD)
+9473:                04 12               ;           COM_04_print_message length=0x0012 (to 0x9487)
+9475:                   09 1C F4 99 DB 8B 9E 61 3A 62 15 B2 6E 62 D0 15
+9485:                   5C 57           
 ;
 ;                       "IGNOBLE ENTERPRISES, INC."
 ;
 9487:                25                  ;           COM_25_print_linefeed()
 9488:                25                  ;           COM_25_print_linefeed()
-9489:                04 15               ;           COM_04_print_message length=0x0015
-948B:                   7E 19 15 26 40 61 C9 15 16 99 91 7A 13 15 CF 97 ;
-949B:                   7F 7B DF 13 22   ;
+9489:                04 15               ;           COM_04_print_message length=0x0015 (to 0x94A0)
+948B:                   7E 19 15 26 40 61 C9 15 16 99 91 7A 13 15 CF 97
+949B:                   7F 7B DF 13 22  
 ;
 ;                       " << SELF IGNITING DYNAMITE >>"
 ;
 94A0:                25                  ;           COM_25_print_linefeed()
-94A1:                04 0D               ;           COM_04_print_message length=0x000D
-94A3:                   DB 1B 46 98 59 5E 82 7B D3 14 59 B1 22 ;
+94A1:                04 0D               ;           COM_04_print_message length=0x000D (to 0x94B0)
+94A3:                   DB 1B 46 98 59 5E 82 7B D3 14 59 B1 22
 ;
 ;                       "HANDLE WITH CARE!"
 ;
 94B0:                25                  ;           COM_25_print_linefeed()
-94B1:                04 1A               ;           COM_04_print_message length=0x001A
-94B3:                   C9 1D B5 17 B3 63 E6 23 0D B2 48 5E 57 C6 C7 1F ;
-94C3:                   C5 C9 96 C3 43 5E 63 B1 E3 06 ;
+94B1:                04 1A               ;           COM_04_print_message length=0x001A (to 0x94CD)
+94B3:                   C9 1D B5 17 B3 63 E6 23 0D B2 48 5E 57 C6 C7 1F
+94C3:                   C5 C9 96 C3 43 5E 63 B1 E3 06
 ;
-;                       "TO USE, 'STRIKE FUSE' EVACUATE AREA!"
+;                       "TO USE, 'STRIKE FUSE' EVACUATE AREA!" 
 ;
-94CD:          53                        ;       COM_0A_is_input_phrase("STRIKE u....... * *")
-94CE:          26                        ;       ELSE goto=0x94F5
-94CF:             0D 24                  ;         COM_0D_while_pass length=0x0024
-94D1:                1A                  ;           COM_1A_set_var_to_first_noun()
-94D2:                8F                  ;           FN_8F_TRY_TO_GET_OBJECT
-94D3:                04 1D               ;           COM_04_print_message length=0x001D
-94D5:                   5F BE 13 15 CF 97 7F 7B AF 14 50 6D CA B5 65 7B ;
-94E5:                   91 7A 90 14 15 58 76 A7 F4 BD 91 7A 21 ;
+;                                        ;         end group_AND at 0x9471
+;                                        ;       end case
+94CD:          53 26                     ;       case COM_0A_is_input_phrase("STRIKE u....... * *"), length=0x0026
+94CF:             0D 24                  ;         COM_0D_group_AND length=0x0024 (to 0x94F5)
+94D1:                1A                  ;           COM_1A_set_var_to_noun1()
+94D2:                8F                  ;           FN_8F_GET_OBJECT
+94D3:                04 1D               ;           COM_04_print_message length=0x001D (to 0x94F2)
+94D5:                   5F BE 13 15 CF 97 7F 7B AF 14 50 6D CA B5 65 7B
+94E5:                   91 7A 90 14 15 58 76 A7 F4 BD 91 7A 21
 ;
 ;                       THE DYNAMITE BEGINS HISSING AND SPUTTERING!
 ;
-94F2:                17 4B 39            ;           COM_17_move_object_to_destination(obj=OBJ_4B_??, destination=OBJ_39_DYNAMITE)
-94F5:    08 63                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0063
-94F7:       0E 61                        ;     COM_0E_while_fail length=0x0061
-94F9:          14                        ;       COM_14_execute_and_reverse_status next command
-94FA:          03 39 4B                  ;       COM_03_is_located(owner=OBJ_39_DYNAMITE, obj=OBJ_4B_??)
-94FD:          0D 14                     ;       COM_0D_while_pass length=0x0014
-94FF:             0E 04                  ;         COM_0E_while_fail length=0x0004
+94F2:                17 4B 39            ;           COM_17_move_object_to(obj=OBJ_4B_LIT_DYNAMITE_FUSE, destination=OBJ_39_DYNAMITE)
+;                                        ;         end group_AND at 0x94CF
+;                                        ;       end case
+;                                        ;     end decode_switch at 0x946B
+;
+94F5:    08 63                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0063 (to 0x955A)
+94F7:       0E 61                        ;     COM_0E_group_OR length=0x0061 (to 0x955A)
+94F9:          14                        ;       COM_14_reverse_status next command
+94FA:          03 39 4B                  ;       COM_03_is_located(owner=OBJ_39_DYNAMITE, obj=OBJ_4B_LIT_DYNAMITE_FUSE)
+94FD:          0D 14                     ;       COM_0D_group_AND length=0x0014 (to 0x9513)
+94FF:             0E 04                  ;         COM_0E_group_OR length=0x0004 (to 0x9505)
 9501:                0A 53               ;           COM_0A_is_input_phrase(phrase=STRIKE u....... * *)
 9503:                0A 06               ;           COM_0A_is_input_phrase(phrase=DROP ..C..... * *)
-9505:             1F 0C                  ;         COM_1F_print2 length=0x000C
-9507:                E3 1B E5 B9 15 EE 76 A7 F4 BD E3 06 ;
+;                                        ;         end group_OR at 0x94FF
+9505:             1F 0C                  ;         COM_1F_print2 length=0x000C (to 0x9513)
+9507:                E3 1B E5 B9 15 EE 76 A7 F4 BD E3 06
 ;
-;                    "HISSS, SPUTTER!"
+;                    "HISSS, SPUTTER!" 
 ;
-9513:          0D 27                     ;       COM_0D_while_pass length=0x0027
+;                                        ;       end group_AND at 0x94FD
+9513:          0D 27                     ;       COM_0D_group_AND length=0x0027 (to 0x953C)
 9515:             01 01                  ;         COM_01_is_in_pack_or_room(obj=OBJ_01_PLAYER)
 9517:             1C 01                  ;         COM_1C_set_var_object(obj=OBJ_01_PLAYER)
-9519:             1F 19                  ;         COM_1F_print2 length=0x0019
-951B:                01 4F 41 A0 EB 8F C7 DE 9B 15 5B CA 67 4D 84 96 ;
-952B:                89 8D 96 96 C4 9C 8D 7B 21 ;
+9519:             1F 19                  ;         COM_1F_print2 length=0x0019 (to 0x9534)
+951B:                01 4F 41 A0 EB 8F C7 DE 9B 15 5B CA 67 4D 84 96
+952B:                89 8D 96 96 C4 9C 8D 7B 21
 ;
 ;                    BOOOOOM! YOU HAVE BEEN BLOWN TO BITS!
 ;
 9534:             1D 69                  ;         COM_1D_attack_var(points=105)
-9536:             17 39 00               ;         COM_17_move_object_to_destination(obj=OBJ_39_DYNAMITE, destination=nowhere)
-9539:             17 4B 00               ;         COM_17_move_object_to_destination(obj=OBJ_4B_??, destination=nowhere)
-953C:          0D 0B                     ;       COM_0D_while_pass length=0x000B
+9536:             17 39 00               ;         COM_17_move_object_to(obj=OBJ_39_DYNAMITE, destination=nowhere)
+9539:             17 4B 00               ;         COM_17_move_object_to(obj=OBJ_4B_LIT_DYNAMITE_FUSE, destination=nowhere)
+;                                        ;       end group_AND at 0x9513
+953C:          0D 0B                     ;       COM_0D_group_AND length=0x000B (to 0x9549)
 953E:             01 37                  ;         COM_01_is_in_pack_or_room(obj=OBJ_37_STEEL_SAFE)
-9540:             1E 37 4C               ;         COM_1E_swap(obj1=OBJ_37_STEEL_SAFE, obj2=OBJ_4C_BLASTED_SAFE)
-9543:             17 39 00               ;         COM_17_move_object_to_destination(obj=OBJ_39_DYNAMITE, destination=nowhere)
-9546:             17 4B 00               ;         COM_17_move_object_to_destination(obj=OBJ_4B_??, destination=nowhere)
-9549:          0D 0C                     ;       COM_0D_while_pass length=0x000C
+9540:             1E 37 4C               ;         COM_1E_swap_object_locations(obj1=OBJ_37_STEEL_SAFE, obj2=OBJ_4C_BLASTED_SAFE)
+9543:             17 39 00               ;         COM_17_move_object_to(obj=OBJ_39_DYNAMITE, destination=nowhere)
+9546:             17 4B 00               ;         COM_17_move_object_to(obj=OBJ_4B_LIT_DYNAMITE_FUSE, destination=nowhere)
+;                                        ;       end group_AND at 0x953C
+9549:          0D 0C                     ;       COM_0D_group_AND length=0x000C (to 0x9557)
 954B:             01 4E                  ;         COM_01_is_in_pack_or_room(obj=OBJ_4E_BOULDER)
-954D:             1E 4E 5A               ;         COM_1E_swap(obj1=OBJ_4E_BOULDER, obj2=OBJ_5A_ENTRANCE_CLEAR)
-9550:             17 39 00               ;         COM_17_move_object_to_destination(obj=OBJ_39_DYNAMITE, destination=nowhere)
+954D:             1E 4E 5A               ;         COM_1E_swap_object_locations(obj1=OBJ_4E_BOULDER, obj2=OBJ_5A_ENTRANCE_CLEAR)
+9550:             17 39 00               ;         COM_17_move_object_to(obj=OBJ_39_DYNAMITE, destination=nowhere)
 9553:             38                     ;         COM_38_bump_score()
-9554:             17 4B 00               ;         COM_17_move_object_to_destination(obj=OBJ_4B_??, destination=nowhere)
-9557:          17 4B 00                  ;       COM_17_move_object_to_destination(obj=OBJ_4B_??, destination=nowhere)
-955A:    02 0C                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000C
-;           STICK OF DYNAMITE
-955C:       03 BA 8B 54 C3 9E 10 5D 6B 48 DB BD ;
+9554:             17 4B 00               ;         COM_17_move_object_to(obj=OBJ_4B_LIT_DYNAMITE_FUSE, destination=nowhere)
+;                                        ;       end group_AND at 0x9549
+9557:          17 4B 00                  ;       COM_17_move_object_to(obj=OBJ_4B_LIT_DYNAMITE_FUSE, destination=nowhere)
+;                                        ;     end group_OR at 0x94F7
+;
+955A:    02 0C                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000C (to 0x9568)
+;           STICK OF DYNAMITE 
+955C:       03 BA 8B 54 C3 9E 10 5D 6B 48 DB BD
 
 ; -------------- Object OBJ_3A_CONTROL_PANEL --------------
-9568: 62 0E                              ; Word_num=0x62 CONSOL, length=0x000E
+9568: 62 0E                              ; Word_num=0x62 CONSOL, length=0x000E (to 0x9578)
 956A: 89 07 81                           ; Location=0x89, disk_section=7, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-956D:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;
+956D:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x9578)
 ;           CONTROL PANEL
-956F:       40 55 F9 BF 12 8A 8F 48 4C   ;
+956F:       40 55 F9 BF 12 8A 8F 48 4C  
 
 ; -------------- Object OBJ_3B_RADIO --------------
-9578: 12 80 BB                           ; Word_num=0x12 RADIO, length=0x00BB
+9578: 12 80 BB                           ; Word_num=0x12 RADIO, length=0x00BB (to 0x9636)
 957B: A2 02 80                           ; Location=0xA2, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
-957E:    03 01                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0001
+;
+957E:    03 01                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0001 (to 0x9581)
 9580:       B9                           ;     FN_B9_PRINT_JUKEBOX
-9581:    07 80 AC                        ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x00AC
-9584:       0D 80 A9                     ;     COM_0D_while_pass length=0x00A9
+;
+9581:    07 80 AC                        ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x00AC (to 0x9630)
+9584:       0D 80 A9                     ;     COM_0D_group_AND length=0x00A9 (to 0x9630)
 9587:          0A 50                     ;       COM_0A_is_input_phrase(phrase=TURN * ON u.......)
-9589:          04 80 A0                  ;       COM_04_print_message length=0x00A0
-958C:             24 1B 83 46 D5 83 AF 55 3F 60 DB F9 8E 48 82 17 ;
-959C:             48 5E 71 48 4B C6 75 5B 84 BF FF 18 DC F8 27 60 ;
-95AC:             4F 15 34 60 7C B3 3F B5 55 F4 8E BE 0B 8A 0F 9B ;
-95BC:             03 BA 16 6C 91 7A 82 17 55 5E EB BF B7 98 A8 17 ;
-95CC:             CE 9C 8E 48 91 7A D0 15 82 17 46 5E 57 62 D7 B3 ;
-95DC:             DF 16 66 A0 43 5E 5B B1 CB 62 23 56 90 BE D6 6A ;
-95EC:             DB 72 2F 49 48 45 A3 A0 CE 92 4B 62 39 49 8E C5 ;
-95FC:             59 F4 50 5E 6B A1 76 B1 38 C6 89 17 C7 16 94 AF ;
-960C:             87 60 54 8B EC 16 04 9F 7F 48 96 19 DB 72 C6 B0 ;
-961C:             AB 7A 69 4D 9D 7A E6 16 4B 4A AB 98 B5 94 EF 78 ;
+9589:          04 80 A0                  ;       COM_04_print_message length=0x00A0 (to 0x962C)
+958C:             24 1B 83 46 D5 83 AF 55 3F 60 DB F9 8E 48 82 17
+959C:             48 5E 71 48 4B C6 75 5B 84 BF FF 18 DC F8 27 60
+95AC:             4F 15 34 60 7C B3 3F B5 55 F4 8E BE 0B 8A 0F 9B
+95BC:             03 BA 16 6C 91 7A 82 17 55 5E EB BF B7 98 A8 17
+95CC:             CE 9C 8E 48 91 7A D0 15 82 17 46 5E 57 62 D7 B3
+95DC:             DF 16 66 A0 43 5E 5B B1 CB 62 23 56 90 BE D6 6A
+95EC:             DB 72 2F 49 48 45 A3 A0 CE 92 4B 62 39 49 8E C5
+95FC:             59 F4 50 5E 6B A1 76 B1 38 C6 89 17 C7 16 94 AF
+960C:             87 60 54 8B EC 16 04 9F 7F 48 96 19 DB 72 C6 B0
+961C:             AB 7A 69 4D 9D 7A E6 16 4B 4A AB 98 B5 94 EF 78
 ;
 ;                 "CRAAAK SCREEE... AND THE FAMOUS DOCTOR ...VREEE
 ;                 FEEERRRRR... STILL INVESTIGATING THE STRANGE UFO LANDING IN
@@ -6254,1106 +6694,1339 @@ ObjectData:
 ;                 AROUND. WE NOW RETURN TO OUR REGULAR PROGRAM." THE RADIO
 ;                 BEGINS PLAYING MUSIC.
 ;
-962C:          1E 3B 3C                  ;       COM_1E_swap(obj1=OBJ_3B_RADIO, obj2=OBJ_3C_RADIO)
+962C:          1E 3B 3C                  ;       COM_1E_swap_object_locations(obj1=OBJ_3B_RADIO, obj2=OBJ_3C_RADIO)
 962F:          38                        ;       COM_38_bump_score()
-9630:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           RADIO
-9632:       C6 B0 AB 7A                  ;
+;                                        ;     end group_AND at 0x9584
+;
+9630:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0x9636)
+;           RADIO 
+9632:       C6 B0 AB 7A                 
 
 ; -------------- Object OBJ_3C_RADIO --------------
-9636: 12 64                              ; Word_num=0x12 RADIO, length=0x0064
+9636: 12 64                              ; Word_num=0x12 RADIO, length=0x0064 (to 0x969C)
 9638: 00 02 80                           ; Location=0x00, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
-963B:    03 1E                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001E
-963D:       04 1C                        ;     COM_04_print_message length=0x001C
-963F:          5F BE 2B 17 91 5A D0 15 82 17 45 5E B8 A0 23 62 ;
-964F:          4B 7B FB A5 D0 DD CF 6A 5B C6 5B 57 ;
 ;
-;              THE RADIO IN THE CORNER IS PLAYING MUSIC.
+963B:    03 1E                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001E (to 0x965B)
+963D:       04 1C                        ;     COM_04_print_message length=0x001C (to 0x965B)
+963F:          5F BE 2B 17 91 5A D0 15 82 17 45 5E B8 A0 23 62
+964F:          4B 7B FB A5 D0 DD CF 6A 5B C6 5B 57
 ;
-965B:    07 39                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0039
-965D:       0E 37                        ;     COM_0E_while_fail length=0x0037
-965F:          0D 17                     ;       COM_0D_while_pass length=0x0017
+;              THE RADIO IN THE CORNER IS PLAYING MUSIC. 
+;
+;
+965B:    07 39                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0039 (to 0x9696)
+965D:       0E 37                        ;     COM_0E_group_OR length=0x0037 (to 0x9696)
+965F:          0D 17                     ;       COM_0D_group_AND length=0x0017 (to 0x9678)
 9661:             0A 51                  ;         COM_0A_is_input_phrase(phrase=TURN * OFF u.......)
-9663:             04 10                  ;         COM_04_print_message length=0x0010
-9665:                5F BE 2B 17 91 5A AF 14 3F 55 4B 62 AB AD 97 62 ;
+9663:             04 10                  ;         COM_04_print_message length=0x0010 (to 0x9675)
+9665:                5F BE 2B 17 91 5A AF 14 3F 55 4B 62 AB AD 97 62
 ;
 ;                    THE RADIO BECOMES QUIET.
 ;
-9675:             1E 3C 4F               ;         COM_1E_swap(obj1=OBJ_3C_RADIO, obj2=OBJ_4F_RADIO)
-9678:          0D 1C                     ;       COM_0D_while_pass length=0x001C
+9675:             1E 3C 4F               ;         COM_1E_swap_object_locations(obj1=OBJ_3C_RADIO, obj2=OBJ_4F_RADIO)
+;                                        ;       end group_AND at 0x965F
+9678:          0D 1C                     ;       COM_0D_group_AND length=0x001C (to 0x9696)
 967A:             0A 50                  ;         COM_0A_is_input_phrase(phrase=TURN * ON u.......)
-967C:             04 18                  ;         COM_04_print_message length=0x0018
-967E:                43 77 EF 8D 13 47 9F 15 23 49 5F BE 77 16 45 B8 ;
-968E:                05 EE 85 48 1B BC 18 A1 ;
+967C:             04 18                  ;         COM_04_print_message length=0x0018 (to 0x9696)
+967E:                43 77 EF 8D 13 47 9F 15 23 49 5F BE 77 16 45 B8
+968E:                05 EE 85 48 1B BC 18 A1
 ;
 ;                    I ALREADY HEAR THE MUSIC, CAN'T YOU?
 ;
-9696:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           RADIO
-9698:       C6 B0 AB 7A                  ;
+;                                        ;       end group_AND at 0x9678
+;                                        ;     end group_OR at 0x965D
+;
+9696:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0x969C)
+;           RADIO 
+9698:       C6 B0 AB 7A                 
 
 ; -------------- Object OBJ_3D_BOTTLE --------------
-969C: 11 38                              ; Word_num=0x11 BOTTLE, length=0x0038
+969C: 11 38                              ; Word_num=0x11 BOTTLE, length=0x0038 (to 0x96D6)
 969E: 44 A0 AE                           ; Location=0x44, disk_section=0, ext_attr=1010...., attributes=1010_1110 (GETTABLE, CLOSEABLE, ??LOCKABLE, CLOSED)
-96A1:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012
-96A3:       04 10                        ;     COM_04_print_message length=0x0010
-96A5:          5F BE 5B B1 4B 7B 44 45 0E A1 DB 8B F4 72 DB 63 ;
 ;
-;              THERE IS A BOTTLE HERE.
+96A1:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x96B5)
+96A3:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x96B5)
+96A5:          5F BE 5B B1 4B 7B 44 45 0E A1 DB 8B F4 72 DB 63
 ;
-96B5:    07 16                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0016
-96B7:       0D 14                        ;     COM_0D_while_pass length=0x0014
+;              THERE IS A BOTTLE HERE. 
+;
+;
+96B5:    07 16                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0016 (to 0x96CD)
+96B7:       0D 14                        ;     COM_0D_group_AND length=0x0014 (to 0x96CD)
 96B9:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-96BB:          04 10                     ;       COM_04_print_message length=0x0010
-96BD:             C1 1B 73 9E 04 68 FA 17 73 49 CE 47 DB B5 DC 4A ;
+96BB:          04 10                     ;       COM_04_print_message length=0x0010 (to 0x96CD)
+96BD:             C1 1B 73 9E 04 68 FA 17 73 49 CE 47 DB B5 DC 4A
 ;
 ;                 "GOOD FOR WHAT AILS YA."
 ;
-96CD:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-96CF:       06                           ;     Weight=6
-96D0:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
+;                                        ;     end group_AND at 0x96B7
+;
+96CD:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0x96D0)
+96CF:       06                           ;     weight=6
+;
+96D0:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0x96D6)
 ;           BOTTLE
-96D2:       06 4F FF BE                  ;
+96D2:       06 4F FF BE                 
 
 ; -------------- Object OBJ_3E_OVAL --------------
-96D6: 4A 06                              ; Word_num=0x4A BUTTON, length=0x0006
+96D6: 4A 06                              ; Word_num=0x4A BUTTON, length=0x0006 (to 0x96DE)
 96D8: 00 07 00                           ; Location=0x00, disk_section=7, ext_attr=0000...., attributes=0000_0000 ()
-96DB:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+96DB:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x96DE)
 96DD:       15                           ;     BRASS
 
 ; -------------- Object OBJ_3F_YELLOW_BUTTON --------------
-96DE: 4A 14                              ; Word_num=0x4A BUTTON, length=0x0014
+96DE: 4A 14                              ; Word_num=0x4A BUTTON, length=0x0014 (to 0x96F4)
 96E0: FF 07 80                           ; Location=0xFF, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
-96E3:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+96E3:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x96E6)
 96E5:       AF                           ;     FN_AF_PRINT_I_SEE_NO_noun1_HERE
-96E6:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+96E6:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x96E9)
 96E8:       48                           ;     YELLOW
-96E9:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;
+96E9:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x96F4)
 ;           YELLOW BUTTON
-96EB:       2E DD 89 8D BF 14 49 C0 4E   ;
+96EB:       2E DD 89 8D BF 14 49 C0 4E  
 
 ; -------------- Object OBJ_40_RED_BUTTON --------------
-96F4: 4A 12                              ; Word_num=0x4A BUTTON, length=0x0012
+96F4: 4A 12                              ; Word_num=0x4A BUTTON, length=0x0012 (to 0x9708)
 96F6: FF 07 80                           ; Location=0xFF, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
-96F9:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+96F9:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x96FC)
 96FB:       AF                           ;     FN_AF_PRINT_I_SEE_NO_noun1_HERE
-96FC:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+96FC:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x96FF)
 96FE:       13                           ;     RED
-96FF:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007
+;
+96FF:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007 (to 0x9708)
 ;           RED BUTTON
-9701:       66 B1 BF 14 49 C0 4E         ;
+9701:       66 B1 BF 14 49 C0 4E        
 
 ; -------------- Object OBJ_41_BLUE_BUTTON --------------
-9708: 4A 13                              ; Word_num=0x4A BUTTON, length=0x0013
+9708: 4A 13                              ; Word_num=0x4A BUTTON, length=0x0013 (to 0x971D)
 970A: FF 07 80                           ; Location=0xFF, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
-970D:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+970D:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x9710)
 970F:       AF                           ;     FN_AF_PRINT_I_SEE_NO_noun1_HERE
-9710:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+9710:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x9713)
 9712:       0D                           ;     BLUE
-9713:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008
-;           BLUE BUTTON
-9715:       8F 4E 44 5E 8E C6 03 A0      ;
+;
+9713:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008 (to 0x971D)
+;           BLUE BUTTON 
+9715:       8F 4E 44 5E 8E C6 03 A0     
 
 ; -------------- Object OBJ_42_ORANGE_BUTTON --------------
-971D: 4A 14                              ; Word_num=0x4A BUTTON, length=0x0014
+971D: 4A 14                              ; Word_num=0x4A BUTTON, length=0x0014 (to 0x9733)
 971F: FF 07 80                           ; Location=0xFF, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
-9722:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+9722:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x9725)
 9724:       AF                           ;     FN_AF_PRINT_I_SEE_NO_noun1_HERE
-9725:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+9725:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x9728)
 9727:       49                           ;     ORANGE
-9728:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;
+9728:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x9733)
 ;           ORANGE BUTTON
-972A:       AB A0 B7 98 BF 14 49 C0 4E   ;
+972A:       AB A0 B7 98 BF 14 49 C0 4E  
 
 ; -------------- Object OBJ_43_BROWN_LIQUID --------------
-9733: 4C 3B                              ; Word_num=0x4C WHISKE, length=0x003B
+9733: 4C 3B                              ; Word_num=0x4C WHISKE, length=0x003B (to 0x9770)
 9735: 3D 10 A0                           ; Location=0x3D, disk_section=0, ext_attr=0001...., attributes=1010_0000 (GETTABLE)
-9738:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002
+;
+9738:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002 (to 0x973C)
 973A:       74                           ;     CLEAR
 973B:       73                           ;     BROWN
-973C:    07 22                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0022
-973E:       0E 20                        ;     COM_0E_while_fail length=0x0020
-9740:          0D 12                     ;       COM_0D_while_pass length=0x0012
-9742:             0A 4F                  ;         COM_0A_is_input_phrase(phrase=DRINK u....... * *)
-9744:             04 0A                  ;         COM_04_print_message length=0x000A
-9746:                13 9F E9 99 E9 16 61 7B 2B 96 ;
 ;
-;                    OH NO! POISON!
+973C:    07 22                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0022 (to 0x9760)
+973E:       0E 20                        ;     COM_0E_group_OR length=0x0020 (to 0x9760)
+9740:          0D 12                     ;       COM_0D_group_AND length=0x0012 (to 0x9754)
+9742:             0A 4F                  ;         COM_0A_is_input_phrase(phrase=DRINK u....... * *)
+9744:             04 0A                  ;         COM_04_print_message length=0x000A (to 0x9750)
+9746:                13 9F E9 99 E9 16 61 7B 2B 96
+;
+;                    OH NO! POISON! 
 ;
 9750:             1C 01                  ;         COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 9752:             1D 6E                  ;         COM_1D_attack_var(points=110)
-9754:          0D 0A                     ;       COM_0D_while_pass length=0x000A
+;                                        ;       end group_AND at 0x9740
+9754:          0D 0A                     ;       COM_0D_group_AND length=0x000A (to 0x9760)
 9756:             0A 59                  ;         COM_0A_is_input_phrase(phrase=TASTE u....... * *)
-9758:             04 06                  ;         COM_04_print_message length=0x0006
-975A:                23 D1 97 B8 EB DA   ;
+9758:             04 06                  ;         COM_04_print_message length=0x0006 (to 0x9760)
+975A:                23 D1 97 B8 EB DA  
 ;
-;                    WHISKEY!
+;                    WHISKEY! 
 ;
-9760:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E
-;           CLEAR BROWN SOLUTION
-9762:       BF 54 23 49 79 4F 03 D2 3E B9 83 C6 03 A0 ;
+;                                        ;       end group_AND at 0x9754
+;                                        ;     end group_OR at 0x973E
+;
+9760:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E (to 0x9770)
+;           CLEAR BROWN SOLUTION 
+9762:       BF 54 23 49 79 4F 03 D2 3E B9 83 C6 03 A0
 
 ; -------------- Object OBJ_44_BAR --------------
-9770: 4D 07                              ; Word_num=0x4D BAR, length=0x0007
+9770: 4D 07                              ; Word_num=0x4D BAR, length=0x0007 (to 0x9779)
 9772: A2 02 81                           ; Location=0xA2, disk_section=2, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-9775:    02 02                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0002
+;
+9775:    02 02                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0002 (to 0x9779)
 ;           BAR
-9777:       D4 4C                        ;
+9777:       D4 4C                       
 
 ; -------------- Object OBJ_45_SINK --------------
-9779: 4E 25                              ; Word_num=0x4E SINK, length=0x0025
+9779: 4E 25                              ; Word_num=0x4E SINK, length=0x0025 (to 0x97A0)
 977B: A2 02 82                           ; Location=0xA2, disk_section=2, ext_attr=0000...., attributes=1000_0010 (CLOSED)
-977E:    03 1B                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001B
-9780:       04 19                        ;     COM_04_print_message length=0x0019
-9782:          6A 4D 8E 7A 82 17 44 5E 23 49 5F BE 5B B1 4B 7B ;
-9792:          55 45 8E 91 15 8A 95 7A 2E ;
+;
+977E:    03 1B                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001B (to 0x979B)
+9780:       04 19                        ;     COM_04_print_message length=0x0019 (to 0x979B)
+9782:          6A 4D 8E 7A 82 17 44 5E 23 49 5F BE 5B B1 4B 7B
+9792:          55 45 8E 91 15 8A 95 7A 2E
 ;
 ;              BEHIND THE BAR THERE IS A SMALL SINK.
 ;
-979B:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+979B:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x97A0)
 ;           SINK
-979D:       50 B8 4B                     ;
+979D:       50 B8 4B                    
 
 ; -------------- Object OBJ_46_WATER --------------
-97A0: 4F 4E                              ; Word_num=0x4F WATER, length=0x004E
+97A0: 4F 4E                              ; Word_num=0x4F WATER, length=0x004E (to 0x97F0)
 97A2: 45 10 A0                           ; Location=0x45, disk_section=0, ext_attr=0001...., attributes=1010_0000 (GETTABLE)
-97A5:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002
+;
+97A5:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002 (to 0x97A9)
 97A7:       72                           ;     COOL
 97A8:       74                           ;     CLEAR
-97A9:    07 2D                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x002D
-97AB:       0E 2B                        ;     COM_0E_while_fail length=0x002B
-97AD:          0D 12                     ;       COM_0D_while_pass length=0x0012
+;
+97A9:    07 2D                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x002D (to 0x97D8)
+97AB:       0E 2B                        ;     COM_0E_group_OR length=0x002B (to 0x97D8)
+97AD:          0D 12                     ;       COM_0D_group_AND length=0x0012 (to 0x97C1)
 97AF:             0A 59                  ;         COM_0A_is_input_phrase(phrase=TASTE u....... * *)
-97B1:             04 0E                  ;         COM_04_print_message length=0x000E
-97B3:                2F 74 56 F4 66 49 4B 62 8B 9F 6B BF 3F 92 ;
+97B1:             04 0E                  ;         COM_04_print_message length=0x000E (to 0x97C1)
+97B3:                2F 74 56 F4 66 49 4B 62 8B 9F 6B BF 3F 92
 ;
 ;                    HMM. TASTES OK TO ME.
 ;
-97C1:          0D 15                     ;       COM_0D_while_pass length=0x0015
+;                                        ;       end group_AND at 0x97AD
+97C1:          0D 15                     ;       COM_0D_group_AND length=0x0015 (to 0x97D8)
 97C3:             0A 4F                  ;         COM_0A_is_input_phrase(phrase=DRINK u....... * *)
-97C5:             04 0D                  ;         COM_04_print_message length=0x000D
-97C7:                C7 DE 4F 15 33 61 68 B1 75 B1 E6 72 2E ;
+97C5:             04 0D                  ;         COM_04_print_message length=0x000D (to 0x97D4)
+97C7:                C7 DE 4F 15 33 61 68 B1 75 B1 E6 72 2E
 ;
 ;                    YOU FEEL REFRESHED.
 ;
 97D4:             1C 01                  ;         COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 97D6:             23 19                  ;         COM_23_heal_var(points=25)
-97D8:    02 16                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0016
-;           SMALL AMOUNT OF COOL CLEAR WATER
-97DA:       E3 B8 F3 8C 71 48 9E C5 B8 16 E1 14 B3 9F BF 54 ;
-97EA:       23 49 16 D0 23 62            ;
+;                                        ;       end group_AND at 0x97C1
+;                                        ;     end group_OR at 0x97AB
+;
+97D8:    02 16                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0016 (to 0x97F0)
+;           SMALL AMOUNT OF COOL CLEAR WATER 
+97DA:       E3 B8 F3 8C 71 48 9E C5 B8 16 E1 14 B3 9F BF 54
+97EA:       23 49 16 D0 23 62           
 
 ; -------------- Object OBJ_47_COUNTER --------------
-97F0: 50 0A                              ; Word_num=0x50 COUNTE, length=0x000A
+97F0: 50 0A                              ; Word_num=0x50 COUNTE, length=0x000A (to 0x97FC)
 97F2: AA 04 81                           ; Location=0xAA, disk_section=4, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-97F5:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;
+97F5:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x97FC)
 ;           COUNTER
-97F7:       47 55 BF 9A 52               ;
+97F7:       47 55 BF 9A 52              
 
 ; -------------- Object OBJ_48_DRESSER --------------
-97FC: 51 0A                              ; Word_num=0x51 DRESSE, length=0x000A
+97FC: 51 0A                              ; Word_num=0x51 DRESSE, length=0x000A (to 0x9808)
 97FE: DE 24 8A                           ; Location=0xDE, disk_section=4, ext_attr=0010...., attributes=1000_1010 (CLOSEABLE, CLOSED)
-9801:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;
+9801:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x9808)
 ;           DRESSER
-9803:       EF 5B D7 B9 52               ;
+9803:       EF 5B D7 B9 52              
 
 ; -------------- Object OBJ_49_TABLE --------------
-9808: 1A 09                              ; Word_num=0x1A DESK, length=0x0009
+9808: 1A 09                              ; Word_num=0x1A DESK, length=0x0009 (to 0x9813)
 980A: 83 01 81                           ; Location=0x83, disk_section=1, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-980D:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           TABLE
-980F:       44 BD DB 8B                  ;
+;
+980D:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0x9813)
+;           TABLE 
+980F:       44 BD DB 8B                 
 
 ; -------------- Object OBJ_4A_HOOD --------------
-9813: 52 3E                              ; Word_num=0x52 HOOD, length=0x003E
+9813: 52 3E                              ; Word_num=0x52 HOOD, length=0x003E (to 0x9853)
 9815: 86 21 88                           ; Location=0x86, disk_section=1, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
-9818:    07 34                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0034
-981A:       0D 32                        ;     COM_0D_while_pass length=0x0032
-981C:          0E 04                     ;       COM_0E_while_fail length=0x0004
+;
+9818:    07 34                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0034 (to 0x984E)
+981A:       0D 32                        ;     COM_0D_group_AND length=0x0032 (to 0x984E)
+981C:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x9822)
 981E:             0A 11                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... * *)
 9820:             0A 2D                  ;         COM_0A_is_input_phrase(phrase=PULL * UP u.......)
-9822:          04 2A                     ;       COM_04_print_message length=0x002A
-9824:             E9 C5 91 96 F0 A4 91 7A 82 17 4A 5E 36 A0 51 18 ;
-9834:             46 C2 55 7B 4F A1 96 AF 56 72 82 17 47 5E BB 98 ;
-9844:             5B 98 4B 7B D5 92 50 B8 6B 6A ;
+;                                        ;       end group_OR at 0x981C
+9822:          04 2A                     ;       COM_04_print_message length=0x002A (to 0x984E)
+9824:             E9 C5 91 96 F0 A4 91 7A 82 17 4A 5E 36 A0 51 18
+9834:             46 C2 55 7B 4F A1 96 AF 56 72 82 17 47 5E BB 98
+9844:             5B 98 4B 7B D5 92 50 B8 6B 6A
 ;
 ;                 UPON OPENING THE HOOD YOU DISCOVER THAT THE ENGINE IS
 ;                 MISSING!
 ;
-984E:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;                                        ;     end group_AND at 0x981A
+;
+984E:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x9853)
 ;           HOOD
-9850:       81 74 44                     ;
+9850:       81 74 44                    
 
-; -------------- Object OBJ_4B_?? --------------
-9853: 00 03                              ; Word_num=0x00 -none-, length=0x0003
+; -------------- Object OBJ_4B_LIT_DYNAMITE_FUSE --------------
+9853: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0x9858)
 9855: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
 
 ; -------------- Object OBJ_4C_BLASTED_SAFE --------------
-9858: 1D 3A                              ; Word_num=0x1D SAFE, length=0x003A
+9858: 1D 3A                              ; Word_num=0x1D SAFE, length=0x003A (to 0x9894)
 985A: 00 04 82                           ; Location=0x00, disk_section=4, ext_attr=0000...., attributes=1000_0010 (CLOSED)
-985D:    03 2B                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x002B
-985F:       04 29                        ;     COM_04_print_message length=0x0029
-9861:          5F BE 53 17 5B 66 03 A0 5F BE 61 17 82 C6 5B 17 ;
-9871:          DB 59 C3 9E 5F BE 39 17 DB 9F 55 72 AF 14 83 61 ;
-9881:          7B 4E FF B9 11 58 F0 A4 2E ;
+;
+985D:    03 2B                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x002B (to 0x988A)
+985F:       04 29                        ;     COM_04_print_message length=0x0029 (to 0x988A)
+9861:          5F BE 53 17 5B 66 03 A0 5F BE 61 17 82 C6 5B 17
+9871:          DB 59 C3 9E 5F BE 39 17 DB 9F 55 72 AF 14 83 61
+9881:          7B 4E FF B9 11 58 F0 A4 2E
 ;
 ;              THE SAFE ON THE SOUTH SIDE OF THE ROOM HAS BEEN BLASTED
 ;              OPEN.
 ;
-988A:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008
+;
+988A:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008 (to 0x9894)
 ;           BLASTED SAFE
-988C:       7B 4E FF B9 15 58 4F 47      ;
+988C:       7B 4E FF B9 15 58 4F 47     
 
 ; -------------- Object OBJ_4D_DOOR --------------
-9894: 10 08                              ; Word_num=0x10 DOOR, length=0x0008
+9894: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x989E)
 9896: 9D 05 88                           ; Location=0x9D, disk_section=5, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
-9899:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+9899:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x989E)
 ;           DOOR
-989B:       81 5B 52                     ;
+989B:       81 5B 52                    
 
 ; -------------- Object OBJ_4E_BOULDER --------------
-989E: 54 5F                              ; Word_num=0x54 BOULDE, length=0x005F
+989E: 54 5F                              ; Word_num=0x54 BOULDE, length=0x005F (to 0x98FF)
 98A0: 9D 05 80                           ; Location=0x9D, disk_section=5, ext_attr=0000...., attributes=1000_0000 ()
-98A3:    03 25                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0025
-98A5:       04 23                        ;     COM_04_print_message length=0x0023
-98A7:          4F 45 65 49 CF 7B B9 14 3E C5 23 62 89 4E A5 54 ;
-98B7:          82 17 47 5E CC 9A 8D 48 4B 5E C9 9A 82 17 55 5E ;
-98C7:          92 73 2E                  ;
+;
+98A3:    03 25                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0025 (to 0x98CA)
+98A5:       04 23                        ;     COM_04_print_message length=0x0023 (to 0x98CA)
+98A7:          4F 45 65 49 CF 7B B9 14 3E C5 23 62 89 4E A5 54
+98B7:          82 17 47 5E CC 9A 8D 48 4B 5E C9 9A 82 17 55 5E
+98C7:          92 73 2E                 
 ;
 ;              A MASSIVE BOULDER BLOCKS THE ENTRANCE INTO THE SHIP.
 ;
-98CA:    07 2C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x002C
-98CC:       0D 2A                        ;     COM_0D_while_pass length=0x002A
-98CE:          0E 04                     ;       COM_0E_while_fail length=0x0004
+;
+98CA:    07 2C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x002C (to 0x98F8)
+98CC:       0D 2A                        ;     COM_0D_group_AND length=0x002A (to 0x98F8)
+98CE:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x98D4)
 98D0:             0A 09                  ;         COM_0A_is_input_phrase(phrase=ATTACK ...P.... WITH .v......)
 98D2:             0A 56                  ;         COM_0A_is_input_phrase(phrase=DIG u....... WITH u.......)
-98D4:          09 32                     ;       COM_09_compare_to_second_noun(obj=OBJ_32_SHOVEL)
-98D6:          04 20                     ;       COM_04_print_message length=0x0020
-98D8:             55 45 8E 91 12 8A 25 79 51 5E 96 64 DB 72 07 4F ;
-98E8:             BF 8B 85 AF EF B3 7F 4E CB B5 C9 9A 0F 15 17 BA ;
+;                                        ;       end group_OR at 0x98CE
+98D4:          09 32                     ;       COM_09_is_noun2(obj=OBJ_32_SHOVEL)
+98D6:          04 20                     ;       COM_04_print_message length=0x0020 (to 0x98F8)
+98D8:             55 45 8E 91 12 8A 25 79 51 5E 96 64 DB 72 07 4F
+98E8:             BF 8B 85 AF EF B3 7F 4E CB B5 C9 9A 0F 15 17 BA
 ;
 ;                 A SMALL PIECE OF THE BOULDER CRUMBLES INTO DUST.
 ;
-98F8:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;                                        ;     end group_AND at 0x98CC
+;
+98F8:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x98FF)
 ;           BOULDER
-98FA:       07 4F BF 8B 52               ;
+98FA:       07 4F BF 8B 52              
 
 ; -------------- Object OBJ_4F_RADIO --------------
-98FF: 12 2C                              ; Word_num=0x12 RADIO, length=0x002C
+98FF: 12 2C                              ; Word_num=0x12 RADIO, length=0x002C (to 0x992D)
 9901: 00 02 80                           ; Location=0x00, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
-9904:    03 01                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0001
+;
+9904:    03 01                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0001 (to 0x9907)
 9906:       B9                           ;     FN_B9_PRINT_JUKEBOX
-9907:    07 1E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001E
-9909:       0D 1C                        ;     COM_0D_while_pass length=0x001C
+;
+9907:    07 1E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001E (to 0x9927)
+9909:       0D 1C                        ;     COM_0D_group_AND length=0x001C (to 0x9927)
 990B:          0A 50                     ;       COM_0A_is_input_phrase(phrase=TURN * ON u.......)
-990D:          04 15                     ;       COM_04_print_message length=0x0015
-990F:             5F BE 2B 17 91 5A AF 14 50 6D D2 B5 5B 8B 91 7A ;
-991F:             77 16 45 B8 2E         ;
+990D:          04 15                     ;       COM_04_print_message length=0x0015 (to 0x9924)
+990F:             5F BE 2B 17 91 5A AF 14 50 6D D2 B5 5B 8B 91 7A
+991F:             77 16 45 B8 2E        
 ;
 ;                 THE RADIO BEGINS PLAYING MUSIC.
 ;
-9924:          1E 3C 4F                  ;       COM_1E_swap(obj1=OBJ_3C_RADIO, obj2=OBJ_4F_RADIO)
-9927:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           RADIO
-9929:       C6 B0 AB 7A                  ;
+9924:          1E 3C 4F                  ;       COM_1E_swap_object_locations(obj1=OBJ_3C_RADIO, obj2=OBJ_4F_RADIO)
+;                                        ;     end group_AND at 0x9909
+;
+9927:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0x992D)
+;           RADIO 
+9929:       C6 B0 AB 7A                 
 
 ; -------------- Object OBJ_50_DRESSER --------------
-992D: 51 0A                              ; Word_num=0x51 DRESSE, length=0x000A
+992D: 51 0A                              ; Word_num=0x51 DRESSE, length=0x000A (to 0x9939)
 992F: DF 24 8A                           ; Location=0xDF, disk_section=4, ext_attr=0010...., attributes=1000_1010 (CLOSEABLE, CLOSED)
-9932:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;
+9932:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x9939)
 ;           DRESSER
-9934:       EF 5B D7 B9 52               ;
+9934:       EF 5B D7 B9 52              
 
 ; -------------- Object OBJ_51_CHAIR --------------
-9939: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C
+9939: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C (to 0x9947)
 993B: DE 04 80                           ; Location=0xDE, disk_section=4, ext_attr=0000...., attributes=1000_0000 ()
-993E:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+993E:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x9941)
 9940:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
-9941:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           CHAIR
-9943:       1B 54 23 7B                  ;
+;
+9941:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0x9947)
+;           CHAIR 
+9943:       1B 54 23 7B                 
 
 ; -------------- Object OBJ_52_CHAIR --------------
-9947: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C
+9947: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C (to 0x9955)
 9949: DF 04 80                           ; Location=0xDF, disk_section=4, ext_attr=0000...., attributes=1000_0000 ()
-994C:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+994C:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x994F)
 994E:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
-994F:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           CHAIR
-9951:       1B 54 23 7B                  ;
+;
+994F:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0x9955)
+;           CHAIR 
+9951:       1B 54 23 7B                 
 
 ; -------------- Object OBJ_53_BED --------------
-9955: 55 0A                              ; Word_num=0x55 BED, length=0x000A
+9955: 55 0A                              ; Word_num=0x55 BED, length=0x000A (to 0x9961)
 9957: DE 04 80                           ; Location=0xDE, disk_section=4, ext_attr=0000...., attributes=1000_0000 ()
-995A:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+995A:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x995D)
 995C:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
-995D:    02 02                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0002
+;
+995D:    02 02                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0002 (to 0x9961)
 ;           BED
-995F:       66 4D                        ;
+995F:       66 4D                       
 
 ; -------------- Object OBJ_54_BED --------------
-9961: 55 0A                              ; Word_num=0x55 BED, length=0x000A
+9961: 55 0A                              ; Word_num=0x55 BED, length=0x000A (to 0x996D)
 9963: DF 04 80                           ; Location=0xDF, disk_section=4, ext_attr=0000...., attributes=1000_0000 ()
-9966:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+9966:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x9969)
 9968:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
-9969:    02 02                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0002
+;
+9969:    02 02                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0002 (to 0x996D)
 ;           BED
-996B:       66 4D                        ;
+996B:       66 4D                       
 
 ; -------------- Object OBJ_55_MOUND_SAND --------------
-996D: 57 80 98                           ; Word_num=0x57 SAND, length=0x0098
+996D: 57 80 98                           ; Word_num=0x57 SAND, length=0x0098 (to 0x9A08)
 9970: A0 02 80                           ; Location=0xA0, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
-9973:    03 34                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0034
-9975:       04 32                        ;     COM_04_print_message length=0x0032
-9977:          5F BE 5B B1 2F 49 99 16 D3 17 44 B8 DB 8B 9E 61 ;
-9987:          D0 B0 B5 53 56 F4 DB 72 F5 59 3E 62 53 17 33 98 ;
-9997:          4B 7B D0 4C A6 85 89 14 D0 47 F3 B9 5F BE F3 17 ;
-99A7:          17 8D                     ;
+;
+9973:    03 34                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0034 (to 0x99A9)
+9975:       04 32                        ;     COM_04_print_message length=0x0032 (to 0x99A9)
+9977:          5F BE 5B B1 2F 49 99 16 D3 17 44 B8 DB 8B 9E 61
+9987:          D0 B0 B5 53 56 F4 DB 72 F5 59 3E 62 53 17 33 98
+9997:          4B 7B D0 4C A6 85 89 14 D0 47 F3 B9 5F BE F3 17
+99A7:          17 8D                    
 ;
 ;              THERE ARE NO VISIBLE ENTRANCES. THE DESERT SAND IS BANKED
 ;              AGAINST THE WALL.
 ;
-99A9:    07 52                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0052
-99AB:       0E 50                        ;     COM_0E_while_fail length=0x0050
-99AD:          0D 2A                     ;       COM_0D_while_pass length=0x002A
-99AF:             0E 04                  ;         COM_0E_while_fail length=0x0004
+;
+99A9:    07 52                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0052 (to 0x99FD)
+99AB:       0E 50                        ;     COM_0E_group_OR length=0x0050 (to 0x99FD)
+99AD:          0D 2A                     ;       COM_0D_group_AND length=0x002A (to 0x99D9)
+99AF:             0E 04                  ;         COM_0E_group_OR length=0x0004 (to 0x99B5)
 99B1:                0A 56               ;           COM_0A_is_input_phrase(phrase=DIG u....... WITH u.......)
 99B3:                0A 12               ;           COM_0A_is_input_phrase(phrase=PULL u....... * *)
-99B5:             09 32                  ;         COM_09_compare_to_second_noun(obj=OBJ_32_SHOVEL)
-99B7:             04 19                  ;         COM_04_print_message length=0x0019
-99B9:                70 4D 96 5F 16 71 DB 72 10 B7 1B 58 1B A1 95 5A ;
-99C9:                48 55 23 62 46 45 44 A0 21 ;
+;                                        ;         end group_OR at 0x99AF
+99B5:             09 32                  ;         COM_09_is_noun2(obj=OBJ_32_SHOVEL)
+99B7:             04 19                  ;         COM_04_print_message length=0x0019 (to 0x99D2)
+99B9:                70 4D 96 5F 16 71 DB 72 10 B7 1B 58 1B A1 95 5A
+99C9:                48 55 23 62 46 45 44 A0 21
 ;
 ;                    BENEATH THE SAND YOU DISCOVER A DOOR!
 ;
-99D2:             17 14 A0               ;         COM_17_move_object_to_destination(obj=OBJ_14_DOOR_COVERED_SHELTER, destination=RM_1_A0_??)
-99D5:             17 55 00               ;         COM_17_move_object_to_destination(obj=OBJ_55_MOUND_SAND, destination=nowhere)
+99D2:             17 14 A0               ;         COM_17_move_object_to(obj=OBJ_14_DOOR_COVERED_SHELTER, destination=RM_1_A0_??)
+99D5:             17 55 00               ;         COM_17_move_object_to(obj=OBJ_55_MOUND_SAND, destination=nowhere)
 99D8:             38                     ;         COM_38_bump_score()
-99D9:          0D 22                     ;       COM_0D_while_pass length=0x0022
-99DB:             0E 04                  ;         COM_0E_while_fail length=0x0004
+;                                        ;       end group_AND at 0x99AD
+99D9:          0D 22                     ;       COM_0D_group_AND length=0x0022 (to 0x99FD)
+99DB:             0E 04                  ;         COM_0E_group_OR length=0x0004 (to 0x99E1)
 99DD:                0A 56               ;           COM_0A_is_input_phrase(phrase=DIG u....... WITH u.......)
 99DF:                0A 12               ;           COM_0A_is_input_phrase(phrase=PULL u....... * *)
-99E1:             09 00                  ;         COM_09_compare_to_second_noun(obj=nothing)
-99E3:             04 18                  ;         COM_04_print_message length=0x0018
-99E5:                5F BE 53 17 33 98 48 B8 0B C0 6C BE 29 A1 1B 71 ;
-99F5:                34 A1 53 15 B7 98 AF B3 ;
+;                                        ;         end group_OR at 0x99DB
+99E1:             09 00                  ;         COM_09_is_noun2(obj=nothing)
+99E3:             04 18                  ;         COM_04_print_message length=0x0018 (to 0x99FD)
+99E5:                5F BE 53 17 33 98 48 B8 0B C0 6C BE 29 A1 1B 71
+99F5:                34 A1 53 15 B7 98 AF B3
 ;
 ;                    THE SAND SIFTS THROUGH YOUR FINGERS.
 ;
-99FD:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;                                        ;       end group_AND at 0x99D9
+;                                        ;     end group_OR at 0x99AB
+;
+99FD:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x9A08)
 ;           MOUND OF SAND
-99FF:       C7 93 33 98 C3 9E 10 B7 44   ;
+99FF:       C7 93 33 98 C3 9E 10 B7 44  
 
 ; -------------- Object OBJ_56_SIGN --------------
-9A08: 56 5F                              ; Word_num=0x56 SIGN, length=0x005F
+9A08: 56 5F                              ; Word_num=0x56 SIGN, length=0x005F (to 0x9A69)
 9A0A: AA 04 84                           ; Location=0xAA, disk_section=4, ext_attr=0000...., attributes=1000_0100 (??LOCKABLE)
-9A0D:    07 55                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0055
-9A0F:       0D 53                        ;     COM_0D_while_pass length=0x0053
+;
+9A0D:    07 55                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0055 (to 0x9A64)
+9A0F:       0D 53                        ;     COM_0D_group_AND length=0x0053 (to 0x9A64)
 9A11:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-9A13:          04 4F                     ;       COM_04_print_message length=0x004F
-9A15:             33 1E D3 B2 CE 98 D0 15 D3 14 9B B7 C3 9E 84 BF ;
-9A25:             C6 97 C3 9C F3 8C 86 74 33 61 27 6F 0D BA 5A 17 ;
-9A35:             2E A1 0F 58 36 60 96 14 82 17 59 5E 66 62 5B 17 ;
-9A45:             DB 59 C3 9E 5F BE 53 17 81 8D 83 96 33 98 9E 61 ;
-9A55:             23 62 5F BE 66 17 B7 A0 5A 17 4E 61 47 62 22 ;
+9A13:          04 4F                     ;       COM_04_print_message length=0x004F (to 0x9A64)
+9A15:             33 1E D3 B2 CE 98 D0 15 D3 14 9B B7 C3 9E 84 BF
+9A25:             C6 97 C3 9C F3 8C 86 74 33 61 27 6F 0D BA 5A 17
+9A35:             2E A1 0F 58 36 60 96 14 82 17 59 5E 66 62 5B 17
+9A45:             DB 59 C3 9E 5F BE 53 17 81 8D 83 96 33 98 9E 61
+9A55:             23 62 5F BE 66 17 B7 A0 5A 17 4E 61 47 62 22
 ;
 ;                 "WARNING, IN CASE OF TORNADO ALL HOTEL GUESTS SHOULD MEET
 ;                 AT THE WEST SIDE OF THE SALOON AND ENTER THE STORM SHELTER."
 ;
-9A64:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;                                        ;     end group_AND at 0x9A0F
+;
+9A64:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x9A69)
 ;           SIGN
-9A66:       49 B8 4E                     ;
+9A66:       49 B8 4E                    
 
 ; -------------- Object OBJ_57_MESSAGE --------------
-9A69: 56 2A                              ; Word_num=0x56 SIGN, length=0x002A
+9A69: 56 2A                              ; Word_num=0x56 SIGN, length=0x002A (to 0x9A95)
 9A6B: 81 01 84                           ; Location=0x81, disk_section=1, ext_attr=0000...., attributes=1000_0100 (??LOCKABLE)
-9A6E:    07 1E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001E
-9A70:       0D 1C                        ;     COM_0D_while_pass length=0x001C
+;
+9A6E:    07 1E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001E (to 0x9A8E)
+9A70:       0D 1C                        ;     COM_0D_group_AND length=0x001C (to 0x9A8E)
 9A72:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-9A74:          04 18                     ;       COM_04_print_message length=0x0018
-9A76:             7B 1C F3 B9 1B 54 17 98 10 EE 2E 63 73 15 D5 B5 ;
-9A86:             2E 7C 4F DB 3F 7A 5C BB ;
+9A74:          04 18                     ;       COM_04_print_message length=0x0018 (to 0x9A8E)
+9A76:             7B 1C F3 B9 1B 54 17 98 10 EE 2E 63 73 15 D5 B5
+9A86:             2E 7C 4F DB 3F 7A 5C BB
 ;
 ;                 "LAST CHANCE, NEXT GAS SIXTY MILES."
 ;
-9A8E:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;                                        ;     end group_AND at 0x9A70
+;
+9A8E:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x9A95)
 ;           MESSAGE
-9A90:       35 92 09 B7 45               ;
+9A90:       35 92 09 B7 45              
 
 ; -------------- Object OBJ_58_NEON_SIGN --------------
-9A95: 56 17                              ; Word_num=0x56 SIGN, length=0x0017
+9A95: 56 17                              ; Word_num=0x56 SIGN, length=0x0017 (to 0x9AAE)
 9A97: 96 03 84                           ; Location=0x96, disk_section=3, ext_attr=0000...., attributes=1000_0100 (??LOCKABLE)
-9A9A:    07 0A                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000A
-9A9C:       0D 08                        ;     COM_0D_while_pass length=0x0008
+;
+9A9A:    07 0A                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000A (to 0x9AA6)
+9A9C:       0D 08                        ;     COM_0D_group_AND length=0x0008 (to 0x9AA6)
 9A9E:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-9AA0:          04 04                     ;       COM_04_print_message length=0x0004
-9AA2:             EB 1A A3 AF            ;
+9AA0:          04 04                     ;       COM_04_print_message length=0x0004 (to 0x9AA6)
+9AA2:             EB 1A A3 AF           
 ;
-;                 "BAR"
+;                 "BAR" 
 ;
-9AA6:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
+;                                        ;     end group_AND at 0x9A9C
+;
+9AA6:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0x9AAE)
 ;           NEON SIGN
-9AA8:       71 98 95 96 80 79            ;
+9AA8:       71 98 95 96 80 79           
 
 ; -------------- Object OBJ_59_AQUARIUM --------------
-9AAE: 58 0B                              ; Word_num=0x58 AQUARI, length=0x000B
+9AAE: 58 0B                              ; Word_num=0x58 AQUARI, length=0x000B (to 0x9ABB)
 9AB0: A6 03 8A                           ; Location=0xA6, disk_section=3, ext_attr=0000...., attributes=1000_1010 (CLOSEABLE, CLOSED)
-9AB3:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
-;           AQUARIUM
-9AB5:       17 49 33 49 5B C5            ;
+;
+9AB3:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0x9ABB)
+;           AQUARIUM 
+9AB5:       17 49 33 49 5B C5           
 
 ; -------------- Object OBJ_5A_ENTRANCE_CLEAR --------------
-9ABB: 54 26                              ; Word_num=0x54 BOULDE, length=0x0026
+9ABB: 54 26                              ; Word_num=0x54 BOULDE, length=0x0026 (to 0x9AE3)
 9ABD: 00 05 80                           ; Location=0x00, disk_section=5, ext_attr=0000...., attributes=1000_0000 ()
-9AC0:    03 21                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0021
-9AC2:       04 1F                        ;     COM_04_print_message length=0x001F
-9AC4:          5F BE 30 15 EB BF 17 98 89 17 82 17 55 5E 92 73 ;
-9AD4:          9B 15 C4 B5 30 60 B6 14 80 A1 DE 14 94 5F 2E ;
+;
+9AC0:    03 21                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0021 (to 0x9AE3)
+9AC2:       04 1F                        ;     COM_04_print_message length=0x001F (to 0x9AE3)
+9AC4:          5F BE 30 15 EB BF 17 98 89 17 82 17 55 5E 92 73
+9AD4:          9B 15 C4 B5 30 60 B6 14 80 A1 DE 14 94 5F 2E
 ;
 ;              THE ENTRANCE TO THE SHIP HAS BEEN BLOWN CLEAR.
 ;
 
 ; -------------- Object OBJ_5B_LIMIT_SIGN --------------
-9AE3: 56 18                              ; Word_num=0x56 SIGN, length=0x0018
+9AE3: 56 18                              ; Word_num=0x56 SIGN, length=0x0018 (to 0x9AFD)
 9AE5: 89 01 84                           ; Location=0x89, disk_section=1, ext_attr=0000...., attributes=1000_0100 (??LOCKABLE)
-9AE8:    07 0E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000E
-9AEA:       0D 0C                        ;     COM_0D_while_pass length=0x000C
+;
+9AE8:    07 0E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000E (to 0x9AF8)
+9AEA:       0D 0C                        ;     COM_0D_group_AND length=0x000C (to 0x9AF8)
 9AEC:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-9AEE:          04 08                     ;       COM_04_print_message length=0x0008
-9AF0:             1B 1B FB C0 8F 8C 74 7B ;
+9AEE:          04 08                     ;       COM_04_print_message length=0x0008 (to 0x9AF8)
+9AF0:             1B 1B FB C0 8F 8C 74 7B
 ;
 ;                 "CITY LIMIT"
 ;
-9AF8:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;                                        ;     end group_AND at 0x9AEA
+;
+9AF8:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x9AFD)
 ;           SIGN
-9AFA:       49 B8 4E                     ;
+9AFA:       49 B8 4E                    
 
 ; -------------- Object OBJ_5C_PAIR_HANDS --------------
-9AFD: 1F 2C                              ; Word_num=0x1F HAND, length=0x002C
+9AFD: 1F 2C                              ; Word_num=0x1F HAND, length=0x002C (to 0x9B2B)
 9AFF: 01 00 C0                           ; Location=0x01, disk_section=0, ext_attr=0000...., attributes=1100_0000 (WEAPON)
-9B02:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;
+9B02:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x9B0D)
 ;           PAIR OF HANDS
-9B04:       4B A4 91 AF 8A 64 8E 48 53   ;
-9B0D:    07 1C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001C
-9B0F:       0D 1A                        ;     COM_0D_while_pass length=0x001A
+9B04:       4B A4 91 AF 8A 64 8E 48 53  
+;
+9B0D:    07 1C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001C (to 0x9B2B)
+9B0F:       0D 1A                        ;     COM_0D_group_AND length=0x001A (to 0x9B2B)
 9B11:          0A 06                     ;       COM_0A_is_input_phrase(phrase=DROP ..C..... * *)
-9B13:          04 16                     ;       COM_04_print_message length=0x0016
-9B15:             C7 DE 49 16 B4 D0 51 18 23 C6 50 72 0B 5C 83 7A ;
-9B25:             95 5A 35 6F 9B C1      ;
+9B13:          04 16                     ;       COM_04_print_message length=0x0016 (to 0x9B2B)
+9B15:             C7 DE 49 16 B4 D0 51 18 23 C6 50 72 0B 5C 83 7A
+9B25:             95 5A 35 6F 9B C1     
 ;
-;                 YOU LOWER YOUR HANDS IN DISGUST.
+;                 YOU LOWER YOUR HANDS IN DISGUST. 
 ;
+;                                        ;     end group_AND at 0x9B0F
 
 ; -------------- Object OBJ_5D_BARRED_WINDOW_OUTSIDE --------------
-9B2B: 59 47                              ; Word_num=0x59 WINDOW, length=0x0047
+9B2B: 59 47                              ; Word_num=0x59 WINDOW, length=0x0047 (to 0x9B74)
 9B2D: 8F 02 80                           ; Location=0x8F, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
-9B30:    07 37                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0037
-9B32:       0D 35                        ;     COM_0D_while_pass length=0x0035
-9B34:          0E 04                     ;       COM_0E_while_fail length=0x0004
+;
+9B30:    07 37                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0037 (to 0x9B69)
+9B32:       0D 35                        ;     COM_0D_group_AND length=0x0035 (to 0x9B69)
+9B34:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x9B3A)
 9B36:             0A 10                  ;         COM_0A_is_input_phrase(phrase=LOOK * IN ......O.)
 9B38:             0A 0B                  ;         COM_0A_is_input_phrase(phrase=LOOK * AT u.......)
-9B3A:          04 2D                     ;       COM_04_print_message length=0x002D
-9B3C:             81 8D 50 86 CB 6A 96 96 DB 72 50 D1 89 5B 1B EE ;
-9B4C:             1B A1 10 53 AB 14 6E B1 55 DB 1B 60 46 45 5D 62 ;
-9B5C:             90 14 03 58 87 15 85 96 B3 46 76 98 2E ;
+;                                        ;       end group_OR at 0x9B34
+9B3A:          04 2D                     ;       COM_04_print_message length=0x002D (to 0x9B69)
+9B3C:             81 8D 50 86 CB 6A 96 96 DB 72 50 D1 89 5B 1B EE
+9B4C:             1B A1 10 53 AB 14 6E B1 55 DB 1B 60 46 45 5D 62
+9B5C:             90 14 03 58 87 15 85 96 B3 46 76 98 2E
 ;
 ;                 LOOKING IN THE WINDOW, YOU CAN BARELY SEE A DESK AND A GUN
 ;                 CABINET.
 ;
-9B69:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;                                        ;     end group_AND at 0x9B32
+;
+9B69:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x9B74)
 ;           BARRED WINDOW
-9B6B:       D4 4C 66 B1 FB 17 49 98 57   ;
+9B6B:       D4 4C 66 B1 FB 17 49 98 57  
 
 ; -------------- Object OBJ_5E_BARRED_WINDOW_INSIDE --------------
-9B74: 59 3A                              ; Word_num=0x59 WINDOW, length=0x003A
+9B74: 59 3A                              ; Word_num=0x59 WINDOW, length=0x003A (to 0x9BB0)
 9B76: 8E 02 80                           ; Location=0x8E, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
-9B79:    07 2A                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x002A
-9B7B:       0D 28                        ;     COM_0D_while_pass length=0x0028
-9B7D:          0E 04                     ;       COM_0E_while_fail length=0x0004
+;
+9B79:    07 2A                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x002A (to 0x9BA5)
+9B7B:       0D 28                        ;     COM_0D_group_AND length=0x0028 (to 0x9BA5)
+9B7D:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0x9B83)
 9B7F:             0A 10                  ;         COM_0A_is_input_phrase(phrase=LOOK * IN ......O.)
 9B81:             0A 0B                  ;         COM_0A_is_input_phrase(phrase=LOOK * AT u.......)
-9B83:          04 20                     ;       COM_04_print_message length=0x0020
-9B85:             C7 DE 57 17 47 5E EE 93 46 DB 57 62 B3 B3 0C BA ;
-9B95:             7D 62 90 73 D6 6A D6 9C DB 72 84 74 79 7C 1B 9C ;
+;                                        ;       end group_OR at 0x9B7D
+9B83:          04 20                     ;       COM_04_print_message length=0x0020 (to 0x9BA5)
+9B85:             C7 DE 57 17 47 5E EE 93 46 DB 57 62 B3 B3 0C BA
+9B95:             7D 62 90 73 D6 6A D6 9C DB 72 84 74 79 7C 1B 9C
 ;
-;                 YOU SEE EMPTY DESERT STRETCHING TO THE HORIZON.
+;                 YOU SEE EMPTY DESERT STRETCHING TO THE HORIZON. 
 ;
-9BA5:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;                                        ;     end group_AND at 0x9B7B
+;
+9BA5:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x9BB0)
 ;           BARRED WINDOW
-9BA7:       D4 4C 66 B1 FB 17 49 98 57   ;
+9BA7:       D4 4C 66 B1 FB 17 49 98 57  
 
 ; -------------- Object OBJ_5F_SHELTER --------------
-9BB0: 5A 0D                              ; Word_num=0x5A SHELTE, length=0x000D
+9BB0: 5A 0D                              ; Word_num=0x5A SHELTE, length=0x000D (to 0x9BBF)
 9BB2: A0 02 80                           ; Location=0xA0, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
-9BB5:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+9BB5:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x9BB8)
 9BB7:       BB                           ;     FN_BB_PRINT_LOOK_IN_AT
-9BB8:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;
+9BB8:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x9BBF)
 ;           SHELTER
-9BBA:       1F B8 3F 8E 52               ;
+9BBA:       1F B8 3F 8E 52              
 
 ; -------------- Object OBJ_60_SHELTER --------------
-9BBF: 5A 0D                              ; Word_num=0x5A SHELTE, length=0x000D
+9BBF: 5A 0D                              ; Word_num=0x5A SHELTE, length=0x000D (to 0x9BCE)
 9BC1: DB 02 80                           ; Location=0xDB, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
-9BC4:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+9BC4:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x9BC7)
 9BC6:       BB                           ;     FN_BB_PRINT_LOOK_IN_AT
-9BC7:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;
+9BC7:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x9BCE)
 ;           SHELTER
-9BC9:       1F B8 3F 8E 52               ;
+9BC9:       1F B8 3F 8E 52              
 
 ; -------------- Object OBJ_61_GROUND --------------
-9BCE: 2B 09                              ; Word_num=0x2B FLOOR, length=0x0009
+9BCE: 2B 09                              ; Word_num=0x2B FLOOR, length=0x0009 (to 0x9BD9)
 9BD0: 01 00 80                           ; Location=0x01, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
-9BD3:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
+;
+9BD3:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0x9BD9)
 ;           GROUND
-9BD5:       B9 6E 8E C5                  ;
+9BD5:       B9 6E 8E C5                 
 
 ; -------------- Object OBJ_62_SHAGGY_CREATURE --------------
-9BD9: 5B 85 24                           ; Word_num=0x5B ALIEN, length=0x0524
+9BD9: 5B 85 24                           ; Word_num=0x5B ALIEN, length=0x0524 (to 0xA100)
 9BDC: C3 05 90                           ; Location=0xC3, disk_section=5, ext_attr=0000...., attributes=1001_0000 (ALIVE)
-9BDF:    03 01                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0001
+;
+9BDF:    03 01                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0001 (to 0x9BE2)
 9BE1:       BD                           ;     FN_BD_PRINT_SHAGGY_CREATURE
-9BE2:    09 02                           ;   Section=09:SECTION_09_HIT_POINTS, length=0x0002
-9BE4:       14 14                        ;     Hit_points=20_of_20
-9BE6:    0A 33                           ;   Section=0A:SECTION_0A_UPON_DEATH, length=0x0033
-9BE8:       0D 31                        ;     COM_0D_while_pass length=0x0031
-9BEA:          1F 28                     ;       COM_1F_print2 length=0x0028
-9BEC:             5F BE 8E 14 30 79 03 15 4B 62 8E 48 2B 17 86 A5 ;
-9BFC:             FB 8E E5 59 55 4A 89 17 0F 15 F3 B9 68 4D AF A0 ;
-9C0C:             51 18 23 C6 47 63 5B BB ;
 ;
-;                 THE ALIEN DIES AND RAPIDLY DECAYS TO DUST BEFORE YOUR EYES.
+;;
+9BE2:    09 02                           ;   Section=09:SECTION_09_HIT_POINTS, length=0x0002 (to 0x9BE6)
+9BE4:       14 14                        ;     max_hit_points=20 current_hit_points=20
 ;
-9C14:          17 62 C3                  ;       COM_17_move_object_to_destination(obj=OBJ_62_SHAGGY_CREATURE, destination=RM_1_C3_??)
+;;
+9BE6:    0A 33                           ;   Section=0A:SECTION_0A_UPON_DEATH, length=0x0033 (to 0x9C1B)
+9BE8:       0D 31                        ;     COM_0D_group_AND length=0x0031 (to 0x9C1B)
+9BEA:          1F 28                     ;       COM_1F_print2 length=0x0028 (to 0x9C14)
+9BEC:             5F BE 8E 14 30 79 03 15 4B 62 8E 48 2B 17 86 A5
+9BFC:             FB 8E E5 59 55 4A 89 17 0F 15 F3 B9 68 4D AF A0
+9C0C:             51 18 23 C6 47 63 5B BB
+;
+;                 THE ALIEN DIES AND RAPIDLY DECAYS TO DUST BEFORE YOUR EYES. 
+;
+9C14:          17 62 C3                  ;       COM_17_move_object_to(obj=OBJ_62_SHAGGY_CREATURE, destination=RM_1_C3_??)
 9C17:          1C 62                     ;       COM_1C_set_var_object(obj=OBJ_62_SHAGGY_CREATURE)
 9C19:          23 4B                     ;       COM_23_heal_var(points=75)
-9C1B:    07 82 DE                        ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x02DE
-9C1E:       0D 82 DB                     ;     COM_0D_while_pass length=0x02DB
+;                                        ;     end group_AND at 0x9BE8
+;
+;;
+;; The various ways the alien can be attacked with colorful descriptions of the action:
+;;   - with HANDS
+;;     - 0-38:    15% "fists pound" for 9 points of damage
+;;     - 39-90:   20% "bones crunch" for 6
+;;     - 91-141:  20% "against the ground" for 4
+;;     - 142-179: 15% "swing misses" no damage
+;;     - 180-217: 15% "blocks your blow" no damage
+;;     - 218-255: 15% "alien ducks" no damage
+;;   - with a weapon
+;;     - SHOVEL, SHOTGUN, or CROWBAR (shooting the shotgun is handled by the general script: 21 damage "limp body falls")
+;;       - 0-25:    10% "smashes down upon the head" for 21 points of damage
+;;       - 24-63:   15% "alien in its side" for 11
+;;       - 64-114:  20% "bursting flesh open" for 6
+;;       - 115-165: 20% "glances harmlessly" no damage
+;;       - 166-203: 15% "misses the alien" no damage
+;;       - 204-255: 20% "entangles your arms" no damage
+9C1B:    07 82 DE                        ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x02DE (to 0x9EFC)
+9C1E:       0D 82 DB                     ;     COM_0D_group_AND length=0x02DB (to 0x9EFC)
 9C21:          0A 09                     ;       COM_0A_is_input_phrase(phrase=ATTACK ...P.... WITH .v......)
-9C23:          0E 82 D6                  ;       COM_0E_while_fail length=0x02D6
-9C26:             0D 81 65               ;         COM_0D_while_pass length=0x0165
-9C29:                09 5C               ;           COM_09_compare_to_second_noun(obj=OBJ_5C_PAIR_HANDS)
-9C2B:                0B 81 60 05         ;           COM_0B_switch length=0x0160, function=COM_05_is_less_equal_last_random(value)
-9C2F:                   26               ;             COM_05_is_less_equal_last_random(value=38)
-9C30:                   44               ;             ELSE goto=0x9C75
-9C31:                      0D 42         ;               COM_0D_while_pass length=0x0042
-9C33:                         04 3C      ;                 COM_04_print_message length=0x003C
-9C35:                            5F BE 8E 14 30 79 66 17 79 47 3D 62 AB 14 8B 54 ;
-9C45:                            4B 49 C7 DE 88 AF 66 7B D2 B5 30 A1 0B 58 C9 9A ;
-9C55:                            D6 15 C8 B5 D7 46 09 EE 67 B1 8B 96 29 54 85 AF ;
-9C65:                            4F A1 8B B3 C7 DE 8A AF 8E 48 6B B5 ;
+9C23:          0E 82 D6                  ;       COM_0E_group_OR length=0x02D6 (to 0x9EFC)
+9C26:             0D 81 65               ;         COM_0D_group_AND length=0x0165 (to 0x9D8E)
+9C29:                09 5C               ;           COM_09_is_noun2(obj=OBJ_5C_PAIR_HANDS)
+9C2B:                0B 81 60 05         ;           COM_0B_switch length=0x0160 (to 0x9D8F), function=COM_05_is_less_equal_last_random(value)
+9C2F:                   26 44            ;             case COM_05_is_less_equal_last_random(value=38), length=0x0044
+9C31:                      0D 42         ;               COM_0D_group_AND length=0x0042 (to 0x9C75)
+9C33:                         04 3C      ;                 COM_04_print_message length=0x003C (to 0x9C71)
+9C35:                            5F BE 8E 14 30 79 66 17 79 47 3D 62 AB 14 8B 54
+9C45:                            4B 49 C7 DE 88 AF 66 7B D2 B5 30 A1 0B 58 C9 9A
+9C55:                            D6 15 C8 B5 D7 46 09 EE 67 B1 8B 96 29 54 85 AF
+9C65:                            4F A1 8B B3 C7 DE 8A AF 8E 48 6B B5
 ;
 ;                                THE ALIEN STAGGERS BACK AS YOUR FISTS POUND INTO ITS FACE,
 ;                                GREEN ICHOR COVERS YOUR HANDS!
 ;
 9C71:                         1C 62      ;                 COM_1C_set_var_object(obj=OBJ_62_SHAGGY_CREATURE)
 9C73:                         1D 09      ;                 COM_1D_attack_var(points=9)
-9C75:                   5A               ;             COM_05_is_less_equal_last_random(value=90)
-9C76:                   3E               ;             ELSE goto=0x9CB5
-9C77:                      0D 3C         ;               COM_0D_while_pass length=0x003C
-9C79:                         04 36      ;                 COM_04_print_message length=0x0036
-9C7B:                            5F BE 8E 14 30 79 D5 15 57 17 B3 9A 67 B1 90 8C ;
-9C8B:                            C4 6A 43 DB F7 17 F3 8C FB A5 A6 53 1B 16 AF 54 ;
-9C9B:                            51 18 48 C2 2E 60 B9 14 75 98 E4 14 8D C5 19 71 ;
-9CAB:                            82 7B 83 7A 71 7B ;
+;                                        ;               end group_AND at 0x9C31
+;                                        ;             end case
+9C75:                   5A 3E            ;             case COM_05_is_less_equal_last_random(value=90), length=0x003E
+9C77:                      0D 3C         ;               COM_0D_group_AND length=0x003C (to 0x9CB5)
+9C79:                         04 36      ;                 COM_04_print_message length=0x0036 (to 0x9CB1)
+9C7B:                            5F BE 8E 14 30 79 D5 15 57 17 B3 9A 67 B1 90 8C
+9C8B:                            C4 6A 43 DB F7 17 F3 8C FB A5 A6 53 1B 16 AF 54
+9C9B:                            51 18 48 C2 2E 60 B9 14 75 98 E4 14 8D C5 19 71
+9CAB:                            82 7B 83 7A 71 7B
 ;
 ;                                THE ALIEN IS SENT REELING BY A WELL PLACED KICK. YOU FEEL
 ;                                BONES CRUNCH WITHIN IT!
 ;
 9CB1:                         1C 62      ;                 COM_1C_set_var_object(obj=OBJ_62_SHAGGY_CREATURE)
 9CB3:                         1D 06      ;                 COM_1D_attack_var(points=6)
-9CB5:                   8D               ;             COM_05_is_less_equal_last_random(value=141)
-9CB6:                   54               ;             ELSE goto=0x9D0B
-9CB7:                      0D 52         ;               COM_0D_while_pass length=0x0052
-9CB9:                         04 4C      ;                 COM_04_print_message length=0x004C
-9CBB:                            5F BE 5A 17 79 47 44 DB 09 B3 88 96 23 C6 58 6D ;
-9CCB:                            4B 62 C7 DE 7B 14 14 67 49 90 12 B2 95 14 51 18 ;
-9CDB:                            4A C2 55 9F 16 BC DB 72 43 48 83 61 4F A1 9B AF ;
-9CEB:                            34 A1 9F 15 F3 46 8E 48 5F 17 5A 49 A3 15 43 90 ;
-9CFB:                            0B 6C A6 9A 82 17 49 5E 07 B3 31 98 ;
+;                                        ;               end group_AND at 0x9C77
+;                                        ;             end case
+9CB5:                   8D 54            ;             case COM_05_is_less_equal_last_random(value=141), length=0x0054
+9CB7:                      0D 52         ;               COM_0D_group_AND length=0x0052 (to 0x9D0B)
+9CB9:                         04 4C      ;                 COM_04_print_message length=0x004C (to 0x9D07)
+9CBB:                            5F BE 5A 17 79 47 44 DB 09 B3 88 96 23 C6 58 6D
+9CCB:                            4B 62 C7 DE 7B 14 14 67 49 90 12 B2 95 14 51 18
+9CDB:                            4A C2 55 9F 16 BC DB 72 43 48 83 61 4F A1 9B AF
+9CEB:                            34 A1 9F 15 F3 46 8E 48 5F 17 5A 49 A3 15 43 90
+9CFB:                            0B 6C A6 9A 82 17 49 5E 07 B3 31 98
 ;
 ;                                THE SHAGGY BROWN FUR GIVES YOU A FIRM GRIP AS YOU HOIST THE
 ;                                ALIEN OVER YOUR HEAD AND SMASH HIM AGAINST THE GROUND!
 ;
 9D07:                         1C 62      ;                 COM_1C_set_var_object(obj=OBJ_62_SHAGGY_CREATURE)
 9D09:                         1D 04      ;                 COM_1D_attack_var(points=4)
-9D0B:                   B3               ;             COM_05_is_less_equal_last_random(value=179)
-9D0C:                   2B               ;             ELSE goto=0x9D38
-9D0D:                      04 29         ;               COM_04_print_message length=0x0029
-9D0F:                         C7 DE 95 AF 50 D1 CF 6A 65 7B 4B 62 5F BE 8E 14 ;
-9D1F:                         30 79 90 14 1B 58 1B A1 47 48 E6 A0 49 16 9B B7 ;
-9D2F:                         C7 DE 84 AF 3B 48 17 98 2E ;
+;                                        ;               end group_AND at 0x9CB7
+;                                        ;             end case
+9D0B:                   B3 2B            ;             case COM_05_is_less_equal_last_random(value=179), length=0x002B
+9D0D:                      04 29         ;               COM_04_print_message length=0x0029 (to 0x9D38)
+9D0F:                         C7 DE 95 AF 50 D1 CF 6A 65 7B 4B 62 5F BE 8E 14
+9D1F:                         30 79 90 14 1B 58 1B A1 47 48 E6 A0 49 16 9B B7
+9D2F:                         C7 DE 84 AF 3B 48 17 98 2E
 ;
 ;                             YOUR SWING MISSES THE ALIEN AND YOU ALMOST LOSE YOUR
 ;                             BALANCE.
 ;
-9D38:                   D9               ;             COM_05_is_less_equal_last_random(value=217)
-9D39:                   2B               ;             ELSE goto=0x9D65
-9D3A:                      04 29         ;               COM_04_print_message length=0x0029
-9D3C:                         5F BE 8E 14 30 79 B6 14 5D 9E DB B5 34 A1 B6 14 ;
-9D4C:                         85 A1 FB 17 53 BE 95 73 94 14 4B 94 8E 48 3F 17 ;
-9D5C:                         1F B8 C8 B5 C1 A0 2E 49 2E ;
+;                                        ;             end case
+9D38:                   D9 2B            ;             case COM_05_is_less_equal_last_random(value=217), length=0x002B
+9D3A:                      04 29         ;               COM_04_print_message length=0x0029 (to 0x9D65)
+9D3C:                         5F BE 8E 14 30 79 B6 14 5D 9E DB B5 34 A1 B6 14
+9D4C:                         85 A1 FB 17 53 BE 95 73 94 14 4B 94 8E 48 3F 17
+9D5C:                         1F B8 C8 B5 C1 A0 2E 49 2E
 ;
 ;                             THE ALIEN BLOCKS YOUR BLOWS WITH HIS ARMS AND RUSHES
 ;                             FORWARD.
 ;
-9D65:                   FF               ;             COM_05_is_less_equal_last_random(value=255)
-9D66:                   27               ;             ELSE goto=0x9D8E
-9D67:                      04 25         ;               COM_04_print_message length=0x0025
-9D69:                         5F BE 8E 14 30 79 0F 15 A5 54 B0 17 F4 59 7B 14 ;
-9D79:                         4E D1 0D 58 DD 78 5B F4 1B A1 65 B1 4F A1 93 AF ;
-9D89:                         C5 C4 D3 86 2E ;
+;                                        ;             end case
+9D65:                   FF 27            ;             case COM_05_is_less_equal_last_random(value=255), length=0x0027
+9D67:                      04 25         ;               COM_04_print_message length=0x0025 (to 0x9D8E)
+9D69:                         5F BE 8E 14 30 79 0F 15 A5 54 B0 17 F4 59 7B 14
+9D79:                         4E D1 0D 58 DD 78 5B F4 1B A1 65 B1 4F A1 93 AF
+9D89:                         C5 C4 D3 86 2E
 ;
 ;                             THE ALIEN DUCKS UNDER A WILD KICK. YOU RECOVER QUICKLY.
 ;
-9D8E:             0D 81 6B               ;         COM_0D_while_pass length=0x016B
-9D91:                0E 06               ;           COM_0E_while_fail length=0x0006
-9D93:                   09 32            ;             COM_09_compare_to_second_noun(obj=OBJ_32_SHOVEL)
-9D95:                   09 28            ;             COM_09_compare_to_second_noun(obj=OBJ_28_SHOTGUN)
-9D97:                   09 24            ;             COM_09_compare_to_second_noun(obj=OBJ_24_CROWBAR)
-9D99:                0B 81 60 05         ;           COM_0B_switch length=0x0160, function=COM_05_is_less_equal_last_random(value)
-9D9D:                   19               ;             COM_05_is_less_equal_last_random(value=25)
-9D9E:                   3F               ;             ELSE goto=0x9DDE
-9D9F:                      0D 3D         ;               COM_0D_while_pass length=0x003D
-9DA1:                         04 03      ;                 COM_04_print_message length=0x0003
-9DA3:                            C7 DE 52 ;
+;                                        ;             end case
+;                                        ;           end decode_switch at 0x9C2B
+;                                        ;         end group_AND at 0x9C26
+;;
+;; Attacks with a weapon
+;;
+9D8E:             0D 81 6B               ;         COM_0D_group_AND length=0x016B (to 0x9EFC)
+9D91:                0E 06               ;           COM_0E_group_OR length=0x0006 (to 0x9D99)
+9D93:                   09 32            ;             COM_09_is_noun2(obj=OBJ_32_SHOVEL)
+9D95:                   09 28            ;             COM_09_is_noun2(obj=OBJ_28_SHOTGUN)
+9D97:                   09 24            ;             COM_09_is_noun2(obj=OBJ_24_CROWBAR)
+;                                        ;           end group_OR at 0x9D91
+9D99:                0B 81 60 05         ;           COM_0B_switch length=0x0160 (to 0x9EFD), function=COM_05_is_less_equal_last_random(value)
+9D9D:                   19 3F            ;             case COM_05_is_less_equal_last_random(value=25), length=0x003F
+9D9F:                      0D 3D         ;               COM_0D_group_AND length=0x003D (to 0x9DDE)
+9DA1:                         04 03      ;                 COM_04_print_message length=0x0003 (to 0x9DA6)
+9DA3:                            C7 DE 52
 ;
 ;                                YOUR
 ;
-9DA6:                         12         ;                 COM_12_print_second_noun()
-9DA7:                         04 31      ;                 COM_04_print_message length=0x0031
-9DA9:                            E3 B8 1F B8 C6 B5 80 A1 B2 17 03 A0 5F BE 9F 15 ;
-9DB9:                            F3 46 C3 9E 5F BE 8E 14 30 79 09 EE 67 B1 8B 96 ;
-9DC9:                            29 54 95 AF EB A6 4B DF C7 DE 85 AF 86 8D F5 72 ;
-9DD9:                            21      ;
+9DA6:                         12         ;                 COM_12_print_noun2()
+9DA7:                         04 31      ;                 COM_04_print_message length=0x0031 (to 0x9DDA)
+9DA9:                            E3 B8 1F B8 C6 B5 80 A1 B2 17 03 A0 5F BE 9F 15
+9DB9:                            F3 46 C3 9E 5F BE 8E 14 30 79 09 EE 67 B1 8B 96
+9DC9:                            29 54 95 AF EB A6 4B DF C7 DE 85 AF 86 8D F5 72
+9DD9:                            21     
 ;
 ;                                SMASHES DOWN UPON THE HEAD OF THE ALIEN, GREEN ICHOR SPRAYS
 ;                                YOUR CLOTHES!
 ;
 9DDA:                         1C 62      ;                 COM_1C_set_var_object(obj=OBJ_62_SHAGGY_CREATURE)
 9DDC:                         1D 15      ;                 COM_1D_attack_var(points=21)
-9DDE:                   3F               ;             COM_05_is_less_equal_last_random(value=63)
-9DDF:                   53               ;             ELSE goto=0x9E33
-9DE0:                      0D 51         ;               COM_0D_while_pass length=0x0051
-9DE2:                         04 03      ;                 COM_04_print_message length=0x0003
-9DE4:                            C7 DE 52 ;
+;                                        ;               end group_AND at 0x9D9F
+;                                        ;             end case
+9DDE:                   3F 53            ;             case COM_05_is_less_equal_last_random(value=63), length=0x0053
+9DE0:                      0D 51         ;               COM_0D_group_AND length=0x0051 (to 0x9E33)
+9DE2:                         04 03      ;                 COM_04_print_message length=0x0003 (to 0x9DE7)
+9DE4:                            C7 DE 52
 ;
 ;                                YOUR
 ;
-9DE7:                         12         ;                 COM_12_print_second_noun()
-9DE8:                         04 45      ;                 COM_04_print_message length=0x0045
-9DEA:                            0C BA 17 7A D6 B5 DB 72 43 48 83 61 83 7A 8D 7B ;
-9DFA:                            5B 17 FE 59 51 18 48 C2 2E 60 B9 14 75 98 E4 14 ;
-9E0A:                            8D C5 19 71 82 7B 83 7A 97 7B 82 17 43 5E 87 8C ;
-9E1A:                            95 96 04 9A 0B C0 4F 45 66 7B B8 16 84 15 30 60 ;
-9E2A:                            B6 14 36 A0 2E ;
+9DE7:                         12         ;                 COM_12_print_noun2()
+9DE8:                         04 45      ;                 COM_04_print_message length=0x0045 (to 0x9E2F)
+9DEA:                            0C BA 17 7A D6 B5 DB 72 43 48 83 61 83 7A 8D 7B
+9DFA:                            5B 17 FE 59 51 18 48 C2 2E 60 B9 14 75 98 E4 14
+9E0A:                            8D C5 19 71 82 7B 83 7A 97 7B 82 17 43 5E 87 8C
+9E1A:                            95 96 04 9A 0B C0 4F 45 66 7B B8 16 84 15 30 60
+9E2A:                            B6 14 36 A0 2E
 ;
 ;                                STRIKES THE ALIEN IN ITS SIDE, YOU FEEL BONES CRUNCH WITHIN
 ;                                IT. THE ALIEN SNORTS A MIST OF GREEN BLOOD.
 ;
 9E2F:                         1C 62      ;                 COM_1C_set_var_object(obj=OBJ_62_SHAGGY_CREATURE)
 9E31:                         1D 0B      ;                 COM_1D_attack_var(points=11)
-9E33:                   72               ;             COM_05_is_less_equal_last_random(value=114)
-9E34:                   48               ;             ELSE goto=0x9E7D
-9E35:                      0D 46         ;               COM_0D_while_pass length=0x0046
-9E37:                         04 03      ;                 COM_04_print_message length=0x0003
-9E39:                            C7 DE 52 ;
+;                                        ;               end group_AND at 0x9DE0
+;                                        ;             end case
+9E33:                   72 48            ;             case COM_05_is_less_equal_last_random(value=114), length=0x0048
+9E35:                      0D 46         ;               COM_0D_group_AND length=0x0046 (to 0x9E7D)
+9E37:                         04 03      ;                 COM_04_print_message length=0x0003 (to 0x9E3C)
+9E39:                            C7 DE 52
 ;
 ;                                YOUR
 ;
-9E3C:                         12         ;                 COM_12_print_second_noun()
-9E3D:                         04 3A      ;                 COM_04_print_message length=0x003A
-9E3F:                            96 73 D6 B5 DB 72 43 48 85 61 C3 B5 9B B2 F4 4F ;
-9E4F:                            03 BA AB 98 5F BE 56 15 5A 62 C2 16 A7 61 84 15 ;
-9E5F:                            30 60 C5 15 84 74 56 15 85 A1 5C 15 2E 60 48 DB ;
-9E6F:                            FF B2 82 17 59 5E 30 A1 AB 57 ;
+9E3C:                         12         ;                 COM_12_print_noun2()
+9E3D:                         04 3A      ;                 COM_04_print_message length=0x003A (to 0x9E79)
+9E3F:                            96 73 D6 B5 DB 72 43 48 85 61 C3 B5 9B B2 F4 4F
+9E4F:                            03 BA AB 98 5F BE 56 15 5A 62 C2 16 A7 61 84 15
+9E5F:                            30 60 C5 15 84 74 56 15 85 A1 5C 15 2E 60 48 DB
+9E6F:                            FF B2 82 17 59 5E 30 A1 AB 57
 ;
 ;                                HITS THE ALIEN'S ARM BURSTING THE FLESH OPEN. GREEN ICHOR
 ;                                FLOWS FREELY FROM THE WOUND!
 ;
 9E79:                         1C 62      ;                 COM_1C_set_var_object(obj=OBJ_62_SHAGGY_CREATURE)
 9E7B:                         1D 06      ;                 COM_1D_attack_var(points=6)
-9E7D:                   A5               ;             COM_05_is_less_equal_last_random(value=165)
-9E7E:                   25               ;             ELSE goto=0x9EA4
-9E7F:                      0D 23         ;               COM_0D_while_pass length=0x0023
-9E81:                         04 03      ;                 COM_04_print_message length=0x0003
-9E83:                            C7 DE 52 ;
+;                                        ;               end group_AND at 0x9E35
+;                                        ;             end case
+9E7D:                   A5 25            ;             case COM_05_is_less_equal_last_random(value=165), length=0x0025
+9E7F:                      0D 23         ;               COM_0D_group_AND length=0x0023 (to 0x9EA4)
+9E81:                         04 03      ;                 COM_04_print_message length=0x0003 (to 0x9E86)
+9E83:                            C7 DE 52
 ;
 ;                                YOUR
 ;
-9E86:                         12         ;                 COM_12_print_second_noun()
-9E87:                         04 1B      ;                 COM_04_print_message length=0x001B
-9E89:                            BB 6D 17 98 CA B5 37 49 F5 8B D3 B8 B8 16 96 64 ;
-9E99:                            DB 72 43 48 85 61 C4 B5 93 9E 2E ;
+9E86:                         12         ;                 COM_12_print_noun2()
+9E87:                         04 1B      ;                 COM_04_print_message length=0x001B (to 0x9EA4)
+9E89:                            BB 6D 17 98 CA B5 37 49 F5 8B D3 B8 B8 16 96 64
+9E99:                            DB 72 43 48 85 61 C4 B5 93 9E 2E
 ;
 ;                                GLANCES HARMLESSLY OFF THE ALIEN'S BODY.
 ;
-9EA4:                   CB               ;             COM_05_is_less_equal_last_random(value=203)
-9EA5:                   26               ;             ELSE goto=0x9ECC
-9EA6:                      0D 24         ;               COM_0D_while_pass length=0x0024
-9EA8:                         04 03      ;                 COM_04_print_message length=0x0003
-9EAA:                            C7 DE 52 ;
+;                                        ;               end group_AND at 0x9E7F
+;                                        ;             end case
+9EA4:                   CB 26            ;             case COM_05_is_less_equal_last_random(value=203), length=0x0026
+9EA6:                      0D 24         ;               COM_0D_group_AND length=0x0024 (to 0x9ECC)
+9EA8:                         04 03      ;                 COM_04_print_message length=0x0003 (to 0x9EAD)
+9EAA:                            C7 DE 52
 ;
 ;                                YOUR
 ;
-9EAD:                         12         ;                 COM_12_print_second_noun()
-9EAE:                         04 1C      ;                 COM_04_print_message length=0x001C
-9EB0:                            D5 92 B5 B7 82 17 43 5E 87 8C 83 96 CB B5 16 BC ;
-9EC0:                            55 D1 0B C0 6B BF 0F A0 5B 17 FF 59 ;
+9EAD:                         12         ;                 COM_12_print_noun2()
+9EAE:                         04 1C      ;                 COM_04_print_message length=0x001C (to 0x9ECC)
+9EB0:                            D5 92 B5 B7 82 17 43 5E 87 8C 83 96 CB B5 16 BC
+9EC0:                            55 D1 0B C0 6B BF 0F A0 5B 17 FF 59
 ;
 ;                                MISSES THE ALIEN AS IT TWISTS TO ONE SIDE.
 ;
-9ECC:                   FF               ;             COM_05_is_less_equal_last_random(value=255)
-9ECD:                   2E               ;             ELSE goto=0x9EFC
-9ECE:                      0D 2C         ;               COM_0D_while_pass length=0x002C
-9ED0:                         04 23      ;                 COM_04_print_message length=0x0023
-9ED2:                            5F BE 8E 14 30 79 30 15 50 BD BF 6D DB B5 34 A1 ;
-9EE2:                            94 14 6E 94 EC 16 CF 62 C3 9A AB 98 5F BE B5 17 ;
-9EF2:                            51 5E 46 ;
+;                                        ;               end group_AND at 0x9EA6
+;                                        ;             end case
+9ECC:                   FF 2E            ;             case COM_05_is_less_equal_last_random(value=255), length=0x002E
+9ECE:                      0D 2C         ;               COM_0D_group_AND length=0x002C (to 0x9EFC)
+9ED0:                         04 23      ;                 COM_04_print_message length=0x0023 (to 0x9EF5)
+9ED2:                            5F BE 8E 14 30 79 30 15 50 BD BF 6D DB B5 34 A1
+9EE2:                            94 14 6E 94 EC 16 CF 62 C3 9A AB 98 5F BE B5 17
+9EF2:                            51 5E 46
 ;
 ;                                THE ALIEN ENTANGLES YOUR ARMS, PREVENTING THE USE OF
 ;
 9EF5:                         A9         ;                 FN_A9_PRINT_noun2
-9EF6:                         04 04      ;                 COM_04_print_message length=0x0004
-9EF8:                            03 A0 97 7B ;
+9EF6:                         04 04      ;                 COM_04_print_message length=0x0004 (to 0x9EFC)
+9EF8:                            03 A0 97 7B
 ;
 ;                                ON IT.
 ;
-9EFC:    08 81 F1                        ;   Section=08:SECTION_08_EVERY_TURN, length=0x01F1
-9EFF:       0E 81 EE                     ;     COM_0E_while_fail length=0x01EE
-9F02:          0D 47                     ;       COM_0D_while_pass length=0x0047
-9F04:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;               end group_AND at 0x9ECE
+;                                        ;             end case
+;                                        ;           end decode_switch at 0x9D99
+;                                        ;         end group_AND at 0x9D8E
+;                                        ;       end group_OR at 0x9C23
+;                                        ;     end group_AND at 0x9C1E
+;
+9EFC:    08 81 F1                        ;   Section=08:SECTION_08_EVERY_TURN, length=0x01F1 (to 0xA0F0)
+;;
+;; Remember, this EVERY_TURN script only runs if the player is in the same disk section (Section5). The SHAGGY_CREATURE is
+;; thus confined to Section5. If the player moves out (like to town or the right half of the desert) then SHAGGY stops
+;; moving until the player comes back to Section5.
+;;
+;; The SHAGGY_CREATURE will not follow the player or teleport to RM_5_DB (dead alien) or RM_5_E8 (prospector).
+;;
+;; Here is the SHAGGY_CREATURE's logic:
+;;
+;; IF the player is NOT in the same room as shaggy AND shaggy is NOT in its starting room:
+;;     IF the player is NOT in RM_5_DB and the player is NOT in RM_5_E8:
+;;         IF the player just made a movement command:
+;;             make the same movement command
+;;             print "something is following you"
+;; ELIF the player is NOT in the same room as shaggy
+;;     IF the player just made a movement command:
+;;         IF the player is NOT in RM_5_DB and the player is NOT in RM_5_E8:
+;;             15% chance of teleporting to the player
+;; ELIF the player is in the same room as shaggy:
+;;     random chance to make one of the following attacks:
+;;       - 10% "teeth pierce your flesh" for 9 points of damage
+;;       - 10% "claw's rend your flesh" for 6
+;;       - 15% "arms try to crush" for 3
+;;       - 20% "kick it back" no damage
+;;       - 20% "jumping backwards" no damage
+;;       - 25% "rushes past" no damage
+;;
+;; Not in same room -- attempt to follow the player   
+9EFF:       0E 81 EE                     ;     COM_0E_group_OR length=0x01EE (to 0xA0F0)
+9F02:          0D 47                     ;       COM_0D_group_AND length=0x0047 (to 0x9F4B)
+9F04:             14                     ;         COM_14_reverse_status next command
 9F05:             01 01                  ;         COM_01_is_in_pack_or_room(obj=OBJ_01_PLAYER)
-9F07:             14                     ;         COM_14_execute_and_reverse_status next command
-9F08:             03 C3 62               ;         COM_03_is_located(owner=RM_1_C3_??, obj=OBJ_62_SHAGGY_CREATURE)
-9F0B:             14                     ;         COM_14_execute_and_reverse_status next command
-9F0C:             0E 06                  ;         COM_0E_while_fail length=0x0006
-9F0E:                03 DB 01            ;           COM_03_is_located(owner=RM_1_DB_??, obj=OBJ_01_PLAYER)
-9F11:                03 E8 01            ;           COM_03_is_located(owner=RM_1_E8_??, obj=OBJ_01_PLAYER)
-9F14:             0B 19 0A               ;         COM_0B_switch length=0x0019, function=COM_0A_is_input_phrase(phrase_num)
-9F17:                04                  ;           COM_0A_is_input_phrase("WEST * * *")
-9F18:                04                  ;           ELSE goto=0x9F1D
+9F07:             14                     ;         COM_14_reverse_status next command
+9F08:             03 C3 62               ;         COM_03_is_located(owner=RM_1_C3_??, obj=OBJ_62_SHAGGY_CREATURE) ;; Start room RM_5_DESERT11
+9F0B:             14                     ;         COM_14_reverse_status next command
+9F0C:             0E 06                  ;         COM_0E_group_OR length=0x0006 (to 0x9F14)
+9F0E:                03 DB 01            ;           COM_03_is_located(owner=RM_1_DB_??, obj=OBJ_01_PLAYER) ;; RM_5_DB (where the rod and sphere are)
+9F11:                03 E8 01            ;           COM_03_is_located(owner=RM_1_E8_??, obj=OBJ_01_PLAYER) ;; RM_5_E8 (where the prospector is)
+;                                        ;         end group_OR at 0x9F0C
+9F14:             0B 19 0A               ;         COM_0B_switch length=0x0019 (to 0x9F30), function=COM_0A_is_input_phrase(phrase_num)
+9F17:                04 04               ;           case COM_0A_is_input_phrase("WEST * * *"), length=0x0004
 9F19:                   21 04 00 00      ;             COM_21_execute_phrase(phrase=WEST * * *, obj1=nothing, obj2=nothing)
-9F1D:                03                  ;           COM_0A_is_input_phrase("EAST * * *")
-9F1E:                04                  ;           ELSE goto=0x9F23
+;                                        ;           end case
+9F1D:                03 04               ;           case COM_0A_is_input_phrase("EAST * * *"), length=0x0004
 9F1F:                   21 03 00 00      ;             COM_21_execute_phrase(phrase=EAST * * *, obj1=nothing, obj2=nothing)
-9F23:                01                  ;           COM_0A_is_input_phrase("NORTH * * *")
-9F24:                04                  ;           ELSE goto=0x9F29
+;                                        ;           end case
+9F23:                01 04               ;           case COM_0A_is_input_phrase("NORTH * * *"), length=0x0004
 9F25:                   21 01 00 00      ;             COM_21_execute_phrase(phrase=NORTH * * *, obj1=nothing, obj2=nothing)
-9F29:                02                  ;           COM_0A_is_input_phrase("SOUTH * * *")
-9F2A:                04                  ;           ELSE goto=0x9F2F
+;                                        ;           end case
+9F29:                02 04               ;           case COM_0A_is_input_phrase("SOUTH * * *"), length=0x0004
 9F2B:                   21 02 00 00      ;             COM_21_execute_phrase(phrase=SOUTH * * *, obj1=nothing, obj2=nothing)
+;                                        ;           end case
+;                                        ;         end decode_switch at 0x9F14
 9F2F:             01 01                  ;         COM_01_is_in_pack_or_room(obj=OBJ_01_PLAYER)
-9F31:             1F 18                  ;         COM_1F_print2 length=0x0018
-9F33:                3F B9 82 62 91 7A 57 17 75 61 89 17 AF 14 59 15 ;
-9F43:                09 8D 50 D1 DB 6A 3F A1 ;
+9F31:             1F 18                  ;         COM_1F_print2 length=0x0018 (to 0x9F4B)
+9F33:                3F B9 82 62 91 7A 57 17 75 61 89 17 AF 14 59 15
+9F43:                09 8D 50 D1 DB 6A 3F A1
 ;
 ;                    SOMETHING SEEMS TO BE FOLLOWING YOU.
 ;
-9F4B:          0D 1E                     ;       COM_0D_while_pass length=0x001E
-9F4D:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;       end group_AND at 0x9F02
+;; Not in same room -- try teleporting to the player
+9F4B:          0D 1E                     ;       COM_0D_group_AND length=0x001E (to 0x9F6B)
+9F4D:             14                     ;         COM_14_reverse_status next command
 9F4E:             01 01                  ;         COM_01_is_in_pack_or_room(obj=OBJ_01_PLAYER)
-9F50:             05 26                  ;         COM_05_is_less_equal_last_random(value=38)
-9F52:             0E 08                  ;         COM_0E_while_fail length=0x0008
+9F50:             05 26                  ;         COM_05_is_leq_last_random(value=38)            ;; 15% chance to move the alien here
+9F52:             0E 08                  ;         COM_0E_group_OR length=0x0008 (to 0x9F5C)
 9F54:                0A 01               ;           COM_0A_is_input_phrase(phrase=NORTH * * *)
 9F56:                0A 02               ;           COM_0A_is_input_phrase(phrase=SOUTH * * *)
 9F58:                0A 03               ;           COM_0A_is_input_phrase(phrase=EAST * * *)
 9F5A:                0A 04               ;           COM_0A_is_input_phrase(phrase=WEST * * *)
-9F5C:             14                     ;         COM_14_execute_and_reverse_status next command
-9F5D:             0E 06                  ;         COM_0E_while_fail length=0x0006
+;                                        ;         end group_OR at 0x9F52
+9F5C:             14                     ;         COM_14_reverse_status next command
+9F5D:             0E 06                  ;         COM_0E_group_OR length=0x0006 (to 0x9F65)
 9F5F:                03 DB 01            ;           COM_03_is_located(owner=RM_1_DB_??, obj=OBJ_01_PLAYER)
 9F62:                03 E8 01            ;           COM_03_is_located(owner=RM_1_E8_??, obj=OBJ_01_PLAYER)
+;                                        ;         end group_OR at 0x9F5D
 9F65:             2C 01                  ;         COM_2C_set_active(obj=OBJ_01_PLAYER)
 9F67:             1C 62                  ;         COM_1C_set_var_object(obj=OBJ_62_SHAGGY_CREATURE)
 9F69:             10                     ;         COM_10_drop_var()
 9F6A:             BD                     ;         FN_BD_PRINT_SHAGGY_CREATURE
-9F6B:          14                        ;       COM_14_execute_and_reverse_status next command
+;                                        ;       end group_AND at 0x9F4B
+;;
+;; Same room -- make a random attack
+;;   0-25    10% "teeth pierce your flesh" for 9 points of damage
+;;   26-52   10% "claw's rend your flesh" for 6
+;;   53-90   15% "arms try to crush" for 3
+;;   91-141  20% "kick it back" no damage
+;;   142-192 20% "jumping backwards" no damage
+;;   193-255 25% "rushes past" no damage
+9F6B:          14                        ;       COM_14_reverse_status next command
 9F6C:          01 01                     ;       COM_01_is_in_pack_or_room(obj=OBJ_01_PLAYER)
-9F6E:          0B 81 7F 05               ;       COM_0B_switch length=0x017F, function=COM_05_is_less_equal_last_random(value)
-9F72:             19                     ;         COM_05_is_less_equal_last_random(value=25)
-9F73:             46                     ;         ELSE goto=0x9FBA
-9F74:                0D 44               ;           COM_0D_while_pass length=0x0044
-9F76:                   1F 3B            ;             COM_1F_print2 length=0x003B
-9F78:                      59 45 CF 49 B8 16 B6 14 8E 7A 91 7A DB 16 83 7A ;
-9F88:                      89 67 8D 9E 82 17 07 B3 13 6D C7 DE 84 AF 93 9E ;
-9F98:                      95 14 2B 17 04 E5 5A 17 3A 49 7F 17 82 62 E3 16 ;
-9FA8:                      2D 62 5B 5E 34 A1 56 15 5A 62 21 ;
+9F6E:          0B 81 7F 05               ;       COM_0B_switch length=0x017F (to 0xA0F1), function=COM_05_is_less_equal_last_random(value)
+9F72:             19 46                  ;         case COM_05_is_less_equal_last_random(value=25), length=0x0046
+9F74:                0D 44               ;           COM_0D_group_AND length=0x0044 (to 0x9FBA)
+9F76:                   1F 3B            ;             COM_1F_print2 length=0x003B (to 0x9FB3)
+9F78:                      59 45 CF 49 B8 16 B6 14 8E 7A 91 7A DB 16 83 7A
+9F88:                      89 67 8D 9E 82 17 07 B3 13 6D C7 DE 84 AF 93 9E
+9F98:                      95 14 2B 17 04 E5 5A 17 3A 49 7F 17 82 62 E3 16
+9FA8:                      2D 62 5B 5E 34 A1 56 15 5A 62 21
 ;
 ;                          A WAVE OF BLINDING PAIN FLOODS THROUGH YOUR BODY AS RAZOR
 ;                          SHARP TEETH PIERCE YOUR FLESH!
 ;
 9FB3:                   1C 01            ;             COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 9FB5:                   1D 09            ;             COM_1D_attack_var(points=9)
-9FB7:                   17 91 01         ;             COM_17_move_object_to_destination(obj=OBJ_91_POISON, destination=OBJ_01_PLAYER)
-9FBA:             34                     ;         COM_05_is_less_equal_last_random(value=52)
-9FBB:             34                     ;         ELSE goto=0x9FF0
-9FBC:                0D 32               ;           COM_0D_while_pass length=0x0032
-9FBE:                   1F 29            ;             COM_1F_print2 length=0x0029
-9FC0:                      C7 DE 4F 15 33 61 55 45 94 5F 91 7A DB 16 83 7A ;
-9FD0:                      4B 49 5F BE 8E 14 30 79 CB 23 BB 54 CB D2 70 B1 ;
-9FE0:                      1B 58 34 A1 56 15 5A 62 21 ;
+9FB7:                   17 91 01         ;             COM_17_move_object_to(obj=OBJ_91_ALIEN_POISON, destination=OBJ_01_PLAYER)
+;                                        ;           end group_AND at 0x9F74
+;                                        ;         end case
+9FBA:             34 34                  ;         case COM_05_is_less_equal_last_random(value=52), length=0x0034
+9FBC:                0D 32               ;           COM_0D_group_AND length=0x0032 (to 0x9FF0)
+9FBE:                   1F 29            ;             COM_1F_print2 length=0x0029 (to 0x9FE9)
+9FC0:                      C7 DE 4F 15 33 61 55 45 94 5F 91 7A DB 16 83 7A
+9FD0:                      4B 49 5F BE 8E 14 30 79 CB 23 BB 54 CB D2 70 B1
+9FE0:                      1B 58 34 A1 56 15 5A 62 21
 ;
 ;                          YOU FEEL A SEARING PAIN AS THE ALIEN'S CLAWS REND YOUR
 ;                          FLESH!
 ;
 9FE9:                   1C 01            ;             COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 9FEB:                   1D 06            ;             COM_1D_attack_var(points=6)
-9FED:                   17 91 01         ;             COM_17_move_object_to_destination(obj=OBJ_91_POISON, destination=OBJ_01_PLAYER)
-9FF0:             5A                     ;         COM_05_is_less_equal_last_random(value=90)
-9FF1:             4C                     ;         ELSE goto=0xA03E
-9FF2:                0D 4A               ;           COM_0D_while_pass length=0x004A
-9FF4:                   1F 44            ;             COM_1F_print2 length=0x0044
-9FF6:                      5F BE 8E 14 30 79 84 15 EA 48 F5 8B 51 18 EB C1 ;
-A006:                      4B 49 8D 7B 5E 17 7B 7A 94 14 4B 94 03 C0 89 17 ;
-A016:                      E4 14 5A C6 82 17 4E 5E 4F 79 C7 16 11 BC 9B 64 ;
-A026:                      3E A1 51 18 23 C6 04 B2 C4 B5 7B 60 96 96 C4 9C ;
-A036:                      8E 61 FF F9   ;
+9FED:                   17 91 01         ;             COM_17_move_object_to(obj=OBJ_91_ALIEN_POISON, destination=OBJ_01_PLAYER)
+;                                        ;           end group_AND at 0x9FBC
+;                                        ;         end case
+9FF0:             5A 4C                  ;         case COM_05_is_less_equal_last_random(value=90), length=0x004C
+9FF2:                0D 4A               ;           COM_0D_group_AND length=0x004A (to 0xA03E)
+9FF4:                   1F 44            ;             COM_1F_print2 length=0x0044 (to 0xA03A)
+9FF6:                      5F BE 8E 14 30 79 84 15 EA 48 F5 8B 51 18 EB C1
+A006:                      4B 49 8D 7B 5E 17 7B 7A 94 14 4B 94 03 C0 89 17
+A016:                      E4 14 5A C6 82 17 4E 5E 4F 79 C7 16 11 BC 9B 64
+A026:                      3E A1 51 18 23 C6 04 B2 C4 B5 7B 60 96 96 C4 9C
+A036:                      8E 61 FF F9  
 ;
 ;                          THE ALIEN GRAPPLES YOU! AS ITS SLIMY ARMS TRY TO CRUSH THE
 ;                          LIFE OUT OF YOU, YOUR RIBS BEGIN TO BEND...
 ;
 A03A:                   1C 01            ;             COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 A03C:                   1D 03            ;             COM_1D_attack_var(points=3)
-A03E:             8D                     ;         COM_05_is_less_equal_last_random(value=141)
-A03F:             43                     ;         ELSE goto=0xA083
-A040:                1F 41               ;           COM_1F_print2 length=0x0041
-A042:                   5F BE 8E 14 30 79 CB 23 BB B8 74 CA 91 7A 7F 17 ;
-A052:                   82 62 EF 16 13 B8 04 68 14 D0 16 58 73 A1 4D B1 ;
-A062:                   51 18 B3 C7 F6 4F 51 18 56 C2 55 D1 16 BC D6 9C ;
-A072:                   DB 72 46 B8 43 5E 33 98 45 86 CB 83 04 BC DD 46 ;
-A082:                   2E               ;
+;                                        ;           end group_AND at 0x9FF2
+;                                        ;         end case
+A03E:             8D 43                  ;         case COM_05_is_less_equal_last_random(value=141), length=0x0043
+A040:                1F 41               ;           COM_1F_print2 length=0x0041 (to 0xA083)
+A042:                   5F BE 8E 14 30 79 CB 23 BB B8 74 CA 91 7A 7F 17
+A052:                   82 62 EF 16 13 B8 04 68 14 D0 16 58 73 A1 4D B1
+A062:                   51 18 B3 C7 F6 4F 51 18 56 C2 55 D1 16 BC D6 9C
+A072:                   DB 72 46 B8 43 5E 33 98 45 86 CB 83 04 BC DD 46
+A082:                   2E              
 ;
 ;                       THE ALIEN'S SLAVERING TEETH PUSH FORWARD TOWARDS YOU, BUT
 ;                       YOU TWIST TO THE SIDE AND KICK IT BACK.
 ;
-A083:             C0                     ;         COM_05_is_less_equal_last_random(value=192)
-A084:             3C                     ;         ELSE goto=0xA0C1
-A085:                1F 3A               ;           COM_1F_print2 length=0x003A
-A087:                   5F BE 8E 14 30 79 CB 23 BB 54 CB D2 12 B2 82 17 ;
-A097:                   07 B3 13 6D C7 DE 85 AF 86 8D F5 72 44 F4 73 C6 ;
-A0A7:                   7B 50 EF 81 90 A5 C4 6A DD 46 14 D0 0B 5C C7 DE ;
-A0B7:                   98 14 46 9F D0 15 F4 81 DB E0 ;
+;                                        ;         end case
+A083:             C0 3C                  ;         case COM_05_is_less_equal_last_random(value=192), length=0x003C
+A085:                1F 3A               ;           COM_1F_print2 length=0x003A (to 0xA0C1)
+A087:                   5F BE 8E 14 30 79 CB 23 BB 54 CB D2 12 B2 82 17
+A097:                   07 B3 13 6D C7 DE 85 AF 86 8D F5 72 44 F4 73 C6
+A0A7:                   7B 50 EF 81 90 A5 C4 6A DD 46 14 D0 0B 5C C7 DE
+A0B7:                   98 14 46 9F D0 15 F4 81 DB E0
 ;
 ;                       THE ALIEN'S CLAWS RIP THROUGH YOUR CLOTHES. BUT BY JUMPING
 ;                       BACKWARDS YOU AVOID INJURY.
 ;
-A0C1:             FF                     ;         COM_05_is_less_equal_last_random(value=255)
-A0C2:             2D                     ;         ELSE goto=0xA0F0
-A0C3:                1F 2B               ;           COM_1F_print2 length=0x002B
-A0C5:                   5F BE 8E 14 30 79 3F 17 1F B8 D2 B5 66 49 51 18 ;
-A0D5:                   4B C2 8B 96 0B C0 6F 68 B3 9B F3 5F 8E 49 72 61 ;
-A0E5:                   16 BC C3 9C 3B C0 8B 54 C7 DE 2E ;
+;                                        ;         end case
+A0C1:             FF 2D                  ;         case COM_05_is_less_equal_last_random(value=255), length=0x002D
+A0C3:                1F 2B               ;           COM_1F_print2 length=0x002B (to 0xA0F0)
+A0C5:                   5F BE 8E 14 30 79 3F 17 1F B8 D2 B5 66 49 51 18
+A0D5:                   4B C2 8B 96 0B C0 6F 68 B3 9B F3 5F 8E 49 72 61
+A0E5:                   16 BC C3 9C 3B C0 8B 54 C7 DE 2E
 ;
 ;                       THE ALIEN RUSHES PAST YOU IN ITS FRENZIED ATTEMPT TO ATTACK
 ;                       YOU.
 ;
-A0F0:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E
+;                                        ;         end case
+;                                        ;       end decode_switch at 0x9F6E
+;                                        ;     end group_OR at 0x9EFF
+;
+A0F0:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E (to 0xA100)
 ;           SHORT SHAGGY CREATURE
-A0F2:       29 B8 B3 B3 1B B8 0B 6D E4 14 96 5F 2F C6 ;
+A0F2:       29 B8 B3 B3 1B B8 0B 6D E4 14 96 5F 2F C6
 
 ; -------------- Object OBJ_63_GREY_CUBE --------------
-A100: 5C 42                              ; Word_num=0x5C CUBE, length=0x0042
+A100: 5C 42                              ; Word_num=0x5C CUBE, length=0x0042 (to 0xA144)
 A102: 65 00 A0                           ; Location=0x65, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
-A105:    03 27                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0027
-A107:       04 25                        ;     COM_04_print_message length=0x0025
-A109:          5F BE 5B B1 4B 7B 46 45 35 49 84 15 3B 63 C1 C0 ;
-A119:          D0 15 13 54 97 B9 2F 49 67 16 4E BD CB 78 24 56 ;
-A129:          4A 5E 2F 62 2E            ;
+;
+A105:    03 27                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0027 (to 0xA12E)
+A107:       04 25                        ;     COM_04_print_message length=0x0025 (to 0xA12E)
+A109:          5F BE 5B B1 4B 7B 46 45 35 49 84 15 3B 63 C1 C0
+A119:          D0 15 13 54 97 B9 2F 49 67 16 4E BD CB 78 24 56
+A129:          4A 5E 2F 62 2E           
 ;
 ;              THERE IS A DARK GREY TWO INCH SQUARE METALIC CUBE HERE.
 ;
-A12E:    01 03                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0003
+;
+A12E:    01 03                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0003 (to 0xA133)
 A130:       6C                           ;     GREY
 A131:       0F                           ;     SMALL
 A132:       6D                           ;     INCH
-A133:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-A135:       04                           ;     Weight=4
-A136:    02 0C                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000C
+;
+A133:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0xA136)
+A135:       04                           ;     weight=4
+;
+A136:    02 0C                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000C (to 0xA144)
 ;           TWO INCH GREY CUBE
-A138:       C1 C0 D0 15 13 54 AF 6E 45 DB AF C3 ;
+A138:       C1 C0 D0 15 13 54 AF 6E 45 DB AF C3
 
 ; -------------- Object OBJ_64_WHITE_CUBE --------------
-A144: 5C 3B                              ; Word_num=0x5C CUBE, length=0x003B
+A144: 5C 3B                              ; Word_num=0x5C CUBE, length=0x003B (to 0xA181)
 A146: 00 00 A0                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
-A149:    03 1F                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001F
-A14B:       04 1D                        ;     COM_04_print_message length=0x001D
-A14D:          5F BE 5B B1 4B 7B 59 45 96 73 56 5E 2B D2 8D 7A ;
-A15D:          15 71 A3 AD 5B B1 24 56 4A 5E 2F 62 2E ;
+;
+A149:    03 1F                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001F (to 0xA16A)
+A14B:       04 1D                        ;     COM_04_print_message length=0x001D (to 0xA16A)
+A14D:          5F BE 5B B1 4B 7B 59 45 96 73 56 5E 2B D2 8D 7A
+A15D:          15 71 A3 AD 5B B1 24 56 4A 5E 2F 62 2E
 ;
 ;              THERE IS A WHITE TWO INCH SQUARE CUBE HERE.
 ;
-A16A:    01 03                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0003
+;
+A16A:    01 03                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0003 (to 0xA16F)
 A16C:       60                           ;     WHITE
 A16D:       0F                           ;     SMALL
 A16E:       6D                           ;     INCH
-A16F:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-A171:       06                           ;     Weight=6
-A172:    02 0D                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000D
+;
+A16F:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0xA172)
+A171:       06                           ;     weight=6
+;
+A172:    02 0D                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000D (to 0xA181)
 ;           TWO INCH WHITE CUBE
-A174:       C1 C0 D0 15 13 54 23 D1 DB BD 24 56 45 ;
+A174:       C1 C0 D0 15 13 54 23 D1 DB BD 24 56 45
 
 ; -------------- Object OBJ_65_TABLE --------------
-A181: 1A 09                              ; Word_num=0x1A DESK, length=0x0009
+A181: 1A 09                              ; Word_num=0x1A DESK, length=0x0009 (to 0xA18C)
 A183: 86 08 81                           ; Location=0x86, disk_section=8, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-A186:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           TABLE
-A188:       44 BD DB 8B                  ;
+;
+A186:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xA18C)
+;           TABLE 
+A188:       44 BD DB 8B                 
 
 ; -------------- Object OBJ_66_RECESS --------------
-A18C: 2E 09                              ; Word_num=0x2E HOLE, length=0x0009
+A18C: 2E 09                              ; Word_num=0x2E HOLE, length=0x0009 (to 0xA197)
 A18E: 86 08 82                           ; Location=0x86, disk_section=8, ext_attr=0000...., attributes=1000_0010 (CLOSED)
-A191:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
+;
+A191:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xA197)
 ;           RECESS
-A193:       65 B1 65 62                  ;
+A193:       65 B1 65 62                 
 
 ; -------------- Object OBJ_67_HOLE --------------
-A197: 2E 08                              ; Word_num=0x2E HOLE, length=0x0008
+A197: 2E 08                              ; Word_num=0x2E HOLE, length=0x0008 (to 0xA1A1)
 A199: 80 07 82                           ; Location=0x80, disk_section=7, ext_attr=0000...., attributes=1000_0010 (CLOSED)
-A19C:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+A19C:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0xA1A1)
 ;           HOLE
-A19E:       7E 74 45                     ;
+A19E:       7E 74 45                    
 
 ; -------------- Object OBJ_68_HOLE_BOULDERS --------------
-A1A1: 2E 62                              ; Word_num=0x2E HOLE, length=0x0062
+A1A1: 2E 62                              ; Word_num=0x2E HOLE, length=0x0062 (to 0xA205)
 A1A3: 9E 08 82                           ; Location=0x9E, disk_section=8, ext_attr=0000...., attributes=1000_0010 (CLOSED)
-A1A6:    06 58                           ;   Section=06:SECTION_06_IF_SECOND_NOUN, length=0x0058
-A1A8:       0D 56                        ;     COM_0D_while_pass length=0x0056
+;
+A1A6:    06 58                           ;   Section=06:SECTION_06_IF_SECOND_NOUN, length=0x0058 (to 0xA200)
+A1A8:       0D 56                        ;     COM_0D_group_AND length=0x0056 (to 0xA200)
 A1AA:          0A 0F                     ;       COM_0A_is_input_phrase(phrase=DROP ..C..... IN ......O.)
-A1AC:          08 64                     ;       COM_08_is_first_noun(obj=OBJ_64_WHITE_CUBE)
-A1AE:          04 4C                     ;       COM_04_print_message length=0x004C
-A1B0:             5F BE E7 14 5B 4D 69 4D 9D 7A 89 17 7E 15 6B A1 ;
-A1C0:             73 4F 2E 6D 1F 8F 84 14 4F A1 51 18 23 C6 E3 72 ;
-A1D0:             03 58 87 96 53 B7 DB A4 56 72 13 54 5F A0 8B 9A ;
-A1E0:             8E 48 90 14 98 14 3B 48 1A 98 51 5E 84 64 2E A1 ;
-A1F0:             F4 59 C5 B5 F5 B3 F5 72 51 18 EB C1 ;
+A1AC:          08 64                     ;       COM_08_is_noun1(obj=OBJ_64_WHITE_CUBE)
+A1AE:          04 4C                     ;       COM_04_print_message length=0x004C (to 0xA1FC)
+A1B0:             5F BE E7 14 5B 4D 69 4D 9D 7A 89 17 7E 15 6B A1
+A1C0:             73 4F 2E 6D 1F 8F 84 14 4F A1 51 18 23 C6 E3 72
+A1D0:             03 58 87 96 53 B7 DB A4 56 72 13 54 5F A0 8B 9A
+A1E0:             8E 48 90 14 98 14 3B 48 1A 98 51 5E 84 64 2E A1
+A1F0:             F4 59 C5 B5 F5 B3 F5 72 51 18 EB C1
 ;
 ;                 THE CUBE BEGINS TO GLOW BRIGHTLY. ABOVE YOUR HEAD AN ESCAPE
 ;                 HATCH OPENS AND AN AVALANCHE OF BOULDERS CRUSHES YOU!
 ;
 A1FC:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 A1FE:          1D 6E                     ;       COM_1D_attack_var(points=110)
-A200:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;                                        ;     end group_AND at 0xA1A8
+;
+A200:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0xA205)
 ;           HOLE
-A202:       7E 74 45                     ;
+A202:       7E 74 45                    
 
 ; -------------- Object OBJ_69_PICTURE --------------
-A205: 5D 0A                              ; Word_num=0x5D PICTUR, length=0x000A
+A205: 5D 0A                              ; Word_num=0x5D PICTUR, length=0x000A (to 0xA211)
 A207: 82 07 80                           ; Location=0x82, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
-A20A:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;
+A20A:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0xA211)
 ;           PICTURE
-A20C:       85 A5 74 C0 45               ;
+A20C:       85 A5 74 C0 45              
 
 ; -------------- Object OBJ_6A_GLASS_CYLINDER --------------
-A211: 5E 80 82                           ; Word_num=0x5E CYLIND, length=0x0082
+A211: 5E 80 82                           ; Word_num=0x5E CYLIND, length=0x0082 (to 0xA296)
 A214: 85 87 8A                           ; Location=0x85, disk_section=7, ext_attr=1000...., attributes=1000_1010 (CLOSEABLE, CLOSED)
-A217:    07 71                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0071
-A219:       0B 6F 0A                     ;     COM_0B_switch length=0x006F, function=COM_0A_is_input_phrase(phrase_num)
-A21C:          11                        ;       COM_0A_is_input_phrase("OPEN u....... * *")
-A21D:          01                        ;       ELSE goto=0xA21F
+;
+A217:    07 71                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0071 (to 0xA28A)
+A219:       0B 6F 0A                     ;     COM_0B_switch length=0x006F (to 0xA28B), function=COM_0A_is_input_phrase(phrase_num)
+A21C:          11 01                     ;       case COM_0A_is_input_phrase("OPEN u....... * *"), length=0x0001
 A21E:             C2                     ;         FN_C2_PRINT_CANT_BUDGE_noun1
-A21F:          40                        ;       COM_0A_is_input_phrase("CLOSE ....A... * *")
-A220:          01                        ;       ELSE goto=0xA222
+;                                        ;       end case
+A21F:          40 01                     ;       case COM_0A_is_input_phrase("CLOSE ....A... * *"), length=0x0001
 A221:             C2                     ;         FN_C2_PRINT_CANT_BUDGE_noun1
-A222:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
-A223:          35                        ;       ELSE goto=0xA259
-A224:             0E 33                  ;         COM_0E_while_fail length=0x0033
-A226:                0D 21               ;           COM_0D_while_pass length=0x0021
-A228:                   1B               ;             COM_1B_set_var_to_second_noun()
-A229:                   14               ;             COM_14_execute_and_reverse_status next command
-A22A:                   2E 20            ;             UNKNOWN_COM_2E, Value: 0x20
-A22C:                   17 01 6A         ;             COM_17_move_object_to_destination(obj=OBJ_01_PLAYER, destination=OBJ_6A_GLASS_CYLINDER)
-A22F:                   04 18            ;             COM_04_print_message length=0x0018
-A231:                      C7 DE 5E 17 7E A1 45 DB 8F 8C 8B 4B C9 9A 82 17 ;
-A241:                      45 5E 43 DE 3F 98 1B B5 ;
+;                                        ;       end case
+A222:          36 35                     ;       case COM_0A_is_input_phrase("ENTER * * *"), length=0x0035
+A224:             0E 33                  ;         COM_0E_group_OR length=0x0033 (to 0xA259)
+A226:                0D 21               ;           COM_0D_group_AND length=0x0021 (to 0xA249)
+A228:                   1B               ;             COM_1B_set_var_to_noun2()
+A229:                   14               ;             COM_14_reverse_status next command
+A22A:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=0x20)
+A22C:                   17 01 6A         ;             COM_17_move_object_to(obj=OBJ_01_PLAYER, destination=OBJ_6A_GLASS_CYLINDER)
+A22F:                   04 18            ;             COM_04_print_message length=0x0018 (to 0xA249)
+A231:                      C7 DE 5E 17 7E A1 45 DB 8F 8C 8B 4B C9 9A 82 17
+A241:                      45 5E 43 DE 3F 98 1B B5
 ;
-;                          YOU SLOWLY CLIMB INTO THE CYLINDER.
+;                          YOU SLOWLY CLIMB INTO THE CYLINDER. 
 ;
-A249:                0D 0E               ;           COM_0D_while_pass length=0x000E
-A24B:                   1B               ;             COM_1B_set_var_to_second_noun()
-A24C:                   2E 20            ;             UNKNOWN_COM_2E, Value: 0x20
-A24E:                   04 09            ;             COM_04_print_message length=0x0009
-A250:                      73 7B 4B 7B C9 54 A6 B7 2E ;
+;                                        ;           end group_AND at 0xA226
+A249:                0D 0E               ;           COM_0D_group_AND length=0x000E (to 0xA259)
+A24B:                   1B               ;             COM_1B_set_var_to_noun2()
+A24C:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=0x20)
+A24E:                   04 09            ;             COM_04_print_message length=0x0009 (to 0xA259)
+A250:                      73 7B 4B 7B C9 54 A6 B7 2E
 ;
 ;                          IT IS CLOSED.
 ;
-A259:          37                        ;       COM_0A_is_input_phrase("CLIMB * OUT *")
-A25A:          2F                        ;       ELSE goto=0xA28A
-A25B:             0E 2D                  ;         COM_0E_while_fail length=0x002D
-A25D:                0D 1B               ;           COM_0D_while_pass length=0x001B
-A25F:                   1B               ;             COM_1B_set_var_to_second_noun()
-A260:                   14               ;             COM_14_execute_and_reverse_status next command
-A261:                   2E 20            ;             UNKNOWN_COM_2E, Value: 0x20
+;                                        ;           end group_AND at 0xA249
+;                                        ;         end group_OR at 0xA224
+;                                        ;       end case
+A259:          37 2F                     ;       case COM_0A_is_input_phrase("CLIMB * OUT *"), length=0x002F
+A25B:             0E 2D                  ;         COM_0E_group_OR length=0x002D (to 0xA28A)
+A25D:                0D 1B               ;           COM_0D_group_AND length=0x001B (to 0xA27A)
+A25F:                   1B               ;             COM_1B_set_var_to_noun2()
+A260:                   14               ;             COM_14_reverse_status next command
+A261:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=0x20)
 A263:                   1C 01            ;             COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 A265:                   10               ;             COM_10_drop_var()
-A266:                   04 12            ;             COM_04_print_message length=0x0012
-A268:                      C7 DE 99 16 D5 CE 50 BD 11 58 96 96 DB 72 89 67 ;
-A278:                      C7 A0         ;
+A266:                   04 12            ;             COM_04_print_message length=0x0012 (to 0xA27A)
+A268:                      C7 DE 99 16 D5 CE 50 BD 11 58 96 96 DB 72 89 67
+A278:                      C7 A0        
 ;
 ;                          YOU NOW STAND ON THE FLOOR.
 ;
-A27A:                0D 0E               ;           COM_0D_while_pass length=0x000E
-A27C:                   1B               ;             COM_1B_set_var_to_second_noun()
-A27D:                   2E 20            ;             UNKNOWN_COM_2E, Value: 0x20
-A27F:                   04 09            ;             COM_04_print_message length=0x0009
-A281:                      73 7B 4B 7B C9 54 A6 B7 2E ;
+;                                        ;           end group_AND at 0xA25D
+A27A:                0D 0E               ;           COM_0D_group_AND length=0x000E (to 0xA28A)
+A27C:                   1B               ;             COM_1B_set_var_to_noun2()
+A27D:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=0x20)
+A27F:                   04 09            ;             COM_04_print_message length=0x0009 (to 0xA28A)
+A281:                      73 7B 4B 7B C9 54 A6 B7 2E
 ;
 ;                          IT IS CLOSED.
 ;
-A28A:    02 0A                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000A
-;           GLASS CYLINDER
-A28C:       BB 6D CB B9 CE 56 8E 7A 23 62 ;
+;                                        ;           end group_AND at 0xA27A
+;                                        ;         end group_OR at 0xA25B
+;                                        ;       end case
+;                                        ;     end decode_switch at 0xA219
+;
+A28A:    02 0A                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000A (to 0xA296)
+;           GLASS CYLINDER 
+A28C:       BB 6D CB B9 CE 56 8E 7A 23 62
 
 ; -------------- Object OBJ_6B_WHITE_BUTTON_LIGHTS --------------
-A296: 4A 53                              ; Word_num=0x4A BUTTON, length=0x0053
+A296: 4A 53                              ; Word_num=0x4A BUTTON, length=0x0053 (to 0xA2EB)
 A298: 6A 00 80                           ; Location=0x6A, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
-A29B:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+A29B:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xA29E)
 A29D:       60                           ;     WHITE
-A29E:    07 41                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0041
-A2A0:       0D 3F                        ;     COM_0D_while_pass length=0x003F
+;
+A29E:    07 41                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0041 (to 0xA2E1)
+A2A0:       0D 3F                        ;     COM_0D_group_AND length=0x003F (to 0xA2E1)
 A2A2:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
-A2A4:          0E 3B                     ;       COM_0E_while_fail length=0x003B
-A2A6:             0D 1E                  ;         COM_0D_while_pass length=0x001E
+A2A4:          0E 3B                     ;       COM_0E_group_OR length=0x003B (to 0xA2E1)
+A2A6:             0D 1E                  ;         COM_0D_group_AND length=0x001E (to 0xA2C6)
 A2A8:                03 85 6D            ;           COM_03_is_located(owner=RM_1_SOUTHWEST_OF_STATION, obj=OBJ_6D_LIGHTS)
-A2AB:                17 6D 00            ;           COM_17_move_object_to_destination(obj=OBJ_6D_LIGHTS, destination=nowhere)
-A2AE:                04 16               ;           COM_04_print_message length=0x0016
-A2B0:                   C3 54 AF 54 82 17 4E 5E 7A 79 0B C0 58 72 49 5E ;
-A2C0:                   0F A0 C7 16 9B C1 ;
+A2AB:                17 6D 00            ;           COM_17_move_object_to(obj=OBJ_6D_LIGHTS, destination=nowhere)
+A2AE:                04 16               ;           COM_04_print_message length=0x0016 (to 0xA2C6)
+A2B0:                   C3 54 AF 54 82 17 4E 5E 7A 79 0B C0 58 72 49 5E
+A2C0:                   0F A0 C7 16 9B C1
 ;
-;                       CLICK. THE LIGHTS HAVE GONE OUT.
+;                       CLICK. THE LIGHTS HAVE GONE OUT. 
 ;
-A2C6:             0D 19                  ;         COM_0D_while_pass length=0x0019
+;                                        ;         end group_AND at 0xA2A6
+A2C6:             0D 19                  ;         COM_0D_group_AND length=0x0019 (to 0xA2E1)
 A2C8:                03 00 6D            ;           COM_03_is_located(owner=nowhere, obj=OBJ_6D_LIGHTS)
-A2CB:                17 6D 85            ;           COM_17_move_object_to_destination(obj=OBJ_6D_LIGHTS, destination=RM_1_SOUTHWEST_OF_STATION)
-A2CE:                04 11               ;           COM_04_print_message length=0x0011
-A2D0:                   C3 54 AF 54 82 17 4E 5E 7A 79 14 BC 8F 62 DD B2 ;
-A2E0:                   2E               ;
+A2CB:                17 6D 85            ;           COM_17_move_object_to(obj=OBJ_6D_LIGHTS, destination=RM_1_SOUTHWEST_OF_STATION)
+A2CE:                04 11               ;           COM_04_print_message length=0x0011 (to 0xA2E1)
+A2D0:                   C3 54 AF 54 82 17 4E 5E 7A 79 14 BC 8F 62 DD B2
+A2E0:                   2E              
 ;
 ;                       CLICK. THE LIGHT RETURNS.
 ;
-A2E1:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008
+;                                        ;         end group_AND at 0xA2C6
+;                                        ;       end group_OR at 0xA2A4
+;                                        ;     end group_AND at 0xA2A0
+;
+A2E1:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008 (to 0xA2EB)
 ;           WHITE BUTTON
-A2E3:       23 D1 DB BD F6 4F 80 BF      ;
+A2E3:       23 D1 DB BD F6 4F 80 BF     
 
 ; -------------- Object OBJ_6C_MAROON_BUTTON --------------
-A2EB: 4A 80 F2                           ; Word_num=0x4A BUTTON, length=0x00F2
+A2EB: 4A 80 F2                           ; Word_num=0x4A BUTTON, length=0x00F2 (to 0xA3E0)
 A2EE: 6A 00 80                           ; Location=0x6A, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
-A2F1:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+A2F1:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xA2F4)
 A2F3:       61                           ;     MAROON
-A2F4:    07 80 DE                        ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x00DE
-A2F7:       0D 80 DB                     ;     COM_0D_while_pass length=0x00DB
+;
+A2F4:    07 80 DE                        ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x00DE (to 0xA3D5)
+A2F7:       0D 80 DB                     ;     COM_0D_group_AND length=0x00DB (to 0xA3D5)
 A2FA:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
-A2FC:          0E 80 D6                  ;       COM_0E_while_fail length=0x00D6
-A2FF:             0D 80 95               ;         COM_0D_while_pass length=0x0095
+A2FC:          0E 80 D6                  ;       COM_0E_group_OR length=0x00D6 (to 0xA3D5)
+A2FF:             0D 80 95               ;         COM_0D_group_AND length=0x0095 (to 0xA397)
 A302:                03 85 01            ;           COM_03_is_located(owner=RM_1_SOUTHWEST_OF_STATION, obj=OBJ_01_PLAYER)
-A305:                04 80 8B            ;           COM_04_print_message length=0x008B
-A308:                   C3 54 AF 54 5A 17 40 D2 6B 83 C7 DE 99 16 85 BE ;
-A318:                   56 5E 56 72 82 17 45 5E E3 8B 8E AF F3 78 C3 9E ;
-A328:                   5F BE EB 14 90 8C F4 59 9B 15 C5 B5 85 8D 17 60 ;
-A338:                   FA 17 3F 7A 09 15 91 7A 61 17 0B EE 15 BC CF 62 ;
-A348:                   66 B1 51 18 23 C6 37 49 59 F4 8E 73 55 5E 54 BD ;
-A358:                   10 B2 C3 6A 16 BC DB 72 95 5A 2F 92 74 4D F3 5F ;
-A368:                   37 49 D0 15 82 17 45 5E 43 DE 3F 98 F3 B4 C7 DE ;
-A378:                   DB 16 CB B9 36 A1 90 14 07 58 70 CA 63 C0 13 8D ;
-A388:                   B6 14 26 60 89 17 FF 14 82 49 2E ;
+A305:                04 80 8B            ;           COM_04_print_message length=0x008B (to 0xA393)
+A308:                   C3 54 AF 54 5A 17 40 D2 6B 83 C7 DE 99 16 85 BE
+A318:                   56 5E 56 72 82 17 45 5E E3 8B 8E AF F3 78 C3 9E
+A328:                   5F BE EB 14 90 8C F4 59 9B 15 C5 B5 85 8D 17 60
+A338:                   FA 17 3F 7A 09 15 91 7A 61 17 0B EE 15 BC CF 62
+A348:                   66 B1 51 18 23 C6 37 49 59 F4 8E 73 55 5E 54 BD
+A358:                   10 B2 C3 6A 16 BC DB 72 95 5A 2F 92 74 4D F3 5F
+A368:                   37 49 D0 15 82 17 45 5E 43 DE 3F 98 F3 B4 C7 DE
+A378:                   DB 16 CB B9 36 A1 90 14 07 58 70 CA 63 C0 13 8D
+A388:                   B6 14 26 60 89 17 FF 14 82 49 2E
 ;
 ;                       CLICK. SHWONK! YOU NOTICE THAT THE CLEAR LID OF THE
 ;                       CYLINDER HAS CLOSED. WHILE DOING SO, IT SEVERED YOUR ARM.
@@ -7362,169 +8035,198 @@ A388:                   B6 14 26 60 89 17 FF 14 82 49 2E ;
 ;
 A393:                1C 01               ;           COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 A395:                1D 64               ;           COM_1D_attack_var(points=100)
-A397:             0D 1E                  ;         COM_0D_while_pass length=0x001E
+;                                        ;         end group_AND at 0xA2FF
+A397:             0D 1E                  ;         COM_0D_group_AND length=0x001E (to 0xA3B7)
 A399:                1C 6A               ;           COM_1C_set_var_object(obj=OBJ_6A_GLASS_CYLINDER)
-A39B:                2E 20               ;           UNKNOWN_COM_2E, Value: 0x20
+A39B:                2E 20               ;           COM_2E_is_var_ext_attributes(value=0x20)
 A39D:                29                  ;           COM_29_toggle_open_VAR()
-A39E:                04 17               ;           COM_04_print_message length=0x0017
-A3A0:                   C3 54 AF 54 5A 17 52 D1 AB A2 5F BE EB 14 90 8C ;
-A3B0:                   F4 59 C2 16 9D 61 2E ;
+A39E:                04 17               ;           COM_04_print_message length=0x0017 (to 0xA3B7)
+A3A0:                   C3 54 AF 54 5A 17 52 D1 AB A2 5F BE EB 14 90 8C
+A3B0:                   F4 59 C2 16 9D 61 2E
 ;
 ;                       CLICK. SHWIPP! THE CYLINDER OPENS.
 ;
-A3B7:             0D 1C                  ;         COM_0D_while_pass length=0x001C
-A3B9:                04 17               ;           COM_04_print_message length=0x0017
-A3BB:                   C3 54 AF 54 5A 17 4D D1 D6 06 DB 72 CE 56 8E 7A ;
-A3CB:                   23 62 C9 54 B5 B7 2E ;
+;                                        ;         end group_AND at 0xA397
+A3B7:             0D 1C                  ;         COM_0D_group_AND length=0x001C (to 0xA3D5)
+A3B9:                04 17               ;           COM_04_print_message length=0x0017 (to 0xA3D2)
+A3BB:                   C3 54 AF 54 5A 17 4D D1 D6 06 DB 72 CE 56 8E 7A
+A3CB:                   23 62 C9 54 B5 B7 2E
 ;
 ;                       CLICK. SHWIK! THE CYLINDER CLOSES.
 ;
 A3D2:                1C 6A               ;           COM_1C_set_var_object(obj=OBJ_6A_GLASS_CYLINDER)
 A3D4:                29                  ;           COM_29_toggle_open_VAR()
-A3D5:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;                                        ;         end group_AND at 0xA3B7
+;                                        ;       end group_OR at 0xA2FC
+;                                        ;     end group_AND at 0xA2F7
+;
+A3D5:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0xA3E0)
 ;           MAROON BUTTON
-A3D7:       94 91 40 A0 BF 14 49 C0 4E   ;
+A3D7:       94 91 40 A0 BF 14 49 C0 4E  
 
 ; -------------- Object OBJ_6D_LIGHTS --------------
-A3E0: 5F 09                              ; Word_num=0x5F LIGHTS, length=0x0009
+A3E0: 5F 09                              ; Word_num=0x5F LIGHTS, length=0x0009 (to 0xA3EB)
 A3E2: 85 07 80                           ; Location=0x85, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
-A3E5:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
+;
+A3E5:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xA3EB)
 ;           LIGHTS
-A3E7:       89 8C 4D 75                  ;
+A3E7:       89 8C 4D 75                 
 
 ; -------------- Object OBJ_6E_CONSOLE --------------
-A3EB: 62 0A                              ; Word_num=0x62 CONSOL, length=0x000A
+A3EB: 62 0A                              ; Word_num=0x62 CONSOL, length=0x000A (to 0xA3F7)
 A3ED: 9C 08 81                           ; Location=0x9C, disk_section=8, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-A3F0:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;
+A3F0:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0xA3F7)
 ;           CONSOLE
-A3F2:       40 55 3E B9 45               ;
+A3F2:       40 55 3E B9 45              
 
 ; -------------- Object OBJ_6F_CHAIR --------------
-A3F7: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C
+A3F7: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C (to 0xA405)
 A3F9: 9C 08 80                           ; Location=0x9C, disk_section=8, ext_attr=0000...., attributes=1000_0000 ()
-A3FC:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+A3FC:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0xA3FF)
 A3FE:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
-A3FF:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           CHAIR
-A401:       1B 54 23 7B                  ;
+;
+A3FF:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xA405)
+;           CHAIR 
+A401:       1B 54 23 7B                 
 
 ; -------------- Object OBJ_70_WHITE_BUTTON_SCREEN --------------
-A405: 4A 5D                              ; Word_num=0x4A BUTTON, length=0x005D
+A405: 4A 5D                              ; Word_num=0x4A BUTTON, length=0x005D (to 0xA464)
 A407: 6E 00 80                           ; Location=0x6E, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
-A40A:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+A40A:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xA40D)
 A40C:       60                           ;     WHITE
-A40D:    07 4B                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x004B
-A40F:       0D 49                        ;     COM_0D_while_pass length=0x0049
+;
+A40D:    07 4B                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x004B (to 0xA45A)
+A40F:       0D 49                        ;     COM_0D_group_AND length=0x0049 (to 0xA45A)
 A411:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
-A413:          0E 45                     ;       COM_0E_while_fail length=0x0045
-A415:             0D 1D                  ;         COM_0D_while_pass length=0x001D
+A413:          0E 45                     ;       COM_0E_group_OR length=0x0045 (to 0xA45A)
+A415:             0D 1D                  ;         COM_0D_group_AND length=0x001D (to 0xA434)
 A417:                03 72 73            ;           COM_03_is_located(owner=OBJ_72_VIEWING_SCREEN, obj=OBJ_73_DISPLAY_EARTH)
-A41A:                04 0F               ;           COM_04_print_message length=0x000F
-A41C:                   5F BE 55 17 67 B1 89 96 B5 9E B6 14 95 48 2E ;
+A41A:                04 0F               ;           COM_04_print_message length=0x000F (to 0xA42B)
+A41C:                   5F BE 55 17 67 B1 89 96 B5 9E B6 14 95 48 2E
 ;
 ;                       THE SCREEN GOES BLANK.
 ;
-A42B:                17 73 00            ;           COM_17_move_object_to_destination(obj=OBJ_73_DISPLAY_EARTH, destination=nowhere)
-A42E:                17 74 00            ;           COM_17_move_object_to_destination(obj=OBJ_74_DISPLAY_MOON, destination=nowhere)
-A431:                17 75 00            ;           COM_17_move_object_to_destination(obj=OBJ_75_DISPLAY_MOTHER_SHIP, destination=nowhere)
-A434:             0D 24                  ;         COM_0D_while_pass length=0x0024
-A436:                04 16               ;           COM_04_print_message length=0x0016
-A438:                   5F BE D3 17 FB 62 AB 98 64 B7 30 60 D5 15 85 14 ;
-A448:                   98 BE 7F 49 9B 5D ;
+A42B:                17 73 00            ;           COM_17_move_object_to(obj=OBJ_73_DISPLAY_EARTH, destination=nowhere)
+A42E:                17 74 00            ;           COM_17_move_object_to(obj=OBJ_74_DISPLAY_MOON, destination=nowhere)
+A431:                17 75 00            ;           COM_17_move_object_to(obj=OBJ_75_DISPLAY_MOTHER_SHIP, destination=nowhere)
+;                                        ;         end group_AND at 0xA415
+A434:             0D 24                  ;         COM_0D_group_AND length=0x0024 (to 0xA45A)
+A436:                04 16               ;           COM_04_print_message length=0x0016 (to 0xA44E)
+A438:                   5F BE D3 17 FB 62 AB 98 64 B7 30 60 D5 15 85 14
+A448:                   98 BE 7F 49 9B 5D
 ;
-;                       THE VIEWING SCREEN IS ACTIVATED.
+;                       THE VIEWING SCREEN IS ACTIVATED. 
 ;
-A44E:                17 73 72            ;           COM_17_move_object_to_destination(obj=OBJ_73_DISPLAY_EARTH, destination=OBJ_72_VIEWING_SCREEN)
-A451:                17 74 72            ;           COM_17_move_object_to_destination(obj=OBJ_74_DISPLAY_MOON, destination=OBJ_72_VIEWING_SCREEN)
-A454:                17 75 72            ;           COM_17_move_object_to_destination(obj=OBJ_75_DISPLAY_MOTHER_SHIP, destination=OBJ_72_VIEWING_SCREEN)
+A44E:                17 73 72            ;           COM_17_move_object_to(obj=OBJ_73_DISPLAY_EARTH, destination=OBJ_72_VIEWING_SCREEN)
+A451:                17 74 72            ;           COM_17_move_object_to(obj=OBJ_74_DISPLAY_MOON, destination=OBJ_72_VIEWING_SCREEN)
+A454:                17 75 72            ;           COM_17_move_object_to(obj=OBJ_75_DISPLAY_MOTHER_SHIP, destination=OBJ_72_VIEWING_SCREEN)
 A457:                1C 72               ;           COM_1C_set_var_object(obj=OBJ_72_VIEWING_SCREEN)
 A459:                33                  ;           COM_33_print_objects_on_var_object()
-A45A:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008
+;                                        ;         end group_AND at 0xA434
+;                                        ;       end group_OR at 0xA413
+;                                        ;     end group_AND at 0xA40F
+;
+A45A:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008 (to 0xA464)
 ;           WHITE BUTTON
-A45C:       23 D1 DB BD F6 4F 80 BF      ;
+A45C:       23 D1 DB BD F6 4F 80 BF     
 
 ; -------------- Object OBJ_71_GREEN_BUTTON_WEAPON --------------
-A464: 4A 80 80                           ; Word_num=0x4A BUTTON, length=0x0080
+A464: 4A 80 80                           ; Word_num=0x4A BUTTON, length=0x0080 (to 0xA4E7)
 A467: 6E 00 80                           ; Location=0x6E, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
-A46A:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+A46A:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xA46D)
 A46C:       6A                           ;     GREEN
-A46D:    07 6E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x006E
-A46F:       0D 6C                        ;     COM_0D_while_pass length=0x006C
+;
+A46D:    07 6E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x006E (to 0xA4DD)
+A46F:       0D 6C                        ;     COM_0D_group_AND length=0x006C (to 0xA4DD)
 A471:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
-A473:          0E 68                     ;       COM_0E_while_fail length=0x0068
-A475:             0D 10                  ;         COM_0D_while_pass length=0x0010
+A473:          0E 68                     ;       COM_0E_group_OR length=0x0068 (to 0xA4DD)
+A475:             0D 10                  ;         COM_0D_group_AND length=0x0010 (to 0xA487)
 A477:                03 73 00            ;           COM_03_is_located(owner=OBJ_73_DISPLAY_EARTH, obj=nothing)
-A47A:                04 0B               ;           COM_04_print_message length=0x000B
-A47C:                   06 9A 90 73 CA 6A EA 48 9D 61 2E ;
+A47A:                04 0B               ;           COM_04_print_message length=0x000B (to 0xA487)
+A47C:                   06 9A 90 73 CA 6A EA 48 9D 61 2E
 ;
 ;                       NOTHING HAPPENS.
 ;
-A487:             0D 52                  ;         COM_0D_while_pass length=0x0052
-A489:                04 14               ;           COM_04_print_message length=0x0014
-A48B:                   A2 1D 74 8E D4 6A 53 79 CC 51 BE A0 00 B3 D4 9C ;
-A49B:                   91 C5 DC 63      ;
+;                                        ;         end group_AND at 0xA475
+A487:             0D 52                  ;         COM_0D_group_AND length=0x0052 (to 0xA4DB)
+A489:                04 14               ;           COM_04_print_message length=0x0014 (to 0xA49F)
+A48B:                   A2 1D 74 8E D4 6A 53 79 CC 51 BE A0 00 B3 D4 9C
+A49B:                   91 C5 DC 63     
 ;
 ;                       "SPLURG RIFIC JORTRONO RUNGE."
 ;
 A49F:                03 01 80            ;           COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_80_WISDOM)
-A4A2:                04 37               ;           COM_04_print_message length=0x0037
-A4A4:                   3F B9 A9 60 DB CE 1B A1 8E C5 3D 62 50 BD 16 58 ;
-A4B4:                   95 73 89 17 67 16 A6 48 81 13 92 5F 03 A0 E6 46 ;
-A4C4:                   CB 7B E6 BD 8B 18 7B A6 B3 9A 6B BF F5 59 2F 7B ;
-A4D4:                   16 58 31 49 97 62 22 ;
+A4A2:                04 37               ;           COM_04_print_message length=0x0037 (to 0xA4DB)
+A4A4:                   3F B9 A9 60 DB CE 1B A1 8E C5 3D 62 50 BD 16 58
+A4B4:                   95 73 89 17 67 16 A6 48 81 13 92 5F 03 A0 E6 46
+A4C4:                   CB 7B E6 BD 8B 18 7B A6 B3 9A 6B BF F5 59 2F 7B
+A4D4:                   16 58 31 49 97 62 22
 ;
 ;                       SOMEHOW YOU UNDERSTAND THIS TO MEAN, "WEAPON ACTIVATED -
 ;                       POINT TO DESIRED TARGET."
 ;
-A4DB:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;         end group_AND at 0xA487
+A4DB:             14                     ;         COM_14_reverse_status next command
 A4DC:             0C                     ;         COM_0C_fail()
-A4DD:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008
+;                                        ;       end group_OR at 0xA473
+;                                        ;     end group_AND at 0xA46F
+;
+A4DD:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008 (to 0xA4E7)
 ;           GREEN BUTTON
-A4DF:       AF 6E 83 61 F6 4F 80 BF      ;
+A4DF:       AF 6E 83 61 F6 4F 80 BF     
 
 ; -------------- Object OBJ_72_VIEWING_SCREEN --------------
-A4E7: 63 0F                              ; Word_num=0x63 SCREEN, length=0x000F
+A4E7: 63 0F                              ; Word_num=0x63 SCREEN, length=0x000F (to 0xA4F8)
 A4E9: 9C 08 81                           ; Location=0x9C, disk_section=8, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-A4EC:    02 0A                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000A
-;           VIEWING SCREEN
-A4EE:       07 CB 50 D1 D5 6A AF 55 83 61 ;
+;
+A4EC:    02 0A                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000A (to 0xA4F8)
+;           VIEWING SCREEN 
+A4EE:       07 CB 50 D1 D5 6A AF 55 83 61
 
 ; -------------- Object OBJ_73_DISPLAY_EARTH --------------
-A4F8: 64 57                              ; Word_num=0x64 EARTH, length=0x0057
+A4F8: 64 57                              ; Word_num=0x64 EARTH, length=0x0057 (to 0xA551)
 A4FA: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
-A4FD:    07 42                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0042
-A4FF:       0D 40                        ;     COM_0D_while_pass length=0x0040
+;
+A4FD:    07 42                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0042 (to 0xA541)
+A4FF:       0D 40                        ;     COM_0D_group_AND length=0x0040 (to 0xA541)
 A501:          0A 58                     ;       COM_0A_is_input_phrase(phrase=POINT u....... * *)
-A503:          04 38                     ;       COM_04_print_message length=0x0038
-A505:             59 45 92 5F 03 A0 83 7A 5F BE 5A 17 D3 7A 4B 7B ;
-A515:             14 67 F3 5F 8E 48 82 17 52 5E 50 8B 73 62 94 5F ;
-A525:             53 BE 4B 7B F5 59 F9 BF 26 DD 10 EE F3 A0 6B BF ;
-A535:             30 92 91 BE 9B 96 3F A1 ;
+A503:          04 38                     ;       COM_04_print_message length=0x0038 (to 0xA53D)
+A505:             59 45 92 5F 03 A0 83 7A 5F BE 5A 17 D3 7A 4B 7B
+A515:             14 67 F3 5F 8E 48 82 17 52 5E 50 8B 73 62 94 5F
+A525:             53 BE 4B 7B F5 59 F9 BF 26 DD 10 EE F3 A0 6B BF
+A535:             30 92 91 BE 9B 96 3F A1
 ;
 ;                 A WEAPON IN THE SHIP IS FIRED AND THE PLANET EARTH IS
 ;                 DESTROYED, NOT TO MENTION YOU.
 ;
 A53D:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 A53F:          1D 6E                     ;       COM_1D_attack_var(points=110)
-A541:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E
-;           DISPLAY OF THE EARTH
-A543:       95 5A FB A5 51 DB 96 64 DB 72 94 5F 53 BE ;
+;                                        ;     end group_AND at 0xA4FF
+;
+A541:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E (to 0xA551)
+;           DISPLAY OF THE EARTH 
+A543:       95 5A FB A5 51 DB 96 64 DB 72 94 5F 53 BE
 
 ; -------------- Object OBJ_74_DISPLAY_MOON --------------
-A551: 65 80 92                           ; Word_num=0x65 MOON, length=0x0092
+A551: 65 80 92                           ; Word_num=0x65 MOON, length=0x0092 (to 0xA5E6)
 A554: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
-A557:    07 7E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x007E
-A559:       0D 7C                        ;     COM_0D_while_pass length=0x007C
+;
+A557:    07 7E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x007E (to 0xA5D7)
+A559:       0D 7C                        ;     COM_0D_group_AND length=0x007C (to 0xA5D7)
 A55B:          0A 58                     ;       COM_0A_is_input_phrase(phrase=POINT u....... * *)
-A55D:          04 74                     ;       COM_04_print_message length=0x0074
-A55F:             5F BE 5A 17 D5 7A D9 B5 92 5F 03 A0 14 67 4B 62 ;
-A56F:             8E 48 51 18 50 C2 03 A1 9B 53 03 A0 5F BE 55 17 ;
-A57F:             67 B1 96 96 56 72 82 17 4F 5E 40 A0 D5 15 FF 14 ;
-A58F:             0C BA C7 A1 9B 5D 83 48 9D 7A 50 BD 0E BC 7F 49 ;
-A59F:             F3 B4 54 8B 9B 6C 6B 68 E7 6D CD 9A B8 16 71 16 ;
-A5AF:             03 A0 3E 55 86 8C 59 5E 82 7B 82 17 47 5E 3E 49 ;
-A5BF:             73 76 F5 59 F9 BF D0 DD CB 6A 03 BC 33 98 C7 DE ;
-A5CF:             16 EE 4F A0            ;
+A55D:          04 74                     ;       COM_04_print_message length=0x0074 (to 0xA5D3)
+A55F:             5F BE 5A 17 D5 7A D9 B5 92 5F 03 A0 14 67 4B 62
+A56F:             8E 48 51 18 50 C2 03 A1 9B 53 03 A0 5F BE 55 17
+A57F:             67 B1 96 96 56 72 82 17 4F 5E 40 A0 D5 15 FF 14
+A58F:             0C BA C7 A1 9B 5D 83 48 9D 7A 50 BD 0E BC 7F 49
+A59F:             F3 B4 54 8B 9B 6C 6B 68 E7 6D CD 9A B8 16 71 16
+A5AF:             03 A0 3E 55 86 8C 59 5E 82 7B 82 17 47 5E 3E 49
+A5BF:             73 76 F5 59 F9 BF D0 DD CB 6A 03 BC 33 98 C7 DE
+A5CF:             16 EE 4F A0           
 ;
 ;                 THE SHIP'S WEAPON FIRES AND YOU NOTICE ON THE SCREEN THAT
 ;                 THE MOON IS DESTROYED. AN INSTANT LATER, LARGE FRAGMENTS OF
@@ -7532,76 +8234,85 @@ A5CF:             16 EE 4F A0            ;
 ;
 A5D3:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 A5D5:          1D 6E                     ;       COM_1D_attack_var(points=110)
-A5D7:    02 0D                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000D
+;                                        ;     end group_AND at 0xA559
+;
+A5D7:    02 0D                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000D (to 0xA5E6)
 ;           DISPLAY OF THE MOON
-A5D9:       95 5A FB A5 51 DB 96 64 DB 72 C1 93 4E ;
+A5D9:       95 5A FB A5 51 DB 96 64 DB 72 C1 93 4E
 
 ; -------------- Object OBJ_75_DISPLAY_MOTHER_SHIP --------------
-A5E6: 66 80 91                           ; Word_num=0x66 SHIP, length=0x0091
+A5E6: 66 80 91                           ; Word_num=0x66 SHIP, length=0x0091 (to 0xA67A)
 A5E9: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
-A5EC:    07 78                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0078
-A5EE:       0D 76                        ;     COM_0D_while_pass length=0x0076
+;
+A5EC:    07 78                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0078 (to 0xA666)
+A5EE:       0D 76                        ;     COM_0D_group_AND length=0x0076 (to 0xA666)
 A5F0:          0A 58                     ;       COM_0A_is_input_phrase(phrase=POINT u....... * *)
-A5F2:          04 62                     ;       COM_04_print_message length=0x0062
-A5F4:             83 48 8F 61 CB B1 AF 14 5B 48 EA 48 94 5F D1 B5 ;
-A604:             96 96 DB 72 64 B7 30 60 90 14 1B 58 1B A1 16 D0 ;
-A614:             13 54 4B 49 73 7B F5 59 F9 BF 4B DF 5F BE 71 16 ;
-A624:             5F BE 95 AF 92 73 D6 06 DB 72 F6 4F 80 BF D4 B5 ;
-A634:             D7 5F DB 59 9E 7A D6 9C DB 72 40 55 3E B9 43 5E ;
-A644:             33 98 5F BE 55 17 67 B1 86 96 85 5F 98 BE 7F 49 ;
-A654:             5B BB                  ;
+A5F2:          04 62                     ;       COM_04_print_message length=0x0062 (to 0xA656)
+A5F4:             83 48 8F 61 CB B1 AF 14 5B 48 EA 48 94 5F D1 B5
+A604:             96 96 DB 72 64 B7 30 60 90 14 1B 58 1B A1 16 D0
+A614:             13 54 4B 49 73 7B F5 59 F9 BF 4B DF 5F BE 71 16
+A624:             5F BE 95 AF 92 73 D6 06 DB 72 F6 4F 80 BF D4 B5
+A634:             D7 5F DB 59 9E 7A D6 9C DB 72 40 55 3E B9 43 5E
+A644:             33 98 5F BE 55 17 67 B1 86 96 85 5F 98 BE 7F 49
+A654:             5B BB                 
 ;
 ;                 AN ENERGY BEAM APPEARS ON THE SCREEN AND YOU WATCH AS IT
 ;                 DESTROYS THE MOTHER SHIP! THE BUTTONS RECEDE INTO THE
 ;                 CONSOLE AND THE SCREEN DEACTIVATES.
 ;
-A656:          17 73 00                  ;       COM_17_move_object_to_destination(obj=OBJ_73_DISPLAY_EARTH, destination=nowhere)
-A659:          17 74 00                  ;       COM_17_move_object_to_destination(obj=OBJ_74_DISPLAY_MOON, destination=nowhere)
-A65C:          17 75 00                  ;       COM_17_move_object_to_destination(obj=OBJ_75_DISPLAY_MOTHER_SHIP, destination=nowhere)
-A65F:          17 70 00                  ;       COM_17_move_object_to_destination(obj=OBJ_70_WHITE_BUTTON_SCREEN, destination=nowhere)
-A662:          17 71 00                  ;       COM_17_move_object_to_destination(obj=OBJ_71_GREEN_BUTTON_WEAPON, destination=nowhere)
+A656:          17 73 00                  ;       COM_17_move_object_to(obj=OBJ_73_DISPLAY_EARTH, destination=nowhere)
+A659:          17 74 00                  ;       COM_17_move_object_to(obj=OBJ_74_DISPLAY_MOON, destination=nowhere)
+A65C:          17 75 00                  ;       COM_17_move_object_to(obj=OBJ_75_DISPLAY_MOTHER_SHIP, destination=nowhere)
+A65F:          17 70 00                  ;       COM_17_move_object_to(obj=OBJ_70_WHITE_BUTTON_SCREEN, destination=nowhere)
+A662:          17 71 00                  ;       COM_17_move_object_to(obj=OBJ_71_GREEN_BUTTON_WEAPON, destination=nowhere)
 A665:          38                        ;       COM_38_bump_score()
-A666:    02 12                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0012
-;           DISPLAY OF THE MOTHER SHIP
-A668:       95 5A FB A5 51 DB 96 64 DB 72 C6 93 F4 72 5A 17 ;
-A678:       D3 7A                        ;
+;                                        ;     end group_AND at 0xA5EE
+;
+A666:    02 12                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0012 (to 0xA67A)
+;           DISPLAY OF THE MOTHER SHIP 
+A668:       95 5A FB A5 51 DB 96 64 DB 72 C6 93 F4 72 5A 17
+A678:       D3 7A                       
 
 ; -------------- Object OBJ_76_CHAIR --------------
-A67A: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C
+A67A: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C (to 0xA688)
 A67C: 8A 08 82                           ; Location=0x8A, disk_section=8, ext_attr=0000...., attributes=1000_0010 (CLOSED)
-A67F:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+A67F:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0xA682)
 A681:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
-A682:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           CHAIR
-A684:       1B 54 23 7B                  ;
+;
+A682:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xA688)
+;           CHAIR 
+A684:       1B 54 23 7B                 
 
 ; -------------- Object OBJ_77_HANDGRIP --------------
-A688: 67 77                              ; Word_num=0x67 HANDGR, length=0x0077
+A688: 67 77                              ; Word_num=0x67 HANDGR, length=0x0077 (to 0xA701)
 A68A: 8A 08 A0                           ; Location=0x8A, disk_section=8, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
-A68D:    07 6A                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x006A
-A68F:       0E 68                        ;     COM_0E_while_fail length=0x0068
-A691:          0D 4E                     ;       COM_0D_while_pass length=0x004E
-A693:             0E 08                  ;         COM_0E_while_fail length=0x0008
+;
+A68D:    07 6A                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x006A (to 0xA6F9)
+A68F:       0E 68                        ;     COM_0E_group_OR length=0x0068 (to 0xA6F9)
+A691:          0D 4E                     ;       COM_0D_group_AND length=0x004E (to 0xA6E1)
+A693:             0E 08                  ;         COM_0E_group_OR length=0x0008 (to 0xA69D)
 A695:                0A 05               ;           COM_0A_is_input_phrase(phrase=GET ..C..... * *)
 A697:                0A 43               ;           COM_0A_is_input_phrase(phrase=GET ..C..... WITH ..C.....)
 A699:                0A 2D               ;           COM_0A_is_input_phrase(phrase=PULL * UP u.......)
 A69B:                0A 12               ;           COM_0A_is_input_phrase(phrase=PULL u....... * *)
-A69D:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;         end group_OR at 0xA693
+A69D:             14                     ;         COM_14_reverse_status next command
 A69E:             A2                     ;         FN_A2_PRINT_ALREADY_HAVE_THE_var
-A69F:             04 02                  ;         COM_04_print_message length=0x0002
-A6A1:                11 9F               ;
+A69F:             04 02                  ;         COM_04_print_message length=0x0002 (to 0xA6A3)
+A6A1:                11 9F              
 ;
 ;                    OH!
 ;
 A6A3:             34                     ;         COM_34_save_system_objects_to_disk()
-A6A4:             1A                     ;         COM_1A_set_var_to_first_noun()
-A6A5:             8F                     ;         FN_8F_TRY_TO_GET_OBJECT
+A6A4:             1A                     ;         COM_1A_set_var_to_noun1()
+A6A5:             8F                     ;         FN_8F_GET_OBJECT
 A6A6:             25                     ;         COM_25_print_linefeed()
-A6A7:             04 33                  ;         COM_04_print_message length=0x0033
-A6A9:                26 BA F0 59 1E 8F 51 18 23 C6 34 BA 07 B3 43 98 ;
-A6B9:                C5 98 AF 14 50 6D 89 17 03 15 E1 B9 8F 8E 90 14 ;
-A6C9:                10 58 EB 62 0F A0 D6 B5 17 48 82 17 D4 60 E6 16 ;
-A6D9:                D7 46 21            ;
+A6A7:             04 33                  ;         COM_04_print_message length=0x0033 (to 0xA6DC)
+A6A9:                26 BA F0 59 1E 8F 51 18 23 C6 34 BA 07 B3 43 98
+A6B9:                C5 98 AF 14 50 6D 89 17 03 15 E1 B9 8F 8E 90 14
+A6C9:                10 58 EB 62 0F A0 D6 B5 17 48 82 17 D4 60 E6 16
+A6D9:                D7 46 21           
 ;
 ;                    SUDDENLY, YOUR SURROUNDINGS BEGIN TO DISSOLVE AND NEW ONES
 ;                    TAKE THEIR PLACE!
@@ -7609,364 +8320,440 @@ A6D9:                D7 46 21            ;
 A6DC:             25                     ;         COM_25_print_linefeed()
 A6DD:             30 81                  ;         COM_30_set_current_room(room=RM_9_SURFACE)
 A6DF:             2F 09                  ;         COM_2F_load_section_from_disk(section=9)
-A6E1:          0D 16                     ;       COM_0D_while_pass length=0x0016
-A6E3:             0E 0C                  ;         COM_0E_while_fail length=0x000C
+;                                        ;       end group_AND at 0xA691
+A6E1:          0D 16                     ;       COM_0D_group_AND length=0x0016 (to 0xA6F9)
+A6E3:             0E 0C                  ;         COM_0E_group_OR length=0x000C (to 0xA6F1)
 A6E5:                0A 06               ;           COM_0A_is_input_phrase(phrase=DROP ..C..... * *)
 A6E7:                0A 0D               ;           COM_0A_is_input_phrase(phrase=THROW .vC..... AT ...P....)
 A6E9:                0A 0F               ;           COM_0A_is_input_phrase(phrase=DROP ..C..... IN ......O.)
 A6EB:                0A 4B               ;           COM_0A_is_input_phrase(phrase=DROP ..C..... ON .......L)
 A6ED:                0A 0E               ;           COM_0A_is_input_phrase(phrase=THROW u....... TO ...P....)
 A6EF:                0A 39               ;           COM_0A_is_input_phrase(phrase=THROW ..C..... IN u.......)
+;                                        ;         end group_OR at 0xA6E3
 A6F1:             03 01 77               ;         COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_77_HANDGRIP)
 A6F4:             35                     ;         COM_35_load_system_objects_from_disk()
 A6F5:             30 8A                  ;         COM_30_set_current_room(room=RM_8_RECREATION)
 A6F7:             2F 08                  ;         COM_2F_load_section_from_disk(section=8)
-A6F9:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
-;           HANDGRIP
-A6FB:       50 72 44 5A D3 7A            ;
+;                                        ;       end group_AND at 0xA6E1
+;                                        ;     end group_OR at 0xA68F
+;
+A6F9:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0xA701)
+;           HANDGRIP 
+A6FB:       50 72 44 5A D3 7A           
 
 ; -------------- Object OBJ_78_CHAIR --------------
-A701: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C
+A701: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C (to 0xA70F)
 A703: 8D 07 80                           ; Location=0x8D, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
-A706:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+A706:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0xA709)
 A708:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
-A709:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           CHAIR
-A70B:       1B 54 23 7B                  ;
+;
+A709:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xA70F)
+;           CHAIR 
+A70B:       1B 54 23 7B                 
 
 ; -------------- Object OBJ_79_LARGE_CUBE --------------
-A70F: 5C 0F                              ; Word_num=0x5C CUBE, length=0x000F
+A70F: 5C 0F                              ; Word_num=0x5C CUBE, length=0x000F (to 0xA720)
 A711: 8D 07 81                           ; Location=0x8D, disk_section=7, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-A714:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+A714:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xA717)
 A716:       0E                           ;     BIG
-A717:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007
+;
+A717:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007 (to 0xA720)
 ;           LARGE CUBE
-A719:       54 8B 9B 6C 24 56 45         ;
+A719:       54 8B 9B 6C 24 56 45        
 
 ; -------------- Object OBJ_7A_HOLE_WISER --------------
-A720: 2E 80 B2                           ; Word_num=0x2E HOLE, length=0x00B2
+A720: 2E 80 B2                           ; Word_num=0x2E HOLE, length=0x00B2 (to 0xA7D5)
 A723: 8D 07 82                           ; Location=0x8D, disk_section=7, ext_attr=0000...., attributes=1000_0010 (CLOSED)
-A726:    06 80 A1                        ;   Section=06:SECTION_06_IF_SECOND_NOUN, length=0x00A1
-A729:       0E 80 9E                     ;     COM_0E_while_fail length=0x009E
-A72C:          0D 60                     ;       COM_0D_while_pass length=0x0060
-A72E:             14                     ;         COM_14_execute_and_reverse_status next command
+;
+A726:    06 80 A1                        ;   Section=06:SECTION_06_IF_SECOND_NOUN, length=0x00A1 (to 0xA7CA)
+A729:       0E 80 9E                     ;     COM_0E_group_OR length=0x009E (to 0xA7CA)
+A72C:          0D 60                     ;       COM_0D_group_AND length=0x0060 (to 0xA78E)
+A72E:             14                     ;         COM_14_reverse_status next command
 A72F:             03 01 80               ;         COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_80_WISDOM)
 A732:             0A 0F                  ;         COM_0A_is_input_phrase(phrase=DROP ..C..... IN ......O.)
-A734:             08 64                  ;         COM_08_is_first_noun(obj=OBJ_64_WHITE_CUBE)
-A736:             17 64 00               ;         COM_17_move_object_to_destination(obj=OBJ_64_WHITE_CUBE, destination=nowhere)
-A739:             04 4C                  ;         COM_04_print_message length=0x004C
-A73B:                44 45 0E B2 83 8C B3 9A 7B 67 13 B8 C3 9E 89 8C ;
-A74B:                33 75 63 98 93 B2 B6 14 8E 7A DB B5 1B A1 8E 48 ;
-A75B:                51 18 48 C2 2E 60 61 17 39 92 56 72 FB 17 B4 B7 ;
-A76B:                82 17 83 48 68 4D AF A0 D6 06 DB 72 96 8C FF BE ;
-A77B:                E7 14 5B 4D 74 C0 8B 9A AF 6E DB E0 ;
+A734:             08 64                  ;         COM_08_is_noun1(obj=OBJ_64_WHITE_CUBE)
+A736:             17 64 00               ;         COM_17_move_object_to(obj=OBJ_64_WHITE_CUBE, destination=nowhere)
+A739:             04 4C                  ;         COM_04_print_message length=0x004C (to 0xA787)
+A73B:                44 45 0E B2 83 8C B3 9A 7B 67 13 B8 C3 9E 89 8C
+A74B:                33 75 63 98 93 B2 B6 14 8E 7A DB B5 1B A1 8E 48
+A75B:                51 18 48 C2 2E 60 61 17 39 92 56 72 FB 17 B4 B7
+A76B:                82 17 83 48 68 4D AF A0 D6 06 DB 72 96 8C FF BE
+A77B:                E7 14 5B 4D 74 C0 8B 9A AF 6E DB E0
 ;
 ;                    A BRILLIANT FLASH OF LIGHT NEARLY BLINDS YOU AND YOU FEEL
 ;                    SOMEWHAT WISER THAN BEFORE! THE LITTLE CUBE TURNS GREY.
 ;
-A787:             17 80 01               ;         COM_17_move_object_to_destination(obj=OBJ_80_WISDOM, destination=OBJ_01_PLAYER)
-A78A:             17 63 7A               ;         COM_17_move_object_to_destination(obj=OBJ_63_GREY_CUBE, destination=OBJ_7A_HOLE_WISER)
+A787:             17 80 01               ;         COM_17_move_object_to(obj=OBJ_80_WISDOM, destination=OBJ_01_PLAYER)
+A78A:             17 63 7A               ;         COM_17_move_object_to(obj=OBJ_63_GREY_CUBE, destination=OBJ_7A_HOLE_WISER)
 A78D:             38                     ;         COM_38_bump_score()
-A78E:          0D 3A                     ;       COM_0D_while_pass length=0x003A
+;                                        ;       end group_AND at 0xA72C
+A78E:          0D 3A                     ;       COM_0D_group_AND length=0x003A (to 0xA7CA)
 A790:             0A 0F                  ;         COM_0A_is_input_phrase(phrase=DROP ..C..... IN ......O.)
-A792:             08 64                  ;         COM_08_is_first_noun(obj=OBJ_64_WHITE_CUBE)
-A794:             04 30                  ;         COM_04_print_message length=0x0030
-A796:                C7 DE 3A 15 F4 A4 30 79 9B 53 99 48 5F BE 84 AF ;
-A7A6:                0E B2 83 8C B3 9A 7B 67 13 B8 C3 9E 89 8C 33 75 ;
-A7B6:                4B 49 C7 DE 84 AF CB B0 87 96 A6 D8 7F 9E 6B B5 ;
+A792:             08 64                  ;         COM_08_is_noun1(obj=OBJ_64_WHITE_CUBE)
+A794:             04 30                  ;         COM_04_print_message length=0x0030 (to 0xA7C6)
+A796:                C7 DE 3A 15 F4 A4 30 79 9B 53 99 48 5F BE 84 AF
+A7A6:                0E B2 83 8C B3 9A 7B 67 13 B8 C3 9E 89 8C 33 75
+A7B6:                4B 49 C7 DE 84 AF CB B0 87 96 A6 D8 7F 9E 6B B5
 ;
 ;                    YOU EXPERIENCE ANOTHER BRILLIANT FLASH OF LIGHT AS YOUR
 ;                    BRAIN EXPLODES!
 ;
 A7C6:             1C 01                  ;         COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 A7C8:             1D 64                  ;         COM_1D_attack_var(points=100)
-A7CA:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;                                        ;       end group_AND at 0xA78E
+;                                        ;     end group_OR at 0xA729
+;
+A7CA:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0xA7D5)
 ;           TWO INCH HOLE
-A7CC:       C1 C0 D0 15 13 54 7E 74 45   ;
+A7CC:       C1 C0 D0 15 13 54 7E 74 45  
 
 ; -------------- Object OBJ_7B_TABLE --------------
-A7D5: 1A 09                              ; Word_num=0x1A DESK, length=0x0009
+A7D5: 1A 09                              ; Word_num=0x1A DESK, length=0x0009 (to 0xA7E0)
 A7D7: 8E 08 81                           ; Location=0x8E, disk_section=8, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-A7DA:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           TABLE
-A7DC:       44 BD DB 8B                  ;
+;
+A7DA:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xA7E0)
+;           TABLE 
+A7DC:       44 BD DB 8B                 
 
 ; -------------- Object OBJ_7C_TRANSPARENT_VIAL --------------
-A7E0: 68 31                              ; Word_num=0x68 VIAL, length=0x0031
+A7E0: 68 31                              ; Word_num=0x68 VIAL, length=0x0031 (to 0xA813)
 A7E2: 7B A0 AA                           ; Location=0x7B, disk_section=0, ext_attr=1010...., attributes=1010_1010 (GETTABLE, CLOSEABLE, CLOSED)
-A7E5:    03 1C                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001C
-A7E7:       04 1A                        ;     COM_04_print_message length=0x001A
-A7E9:          5F BE 5B B1 4B 7B 55 45 8E 91 16 8A D0 B0 5B B9 ;
-A7F9:          70 B1 18 BC 8E 78 9F 15 7F B1 ;
+;
+A7E5:    03 1C                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001C (to 0xA803)
+A7E7:       04 1A                        ;     COM_04_print_message length=0x001A (to 0xA803)
+A7E9:          5F BE 5B B1 4B 7B 55 45 8E 91 16 8A D0 B0 5B B9
+A7F9:          70 B1 18 BC 8E 78 9F 15 7F B1
 ;
 ;              THERE IS A SMALL TRANSPARENT VIAL HERE.
 ;
-A803:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-A805:       06                           ;     Weight=6
-A806:    02 0B                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000B
+;
+A803:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0xA806)
+A805:       06                           ;     weight=6
+;
+A806:    02 0B                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000B (to 0xA813)
 ;           TRANSPARENT VIAL
-A808:       EB BF A2 9A 2F 49 B3 9A 03 CB 4C ;
+A808:       EB BF A2 9A 2F 49 B3 9A 03 CB 4C
 
 ; -------------- Object OBJ_7D_TSOM_SOLUTION --------------
-A813: 4C 6C                              ; Word_num=0x4C WHISKE, length=0x006C
+A813: 4C 6C                              ; Word_num=0x4C WHISKE, length=0x006C (to 0xA881)
 A815: 7C 10 A0                           ; Location=0x7C, disk_section=0, ext_attr=0001...., attributes=1010_0000 (GETTABLE)
-A818:    07 59                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0059
-A81A:       0E 57                        ;     COM_0E_while_fail length=0x0057
-A81C:          0D 30                     ;       COM_0D_while_pass length=0x0030
-A81E:             0A 59                  ;         COM_0A_is_input_phrase(phrase=TASTE u....... * *)
-A820:             0E 2C                  ;         COM_0E_while_fail length=0x002C
-A822:                14                  ;           COM_14_execute_and_reverse_status next command
-A823:                BF                  ;           FN_BF_ASSERT_VAR_IS_CLOSED
-A824:                0D 28               ;           COM_0D_while_pass length=0x0028
-A826:                   04 22            ;             COM_04_print_message length=0x0022
-A828:                      33 D1 16 EE DB 72 34 92 56 5E 66 49 51 5E 96 64 ;
-A838:                      95 73 66 17 50 C4 D0 15 09 CB AB A0 F5 BD 51 18 ;
-A848:                      EB C1         ;
 ;
-;                          WHY, THE MERE TASTE OF THIS STUFF INVIGORATES YOU!
+A818:    07 59                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0059 (to 0xA873)
+A81A:       0E 57                        ;     COM_0E_group_OR length=0x0057 (to 0xA873)
+A81C:          0D 30                     ;       COM_0D_group_AND length=0x0030 (to 0xA84E)
+A81E:             0A 59                  ;         COM_0A_is_input_phrase(phrase=TASTE u....... * *)
+A820:             0E 2C                  ;         COM_0E_group_OR length=0x002C (to 0xA84E)
+A822:                14                  ;           COM_14_reverse_status next command
+A823:                BF                  ;           FN_BF_IS_LIQUID_REACHABLE
+A824:                0D 28               ;           COM_0D_group_AND length=0x0028 (to 0xA84E)
+A826:                   04 22            ;             COM_04_print_message length=0x0022 (to 0xA84A)
+A828:                      33 D1 16 EE DB 72 34 92 56 5E 66 49 51 5E 96 64
+A838:                      95 73 66 17 50 C4 D0 15 09 CB AB A0 F5 BD 51 18
+A848:                      EB C1        
+;
+;                          WHY, THE MERE TASTE OF THIS STUFF INVIGORATES YOU! 
 ;
 A84A:                   1C 01            ;             COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 A84C:                   23 05            ;             COM_23_heal_var(points=5)
-A84E:          0D 23                     ;       COM_0D_while_pass length=0x0023
+;                                        ;           end group_AND at 0xA824
+;                                        ;         end group_OR at 0xA820
+;                                        ;       end group_AND at 0xA81C
+;;
+A84E:          0D 23                     ;       COM_0D_group_AND length=0x0023 (to 0xA873)
 A850:             0A 4F                  ;         COM_0A_is_input_phrase(phrase=DRINK u....... * *)
-A852:             0E 1F                  ;         COM_0E_while_fail length=0x001F
-A854:                14                  ;           COM_14_execute_and_reverse_status next command
-A855:                BF                  ;           FN_BF_ASSERT_VAR_IS_CLOSED
-A856:                0D 1B               ;           COM_0D_while_pass length=0x001B
+A852:             0E 1F                  ;         COM_0E_group_OR length=0x001F (to 0xA873)
+A854:                14                  ;           COM_14_reverse_status next command
+A855:                BF                  ;           FN_BF_IS_LIQUID_REACHABLE
+A856:                0D 1B               ;           COM_0D_group_AND length=0x001B (to 0xA873)
 A858:                   1C 01            ;             COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 A85A:                   23 64            ;             COM_23_heal_var(points=100)
-A85C:                   04 12            ;             COM_04_print_message length=0x0012
-A85E:                      49 D2 D6 06 56 72 F3 17 D4 B5 8E 5F FB 8E 41 6E ;
-A86E:                      AB 57         ;
+A85C:                   04 12            ;             COM_04_print_message length=0x0012 (to 0xA870)
+A85E:                      49 D2 D6 06 56 72 F3 17 D4 B5 8E 5F FB 8E 41 6E
+A86E:                      AB 57        
 ;
-;                          WOW! THAT WAS REALLY GOOD!
+;                          WOW! THAT WAS REALLY GOOD! 
 ;
-A870:                   17 91 00         ;             COM_17_move_object_to_destination(obj=OBJ_91_POISON, destination=nowhere)
-A873:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+A870:                   17 91 00         ;             COM_17_move_object_to(obj=OBJ_91_ALIEN_POISON, destination=nowhere)
+;                                        ;           end group_AND at 0xA856
+;                                        ;         end group_OR at 0xA852
+;                                        ;       end group_AND at 0xA84E
+;                                        ;     end group_OR at 0xA81A
+;
+;;
+A873:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xA876)
 A875:       6B                           ;     TSOM
-A876:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;
+;;
+A876:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0xA881)
 ;           TSOM SOLUTION
-A878:       21 C0 55 90 CF 9F 91 BE 4E   ;
+A878:       21 C0 55 90 CF 9F 91 BE 4E  
 
 ; -------------- Object OBJ_7E_PEDESTAL --------------
-A881: 69 0B                              ; Word_num=0x69 PEDEST, length=0x000B
+A881: 69 0B                              ; Word_num=0x69 PEDEST, length=0x000B (to 0xA88E)
 A883: 90 08 81                           ; Location=0x90, disk_section=8, ext_attr=0000...., attributes=1000_0001 (LOCKED)
-A886:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
-;           PEDESTAL
-A888:       E6 A4 66 62 33 48            ;
+;
+A886:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0xA88E)
+;           PEDESTAL 
+A888:       E6 A4 66 62 33 48           
 
 ; -------------- Object OBJ_7F_TWO_INCH_HOLE --------------
-A88E: 2E 5A                              ; Word_num=0x2E HOLE, length=0x005A
+A88E: 2E 5A                              ; Word_num=0x2E HOLE, length=0x005A (to 0xA8EA)
 A890: 90 08 82                           ; Location=0x90, disk_section=8, ext_attr=0000...., attributes=1000_0010 (CLOSED)
-A893:    06 4A                           ;   Section=06:SECTION_06_IF_SECOND_NOUN, length=0x004A
-A895:       0D 48                        ;     COM_0D_while_pass length=0x0048
+;
+A893:    06 4A                           ;   Section=06:SECTION_06_IF_SECOND_NOUN, length=0x004A (to 0xA8DF)
+A895:       0D 48                        ;     COM_0D_group_AND length=0x0048 (to 0xA8DF)
 A897:          0A 0F                     ;       COM_0A_is_input_phrase(phrase=DROP ..C..... IN ......O.)
-A899:          08 63                     ;       COM_08_is_first_noun(obj=OBJ_63_GREY_CUBE)
-A89B:          17 63 00                  ;       COM_17_move_object_to_destination(obj=OBJ_63_GREY_CUBE, destination=nowhere)
-A89E:          04 3C                     ;       COM_04_print_message length=0x003C
-A8A0:             1A B9 A4 EA D5 86 91 A6 82 17 4E 5E 8E 7B DB 8B ;
-A8B0:             24 56 44 5E 7B 60 8B 9A 6B BF C9 6D C4 CE 09 B2 ;
-A8C0:             46 75 B3 E0 5F BE 95 96 8E 62 F5 8B D0 15 6B BF ;
-A8D0:             55 45 46 72 51 5E 99 64 96 73 DB 63 ;
+A899:          08 63                     ;       COM_08_is_noun1(obj=OBJ_63_GREY_CUBE)
+A89B:          17 63 00                  ;       COM_17_move_object_to(obj=OBJ_63_GREY_CUBE, destination=nowhere)
+A89E:          04 3C                     ;       COM_04_print_message length=0x003C (to 0xA8DC)
+A8A0:             1A B9 A4 EA D5 86 91 A6 82 17 4E 5E 8E 7B DB 8B
+A8B0:             24 56 44 5E 7B 60 8B 9A 6B BF C9 6D C4 CE 09 B2
+A8C0:             46 75 B3 E0 5F BE 95 96 8E 62 F5 8B D0 15 6B BF
+A8D0:             55 45 46 72 51 5E 99 64 96 73 DB 63
 ;
 ;                 SNP-KRKL-PP! THE LITTLE CUBE BEGINS TO GLOW BRIGHTLY, THEN
 ;                 SETTLES INTO A SHADE OF WHITE.
 ;
-A8DC:          17 64 7F                  ;       COM_17_move_object_to_destination(obj=OBJ_64_WHITE_CUBE, destination=OBJ_7F_TWO_INCH_HOLE)
-A8DF:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+A8DC:          17 64 7F                  ;       COM_17_move_object_to(obj=OBJ_64_WHITE_CUBE, destination=OBJ_7F_TWO_INCH_HOLE)
+;                                        ;     end group_AND at 0xA895
+;
+A8DF:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0xA8EA)
 ;           TWO INCH HOLE
-A8E1:       C1 C0 D0 15 13 54 7E 74 45   ;
+A8E1:       C1 C0 D0 15 13 54 7E 74 45  
 
 ; -------------- Object OBJ_80_WISDOM --------------
-A8EA: 00 03                              ; Word_num=0x00 -none-, length=0x0003
+A8EA: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0xA8EF)
 A8EC: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
 
 ; -------------- Object OBJ_81_GREEN_CUBE --------------
-A8EF: 5C 55                              ; Word_num=0x5C CUBE, length=0x0055
+A8EF: 5C 55                              ; Word_num=0x5C CUBE, length=0x0055 (to 0xA946)
 A8F1: DB 05 A0                           ; Location=0xDB, disk_section=5, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
-A8F4:    03 1A                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001A
-A8F6:       04 18                        ;     COM_04_print_message length=0x0018
-A8F8:          5F BE 5B B1 4B 7B 56 45 2B D2 8D 7A 09 71 67 B1 ;
-A908:          85 96 AF C3 9F 15 7F B1   ;
+;
+A8F4:    03 1A                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001A (to 0xA910)
+A8F6:       04 18                        ;     COM_04_print_message length=0x0018 (to 0xA910)
+A8F8:          5F BE 5B B1 4B 7B 56 45 2B D2 8D 7A 09 71 67 B1
+A908:          85 96 AF C3 9F 15 7F B1  
 ;
 ;              THERE IS A TWO INCH GREEN CUBE HERE.
 ;
-A910:    07 1F                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001F
-A912:       0D 1D                        ;     COM_0D_while_pass length=0x001D
-A914:          0E 04                     ;       COM_0E_while_fail length=0x0004
+;
+A910:    07 1F                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001F (to 0xA931)
+A912:       0D 1D                        ;     COM_0D_group_AND length=0x001D (to 0xA931)
+A914:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0xA91A)
 A916:             0A 05                  ;         COM_0A_is_input_phrase(phrase=GET ..C..... * *)
 A918:             0A 43                  ;         COM_0A_is_input_phrase(phrase=GET ..C..... WITH ..C.....)
+;                                        ;       end group_OR at 0xA914
 A91A:          03 67 81                  ;       COM_03_is_located(owner=OBJ_67_HOLE, obj=OBJ_81_GREEN_CUBE)
 A91D:          03 3F 3E                  ;       COM_03_is_located(owner=OBJ_3F_YELLOW_BUTTON, obj=OBJ_3E_OVAL)
-A920:          04 0D                     ;       COM_04_print_message length=0x000D
-A922:             5F BE C8 16 33 48 C9 54 B5 B7 B2 17 2E ;
+A920:          04 0D                     ;       COM_04_print_message length=0x000D (to 0xA92F)
+A922:             5F BE C8 16 33 48 C9 54 B5 B7 B2 17 2E
 ;
 ;                 THE OVAL CLOSES UP.
 ;
 A92F:          9E                        ;       FN_9E_REMOVE_OVAL_FROM_ROOM
 A930:          0C                        ;       COM_0C_fail()
-A931:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-A933:       06                           ;     Weight=6
-A934:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;                                        ;     end group_AND at 0xA912
+;
+A931:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0xA934)
+A933:       06                           ;     weight=6
+;
+A934:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xA937)
 A936:       6A                           ;     GREEN
-A937:    02 0D                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000D
+;
+A937:    02 0D                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000D (to 0xA946)
 ;           TWO INCH GREEN CUBE
-A939:       C1 C0 D0 15 13 54 AF 6E 83 61 24 56 45 ;
+A939:       C1 C0 D0 15 13 54 AF 6E 83 61 24 56 45
 
 ; -------------- Object OBJ_82_ROD_WITH_SPHERE --------------
-A946: 6E 80 AE                           ; Word_num=0x6E ROD, length=0x00AE
+;;
+;; This is a radiation detector. It flashes faster and faster as you approach the ENGINES on the UFO.
+;; The ENGINES are at the end of a long hallway in room 0x92. The sphere flashes slowly in 0x90, faster in 0x91, 
+;; and wildly in 0x92, where the player begins taking damage.
+;;
+;; !! See the discussion of command "COM_03_is_located()" and the subtle bug in game logic. The radiation
+;; detector is designed to warn about radiation on the UFO, but there are other rooms with the same  
+;; numbers (0x90, 0x91, and 0x92). The shere will inadvertantly flash in these rooms too:
+;;   0x90 (slow):   RM_8_POWER, RM_3_WEST_ALLEY_INTERSECTION, RM_6_DESERT46
+;;   0x91 (medium): RM_8_AIRLOCK11, RM_3_WEST_ALLEY_SOUTH, RM_6_DESERT47
+;;   0x92 (fast):   RM_8_ENGINES, RM_2_SOUTH_OF_WEST_ALLEY, RM_6_DESERT48
+;;
+A946: 6E 80 AE                           ; Word_num=0x6E ROD, length=0x00AE (to 0xA9F7)
 A949: DB 05 A0                           ; Location=0xDB, disk_section=5, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
-A94C:    03 1D                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001D
-A94E:       04 1B                        ;     COM_04_print_message length=0x001B
-A950:          5F BE 5B B1 4B 7B 54 45 73 9E 56 D1 03 71 84 15 ;
-A960:          30 60 62 17 F4 72 4A 5E 2F 62 2E ;
+;
+A94C:    03 1D                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001D (to 0xA96B)
+A94E:       04 1B                        ;     COM_04_print_message length=0x001B (to 0xA96B)
+A950:          5F BE 5B B1 4B 7B 54 45 73 9E 56 D1 03 71 84 15
+A960:          30 60 62 17 F4 72 4A 5E 2F 62 2E
 ;
 ;              THERE IS A ROD WITH A GREEN SPHERE HERE.
 ;
-A96B:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001
-A96D:       10                           ;     Weight=16
-A96E:    08 77                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0077
-A970:       0E 75                        ;     COM_0E_while_fail length=0x0075
-A972:          0D 25                     ;       COM_0D_while_pass length=0x0025
+;
+A96B:    0C 01                           ;   Section=0C:SECTION_0C_WEIGHT, length=0x0001 (to 0xA96E)
+A96D:       10                           ;     weight=16
+;
+A96E:    08 77                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0077 (to 0xA9E7)
+A970:       0E 75                        ;     COM_0E_group_OR length=0x0075 (to 0xA9E7)
+A972:          0D 25                     ;       COM_0D_group_AND length=0x0025 (to 0xA999)
 A974:             03 90 01               ;         COM_03_is_located(owner=RM_1_90_??, obj=OBJ_01_PLAYER)
-A977:             1F 20                  ;         COM_1F_print2 length=0x0020
-A979:                5F BE 84 15 30 60 62 17 F4 72 4B 5E D5 B5 89 8D ;
-A989:                FB 8E 7B 67 23 B8 AB 98 8E 48 AF 14 E3 61 CF 98 ;
+A977:             1F 20                  ;         COM_1F_print2 length=0x0020 (to 0xA999)
+A979:                5F BE 84 15 30 60 62 17 F4 72 4B 5E D5 B5 89 8D
+A989:                FB 8E 7B 67 23 B8 AB 98 8E 48 AF 14 E3 61 CF 98
 ;
 ;                    THE GREEN SPHERE IS SLOWLY FLASHING AND BEEPING.
 ;
-A999:          0D 25                     ;       COM_0D_while_pass length=0x0025
+;                                        ;       end group_AND at 0xA972
+A999:          0D 25                     ;       COM_0D_group_AND length=0x0025 (to 0xA9C0)
 A99B:             03 91 01               ;         COM_03_is_located(owner=RM_1_91_??, obj=OBJ_01_PLAYER)
-A99E:             1F 20                  ;         COM_1F_print2 length=0x0020
-A9A0:                5F BE 84 15 30 60 62 17 F4 72 4B 5E C8 B5 55 8B ;
-A9B0:                90 73 C3 6A 33 98 67 4D 90 A5 CE 6A 26 A1 47 62 ;
+A99E:             1F 20                  ;         COM_1F_print2 length=0x0020 (to 0xA9C0)
+A9A0:                5F BE 84 15 30 60 62 17 F4 72 4B 5E C8 B5 55 8B
+A9B0:                90 73 C3 6A 33 98 67 4D 90 A5 CE 6A 26 A1 47 62
 ;
 ;                    THE GREEN SPHERE IS FLASHING AND BEEPING LOUDER.
 ;
-A9C0:          0D 25                     ;       COM_0D_while_pass length=0x0025
+;                                        ;       end group_AND at 0xA999
+A9C0:          0D 25                     ;       COM_0D_group_AND length=0x0025 (to 0xA9E7)
 A9C2:             03 92 01               ;         COM_03_is_located(owner=RM_1_92_??, obj=OBJ_01_PLAYER)
-A9C5:             1F 20                  ;         COM_1F_print2 length=0x0020
-A9C7:                5F BE 84 15 30 60 62 17 F4 72 4B 5E C8 B5 55 8B ;
-A9D7:                90 73 C3 6A 33 98 67 4D 90 A5 D9 6A 3E 7A F9 8E ;
+A9C5:             1F 20                  ;         COM_1F_print2 length=0x0020 (to 0xA9E7)
+A9C7:                5F BE 84 15 30 60 62 17 F4 72 4B 5E C8 B5 55 8B
+A9D7:                90 73 C3 6A 33 98 67 4D 90 A5 D9 6A 3E 7A F9 8E
 ;
 ;                    THE GREEN SPHERE IS FLASHING AND BEEPING WILDLY!
 ;
-A9E7:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E
+;                                        ;       end group_AND at 0xA9C0
+;                                        ;     end group_OR at 0xA970
+;
+A9E7:    02 0E                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000E (to 0xA9F7)
 ;           ROD WITH GREEN SPHERE
-A9E9:       F6 B2 FB 17 53 BE AF 6E 83 61 62 B9 2F 62 ;
+A9E9:       F6 B2 FB 17 53 BE AF 6E 83 61 62 B9 2F 62
 
-; -------------- Object OBJ_83_?? --------------
-A9F7: 00 03                              ; Word_num=0x00 -none-, length=0x0003
+; -------------- Object OBJ_83_RADIATION_DOSE1 --------------
+A9F7: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0xA9FC)
 A9F9: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
 
-; -------------- Object OBJ_84_?? --------------
-A9FC: 00 03                              ; Word_num=0x00 -none-, length=0x0003
+; -------------- Object OBJ_84_RADIATION_DOSE2 --------------
+A9FC: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0xAA01)
 A9FE: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
 
 ; -------------- Object OBJ_85_CYLINDER_BOMB --------------
-AA01: 5E 2B                              ; Word_num=0x5E CYLIND, length=0x002B
+AA01: 5E 2B                              ; Word_num=0x5E CYLIND, length=0x002B (to 0xAA2E)
 AA03: 94 07 80                           ; Location=0x94, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
-AA06:    07 1E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001E
-AA08:       0D 1C                        ;     COM_0D_while_pass length=0x001C
-AA0A:          C4                        ;       FN_C4_ASSERT_IS_AFFECT_PHRASE
-AA0B:          04 15                     ;       COM_04_print_message length=0x0015
-AA0D:             1D 85 01 4F 41 A0 EB 8F C7 DE 57 17 11 BC 83 66 ;
-AA1D:             44 45 E4 9F 21         ;
+;
+AA06:    07 1E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001E (to 0xAA26)
+AA08:       0D 1C                        ;     COM_0D_group_AND length=0x001C (to 0xAA26)
+AA0A:          C4                        ;       FN_C4_IS_PHRASE_AN_AFFECT
+AA0B:          04 15                     ;       COM_04_print_message length=0x0015 (to 0xAA22)
+AA0D:             1D 85 01 4F 41 A0 EB 8F C7 DE 57 17 11 BC 83 66
+AA1D:             44 45 E4 9F 21        
 ;
 ;                 KA-BOOOOOM! YOU SET OFF A BOMB!
 ;
 AA22:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 AA24:          1D 4B                     ;       COM_1D_attack_var(points=75)
-AA26:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
-;           CYLINDER
-AA28:       CE 56 8E 7A 23 62            ;
+;                                        ;     end group_AND at 0xAA08
+;
+AA26:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0xAA2E)
+;           CYLINDER 
+AA28:       CE 56 8E 7A 23 62           
 
 ; -------------- Object OBJ_86_CYLINDER_POISON --------------
-AA2E: 5E 5C                              ; Word_num=0x5E CYLIND, length=0x005C
+AA2E: 5E 5C                              ; Word_num=0x5E CYLIND, length=0x005C (to 0xAA8C)
 AA30: 95 07 80                           ; Location=0x95, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
-AA33:    07 4F                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x004F
-AA35:       0D 4D                        ;     COM_0D_while_pass length=0x004D
-AA37:          C4                        ;       FN_C4_ASSERT_IS_AFFECT_PHRASE
-AA38:          04 46                     ;       COM_04_print_message length=0x0046
-AA3A:             13 9F E9 99 C0 16 51 5E 96 64 DB 72 CE 56 8E 7A ;
-AA4A:             3D 62 4F 15 F3 8C 6B BF 5F BE 56 15 44 A0 90 14 ;
-AA5A:             04 58 FD B2 EB 5D 73 7B 4B 7B 6E B1 95 5F 91 7A ;
-AA6A:             73 15 6B B5 47 55 36 6D E1 14 7A C4 09 EE 62 49 ;
-AA7A:             D2 06 55 9F 01 A0      ;
+;
+AA33:    07 4F                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x004F (to 0xAA84)
+AA35:       0D 4D                        ;     COM_0D_group_AND length=0x004D (to 0xAA84)
+AA37:          C4                        ;       FN_C4_IS_PHRASE_AN_AFFECT
+AA38:          04 46                     ;       COM_04_print_message length=0x0046 (to 0xAA80)
+AA3A:             13 9F E9 99 C0 16 51 5E 96 64 DB 72 CE 56 8E 7A
+AA4A:             3D 62 4F 15 F3 8C 6B BF 5F BE 56 15 44 A0 90 14
+AA5A:             04 58 FD B2 EB 5D 73 7B 4B 7B 6E B1 95 5F 91 7A
+AA6A:             73 15 6B B5 47 55 36 6D E1 14 7A C4 09 EE 62 49
+AA7A:             D2 06 55 9F 01 A0     
 ;
 ;                 OH NO! ONE OF THE CYLINDERS FELL TO THE FLOOR AND BROKE! IT
 ;                 IS RELEASING GAS! COUGH, COUGH, GASP! POISON!
 ;
 AA80:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 AA82:          1D 4B                     ;       COM_1D_attack_var(points=75)
-AA84:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
-;           CYLINDER
-AA86:       CE 56 8E 7A 23 62            ;
+;                                        ;     end group_AND at 0xAA35
+;
+AA84:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0xAA8C)
+;           CYLINDER 
+AA86:       CE 56 8E 7A 23 62           
 
 ; -------------- Object OBJ_87_CYLINDER_ANTS --------------
-AA8C: 5E 69                              ; Word_num=0x5E CYLIND, length=0x0069
+AA8C: 5E 69                              ; Word_num=0x5E CYLIND, length=0x0069 (to 0xAAF7)
 AA8E: 97 07 80                           ; Location=0x97, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
-AA91:    07 5C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x005C
-AA93:       0D 5A                        ;     COM_0D_while_pass length=0x005A
-AA95:          C4                        ;       FN_C4_ASSERT_IS_AFFECT_PHRASE
-AA96:          04 54                     ;       COM_04_print_message length=0x0054
-AA98:             E9 C5 84 96 D0 60 C6 6A 66 7B 2C C6 16 60 82 17 ;
-AAA8:             49 5E 74 8D 51 5E F0 A4 C3 B5 33 98 4A 45 14 9E ;
-AAB8:             11 58 96 64 EF 74 4B 5E 1A 98 49 16 AB 98 9E 48 ;
-AAC8:             CB B5 D4 B5 3F 61 57 49 AB 57 5F BE 44 DB 7B 60 ;
-AAD8:             85 96 D9 B0 90 8C C3 6A F3 8C 4F A1 96 AF DB 72 ;
-AAE8:             FB A5 99 53            ;
+;
+AA91:    07 5C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x005C (to 0xAAEF)
+AA93:       0D 5A                        ;     COM_0D_group_AND length=0x005A (to 0xAAEF)
+AA95:          C4                        ;       FN_C4_IS_PHRASE_AN_AFFECT
+AA96:          04 54                     ;       COM_04_print_message length=0x0054 (to 0xAAEC)
+AA98:             E9 C5 84 96 D0 60 C6 6A 66 7B 2C C6 16 60 82 17
+AAA8:             49 5E 74 8D 51 5E F0 A4 C3 B5 33 98 4A 45 14 9E
+AAB8:             11 58 96 64 EF 74 4B 5E 1A 98 49 16 AB 98 9E 48
+AAC8:             CB B5 D4 B5 3F 61 57 49 AB 57 5F BE 44 DB 7B 60
+AAD8:             85 96 D9 B0 90 8C C3 6A F3 8C 4F A1 96 AF DB 72
+AAE8:             FB A5 99 53           
 ;
 ;                 UPON BEING DISTURBED, THE GLOBE OPENS AND A HOARD OF THREE
 ;                 INCH LONG ANTS IS RELEASED! THEY BEGIN CRAWLING ALL OVER
 ;                 THE PLACE!
 ;
-AAEC:          17 89 97                  ;       COM_17_move_object_to_destination(obj=OBJ_89_ALIEN_ANTS, destination=RM_1_97_??)
-AAEF:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
-;           CYLINDER
-AAF1:       CE 56 8E 7A 23 62            ;
+AAEC:          17 89 97                  ;       COM_17_move_object_to(obj=OBJ_89_ALIEN_ANTS, destination=RM_1_97_??)
+;                                        ;     end group_AND at 0xAA93
+;
+AAEF:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0xAAF7)
+;           CYLINDER 
+AAF1:       CE 56 8E 7A 23 62           
 
 ; -------------- Object OBJ_88_CYLINDERS_UNABLE --------------
-AAF7: 5E 2E                              ; Word_num=0x5E CYLIND, length=0x002E
+AAF7: 5E 2E                              ; Word_num=0x5E CYLIND, length=0x002E (to 0xAB27)
 AAF9: 99 07 80                           ; Location=0x99, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
-AAFC:    07 21                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0021
-AAFE:       0D 1F                        ;     COM_0D_while_pass length=0x001F
-AB00:          C4                        ;       FN_C4_ASSERT_IS_AFFECT_PHRASE
-AB01:          04 1C                     ;       COM_04_print_message length=0x001C
-AB03:             C7 DE 94 14 57 5E C4 97 DB 8B 6B BF 50 47 E6 5F ;
-AB13:             82 17 57 62 EB 14 90 8C F4 59 5B BB ;
 ;
-;                 YOU ARE UNABLE TO AFFECT THESE CYLINDERS.
+AAFC:    07 21                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0021 (to 0xAB1F)
+AAFE:       0D 1F                        ;     COM_0D_group_AND length=0x001F (to 0xAB1F)
+AB00:          C4                        ;       FN_C4_IS_PHRASE_AN_AFFECT
+AB01:          04 1C                     ;       COM_04_print_message length=0x001C (to 0xAB1F)
+AB03:             C7 DE 94 14 57 5E C4 97 DB 8B 6B BF 50 47 E6 5F
+AB13:             82 17 57 62 EB 14 90 8C F4 59 5B BB
 ;
-AB1F:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006
-;           CYLINDER
-AB21:       CE 56 8E 7A 23 62            ;
+;                 YOU ARE UNABLE TO AFFECT THESE CYLINDERS. 
+;
+;                                        ;     end group_AND at 0xAAFE
+;
+AB1F:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0xAB27)
+;           CYLINDER 
+AB21:       CE 56 8E 7A 23 62           
 
 ; -------------- Object OBJ_89_ALIEN_ANTS --------------
-AB27: 5B 81 6B                           ; Word_num=0x5B ALIEN, length=0x016B
+AB27: 5B 81 6B                           ; Word_num=0x5B ALIEN, length=0x016B (to 0xAC95)
 AB2A: 00 00 90                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1001_0000 (ALIVE)
-AB2D:    03 22                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0022
-AB2F:       04 20                        ;     COM_04_print_message length=0x0020
-AB31:          6C BE 1B 60 8D 7A 03 71 CD 9A 94 14 45 5E D9 B0 ;
-AB41:          90 8C C3 6A F3 8C 4F A1 96 AF DB 72 FB A5 99 53 ;
+;
+AB2D:    03 22                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0022 (to 0xAB51)
+AB2F:       04 20                        ;     COM_04_print_message length=0x0020 (to 0xAB51)
+AB31:          6C BE 1B 60 8D 7A 03 71 CD 9A 94 14 45 5E D9 B0
+AB41:          90 8C C3 6A F3 8C 4F A1 96 AF DB 72 FB A5 99 53
 ;
 ;              THREE INCH ANTS ARE CRAWLING ALL OVER THE PLACE!
 ;
-AB51:    07 81 1C                        ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x011C
-AB54:       0D 81 19                     ;     COM_0D_while_pass length=0x0119
+;
+AB51:    07 81 1C                        ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x011C (to 0xAC70)
+AB54:       0D 81 19                     ;     COM_0D_group_AND length=0x0119 (to 0xAC70)
 AB57:          0A 09                     ;       COM_0A_is_input_phrase(phrase=ATTACK ...P.... WITH .v......)
-AB59:          0E 81 14                  ;       COM_0E_while_fail length=0x0114
-AB5C:             0D 80 81               ;         COM_0D_while_pass length=0x0081
-AB5F:                09 5C               ;           COM_09_compare_to_second_noun(obj=OBJ_5C_PAIR_HANDS)
-AB61:                04 79               ;           COM_04_print_message length=0x0079
-AB63:                   09 BA E3 93 AB 98 8E 48 5E 17 EA 48 91 7A 96 14 ;
-AB73:                   82 17 56 5E 87 74 10 B7 0B 5C C3 9E AF 55 8F 49 ;
-AB83:                   75 B1 51 18 4D C2 46 7A 63 16 9F 9B BF 14 03 BC ;
-AB93:                   DB B5 1B A1 67 66 16 8A DB 72 70 CA DB 9F C3 9E ;
-ABA3:                   5F BE 23 7B 03 BA CE 98 51 18 54 C2 8E 5F 6F 7C ;
-ABB3:                   51 18 23 C6 FE 67 1F 8F A9 15 B8 D0 46 62 D6 15 ;
-ABC3:                   D5 15 89 17 CE 9C 7F 49 89 17 09 15 90 14 82 DF ;
-ABD3:                   91 7A 84 14 36 A1 D6 15 2E ;
+AB59:          0E 81 14                  ;       COM_0E_group_OR length=0x0114 (to 0xAC70)
+AB5C:             0D 80 81               ;         COM_0D_group_AND length=0x0081 (to 0xABE0)
+AB5F:                09 5C               ;           COM_09_is_noun2(obj=OBJ_5C_PAIR_HANDS)
+AB61:                04 79               ;           COM_04_print_message length=0x0079 (to 0xABDC)
+AB63:                   09 BA E3 93 AB 98 8E 48 5E 17 EA 48 91 7A 96 14
+AB73:                   82 17 56 5E 87 74 10 B7 0B 5C C3 9E AF 55 8F 49
+AB83:                   75 B1 51 18 4D C2 46 7A 63 16 9F 9B BF 14 03 BC
+AB93:                   DB B5 1B A1 67 66 16 8A DB 72 70 CA DB 9F C3 9E
+ABA3:                   5F BE 23 7B 03 BA CE 98 51 18 54 C2 8E 5F 6F 7C
+ABB3:                   51 18 23 C6 FE 67 1F 8F A9 15 B8 D0 46 62 D6 15
+ABC3:                   D5 15 89 17 CE 9C 7F 49 89 17 09 15 90 14 82 DF
+ABD3:                   91 7A 84 14 36 A1 D6 15 2E
 ;
 ;                       STOMPING AND SLAPPING AT THE THOUSANDS OF CREATURES YOU
 ;                       KILL MANY. BUT AS YOU FEEL THE VENOM OF THEIR STING, YOU
@@ -7975,20 +8762,22 @@ ABD3:                   91 7A 84 14 36 A1 D6 15 2E ;
 ;
 ABDC:                1C 01               ;           COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 ABDE:                1D 4B               ;           COM_1D_attack_var(points=75)
-ABE0:             0D 80 8D               ;         COM_0D_while_pass length=0x008D
-ABE3:                0E 06               ;           COM_0E_while_fail length=0x0006
-ABE5:                   09 32            ;             COM_09_compare_to_second_noun(obj=OBJ_32_SHOVEL)
-ABE7:                   09 28            ;             COM_09_compare_to_second_noun(obj=OBJ_28_SHOTGUN)
-ABE9:                   09 24            ;             COM_09_compare_to_second_noun(obj=OBJ_24_CROWBAR)
-ABEB:                04 7F               ;           COM_04_print_message length=0x007F
-ABED:                   C7 DE 2B 17 83 7A 89 4E CB D2 89 5B 91 96 96 96 ;
-ABFD:                   DB 72 90 91 45 DB 63 B1 74 C0 4B 62 AB 55 C3 D1 ;
-AC0D:                   AB 98 03 A0 5F BE 56 15 44 A0 55 F4 FE C3 96 61 ;
-AC1D:                   5B DB 1B A1 67 66 03 8A BF 14 D3 B2 AB 98 4B A4 ;
-AC2D:                   91 96 9B 96 34 A1 3F 16 C3 6A D1 B5 5B 98 C3 9E ;
-AC3D:                   5F BE E4 14 96 5F 2F C6 D5 B5 90 BE CB 6E C7 DE ;
-AC4D:                   5B F4 1B A1 55 A4 D1 B5 73 C6 A5 B7 0E A0 CE B5 ;
-AC5D:                   7F 49 F3 B4 78 98 23 62 6B BF F3 49 B0 85 2E ;
+;                                        ;         end group_AND at 0xAB5C
+ABE0:             0D 80 8D               ;         COM_0D_group_AND length=0x008D (to 0xAC70)
+ABE3:                0E 06               ;           COM_0E_group_OR length=0x0006 (to 0xABEB)
+ABE5:                   09 32            ;             COM_09_is_noun2(obj=OBJ_32_SHOVEL)
+ABE7:                   09 28            ;             COM_09_is_noun2(obj=OBJ_28_SHOTGUN)
+ABE9:                   09 24            ;             COM_09_is_noun2(obj=OBJ_24_CROWBAR)
+;                                        ;           end group_OR at 0xABE3
+ABEB:                04 7F               ;           COM_04_print_message length=0x007F (to 0xAC6C)
+ABED:                   C7 DE 2B 17 83 7A 89 4E CB D2 89 5B 91 96 96 96
+ABFD:                   DB 72 90 91 45 DB 63 B1 74 C0 4B 62 AB 55 C3 D1
+AC0D:                   AB 98 03 A0 5F BE 56 15 44 A0 55 F4 FE C3 96 61
+AC1D:                   5B DB 1B A1 67 66 03 8A BF 14 D3 B2 AB 98 4B A4
+AC2D:                   91 96 9B 96 34 A1 3F 16 C3 6A D1 B5 5B 98 C3 9E
+AC3D:                   5F BE E4 14 96 5F 2F C6 D5 B5 90 BE CB 6E C7 DE
+AC4D:                   5B F4 1B A1 55 A4 D1 B5 73 C6 A5 B7 0E A0 CE B5
+AC5D:                   7F 49 F3 B4 78 98 23 62 6B BF F3 49 B0 85 2E
 ;
 ;                       YOU RAIN BLOWS DOWN ON THE MANY CREATURES CRAWLING ON THE
 ;                       FLOOR. SUDDENLY YOU FEEL A BURNING PAIN ON YOUR LEG AS ONE
@@ -7997,78 +8786,90 @@ AC5D:                   7F 49 F3 B4 78 98 23 62 6B BF F3 49 B0 85 2E ;
 ;
 AC6C:                1C 01               ;           COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 AC6E:                1D 4B               ;           COM_1D_attack_var(points=75)
-AC70:    08 18                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0018
-AC72:       1F 16                        ;     COM_1F_print2 length=0x0016
-AC74:          5F BE 90 14 0B C0 2F 49 E4 14 FE 49 91 7A 38 15 ;
-AC84:          43 62 1F D1 59 B1         ;
+;                                        ;         end group_AND at 0xABE0
+;                                        ;       end group_OR at 0xAB59
+;                                        ;     end group_AND at 0xAB54
+;
+AC70:    08 18                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0018 (to 0xAC8A)
+AC72:       1F 16                        ;     COM_1F_print2 length=0x0016 (to 0xAC8A)
+AC74:          5F BE 90 14 0B C0 2F 49 E4 14 FE 49 91 7A 38 15
+AC84:          43 62 1F D1 59 B1        
 ;
 ;              THE ANTS ARE CRAWLING EVERYWHERE!
 ;
-AC8A:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009
+;
+AC8A:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0xAC95)
 ;           HOARD OF ANTS
-AC8C:       73 74 33 B1 C3 9E 9E 48 53   ;
+AC8C:       73 74 33 B1 C3 9E 9E 48 53  
 
 ; -------------- Object OBJ_8A_DEAD_ALIEN --------------
-AC95: 5B 22                              ; Word_num=0x5B ALIEN, length=0x0022
+AC95: 5B 22                              ; Word_num=0x5B ALIEN, length=0x0022 (to 0xACB9)
 AC97: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
-AC9A:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014
-AC9C:       04 12                        ;     COM_04_print_message length=0x0012
-AC9E:          5F BE 5B B1 4B 7B 46 45 86 5F 8E 14 30 79 9F 15 ;
-ACAE:          7F B1                     ;
+;
+AC9A:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0xACB0)
+AC9C:       04 12                        ;     COM_04_print_message length=0x0012 (to 0xACB0)
+AC9E:          5F BE 5B B1 4B 7B 46 45 86 5F 8E 14 30 79 9F 15
+ACAE:          7F B1                    
 ;
 ;              THERE IS A DEAD ALIEN HERE.
 ;
-ACB0:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007
+;
+ACB0:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007 (to 0xACB9)
 ;           DEAD ALIEN
-ACB2:       E3 59 03 58 87 8C 4E         ;
+ACB2:       E3 59 03 58 87 8C 4E        
 
 ; -------------- Object OBJ_8B_SQUIRMING_ALIEN --------------
-ACB9: 5B 7C                              ; Word_num=0x5B ALIEN, length=0x007C
+ACB9: 5B 7C                              ; Word_num=0x5B ALIEN, length=0x007C (to 0xAD37)
 ACBB: DB 05 90                           ; Location=0xDB, disk_section=5, ext_attr=0000...., attributes=1001_0000 (ALIVE)
-ACBE:    03 77                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0077
-ACC0:       0D 75                        ;     COM_0D_while_pass length=0x0075
-ACC2:          17 8B 00                  ;       COM_17_move_object_to_destination(obj=OBJ_8B_SQUIRMING_ALIEN, destination=nowhere)
-ACC5:          17 8A DB                  ;       COM_17_move_object_to_destination(obj=OBJ_8A_DEAD_ALIEN, destination=RM_1_DB_??)
+;
+ACBE:    03 77                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0077 (to 0xAD37)
+ACC0:       0D 75                        ;     COM_0D_group_AND length=0x0075 (to 0xAD37)
+ACC2:          17 8B 00                  ;       COM_17_move_object_to(obj=OBJ_8B_SQUIRMING_ALIEN, destination=nowhere)
+ACC5:          17 8A DB                  ;       COM_17_move_object_to(obj=OBJ_8A_DEAD_ALIEN, destination=RM_1_DB_??)
 ACC8:          38                        ;       COM_38_bump_score()
-ACC9:          04 6C                     ;       COM_04_print_message length=0x006C
-ACCB:             63 98 03 B1 03 EE 83 96 87 8C 84 96 D0 60 CB 6A ;
-ACDB:             D5 B5 AB AD AB B2 AB 98 03 A0 5F BE 84 15 30 A1 ;
-ACEB:             AB 57 73 7B 81 8D CB 87 D3 C5 73 49 C7 DE 90 14 ;
-ACFB:             15 58 55 4A 71 13 E7 8B 81 A6 AC A2 9F 15 E9 16 ;
-AD0B:             9E 7A C3 B5 16 BC DB 72 24 56 43 5E 33 98 5F BE ;
-AD1B:             92 96 50 9F 0B C0 B5 D0 9B C1 DB 72 5F BE 84 96 ;
-AD2B:             E1 5F 35 92 CF 17 7B B4 03 BA 17 8D ;
+ACC9:          04 6C                     ;       COM_04_print_message length=0x006C (to 0xAD37)
+ACCB:             63 98 03 B1 03 EE 83 96 87 8C 84 96 D0 60 CB 6A
+ACDB:             D5 B5 AB AD AB B2 AB 98 03 A0 5F BE 84 15 30 A1
+ACEB:             AB 57 73 7B 81 8D CB 87 D3 C5 73 49 C7 DE 90 14
+ACFB:             15 58 55 4A 71 13 E7 8B 81 A6 AC A2 9F 15 E9 16
+AD0B:             9E 7A C3 B5 16 BC DB 72 24 56 43 5E 33 98 5F BE
+AD1B:             92 96 50 9F 0B C0 B5 D0 9B C1 DB 72 5F BE 84 96
+AD2B:             E1 5F 35 92 CF 17 7B B4 03 BA 17 8D
 ;
 ;                 NEARBY, AN ALIEN BEING IS SQUIRMING ON THE GROUND! IT LOOKS
 ;                 UP AT YOU AND SAYS "GLEEPOOP!" HE POINTS AT THE CUBE AND
 ;                 THEN POINTS WEST. HE THEN BECOMES VERY STILL.
 ;
+;                                        ;     end group_AND at 0xACC0
 
 ; -------------- Object OBJ_8C_PROSPECTOR --------------
-AD37: 70 81 BD                           ; Word_num=0x70 PROSPE, length=0x01BD
+AD37: 70 81 BD                           ; Word_num=0x70 PROSPE, length=0x01BD (to 0xAEF7)
 AD3A: E8 05 90                           ; Location=0xE8, disk_section=5, ext_attr=0000...., attributes=1001_0000 (ALIVE)
-AD3D:    03 2C                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x002C
-AD3F:       04 2A                        ;     COM_04_print_message length=0x002A
-AD41:          83 48 BE 9F EC 16 E2 A0 E6 5F A3 A0 FB B9 4D 98 ;
-AD51:          9F 15 7F B1 9F 15 57 17 75 61 89 17 AF 14 DE 14 ;
-AD61:          90 5F 91 7A A3 15 C9 B5 A7 C5 ;
+;
+AD3D:    03 2C                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x002C (to 0xAD6B)
+AD3F:       04 2A                        ;     COM_04_print_message length=0x002A (to 0xAD6B)
+AD41:          83 48 BE 9F EC 16 E2 A0 E6 5F A3 A0 FB B9 4D 98
+AD51:          9F 15 7F B1 9F 15 57 17 75 61 89 17 AF 14 DE 14
+AD61:          90 5F 91 7A A3 15 C9 B5 A7 C5
 ;
 ;              AN OLD PROSPECTOR STANDS HERE. HE SEEMS TO BE CLEANING HIS
 ;              GUN.
 ;
-AD6B:    07 62                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0062
-AD6D:       0D 60                        ;     COM_0D_while_pass length=0x0060
-AD6F:          0E 05                     ;       COM_0E_while_fail length=0x0005
-AD71:             C4                     ;         FN_C4_ASSERT_IS_AFFECT_PHRASE
+;
+AD6B:    07 62                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0062 (to 0xADCF)
+AD6D:       0D 60                        ;     COM_0D_group_AND length=0x0060 (to 0xADCF)
+AD6F:          0E 05                     ;       COM_0E_group_OR length=0x0005 (to 0xAD76)
+AD71:             C4                     ;         FN_C4_IS_PHRASE_AN_AFFECT
 AD72:             0A 0E                  ;         COM_0A_is_input_phrase(phrase=THROW u....... TO ...P....)
 AD74:             0A 57                  ;         COM_0A_is_input_phrase(phrase=SHOOT u....... WITH u.......)
-AD76:          04 53                     ;       COM_04_print_message length=0x0053
-AD78:             4B 49 C7 DE AF 14 50 6D 89 17 71 16 7E CA 9F 15 ;
-AD88:             2B 17 57 7B CA B5 4B 7B 30 6F 90 14 12 58 50 9F ;
-AD98:             0B C0 73 7B 73 49 C7 DE BF 06 44 2C 4F 8B BE 06 ;
-ADA8:             FC 25 46 6E 43 18 C6 06 64 C5 DB 14 FB C0 FE 67 ;
-ADB8:             33 89 59 77 60 49 F3 23 04 4F 9B 96 66 62 2E 62 ;
-ADC8:             19 60 22               ;
+;                                        ;       end group_OR at 0xAD6F
+AD76:          04 53                     ;       COM_04_print_message length=0x0053 (to 0xADCB)
+AD78:             4B 49 C7 DE AF 14 50 6D 89 17 71 16 7E CA 9F 15
+AD88:             2B 17 57 7B CA B5 4B 7B 30 6F 90 14 12 58 50 9F
+AD98:             0B C0 73 7B 73 49 C7 DE BF 06 44 2C 4F 8B BE 06
+ADA8:             FC 25 46 6E 43 18 C6 06 64 C5 DB 14 FB C0 FE 67
+ADB8:             33 89 59 77 60 49 F3 23 04 4F 9B 96 66 62 2E 62
+ADC8:             19 60 22              
 ;
 ;                 AS YOU BEGIN TO MOVE, HE RAISES HIS GUN AND POINTS IT AT
 ;                 YOU! >> BLAM! << "GOT YA! DUMB CITY FOLK, I WASN'T BORN
@@ -8076,40 +8877,44 @@ ADC8:             19 60 22               ;
 ;
 ADCB:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 ADCD:          1D 4B                     ;       COM_1D_attack_var(points=75)
-ADCF:    08 81 1C                        ;   Section=08:SECTION_08_EVERY_TURN, length=0x011C
-ADD2:       0E 81 19                     ;     COM_0E_while_fail length=0x0119
-ADD5:          0D 1F                     ;       COM_0D_while_pass length=0x001F
-ADD7:             03 01 8D               ;         COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_8D_??)
-ADDA:             1F 1A                  ;         COM_1F_print2 length=0x001A
-ADDC:                91 1E 55 C2 8E BE 0A 8A 2F 62 A3 00 1B B7 D6 B5 ;
-ADEC:                DB 72 F9 A6 5F B9 09 56 1B B5 ;
+;                                        ;     end group_AND at 0xAD6D
 ;
-;                    "YOU STILL HERE?" SAYS THE PROSPECTOR.
+ADCF:    08 81 1C                        ;   Section=08:SECTION_08_EVERY_TURN, length=0x011C (to 0xAEEE)
+ADD2:       0E 81 19                     ;     COM_0E_group_OR length=0x0119 (to 0xAEEE)
+ADD5:          0D 1F                     ;       COM_0D_group_AND length=0x001F (to 0xADF6)
+ADD7:             03 01 8D               ;         COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_8D_PROSPECTOR_HAS_SPOKEN)
+ADDA:             1F 1A                  ;         COM_1F_print2 length=0x001A (to 0xADF6)
+ADDC:                91 1E 55 C2 8E BE 0A 8A 2F 62 A3 00 1B B7 D6 B5
+ADEC:                DB 72 F9 A6 5F B9 09 56 1B B5
 ;
-ADF6:          0D 80 F5                  ;       COM_0D_while_pass length=0x00F5
-ADF9:             14                     ;         COM_14_execute_and_reverse_status next command
-ADFA:             0E 08                  ;         COM_0E_while_fail length=0x0008
+;                    "YOU STILL HERE?" SAYS THE PROSPECTOR. 
+;
+;                                        ;       end group_AND at 0xADD5
+ADF6:          0D 80 F5                  ;       COM_0D_group_AND length=0x00F5 (to 0xAEEE)
+ADF9:             14                     ;         COM_14_reverse_status next command
+ADFA:             0E 08                  ;         COM_0E_group_OR length=0x0008 (to 0xAE04)
 ADFC:                0A 03               ;           COM_0A_is_input_phrase(phrase=EAST * * *)
 ADFE:                0A 04               ;           COM_0A_is_input_phrase(phrase=WEST * * *)
 AE00:                0A 01               ;           COM_0A_is_input_phrase(phrase=NORTH * * *)
 AE02:                0A 02               ;           COM_0A_is_input_phrase(phrase=SOUTH * * *)
+;                                        ;         end group_OR at 0xADFA
 AE04:             01 01                  ;         COM_01_is_in_pack_or_room(obj=OBJ_01_PLAYER)
-AE06:             1F 80 E2               ;         COM_1F_print2 length=0x00E2
-AE09:                5F BE EC 16 E2 A0 E6 5F A3 A0 81 8D CB 87 C7 DE ;
-AE19:                03 15 65 B1 13 BF D0 15 82 17 47 5E 35 DD 90 14 ;
-AE29:                15 58 55 4A FC ED 55 77 30 60 7B 14 0C BA 91 48 ;
-AE39:                56 5E 90 73 D1 6A 73 C6 B5 D0 AB BB 3F B9 4D 5E ;
-AE49:                8E 7A B8 16 E4 14 96 5F 2F C6 CB 06 5A 17 F3 A0 ;
-AE59:                8F 73 FA 17 83 61 55 77 30 60 A3 15 DB 95 43 79 ;
-AE69:                C7 DE 94 14 46 5E 64 C5 30 15 29 A1 16 71 CA 9C ;
-AE79:                86 5F 82 17 73 49 1B D0 0E EE 3D A0 C7 16 08 BC ;
-AE89:                A3 A0 5F BE 63 16 0F 6E 85 BE A0 13 E3 9F 13 8D ;
-AE99:                5B F4 1B A1 47 55 B3 8B 5F B9 33 98 5F BE 2F 17 ;
-AEA9:                F3 B9 C3 9E C7 DE 8E AF 4F 79 D0 15 82 17 4B 7B ;
-AEB9:                F5 59 3E 62 D0 06 8E A1 71 16 5B CA 49 48 AB 98 ;
-AEC9:                98 45 AF A0 BB 15 29 B8 F3 A0 C7 DE E3 06 DB 72 ;
-AED9:                77 5B 05 B9 15 BC 2F 60 CF 17 7B B4 73 68 8E 61 ;
-AEE9:                1F 8F               ;
+AE06:             1F 80 E2               ;         COM_1F_print2 length=0x00E2 (to 0xAEEB)
+AE09:                5F BE EC 16 E2 A0 E6 5F A3 A0 81 8D CB 87 C7 DE
+AE19:                03 15 65 B1 13 BF D0 15 82 17 47 5E 35 DD 90 14
+AE29:                15 58 55 4A FC ED 55 77 30 60 7B 14 0C BA 91 48
+AE39:                56 5E 90 73 D1 6A 73 C6 B5 D0 AB BB 3F B9 4D 5E
+AE49:                8E 7A B8 16 E4 14 96 5F 2F C6 CB 06 5A 17 F3 A0
+AE59:                8F 73 FA 17 83 61 55 77 30 60 A3 15 DB 95 43 79
+AE69:                C7 DE 94 14 46 5E 64 C5 30 15 29 A1 16 71 CA 9C
+AE79:                86 5F 82 17 73 49 1B D0 0E EE 3D A0 C7 16 08 BC
+AE89:                A3 A0 5F BE 63 16 0F 6E 85 BE A0 13 E3 9F 13 8D
+AE99:                5B F4 1B A1 47 55 B3 8B 5F B9 33 98 5F BE 2F 17
+AEA9:                F3 B9 C3 9E C7 DE 8E AF 4F 79 D0 15 82 17 4B 7B
+AEB9:                F5 59 3E 62 D0 06 8E A1 71 16 5B CA 49 48 AB 98
+AEC9:                98 45 AF A0 BB 15 29 B8 F3 A0 C7 DE E3 06 DB 72
+AED9:                77 5B 05 B9 15 BC 2F 60 CF 17 7B B4 73 68 8E 61
+AEE9:                1F 8F              
 ;
 ;                    THE PROSPECTOR LOOKS YOU DIRECTLY IN THE EYES AND SAYS, "I
 ;                    SEEN A STRANGE THING OUT WEST! SOME KIND OF CREATURE! I
@@ -8118,407 +8923,452 @@ AEE9:                1F 8F               ;
 ;                    SPEND THE REST OF YOUR LIFE IN THIS DESERT! NOW, MOVE ALONG
 ;                    A'FORE I SHOOT YOU!" HE DOESN'T SEEM VERY FRIENDLY.
 ;
-AEEB:             17 8D 01               ;         COM_17_move_object_to_destination(obj=OBJ_8D_??, destination=OBJ_01_PLAYER)
-AEEE:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007
+AEEB:             17 8D 01               ;         COM_17_move_object_to(obj=OBJ_8D_PROSPECTOR_HAS_SPOKEN, destination=OBJ_01_PLAYER)
+;                                        ;       end group_AND at 0xADF6
+;                                        ;     end group_OR at 0xADD2
+;
+AEEE:    02 07                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0007 (to 0xAEF7)
 ;           PROSPECTOR
-AEF0:       F9 A6 5F B9 09 56 52         ;
+AEF0:       F9 A6 5F B9 09 56 52        
 
-; -------------- Object OBJ_8D_?? --------------
-AEF7: 00 03                              ; Word_num=0x00 -none-, length=0x0003
+; -------------- Object OBJ_8D_PROSPECTOR_HAS_SPOKEN --------------
+AEF7: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0xAEFC)
 AEF9: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
 
 ; -------------- Object OBJ_8E_MACHINE --------------
-AEFC: 6F 0A                              ; Word_num=0x6F MACHIN, length=0x000A
+AEFC: 6F 0A                              ; Word_num=0x6F MACHIN, length=0x000A (to 0xAF08)
 AEFE: 9B 08 80                           ; Location=0x9B, disk_section=8, ext_attr=0000...., attributes=1000_0000 ()
-AF01:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;
+AF01:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0xAF08)
 ;           MACHINE
-AF03:       85 91 90 73 45               ;
+AF03:       85 91 90 73 45              
 
 ; -------------- Object OBJ_8F_WHITE_BUTTON_ENGINES --------------
-AF08: 4A 80 87                           ; Word_num=0x4A BUTTON, length=0x0087
+AF08: 4A 80 87                           ; Word_num=0x4A BUTTON, length=0x0087 (to 0xAF92)
 AF0B: 3A 00 80                           ; Location=0x3A, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
-AF0E:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001
+;
+AF0E:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xAF11)
 AF10:       60                           ;     WHITE
-AF11:    07 75                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0075
-AF13:       0D 73                        ;     COM_0D_while_pass length=0x0073
+;
+AF11:    07 75                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0075 (to 0xAF88)
+AF13:       0D 73                        ;     COM_0D_group_AND length=0x0073 (to 0xAF88)
 AF15:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
-AF17:          0E 6F                     ;       COM_0E_while_fail length=0x006F
-AF19:             0D 6B                  ;         COM_0D_while_pass length=0x006B
-AF1B:                04 42               ;           COM_04_print_message length=0x0042
-AF1D:                   C3 54 AF 54 51 18 4A C2 94 5F 7B 14 87 8D 14 58 ;
-AF2D:                   64 C5 DB 8B 4B 49 5F BE 5A 17 D3 7A 74 8E 1F 54 ;
-AF3D:                   C8 B5 A3 A0 4F 45 E7 9F D7 9A 82 17 83 61 58 45 ;
-AF4D:                   45 9F 55 5E 55 4A FC ED 6F CC 44 5E 03 A0 56 B8 ;
-AF5D:                   2C E1            ;
+AF17:          0E 6F                     ;       COM_0E_group_OR length=0x006F (to 0xAF88)
+AF19:             0D 6B                  ;         COM_0D_group_AND length=0x006B (to 0xAF86)
+AF1B:                04 42               ;           COM_04_print_message length=0x0042 (to 0xAF5F)
+AF1D:                   C3 54 AF 54 51 18 4A C2 94 5F 7B 14 87 8D 14 58
+AF2D:                   64 C5 DB 8B 4B 49 5F BE 5A 17 D3 7A 74 8E 1F 54
+AF3D:                   C8 B5 A3 A0 4F 45 E7 9F D7 9A 82 17 83 61 58 45
+AF4D:                   45 9F 55 5E 55 4A FC ED 6F CC 44 5E 03 A0 56 B8
+AF5D:                   2C E1           
 ;
 ;                       CLICK. YOU HEAR A LOUD RUMBLE AS THE SHIP LURCHES FOR A
 ;                       MOMENT. THEN A VOICE SAYS, "VREE BON SITZ!"
 ;
 AF5F:                03 01 80            ;           COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_80_WISDOM)
-AF62:                04 22               ;           COM_04_print_message length=0x0022
-AF64:                   C7 DE B0 17 F4 59 FB B9 33 98 63 BE D6 B5 CF 9C ;
-AF74:                   90 5F FC ED 91 61 8F 7A C3 B5 5B B1 4F 59 77 47 ;
-AF84:                   9C 5D            ;
+AF62:                04 22               ;           COM_04_print_message length=0x0022 (to 0xAF86)
+AF64:                   C7 DE B0 17 F4 59 FB B9 33 98 63 BE D6 B5 CF 9C
+AF74:                   90 5F FC ED 91 61 8F 7A C3 B5 5B B1 4F 59 77 47
+AF84:                   9C 5D           
 ;
 ;                       YOU UNDERSTAND THIS TO MEAN, "ENGINES ARE DAMAGED."
 ;
-AF86:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;         end group_AND at 0xAF19
+AF86:             14                     ;         COM_14_reverse_status next command
 AF87:             0C                     ;         COM_0C_fail()
-AF88:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008
+;                                        ;       end group_OR at 0xAF17
+;                                        ;     end group_AND at 0xAF13
+;
+AF88:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008 (to 0xAF92)
 ;           WHITE BUTTON
-AF8A:       23 D1 DB BD F6 4F 80 BF      ;
+AF8A:       23 D1 DB BD F6 4F 80 BF     
 
 ; -------------- Object OBJ_90_CHAIR --------------
-AF92: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C
+AF92: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C (to 0xAFA0)
 AF94: 89 07 80                           ; Location=0x89, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
-AF97:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001
+;
+AF97:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0xAF9A)
 AF99:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
-AF9A:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           CHAIR
-AF9C:       1B 54 23 7B                  ;
+;
+AF9A:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xAFA0)
+;           CHAIR 
+AF9C:       1B 54 23 7B                 
 
-; -------------- Object OBJ_91_POISON --------------
-AFA0: 00 09                              ; Word_num=0x00 -none-, length=0x0009
+; -------------- Object OBJ_91_ALIEN_POISON --------------
+AFA0: 00 09                              ; Word_num=0x00 -none-, length=0x0009 (to 0xAFAB)
 AFA2: 00 00 A0                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
-AFA5:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
+;
+AFA5:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xAFAB)
 ;           POISON
-AFA7:       7B A6 40 B9                  ;
+AFA7:       7B A6 40 B9                 
 
 ; -------------- Object OBJ_92_SCORE --------------
-AFAB: 00 03                              ; Word_num=0x00 -none-, length=0x0003
+AFAB: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0xAFB0)
 AFAD: 00 00 00                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=0000_0000 ()
 
 ; -------------- Object OBJ_93_DOOR_ESNEL --------------
-AFB0: 10 09                              ; Word_num=0x10 DOOR, length=0x0009
+AFB0: 10 09                              ; Word_num=0x10 DOOR, length=0x0009 (to 0xAFBB)
 AFB2: 83 29 88                           ; Location=0x83, disk_section=9, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
-AFB5:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           ESNEL
-AFB7:       60 62 33 61                  ;
+;
+AFB5:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xAFBB)
+;           ESNEL 
+AFB7:       60 62 33 61                 
 
 ; -------------- Object OBJ_94_GOOLUB --------------
-AFBB: 71 32                              ; Word_num=0x71 GOOLUB, length=0x0032
+AFBB: 71 32                              ; Word_num=0x71 GOOLUB, length=0x0032 (to 0xAFEF)
 AFBD: 31 00 90                           ; Location=0x31, disk_section=0, ext_attr=0000...., attributes=1001_0000 (ALIVE)
-AFC0:    07 27                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0027
-AFC2:       0D 25                        ;     COM_0D_while_pass length=0x0025
-AFC4:          0E 05                     ;       COM_0E_while_fail length=0x0005
-AFC6:             C4                     ;         FN_C4_ASSERT_IS_AFFECT_PHRASE
+;
+AFC0:    07 27                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0027 (to 0xAFE9)
+AFC2:       0D 25                        ;     COM_0D_group_AND length=0x0025 (to 0xAFE9)
+AFC4:          0E 05                     ;       COM_0E_group_OR length=0x0005 (to 0xAFCB)
+AFC6:             C4                     ;         FN_C4_IS_PHRASE_AN_AFFECT
 AFC7:             0A 09                  ;         COM_0A_is_input_phrase(phrase=ATTACK ...P.... WITH .v......)
 AFC9:             0A 57                  ;         COM_0A_is_input_phrase(phrase=SHOOT u....... WITH u.......)
-AFCB:          04 0E                     ;       COM_04_print_message length=0x000E
-AFCD:             E9 C5 84 96 D0 60 C6 6A 66 7B 2C C6 16 60 ;
+;                                        ;       end group_OR at 0xAFC4
+AFCB:          04 0E                     ;       COM_04_print_message length=0x000E (to 0xAFDB)
+AFCD:             E9 C5 84 96 D0 60 C6 6A 66 7B 2C C6 16 60
 ;
 ;                 UPON BEING DISTURBED,
 ;
 AFDB:          A8                        ;       FN_A8_PRINT_noun1
-AFDC:          04 08                     ;       COM_04_print_message length=0x0008
-AFDE:             83 67 4B 62 F3 49 DB E0 ;
+AFDC:          04 08                     ;       COM_04_print_message length=0x0008 (to 0xAFE6)
+AFDE:             83 67 4B 62 F3 49 DB E0
 ;
-;                 FLIES AWAY.
+;                 FLIES AWAY. 
 ;
-AFE6:          17 94 00                  ;       COM_17_move_object_to_destination(obj=OBJ_94_GOOLUB, destination=nowhere)
-AFE9:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
+AFE6:          17 94 00                  ;       COM_17_move_object_to(obj=OBJ_94_GOOLUB, destination=nowhere)
+;                                        ;     end group_AND at 0xAFC2
+;
+AFE9:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xAFEF)
 ;           GOOLUB
-AFEB:       41 6E 64 8E                  ;
+AFEB:       41 6E 64 8E                 
 
 ; -------------- Object OBJ_95_DOOR_ESNEL --------------
-AFEF: 10 2C                              ; Word_num=0x10 DOOR, length=0x002C
+AFEF: 10 2C                              ; Word_num=0x10 DOOR, length=0x002C (to 0xB01D)
 AFF1: 87 69 88                           ; Location=0x87, disk_section=9, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
-AFF4:    07 21                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0021
-AFF6:       0E 1F                        ;     COM_0E_while_fail length=0x001F
-AFF8:          0D 0C                     ;       COM_0D_while_pass length=0x000C
-AFFA:             0E 06                  ;         COM_0E_while_fail length=0x0006
+;
+AFF4:    07 21                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0021 (to 0xB017)
+AFF6:       0E 1F                        ;     COM_0E_group_OR length=0x001F (to 0xB017)
+AFF8:          0D 0C                     ;       COM_0D_group_AND length=0x000C (to 0xB006)
+AFFA:             0E 06                  ;         COM_0E_group_OR length=0x0006 (to 0xB002)
 AFFC:                0A 3A               ;           COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 AFFE:                0A 42               ;           COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
 B000:                0A 41               ;           COM_0A_is_input_phrase(phrase=LOCK ....A... WITH u.......)
-B002:             14                     ;         COM_14_execute_and_reverse_status next command
-B003:             09 97                  ;         COM_09_compare_to_second_noun(obj=OBJ_97_SMALL_UKORK_KEY)
+;                                        ;         end group_OR at 0xAFFA
+B002:             14                     ;         COM_14_reverse_status next command
+B003:             09 97                  ;         COM_09_is_noun2(obj=OBJ_97_SMALL_UKORK_KEY)
 B005:             BA                     ;         FN_BA_OPEN_UNLOCK
-B006:          0D 0F                     ;       COM_0D_while_pass length=0x000F
+;                                        ;       end group_AND at 0xAFF8
+B006:          0D 0F                     ;       COM_0D_group_AND length=0x000F (to 0xB017)
 B008:             0A 11                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... * *)
-B00A:             1A                     ;         COM_1A_set_var_to_first_noun()
-B00B:             2E 40                  ;         UNKNOWN_COM_2E, Value: 0x40
+B00A:             1A                     ;         COM_1A_set_var_to_noun1()
+B00B:             2E 40                  ;         COM_2E_is_var_ext_attributes(value=0x40)
 B00D:             A8                     ;         FN_A8_PRINT_noun1
-B00E:             04 07                  ;         COM_04_print_message length=0x0007
-B010:                4B 7B 44 87 B0 85 2E ;
+B00E:             04 07                  ;         COM_04_print_message length=0x0007 (to 0xB017)
+B010:                4B 7B 44 87 B0 85 2E
 ;
 ;                    IS KORKEN.
 ;
-B017:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           ESNEL
-B019:       60 62 33 61                  ;
+;                                        ;       end group_AND at 0xB006
+;                                        ;     end group_OR at 0xAFF6
+;
+B017:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xB01D)
+;           ESNEL 
+B019:       60 62 33 61                 
 
 ; -------------- Object OBJ_96_DOOR_ESNEL --------------
-B01D: 10 2C                              ; Word_num=0x10 DOOR, length=0x002C
+B01D: 10 2C                              ; Word_num=0x10 DOOR, length=0x002C (to 0xB04B)
 B01F: 89 69 88                           ; Location=0x89, disk_section=9, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
-B022:    07 21                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0021
-B024:       0E 1F                        ;     COM_0E_while_fail length=0x001F
-B026:          0D 0C                     ;       COM_0D_while_pass length=0x000C
-B028:             0E 06                  ;         COM_0E_while_fail length=0x0006
+;
+B022:    07 21                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0021 (to 0xB045)
+B024:       0E 1F                        ;     COM_0E_group_OR length=0x001F (to 0xB045)
+B026:          0D 0C                     ;       COM_0D_group_AND length=0x000C (to 0xB034)
+B028:             0E 06                  ;         COM_0E_group_OR length=0x0006 (to 0xB030)
 B02A:                0A 3A               ;           COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 B02C:                0A 42               ;           COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
 B02E:                0A 41               ;           COM_0A_is_input_phrase(phrase=LOCK ....A... WITH u.......)
-B030:             14                     ;         COM_14_execute_and_reverse_status next command
-B031:             09 97                  ;         COM_09_compare_to_second_noun(obj=OBJ_97_SMALL_UKORK_KEY)
+;                                        ;         end group_OR at 0xB028
+B030:             14                     ;         COM_14_reverse_status next command
+B031:             09 97                  ;         COM_09_is_noun2(obj=OBJ_97_SMALL_UKORK_KEY)
 B033:             BA                     ;         FN_BA_OPEN_UNLOCK
-B034:          0D 0F                     ;       COM_0D_while_pass length=0x000F
+;                                        ;       end group_AND at 0xB026
+B034:          0D 0F                     ;       COM_0D_group_AND length=0x000F (to 0xB045)
 B036:             0A 11                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... * *)
-B038:             1A                     ;         COM_1A_set_var_to_first_noun()
-B039:             2E 40                  ;         UNKNOWN_COM_2E, Value: 0x40
+B038:             1A                     ;         COM_1A_set_var_to_noun1()
+B039:             2E 40                  ;         COM_2E_is_var_ext_attributes(value=0x40)
 B03B:             A8                     ;         FN_A8_PRINT_noun1
-B03C:             04 07                  ;         COM_04_print_message length=0x0007
-B03E:                4B 7B 44 87 B0 85 2E ;
+B03C:             04 07                  ;         COM_04_print_message length=0x0007 (to 0xB045)
+B03E:                4B 7B 44 87 B0 85 2E
 ;
 ;                    IS KORKEN.
 ;
-B045:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004
-;           ESNEL
-B047:       60 62 33 61                  ;
+;                                        ;       end group_AND at 0xB034
+;                                        ;     end group_OR at 0xB024
+;
+B045:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xB04B)
+;           ESNEL 
+B047:       60 62 33 61                 
 
 ; -------------- Object OBJ_97_SMALL_UKORK_KEY --------------
-B04B: 16 77                              ; Word_num=0x16 KEY, length=0x0077
+B04B: 16 77                              ; Word_num=0x16 KEY, length=0x0077 (to 0xB0C4)
 B04D: 86 09 A4                           ; Location=0x86, disk_section=9, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
-B050:    03 15                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0015
-B052:       04 13                        ;     COM_04_print_message length=0x0013
-B054:          5F BE 5B B1 4B 7B 55 45 8E 91 17 8A 44 87 CA 83 ;
-B064:          2F 62 2E                  ;
+;
+B050:    03 15                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0015 (to 0xB067)
+B052:       04 13                        ;     COM_04_print_message length=0x0013 (to 0xB067)
+B054:          5F BE 5B B1 4B 7B 55 45 8E 91 17 8A 44 87 CA 83
+B064:          2F 62 2E                 
 ;
 ;              THERE IS A SMALL UKORK HERE.
 ;
-B067:    07 51                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0051
-B069:       0D 4F                        ;     COM_0D_while_pass length=0x004F
+;
+B067:    07 51                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0051 (to 0xB0BA)
+B069:       0D 4F                        ;     COM_0D_group_AND length=0x004F (to 0xB0BA)
 B06B:          0A 08                     ;       COM_0A_is_input_phrase(phrase=READ .....?.. * *)
-B06D:          04 0F                     ;       COM_04_print_message length=0x000F
-B06F:             04 1D AE 85 EB B8 18 BC 67 B1 05 4F 4E BD 22 ;
+B06D:          04 0F                     ;       COM_04_print_message length=0x000F (to 0xB07E)
+B06F:             04 1D AE 85 EB B8 18 BC 67 B1 05 4F 4E BD 22
 ;
 ;                 "ORKELSMIT VREEBOSTAL"
 ;
-B07E:          0E 3A                     ;       COM_0E_while_fail length=0x003A
-B080:             0D 36                  ;         COM_0D_while_pass length=0x0036
+B07E:          0E 3A                     ;       COM_0E_group_OR length=0x003A (to 0xB0BA)
+B080:             0D 36                  ;         COM_0D_group_AND length=0x0036 (to 0xB0B8)
 B082:                03 01 80            ;           COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_80_WISDOM)
-B085:                04 31               ;           COM_04_print_message length=0x0031
-B087:                   FA 17 DA 78 67 16 9D 48 FC ED 43 79 07 68 56 98 ;
-B097:                   0C 15 53 A0 83 7A A3 48 63 16 3C 7A B7 A1 2F 17 ;
-B0A7:                   74 C0 92 96 E6 A0 77 47 87 15 3F 49 BF 9A 17 60 ;
-B0B7:                   22               ;
+B085:                04 31               ;           COM_04_print_message length=0x0031 (to 0xB0B8)
+B087:                   FA 17 DA 78 67 16 9D 48 FC ED 43 79 07 68 56 98
+B097:                   0C 15 53 A0 83 7A A3 48 63 16 3C 7A B7 A1 2F 17
+B0A7:                   74 C0 92 96 E6 A0 77 47 87 15 3F 49 BF 9A 17 60
+B0B7:                   22              
 ;
 ;                        WHICH MEANS, "IF FOUND, DROP IN ANY MAILBOX. RETURN
 ;                       POSTAGE GUARUNTEED."
 ;
-B0B8:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;         end group_AND at 0xB080
+B0B8:             14                     ;         COM_14_reverse_status next command
 B0B9:             0C                     ;         COM_0C_fail()
-B0BA:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008
-;           SMALL UKORK
-B0BC:       E3 B8 F3 8C 21 C5 4B B2      ;
+;                                        ;       end group_OR at 0xB07E
+;                                        ;     end group_AND at 0xB069
+;
+B0BA:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008 (to 0xB0C4)
+;           SMALL UKORK 
+B0BC:       E3 B8 F3 8C 21 C5 4B B2     
 
 ; -------------- Object OBJ_98_BLURNUM_RADIO --------------
-B0C4: 12 81 87                           ; Word_num=0x12 RADIO, length=0x0187
+B0C4: 12 81 87                           ; Word_num=0x12 RADIO, length=0x0187 (to 0xB24E)
 B0C7: 8B 09 80                           ; Location=0x8B, disk_section=9, ext_attr=0000...., attributes=1000_0000 ()
-B0CA:    07 81 7A                        ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x017A
-B0CD:       0E 81 77                     ;     COM_0E_while_fail length=0x0177
-B0D0:          0D 73                     ;       COM_0D_while_pass length=0x0073
+;
+B0CA:    07 81 7A                        ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x017A (to 0xB247)
+B0CD:       0E 81 77                     ;     COM_0E_group_OR length=0x0177 (to 0xB247)
+B0D0:          0D 73                     ;       COM_0D_group_AND length=0x0073 (to 0xB145)
 B0D2:             0A 50                  ;         COM_0A_is_input_phrase(phrase=TURN * ON u.......)
 B0D4:             03 00 71               ;         COM_03_is_located(owner=nowhere, obj=OBJ_71_GREEN_BUTTON_WEAPON)
-B0D7:             04 6C                  ;         COM_04_print_message length=0x006C
-B0D9:                C2 1D 4B 5E 0B 9B 51 B8 91 96 96 64 DB 72 FB A5 ;
-B0E9:                76 98 55 17 0F B2 00 81 D5 15 81 15 91 7A F7 17 ;
-B0F9:                17 8D D6 15 9B 15 C4 B5 30 60 FF 14 F4 BD D0 92 ;
-B109:                F3 5F 5B BE 15 BC B3 55 F9 92 8B 96 CF B5 DA C3 ;
-B119:                71 16 5B B1 2B BA 44 BD DB 8B 6B BF 34 A1 8F 16 ;
-B129:                0D 60 AF 14 17 53 BE B7 AA 17 07 EE 3E 49 0B 71 ;
-B139:                D6 B5 4E A0 AA 17 15 EE 8E 91 9C 8F ;
+B0D7:             04 6C                  ;         COM_04_print_message length=0x006C (to 0xB145)
+B0D9:                C2 1D 4B 5E 0B 9B 51 B8 91 96 96 64 DB 72 FB A5
+B0E9:                76 98 55 17 0F B2 00 81 D5 15 81 15 91 7A F7 17
+B0F9:                17 8D D6 15 9B 15 C4 B5 30 60 FF 14 F4 BD D0 92
+B109:                F3 5F 5B BE 15 BC B3 55 F9 92 8B 96 CF B5 DA C3
+B119:                71 16 5B B1 2B BA 44 BD DB 8B 6B BF 34 A1 8F 16
+B129:                0D 60 AF 14 17 53 BE B7 AA 17 07 EE 3E 49 0B 71
+B139:                D6 B5 4E A0 AA 17 15 EE 8E 91 9C 8F
 ;
 ;                    "THE INVASION OF THE PLANET SCRIMJON IS GOING WELL. IT HAS
 ;                    BEEN DETERMINED THAT SCRIMJON IS MUCH MORE SUITABLE TO OUR
 ;                    NEEDS BECAUSE, UH, EARTH IS TOO, UH, SMALL."
 ;
-B145:          0D 80 9B                  ;       COM_0D_while_pass length=0x009B
+;                                        ;       end group_AND at 0xB0D0
+B145:          0D 80 9B                  ;       COM_0D_group_AND length=0x009B (to 0xB1E3)
 B148:             0A 50                  ;         COM_0A_is_input_phrase(phrase=TURN * ON u.......)
 B14A:             03 01 80               ;         COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_80_WISDOM)
 B14D:             0A 50                  ;         COM_0A_is_input_phrase(phrase=TURN * ON u.......)
-B14F:             04 80 91               ;         COM_04_print_message length=0x0091
-B152:                7A 1B B2 53 08 BC A3 A0 5F BE E4 14 5A 49 B8 16 ;
-B162:                82 17 55 5E 47 55 15 BC 92 73 16 EE DB 72 A0 7A ;
-B172:                5B 49 03 A0 C3 9E 5F BE E6 16 8F 48 07 BC 3E 49 ;
-B182:                0B 71 C9 B5 50 9F D9 6A 46 61 56 F4 DB 72 C6 93 ;
-B192:                F4 72 5A 17 D3 7A 4B 7B 09 9A D0 15 C4 16 16 4E ;
-B1A2:                03 EE 33 98 4E D1 15 8A 40 A0 AF 14 50 6D 82 17 ;
-B1B2:                52 5E 31 C6 51 5E 8E 64 4F 79 59 15 B5 B2 54 F4 ;
-B1C2:                E9 61 B3 B3 6B BF C7 DE 95 AF 09 A6 0F A0 F6 B0 ;
-B1D2:                A3 46 83 7A 6C BE 1B 60 7F 67 30 60 69 B9 2F C0 ;
-B1E2:                22                  ;
+B14F:             04 80 91               ;         COM_04_print_message length=0x0091 (to 0xB1E3)
+B152:                7A 1B B2 53 08 BC A3 A0 5F BE E4 14 5A 49 B8 16
+B162:                82 17 55 5E 47 55 15 BC 92 73 16 EE DB 72 A0 7A
+B172:                5B 49 03 A0 C3 9E 5F BE E6 16 8F 48 07 BC 3E 49
+B182:                0B 71 C9 B5 50 9F D9 6A 46 61 56 F4 DB 72 C6 93
+B192:                F4 72 5A 17 D3 7A 4B 7B 09 9A D0 15 C4 16 16 4E
+B1A2:                03 EE 33 98 4E D1 15 8A 40 A0 AF 14 50 6D 82 17
+B1B2:                52 5E 31 C6 51 5E 8E 64 4F 79 59 15 B5 B2 54 F4
+B1C2:                E9 61 B3 B3 6B BF C7 DE 95 AF 09 A6 0F A0 F6 B0
+B1D2:                A3 46 83 7A 6C BE 1B 60 7F 67 30 60 69 B9 2F C0
+B1E2:                22                 
 ;
 ;                    "EXCEPT FOR THE CRASH OF THE SCOUT SHIP, THE INVASION OF
 ;                    THE PLANET EARTH IS GOING WELL. THE MOTHER SHIP IS NOW IN
 ;                    ORBIT, AND WILL SOON BEGIN THE PURGE OF LIFE FORMS. REPORT
 ;                    TO YOUR SPLOONERBLAB IN THREE FLEEENSPOTS."
 ;
-B1E3:          0D 56                     ;       COM_0D_while_pass length=0x0056
+;                                        ;       end group_AND at 0xB145
+B1E3:          0D 56                     ;       COM_0D_group_AND length=0x0056 (to 0xB23B)
 B1E5:             0A 50                  ;         COM_0A_is_input_phrase(phrase=TURN * ON u.......)
-B1E7:             04 52                  ;         COM_04_print_message length=0x0052
-B1E9:                5D 1E 33 A7 BD 55 15 71 F3 55 2A B8 10 EE A0 CC ;
-B1F9:                E6 16 B3 9A C2 B3 80 15 D9 6A 17 8D 76 16 E3 74 ;
-B209:                2A B8 83 16 FE B0 8E 16 FE 17 15 8A 95 96 FE BF ;
-B219:                EC 16 C8 6A 40 16 5C 15 6F 94 3A 17 B3 B3 1B BC ;
-B229:                95 AF 08 A6 F6 B0 90 4B 82 17 88 AF 5D 8D 4D A7 ;
-B239:                63 F4               ;
+B1E7:             04 52                  ;         COM_04_print_message length=0x0052 (to 0xB23B)
+B1E9:                5D 1E 33 A7 BD 55 15 71 F3 55 2A B8 10 EE A0 CC
+B1F9:                E6 16 B3 9A C2 B3 80 15 D9 6A 17 8D 76 16 E3 74
+B209:                2A B8 83 16 FE B0 8E 16 FE 17 15 8A 95 96 FE BF
+B219:                EC 16 C8 6A 40 16 5C 15 6F 94 3A 17 B3 B3 1B BC
+B229:                95 AF 08 A6 F6 B0 90 4B 82 17 88 AF 5D 8D 4D A7
+B239:                63 F4              
 ;
 ;                    "XCPT CRSH SCT SHP, NVSN PLNT RTH GNG WLL. MTHR SHP N RBT
 ;                    ND WLL SN STRT PRG F LF FRMS. RPRT T YR SPLNRBLB N THR
 ;                    FLNSPTS."
 ;
-B23B:          0D 0A                     ;       COM_0D_while_pass length=0x000A
+;                                        ;       end group_AND at 0xB1E3
+B23B:          0D 0A                     ;       COM_0D_group_AND length=0x000A (to 0xB247)
 B23D:             0A 0B                  ;         COM_0A_is_input_phrase(phrase=LOOK * AT u.......)
 B23F:             A8                     ;         FN_A8_PRINT_noun1
-B240:             04 05                  ;         COM_04_print_message length=0x0005
-B242:                4B 7B D0 9E 2E      ;
+B240:             04 05                  ;         COM_04_print_message length=0x0005 (to 0xB247)
+B242:                4B 7B D0 9E 2E     
 ;
 ;                    IS OFF.
 ;
-B247:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005
+;                                        ;       end group_AND at 0xB23B
+;                                        ;     end group_OR at 0xB0CD
+;
+B247:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0xB24E)
 ;           BLURNUM
-B249:       8F 4E DF B2 4D               ;
+B249:       8F 4E DF B2 4D              
 
 ; -------------- Object OBJ_99_SHIP --------------
-B24E: 66 08                              ; Word_num=0x66 SHIP, length=0x0008
+B24E: 66 08                              ; Word_num=0x66 SHIP, length=0x0008 (to 0xB258)
 B250: 9D 05 80                           ; Location=0x9D, disk_section=5, ext_attr=0000...., attributes=1000_0000 ()
-B253:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+B253:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0xB258)
 ;           SHIP
-B255:       23 B8 50                     ;
+B255:       23 B8 50                    
 
 ; -------------- Object OBJ_9A_WALL --------------
-B258: 25 08                              ; Word_num=0x25 WALL, length=0x0008
+B258: 25 08                              ; Word_num=0x25 WALL, length=0x0008 (to 0xB262)
 B25A: 01 00 80                           ; Location=0x01, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
-B25D:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+B25D:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0xB262)
 ;           WALL
-B25F:       0E D0 4C                     ;
+B25F:       0E D0 4C                    
 
 ; -------------- Object OBJ_9B_?? --------------
-B262: 00 03                              ; Word_num=0x00 -none-, length=0x0003
+B262: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0xB267)
 B264: 00 00 00                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=0000_0000 ()
 
 ; -------------- Object OBJ_9C_SHIP --------------
-B267: 66 08                              ; Word_num=0x66 SHIP, length=0x0008
+B267: 66 08                              ; Word_num=0x66 SHIP, length=0x0008 (to 0xB271)
 B269: 80 07 80                           ; Location=0x80, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
-B26C:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003
+;
+B26C:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0xB271)
 ;           SHIP
-B26E:       23 B8 50                     ;
+B26E:       23 B8 50                    
 
 ; -------------- Object OBJ_9D_THIRST_TRACKER --------------
-B271: 00 81 3B                           ; Word_num=0x00 -none-, length=0x013B
+B271: 00 81 3B                           ; Word_num=0x00 -none-, length=0x013B (to 0xB3AF)
 B274: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
-B277:    08 81 35                        ;   Section=08:SECTION_08_EVERY_TURN, length=0x0135
-B27A:       0D 81 32                     ;     COM_0D_while_pass length=0x0132
+;
+B277:    08 81 35                        ;   Section=08:SECTION_08_EVERY_TURN, length=0x0135 (to 0xB3AF)
+B27A:       0D 81 32                     ;     COM_0D_group_AND length=0x0132 (to 0xB3AF)
 B27D:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 B27F:          1D 02                     ;       COM_1D_attack_var(points=2)
-B281:          0B 81 2B 22               ;       COM_0B_switch length=0x012B, function=COM_22_is_less_equal_health(points)
-B285:             01                     ;         COM_22_is_less_equal_health(points=1)
-B286:             01                     ;         ELSE goto=0xB288
-B287:                1A                  ;           COM_1A_set_var_to_first_noun()
-B288:             03                     ;         COM_22_is_less_equal_health(points=3)
-B289:             33                     ;         ELSE goto=0xB2BD
-B28A:                1F 31               ;           COM_1F_print2 length=0x0031
-B28C:                   C7 DE E1 14 FB 8C 17 A7 FB 17 53 BE 22 63 B5 49 ;
-B29C:                   91 BE 1B 9C 43 79 C7 DE 9B 15 5B CA A3 48 F3 17 ;
-B2AC:                   F4 BD 04 EE 8E 62 23 62 F3 5B 4B 99 73 7B 09 9A ;
-B2BC:                   21               ;
+B281:          0B 81 2B 22               ;       COM_0B_switch length=0x012B (to 0xB3B0), function=COM_22_is_less_equal_health(points)
+B285:             01 01                  ;         case COM_22_is_less_equal_health(points=1), length=0x0001
+B287:                1A                  ;           COM_1A_set_var_to_noun1()
+;                                        ;         end case
+B288:             03 33                  ;         case COM_22_is_less_equal_health(points=3), length=0x0033
+B28A:                1F 31               ;           COM_1F_print2 length=0x0031 (to 0xB2BD)
+B28C:                   C7 DE E1 14 FB 8C 17 A7 FB 17 53 BE 22 63 B5 49
+B29C:                   91 BE 1B 9C 43 79 C7 DE 9B 15 5B CA A3 48 F3 17
+B2AC:                   F4 BD 04 EE 8E 62 23 62 F3 5B 4B 99 73 7B 09 9A
+B2BC:                   21              
 ;
 ;                       YOU COLLAPSE WITH EXHAUSTION. IF YOU HAVE ANY WATER, BETTER
 ;                       DRINK IT NOW!
 ;
-B2BD:             08                     ;         COM_22_is_less_equal_health(points=8)
-B2BE:             01                     ;         ELSE goto=0xB2C0
-B2BF:                1A                  ;           COM_1A_set_var_to_first_noun()
-B2C0:             0A                     ;         COM_22_is_less_equal_health(points=10)
-B2C1:             22                     ;         ELSE goto=0xB2E4
-B2C2:                1F 20               ;           COM_1F_print2 length=0x0020
-B2C4:                   C7 DE D3 14 90 96 F3 A0 A7 85 09 A3 50 9F D9 6A ;
-B2D4:                   82 7B 36 A1 61 17 1B 92 6E B1 28 79 61 17 01 A0 ;
+;                                        ;         end case
+B2BD:             08 01                  ;         case COM_22_is_less_equal_health(points=8), length=0x0001
+B2BF:                1A                  ;           COM_1A_set_var_to_noun1()
+;                                        ;         end case
+B2C0:             0A 22                  ;         case COM_22_is_less_equal_health(points=10), length=0x0022
+B2C2:                1F 20               ;           COM_1F_print2 length=0x0020 (to 0xB2E4)
+B2C4:                   C7 DE D3 14 90 96 F3 A0 A7 85 09 A3 50 9F D9 6A
+B2D4:                   82 7B 36 A1 61 17 1B 92 6E B1 28 79 61 17 01 A0
 ;
 ;                       YOU CAN NOT KEEP GOING WITHOUT SOME RELIEF SOON!
 ;
-B2E4:             12                     ;         COM_22_is_less_equal_health(points=18)
-B2E5:             01                     ;         ELSE goto=0xB2E7
-B2E6:                1A                  ;           COM_1A_set_var_to_first_noun()
-B2E7:             14                     ;         COM_22_is_less_equal_health(points=20)
-B2E8:             0C                     ;         ELSE goto=0xB2F5
-B2E9:                1F 0A               ;           COM_1F_print2 length=0x000A
-B2EB:                   45 6E 0B 71 DB 22 94 BE F1 5F ;
+;                                        ;         end case
+B2E4:             12 01                  ;         case COM_22_is_less_equal_health(points=18), length=0x0001
+B2E6:                1A                  ;           COM_1A_set_var_to_noun1()
+;                                        ;         end case
+B2E7:             14 0C                  ;         case COM_22_is_less_equal_health(points=20), length=0x000C
+B2E9:                1F 0A               ;           COM_1F_print2 length=0x000A (to 0xB2F5)
+B2EB:                   45 6E 0B 71 DB 22 94 BE F1 5F
 ;
 ;                       GOSH I'M TIRED!
 ;
-B2F5:             1C                     ;         COM_22_is_less_equal_health(points=28)
-B2F6:             01                     ;         ELSE goto=0xB2F8
-B2F7:                1A                  ;           COM_1A_set_var_to_first_noun()
-B2F8:             1E                     ;         COM_22_is_less_equal_health(points=30)
-B2F9:             1C                     ;         ELSE goto=0xB316
-B2FA:                1F 1A               ;           COM_1F_print2 length=0x001A
-B2FC:                   C7 DE D3 14 E6 96 7B 17 9B 85 A5 94 0F 71 AF A0 ;
-B30C:                   B8 16 82 17 4B 7B E3 72 AB BB ;
+;                                        ;         end case
+B2F5:             1C 01                  ;         case COM_22_is_less_equal_health(points=28), length=0x0001
+B2F7:                1A                  ;           COM_1A_set_var_to_noun1()
+;                                        ;         end case
+B2F8:             1E 1C                  ;         case COM_22_is_less_equal_health(points=30), length=0x001C
+B2FA:                1F 1A               ;           COM_1F_print2 length=0x001A (to 0xB316)
+B2FC:                   C7 DE D3 14 E6 96 7B 17 9B 85 A5 94 0F 71 AF A0
+B30C:                   B8 16 82 17 4B 7B E3 72 AB BB
 ;
-;                       YOU CAN'T TAKE MUCH MORE OF THIS HEAT!
+;                       YOU CAN'T TAKE MUCH MORE OF THIS HEAT! 
 ;
-B316:             26                     ;         COM_22_is_less_equal_health(points=38)
-B317:             01                     ;         ELSE goto=0xB319
-B318:                1A                  ;           COM_1A_set_var_to_first_noun()
-B319:             28                     ;         COM_22_is_less_equal_health(points=40)
-B31A:             10                     ;         ELSE goto=0xB32B
-B31B:                1F 0E               ;           COM_1F_print2 length=0x000E
-B31D:                   0B 4F 0B EE DB 22 2B B9 63 BE A6 B3 EB DA ;
+;                                        ;         end case
+B316:             26 01                  ;         case COM_22_is_less_equal_health(points=38), length=0x0001
+B318:                1A                  ;           COM_1A_set_var_to_noun1()
+;                                        ;         end case
+B319:             28 10                  ;         case COM_22_is_less_equal_health(points=40), length=0x0010
+B31B:                1F 0E               ;           COM_1F_print2 length=0x000E (to 0xB32B)
+B31D:                   0B 4F 0B EE DB 22 2B B9 63 BE A6 B3 EB DA
 ;
-;                       BOY, I'M SO THIRSTY!
+;                       BOY, I'M SO THIRSTY! 
 ;
-B32B:             30                     ;         COM_22_is_less_equal_health(points=48)
-B32C:             01                     ;         ELSE goto=0xB32E
-B32D:                1A                  ;           COM_1A_set_var_to_first_noun()
-B32E:             32                     ;         COM_22_is_less_equal_health(points=50)
-B32F:             1E                     ;         ELSE goto=0xB34E
-B330:                1F 1C               ;           COM_1F_print2 length=0x001C
-B332:                   4A 77 5F A0 51 18 44 C2 07 B3 2E 6D 49 16 0B C0 ;
-B342:                   C3 9E 01 68 03 58 33 98 16 D0 21 62 ;
+;                                        ;         end case
+B32B:             30 01                  ;         case COM_22_is_less_equal_health(points=48), length=0x0001
+B32D:                1A                  ;           COM_1A_set_var_to_noun1()
+;                                        ;         end case
+B32E:             32 1E                  ;         case COM_22_is_less_equal_health(points=50), length=0x001E
+B330:                1F 1C               ;           COM_1F_print2 length=0x001C (to 0xB34E)
+B332:                   4A 77 5F A0 51 18 44 C2 07 B3 2E 6D 49 16 0B C0
+B342:                   C3 9E 01 68 03 58 33 98 16 D0 21 62
 ;
 ;                       I HOPE YOU BROUGHT LOTS OF FOOD AND WATER!
 ;
-B34E:             3A                     ;         COM_22_is_less_equal_health(points=58)
-B34F:             01                     ;         ELSE goto=0xB351
-B350:                1A                  ;           COM_1A_set_var_to_first_noun()
-B351:             3C                     ;         COM_22_is_less_equal_health(points=60)
-B352:             34                     ;         ELSE goto=0xB387
-B353:                1F 32               ;           COM_1F_print2 length=0x0032
-B355:                   C7 DE D3 14 94 96 8E 5F FB 8E 67 66 16 8A DB 72 ;
-B365:                   E3 72 11 BC 96 64 DB 72 30 BA BF 14 D3 B2 AB 98 ;
-B375:                   89 5B 91 96 9B 96 1B A1 83 7A 63 BE C6 B5 57 62 ;
-B385:                   B1 B3            ;
+;                                        ;         end case
+B34E:             3A 01                  ;         case COM_22_is_less_equal_health(points=58), length=0x0001
+B350:                1A                  ;           COM_1A_set_var_to_noun1()
+;                                        ;         end case
+B351:             3C 34                  ;         case COM_22_is_less_equal_health(points=60), length=0x0034
+B353:                1F 32               ;           COM_1F_print2 length=0x0032 (to 0xB387)
+B355:                   C7 DE D3 14 94 96 8E 5F FB 8E 67 66 16 8A DB 72
+B365:                   E3 72 11 BC 96 64 DB 72 30 BA BF 14 D3 B2 AB 98
+B375:                   89 5B 91 96 9B 96 1B A1 83 7A 63 BE C6 B5 57 62
+B385:                   B1 B3           
 ;
 ;                       YOU CAN REALLY FEEL THE HEAT OF THE SUN BURNING DOWN ON YOU
 ;                       IN THIS DESERT!
 ;
-B387:             41                     ;         COM_22_is_less_equal_health(points=65)
-B388:             01                     ;         ELSE goto=0xB38A
-B389:                1A                  ;           COM_1A_set_var_to_first_noun()
-B38A:             43                     ;         COM_22_is_less_equal_health(points=67)
-B38B:             20                     ;         ELSE goto=0xB3AC
-B38C:                1F 1E               ;           COM_1F_print2 length=0x001E
-B38E:                   0B 4F 16 EE 95 73 FF 14 B4 B7 0B BC C9 B5 18 A0 ;
-B39E:                   44 45 56 5E 29 A1 16 71 C5 9C 05 B3 6B B5 ;
+;                                        ;         end case
+B387:             41 01                  ;         case COM_22_is_less_equal_health(points=65), length=0x0001
+B389:                1A                  ;           COM_1A_set_var_to_noun1()
+;                                        ;         end case
+B38A:             43 20                  ;         case COM_22_is_less_equal_health(points=67), length=0x0020
+B38C:                1F 1E               ;           COM_1F_print2 length=0x001E (to 0xB3AC)
+B38E:                   0B 4F 16 EE 95 73 FF 14 B4 B7 0B BC C9 B5 18 A0
+B39E:                   44 45 56 5E 29 A1 16 71 C5 9C 05 B3 6B B5
 ;
-;                       BOY, THIS DESERT IS GONNA BE TOUGH TO CROSS!
+;                       BOY, THIS DESERT IS GONNA BE TOUGH TO CROSS! 
 ;
-B3AC:             FF                     ;         COM_22_is_less_equal_health(points=255)
-B3AD:             01                     ;         ELSE goto=0xB3AF
-B3AE:                1A                  ;           COM_1A_set_var_to_first_noun()
-
-
-
-; ?? Is CA:DIE_ENERGY_BEAM ever used?
+;                                        ;         end case
+B3AC:             FF 01                  ;         case COM_22_is_less_equal_health(points=255), length=0x0001
+B3AE:                1A                  ;           COM_1A_set_var_to_noun1()
+;                                        ;         end case
+;                                        ;       end decode_switch at 0xB281
+;                                        ;     end group_AND at 0xB27A
 
 SubroutineCommands:
-B3AF: 00 89 BC  ; List_ID=0x00, length=0x09BC
+B3AF: 00 89 BC  ; List_ID=0x00, length=0x09BC (to 0xBD6E)
 
 ; -------------- Routine FN_81_PRINT_DOOR_HERE
 ;
 B3B2: 81 10                              ; Routine Number: 0x81, Length: 0x0010
-B3B4:       04 0E                        ;     COM_04_print_message length=0x000E
-B3B6:          5F BE 5B B1 4B 7B 46 45 44 A0 9F 15 7F B1 ;
+B3B4:       04 0E                        ;     COM_04_print_message length=0x000E (to 0xB3C4)
+B3B6:          5F BE 5B B1 4B 7B 46 45 44 A0 9F 15 7F B1
 ;
 ;              THERE IS A DOOR HERE.
 ;
@@ -8526,8 +9376,8 @@ B3B6:          5F BE 5B B1 4B 7B 46 45 44 A0 9F 15 7F B1 ;
 ; -------------- Routine FN_80_PRINT_SHOTGUN_HERE
 ;
 B3C4: 80 12                              ; Routine Number: 0x80, Length: 0x0012
-B3C6:       04 10                        ;     COM_04_print_message length=0x0010
-B3C8:          5F BE 5B B1 4B 7B 55 45 86 74 30 6F 9F 15 7F B1 ;
+B3C6:       04 10                        ;     COM_04_print_message length=0x0010 (to 0xB3D8)
+B3C8:          5F BE 5B B1 4B 7B 55 45 86 74 30 6F 9F 15 7F B1
 ;
 ;              THERE IS A SHOTGUN HERE.
 ;
@@ -8535,8 +9385,8 @@ B3C8:          5F BE 5B B1 4B 7B 55 45 86 74 30 6F 9F 15 7F B1 ;
 ; -------------- Routine FN_8B_PRINT_PERIOD
 ;
 B3D8: 8B 04                              ; Routine Number: 0x8B, Length: 0x0004
-B3DA:       04 02                        ;     COM_04_print_message length=0x0002
-B3DC:          3B F4                     ;
+B3DA:       04 02                        ;     COM_04_print_message length=0x0002 (to 0xB3DE)
+B3DC:          3B F4                    
 ;
 ;              .  
 ;
@@ -8544,9 +9394,9 @@ B3DC:          3B F4                     ;
 ; -------------- Routine FN_AB_PRINT_STILL_IN_DESERT
 ;
 B3DE: AB 15                              ; Routine Number: 0xAB, Length: 0x0015
-B3E0:       04 13                        ;     COM_04_print_message length=0x0013
-B3E2:          C7 DE 94 14 55 5E 8E BE 0B 8A 96 96 DB 72 F5 59 ;
-B3F2:          3E 62 2E                  ;
+B3E0:       04 13                        ;     COM_04_print_message length=0x0013 (to 0xB3F5)
+B3E2:          C7 DE 94 14 55 5E 8E BE 0B 8A 96 96 DB 72 F5 59
+B3F2:          3E 62 2E                 
 ;
 ;              YOU ARE STILL IN THE DESERT.
 ;
@@ -8554,10 +9404,10 @@ B3F2:          3E 62 2E                  ;
 ; -------------- Routine FN_95_PRINT_TRAIL_MEANDERS
 ;
 B3F5: 95 23                              ; Routine Number: 0x95, Length: 0x0023
-B3F7:       04 21                        ;     COM_04_print_message length=0x0021
-B3F9:          55 45 8E 91 16 8A CB B0 0F 8A 90 5F F4 59 C8 B5 ;
-B409:          FF B2 82 17 47 5E 66 49 89 17 82 17 59 5E 66 62 ;
-B419:          2E                        ;
+B3F7:       04 21                        ;     COM_04_print_message length=0x0021 (to 0xB41A)
+B3F9:          55 45 8E 91 16 8A CB B0 0F 8A 90 5F F4 59 C8 B5
+B409:          FF B2 82 17 47 5E 66 49 89 17 82 17 59 5E 66 62
+B419:          2E                       
 ;
 ;              A SMALL TRAIL MEANDERS FROM THE EAST TO THE WEST.
 ;
@@ -8565,9 +9415,9 @@ B419:          2E                        ;
 ; -------------- Routine FN_96_PRINT_VAST_CANYON
 ;
 B41A: 96 1E                              ; Routine Number: 0x96, Length: 0x001E
-B41C:       04 1C                        ;     COM_04_print_message length=0x001C
-B41E:          58 45 66 49 CF 15 55 A4 04 B7 DB 8B 10 53 C0 DE ;
-B42E:          C2 16 9D 61 AF 14 04 68 5B 5E 3F A1 ;
+B41C:       04 1C                        ;     COM_04_print_message length=0x001C (to 0xB43A)
+B41E:          58 45 66 49 CF 15 55 A4 04 B7 DB 8B 10 53 C0 DE
+B42E:          C2 16 9D 61 AF 14 04 68 5B 5E 3F A1
 ;
 ;              A VAST IMPASSABLE CANYON OPENS BEFORE YOU.
 ;
@@ -8575,9 +9425,9 @@ B42E:          C2 16 9D 61 AF 14 04 68 5B 5E 3F A1 ;
 ; -------------- Routine FN_97_PRINT_CERTAIN_DEATH
 ;
 B43A: 97 1D                              ; Routine Number: 0x97, Length: 0x001D
-B43C:       04 1B                        ;     COM_04_print_message length=0x001B
-B43E:          6B BF 2B 6E 5B BE 19 BC 3B 4A 47 D2 B3 8B 23 92 ;
-B44E:          85 96 3E 62 D0 47 FF 14 82 49 21 ;
+B43C:       04 1B                        ;     COM_04_print_message length=0x001B (to 0xB459)
+B43E:          6B BF 2B 6E 5B BE 19 BC 3B 4A 47 D2 B3 8B 23 92
+B44E:          85 96 3E 62 D0 47 FF 14 82 49 21
 ;
 ;              TO GO THAT WAY WOULD MEAN CERTAIN DEATH!
 ;
@@ -8585,28 +9435,29 @@ B44E:          85 96 3E 62 D0 47 FF 14 82 49 21 ;
 ; -------------- Routine FN_99_DIE_CANYON_PLUNGE
 ;
 B459: 99 50                              ; Routine Number: 0x99, Length: 0x0050
-B45B:       0D 4E                        ;     COM_0D_while_pass length=0x004E
-B45D:          04 46                     ;       COM_04_print_message length=0x0046
-B45F:             83 46 94 46 7C B3 7C B3 F9 6C 22 6D 62 73 C3 06 ;
-B46F:             3C 49 FA 6C AB 70 94 14 BA B1 AB 70 5F BE D3 14 ;
-B47F:             91 9B 99 96 46 48 C7 B5 29 54 51 18 23 C6 64 B7 ;
-B48F:             8F 5F 95 14 51 18 52 C2 70 8E 9B 6C 6B BF C7 DE ;
-B49F:             86 AF 96 5F AB 70      ;
+B45B:       0D 4E                        ;     COM_0D_group_AND length=0x004E (to 0xB4AB)
+B45D:          04 46                     ;       COM_04_print_message length=0x0046 (to 0xB4A5)
+B45F:             83 46 94 46 7C B3 7C B3 F9 6C 22 6D 62 73 C3 06
+B46F:             3C 49 FA 6C AB 70 94 14 BA B1 AB 70 5F BE D3 14
+B47F:             91 9B 99 96 46 48 C7 B5 29 54 51 18 23 C6 64 B7
+B48F:             8F 5F 95 14 51 18 52 C2 70 8E 9B 6C 6B BF C7 DE
+B49F:             86 AF 96 5F AB 70     
 ;
 ;                 AAAAARRRRRRRGGGGHHHHH! AARRGGHH!  ARRGHH! THE CANYON WALLS
 ;                 ECHO YOUR SCREAM AS YOU PLUNGE TO YOUR DEATH!
 ;
-B4A5:          20 01                     ;       COM_20_is_active_this(obj=OBJ_01_PLAYER)
+B4A5:          20 01                     ;       COM_20_is_active_object(obj=OBJ_01_PLAYER)
 B4A7:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 B4A9:          1D 64                     ;       COM_1D_attack_var(points=100)
+;                                        ;     end group_AND at 0xB45B
 
 ; -------------- Routine FN_9A_PRINT_CANYON_PREVENTS
 ;
 B4AB: 9A 31                              ; Routine Number: 0x9A, Length: 0x0031
-B4AD:       04 2F                        ;     COM_04_print_message length=0x002F
-B4AF:          5F BE D3 14 91 9B 99 96 46 48 D4 B5 57 7B 84 14 ;
-B4BF:          4F A1 51 18 52 C2 78 B1 9E 61 91 7A 71 16 6F CA ;
-B4CF:          9E 61 D0 15 82 17 4B 7B 94 5A E6 5F C0 7A 2E ;
+B4AD:       04 2F                        ;     COM_04_print_message length=0x002F (to 0xB4DE)
+B4AF:          5F BE D3 14 91 9B 99 96 46 48 D4 B5 57 7B 84 14
+B4BF:          4F A1 51 18 52 C2 78 B1 9E 61 91 7A 71 16 6F CA
+B4CF:          9E 61 D0 15 82 17 4B 7B 94 5A E6 5F C0 7A 2E
 ;
 ;              THE CANYON WALLS RISE ABOVE YOU PREVENTING MOVEMENT IN THIS
 ;              DIRECTION.
@@ -8615,139 +9466,150 @@ B4CF:          9E 61 D0 15 82 17 4B 7B 94 5A E6 5F C0 7A 2E ;
 ; -------------- Routine FN_98_PRINT_LAKE
 ;
 B4DE: 98 28                              ; Routine Number: 0x98, Length: 0x0028
-B4E0:       04 26                        ;     COM_04_print_message length=0x0026
-B4E2:          6B BF 5F BE 23 15 F3 B9 C7 DE D3 14 95 96 1B 60 ;
-B4F2:          1B D1 03 BC 9F A6 3D 49 89 17 AF 14 7B 14 54 8B ;
-B502:          9B 6C 4D 8B DB 63         ;
+B4E0:       04 26                        ;     COM_04_print_message length=0x0026 (to 0xB508)
+B4E2:          6B BF 5F BE 23 15 F3 B9 C7 DE D3 14 95 96 1B 60
+B4F2:          1B D1 03 BC 9F A6 3D 49 89 17 AF 14 7B 14 54 8B
+B502:          9B 6C 4D 8B DB 63        
 ;
-;              TO THE EAST YOU CAN SEE WHAT APPEARS TO BE A LARGE LAKE.
+;              TO THE EAST YOU CAN SEE WHAT APPEARS TO BE A LARGE LAKE. 
 ;
 
 ; -------------- Routine FN_9B_PRINT_EMPTY_HIGHWAY
 ;
 B508: 9B 1C                              ; Routine Number: 0x9B, Length: 0x001C
-B50A:       04 1A                        ;     COM_04_print_message length=0x001A
-B50C:          83 48 72 61 FB C0 89 73 B3 75 56 DB D8 B0 4D 61 ;
-B51C:          23 15 F3 B9 8E 48 F7 17 17 BA ;
+B50A:       04 1A                        ;     COM_04_print_message length=0x001A (to 0xB526)
+B50C:          83 48 72 61 FB C0 89 73 B3 75 56 DB D8 B0 4D 61
+B51C:          23 15 F3 B9 8E 48 F7 17 17 BA
 ;
 ;              AN EMPTY HIGHWAY TRAVELS EAST AND WEST.
 ;
 
-; -------------- Routine FN_8D_ASSERT_OBJECT_IS_CLOSED
+; -------------- Routine FN_8D_IS_CLOSED
 ;
 B526: 8D 0E                              ; Routine Number: 0x8D, Length: 0x000E
-B528:       0D 0C                        ;     COM_0D_while_pass length=0x000C
-B52A:          2E 20                     ;       UNKNOWN_COM_2E, Value: 0x20
+B528:       0D 0C                        ;     COM_0D_group_AND length=0x000C (to 0xB536)
+B52A:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=0x20)
 B52C:          AA                        ;       FN_AA_PRINT_THE_var
-B52D:          04 07                     ;       COM_04_print_message length=0x0007
-B52F:             4B 7B C9 54 A6 B7 2E   ;
+B52D:          04 07                     ;       COM_04_print_message length=0x0007 (to 0xB536)
+B52F:             4B 7B C9 54 A6 B7 2E  
 ;
 ;                 IS CLOSED.
 ;
+;                                        ;     end group_AND at 0xB528
 
-; -------------- Routine FN_C7_ASSERT_OBJECT_IS_RIBULN
+; -------------- Routine FN_C7_IS_OBJECT_RIBULN
 ;
 B536: C7 0E                              ; Routine Number: 0xC7, Length: 0x000E
-B538:       0D 0C                        ;     COM_0D_while_pass length=0x000C
-B53A:          2E 20                     ;       UNKNOWN_COM_2E, Value: 0x20
+B538:       0D 0C                        ;     COM_0D_group_AND length=0x000C (to 0xB546)
+B53A:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=0x20)
 B53C:          AA                        ;       FN_AA_PRINT_THE_var
-B53D:          04 07                     ;       COM_04_print_message length=0x0007
-B53F:             4B 7B 04 B2 48 C5 2E   ;
+B53D:          04 07                     ;       COM_04_print_message length=0x0007 (to 0xB546)
+B53F:             4B 7B 04 B2 48 C5 2E  
 ;
 ;                 IS RIBULN.
 ;
+;                                        ;     end group_AND at 0xB538
 
-; -------------- Routine FN_8F_TRY_TO_GET_OBJECT
+; -------------- Routine FN_8F_GET_OBJECT
 ;
 B546: 8F 80 94                           ; Routine Number: 0x8F, Length: 0x0094
-B549:       0D 80 91                     ;     COM_0D_while_pass length=0x0091
-B54C:          0E 80 8D                  ;       COM_0E_while_fail length=0x008D
-B54F:             14                     ;         COM_14_execute_and_reverse_status next command
-B550:             BF                     ;         FN_BF_ASSERT_VAR_IS_CLOSED
-B551:             0D 23                  ;         COM_0D_while_pass length=0x0023
-B553:                2E 10               ;           UNKNOWN_COM_2E, Value: 0x10
+B549:       0D 80 91                     ;     COM_0D_group_AND length=0x0091 (to 0xB5DD)
+B54C:          0E 80 8D                  ;       COM_0E_group_OR length=0x008D (to 0xB5DC)
+B54F:             14                     ;         COM_14_reverse_status next command
+B550:             BF                     ;         FN_BF_IS_LIQUID_REACHABLE
+B551:             0D 23                  ;         COM_0D_group_AND length=0x0023 (to 0xB576)
+B553:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
 B555:                AA                  ;           FN_AA_PRINT_THE_var
-B556:                04 1E               ;           COM_04_print_message length=0x001E
-B558:                   C3 B8 0B A7 6C BE 29 A1 1B 71 34 A1 53 15 B7 98 ;
-B568:                   AE B3 3F 16 D3 49 AB 98 5F BE 59 90 97 62 ;
+B556:                04 1E               ;           COM_04_print_message length=0x001E (to 0xB576)
+B558:                   C3 B8 0B A7 6C BE 29 A1 1B 71 34 A1 53 15 B7 98
+B568:                   AE B3 3F 16 D3 49 AB 98 5F BE 59 90 97 62
 ;
 ;                       SLIPS THROUGH YOUR FINGERS, LEAVING THEM WET.
 ;
-B576:             0D 1A                  ;         COM_0D_while_pass length=0x001A
-B578:                15 10               ;           COM_15_check_var(value=0x10)
-B57A:                04 16               ;           COM_04_print_message length=0x0016
-B57C:                   46 77 05 A0 16 BC 90 73 CA 83 59 5E 46 7A E1 14 ;
-B58C:                   5F A0 D6 B0 DB 63 ;
+;                                        ;         end group_AND at 0xB551
+B576:             0D 1A                  ;         COM_0D_group_AND length=0x001A (to 0xB592)
+B578:                15 10               ;           COM_15_is_var_attributes(value=0x10)
+B57A:                04 16               ;           COM_04_print_message length=0x0016 (to 0xB592)
+B57C:                   46 77 05 A0 16 BC 90 73 CA 83 59 5E 46 7A E1 14
+B58C:                   5F A0 D6 B0 DB 63
 ;
-;                       I DON'T THINK HE WILL COOPERATE.
+;                       I DON'T THINK HE WILL COOPERATE. 
 ;
-B592:             0D 22                  ;         COM_0D_while_pass length=0x0022
-B594:                14                  ;           COM_14_execute_and_reverse_status next command
-B595:                15 20               ;           COM_15_check_var(value=0x20)
-B597:                14                  ;           COM_14_execute_and_reverse_status next command
-B598:                2D 5C               ;           COM_2D_compare_to_var_object(obj_num=0x5C, obj_text="OBJ_5C_PAIR_HANDS")
-B59A:                04 18               ;           COM_04_print_message length=0x0018
-B59C:                   C7 DE 94 14 53 5E D6 C4 4B 5E 13 98 44 A4 DB 8B ;
-B5AC:                   C3 9E 6F B1 53 A1 AB 98 ;
+;                                        ;         end group_AND at 0xB576
+B592:             0D 22                  ;         COM_0D_group_AND length=0x0022 (to 0xB5B6)
+B594:                14                  ;           COM_14_reverse_status next command
+B595:                15 20               ;           COM_15_is_var_attributes(value=0x20)
+B597:                14                  ;           COM_14_reverse_status next command
+B598:                2D 5C               ;           COM_2D_is_var_object(obj_num=0x5C, obj_text="OBJ_5C_PAIR_HANDS")
+B59A:                04 18               ;           COM_04_print_message length=0x0018 (to 0xB5B4)
+B59C:                   C7 DE 94 14 53 5E D6 C4 4B 5E 13 98 44 A4 DB 8B
+B5AC:                   C3 9E 6F B1 53 A1 AB 98
 ;
-;                       YOU ARE QUITE INCAPABLE OF REMOVING
+;                       YOU ARE QUITE INCAPABLE OF REMOVING 
 ;
 B5B4:                AA                  ;           FN_AA_PRINT_THE_var
 B5B5:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0xB592
 B5B6:             18                     ;         COM_18_is_var_owned_by_active()
-B5B7:             0D 18                  ;         COM_0D_while_pass length=0x0018
+B5B7:             0D 18                  ;         COM_0D_group_AND length=0x0018 (to 0xB5D1)
 B5B9:                0F                  ;           COM_0F_pick_up_var_object()
-B5BA:                14                  ;           COM_14_execute_and_reverse_status next command
-B5BB:                39                  ;           COM_39_check_weight_70_or_less()
-B5BC:                04 12               ;           COM_04_print_message length=0x0012
-B5BE:                   C7 DE D3 14 E6 96 D3 14 83 B3 82 17 73 49 A5 94 ;
-B5CE:                   9B 76            ;
+B5BA:                14                  ;           COM_14_reverse_status next command
+B5BB:                39                  ;           COM_39_is_weight_70_or_less()
+B5BC:                04 12               ;           COM_04_print_message length=0x0012 (to 0xB5D0)
+B5BE:                   C7 DE D3 14 E6 96 D3 14 83 B3 82 17 73 49 A5 94
+B5CE:                   9B 76           
 ;
-;                       YOU CAN'T CARRY THAT MUCH.
+;                       YOU CAN'T CARRY THAT MUCH. 
 ;
 B5D0:                10                  ;           COM_10_drop_var()
-B5D1:             0D 08                  ;         COM_0D_while_pass length=0x0008
+;                                        ;         end group_AND at 0xB5B7
+B5D1:             0D 08                  ;         COM_0D_group_AND length=0x0008 (to 0xB5DB)
 B5D3:                0F                  ;           COM_0F_pick_up_var_object()
 B5D4:                AA                  ;           FN_AA_PRINT_THE_var
-B5D5:                04 04               ;           COM_04_print_message length=0x0004
-B5D7:                   4D BD A7 61      ;
+B5D5:                04 04               ;           COM_04_print_message length=0x0004 (to 0xB5DB)
+B5D7:                   4D BD A7 61     
 ;
 ;                       TAKEN.
 ;
+;                                        ;         end group_AND at 0xB5D1
 B5DB:             C1                     ;         FN_C1_PRINT_CANT_REACH_var
+;                                        ;       end group_OR at 0xB54C
 B5DC:          18                        ;       COM_18_is_var_owned_by_active()
+;                                        ;     end group_AND at 0xB549
 
 ; -------------- Routine FN_A2_PRINT_ALREADY_HAVE_THE_var
 ;
 B5DD: A2 13                              ; Routine Number: 0xA2, Length: 0x0013
-B5DF:       0D 11                        ;     COM_0D_while_pass length=0x0011
-B5E1:          1A                        ;       COM_1A_set_var_to_first_noun()
+B5DF:       0D 11                        ;     COM_0D_group_AND length=0x0011 (to 0xB5F2)
+B5E1:          1A                        ;       COM_1A_set_var_to_noun1()
 B5E2:          18                        ;       COM_18_is_var_owned_by_active()
-B5E3:          04 0B                     ;       COM_04_print_message length=0x000B
-B5E5:             C7 DE 8E 14 63 B1 FB 5C 58 72 45 ;
+B5E3:          04 0B                     ;       COM_04_print_message length=0x000B (to 0xB5F0)
+B5E5:             C7 DE 8E 14 63 B1 FB 5C 58 72 45
 ;
 ;                 YOU ALREADY HAVE
 ;
 B5F0:          AA                        ;       FN_AA_PRINT_THE_var
 B5F1:          8B                        ;       FN_8B_PRINT_PERIOD
+;                                        ;     end group_AND at 0xB5DF
 
 ; -------------- Routine FN_90_PRINT_ERROR_CLIMB_ENTER
 ;
 B5F2: 90 09                              ; Routine Number: 0x90, Length: 0x0009
-B5F4:       0B 07 0A                     ;     COM_0B_switch length=0x0007, function=COM_0A_is_input_phrase(phrase_num)
-B5F7:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
-B5F8:          01                        ;       ELSE goto=0xB5FA
+B5F4:       0B 07 0A                     ;     COM_0B_switch length=0x0007 (to 0xB5FE), function=COM_0A_is_input_phrase(phrase_num)
+B5F7:          36 01                     ;       case COM_0A_is_input_phrase("ENTER * * *"), length=0x0001
 B5F9:             91                     ;         FN_91_PRINT_USE_DIRECTIONS
-B5FA:          37                        ;       COM_0A_is_input_phrase("CLIMB * OUT *")
-B5FB:          01                        ;       ELSE goto=0xB5FD
+;                                        ;       end case
+B5FA:          37 01                     ;       case COM_0A_is_input_phrase("CLIMB * OUT *"), length=0x0001
 B5FC:             91                     ;         FN_91_PRINT_USE_DIRECTIONS
+;                                        ;       end case
+;                                        ;     end decode_switch at 0xB5F4
 
 ; -------------- Routine FN_91_PRINT_USE_DIRECTIONS
 ;
 B5FD: 91 19                              ; Routine Number: 0x91, Length: 0x0019
-B5FF:       1F 17                        ;     COM_1F_print2 length=0x0017
-B601:          FF A5 57 49 B5 17 46 5E 2F 7B 03 56 1D A0 A6 16 ;
-B611:          3F BB 11 EE 99 AF 2E      ;
+B5FF:       1F 17                        ;     COM_1F_print2 length=0x0017 (to 0xB618)
+B601:          FF A5 57 49 B5 17 46 5E 2F 7B 03 56 1D A0 A6 16
+B611:          3F BB 11 EE 99 AF 2E     
 ;
 ;              PLEASE USE DIRECTIONS N,S,E, OR W.
 ;
@@ -8755,361 +9617,393 @@ B611:          3F BB 11 EE 99 AF 2E      ;
 ; -------------- Routine FN_92_PRINT_TRIED_BUT_COULDNT
 ;
 B618: 92 1F                              ; Routine Number: 0x92, Length: 0x001F
-B61A:       0D 1D                        ;     COM_0D_while_pass length=0x001D
-B61C:          1A                        ;       COM_1A_set_var_to_first_noun()
-B61D:          14                        ;       COM_14_execute_and_reverse_status next command
-B61E:          15 08                     ;       COM_15_check_var(value=0x08)
-B620:          04 17                     ;       COM_04_print_message length=0x0017
-B622:             C7 DE 8C 17 26 79 04 EE 73 C6 C7 DE E1 14 3E C5 ;
-B632:             E6 96 09 15 D6 15 2E   ;
+B61A:       0D 1D                        ;     COM_0D_group_AND length=0x001D (to 0xB639)
+B61C:          1A                        ;       COM_1A_set_var_to_noun1()
+B61D:          14                        ;       COM_14_reverse_status next command
+B61E:          15 08                     ;       COM_15_is_var_attributes(value=0x08)
+B620:          04 17                     ;       COM_04_print_message length=0x0017 (to 0xB639)
+B622:             C7 DE 8C 17 26 79 04 EE 73 C6 C7 DE E1 14 3E C5
+B632:             E6 96 09 15 D6 15 2E  
 ;
 ;                 YOU TRIED, BUT YOU COULDN'T DO IT.
 ;
+;                                        ;     end group_AND at 0xB61A
 
-; -------------- Routine FN_94_INIT_GAME
+; -------------- Routine FN_94_INITIALIZE_GAME
 ;
 B639: 94 06                              ; Routine Number: 0x94, Length: 0x0006
-B63B:       0D 04                        ;     COM_0D_while_pass length=0x0004
+B63B:       0D 04                        ;     COM_0D_group_AND length=0x0004 (to 0xB641)
 B63D:          30 80                     ;       COM_30_set_current_room(room=RM_1_HIGHWAY_WEST)
 B63F:          2F 01                     ;       COM_2F_load_section_from_disk(section=1)
+;                                        ;     end group_AND at 0xB63B
 
 ; -------------- Routine FN_A3_PRINT_WELCOME_MESSAGE
 ;
 B641: A3 36                              ; Routine Number: 0xA3, Length: 0x0036
-B643:       0D 34                        ;     COM_0D_while_pass length=0x0034
+B643:       0D 34                        ;     COM_0D_group_AND length=0x0034 (to 0xB679)
 B645:          3A                        ;       COM_3A_clear_screen()
 B646:          2C 01                     ;       COM_2C_set_active(obj=OBJ_01_PLAYER)
 B648:          30 80                     ;       COM_30_set_current_room(room=RM_1_HIGHWAY_WEST)
-B64A:          17 01 80                  ;       COM_17_move_object_to_destination(obj=OBJ_01_PLAYER, destination=RM_1_HIGHWAY_WEST)
-B64D:          1F 1A                     ;       COM_1F_print2 length=0x001A
-B64F:             DF 2C DF 2C DF 2C DF 2C DF 2C 5A 2C 99 61 BE B5 ;
-B65F:             76 26 76 26 76 26 76 26 76 26 ;
+B64A:          17 01 80                  ;       COM_17_move_object_to(obj=OBJ_01_PLAYER, destination=RM_1_HIGHWAY_WEST)
+B64D:          1F 1A                     ;       COM_1F_print2 length=0x001A (to 0xB669)
+B64F:             DF 2C DF 2C DF 2C DF 2C DF 2C 5A 2C 99 61 BE B5
+B65F:             76 26 76 26 76 26 76 26 76 26
 ;
 ;                 >>>>>>>>>>>>>>>> XENOS <<<<<<<<<<<<<<<<
 ;
 B669:          25                        ;       COM_25_print_linefeed()
-B66A:          1F 0C                     ;       COM_1F_print2 length=0x000C
-B66C:             0C BA 91 48 46 62 AF 14 14 D0 EB 5D ;
+B66A:          1F 0C                     ;       COM_1F_print2 length=0x000C (to 0xB678)
+B66C:             0C BA 91 48 46 62 AF 14 14 D0 EB 5D
 ;
-;                 STRANGER, BEWARE!
+;                 STRANGER, BEWARE! 
 ;
 B678:          25                        ;       COM_25_print_linefeed()
+;                                        ;     end group_AND at 0xB643
 
-; -------------- Routine FN_A5_VERIFY_OPEN
+; -------------- Routine FN_A5_IS_OPEN
 ;
 B679: A5 12                              ; Routine Number: 0xA5, Length: 0x0012
-B67B:       0D 10                        ;     COM_0D_while_pass length=0x0010
-B67D:          14                        ;       COM_14_execute_and_reverse_status next command
-B67E:          2E 20                     ;       UNKNOWN_COM_2E, Value: 0x20
+B67B:       0D 10                        ;     COM_0D_group_AND length=0x0010 (to 0xB68D)
+B67D:          14                        ;       COM_14_reverse_status next command
+B67E:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=0x20)
 B680:          A8                        ;       FN_A8_PRINT_noun1
-B681:          04 0A                     ;       COM_04_print_message length=0x000A
-B683:             4B 7B 06 9A DE 14 D7 A0 9B 5D ;
+B681:          04 0A                     ;       COM_04_print_message length=0x000A (to 0xB68D)
+B683:             4B 7B 06 9A DE 14 D7 A0 9B 5D
 ;
-;                 IS NOT CLOSED.
+;                 IS NOT CLOSED. 
 ;
+;                                        ;     end group_AND at 0xB67B
 
-; -------------- Routine FN_A6_ATTEMPT_TO_OPEN
+; -------------- Routine FN_A6_OPEN
 ;
 B68D: A6 26                              ; Routine Number: 0xA6, Length: 0x0026
-B68F:       0E 24                        ;     COM_0E_while_fail length=0x0024
-B691:          0D 0D                     ;       COM_0D_while_pass length=0x000D
+B68F:       0E 24                        ;     COM_0E_group_OR length=0x0024 (to 0xB6B5)
+B691:          0D 0D                     ;       COM_0D_group_AND length=0x000D (to 0xB6A0)
 B693:             29                     ;         COM_29_toggle_open_VAR()
 B694:             A8                     ;         FN_A8_PRINT_noun1
-B695:             04 08                  ;         COM_04_print_message length=0x0008
-B697:                4B 7B 09 9A C2 16 A7 61 ;
+B695:             04 08                  ;         COM_04_print_message length=0x0008 (to 0xB69F)
+B697:                4B 7B 09 9A C2 16 A7 61
 ;
 ;                    IS NOW OPEN.
 ;
 B69F:             0C                     ;         COM_0C_fail()
-B6A0:          0D 11                     ;       COM_0D_while_pass length=0x0011
-B6A2:             1A                     ;         COM_1A_set_var_to_first_noun()
-B6A3:             15 02                  ;         COM_15_check_var(value=0x02)
-B6A5:             14                     ;         COM_14_execute_and_reverse_status next command
-B6A6:             2E 80                  ;         UNKNOWN_COM_2E, Value: 0x80
-B6A8:             14                     ;         COM_14_execute_and_reverse_status next command
+;                                        ;       end group_AND at 0xB691
+B6A0:          0D 11                     ;       COM_0D_group_AND length=0x0011 (to 0xB6B3)
+B6A2:             1A                     ;         COM_1A_set_var_to_noun1()
+B6A3:             15 02                  ;         COM_15_is_var_attributes(value=0x02)
+B6A5:             14                     ;         COM_14_reverse_status next command
+B6A6:             2E 80                  ;         COM_2E_is_var_ext_attributes(value=0x80)
+B6A8:             14                     ;         COM_14_reverse_status next command
 B6A9:             33                     ;         COM_33_print_objects_on_var_object()
 B6AA:             A8                     ;         FN_A8_PRINT_noun1
-B6AB:             04 06                  ;         COM_04_print_message length=0x0006
-B6AD:                4B 7B 72 61 1F C1   ;
+B6AB:             04 06                  ;         COM_04_print_message length=0x0006 (to 0xB6B3)
+B6AD:                4B 7B 72 61 1F C1  
 ;
 ;                    IS EMPTY.
 ;
-B6B3:          14                        ;       COM_14_execute_and_reverse_status next command
+;                                        ;       end group_AND at 0xB6A0
+B6B3:          14                        ;       COM_14_reverse_status next command
 B6B4:          0C                        ;       COM_0C_fail()
+;                                        ;     end group_OR at 0xB68F
 
 ; -------------- Routine FN_A8_PRINT_noun1
 ;
 B6B5: A8 0C                              ; Routine Number: 0xA8, Length: 0x000C
-B6B7:       0D 0A                        ;     COM_0D_while_pass length=0x000A
-B6B9:          1A                        ;       COM_1A_set_var_to_first_noun()
-B6BA:          0E 06                     ;       COM_0E_while_fail length=0x0006
-B6BC:             15 10                  ;         COM_15_check_var(value=0x10)
-B6BE:             1F 02                  ;         COM_1F_print2 length=0x0002
-B6C0:                5F BE               ;
+B6B7:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0xB6C3)
+B6B9:          1A                        ;       COM_1A_set_var_to_noun1()
+B6BA:          0E 06                     ;       COM_0E_group_OR length=0x0006 (to 0xB6C2)
+B6BC:             15 10                  ;         COM_15_is_var_attributes(value=0x10)
+B6BE:             1F 02                  ;         COM_1F_print2 length=0x0002 (to 0xB6C2)
+B6C0:                5F BE              
 ;
 ;                    THE
 ;
-B6C2:          11                        ;       COM_11_print_first_noun()
+;                                        ;       end group_OR at 0xB6BA
+B6C2:          11                        ;       COM_11_print_noun1()
+;                                        ;     end group_AND at 0xB6B7
 
 ; -------------- Routine FN_A9_PRINT_noun2
 ;
 B6C3: A9 0C                              ; Routine Number: 0xA9, Length: 0x000C
-B6C5:       0D 0A                        ;     COM_0D_while_pass length=0x000A
-B6C7:          1B                        ;       COM_1B_set_var_to_second_noun()
-B6C8:          0E 06                     ;       COM_0E_while_fail length=0x0006
-B6CA:             15 10                  ;         COM_15_check_var(value=0x10)
-B6CC:             1F 02                  ;         COM_1F_print2 length=0x0002
-B6CE:                5F BE               ;
+B6C5:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0xB6D1)
+B6C7:          1B                        ;       COM_1B_set_var_to_noun2()
+B6C8:          0E 06                     ;       COM_0E_group_OR length=0x0006 (to 0xB6D0)
+B6CA:             15 10                  ;         COM_15_is_var_attributes(value=0x10)
+B6CC:             1F 02                  ;         COM_1F_print2 length=0x0002 (to 0xB6D0)
+B6CE:                5F BE              
 ;
 ;                    THE
 ;
-B6D0:          12                        ;       COM_12_print_second_noun()
+;                                        ;       end group_OR at 0xB6C8
+B6D0:          12                        ;       COM_12_print_noun2()
+;                                        ;     end group_AND at 0xB6C5
 
 ; -------------- Routine FN_AA_PRINT_THE_var
 ;
 B6D1: AA 0B                              ; Routine Number: 0xAA, Length: 0x000B
-B6D3:       0D 09                        ;     COM_0D_while_pass length=0x0009
-B6D5:          0E 06                     ;       COM_0E_while_fail length=0x0006
-B6D7:             15 10                  ;         COM_15_check_var(value=0x10)
-B6D9:             1F 02                  ;         COM_1F_print2 length=0x0002
-B6DB:                5F BE               ;
+B6D3:       0D 09                        ;     COM_0D_group_AND length=0x0009 (to 0xB6DE)
+B6D5:          0E 06                     ;       COM_0E_group_OR length=0x0006 (to 0xB6DD)
+B6D7:             15 10                  ;         COM_15_is_var_attributes(value=0x10)
+B6D9:             1F 02                  ;         COM_1F_print2 length=0x0002 (to 0xB6DD)
+B6DB:                5F BE              
 ;
 ;                    THE
 ;
+;                                        ;       end group_OR at 0xB6D5
 B6DD:          16                        ;       COM_16_print_var()
+;                                        ;     end group_AND at 0xB6D3
 
 ; -------------- Routine FN_9C_PRINT_AIRLOCK_TWO_BUTTONS
 ;
 B6DE: 9C 53                              ; Routine Number: 0x9C, Length: 0x0053
-B6E0:       0D 51                        ;     COM_0D_while_pass length=0x0051
-B6E2:          04 04                     ;       COM_04_print_message length=0x0004
-B6E4:             52 86 5B B9            ;
+B6E0:       0D 51                        ;     COM_0D_group_AND length=0x0051 (to 0xB733)
+B6E2:          04 04                     ;       COM_04_print_message length=0x0004 (to 0xB6E8)
+B6E4:             52 86 5B B9           
 ;
 ;                 KIPSPA
 ;
-B6E8:          0E 08                     ;       COM_0E_while_fail length=0x0008
-B6EA:             C3                     ;         FN_C3_PLAYER_LACKS_WISDOM
-B6EB:             04 05                  ;         COM_04_print_message length=0x0005
-B6ED:                D4 47 75 8D 4B      ;
+B6E8:          0E 08                     ;       COM_0E_group_OR length=0x0008 (to 0xB6F2)
+B6EA:             C3                     ;         FN_C3_IS_PLAYER_LACKING_WISDOM
+B6EB:             04 05                  ;         COM_04_print_message length=0x0005 (to 0xB6F2)
+B6ED:                D4 47 75 8D 4B     
 ;
 ;                    AIRLOCK
 ;
+;                                        ;       end group_OR at 0xB6E8
 B6F2:          8B                        ;       FN_8B_PRINT_PERIOD
-B6F3:          04 3E                     ;       COM_04_print_message length=0x003E
-B6F5:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 84 15 3B 63 ;
-B705:             01 B3 DB 95 5F BE 5B B1 4B 7B 52 45 8F 48 19 8A ;
-B715:             82 7B 91 17 C4 9C 8E C6 1D A0 11 EE 5B 98 4B 7B ;
-B725:             66 B1 90 14 11 58 5B 98 4B 7B 8F 4E DB 63 ;
+B6F3:          04 3E                     ;       COM_04_print_message length=0x003E (to 0xB733)
+B6F5:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 84 15 3B 63
+B705:             01 B3 DB 95 5F BE 5B B1 4B 7B 52 45 8F 48 19 8A
+B715:             82 7B 91 17 C4 9C 8E C6 1D A0 11 EE 5B 98 4B 7B
+B725:             66 B1 90 14 11 58 5B 98 4B 7B 8F 4E DB 63
 ;
 ;                 YOU ARE IN A SMALL GREY ROOM. THERE IS A PANEL WITH TWO
 ;                 BUTTONS, ONE IS RED AND ONE IS BLUE.
 ;
+;                                        ;     end group_AND at 0xB6E0
 
 ; -------------- Routine FN_B0_PRINT_AIRLOCK_THREE_BUTTONS
 ;
 B733: B0 5F                              ; Routine Number: 0xB0, Length: 0x005F
-B735:       0D 5D                        ;     COM_0D_while_pass length=0x005D
-B737:          04 04                     ;       COM_04_print_message length=0x0004
-B739:             52 86 5B B9            ;
+B735:       0D 5D                        ;     COM_0D_group_AND length=0x005D (to 0xB794)
+B737:          04 04                     ;       COM_04_print_message length=0x0004 (to 0xB73D)
+B739:             52 86 5B B9           
 ;
 ;                 KIPSPA
 ;
-B73D:          0E 08                     ;       COM_0E_while_fail length=0x0008
-B73F:             C3                     ;         FN_C3_PLAYER_LACKS_WISDOM
-B740:             04 05                  ;         COM_04_print_message length=0x0005
-B742:                D4 47 75 8D 4B      ;
+B73D:          0E 08                     ;       COM_0E_group_OR length=0x0008 (to 0xB747)
+B73F:             C3                     ;         FN_C3_IS_PLAYER_LACKING_WISDOM
+B740:             04 05                  ;         COM_04_print_message length=0x0005 (to 0xB747)
+B742:                D4 47 75 8D 4B     
 ;
 ;                    AIRLOCK
 ;
+;                                        ;       end group_OR at 0xB73D
 B747:          8B                        ;       FN_8B_PRINT_PERIOD
-B748:          04 4A                     ;       COM_04_print_message length=0x004A
-B74A:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 84 15 3B 4A ;
-B75A:             01 B3 DB 95 5F BE 5B B1 4B 7B 52 45 8F 48 19 8A ;
-B76A:             82 7B 82 17 67 B1 BF 14 49 C0 AE 9A C0 16 4B 5E ;
-B77A:             D4 B5 16 60 C0 16 4B 5E C4 B5 67 8E 03 EE 33 98 ;
-B78A:             0F A0 D5 15 47 18 09 8D 5B D4 ;
+B748:          04 4A                     ;       COM_04_print_message length=0x004A (to 0xB794)
+B74A:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 84 15 3B 4A
+B75A:             01 B3 DB 95 5F BE 5B B1 4B 7B 52 45 8F 48 19 8A
+B76A:             82 7B 82 17 67 B1 BF 14 49 C0 AE 9A C0 16 4B 5E
+B77A:             D4 B5 16 60 C0 16 4B 5E C4 B5 67 8E 03 EE 33 98
+B78A:             0F A0 D5 15 47 18 09 8D 5B D4
 ;
 ;                 YOU ARE IN A SMALL GRAY ROOM. THERE IS A PANEL WITH THREE
 ;                 BUTTONS, ONE IS RED, ONE IS BLUE, AND ONE IS YELLOW.
 ;
+;                                        ;     end group_AND at 0xB735
 
 ; -------------- Routine FN_9D_PRINT_EXIT_YELLOW_BUTTON
 ;
 B794: 9D 74                              ; Routine Number: 0x9D, Length: 0x0074
-B796:       0D 72                        ;     COM_0D_while_pass length=0x0072
-B798:          04 05                     ;       COM_04_print_message length=0x0005
-B79A:             89 4E E2 87 41         ;
+B796:       0D 72                        ;     COM_0D_group_AND length=0x0072 (to 0xB80A)
+B798:          04 05                     ;       COM_04_print_message length=0x0005 (to 0xB79F)
+B79A:             89 4E E2 87 41        
 ;
 ;                 BLOKSPA
 ;
-B79F:          0E 06                     ;       COM_0E_while_fail length=0x0006
-B7A1:             C3                     ;         FN_C3_PLAYER_LACKS_WISDOM
-B7A2:             04 03                  ;         COM_04_print_message length=0x0003
-B7A4:                23 63 54            ;
+B79F:          0E 06                     ;       COM_0E_group_OR length=0x0006 (to 0xB7A7)
+B7A1:             C3                     ;         FN_C3_IS_PLAYER_LACKING_WISDOM
+B7A2:             04 03                  ;         COM_04_print_message length=0x0003 (to 0xB7A7)
+B7A4:                23 63 54           
 ;
 ;                    EXIT
 ;
+;                                        ;       end group_OR at 0xB79F
 B7A7:          8B                        ;       FN_8B_PRINT_PERIOD
-B7A8:          04 60                     ;       COM_04_print_message length=0x0060
-B7AA:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 E7 14 05 4E ;
-B7BA:             FF 8B 82 17 2F 62 D5 15 7B 14 2E DD 89 8D BF 14 ;
-B7CA:             49 C0 91 96 96 96 DB 72 6A A0 DB A0 DB BD 0E D0 ;
-B7DA:             9B 8F 03 A0 5F BE 8F 16 23 49 0E D0 16 8A F4 72 ;
-B7EA:             4B 5E C3 B5 5F 17 46 48 63 17 94 C3 4A 5E BF 9F ;
-B7FA:             84 14 36 A1 91 17 CB 9C 1A 98 4B 62 E7 59 9B A8 ;
+B7A8:          04 60                     ;       COM_04_print_message length=0x0060 (to 0xB80A)
+B7AA:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 E7 14 05 4E
+B7BA:             FF 8B 82 17 2F 62 D5 15 7B 14 2E DD 89 8D BF 14
+B7CA:             49 C0 91 96 96 96 DB 72 6A A0 DB A0 DB BD 0E D0
+B7DA:             9B 8F 03 A0 5F BE 8F 16 23 49 0E D0 16 8A F4 72
+B7EA:             4B 5E C3 B5 5F 17 46 48 63 17 94 C3 4A 5E BF 9F
+B7FA:             84 14 36 A1 91 17 CB 9C 1A 98 4B 62 E7 59 9B A8
 ;
 ;                 YOU ARE IN A SMALL CUBICLE. THERE IS A YELLOW BUTTON ON THE
 ;                 OPPOSITE WALL. ON THE NEAR WALL THERE IS A SMALL SQUARE
 ;                 HOLE ABOUT TWO INCHES DEEP.
 ;
+;                                        ;     end group_AND at 0xB796
 
 ; -------------- Routine FN_9E_REMOVE_OVAL_FROM_ROOM
 ;
 B80A: 9E 03                              ; Routine Number: 0x9E, Length: 0x0003
-B80C:       17 3E 00                     ;     COM_17_move_object_to_destination(obj=OBJ_3E_OVAL, destination=nowhere)
+B80C:       17 3E 00                     ;     COM_17_move_object_to(obj=OBJ_3E_OVAL, destination=nowhere)
 
-; -------------- Routine FN_9F_??
+; -------------- Routine FN_9F_OVAL_YELLOW_BUTTON
 ;
 B80F: 9F 0A                              ; Routine Number: 0x9F, Length: 0x000A
-B811:       0D 08                        ;     COM_0D_while_pass length=0x0008
+B811:       0D 08                        ;     COM_0D_group_AND length=0x0008 (to 0xB81B)
 B813:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
-B815:          08 3F                     ;       COM_08_is_first_noun(obj=OBJ_3F_YELLOW_BUTTON)
+B815:          08 3F                     ;       COM_08_is_noun1(obj=OBJ_3F_YELLOW_BUTTON)
 B817:          AD                        ;       FN_AD_HANDLE_OVAL
-B818:          17 3E 3F                  ;       COM_17_move_object_to_destination(obj=OBJ_3E_OVAL, destination=OBJ_3F_YELLOW_BUTTON)
+B818:          17 3E 3F                  ;       COM_17_move_object_to(obj=OBJ_3E_OVAL, destination=OBJ_3F_YELLOW_BUTTON)
+;                                        ;     end group_AND at 0xB811
 
-; -------------- Routine FN_A0_??
+; -------------- Routine FN_A0_OVAL_RED_BUTTON
 ;
 B81B: A0 0A                              ; Routine Number: 0xA0, Length: 0x000A
-B81D:       0D 08                        ;     COM_0D_while_pass length=0x0008
+B81D:       0D 08                        ;     COM_0D_group_AND length=0x0008 (to 0xB827)
 B81F:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
-B821:          08 40                     ;       COM_08_is_first_noun(obj=OBJ_40_RED_BUTTON)
+B821:          08 40                     ;       COM_08_is_noun1(obj=OBJ_40_RED_BUTTON)
 B823:          AD                        ;       FN_AD_HANDLE_OVAL
-B824:          17 3E 40                  ;       COM_17_move_object_to_destination(obj=OBJ_3E_OVAL, destination=OBJ_40_RED_BUTTON)
+B824:          17 3E 40                  ;       COM_17_move_object_to(obj=OBJ_3E_OVAL, destination=OBJ_40_RED_BUTTON)
+;                                        ;     end group_AND at 0xB81D
 
-; -------------- Routine FN_A1_??
+; -------------- Routine FN_A1_OVAL_BLUE_BUTTON
 ;
 B827: A1 0A                              ; Routine Number: 0xA1, Length: 0x000A
-B829:       0D 08                        ;     COM_0D_while_pass length=0x0008
+B829:       0D 08                        ;     COM_0D_group_AND length=0x0008 (to 0xB833)
 B82B:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
-B82D:          08 41                     ;       COM_08_is_first_noun(obj=OBJ_41_BLUE_BUTTON)
+B82D:          08 41                     ;       COM_08_is_noun1(obj=OBJ_41_BLUE_BUTTON)
 B82F:          AD                        ;       FN_AD_HANDLE_OVAL
-B830:          17 3E 41                  ;       COM_17_move_object_to_destination(obj=OBJ_3E_OVAL, destination=OBJ_41_BLUE_BUTTON)
+B830:          17 3E 41                  ;       COM_17_move_object_to(obj=OBJ_3E_OVAL, destination=OBJ_41_BLUE_BUTTON)
+;                                        ;     end group_AND at 0xB829
 
 ; -------------- Routine FN_AC_HANDLE_ORANGE_BUTTON
 ;
 B833: AC 0A                              ; Routine Number: 0xAC, Length: 0x000A
-B835:       0D 08                        ;     COM_0D_while_pass length=0x0008
+B835:       0D 08                        ;     COM_0D_group_AND length=0x0008 (to 0xB83F)
 B837:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
-B839:          08 42                     ;       COM_08_is_first_noun(obj=OBJ_42_ORANGE_BUTTON)
+B839:          08 42                     ;       COM_08_is_noun1(obj=OBJ_42_ORANGE_BUTTON)
 B83B:          AD                        ;       FN_AD_HANDLE_OVAL
-B83C:          17 3E 42                  ;       COM_17_move_object_to_destination(obj=OBJ_3E_OVAL, destination=OBJ_42_ORANGE_BUTTON)
+B83C:          17 3E 42                  ;       COM_17_move_object_to(obj=OBJ_3E_OVAL, destination=OBJ_42_ORANGE_BUTTON)
+;                                        ;     end group_AND at 0xB835
 
 ; -------------- Routine FN_AD_HANDLE_OVAL
 ;
 B83F: AD 54                              ; Routine Number: 0xAD, Length: 0x0054
-B841:       0E 52                        ;     COM_0E_while_fail length=0x0052
-B843:          0D 3B                     ;       COM_0D_while_pass length=0x003B
-B845:             14                     ;         COM_14_execute_and_reverse_status next command
-B846:             37                     ;         COM_37_assert_player_is_in_an_object()
+B841:       0E 52                        ;     COM_0E_group_OR length=0x0052 (to 0xB895)
+B843:          0D 3B                     ;       COM_0D_group_AND length=0x003B (to 0xB880)
+B845:             14                     ;         COM_14_reverse_status next command
+B846:             37                     ;         COM_37_is_player_in_an_object()
 B847:             03 00 3E               ;         COM_03_is_located(owner=nowhere, obj=OBJ_3E_OVAL)
-B84A:             04 34                  ;         COM_04_print_message length=0x0034
-B84C:                44 45 45 8B D1 83 CE C9 92 14 E3 A4 8B B3 03 A0 ;
-B85C:                5F BE F3 17 F3 8C 8E 48 3A 15 50 A4 0B 5C 6B BF ;
-B86C:                47 48 E6 A0 63 16 95 96 6F 7C 12 58 02 B3 BE A0 ;
-B87C:                C0 7A 5B BB         ;
+B84A:             04 34                  ;         COM_04_print_message length=0x0034 (to 0xB880)
+B84C:                44 45 45 8B D1 83 CE C9 92 14 E3 A4 8B B3 03 A0
+B85C:                5F BE F3 17 F3 8C 8E 48 3A 15 50 A4 0B 5C 6B BF
+B86C:                47 48 E6 A0 63 16 95 96 6F 7C 12 58 02 B3 BE A0
+B87C:                C0 7A 5B BB        
 ;
 ;                    A BLACK OVAL APPEARS ON THE WALL AND EXPANDS TO ALMOST MAN
 ;                    SIZED PROPORTIONS.
 ;
-B880:          0D 0F                     ;       COM_0D_while_pass length=0x000F
-B882:             14                     ;         COM_14_execute_and_reverse_status next command
-B883:             37                     ;         COM_37_assert_player_is_in_an_object()
-B884:             04 0B                  ;         COM_04_print_message length=0x000B
-B886:                06 9A 90 73 CA 6A EA 48 9D 61 2E ;
+;                                        ;       end group_AND at 0xB843
+B880:          0D 0F                     ;       COM_0D_group_AND length=0x000F (to 0xB891)
+B882:             14                     ;         COM_14_reverse_status next command
+B883:             37                     ;         COM_37_is_player_in_an_object()
+B884:             04 0B                  ;         COM_04_print_message length=0x000B (to 0xB891)
+B886:                06 9A 90 73 CA 6A EA 48 9D 61 2E
 ;
 ;                    NOTHING HAPPENS.
 ;
-B891:          0D 02                     ;       COM_0D_while_pass length=0x0002
-B893:             1A                     ;         COM_1A_set_var_to_first_noun()
+;                                        ;       end group_AND at 0xB880
+B891:          0D 02                     ;       COM_0D_group_AND length=0x0002 (to 0xB895)
+B893:             1A                     ;         COM_1A_set_var_to_noun1()
 B894:             C1                     ;         FN_C1_PRINT_CANT_REACH_var
+;                                        ;       end group_AND at 0xB891
+;                                        ;     end group_OR at 0xB841
 
 ; -------------- Routine FN_AE_PRINT_PUSH_BUTTON
 ;
 B895: AE 21                              ; Routine Number: 0xAE, Length: 0x0021
-B897:       0D 1F                        ;     COM_0D_while_pass length=0x001F
+B897:       0D 1F                        ;     COM_0D_group_AND length=0x001F (to 0xB8B8)
 B899:          03 00 3E                  ;       COM_03_is_located(owner=nowhere, obj=OBJ_3E_OVAL)
-B89C:          04 1A                     ;       COM_04_print_message length=0x001A
-B89E:             C7 DE FB 17 F3 8C 58 72 56 5E D2 9C 5A C6 7B 14 ;
-B8AE:             F6 4F 80 BF 06 EE 6F C5 EB DA ;
+B89C:          04 1A                     ;       COM_04_print_message length=0x001A (to 0xB8B8)
+B89E:             C7 DE FB 17 F3 8C 58 72 56 5E D2 9C 5A C6 7B 14
+B8AE:             F6 4F 80 BF 06 EE 6F C5 EB DA
 ;
-;                 YOU WILL HAVE TO PUSH A BUTTON, DUMMY!
+;                 YOU WILL HAVE TO PUSH A BUTTON, DUMMY! 
 ;
+;                                        ;     end group_AND at 0xB897
 
 ; -------------- Routine FN_AF_PRINT_I_SEE_NO_noun1_HERE
 ;
 B8B8: AF 13                              ; Routine Number: 0xAF, Length: 0x0013
-B8BA:       0D 11                        ;     COM_0D_while_pass length=0x0011
+B8BA:       0D 11                        ;     COM_0D_group_AND length=0x0011 (to 0xB8CD)
 B8BC:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
-B8BE:          04 06                     ;       COM_04_print_message length=0x0006
-B8C0:             55 77 1B 60 EB 99      ;
+B8BE:          04 06                     ;       COM_04_print_message length=0x0006 (to 0xB8C6)
+B8C0:             55 77 1B 60 EB 99     
 ;
-;                 I SEE NO
+;                 I SEE NO 
 ;
-B8C6:          11                        ;       COM_11_print_first_noun()
-B8C7:          04 04                     ;       COM_04_print_message length=0x0004
-B8C9:             F4 72 DB 63            ;
+B8C6:          11                        ;       COM_11_print_noun1()
+B8C7:          04 04                     ;       COM_04_print_message length=0x0004 (to 0xB8CD)
+B8C9:             F4 72 DB 63           
 ;
-;                 HERE.
+;                 HERE. 
 ;
+;                                        ;     end group_AND at 0xB8BA
 
 ; -------------- Routine FN_B1_PRINT_var_CONTAINS
 ;
 B8CD: B1 0E                              ; Routine Number: 0xB1, Length: 0x000E
-B8CF:       0D 0C                        ;     COM_0D_while_pass length=0x000C
-B8D1:          04 01                     ;       COM_04_print_message length=0x0001
-B8D3:             20                     ;
+B8CF:       0D 0C                        ;     COM_0D_group_AND length=0x000C (to 0xB8DD)
+B8D1:          04 01                     ;       COM_04_print_message length=0x0001 (to 0xB8D4)
+B8D3:             20                    
 ;
 ;                  
 ;
 B8D4:          AA                        ;       FN_AA_PRINT_THE_var
-B8D5:          04 06                     ;       COM_04_print_message length=0x0006
-B8D7:             40 55 4B BD 8B 9A      ;
+B8D5:          04 06                     ;       COM_04_print_message length=0x0006 (to 0xB8DD)
+B8D7:             40 55 4B BD 8B 9A     
 ;
-;                 CONTAINS
+;                 CONTAINS 
 ;
+;                                        ;     end group_AND at 0xB8CF
 
 ; -------------- Routine FN_B2_PRINT_ON_var_CAN_BE_SEEN
 ;
 B8DD: B2 11                              ; Routine Number: 0xB2, Length: 0x0011
-B8DF:       0D 0F                        ;     COM_0D_while_pass length=0x000F
-B8E1:          04 02                     ;       COM_04_print_message length=0x0002
-B8E3:             C0 16                  ;
+B8DF:       0D 0F                        ;     COM_0D_group_AND length=0x000F (to 0xB8F0)
+B8E1:          04 02                     ;       COM_04_print_message length=0x0002 (to 0xB8E5)
+B8E3:             C0 16                 
 ;
 ;                  ON
 ;
 B8E5:          AA                        ;       FN_AA_PRINT_THE_var
-B8E6:          04 08                     ;       COM_04_print_message length=0x0008
-B8E8:             10 53 AF 14 57 17 83 61 ;
+B8E6:          04 08                     ;       COM_04_print_message length=0x0008 (to 0xB8F0)
+B8E8:             10 53 AF 14 57 17 83 61
 ;
-;                 CAN BE SEEN
+;                 CAN BE SEEN 
 ;
+;                                        ;     end group_AND at 0xB8DF
 
 ; -------------- Routine FN_B3_PRINT_DISK_ERROR
 ;
 B8F0: B3 0C                              ; Routine Number: 0xB3, Length: 0x000C
-B8F2:       0D 0A                        ;     COM_0D_while_pass length=0x000A
-B8F4:          1F 07                     ;       COM_1F_print2 length=0x0007
-B8F6:             95 5A C7 83 79 B3 52   ;
+B8F2:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0xB8FE)
+B8F4:          1F 07                     ;       COM_1F_print2 length=0x0007 (to 0xB8FD)
+B8F6:             95 5A C7 83 79 B3 52  
 ;
 ;                 DISK ERROR
 ;
 B8FD:          25                        ;       COM_25_print_linefeed()
+;                                        ;     end group_AND at 0xB8F2
 
 ; -------------- Routine FN_B4_PRINT_AND
 ;
 B8FE: B4 04                              ; Routine Number: 0xB4, Length: 0x0004
-B900:       04 02                        ;     COM_04_print_message length=0x0002
-B902:          8E 48                     ;
+B900:       04 02                        ;     COM_04_print_message length=0x0002 (to 0xB904)
+B902:          8E 48                    
 ;
 ;              AND
 ;
@@ -9117,8 +10011,8 @@ B902:          8E 48                     ;
 ; -------------- Routine FN_B5_PRINT_BY_YOUR_COMMAND
 ;
 B904: B5 0D                              ; Routine Number: 0xB5, Length: 0x000D
-B906:       04 0B                        ;     COM_04_print_message length=0x000B
-B908:          7B 50 C7 DE 85 AF EF 9F 8E 48 2E ;
+B906:       04 0B                        ;     COM_04_print_message length=0x000B (to 0xB913)
+B908:          7B 50 C7 DE 85 AF EF 9F 8E 48 2E
 ;
 ;              BY YOUR COMMAND.
 ;
@@ -9126,11 +10020,11 @@ B908:          7B 50 C7 DE 85 AF EF 9F 8E 48 2E ;
 ; -------------- Routine FN_B6_PRINT_TWO_SAME_SPACE
 ;
 B913: B6 3C                              ; Routine Number: 0xB6, Length: 0x003C
-B915:       04 3A                        ;     COM_04_print_message length=0x003A
-B917:          73 7B 4B 7B 73 A5 45 B8 46 48 4B DB E9 93 DB B9 ;
-B927:          7F 4E 59 15 96 AF 2B D2 34 9E E6 5F D6 B5 D1 9C ;
-B937:          67 53 FB A7 5F BE 53 17 1B 92 5B B9 9B 53 73 49 ;
-B947:          5F BE 53 17 1B 92 8F BE DB 63 ;
+B915:       04 3A                        ;     COM_04_print_message length=0x003A (to 0xB951)
+B917:          73 7B 4B 7B 73 A5 45 B8 46 48 4B DB E9 93 DB B9
+B927:          7F 4E 59 15 96 AF 2B D2 34 9E E6 5F D6 B5 D1 9C
+B937:          67 53 FB A7 5F BE 53 17 1B 92 5B B9 9B 53 73 49
+B947:          5F BE 53 17 1B 92 8F BE DB 63
 ;
 ;              IT IS PHYSICALLY IMPOSSIBLE FOR TWO OBJECTS TO OCCUPY THE
 ;              SAME SPACE AT THE SAME TIME.
@@ -9139,34 +10033,35 @@ B947:          5F BE 53 17 1B 92 8F BE DB 63 ;
 ; -------------- Routine FN_B7_PRINT_HAVE_TO_OPEN_var
 ;
 B951: B7 16                              ; Routine Number: 0xB7, Length: 0x0016
-B953:       0D 14                        ;     COM_0D_while_pass length=0x0014
-B955:          2E 20                     ;       UNKNOWN_COM_2E, Value: 0x20
-B957:          04 0E                     ;       COM_04_print_message length=0x000E
-B959:             C7 DE FB 17 F3 8C 58 72 56 5E D1 9C F0 A4 ;
+B953:       0D 14                        ;     COM_0D_group_AND length=0x0014 (to 0xB969)
+B955:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=0x20)
+B957:          04 0E                     ;       COM_04_print_message length=0x000E (to 0xB967)
+B959:             C7 DE FB 17 F3 8C 58 72 56 5E D1 9C F0 A4
 ;
 ;                 YOU WILL HAVE TO OPEN
 ;
 B967:          AA                        ;       FN_AA_PRINT_THE_var
 B968:          8B                        ;       FN_8B_PRINT_PERIOD
+;                                        ;     end group_AND at 0xB953
 
 ; -------------- Routine FN_B8_PRINT_GARBAGE_GAMES
 ;
 B969: B8 24                              ; Routine Number: 0xB8, Length: 0x0024
-B96B:       04 22                        ;     COM_04_print_message length=0x0022
-B96D:          C7 DE 20 16 6B A1 C7 DE D3 14 E6 96 09 15 82 17 ;
-B97D:          73 49 14 6C C9 4C 4B 5E 96 96 F5 72 49 5E 67 48 ;
-B98D:          6B B5                     ;
+B96B:       04 22                        ;     COM_04_print_message length=0x0022 (to 0xB98F)
+B96D:          C7 DE 20 16 6B A1 C7 DE D3 14 E6 96 09 15 82 17
+B97D:          73 49 14 6C C9 4C 4B 5E 96 96 F5 72 49 5E 67 48
+B98D:          6B B5                    
 ;
-;              YOU KNOW YOU CAN'T DO THAT GARBAGE IN THESE GAMES!
+;              YOU KNOW YOU CAN'T DO THAT GARBAGE IN THESE GAMES! 
 ;
 
 ; -------------- Routine FN_B9_PRINT_JUKEBOX
 ;
 B98F: B9 2E                              ; Routine Number: 0xB9, Length: 0x002E
-B991:       04 2C                        ;     COM_04_print_message length=0x002C
-B993:          83 7A 5F BE E1 14 CF B2 95 AF 50 BD 0B 5C 83 48 ;
-B9A3:          8D 48 30 79 14 BC 03 47 C3 9C 07 4F 16 BC DB 72 ;
-B9B3:          5C B8 51 5E 83 64 FF 15 A4 85 B7 A1 ;
+B991:       04 2C                        ;     COM_04_print_message length=0x002C (to 0xB9BF)
+B993:          83 7A 5F BE E1 14 CF B2 95 AF 50 BD 0B 5C 83 48
+B9A3:          8D 48 30 79 14 BC 03 47 C3 9C 07 4F 16 BC DB 72
+B9B3:          5C B8 51 5E 83 64 FF 15 A4 85 B7 A1
 ;
 ;              IN THE CORNER STANDS AN ANCIENT RADIO ABOUT THE SIZE OF A
 ;              JUKEBOX.
@@ -9175,72 +10070,82 @@ B9B3:          5C B8 51 5E 83 64 FF 15 A4 85 B7 A1 ;
 ; -------------- Routine FN_BA_OPEN_UNLOCK
 ;
 B9BF: BA 65                              ; Routine Number: 0xBA, Length: 0x0065
-B9C1:       0D 63                        ;     COM_0D_while_pass length=0x0063
-B9C3:          0E 04                     ;       COM_0E_while_fail length=0x0004
+B9C1:       0D 63                        ;     COM_0D_group_AND length=0x0063 (to 0xBA26)
+B9C3:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0xB9C9)
 B9C5:             0A 3A                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 B9C7:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
-B9C9:          0E 5B                     ;       COM_0E_while_fail length=0x005B
-B9CB:             0D 28                  ;         COM_0D_while_pass length=0x0028
-B9CD:                09 24               ;           COM_09_compare_to_second_noun(obj=OBJ_24_CROWBAR)
-B9CF:                1A                  ;           COM_1A_set_var_to_first_noun()
-B9D0:                14                  ;           COM_14_execute_and_reverse_status next command
-B9D1:                2E 40               ;           UNKNOWN_COM_2E, Value: 0x40
-B9D3:                04 1A               ;           COM_04_print_message length=0x001A
-B9D5:                   EB 99 67 98 16 58 C4 9C 58 5E BE 7A 9E 61 0B EE ;
-B9E5:                   0B C0 06 9A 49 16 97 54 AB 57 ;
+;                                        ;       end group_OR at 0xB9C3
+B9C9:          0E 5B                     ;       COM_0E_group_OR length=0x005B (to 0xBA26)
+B9CB:             0D 28                  ;         COM_0D_group_AND length=0x0028 (to 0xB9F5)
+B9CD:                09 24               ;           COM_09_is_noun2(obj=OBJ_24_CROWBAR)
+B9CF:                1A                  ;           COM_1A_set_var_to_noun1()
+B9D0:                14                  ;           COM_14_reverse_status next command
+B9D1:                2E 40               ;           COM_2E_is_var_ext_attributes(value=0x40)
+B9D3:                04 1A               ;           COM_04_print_message length=0x001A (to 0xB9EF)
+B9D5:                   EB 99 67 98 16 58 C4 9C 58 5E BE 7A 9E 61 0B EE
+B9E5:                   0B C0 06 9A 49 16 97 54 AB 57
 ;
-;                       NO NEED TO BE VIOLENT, ITS NOT LOCKED!
+;                       NO NEED TO BE VIOLENT, ITS NOT LOCKED! 
 ;
-B9EF:                0E 04               ;           COM_0E_while_fail length=0x0004
-B9F1:                   14               ;             COM_14_execute_and_reverse_status next command
-B9F2:                   2E 20            ;             UNKNOWN_COM_2E, Value: 0x20
-B9F4:                   A6               ;             FN_A6_ATTEMPT_TO_OPEN
-B9F5:             0D 1C                  ;         COM_0D_while_pass length=0x001C
-B9F7:                09 24               ;           COM_09_compare_to_second_noun(obj=OBJ_24_CROWBAR)
-B9F9:                04 18               ;           COM_04_print_message length=0x0018
-B9FB:                   C7 DE 96 AF 3E A0 D5 15 89 17 D5 9C 8E 91 08 8A ;
-BA0B:                   A3 A0 5F BE F9 15 1B 51 ;
+B9EF:                0E 04               ;           COM_0E_group_OR length=0x0004 (to 0xB9F5)
+B9F1:                   14               ;             COM_14_reverse_status next command
+B9F2:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=0x20)
+B9F4:                   A6               ;             FN_A6_OPEN
+;                                        ;           end group_OR at 0xB9EF
+;                                        ;         end group_AND at 0xB9CB
+B9F5:             0D 1C                  ;         COM_0D_group_AND length=0x001C (to 0xBA13)
+B9F7:                09 24               ;           COM_09_is_noun2(obj=OBJ_24_CROWBAR)
+B9F9:                04 18               ;           COM_04_print_message length=0x0018 (to 0xBA13)
+B9FB:                   C7 DE 96 AF 3E A0 D5 15 89 17 D5 9C 8E 91 08 8A
+BA0B:                   A3 A0 5F BE F9 15 1B 51
 ;
-;                       YOUR TOOL IS TOO SMALL FOR THE JOB.
+;                       YOUR TOOL IS TOO SMALL FOR THE JOB. 
 ;
-BA13:             0D 11                  ;         COM_0D_while_pass length=0x0011
+;                                        ;         end group_AND at 0xB9F5
+BA13:             0D 11                  ;         COM_0D_group_AND length=0x0011 (to 0xBA26)
 BA15:                A9                  ;           FN_A9_PRINT_noun2
-BA16:                04 0E               ;           COM_04_print_message length=0x000E
-BA18:                   77 5B 05 B9 15 BC 2F 60 89 17 01 18 6F B2 ;
+BA16:                04 0E               ;           COM_04_print_message length=0x000E (to 0xBA26)
+BA18:                   77 5B 05 B9 15 BC 2F 60 89 17 01 18 6F B2
 ;
 ;                       DOESN'T SEEM TO WORK.
 ;
+;                                        ;         end group_AND at 0xBA13
+;                                        ;       end group_OR at 0xB9C9
+;                                        ;     end group_AND at 0xB9C1
 
 ; -------------- Routine FN_BB_PRINT_LOOK_IN_AT
 ;
 BA26: BB 23                              ; Routine Number: 0xBB, Length: 0x0023
-BA28:       0D 21                        ;     COM_0D_while_pass length=0x0021
-BA2A:          0E 04                     ;       COM_0E_while_fail length=0x0004
+BA28:       0D 21                        ;     COM_0D_group_AND length=0x0021 (to 0xBA4B)
+BA2A:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0xBA30)
 BA2C:             0A 10                  ;         COM_0A_is_input_phrase(phrase=LOOK * IN ......O.)
 BA2E:             0A 0B                  ;         COM_0A_is_input_phrase(phrase=LOOK * AT u.......)
-BA30:          04 19                     ;       COM_04_print_message length=0x0019
-BA32:             8D 7B 89 17 C6 9C 35 49 89 17 57 17 4F 5E DA C3 ;
-BA42:             B8 16 90 14 82 DF 91 7A 2E ;
+;                                        ;       end group_OR at 0xBA2A
+BA30:          04 19                     ;       COM_04_print_message length=0x0019 (to 0xBA4B)
+BA32:             8D 7B 89 17 C6 9C 35 49 89 17 57 17 4F 5E DA C3
+BA42:             B8 16 90 14 82 DF 91 7A 2E
 ;
 ;                 ITS TOO DARK TO SEE MUCH OF ANYTHING.
 ;
+;                                        ;     end group_AND at 0xBA28
 
-; -------------- Routine FN_BC_SHOOT_DROP_SHOTGUN
+; -------------- Routine FN_BC_SHOOT_DROP_SHELL
 ;
 BA4B: BC 07                              ; Routine Number: 0xBC, Length: 0x0007
-BA4D:       0D 05                        ;     COM_0D_while_pass length=0x0005
+BA4D:       0D 05                        ;     COM_0D_group_AND length=0x0005 (to 0xBA54)
 BA4F:          0A 57                     ;       COM_0A_is_input_phrase(phrase=SHOOT u....... WITH u.......)
-BA51:          09 28                     ;       COM_09_compare_to_second_noun(obj=OBJ_28_SHOTGUN)
+BA51:          09 28                     ;       COM_09_is_noun2(obj=OBJ_28_SHOTGUN)
 BA53:          10                        ;       COM_10_drop_var()
+;                                        ;     end group_AND at 0xBA4D
 
 ; -------------- Routine FN_BD_PRINT_SHAGGY_CREATURE
 ;
 BA54: BD 42                              ; Routine Number: 0xBD, Length: 0x0042
-BA56:       1F 40                        ;     COM_1F_print2 length=0x0040
-BA58:          56 45 EF 74 48 5E 46 A0 7B 17 F3 8C 1B B8 0B 6D ;
-BA68:          E4 14 96 5F 2F C6 FB 17 53 BE DC B0 A3 A0 1B B8 ;
-BA78:          13 B3 BB 54 CB D2 8E 48 5E 17 CF 49 10 B2 D6 6A ;
-BA88:          36 60 15 71 50 BD 0B 5C 68 4D AF A0 51 18 DB C7 ;
+BA56:       1F 40                        ;     COM_1F_print2 length=0x0040 (to 0xBA98)
+BA58:          56 45 EF 74 48 5E 46 A0 7B 17 F3 8C 1B B8 0B 6D
+BA68:          E4 14 96 5F 2F C6 FB 17 53 BE DC B0 A3 A0 1B B8
+BA78:          13 B3 BB 54 CB D2 8E 48 5E 17 CF 49 10 B2 D6 6A
+BA88:          36 60 15 71 50 BD 0B 5C 68 4D AF A0 51 18 DB C7
 ;
 ;              A THREE FOOT TALL SHAGGY CREATURE WITH RAZOR SHARP CLAWS
 ;              AND SLAVERING TEETH STANDS BEFORE YOU.
@@ -9249,73 +10154,80 @@ BA88:          36 60 15 71 50 BD 0B 5C 68 4D AF A0 51 18 DB C7 ;
 ; -------------- Routine FN_BE_PRINT_FORCE_FIELD
 ;
 BA98: BE 26                              ; Routine Number: 0xBE, Length: 0x0026
-BA9A:       04 24                        ;     COM_04_print_message length=0x0024
-BA9C:          48 45 AD A0 48 5E 2E 79 12 58 78 B1 9E 61 DB B5 ;
-BAAC:          1B A1 79 68 49 90 50 9F D6 6A 56 72 03 15 65 B1 ;
-BABC:          91 BE 1B 9C               ;
+BA9A:       04 24                        ;     COM_04_print_message length=0x0024 (to 0xBAC0)
+BA9C:          48 45 AD A0 48 5E 2E 79 12 58 78 B1 9E 61 DB B5
+BAAC:          1B A1 79 68 49 90 50 9F D6 6A 56 72 03 15 65 B1
+BABC:          91 BE 1B 9C              
 ;
-;              A FORCE FIELD PREVENTS YOU FROM GOING THAT DIRECTION.
+;              A FORCE FIELD PREVENTS YOU FROM GOING THAT DIRECTION. 
 ;
 
-; -------------- Routine FN_BF_ASSERT_VAR_IS_CLOSED
+; -------------- Routine FN_BF_IS_LIQUID_REACHABLE
 ;
 BAC0: BF 10                              ; Routine Number: 0xBF, Length: 0x0010
-BAC2:       0E 0E                        ;     COM_0E_while_fail length=0x000E
+BAC2:       0E 0E                        ;     COM_0E_group_OR length=0x000E (to 0xBAD2)
 BAC4:          36                        ;       UNKNOWN_COM_36
-BAC5:          0D 0B                     ;       COM_0D_while_pass length=0x000B
+;; If this object is in a closed container, then the var object is changed. The print
+;; below tells the user the container is closed.
+BAC5:          0D 0B                     ;       COM_0D_group_AND length=0x000B (to 0xBAD2)
 BAC7:             AA                     ;         FN_AA_PRINT_THE_var
-BAC8:             04 07                  ;         COM_04_print_message length=0x0007
-BACA:                4B 7B C9 54 A6 B7 2E ;
+BAC8:             04 07                  ;         COM_04_print_message length=0x0007 (to 0xBAD1)
+BACA:                4B 7B C9 54 A6 B7 2E
 ;
 ;                    IS CLOSED.
 ;
 BAD1:             0C                     ;         COM_0C_fail()
+;                                        ;       end group_AND at 0xBAC5
+;                                        ;     end group_OR at 0xBAC2
 
-; -------------- Routine FN_C0_ASSERT_NO_NOUNS_GIVEN
+; -------------- Routine FN_C0_ARE_NOUNS_GIVEN
 ;
 BAD2: C0 06                              ; Routine Number: 0xC0, Length: 0x0006
-BAD4:       0D 04                        ;     COM_0D_while_pass length=0x0004
-BAD6:          08 00                     ;       COM_08_is_first_noun(obj=nothing)
-BAD8:          09 00                     ;       COM_09_compare_to_second_noun(obj=nothing)
+BAD4:       0D 04                        ;     COM_0D_group_AND length=0x0004 (to 0xBADA)
+BAD6:          08 00                     ;       COM_08_is_noun1(obj=nothing)
+BAD8:          09 00                     ;       COM_09_is_noun2(obj=nothing)
+;                                        ;     end group_AND at 0xBAD4
 
 ; -------------- Routine FN_C1_PRINT_CANT_REACH_var
 ;
 BADA: C1 18                              ; Routine Number: 0xC1, Length: 0x0018
-BADC:       0D 16                        ;     COM_0D_while_pass length=0x0016
-BADE:          04 0A                     ;       COM_04_print_message length=0x000A
-BAE0:             C7 DE D3 14 E6 96 2F 17 DA 46 ;
+BADC:       0D 16                        ;     COM_0D_group_AND length=0x0016 (to 0xBAF4)
+BADE:          04 0A                     ;       COM_04_print_message length=0x000A (to 0xBAEA)
+BAE0:             C7 DE D3 14 E6 96 2F 17 DA 46
 ;
 ;                 YOU CAN'T REACH
 ;
 BAEA:          AA                        ;       FN_AA_PRINT_THE_var
-BAEB:          04 07                     ;       COM_04_print_message length=0x0007
-BAED:             79 68 4A 90 2F 62 2E   ;
+BAEB:          04 07                     ;       COM_04_print_message length=0x0007 (to 0xBAF4)
+BAED:             79 68 4A 90 2F 62 2E  
 ;
 ;                 FROM HERE.
 ;
+;                                        ;     end group_AND at 0xBADC
 
 ; -------------- Routine FN_C2_PRINT_CANT_BUDGE_noun1
 ;
 BAF4: C2 10                              ; Routine Number: 0xC2, Length: 0x0010
-BAF6:       0D 0E                        ;     COM_0D_while_pass length=0x000E
-BAF8:          04 0A                     ;       COM_04_print_message length=0x000A
-BAFA:             C7 DE D3 14 E6 96 BF 14 37 5A ;
+BAF6:       0D 0E                        ;     COM_0D_group_AND length=0x000E (to 0xBB06)
+BAF8:          04 0A                     ;       COM_04_print_message length=0x000A (to 0xBB04)
+BAFA:             C7 DE D3 14 E6 96 BF 14 37 5A
 ;
 ;                 YOU CAN'T BUDGE
 ;
 BB04:          A8                        ;       FN_A8_PRINT_noun1
 BB05:          8B                        ;       FN_8B_PRINT_PERIOD
+;                                        ;     end group_AND at 0xBAF6
 
-; -------------- Routine FN_C3_PLAYER_LACKS_WISDOM
+; -------------- Routine FN_C3_IS_PLAYER_LACKING_WISDOM
 ;
 BB06: C3 04                              ; Routine Number: 0xC3, Length: 0x0004
-BB08:       14                           ;     COM_14_execute_and_reverse_status next command
+BB08:       14                           ;     COM_14_reverse_status next command
 BB09:       03 01 80                     ;     COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_80_WISDOM)
 
-; -------------- Routine FN_C4_ASSERT_IS_AFFECT_PHRASE
+; -------------- Routine FN_C4_IS_PHRASE_AN_AFFECT
 ;
 BB0C: C4 1C                              ; Routine Number: 0xC4, Length: 0x001C
-BB0E:       0E 1A                        ;     COM_0E_while_fail length=0x001A
+BB0E:       0E 1A                        ;     COM_0E_group_OR length=0x001A (to 0xBB2A)
 BB10:          0A 11                     ;       COM_0A_is_input_phrase(phrase=OPEN u....... * *)
 BB12:          0A 3A                     ;       COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
 BB14:          0A 05                     ;       COM_0A_is_input_phrase(phrase=GET ..C..... * *)
@@ -9329,61 +10241,66 @@ BB22:          0A 0F                     ;       COM_0A_is_input_phrase(phrase=D
 BB24:          0A 4B                     ;       COM_0A_is_input_phrase(phrase=DROP ..C..... ON .......L)
 BB26:          0A 4D                     ;       COM_0A_is_input_phrase(phrase=FILL ......O. WITH u.......)
 BB28:          0A 40                     ;       COM_0A_is_input_phrase(phrase=CLOSE ....A... * *)
+;                                        ;     end group_OR at 0xBB0E
 
 ; -------------- Routine FN_C5_ENTER_CLIMB_OUT
 ;
 BB2A: C5 28                              ; Routine Number: 0xC5, Length: 0x0028
-BB2C:       0B 26 0A                     ;     COM_0B_switch length=0x0026, function=COM_0A_is_input_phrase(phrase_num)
-BB2F:          36                        ;       COM_0A_is_input_phrase("ENTER * * *")
-BB30:          0F                        ;       ELSE goto=0xBB40
-BB31:             0D 0D                  ;         COM_0D_while_pass length=0x000D
-BB33:                04 09               ;           COM_04_print_message length=0x0009
-BB35:                   C7 DE AF 23 99 16 CB CE 4E ;
+BB2C:       0B 26 0A                     ;     COM_0B_switch length=0x0026 (to 0xBB55), function=COM_0A_is_input_phrase(phrase_num)
+BB2F:          36 0F                     ;       case COM_0A_is_input_phrase("ENTER * * *"), length=0x000F
+BB31:             0D 0D                  ;         COM_0D_group_AND length=0x000D (to 0xBB40)
+BB33:                04 09               ;           COM_04_print_message length=0x0009 (to 0xBB3E)
+BB35:                   C7 DE AF 23 99 16 CB CE 4E
 ;
 ;                       YOU'RE NOW IN
 ;
 BB3E:                A8                  ;           FN_A8_PRINT_noun1
 BB3F:                8B                  ;           FN_8B_PRINT_PERIOD
-BB40:          37                        ;       COM_0A_is_input_phrase("CLIMB * OUT *")
-BB41:          12                        ;       ELSE goto=0xBB54
-BB42:             0D 10                  ;         COM_0D_while_pass length=0x0010
-BB44:                04 0C               ;           COM_04_print_message length=0x000C
-BB46:                   C7 DE AF 23 99 16 D1 CE 73 C6 C3 9E ;
+;                                        ;         end group_AND at 0xBB31
+;                                        ;       end case
+BB40:          37 12                     ;       case COM_0A_is_input_phrase("CLIMB * OUT *"), length=0x0012
+BB42:             0D 10                  ;         COM_0D_group_AND length=0x0010 (to 0xBB54)
+BB44:                04 0C               ;           COM_04_print_message length=0x000C (to 0xBB52)
+BB46:                   C7 DE AF 23 99 16 D1 CE 73 C6 C3 9E
 ;
-;                       YOU'RE NOW OUT OF
+;                       YOU'RE NOW OUT OF 
 ;
 BB52:                A8                  ;           FN_A8_PRINT_noun1
 BB53:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0xBB42
+;                                        ;       end case
+;                                        ;     end decode_switch at 0xBB2C
 
 ; -------------- Routine FN_C6_PROMPT_FOR_DRIVE_NUMBER
 ;
 BB54: C6 1E                              ; Routine Number: 0xC6, Length: 0x001E
-BB56:       0D 1C                        ;     COM_0D_while_pass length=0x001C
-BB58:          04 18                     ;       COM_04_print_message length=0x0018
-BB5A:             18 B7 46 5E 5D 7B D5 15 D0 15 FA 17 DA 78 0C 15 ;
-BB6A:             CF 7B B9 13 D7 E8 C3 12 ;
+BB56:       0D 1C                        ;     COM_0D_group_AND length=0x001C (to 0xBB74)
+BB58:          04 18                     ;       COM_04_print_message length=0x0018 (to 0xBB72)
+BB5A:             18 B7 46 5E 5D 7B D5 15 D0 15 FA 17 DA 78 0C 15
+BB6A:             CF 7B B9 13 D7 E8 C3 12
 ;
-;                 SAVE DISK IS IN WHICH DRIVE <0-3> ?
+;                 SAVE DISK IS IN WHICH DRIVE <0-3> ? 
 ;
 BB72:          3B                        ;       COM_3B_wait_for_key123()
 BB73:          25                        ;       COM_25_print_linefeed()
+;                                        ;     end group_AND at 0xBB56
 
 ; -------------- Routine FN_C8_BACK_TO_TOWN
 ;
 BB74: C8 81 80                           ; Routine Number: 0xC8, Length: 0x0180
-BB77:       0E 81 7D                     ;     COM_0E_while_fail length=0x017D
-BB7A:          0D 80 8C                  ;       COM_0D_while_pass length=0x008C
-BB7D:             03 01 91               ;         COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_91_POISON)
-BB80:             04 80 82               ;         COM_04_print_message length=0x0082
-BB83:                AE D0 73 8F 73 7B A7 B7 4B 94 C7 DE 63 16 DB 59 ;
-BB93:                73 7B E4 46 E5 A0 82 17 46 5E 57 62 B1 B3 A9 15 ;
-BBA3:                B8 D0 46 62 FA 17 83 61 5B BE 10 BC 66 49 45 DB ;
-BBB3:                63 B1 74 C0 4B 5E 96 96 DB 72 F5 59 3E 62 96 14 ;
-BBC3:                45 BD A6 85 51 18 B3 C7 C7 DE F7 17 5B B1 7B A6 ;
-BBD3:                40 B9 F1 5F DF 16 DB B1 0B A7 3F B9 43 5E C3 9A ;
-BBE3:                86 5B 45 5E 2E A1 0A 58 CF 49 53 17 66 CA 51 18 ;
-BBF3:                DB C7 F6 4F 0B EE 0B BC D6 B5 2B A0 56 8B 50 5E ;
-BC03:                8F A1               ;
+BB77:       0E 81 7D                     ;     COM_0E_group_OR length=0x017D (to 0xBCF7)
+BB7A:          0D 80 8C                  ;       COM_0D_group_AND length=0x008C (to 0xBC09)
+BB7D:             03 01 91               ;         COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_91_ALIEN_POISON)
+BB80:             04 80 82               ;         COM_04_print_message length=0x0082 (to 0xBC05)
+BB83:                AE D0 73 8F 73 7B A7 B7 4B 94 C7 DE 63 16 DB 59
+BB93:                73 7B E4 46 E5 A0 82 17 46 5E 57 62 B1 B3 A9 15
+BBA3:                B8 D0 46 62 FA 17 83 61 5B BE 10 BC 66 49 45 DB
+BBB3:                63 B1 74 C0 4B 5E 96 96 DB 72 F5 59 3E 62 96 14
+BBC3:                45 BD A6 85 51 18 B3 C7 C7 DE F7 17 5B B1 7B A6
+BBD3:                40 B9 F1 5F DF 16 DB B1 0B A7 3F B9 43 5E C3 9A
+BBE3:                86 5B 45 5E 2E A1 0A 58 CF 49 53 17 66 CA 51 18
+BBF3:                DB C7 F6 4F 0B EE 0B BC D6 B5 2B A0 56 8B 50 5E
+BC03:                8F A1              
 ;
 ;                    WELL, IT SEEMS YOU MADE IT ACROSS THE DESERT! HOWEVER, WHEN
 ;                    THAT NASTY CREATURE IN THE DESERT ATTACKED YOU, YOU WERE
@@ -9392,24 +10309,25 @@ BC03:                8F A1               ;
 ;
 BC05:             1C 01                  ;         COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 BC07:             1D 64                  ;         COM_1D_attack_var(points=100)
-BC09:          0D 80 E9                  ;       COM_0D_while_pass length=0x00E9
+;                                        ;       end group_AND at 0xBB7A
+BC09:          0D 80 E9                  ;       COM_0D_group_AND length=0x00E9 (to 0xBCF5)
 BC0C:             03 00 71               ;         COM_03_is_located(owner=nowhere, obj=OBJ_71_GREEN_BUTTON_WEAPON)
-BC0F:             04 80 E2               ;         COM_04_print_message length=0x00E2
-BC12:                C7 DE 9B 15 5B CA 86 91 4B 5E 04 BC DD 46 89 17 ;
-BC22:                89 17 01 D2 82 17 56 5E 80 A1 C8 B5 C5 9F 9B 15 ;
-BC32:                5B CA 76 B1 38 C6 F3 5F 8E 48 82 17 3B 63 1F 54 ;
-BC42:                23 62 C7 DE 95 AF D5 C3 65 62 43 F4 B3 14 C5 6A ;
-BC52:                3F 61 6B 4F 91 BE 8B 96 D2 B5 72 B1 2F 49 03 58 ;
-BC62:                33 98 5F BE 4F 15 03 BA 16 CB 35 79 3B 16 F3 B9 ;
-BC72:                46 48 93 16 2E 6D 56 F4 DB 72 94 5F 53 BE 55 72 ;
-BC82:                AF 14 83 61 18 B7 F1 5F 8A 14 19 EE 46 61 10 EE ;
-BC92:                6B A1 C7 DE 77 16 F3 B9 76 B1 38 C6 89 17 82 17 ;
-BCA2:                46 5E BE 9F EF B3 D1 B5 9B 64 34 A1 99 16 A3 B2 ;
-BCB2:                04 8A B3 A0 AB 98 88 8C DB 63 F4 A4 52 72 33 BB ;
-BCC2:                C7 DE 82 17 95 7A 15 EE E7 9F 5B 59 90 14 02 A1 ;
-BCD2:                23 62 59 C4 FB 17 F3 8C 3F 55 43 5E 33 98 C7 DE ;
-BCE2:                D3 14 8B 96 0F 9B 03 BA 16 6C 51 5E 17 98 71 16 ;
-BCF2:                7F B1               ;
+BC0F:             04 80 E2               ;         COM_04_print_message length=0x00E2 (to 0xBCF4)
+BC12:                C7 DE 9B 15 5B CA 86 91 4B 5E 04 BC DD 46 89 17
+BC22:                89 17 01 D2 82 17 56 5E 80 A1 C8 B5 C5 9F 9B 15
+BC32:                5B CA 76 B1 38 C6 F3 5F 8E 48 82 17 3B 63 1F 54
+BC42:                23 62 C7 DE 95 AF D5 C3 65 62 43 F4 B3 14 C5 6A
+BC52:                3F 61 6B 4F 91 BE 8B 96 D2 B5 72 B1 2F 49 03 58
+BC62:                33 98 5F BE 4F 15 03 BA 16 CB 35 79 3B 16 F3 B9
+BC72:                46 48 93 16 2E 6D 56 F4 DB 72 94 5F 53 BE 55 72
+BC82:                AF 14 83 61 18 B7 F1 5F 8A 14 19 EE 46 61 10 EE
+BC92:                6B A1 C7 DE 77 16 F3 B9 76 B1 38 C6 89 17 82 17
+BCA2:                46 5E BE 9F EF B3 D1 B5 9B 64 34 A1 99 16 A3 B2
+BCB2:                04 8A B3 A0 AB 98 88 8C DB 63 F4 A4 52 72 33 BB
+BCC2:                C7 DE 82 17 95 7A 15 EE E7 9F 5B 59 90 14 02 A1
+BCD2:                23 62 59 C4 FB 17 F3 8C 3F 55 43 5E 33 98 C7 DE
+BCE2:                D3 14 8B 96 0F 9B 03 BA 16 6C 51 5E 17 98 71 16
+BCF2:                7F B1              
 ;
 ;                    YOU HAVE MADE IT BACK TO TOWN! THE TOWNS FOLK HAVE RETURNED
 ;                    AND THEY CHEER YOUR SUCCESS. A BIG CELEBRATION IS PREPARED
@@ -9419,43 +10337,47 @@ BCF2:                7F B1               ;
 ;                    ANOTHER UFO WILL COME AND YOU CAN INVESTIGATE ONCE MORE.
 ;
 BCF4:             24                     ;         COM_24_exit_program()
-BCF5:          14                        ;       COM_14_execute_and_reverse_status next command
+;                                        ;       end group_AND at 0xBC09
+BCF5:          14                        ;       COM_14_reverse_status next command
 BCF6:          0C                        ;       COM_0C_fail()
+;                                        ;     end group_OR at 0xBB77
 
 ; -------------- Routine FN_C9_PRINT_COMPLETED_PERCENT
 ;
 BCF7: C9 23                              ; Routine Number: 0xC9, Length: 0x0023
-BCF9:       0D 21                        ;     COM_0D_while_pass length=0x0021
-BCFB:          1F 0C                     ;       COM_1F_print2 length=0x000C
-BCFD:             C7 DE 9B 15 5B CA 3F 55 FF A5 E6 BD ;
+BCF9:       0D 21                        ;     COM_0D_group_AND length=0x0021 (to 0xBD1C)
+BCFB:          1F 0C                     ;       COM_1F_print2 length=0x000C (to 0xBD09)
+BCFD:             C7 DE 9B 15 5B CA 3F 55 FF A5 E6 BD
 ;
 ;                 YOU HAVE COMPLETED
 ;
 BD09:          26                        ;       COM_26_print_score()
-BD0A:          1F 10                     ;       COM_1F_print2 length=0x0010
-BD0C:             F4 A4 B0 53 11 BC 9B 64 34 A1 6B 16 DB B9 27 A0 ;
+BD0A:          1F 10                     ;       COM_1F_print2 length=0x0010 (to 0xBD1C)
+BD0C:             F4 A4 B0 53 11 BC 9B 64 34 A1 6B 16 DB B9 27 A0
 ;
 ;                 PERCENT OF YOUR MISSION.
 ;
+;                                        ;     end group_AND at 0xBCF9
 
 ; -------------- Routine FN_CA_DIE_ENERGY_BEAM
 ;
 BD1C: CA 50                              ; Routine Number: 0xCA, Length: 0x0050
-BD1E:       0D 4E                        ;     COM_0D_while_pass length=0x004E
+BD1E:       0D 4E                        ;     COM_0D_group_AND length=0x004E (to 0xBD6E)
 BD20:          25                        ;       COM_25_print_linefeed()
 BD21:          25                        ;       COM_25_print_linefeed()
-BD22:          1F 46                     ;       COM_1F_print2 length=0x0046
-BD24:             26 BA F0 59 1E 8F 5C 15 DB 9F A7 B7 D0 92 D3 6D ;
-BD34:             99 16 1F D1 7E B1 90 14 30 15 31 62 44 DB 8F 5F ;
-BD44:             30 15 6E CA 5F A0 DB B5 19 A1 51 18 23 C6 74 CA ;
-BD54:             4E DB 4F 79 D5 15 EF 16 B7 B1 08 58 FF B2 51 18 ;
-BD64:             23 C6 F6 4E EB DA      ;
+BD22:          1F 46                     ;       COM_1F_print2 length=0x0046 (to 0xBD6A)
+BD24:             26 BA F0 59 1E 8F 5C 15 DB 9F A7 B7 D0 92 D3 6D
+BD34:             99 16 1F D1 7E B1 90 14 30 15 31 62 44 DB 8F 5F
+BD44:             30 15 6E CA 5F A0 DB B5 19 A1 51 18 23 C6 74 CA
+BD54:             4E DB 4F 79 D5 15 EF 16 B7 B1 08 58 FF B2 51 18
+BD64:             23 C6 F6 4E EB DA     
 ;
 ;                 SUDDENLY, FROM SEEMINGLY NOWHERE, AN ENERGY BEAM ENVELOPES
 ;                 YOU! YOUR VERY LIFE IS PURGED FROM YOUR BODY!
 ;
 BD6A:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 BD6C:          1D 64                     ;       COM_1D_attack_var(points=100)
+;                                        ;     end group_AND at 0xBD1E
 
 diskAccessBuffer:
 ; 256 bytes

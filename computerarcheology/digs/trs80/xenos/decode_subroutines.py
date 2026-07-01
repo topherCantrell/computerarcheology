@@ -34,10 +34,11 @@ if __name__ == '__main__':
     lid = cursor.get_byte(line)
     mlength = cursor.decode_length(line)
     end_of_routines = mlength + cursor.pos
+    end_of = cursor.origin + cursor.pos + mlength
 
     # List header
 
-    print(f'{origin:04X}: {cursor.build_data_line(line)} ; List_ID=0x{lid:02X}, length=0x{mlength:04X}')
+    print(f'{origin:04X}: {cursor.build_data_line(line)} ; List_ID=0x{lid:02X}, length=0x{mlength:04X} (to 0x{end_of:04X})')
     print()
 
     while cursor.pos < end_of_routines:   

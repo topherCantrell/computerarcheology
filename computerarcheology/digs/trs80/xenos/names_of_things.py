@@ -95,10 +95,10 @@ ROOMS = {
         0x9B: 'NARROW_PATH',
         0x9C: 'CANYON_FLOOR',
         0x9D: 'UFO_CRATER',
-        0x9E: 'STRANGE_FOOTPRINTS1',
+        0x9E: 'DESERT_STRANGE_FOOTPRINTS1',
         0x9F: 'DESERT_CANYON3',
-        0xA0: 'ERRATIC_FOOTPRINTS',
-        0xA1: 'WEAVING_FOOTPRINTS',
+        0xA0: 'DESERT_ERRATIC_FOOTPRINTS',
+        0xA1: 'DESERT_WEAVING_FOOTPRINTS',
         0xA2: 'STRANGE_FOOTPRINTS2',
         0xA3: 'DESERT3',
         0xA4: 'DESERT4',
@@ -269,39 +269,39 @@ ROOMS = {
 }
 
 COMMANDS = {
-    0x00: 'move_ACTIVE_and_look',
+    0x00: 'move_and_look',
     0x01: 'is_in_pack_or_room',
-    0x02: 'is_owned',
+    0x02: 'is_owned_by',
     0x03: 'is_located',
     0x04: 'print_message',
-    0x05: 'is_less_equal_last_random',
+    0x05: 'is_leq_last_random',
     0x06: 'print_inventory',
     0x07: 'print_room_description',
-    0x08: 'is_first_noun',
-    0x09: 'compare_to_second_noun',
+    0x08: 'is_noun1',
+    0x09: 'is_noun2',
     0x0A: 'is_input_phrase',
     0x0B: 'switch',
     0x0C: 'fail',
-    0x0D: 'while_pass',
-    0x0E: 'while_fail',
+    0x0D: 'group_AND',
+    0x0E: 'group_OR',
     0x0F: 'pick_up_var_object',
     0x10: 'drop_var',
-    0x11: 'print_first_noun',
-    0x12: 'print_second_noun',
-    0x13: 'process_phrase_by_room_first_second',
-    0x14: 'execute_and_reverse_status',
-    0x15: 'check_var',
+    0x11: 'print_noun1',
+    0x12: 'print_noun2',
+    0x13: 'process_phrase_by_room',
+    0x14: 'reverse_status',
+    0x15: 'is_var_attributes',
     0x16: 'print_var',
-    0x17: 'move_object_to_destination',
+    0x17: 'move_object_to',
     0x18: 'is_var_owned_by_active',
     0x19: 'move_active_object',
-    0x1A: 'set_var_to_first_noun',
-    0x1B: 'set_var_to_second_noun',
+    0x1A: 'set_var_to_noun1',
+    0x1B: 'set_var_to_noun2',
     0x1C: 'set_var_object',
     0x1D: 'attack_var',
-    0x1E: 'swap',
+    0x1E: 'swap_object_locations',
     0x1F: 'print2',
-    0x20: 'is_active_this',
+    0x20: 'is_active_object',
     0x21: 'execute_phrase',
     0x22: 'is_less_equal_health',
     0x23: 'heal_var',
@@ -314,34 +314,34 @@ COMMANDS = {
     0x2A: 'toggle_lock_VAR',
     0x2B: 'random',
     0x2C: 'set_active',
-    0x2D: 'compare_to_var_object',
+    0x2D: 'is_var_object',
     
-    0x2E: 'check_extended_attributes',
+    0x2E: 'is_var_ext_attributes',
     0x2F: 'load_section_from_disk',
     0x30: 'set_current_room',
-    0x31: 'move_second_noun_to_var_object',
-    0x32: 'move_first_noun_to_var_object',
+    0x31: 'move_noun2_to_var_object',
+    0x32: 'move_noun1_to_var_object',
     0x33: 'print_objects_on_var_object',
     0x34: 'save_system_objects_to_disk',
     0x35: 'load_system_objects_from_disk',
-    0x36: 'UNKNOWN??36??',
-    0x37: 'assert_player_is_in_an_object',
+    0x36: 'is_in_room_or_open_container',
+    0x37: 'is_player_in_an_object',
     0x38: 'bump_score',
-    0x39: 'check_weight_70_or_less',
+    0x39: 'is_weight_70_or_less',
     0x3A: 'clear_screen',
     0x3B: 'wait_for_key123',
 }
 
 ROUTINES = {
-    0x80: 'PRINT_SHOTGUN_HERE',
     0x81: 'PRINT_DOOR_HERE',
+    0x80: 'PRINT_SHOTGUN_HERE',    
     0x8B: 'PRINT_PERIOD',
-    0x8D: 'ASSERT_OBJECT_IS_CLOSED',
-    0x8F: 'TRY_TO_GET_OBJECT',
+    0x8D: 'IS_CLOSED',
+    0x8F: 'GET_OBJECT',
     0x90: 'PRINT_ERROR_CLIMB_ENTER',
     0x91: 'PRINT_USE_DIRECTIONS',
     0x92: 'PRINT_TRIED_BUT_COULDNT',
-    0x94: 'INIT_GAME',  # Moves to HIGHWAY_WEST in section 1
+    0x94: 'INITIALIZE_GAME',  # Moves to HIGHWAY_WEST in section 1
     0x95: 'PRINT_TRAIL_MEANDERS',
     0x96: 'PRINT_VAST_CANYON',
     0x97: 'PRINT_CERTAIN_DEATH',
@@ -352,13 +352,13 @@ ROUTINES = {
     0x9C: 'PRINT_AIRLOCK_TWO_BUTTONS',
     0x9D: 'PRINT_EXIT_YELLOW_BUTTON',
     0x9E: 'REMOVE_OVAL_FROM_ROOM',
-    # 0x9F ??
-    # 0xA0 ??
-    # 0xA1 ??
+    0x9F: 'OVAL_YELLOW_BUTTON',
+    0xA0: 'OVAL_RED_BUTTON',
+    0xA1: 'OVAL_BLUE_BUTTON',
     0xA2: 'PRINT_ALREADY_HAVE_THE_var',
     0xA3: 'PRINT_WELCOME_MESSAGE',  # Moves to HIGHWAY_WEST in section 1
-    0xA5: 'VERIFY_OPEN',
-    0xA6: 'ATTEMPT_TO_OPEN',
+    0xA5: 'IS_OPEN',
+    0xA6: 'OPEN',
     0xA8: 'PRINT_noun1',
     0xA9: 'PRINT_noun2',
     0xAA: 'PRINT_THE_var',
@@ -379,18 +379,18 @@ ROUTINES = {
     0xB9: 'PRINT_JUKEBOX',
     0xBA: 'OPEN_UNLOCK',
     0xBB: 'PRINT_LOOK_IN_AT',
-    0xBC: 'SHOOT_DROP_SHOTGUN',
+    0xBC: 'SHOOT_DROP_SHELL',
     0xBD: 'PRINT_SHAGGY_CREATURE',
     0xBE: 'PRINT_FORCE_FIELD',
-    0xBF: 'ASSERT_VAR_IS_CLOSED',
-    0xC0: 'ASSERT_NO_NOUNS_GIVEN',
+    0xBF: 'IS_LIQUID_REACHABLE',
+    0xC0: 'ARE_NOUNS_GIVEN',
     0xC1: 'PRINT_CANT_REACH_var',
     0xC2: 'PRINT_CANT_BUDGE_noun1',
-    0xC3: 'PLAYER_LACKS_WISDOM',
-    0xC4: 'ASSERT_IS_AFFECT_PHRASE',
+    0xC3: 'IS_PLAYER_LACKING_WISDOM',
+    0xC4: 'IS_PHRASE_AN_AFFECT',
     0xC5: 'ENTER_CLIMB_OUT',
     0xC6: 'PROMPT_FOR_DRIVE_NUMBER',
-    0xC7: 'ASSERT_OBJECT_IS_RIBULN',
+    0xC7: 'IS_OBJECT_RIBULN',
     0xC8: 'BACK_TO_TOWN',
     0xC9: 'PRINT_COMPLETED_PERCENT', 
     0xCA: 'DIE_ENERGY_BEAM',
@@ -439,10 +439,10 @@ OBJECTS = {
     0x24: "CROWBAR",
     0x25: "WANTED_POSTER",
     0x26: "GUN_CABINET",
-    0x27: "SHOTGUN",
+    0x27: "SHOTGUN_IN_CABINET",
     0x28: "SHOTGUN",
-    # 0x29
-    # 0x2A
+    0x29: "SHOTGUN_SHELL1",
+    0x2A: "SHOTGUN_SHELL2",
     0x2B: "GAS_PUMP",
     0x2C: "PADLOCK",
     0x2D: "JACK-O-MATIC",
@@ -453,7 +453,7 @@ OBJECTS = {
     0x32: "SHOVEL",
     0x33: "RATTLE_SNAKE",
     0x34: "DEAD_SNAKE",
-    # 0x35,
+    0x35: "SNAKE_VENOM",
     0x36: "FOOD",
     0x37: "STEEL_SAFE",
     0x38: "MONEY",
@@ -475,7 +475,7 @@ OBJECTS = {
     0x48: "DRESSER",
     0x49: "TABLE",
     0x4A: "HOOD",
-    #0x4B
+    0x4B: "LIT_DYNAMITE_FUSE",
     0x4C: "BLASTED_SAFE",
     0x4D: "DOOR",
     0x4E: "BOULDER",
@@ -531,8 +531,8 @@ OBJECTS = {
     0x80: "WISDOM",
     0x81: "GREEN_CUBE",
     0x82: "ROD_WITH_SPHERE",
-    # 0x83
-    # 0x84
+    0x83: "RADIATION_DOSE1",
+    0x84: "RADIATION_DOSE2",
     0x85: "CYLINDER_BOMB",
     0x86: "CYLINDER_POISON",
     0x87: "CYLINDER_ANTS",
@@ -541,11 +541,11 @@ OBJECTS = {
     0x8A: "DEAD_ALIEN",
     0x8B: "SQUIRMING_ALIEN",
     0x8C: "PROSPECTOR",
-    # 0x8D
+    0x8D: "PROSPECTOR_HAS_SPOKEN",
     0x8E: "MACHINE",
     0x8F: "WHITE_BUTTON_ENGINES",
     0x90: "CHAIR",
-    0x91: "POISON",
+    0x91: "ALIEN_POISON",
     0x92: "SCORE", 
     0x93: "DOOR_ESNEL",   
     0x94: "GOOLUB",
@@ -559,6 +559,53 @@ OBJECTS = {
     0x9C: "SHIP",
     0x9D: 'THIRST_TRACKER',
 }
+
+EXT_ATTRIBUTES = {
+    0x80: 'Glass',
+    0x40: 'Locked',
+    0x20: 'Closed',
+    0x10: 'liQuid'
+}
+
+ATTRIBUTES = {
+    0x80: '??',
+    0x40: 'Weapon',
+    0x20: 'Portable',
+    0x10: 'Alive',
+    0x08: 'Openable',
+    0x04: 'Readable',
+    0x02: 'Holder',
+    0x01: 'Surface'
+}
+
+def get_ext_attribute_name(value):
+    ret_bits = ''
+    ret_words = []
+    for bit, name in EXT_ATTRIBUTES.items():
+        if value & bit:
+            for p in name:
+                if p=='?' or p.isupper():
+                    ret_bits += p
+                    break
+            ret_words.append(name)
+        else:
+            ret_bits += '.'
+    return f'{ret_bits}----({",".join(ret_words)})'
+
+def get_attribute_name(value):
+    # attributes=?QW.S...(liQuid, Weapon, Surface)
+    ret_bits = ''
+    ret_words = []
+    for bit, name in ATTRIBUTES.items():
+        if value & bit:
+            for p in name:
+                if p=='?' or p.isupper():
+                    ret_bits += p
+                    break
+            ret_words.append(name)
+        else:
+            ret_bits += '.'
+    return f'{ret_bits}({",".join(ret_words)})'
 
 def check_unique_rooms():
     names = []

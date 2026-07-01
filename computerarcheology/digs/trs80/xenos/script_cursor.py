@@ -79,7 +79,8 @@ class ScriptCursor:
     def decode_print_command(self, cmd_name, origin, line, _, prt_level):
         length = self.decode_length(line)
         end_of_command = self.pos+length
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name} length=0x{length:04X}', prt_level)        
+        end_of = self.origin+self.pos+length
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name} length=0x{length:04X} (to 0x{end_of:04X})', prt_level)        
         g = unpack.unpack(self.pos, self.data, length)
         
         origin += len(line)
@@ -102,12 +103,14 @@ class ScriptCursor:
     }
 
     def decode_switch(self, cmd_name, origin, line, disk_number, prt_level):
+        start_of_command = self.pos - 1 + self.origin
         length = self.decode_length(line)
         end_of_command = self.pos+length
         fn_to_call = self.get_byte(line)        
         if fn_to_call != 0x0A and fn_to_call != 0x03 and fn_to_call != 0x05 and fn_to_call != 0x22 and fn_to_call != 0x08: 
             raise Exception(f"Unknown function to call in SWITCH command: 0x{fn_to_call:02X}")
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name} length=0x{length:04X}, function={self.SWITCH_WORDS[fn_to_call][0]}', prt_level)
+        end_of = self.origin+self.pos+length
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name} length=0x{length:04X} (to 0x{end_of:04X}), function={self.SWITCH_WORDS[fn_to_call][0]}', prt_level)
         
         while self.pos < end_of_command:
             line = []
@@ -117,18 +120,23 @@ class ScriptCursor:
                 obj_text = names_of_things.get_object_name(value)
                 value2 = self.get_byte(line)
                 obj_text2 = names_of_things.get_object_name(value2)
-                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; COM_03_is_located(room_num, obj_num) room_num={obj_text}, obj_num={obj_text2}', prt_level+1)
+                length_of_phrase = self.decode_length(line)
+                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ;case COM_03_is_located(room_num, obj_num) room_num={obj_text}, obj_num={obj_text2}, length=0x{length_of_phrase:04X}', prt_level+1)
             elif fn_to_call == 0x05:
-                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; COM_05_is_less_equal_last_random(value={value})', prt_level+1)
+                length_of_phrase = self.decode_length(line)
+                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; case COM_05_is_less_equal_last_random(value={value}), length=0x{length_of_phrase:04X}', prt_level+1)
             elif fn_to_call == 0x08:   
                 obj_text = names_of_things.get_object_name(value)                             
-                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; COM_08_is_first_noun(object_num={obj_text})', prt_level+1)
+                length_of_phrase = self.decode_length(line)
+                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; case COM_08_is_first_noun(object_num={obj_text}), length=0x{length_of_phrase:04X}', prt_level+1)
             elif fn_to_call == 0x0A:
                 phrase_num = value
                 phrase_text = language.get_phrase(phrase_num)
-                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; COM_0A_is_input_phrase("{phrase_text}")', prt_level+1)
+                length_of_phrase = self.decode_length(line)
+                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; case COM_0A_is_input_phrase("{phrase_text}"), length=0x{length_of_phrase:04X}', prt_level+1)
             elif fn_to_call == 0x22:
-                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; COM_22_is_less_equal_health(points={value})', prt_level+1)
+                length_of_phrase = self.decode_length(line)
+                self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; case COM_22_is_less_equal_health(points={value}), length=0x{length_of_phrase:04X}', prt_level+1)
             
             else:
                 self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {self.SWITCH_WORDS[fn_to_call][1]}: 0x{value:02X}', prt_level+1)
@@ -136,23 +144,33 @@ class ScriptCursor:
             
             line = []
             origin = self.origin+self.pos
-            length_of_phrase = self.decode_length(line)
-            self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; ELSE goto=0x{self.origin+self.pos+length_of_phrase:04X}', prt_level+1)
-            self.decode_command(disk_number, prt_level+2)        
+            # self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; ELSE goto=0x{self.origin+self.pos+length_of_phrase:04X}', prt_level+1)
+            self.decode_command(disk_number, prt_level+2)
+            self.print_with_level(f'end case', prt_level+1)
+
+        self.print_with_level(f'end decode_switch at 0x{start_of_command:04X}', prt_level)        
     
     def decode_while_pass(self, cmd_name, origin, line, disk_number, prt_level):
+        start_of_command = self.pos - 1 + self.origin
         length = self.decode_length(line)
         end_of_command = self.pos+length
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name} length=0x{length:04X}', prt_level)
+        end_of = self.origin+self.pos+length
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name} length=0x{length:04X} (to 0x{end_of:04X})', prt_level)
         while self.pos < end_of_command:
             self.decode_command(disk_number, prt_level+1)
+
+        self.print_with_level(f'end group_AND at 0x{start_of_command:04X}', prt_level)
     
     def decode_while_fail(self, cmd_name, origin, line, disk_number, prt_level):
+        start_of_command = self.pos - 1 + self.origin
         length = self.decode_length(line)
         end_of_command = self.pos+length
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name} length=0x{length:04X}', prt_level)
+        end_of = self.origin+self.pos+length
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name} length=0x{length:04X} (to 0x{end_of:04X})', prt_level)
         while self.pos < end_of_command:
             self.decode_command(disk_number, prt_level+1)
+
+        self.print_with_level(f'end group_OR at 0x{start_of_command:04X}', prt_level)
 
     def decode_set_current_room(self, cmd_name, origin, line, disk_number, prt_level):
         room_num = self.get_byte(line)
@@ -254,7 +272,8 @@ class ScriptCursor:
     def decode_print2(self, cmd_name, origin, line, _, prt_level):
         length = self.decode_length(line)
         end_of_command = self.pos+length
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name} length=0x{length:04X}', prt_level)
+        end_of = self.origin+self.pos+length
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name} length=0x{length:04X} (to 0x{end_of:04X})', prt_level)
         g = unpack.unpack(self.pos, self.data, length)        
         origin += len(line)
         line = []        
@@ -321,7 +340,8 @@ class ScriptCursor:
 
     def decode_check_var(self, cmd_name, origin, line, _, prt_level):
         value = self.get_byte(line)
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}(value=0x{value:02X})', prt_level)
+        attributes_text = names_of_things.get_attribute_name(value)
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}(value={attributes_text})', prt_level)
 
     def decode_is_var_owned_by_active(self, cmd_name, origin, line, _, prt_level):
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
@@ -370,9 +390,10 @@ class ScriptCursor:
     def decode_print_objects_on_var_object(self, cmd_name, origin, line, _, prt_level):
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}()', prt_level)
 
-    def decode_unknown2E(self, cmd_name, origin, line, _, prt_level):
+    def decode_check_ext_attributes(self, cmd_name, origin, line, _, prt_level):
         value = self.get_byte(line)
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN_COM_2E, Value: 0x{value:02X}', prt_level)              
+        attributes_text = names_of_things.get_ext_attribute_name(value)
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; {cmd_name}(value={attributes_text})', prt_level)              
     def decode_unknown36(self, cmd_name, origin, line, _, prt_level):
         self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; UNKNOWN_COM_36', prt_level)        
 
@@ -411,7 +432,7 @@ class ScriptCursor:
         0x1F: decode_print2,
         0x20: decode_is_active_this,
         0x21: decode_execute_phrase,
-        # 0x22
+        # 0x22: decode_is_less_equal_health, # Only called from SWITCH
         0x23: decode_heal_var,
         0x24: decode_exit_program,
         0x25: decode_print_linefeed,
@@ -420,10 +441,10 @@ class ScriptCursor:
         0x28: decode_save_game,
         0x29: decode_print_open_var,
         0x2A: decode_toggle_lock_var,
-        # 0x2B
+        # 0x2B: decode_random, # Never called from scripts
         0x2C: decode_set_active,
         0x2D: decode_compare_to_var_object,
-        0x2E: decode_unknown2E,
+        0x2E: decode_check_ext_attributes,
         0x2F: decode_load_section_from_disk,
         0x30: decode_set_current_room,
         0x31: decode_move_second_noun_to_var_object,
@@ -442,8 +463,8 @@ class ScriptCursor:
     def print_with_level(self, text, prt_level):
         a  = text.find(':')
         if a<0:
-            print(">>>>>",text)
-            raise "STOP"
+            print(';'.ljust(40) + ' ; ' + ' '*(prt_level*2) +text)
+            return
         b = text.find(';')
         if b>=0:
             data_part = text[a+2:b].strip()
@@ -455,7 +476,9 @@ class ScriptCursor:
         g = g.ljust(40)
         if comment_part:
             comment_part = ' '*(prt_level*2) + comment_part
-        print(g+' ; '+comment_part)        
+            print(g+' ; '+comment_part)   
+        else:
+            print(g)     
 
     def decode_command(self, disk_number, prt_level):
         line = []
@@ -480,11 +503,12 @@ class ScriptCursor:
         section_type = self.get_byte(line)
         length = self.decode_length(line)
         end_of_section = self.pos+length
+        end_of = self.origin+self.pos+length
 
         section_text = names_of_things.get_section_name(section_type)
         
         print(';')
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; ---- Section {section_text} length=0x{length:04X}', prt_level)
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; ---- Section {section_text} length=0x{length:04X} (to 0x{end_of:04X})', prt_level)
         
         while self.pos < end_of_section:                        
             self.decode_command(disk_number,prt_level+1)
@@ -522,7 +546,8 @@ class ScriptCursor:
         origin = self.origin+self.pos
         list_id = self.get_byte(line)
         length = self.decode_length(line)
-        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; List_ID=0x{list_id:02X}, length=0x{length:04X}', 0)
+        end_of = self.origin+self.pos+length
+        self.print_with_level(f'{origin:04X}: {self.build_data_line(line)} ; List_ID=0x{list_id:02X}, length=0x{length:04X} (to 0x{end_of:04X})', 0)
         end_of_list = self.pos+length
         while self.pos < end_of_list:
             self.decode_room(disk_number, 0)

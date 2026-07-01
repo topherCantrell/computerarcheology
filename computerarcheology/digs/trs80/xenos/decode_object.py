@@ -8,7 +8,7 @@ def decode_section_09(cursor, end_of_sec):
     origin, line = cursor.start_new_line()
     hp_max = cursor.get_byte(line)
     hp_current = cursor.get_byte(line)
-    cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Hit_points={hp_current}_of_{hp_max}',2)
+    cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; max_hit_points={hp_max} current_hit_points={hp_current}',2)
 
 def decode_section_script(cursor, end_of_sec, disk_number):
     cursor.decode_command_list(end_of_sec, disk_number, 2)
@@ -24,7 +24,7 @@ def decode_section_01(cursor, end_of_sec):
 def decode_section_0C(cursor, end_of_sec):
     origin, line = cursor.start_new_line()
     weight = cursor.get_byte(line)
-    cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Weight={weight}',2)
+    cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; weight={weight}',2)
 
 def decode_section_02(cursor, end_of_sec):
     dlen = end_of_sec - cursor.pos
@@ -41,37 +41,8 @@ def decode_generic_section(cursor, end_of_sec):
     while cursor.pos < end_of_sec:
         cursor.get_byte(line)
     cursor.print_data_run(origin, line,2)        
-    
 
-def decode_attributes(dbits):    
-    # TODO upper bit means something
-    atts = []
-    if dbits & 64:
-        atts.append('WEAPON')
-    if dbits & 32:
-        atts.append('GETTABLE')
-    if dbits & 16:
-        atts.append('ALIVE')
-    if dbits & 8:
-        atts.append('CLOSEABLE')
-    if dbits & 4:
-        atts.append('??LOCKABLE')
-    if dbits & 2:
-        atts.append('CLOSED')
-    if dbits & 1:
-        atts.append('LOCKED')
-
-    ret = f'{dbits:08b}'
-    ret = ret[0:4]+'_'+ret[4:]
-    ret = f'{ret} ({", ".join(atts)})'
-    return ret
-
-def decode_extended_attributes(dbits):
-    ret = f'{dbits:08b}'
-    ret = ret[0:4]+'....'
-    return ret
-
-def decode_object(cursor):
+def decode_object(cursor, obj_text, map_data_file):
 
     # Object header (word, length)
 
@@ -85,17 +56,21 @@ def decode_object(cursor):
         word_text = '-player-'
     else:
         word_text = language.get_noun(word_num)
-    cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Word_num=0x{word_num:02X} {word_text}, length=0x{mlength:04X}',0)
+    end_of = cursor.origin + cursor.pos + mlength
+    cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Word_num=0x{word_num:02X} {word_text}, length=0x{mlength:04X} (to 0x{end_of:04X})',0)
     
     # Object data (location, points, data bits)
 
     origin, line = cursor.start_new_line()
-    location = cursor.get_byte(line)
+    location = cursor.get_byte(line)    
     data = cursor.get_byte(line)
     dbits = cursor.get_byte(line)    
-    attributes_text = decode_attributes(dbits)
-    ext_text = decode_extended_attributes(data&0xF0)
+    attributes_text = names_of_things.get_attribute_name(dbits)
+    ext_text = names_of_things.get_ext_attribute_name(data&0xF0)
+    location_text = names_of_things.get_destination(data&15, location)
     cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Location=0x{location:02X}, disk_section={data&15}, ext_attr={ext_text}, attributes={attributes_text}',0)
+
+    map_data_file.write(f'{obj_text.ljust(40)}{location_text.ljust(32)}{ext_text.ljust(32)}{attributes_text.ljust(20)}\n')
 
     # Multiple sections
 
@@ -106,7 +81,9 @@ def decode_object(cursor):
         mlength = cursor.decode_length(line)
         end_of_sec = cursor.pos+mlength        
 
-        cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Section={section_num:02X}:{section_text}, length=0x{mlength:04X}',1)
+        end_of = cursor.origin + cursor.pos + mlength
+        print(';')
+        cursor.print_with_level(f'{origin:04X}: {cursor.build_data_line(line)} ; Section={section_num:02X}:{section_text}, length=0x{mlength:04X} (to 0x{end_of:04X})',1)
 
         if section_num == 0x01:
             decode_section_01(cursor, end_of_sec)
@@ -137,17 +114,21 @@ if __name__ == '__main__':
     mlength = cursor.decode_length(line)
     end_of_objects = mlength + cursor.pos
 
+    end_of = cursor.origin + cursor.pos + mlength
+
     # List header
 
-    print(f'{origin:04X}: {cursor.build_data_line(line)} ; List_ID=0x{lid:02X}, length=0x{mlength:04X}')
+    print(f'{origin:04X}: {cursor.build_data_line(line)} ; List_ID=0x{lid:02X}, length=0x{mlength:04X} (to 0x{end_of:04X})')
     print()
+
+    map_data_file = open('map_obj_data.txt', 'w')
 
     objnum = 0
     while cursor.pos < end_of_objects:
         objnum += 1    
         obj_text = names_of_things.get_object_name(objnum)
         print(f'; -------------- Object {obj_text} --------------')
-        decode_object(cursor)
+        decode_object(cursor, obj_text, map_data_file)
         print()
 
     if cursor.pos > end_of_objects:

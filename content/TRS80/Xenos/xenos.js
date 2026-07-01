@@ -2,6 +2,13 @@ function startXenos(consoleElement, tapeElement) {
 	loadBinaryFromUrl("combined.bin", consoleElement, tapeElement);	
 };
 
+function getRandomIntInclusive(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  // The maximum is inclusive and the minimum is inclusive
+  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+};
+
 async function loadBinaryFromUrl(url,consoleElement, tapeElement) {
   try {
     const response = await fetch(url);
@@ -227,6 +234,17 @@ function makeXenosMachine(consoleElement,tapeElement) {
 
 				if(addr==0xBB5A) {
 					tapeArea.style.display = "block";
+				}
+
+				if(addr==0x71E4) { // Code that generates random word in 71EC
+					binData[0x71EC] = getRandomIntInclusive(0,255);
+					binData[0x71ED] = getRandomIntInclusive(0,255);
+					return 0x97; // SUB A instruction
+				}
+
+				if(addr>=0x9EFF && addr<0xA0F0) {
+					console.log("Hit script at "+addr.toString(16));
+					return binData[addr];
 				}
 
 				// if(addr==0x6E6A) { // save game
