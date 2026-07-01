@@ -3703,7 +3703,7 @@ GeneralScript:
 7DB9:             0D 13                  ;         COM_0D_group_AND length=0x0013 (to 0x7DCE)
 7DBB:                1A                  ;           COM_1A_set_var_to_noun1()
 7DBC:                14                  ;           COM_14_reverse_status next command
-7DBD:                15 20               ;           COM_15_is_var_attributes(value=0x20)
+7DBD:                15 20               ;           COM_15_is_var_attributes(value=..P.....(Portable))
 7DBF:                04 0B               ;           COM_04_print_message length=0x000B (to 0x7DCC)
 7DC1:                   89 74 D3 14 9B 96 1B A1 F9 5B 50
 ;
@@ -3742,7 +3742,7 @@ GeneralScript:
 7DF7:             92                     ;         FN_92_PRINT_TRIED_BUT_COULDNT
 7DF8:             0D 0D                  ;         COM_0D_group_AND length=0x000D (to 0x7E07)
 7DFA:                1A                  ;           COM_1A_set_var_to_noun1()
-7DFB:                2E 40               ;           COM_2E_is_var_ext_attributes(value=0x40)
+7DFB:                2E 40               ;           COM_2E_is_var_ext_attributes(value=.L..----(Locked))
 7DFD:                A8                  ;           FN_A8_PRINT_noun1
 7DFE:                04 07               ;           COM_04_print_message length=0x0007 (to 0x7E07)
 7E00:                   4B 7B 75 8D A6 85 2E
@@ -3765,7 +3765,7 @@ GeneralScript:
 7E13:             92                     ;         FN_92_PRINT_TRIED_BUT_COULDNT
 7E14:             A5                     ;         FN_A5_IS_OPEN
 7E15:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x7E1B)
-7E17:                2E 40               ;           COM_2E_is_var_ext_attributes(value=0x40)
+7E17:                2E 40               ;           COM_2E_is_var_ext_attributes(value=.L..----(Locked))
 7E19:                2A                  ;           COM_2A_toggle_lock_VAR()
 7E1A:                0C                  ;           COM_0C_fail()
 ;                                        ;         end group_AND at 0x7E15
@@ -3778,7 +3778,7 @@ GeneralScript:
 7E21:             92                     ;         FN_92_PRINT_TRIED_BUT_COULDNT
 7E22:             0D 0E                  ;         COM_0D_group_AND length=0x000E (to 0x7E32)
 7E24:                1A                  ;           COM_1A_set_var_to_noun1()
-7E25:                2E 20               ;           COM_2E_is_var_ext_attributes(value=0x20)
+7E25:                2E 20               ;           COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 7E27:                A8                  ;           FN_A8_PRINT_noun1
 7E28:                04 08               ;           COM_04_print_message length=0x0008 (to 0x7E32)
 7E2A:                   4B 7B 06 9A C2 16 A7 61
@@ -3809,7 +3809,7 @@ GeneralScript:
 7E4D:             0D 11                  ;         COM_0D_group_AND length=0x0011 (to 0x7E60)
 7E4F:                1A                  ;           COM_1A_set_var_to_noun1()
 7E50:                14                  ;           COM_14_reverse_status next command
-7E51:                2E 40               ;           COM_2E_is_var_ext_attributes(value=0x40)
+7E51:                2E 40               ;           COM_2E_is_var_ext_attributes(value=.L..----(Locked))
 7E53:                A8                  ;           FN_A8_PRINT_noun1
 7E54:                04 0A               ;           COM_04_print_message length=0x000A (to 0x7E60)
 7E56:                   4B 7B 06 9A 49 16 97 54 9B 5D
@@ -3856,7 +3856,7 @@ GeneralScript:
 ;                                        ;         end group_AND at 0x7E7C
 7E95:             0D 11                  ;         COM_0D_group_AND length=0x0011 (to 0x7EA8)
 7E97:                1A                  ;           COM_1A_set_var_to_noun1()
-7E98:                2E 40               ;           COM_2E_is_var_ext_attributes(value=0x40)
+7E98:                2E 40               ;           COM_2E_is_var_ext_attributes(value=.L..----(Locked))
 7E9A:                A8                  ;           FN_A8_PRINT_noun1
 7E9B:                04 0B               ;           COM_04_print_message length=0x000B (to 0x7EA8)
 7E9D:                   4B 7B 06 9A B0 17 75 8D A6 85 2E
@@ -3881,7 +3881,7 @@ GeneralScript:
 7EBD:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x7EC4)
 7EBF:                1A                  ;           COM_1A_set_var_to_noun1()
 7EC0:                14                  ;           COM_14_reverse_status next command
-7EC1:                15 20               ;           COM_15_is_var_attributes(value=0x20)
+7EC1:                15 20               ;           COM_15_is_var_attributes(value=..P.....(Portable))
 7EC3:                C2                  ;           FN_C2_PRINT_CANT_BUDGE_noun1
 ;                                        ;         end group_AND at 0x7EBD
 7EC4:             0D 1C                  ;         COM_0D_group_AND length=0x001C (to 0x7EE2)
@@ -3912,7 +3912,7 @@ GeneralScript:
 7EEE:             0E 3E                  ;         COM_0E_group_OR length=0x003E (to 0x7F2E)
 7EF0:                0D 17               ;           COM_0D_group_AND length=0x0017 (to 0x7F09)
 7EF2:                   14               ;             COM_14_reverse_status next command
-7EF3:                   15 40            ;             COM_15_is_var_attributes(value=0x40)
+7EF3:                   15 40            ;             COM_15_is_var_attributes(value=.W......(Weapon))
 7EF5:                   04 0A            ;             COM_04_print_message length=0x000A (to 0x7F01)
 7EF7:                      C7 DE D3 14 E6 96 AF 15 B3 B3
 ;
@@ -3931,7 +3931,7 @@ GeneralScript:
 7F0A:                0D 22               ;           COM_0D_group_AND length=0x0022 (to 0x7F2E)
 7F0C:                   1A               ;             COM_1A_set_var_to_noun1()
 7F0D:                   14               ;             COM_14_reverse_status next command
-7F0E:                   15 10            ;             COM_15_is_var_attributes(value=0x10)
+7F0E:                   15 10            ;             COM_15_is_var_attributes(value=...A....(Alive))
 7F10:                   04 13            ;             COM_04_print_message length=0x0013 (to 0x7F25)
 7F12:                      73 7B 77 5B D0 B5 C9 9C 36 A0 89 17 AF 14 73 49
 7F22:                      03 A0 41     
@@ -3998,7 +3998,7 @@ GeneralScript:
 7F7F:             13                     ;         COM_13_process_phrase_by_room()
 7F80:             0D 22                  ;         COM_0D_group_AND length=0x0022 (to 0x7FA4)
 7F82:                1A                  ;           COM_1A_set_var_to_noun1()
-7F83:                15 10               ;           COM_15_is_var_attributes(value=0x10)
+7F83:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
 7F85:                04 09               ;           COM_04_print_message length=0x0009 (to 0x7F90)
 7F87:                   46 77 05 A0 16 BC 90 73 4B
 ;
@@ -4045,7 +4045,7 @@ GeneralScript:
 7FE1:             13                     ;         COM_13_process_phrase_by_room()
 7FE2:             0D 15                  ;         COM_0D_group_AND length=0x0015 (to 0x7FF9)
 7FE4:                1A                  ;           COM_1A_set_var_to_noun1()
-7FE5:                15 10               ;           COM_15_is_var_attributes(value=0x10)
+7FE5:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
 7FE7:                04 0E               ;           COM_04_print_message length=0x000E (to 0x7FF7)
 7FE9:                   5B BE 65 BC 99 16 F3 17 56 DB CA 9C 3E C6
 ;
@@ -4069,7 +4069,7 @@ GeneralScript:
 8011:             13                     ;         COM_13_process_phrase_by_room()
 8012:             0D 17                  ;         COM_0D_group_AND length=0x0017 (to 0x802B)
 8014:                1A                  ;           COM_1A_set_var_to_noun1()
-8015:                15 04               ;           COM_15_is_var_attributes(value=0x04)
+8015:                15 04               ;           COM_15_is_var_attributes(value=.....R..(Readable))
 8017:                04 10               ;           COM_04_print_message length=0x0010 (to 0x8029)
 8019:                   3F B9 82 62 91 7A D5 15 04 18 8E 7B 83 61 03 A0
 ;
@@ -4079,7 +4079,7 @@ GeneralScript:
 802A:                8B                  ;           FN_8B_PRINT_PERIOD
 ;                                        ;         end group_AND at 0x8012
 802B:             0D 0D                  ;         COM_0D_group_AND length=0x000D (to 0x803A)
-802D:                2E 20               ;           COM_2E_is_var_ext_attributes(value=0x20)
+802D:                2E 20               ;           COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 802F:                04 09               ;           COM_04_print_message length=0x0009 (to 0x803A)
 8031:                   73 7B 4B 7B C9 54 A6 B7 2E
 ;
@@ -4087,7 +4087,7 @@ GeneralScript:
 ;
 ;                                        ;         end group_AND at 0x802B
 803A:             0D 0D                  ;         COM_0D_group_AND length=0x000D (to 0x8049)
-803C:                2E 40               ;           COM_2E_is_var_ext_attributes(value=0x40)
+803C:                2E 40               ;           COM_2E_is_var_ext_attributes(value=.L..----(Locked))
 803E:                04 09               ;           COM_04_print_message length=0x0009 (to 0x8049)
 8040:                   73 7B 4B 7B 75 8D A6 85 2E
 ;
@@ -4095,16 +4095,16 @@ GeneralScript:
 ;
 ;                                        ;         end group_AND at 0x803A
 8049:             0D 0A                  ;         COM_0D_group_AND length=0x000A (to 0x8055)
-804B:                15 02               ;           COM_15_is_var_attributes(value=0x02)
+804B:                15 02               ;           COM_15_is_var_attributes(value=......H.(Holder))
 804D:                0E 05               ;           COM_0E_group_OR length=0x0005 (to 0x8054)
-804F:                   2E 80            ;             COM_2E_is_var_ext_attributes(value=0x80)
+804F:                   2E 80            ;             COM_2E_is_var_ext_attributes(value=G...----(Glass))
 8051:                   14               ;             COM_14_reverse_status next command
-8052:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=0x20)
+8052:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 ;                                        ;           end group_OR at 0x804D
 8054:                33                  ;           COM_33_print_objects_on_var_object()
 ;                                        ;         end group_AND at 0x8049
 8055:             0D 03                  ;         COM_0D_group_AND length=0x0003 (to 0x805A)
-8057:                15 01               ;           COM_15_is_var_attributes(value=0x01)
+8057:                15 01               ;           COM_15_is_var_attributes(value=.......S(Surface))
 8059:                33                  ;           COM_33_print_objects_on_var_object()
 ;                                        ;         end group_AND at 0x8055
 805A:             0D 18                  ;         COM_0D_group_AND length=0x0018 (to 0x8074)
@@ -4139,7 +4139,7 @@ GeneralScript:
 8092:             0D 2A                  ;         COM_0D_group_AND length=0x002A (to 0x80BE)
 8094:                1B                  ;           COM_1B_set_var_to_noun2()
 8095:                14                  ;           COM_14_reverse_status next command
-8096:                15 02               ;           COM_15_is_var_attributes(value=0x02)
+8096:                15 02               ;           COM_15_is_var_attributes(value=......H.(Holder))
 8098:                04 22               ;           COM_04_print_message length=0x0022 (to 0x80BC)
 809A:                   40 55 B0 53 EB BF DB BD 4B 49 C7 DE 63 16 B3 E0
 80AA:                   C7 DE D3 14 90 96 F3 A0 A7 B7 90 14 82 DF 91 7A
@@ -4152,8 +4152,8 @@ GeneralScript:
 ;                                        ;         end group_AND at 0x8092
 80BE:             0D 0F                  ;         COM_0D_group_AND length=0x000F (to 0x80CF)
 80C0:                14                  ;           COM_14_reverse_status next command
-80C1:                2E 80               ;           COM_2E_is_var_ext_attributes(value=0x80)
-80C3:                2E 20               ;           COM_2E_is_var_ext_attributes(value=0x20)
+80C1:                2E 80               ;           COM_2E_is_var_ext_attributes(value=G...----(Glass))
+80C3:                2E 20               ;           COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 80C5:                A9                  ;           FN_A9_PRINT_noun2
 80C6:                04 07               ;           COM_04_print_message length=0x0007 (to 0x80CF)
 80C8:                   4B 7B C9 54 A6 B7 2E
@@ -4177,7 +4177,7 @@ GeneralScript:
 80DF:             13                     ;         COM_13_process_phrase_by_room()
 80E0:             0D 1A                  ;         COM_0D_group_AND length=0x001A (to 0x80FC)
 80E2:                1B                  ;           COM_1B_set_var_to_noun2()
-80E3:                15 04               ;           COM_15_is_var_attributes(value=0x04)
+80E3:                15 04               ;           COM_15_is_var_attributes(value=.....R..(Readable))
 80E5:                04 13               ;           COM_04_print_message length=0x0013 (to 0x80FA)
 80E7:                   5F BE 5D B1 D5 B5 E7 9F 63 BE AB 98 B3 D2 3F C0
 80F7:                   91 96 4E        
@@ -4189,7 +4189,7 @@ GeneralScript:
 ;                                        ;         end group_AND at 0x80E0
 80FC:             0D 1D                  ;         COM_0D_group_AND length=0x001D (to 0x811B)
 80FE:                14                  ;           COM_14_reverse_status next command
-80FF:                15 01               ;           COM_15_is_var_attributes(value=0x01)
+80FF:                15 01               ;           COM_15_is_var_attributes(value=.......S(Surface))
 8101:                04 16               ;           COM_04_print_message length=0x0016 (to 0x8119)
 8103:                   5F BE 5D B1 D0 B5 02 A1 91 7A 99 16 F9 BD BE A0
 8113:                   FB 75 B9 46 73 C6
@@ -4328,7 +4328,7 @@ GeneralScript:
 822E:             13                     ;         COM_13_process_phrase_by_room()
 822F:             0D 13                  ;         COM_0D_group_AND length=0x0013 (to 0x8244)
 8231:                1A                  ;           COM_1A_set_var_to_noun1()
-8232:                15 10               ;           COM_15_is_var_attributes(value=0x10)
+8232:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
 8234:                A8                  ;           FN_A8_PRINT_noun1
 8235:                04 0D               ;           COM_04_print_message length=0x000D (to 0x8244)
 8237:                   40 D2 F3 23 F6 8B 51 18 52 C2 65 49 21
@@ -4373,7 +4373,7 @@ GeneralScript:
 826E:             13                     ;         COM_13_process_phrase_by_room()
 826F:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x8283)
 8271:                1A                  ;           COM_1A_set_var_to_noun1()
-8272:                15 10               ;           COM_15_is_var_attributes(value=0x10)
+8272:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
 8274:                A8                  ;           FN_A8_PRINT_noun1
 8275:                04 0C               ;           COM_04_print_message length=0x000C (to 0x8283)
 8277:                   72 B1 87 8C 33 BB DF 1B 09 8D 63 F4
@@ -4445,7 +4445,7 @@ GeneralScript:
 82F7:             13                     ;         COM_13_process_phrase_by_room()
 82F8:             0D 16                  ;         COM_0D_group_AND length=0x0016 (to 0x8310)
 82FA:                1A                  ;           COM_1A_set_var_to_noun1()
-82FB:                15 10               ;           COM_15_is_var_attributes(value=0x10)
+82FB:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
 82FD:                A8                  ;           FN_A8_PRINT_noun1
 82FE:                04 10               ;           COM_04_print_message length=0x0010 (to 0x8310)
 8300:                   60 7B F3 23 70 75 C3 6E 33 17 2E 6D 99 16 5B D4
@@ -4473,7 +4473,7 @@ GeneralScript:
 832F:             13                     ;         COM_13_process_phrase_by_room()
 8330:             0D 14                  ;         COM_0D_group_AND length=0x0014 (to 0x8346)
 8332:                1B                  ;           COM_1B_set_var_to_noun2()
-8333:                15 10               ;           COM_15_is_var_attributes(value=0x10)
+8333:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
 8335:                A9                  ;           FN_A9_PRINT_noun2
 8336:                04 0E               ;           COM_04_print_message length=0x000E (to 0x8346)
 8338:                   47 D2 B3 8B D6 B0 F4 72 23 15 1B BC 19 A1
@@ -4633,10 +4633,10 @@ GeneralScript:
 8496:                   0D 1E            ;             COM_0D_group_AND length=0x001E (to 0x84B6)
 8498:                      0E 07         ;               COM_0E_group_OR length=0x0007 (to 0x84A1)
 849A:                         14         ;                 COM_14_reverse_status next command
-849B:                         15 10      ;                 COM_15_is_var_attributes(value=0x10)
+849B:                         15 10      ;                 COM_15_is_var_attributes(value=...A....(Alive))
 849D:                         1B         ;                 COM_1B_set_var_to_noun2()
 849E:                         14         ;                 COM_14_reverse_status next command
-849F:                         15 40      ;                 COM_15_is_var_attributes(value=0x40)
+849F:                         15 40      ;                 COM_15_is_var_attributes(value=.W......(Weapon))
 ;                                        ;               end group_OR at 0x8498
 84A1:                      A8            ;               FN_A8_PRINT_noun1
 84A2:                      04 0F         ;               COM_04_print_message length=0x000F (to 0x84B3)
@@ -4760,7 +4760,7 @@ GeneralScript:
 85DD:             0D 06                  ;         COM_0D_group_AND length=0x0006 (to 0x85E5)
 85DF:                1A                  ;           COM_1A_set_var_to_noun1()
 85E0:                14                  ;           COM_14_reverse_status next command
-85E1:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
+85E1:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
 85E3:                14                  ;           COM_14_reverse_status next command
 85E4:                8F                  ;           FN_8F_GET_OBJECT
 ;                                        ;         end group_AND at 0x85DD
@@ -4769,7 +4769,7 @@ GeneralScript:
 85E7:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x85EE)
 85E9:                1B                  ;           COM_1B_set_var_to_noun2()
 85EA:                14                  ;           COM_14_reverse_status next command
-85EB:                15 02               ;           COM_15_is_var_attributes(value=0x02)
+85EB:                15 02               ;           COM_15_is_var_attributes(value=......H.(Holder))
 85ED:                B6                  ;           FN_B6_PRINT_TWO_SAME_SPACE
 ;                                        ;         end group_AND at 0x85E7
 85EE:             B7                     ;         FN_B7_PRINT_HAVE_TO_OPEN_var
@@ -4789,7 +4789,7 @@ GeneralScript:
 85FC:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x8603)
 85FE:                1B                  ;           COM_1B_set_var_to_noun2()
 85FF:                14                  ;           COM_14_reverse_status next command
-8600:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
+8600:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
 8602:                B8                  ;           FN_B8_PRINT_GARBAGE_GAMES
 ;                                        ;         end group_AND at 0x85FC
 8603:             14                     ;         COM_14_reverse_status next command
@@ -4797,14 +4797,14 @@ GeneralScript:
 8605:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x860C)
 8607:                1A                  ;           COM_1A_set_var_to_noun1()
 8608:                14                  ;           COM_14_reverse_status next command
-8609:                15 02               ;           COM_15_is_var_attributes(value=0x02)
+8609:                15 02               ;           COM_15_is_var_attributes(value=......H.(Holder))
 860B:                B6                  ;           FN_B6_PRINT_TWO_SAME_SPACE
 ;                                        ;         end group_AND at 0x8605
 860C:             B7                     ;         FN_B7_PRINT_HAVE_TO_OPEN_var
 860D:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x8614)
 860F:                1B                  ;           COM_1B_set_var_to_noun2()
 8610:                14                  ;           COM_14_reverse_status next command
-8611:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
+8611:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
 8613:                B8                  ;           FN_B8_PRINT_GARBAGE_GAMES
 ;                                        ;         end group_AND at 0x860D
 8614:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x861A)
@@ -4823,7 +4823,7 @@ GeneralScript:
 8621:             0D 0A                  ;         COM_0D_group_AND length=0x000A (to 0x862D)
 8623:                1A                  ;           COM_1A_set_var_to_noun1()
 8624:                14                  ;           COM_14_reverse_status next command
-8625:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
+8625:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
 8627:                04 03               ;           COM_04_print_message length=0x0003 (to 0x862C)
 8629:                   81 A6 52        
 ;
@@ -4847,7 +4847,7 @@ GeneralScript:
 8641:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x8655)
 8643:                1B                  ;           COM_1B_set_var_to_noun2()
 8644:                14                  ;           COM_14_reverse_status next command
-8645:                15 02               ;           COM_15_is_var_attributes(value=0x02)
+8645:                15 02               ;           COM_15_is_var_attributes(value=......H.(Holder))
 8647:                A9                  ;           FN_A9_PRINT_noun2
 8648:                04 08               ;           COM_04_print_message length=0x0008 (to 0x8652)
 864A:                   4B 7B 09 9A FB 14 F7 93
@@ -4875,7 +4875,7 @@ GeneralScript:
 8662:             0D 32                  ;         COM_0D_group_AND length=0x0032 (to 0x8696)
 8664:                1A                  ;           COM_1A_set_var_to_noun1()
 8665:                14                  ;           COM_14_reverse_status next command
-8666:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10);; ??Drinkable??
+8666:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid));; ??Drinkable??
 8668:                04 2A               ;           COM_04_print_message length=0x002A (to 0x8694)
 866A:                   C7 DE AF 23 5B 17 AE 54 BF 14 10 BC F3 A0 4E 72
 867A:                   83 64 D5 B5 DD 78 95 14 51 18 59 C2 2E A1 04 58
@@ -4911,12 +4911,12 @@ GeneralScript:
 86B7:             0D 06                  ;         COM_0D_group_AND length=0x0006 (to 0x86BF)
 86B9:                1A                  ;           COM_1A_set_var_to_noun1()
 86BA:                14                  ;           COM_14_reverse_status next command
-86BB:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
+86BB:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
 86BD:                14                  ;           COM_14_reverse_status next command
 86BE:                8F                  ;           FN_8F_GET_OBJECT
 ;                                        ;         end group_AND at 0x86B7
 86BF:             0D 16                  ;         COM_0D_group_AND length=0x0016 (to 0x86D7)
-86C1:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
+86C1:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
 86C3:                0E 12               ;           COM_0E_group_OR length=0x0012 (to 0x86D7)
 86C5:                   14               ;             COM_14_reverse_status next command
 86C6:                   BF               ;             FN_BF_IS_LIQUID_REACHABLE
@@ -4935,7 +4935,7 @@ GeneralScript:
 86D7:             0D 16                  ;         COM_0D_group_AND length=0x0016 (to 0x86EF)
 86D9:                1B                  ;           COM_1B_set_var_to_noun2()
 86DA:                14                  ;           COM_14_reverse_status next command
-86DB:                15 01               ;           COM_15_is_var_attributes(value=0x01)
+86DB:                15 01               ;           COM_15_is_var_attributes(value=.......S(Surface))
 86DD:                04 10               ;           COM_04_print_message length=0x0010 (to 0x86EF)
 86DF:                   5F BE 5D B1 D0 B5 F3 A0 99 61 7A C4 39 17 FF 9F
 ;
@@ -5160,7 +5160,7 @@ ObjectData:
 
 ; -------------- Object OBJ_01_PLAYER --------------
 887D: 01 80 87                           ; Word_num=0x01 -player-, length=0x0087 (to 0x8907)
-8880: 80 01 80                           ; Location=0x80, disk_section=1, ext_attr=0000...., attributes=1000_0000 ()
+8880: 80 01 80                           ; Location=0x80, disk_section=1, ext_attr=....----(), attributes=?.......(??)
 ;
 ;; When the player dies, print the percent completed. Print a note if the
 ;; player has the snake venom.
@@ -5230,7 +5230,7 @@ ObjectData:
 
 ; -------------- Object OBJ_02_DOOR_GAS_STATION --------------
 8907: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8911)
-8909: 83 01 88                           ; Location=0x83, disk_section=1, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
+8909: 83 01 88                           ; Location=0x83, disk_section=1, ext_attr=....----(), attributes=?...O...(??,Openable)
 ;
 890C:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8911)
 ;           DOOR
@@ -5238,7 +5238,7 @@ ObjectData:
 
 ; -------------- Object OBJ_03_DOOR_FRONT_OF_STATION --------------
 8911: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x891B)
-8913: 82 21 88                           ; Location=0x82, disk_section=1, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
+8913: 82 21 88                           ; Location=0x82, disk_section=1, ext_attr=..C.----(Closed), attributes=?...O...(??,Openable)
 ;
 8916:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x891B)
 ;           DOOR
@@ -5246,7 +5246,7 @@ ObjectData:
 
 ; -------------- Object OBJ_04_DOOR_EAST_OF_STATION --------------
 891B: 10 2E                              ; Word_num=0x10 DOOR, length=0x002E (to 0x894B)
-891D: 88 61 8C                           ; Location=0x88, disk_section=1, ext_attr=0110...., attributes=1000_1100 (CLOSEABLE, ??LOCKABLE)
+891D: 88 61 8C                           ; Location=0x88, disk_section=1, ext_attr=.LC.----(Locked,Closed), attributes=?...OR..(??,Openable,Readable)
 ;
 8920:    07 24                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0024 (to 0x8946)
 8922:       0E 22                        ;     COM_0E_group_OR length=0x0022 (to 0x8946)
@@ -5275,7 +5275,7 @@ ObjectData:
 
 ; -------------- Object OBJ_05_DOOR_RESTROOM --------------
 894B: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8955)
-894D: DA 01 88                           ; Location=0xDA, disk_section=1, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
+894D: DA 01 88                           ; Location=0xDA, disk_section=1, ext_attr=....----(), attributes=?...O...(??,Openable)
 ;
 8950:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8955)
 ;           DOOR
@@ -5283,7 +5283,7 @@ ObjectData:
 
 ; -------------- Object OBJ_06_DOOR_MAIN_STREET_WEST --------------
 8955: 10 2C                              ; Word_num=0x10 DOOR, length=0x002C (to 0x8983)
-8957: 8D 22 88                           ; Location=0x8D, disk_section=2, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
+8957: 8D 22 88                           ; Location=0x8D, disk_section=2, ext_attr=..C.----(Closed), attributes=?...O...(??,Openable)
 ;
 895A:    03 19                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0019 (to 0x8975)
 895C:       04 17                        ;     COM_04_print_message length=0x0017 (to 0x8975)
@@ -5303,7 +5303,7 @@ ObjectData:
 
 ; -------------- Object OBJ_07_DOOR_SALOON --------------
 8983: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x898D)
-8985: A2 02 88                           ; Location=0xA2, disk_section=2, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
+8985: A2 02 88                           ; Location=0xA2, disk_section=2, ext_attr=....----(), attributes=?...O...(??,Openable)
 ;
 8988:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x898D)
 ;           DOOR
@@ -5311,7 +5311,7 @@ ObjectData:
 
 ; -------------- Object OBJ_08_DOOR_MAIN_STREET_WEST --------------
 898D: 10 41                              ; Word_num=0x10 DOOR, length=0x0041 (to 0x89D0)
-898F: 8D 62 88                           ; Location=0x8D, disk_section=2, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
+898F: 8D 62 88                           ; Location=0x8D, disk_section=2, ext_attr=.LC.----(Locked,Closed), attributes=?...O...(??,Openable)
 ;
 8992:    03 1B                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001B (to 0x89AF)
 8994:       04 19                        ;     COM_04_print_message length=0x0019 (to 0x89AF)
@@ -5341,7 +5341,7 @@ ObjectData:
 
 ; -------------- Object OBJ_09_DOOR_SHERIFFS_OFFICE --------------
 89D0: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x89DA)
-89D2: 8E 02 88                           ; Location=0x8E, disk_section=2, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
+89D2: 8E 02 88                           ; Location=0x8E, disk_section=2, ext_attr=....----(), attributes=?...O...(??,Openable)
 ;
 89D5:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x89DA)
 ;           DOOR
@@ -5349,7 +5349,7 @@ ObjectData:
 
 ; -------------- Object OBJ_0A_DOOR_HARDWARE_SOUTH --------------
 89DA: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x89E4)
-89DC: A6 03 88                           ; Location=0xA6, disk_section=3, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
+89DC: A6 03 88                           ; Location=0xA6, disk_section=3, ext_attr=....----(), attributes=?...O...(??,Openable)
 ;
 89DF:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x89E4)
 ;           DOOR
@@ -5357,7 +5357,7 @@ ObjectData:
 
 ; -------------- Object OBJ_0B_DOOR_TOWN_CENTER_SLIMS --------------
 89E4: 10 34                              ; Word_num=0x10 DOOR, length=0x0034 (to 0x8A1A)
-89E6: 93 23 88                           ; Location=0x93, disk_section=3, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
+89E6: 93 23 88                           ; Location=0x93, disk_section=3, ext_attr=..C.----(Closed), attributes=?...O...(??,Openable)
 ;
 89E9:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x89FD)
 89EB:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x89FD)
@@ -5386,7 +5386,7 @@ ObjectData:
 
 ; -------------- Object OBJ_0C_DOOR_TOWN_CENTER_BOBS --------------
 8A1A: 10 24                              ; Word_num=0x10 DOOR, length=0x0024 (to 0x8A40)
-8A1C: 93 23 88                           ; Location=0x93, disk_section=3, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
+8A1C: 93 23 88                           ; Location=0x93, disk_section=3, ext_attr=..C.----(Closed), attributes=?...O...(??,Openable)
 ;
 8A1F:    03 11                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0011 (to 0x8A32)
 8A21:       04 0F                        ;     COM_04_print_message length=0x000F (to 0x8A32)
@@ -5404,7 +5404,7 @@ ObjectData:
 
 ; -------------- Object OBJ_0D_DOOR_SLIMS_GROCERY --------------
 8A40: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8A4A)
-8A42: 94 03 88                           ; Location=0x94, disk_section=3, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
+8A42: 94 03 88                           ; Location=0x94, disk_section=3, ext_attr=....----(), attributes=?...O...(??,Openable)
 ;
 8A45:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8A4A)
 ;           DOOR
@@ -5412,7 +5412,7 @@ ObjectData:
 
 ; -------------- Object OBJ_0E_DOOR_MAIN_STREET_EAST_HOTEL --------------
 8A4A: 10 32                              ; Word_num=0x10 DOOR, length=0x0032 (to 0x8A7E)
-8A4C: 99 24 88                           ; Location=0x99, disk_section=4, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
+8A4C: 99 24 88                           ; Location=0x99, disk_section=4, ext_attr=..C.----(Closed), attributes=?...O...(??,Openable)
 ;
 8A4F:    03 20                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0020 (to 0x8A71)
 8A51:       04 1E                        ;     COM_04_print_message length=0x001E (to 0x8A71)
@@ -5432,7 +5432,7 @@ ObjectData:
 
 ; -------------- Object OBJ_0F_DOOR_HOTEL_LOBBY --------------
 8A7E: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8A88)
-8A80: AA 04 88                           ; Location=0xAA, disk_section=4, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
+8A80: AA 04 88                           ; Location=0xAA, disk_section=4, ext_attr=....----(), attributes=?...O...(??,Openable)
 ;
 8A83:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8A88)
 ;           DOOR
@@ -5440,7 +5440,7 @@ ObjectData:
 
 ; -------------- Object OBJ_10_DOOR_MAIN_STREET_EAST_BANK --------------
 8A88: 10 39                              ; Word_num=0x10 DOOR, length=0x0039 (to 0x8AC3)
-8A8A: 99 64 88                           ; Location=0x99, disk_section=4, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
+8A8A: 99 64 88                           ; Location=0x99, disk_section=4, ext_attr=.LC.----(Locked,Closed), attributes=?...O...(??,Openable)
 ;
 8A8D:    02 08                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0008 (to 0x8A97)
 ;           MASSIVE DOOR
@@ -5471,7 +5471,7 @@ ObjectData:
 
 ; -------------- Object OBJ_11_DOOR_BANK --------------
 8AC3: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8ACD)
-8AC5: 9A 04 88                           ; Location=0x9A, disk_section=4, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
+8AC5: 9A 04 88                           ; Location=0x9A, disk_section=4, ext_attr=....----(), attributes=?...O...(??,Openable)
 ;
 8AC8:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8ACD)
 ;           DOOR
@@ -5479,15 +5479,15 @@ ObjectData:
 
 ; -------------- Object OBJ_12_DOOR --------------
 8ACD: 10 03                              ; Word_num=0x10 DOOR, length=0x0003 (to 0x8AD2)
-8ACF: 00 00 00                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=0000_0000 ()
+8ACF: 00 00 00                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=........()
 
 ; -------------- Object OBJ_13_DOOR --------------
 8AD2: 10 03                              ; Word_num=0x10 DOOR, length=0x0003 (to 0x8AD7)
-8AD4: 00 00 00                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=0000_0000 ()
+8AD4: 00 00 00                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=........()
 
 ; -------------- Object OBJ_14_DOOR_COVERED_SHELTER --------------
 8AD7: 10 1D                              ; Word_num=0x10 DOOR, length=0x001D (to 0x8AF6)
-8AD9: 00 22 88                           ; Location=0x00, disk_section=2, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
+8AD9: 00 22 88                           ; Location=0x00, disk_section=2, ext_attr=..C.----(Closed), attributes=?...O...(??,Openable)
 ;
 8ADC:    03 13                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0013 (to 0x8AF1)
 8ADE:       04 11                        ;     COM_04_print_message length=0x0011 (to 0x8AF1)
@@ -5503,7 +5503,7 @@ ObjectData:
 
 ; -------------- Object OBJ_15_DOOR_SHELTER --------------
 8AF6: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8B00)
-8AF8: DB 02 88                           ; Location=0xDB, disk_section=2, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
+8AF8: DB 02 88                           ; Location=0xDB, disk_section=2, ext_attr=....----(), attributes=?...O...(??,Openable)
 ;
 8AFB:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8B00)
 ;           DOOR
@@ -5511,7 +5511,7 @@ ObjectData:
 
 ; -------------- Object OBJ_16_RED_DOOR_HALLWAY --------------
 8B00: 10 30                              ; Word_num=0x10 DOOR, length=0x0030 (to 0x8B32)
-8B02: DD 64 88                           ; Location=0xDD, disk_section=4, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
+8B02: DD 64 88                           ; Location=0xDD, disk_section=4, ext_attr=.LC.----(Locked,Closed), attributes=?...O...(??,Openable)
 ;
 8B05:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x8B19)
 8B07:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x8B19)
@@ -5540,7 +5540,7 @@ ObjectData:
 
 ; -------------- Object OBJ_17_DOOR_NORTH_ROOM --------------
 8B32: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8B3C)
-8B34: DE 04 88                           ; Location=0xDE, disk_section=4, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
+8B34: DE 04 88                           ; Location=0xDE, disk_section=4, ext_attr=....----(), attributes=?...O...(??,Openable)
 ;
 8B37:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8B3C)
 ;           DOOR
@@ -5548,7 +5548,7 @@ ObjectData:
 
 ; -------------- Object OBJ_18_BLUE_DOOR_HALLWAY --------------
 8B3C: 10 30                              ; Word_num=0x10 DOOR, length=0x0030 (to 0x8B6E)
-8B3E: DD 64 88                           ; Location=0xDD, disk_section=4, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
+8B3E: DD 64 88                           ; Location=0xDD, disk_section=4, ext_attr=.LC.----(Locked,Closed), attributes=?...O...(??,Openable)
 ;
 8B41:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x8B55)
 8B43:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x8B55)
@@ -5577,7 +5577,7 @@ ObjectData:
 
 ; -------------- Object OBJ_19_DOOR_SOUTH_ROOM --------------
 8B6E: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x8B78)
-8B70: DF 04 88                           ; Location=0xDF, disk_section=4, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
+8B70: DF 04 88                           ; Location=0xDF, disk_section=4, ext_attr=....----(), attributes=?...O...(??,Openable)
 ;
 8B73:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x8B78)
 ;           DOOR
@@ -5585,7 +5585,7 @@ ObjectData:
 
 ; -------------- Object OBJ_1A_MASTER_KEY --------------
 8B78: 16 3E                              ; Word_num=0x16 KEY, length=0x003E (to 0x8BB8)
-8B7A: 47 00 A4                           ; Location=0x47, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
+8B7A: 47 00 A4                           ; Location=0x47, disk_section=0, ext_attr=....----(), attributes=?.P..R..(??,Portable,Readable)
 ;
 8B7D:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x8B93)
 8B7F:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x8B93)
@@ -5617,7 +5617,7 @@ ObjectData:
 
 ; -------------- Object OBJ_1B_BRASS_KEY_SHERIFF --------------
 8BB8: 16 36                              ; Word_num=0x16 KEY, length=0x0036 (to 0x8BF0)
-8BBA: 48 00 A4                           ; Location=0x48, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
+8BBA: 48 00 A4                           ; Location=0x48, disk_section=0, ext_attr=....----(), attributes=?.P..R..(??,Portable,Readable)
 ;
 8BBD:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x8BD3)
 8BBF:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x8BD3)
@@ -5650,7 +5650,7 @@ ObjectData:
 
 ; -------------- Object OBJ_1C_SKELETON_KEY --------------
 8BF0: 16 2B                              ; Word_num=0x16 KEY, length=0x002B (to 0x8C1D)
-8BF2: 49 00 A0                           ; Location=0x49, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
+8BF2: 49 00 A0                           ; Location=0x49, disk_section=0, ext_attr=....----(), attributes=?.P.....(??,Portable)
 ;
 8BF5:    03 16                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0016 (to 0x8C0D)
 8BF7:       04 14                        ;     COM_04_print_message length=0x0014 (to 0x8C0D)
@@ -5672,7 +5672,7 @@ ObjectData:
 
 ; -------------- Object OBJ_1D_STEEL_KEY_BANK --------------
 8C1D: 16 3A                              ; Word_num=0x16 KEY, length=0x003A (to 0x8C59)
-8C1F: 21 00 A4                           ; Location=0x21, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
+8C1F: 21 00 A4                           ; Location=0x21, disk_section=0, ext_attr=....----(), attributes=?.P..R..(??,Portable,Readable)
 ;
 8C22:    03 16                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0016 (to 0x8C3A)
 8C24:       04 14                        ;     COM_04_print_message length=0x0014 (to 0x8C3A)
@@ -5706,7 +5706,7 @@ ObjectData:
 
 ; -------------- Object OBJ_1E_RED_KEY_SLIMS --------------
 8C59: 16 33                              ; Word_num=0x16 KEY, length=0x0033 (to 0x8C8E)
-8C5B: 21 00 A4                           ; Location=0x21, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
+8C5B: 21 00 A4                           ; Location=0x21, disk_section=0, ext_attr=....----(), attributes=?.P..R..(??,Portable,Readable)
 ;
 8C5E:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x8C72)
 8C60:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x8C72)
@@ -5738,7 +5738,7 @@ ObjectData:
 
 ; -------------- Object OBJ_1F_SMALL_KEY_CAB --------------
 8C8E: 16 34                              ; Word_num=0x16 KEY, length=0x0034 (to 0x8CC4)
-8C90: 21 00 A4                           ; Location=0x21, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
+8C90: 21 00 A4                           ; Location=0x21, disk_section=0, ext_attr=....----(), attributes=?.P..R..(??,Portable,Readable)
 ;
 8C93:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x8CA9)
 8C95:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x8CA9)
@@ -5771,7 +5771,7 @@ ObjectData:
 
 ; -------------- Object OBJ_20_DESK --------------
 8CC4: 1A 32                              ; Word_num=0x1A DESK, length=0x0032 (to 0x8CF8)
-8CC6: 8E 02 81                           ; Location=0x8E, disk_section=2, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+8CC6: 8E 02 81                           ; Location=0x8E, disk_section=2, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 8CC9:    07 28                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0028 (to 0x8CF3)
 8CCB:       0D 26                        ;     COM_0D_group_AND length=0x0026 (to 0x8CF3)
@@ -5795,7 +5795,7 @@ ObjectData:
 
 ; -------------- Object OBJ_21_TOP_DRAWER --------------
 8CF8: 1B 54                              ; Word_num=0x1B DRAWER, length=0x0054 (to 0x8D4E)
-8CFA: 8E 62 8A                           ; Location=0x8E, disk_section=2, ext_attr=0110...., attributes=1000_1010 (CLOSEABLE, CLOSED)
+8CFA: 8E 62 8A                           ; Location=0x8E, disk_section=2, ext_attr=.LC.----(Locked,Closed), attributes=?...O.H.(??,Openable,Holder)
 ;
 8CFD:    07 43                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0043 (to 0x8D42)
 8CFF:       0E 41                        ;     COM_0E_group_OR length=0x0041 (to 0x8D42)
@@ -5805,8 +5805,8 @@ ObjectData:
 8D07:                0A 42               ;           COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
 ;                                        ;         end group_OR at 0x8D03
 8D09:             1A                     ;         COM_1A_set_var_to_noun1()
-8D0A:             2E 40                  ;         COM_2E_is_var_ext_attributes(value=0x40)
-8D0C:             2E 20                  ;         COM_2E_is_var_ext_attributes(value=0x20)
+8D0A:             2E 40                  ;         COM_2E_is_var_ext_attributes(value=.L..----(Locked))
+8D0C:             2E 20                  ;         COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 8D0E:             09 24                  ;         COM_09_is_noun2(obj=OBJ_24_CROWBAR)
 8D10:             04 2B                  ;         COM_04_print_message length=0x002B (to 0x8D3D)
 8D12:                5F BE 5B B1 4B 7B 55 45 AF 55 DA 5F B8 16 89 17
@@ -5833,7 +5833,7 @@ ObjectData:
 
 ; -------------- Object OBJ_22_MIDDLE_DRAWER --------------
 8D4E: 1B 43                              ; Word_num=0x1B DRAWER, length=0x0043 (to 0x8D93)
-8D50: 8E 62 8A                           ; Location=0x8E, disk_section=2, ext_attr=0110...., attributes=1000_1010 (CLOSEABLE, CLOSED)
+8D50: 8E 62 8A                           ; Location=0x8E, disk_section=2, ext_attr=.LC.----(Locked,Closed), attributes=?...O.H.(??,Openable,Holder)
 ;
 8D53:    07 30                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0030 (to 0x8D85)
 8D55:       0E 2E                        ;     COM_0E_group_OR length=0x002E (to 0x8D85)
@@ -5843,8 +5843,8 @@ ObjectData:
 8D5D:                0A 42               ;           COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
 ;                                        ;         end group_OR at 0x8D59
 8D5F:             1A                     ;         COM_1A_set_var_to_noun1()
-8D60:             2E 40                  ;         COM_2E_is_var_ext_attributes(value=0x40)
-8D62:             2E 20                  ;         COM_2E_is_var_ext_attributes(value=0x20)
+8D60:             2E 40                  ;         COM_2E_is_var_ext_attributes(value=.L..----(Locked))
+8D62:             2E 20                  ;         COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 8D64:             09 24                  ;         COM_09_is_noun2(obj=OBJ_24_CROWBAR)
 8D66:             04 19                  ;         COM_04_print_message length=0x0019 (to 0x8D81)
 8D68:                56 D1 03 71 E4 14 8D C5 73 76 5F BE 0C 15 F7 49
@@ -5868,7 +5868,7 @@ ObjectData:
 
 ; -------------- Object OBJ_23_BOTTOM_DRAWER --------------
 8D93: 1B 1C                              ; Word_num=0x1B DRAWER, length=0x001C (to 0x8DB1)
-8D95: 8E 22 8A                           ; Location=0x8E, disk_section=2, ext_attr=0010...., attributes=1000_1010 (CLOSEABLE, CLOSED)
+8D95: 8E 22 8A                           ; Location=0x8E, disk_section=2, ext_attr=..C.----(Closed), attributes=?...O.H.(??,Openable,Holder)
 ;
 8D98:    07 09                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0009 (to 0x8DA3)
 8D9A:       0D 07                        ;     COM_0D_group_AND length=0x0007 (to 0x8DA3)
@@ -5888,7 +5888,7 @@ ObjectData:
 
 ; -------------- Object OBJ_24_CROWBAR --------------
 8DB1: 37 29                              ; Word_num=0x37 CROWBA, length=0x0029 (to 0x8DDC)
-8DB3: 49 00 E0                           ; Location=0x49, disk_section=0, ext_attr=0000...., attributes=1110_0000 (WEAPON, GETTABLE)
+8DB3: 49 00 E0                           ; Location=0x49, disk_section=0, ext_attr=....----(), attributes=?WP.....(??,Weapon,Portable)
 ;
 8DB6:    03 16                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0016 (to 0x8DCE)
 8DB8:       04 14                        ;     COM_04_print_message length=0x0014 (to 0x8DCE)
@@ -5907,7 +5907,7 @@ ObjectData:
 
 ; -------------- Object OBJ_25_WANTED_POSTER --------------
 8DDC: 38 68                              ; Word_num=0x38 POSTER, length=0x0068 (to 0x8E46)
-8DDE: 22 00 A4                           ; Location=0x22, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
+8DDE: 22 00 A4                           ; Location=0x22, disk_section=0, ext_attr=....----(), attributes=?.P..R..(??,Portable,Readable)
 ;
 8DE1:    03 16                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0016 (to 0x8DF9)
 8DE3:       04 14                        ;     COM_04_print_message length=0x0014 (to 0x8DF9)
@@ -5937,7 +5937,7 @@ ObjectData:
 
 ; -------------- Object OBJ_26_GUN_CABINET --------------
 8E46: 19 80 8A                           ; Word_num=0x19 CABINE, length=0x008A (to 0x8ED3)
-8E49: 8E E2 8A                           ; Location=0x8E, disk_section=2, ext_attr=1110...., attributes=1000_1010 (CLOSEABLE, CLOSED)
+8E49: 8E E2 8A                           ; Location=0x8E, disk_section=2, ext_attr=GLC.----(Glass,Locked,Closed), attributes=?...O.H.(??,Openable,Holder)
 ;
 8E4C:    07 7B                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x007B (to 0x8EC9)
 8E4E:       0E 79                        ;     COM_0E_group_OR length=0x0079 (to 0x8EC9)
@@ -5995,7 +5995,7 @@ ObjectData:
 
 ; -------------- Object OBJ_27_SHOTGUN_IN_CABINET --------------
 8ED3: 39 53                              ; Word_num=0x39 SHOTGU, length=0x0053 (to 0x8F28)
-8ED5: 8E 02 C0                           ; Location=0x8E, disk_section=2, ext_attr=0000...., attributes=1100_0000 (WEAPON)
+8ED5: 8E 02 C0                           ; Location=0x8E, disk_section=2, ext_attr=....----(), attributes=?W......(??,Weapon)
 ;
 8ED8:    03 2C                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x002C (to 0x8F06)
 8EDA:       04 2A                        ;     COM_04_print_message length=0x002A (to 0x8F06)
@@ -6026,7 +6026,7 @@ ObjectData:
 
 ; -------------- Object OBJ_28_SHOTGUN --------------
 8F28: 39 2E                              ; Word_num=0x39 SHOTGU, length=0x002E (to 0x8F58)
-8F2A: 00 00 E0                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1110_0000 (WEAPON, GETTABLE)
+8F2A: 00 00 E0                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?WP.....(??,Weapon,Portable)
 ;
 8F2D:    03 01                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0001 (to 0x8F30)
 8F2F:       80                           ;     FN_80_PRINT_SHOTGUN_HERE
@@ -6059,7 +6059,7 @@ ObjectData:
 
 ; -------------- Object OBJ_29_SHOTGUN_SHELL1 --------------
 8F58: 00 0E                              ; Word_num=0x00 -none-, length=0x000E (to 0x8F68)
-8F5A: 28 00 A0                           ; Location=0x28, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
+8F5A: 28 00 A0                           ; Location=0x28, disk_section=0, ext_attr=....----(), attributes=?.P.....(??,Portable)
 ;
 8F5D:    08 09                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0009 (to 0x8F68)
 8F5F:       0D 07                        ;     COM_0D_group_AND length=0x0007 (to 0x8F68)
@@ -6071,7 +6071,7 @@ ObjectData:
 
 ; -------------- Object OBJ_2A_SHOTGUN_SHELL2 --------------
 8F68: 00 0A                              ; Word_num=0x00 -none-, length=0x000A (to 0x8F74)
-8F6A: 28 00 A0                           ; Location=0x28, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
+8F6A: 28 00 A0                           ; Location=0x28, disk_section=0, ext_attr=....----(), attributes=?.P.....(??,Portable)
 ;
 8F6D:    08 05                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0005 (to 0x8F74)
 8F6F:       0D 03                        ;     COM_0D_group_AND length=0x0003 (to 0x8F74)
@@ -6081,7 +6081,7 @@ ObjectData:
 
 ; -------------- Object OBJ_2B_GAS_PUMP --------------
 8F74: 3A 6C                              ; Word_num=0x3A PUMP, length=0x006C (to 0x8FE2)
-8F76: 82 01 81                           ; Location=0x82, disk_section=1, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+8F76: 82 01 81                           ; Location=0x82, disk_section=1, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 8F79:    03 22                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0022 (to 0x8F9D)
 8F7B:       04 20                        ;     COM_04_print_message length=0x0020 (to 0x8F9D)
@@ -6114,7 +6114,7 @@ ObjectData:
 
 ; -------------- Object OBJ_2C_PADLOCK --------------
 8FE2: 29 0D                              ; Word_num=0x29 PADLOC, length=0x000D (to 0x8FF1)
-8FE4: 2B 60 88                           ; Location=0x2B, disk_section=0, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
+8FE4: 2B 60 88                           ; Location=0x2B, disk_section=0, ext_attr=.LC.----(Locked,Closed), attributes=?...O...(??,Openable)
 ;
 8FE7:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x8FEA)
 8FE9:       BA                           ;     FN_BA_OPEN_UNLOCK
@@ -6125,7 +6125,7 @@ ObjectData:
 
 ; -------------- Object OBJ_2D_JACK-O-MATIC --------------
 8FF1: 31 5D                              ; Word_num=0x31 JACK, length=0x005D (to 0x9050)
-8FF3: 83 01 A4                           ; Location=0x83, disk_section=1, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
+8FF3: 83 01 A4                           ; Location=0x83, disk_section=1, ext_attr=....----(), attributes=?.P..R..(??,Portable,Readable)
 ;
 8FF6:    03 10                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0010 (to 0x9008)
 8FF8:       04 0E                        ;     COM_04_print_message length=0x000E (to 0x9008)
@@ -6161,7 +6161,7 @@ ObjectData:
 
 ; -------------- Object OBJ_2E_RUSTY_JEEP --------------
 9050: 32 77                              ; Word_num=0x32 JEEP, length=0x0077 (to 0x90C9)
-9052: 86 01 81                           ; Location=0x86, disk_section=1, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+9052: 86 01 81                           ; Location=0x86, disk_section=1, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 9055:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x906B)
 9057:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x906B)
@@ -6211,7 +6211,7 @@ ObjectData:
 
 ; -------------- Object OBJ_2F_FLAT_TIRE --------------
 90C9: 21 45                              ; Word_num=0x21 TIRE, length=0x0045 (to 0x9110)
-90CB: 2E 00 A0                           ; Location=0x2E, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
+90CB: 2E 00 A0                           ; Location=0x2E, disk_section=0, ext_attr=....----(), attributes=?.P.....(??,Portable)
 ;
 90CE:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x90E4)
 90D0:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x90E4)
@@ -6248,7 +6248,7 @@ ObjectData:
 
 ; -------------- Object OBJ_30_SPARE_TIRE --------------
 9110: 21 42                              ; Word_num=0x21 TIRE, length=0x0042 (to 0x9154)
-9112: 86 01 A0                           ; Location=0x86, disk_section=1, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
+9112: 86 01 A0                           ; Location=0x86, disk_section=1, ext_attr=....----(), attributes=?.P.....(??,Portable)
 ;
 9115:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x912B)
 9117:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x912B)
@@ -6282,7 +6282,7 @@ ObjectData:
 
 ; -------------- Object OBJ_31_SPHORX --------------
 9154: 1A 09                              ; Word_num=0x1A DESK, length=0x0009 (to 0x915F)
-9156: 85 09 81                           ; Location=0x85, disk_section=9, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+9156: 85 09 81                           ; Location=0x85, disk_section=9, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 9159:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0x915F)
 ;           SPHORX
@@ -6290,7 +6290,7 @@ ObjectData:
 
 ; -------------- Object OBJ_32_SHOVEL --------------
 915F: 26 20                              ; Word_num=0x26 SHOVEL, length=0x0020 (to 0x9181)
-9161: DC 03 E0                           ; Location=0xDC, disk_section=3, ext_attr=0000...., attributes=1110_0000 (WEAPON, GETTABLE)
+9161: DC 03 E0                           ; Location=0xDC, disk_section=3, ext_attr=....----(), attributes=?WP.....(??,Weapon,Portable)
 ;
 9164:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x9178)
 9166:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x9178)
@@ -6308,7 +6308,7 @@ ObjectData:
 
 ; -------------- Object OBJ_33_RATTLE_SNAKE --------------
 9181: 0C 81 B2                           ; Word_num=0x0C SNAKE, length=0x01B2 (to 0x9336)
-9184: DC 03 90                           ; Location=0xDC, disk_section=3, ext_attr=0000...., attributes=1001_0000 (ALIVE)
+9184: DC 03 90                           ; Location=0xDC, disk_section=3, ext_attr=....----(), attributes=?..A....(??,Alive)
 ;
 9187:    03 2F                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x002F (to 0x91B8)
 9189:       04 2D                        ;     COM_04_print_message length=0x002D (to 0x91B8)
@@ -6432,7 +6432,7 @@ ObjectData:
 
 ; -------------- Object OBJ_34_DEAD_SNAKE --------------
 9336: 0C 25                              ; Word_num=0x0C SNAKE, length=0x0025 (to 0x935D)
-9338: 00 03 A0                           ; Location=0x00, disk_section=3, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
+9338: 00 03 A0                           ; Location=0x00, disk_section=3, ext_attr=....----(), attributes=?.P.....(??,Portable)
 ;
 933B:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0x9351)
 933D:       04 12                        ;     COM_04_print_message length=0x0012 (to 0x9351)
@@ -6454,7 +6454,7 @@ ObjectData:
 ;; every turn. There is no way to cure the snake bite. The user's UPON_DEATH section includes a note 
 ;; about the user being poisoned.
 935D: 20 0D                              ; Word_num=0x20 ??20??, length=0x000D (to 0x936C)
-935F: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+935F: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 ;
 9362:    08 08                           ;   Section=08:SECTION_08_EVERY_TURN, length=0x0008 (to 0x936C)
 9364:       0D 06                        ;     COM_0D_group_AND length=0x0006 (to 0x936C)
@@ -6466,7 +6466,7 @@ ObjectData:
 ; -------------- Object OBJ_36_FOOD --------------
 ;; The food heals 35 hit points (that iss half the player's max)
 936C: 1C 58                              ; Word_num=0x1C FOOD, length=0x0058 (to 0x93C6)
-936E: 94 03 A0                           ; Location=0x94, disk_section=3, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
+936E: 94 03 A0                           ; Location=0x94, disk_section=3, ext_attr=....----(), attributes=?.P.....(??,Portable)
 ;
 9371:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x9385)
 9373:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x9385)
@@ -6499,7 +6499,7 @@ ObjectData:
 
 ; -------------- Object OBJ_37_STEEL_SAFE --------------
 93C6: 1D 31                              ; Word_num=0x1D SAFE, length=0x0031 (to 0x93F9)
-93C8: 9A 64 8A                           ; Location=0x9A, disk_section=4, ext_attr=0110...., attributes=1000_1010 (CLOSEABLE, CLOSED)
+93C8: 9A 64 8A                           ; Location=0x9A, disk_section=4, ext_attr=.LC.----(Locked,Closed), attributes=?...O.H.(??,Openable,Holder)
 ;
 93CB:    03 24                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0024 (to 0x93F1)
 93CD:       04 22                        ;     COM_04_print_message length=0x0022 (to 0x93F1)
@@ -6519,7 +6519,7 @@ ObjectData:
 
 ; -------------- Object OBJ_38_MONEY --------------
 93F9: 27 49                              ; Word_num=0x27 MONEY, length=0x0049 (to 0x9444)
-93FB: 4C 00 A4                           ; Location=0x4C, disk_section=0, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
+93FB: 4C 00 A4                           ; Location=0x4C, disk_section=0, ext_attr=....----(), attributes=?.P..R..(??,Portable,Readable)
 ;
 93FE:    03 13                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0013 (to 0x9413)
 9400:       04 11                        ;     COM_04_print_message length=0x0011 (to 0x9413)
@@ -6549,7 +6549,7 @@ ObjectData:
 
 ; -------------- Object OBJ_39_DYNAMITE --------------
 9444: 1E 81 21                           ; Word_num=0x1E DYNAMI, length=0x0121 (to 0x9568)
-9447: DB 02 A4                           ; Location=0xDB, disk_section=2, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
+9447: DB 02 A4                           ; Location=0xDB, disk_section=2, ext_attr=....----(), attributes=?.P..R..(??,Portable,Readable)
 ;
 944A:    03 19                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0019 (to 0x9465)
 944C:       04 17                        ;     COM_04_print_message length=0x0017 (to 0x9465)
@@ -6660,7 +6660,7 @@ ObjectData:
 
 ; -------------- Object OBJ_3A_CONTROL_PANEL --------------
 9568: 62 0E                              ; Word_num=0x62 CONSOL, length=0x000E (to 0x9578)
-956A: 89 07 81                           ; Location=0x89, disk_section=7, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+956A: 89 07 81                           ; Location=0x89, disk_section=7, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 956D:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x9578)
 ;           CONTROL PANEL
@@ -6668,7 +6668,7 @@ ObjectData:
 
 ; -------------- Object OBJ_3B_RADIO --------------
 9578: 12 80 BB                           ; Word_num=0x12 RADIO, length=0x00BB (to 0x9636)
-957B: A2 02 80                           ; Location=0xA2, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
+957B: A2 02 80                           ; Location=0xA2, disk_section=2, ext_attr=....----(), attributes=?.......(??)
 ;
 957E:    03 01                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0001 (to 0x9581)
 9580:       B9                           ;     FN_B9_PRINT_JUKEBOX
@@ -6704,7 +6704,7 @@ ObjectData:
 
 ; -------------- Object OBJ_3C_RADIO --------------
 9636: 12 64                              ; Word_num=0x12 RADIO, length=0x0064 (to 0x969C)
-9638: 00 02 80                           ; Location=0x00, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
+9638: 00 02 80                           ; Location=0x00, disk_section=2, ext_attr=....----(), attributes=?.......(??)
 ;
 963B:    03 1E                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001E (to 0x965B)
 963D:       04 1C                        ;     COM_04_print_message length=0x001C (to 0x965B)
@@ -6742,7 +6742,7 @@ ObjectData:
 
 ; -------------- Object OBJ_3D_BOTTLE --------------
 969C: 11 38                              ; Word_num=0x11 BOTTLE, length=0x0038 (to 0x96D6)
-969E: 44 A0 AE                           ; Location=0x44, disk_section=0, ext_attr=1010...., attributes=1010_1110 (GETTABLE, CLOSEABLE, ??LOCKABLE, CLOSED)
+969E: 44 A0 AE                           ; Location=0x44, disk_section=0, ext_attr=G.C.----(Glass,Closed), attributes=?.P.ORH.(??,Portable,Openable,Readable,Holder)
 ;
 96A1:    03 12                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0012 (to 0x96B5)
 96A3:       04 10                        ;     COM_04_print_message length=0x0010 (to 0x96B5)
@@ -6770,14 +6770,14 @@ ObjectData:
 
 ; -------------- Object OBJ_3E_OVAL --------------
 96D6: 4A 06                              ; Word_num=0x4A BUTTON, length=0x0006 (to 0x96DE)
-96D8: 00 07 00                           ; Location=0x00, disk_section=7, ext_attr=0000...., attributes=0000_0000 ()
+96D8: 00 07 00                           ; Location=0x00, disk_section=7, ext_attr=....----(), attributes=........()
 ;
 96DB:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0x96DE)
 96DD:       15                           ;     BRASS
 
 ; -------------- Object OBJ_3F_YELLOW_BUTTON --------------
 96DE: 4A 14                              ; Word_num=0x4A BUTTON, length=0x0014 (to 0x96F4)
-96E0: FF 07 80                           ; Location=0xFF, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
+96E0: FF 07 80                           ; Location=0xFF, disk_section=7, ext_attr=....----(), attributes=?.......(??)
 ;
 96E3:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x96E6)
 96E5:       AF                           ;     FN_AF_PRINT_I_SEE_NO_noun1_HERE
@@ -6791,7 +6791,7 @@ ObjectData:
 
 ; -------------- Object OBJ_40_RED_BUTTON --------------
 96F4: 4A 12                              ; Word_num=0x4A BUTTON, length=0x0012 (to 0x9708)
-96F6: FF 07 80                           ; Location=0xFF, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
+96F6: FF 07 80                           ; Location=0xFF, disk_section=7, ext_attr=....----(), attributes=?.......(??)
 ;
 96F9:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x96FC)
 96FB:       AF                           ;     FN_AF_PRINT_I_SEE_NO_noun1_HERE
@@ -6805,7 +6805,7 @@ ObjectData:
 
 ; -------------- Object OBJ_41_BLUE_BUTTON --------------
 9708: 4A 13                              ; Word_num=0x4A BUTTON, length=0x0013 (to 0x971D)
-970A: FF 07 80                           ; Location=0xFF, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
+970A: FF 07 80                           ; Location=0xFF, disk_section=7, ext_attr=....----(), attributes=?.......(??)
 ;
 970D:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x9710)
 970F:       AF                           ;     FN_AF_PRINT_I_SEE_NO_noun1_HERE
@@ -6819,7 +6819,7 @@ ObjectData:
 
 ; -------------- Object OBJ_42_ORANGE_BUTTON --------------
 971D: 4A 14                              ; Word_num=0x4A BUTTON, length=0x0014 (to 0x9733)
-971F: FF 07 80                           ; Location=0xFF, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
+971F: FF 07 80                           ; Location=0xFF, disk_section=7, ext_attr=....----(), attributes=?.......(??)
 ;
 9722:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x9725)
 9724:       AF                           ;     FN_AF_PRINT_I_SEE_NO_noun1_HERE
@@ -6833,7 +6833,7 @@ ObjectData:
 
 ; -------------- Object OBJ_43_BROWN_LIQUID --------------
 9733: 4C 3B                              ; Word_num=0x4C WHISKE, length=0x003B (to 0x9770)
-9735: 3D 10 A0                           ; Location=0x3D, disk_section=0, ext_attr=0001...., attributes=1010_0000 (GETTABLE)
+9735: 3D 10 A0                           ; Location=0x3D, disk_section=0, ext_attr=...Q----(liQuid), attributes=?.P.....(??,Portable)
 ;
 9738:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002 (to 0x973C)
 973A:       74                           ;     CLEAR
@@ -6867,7 +6867,7 @@ ObjectData:
 
 ; -------------- Object OBJ_44_BAR --------------
 9770: 4D 07                              ; Word_num=0x4D BAR, length=0x0007 (to 0x9779)
-9772: A2 02 81                           ; Location=0xA2, disk_section=2, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+9772: A2 02 81                           ; Location=0xA2, disk_section=2, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 9775:    02 02                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0002 (to 0x9779)
 ;           BAR
@@ -6875,7 +6875,7 @@ ObjectData:
 
 ; -------------- Object OBJ_45_SINK --------------
 9779: 4E 25                              ; Word_num=0x4E SINK, length=0x0025 (to 0x97A0)
-977B: A2 02 82                           ; Location=0xA2, disk_section=2, ext_attr=0000...., attributes=1000_0010 (CLOSED)
+977B: A2 02 82                           ; Location=0xA2, disk_section=2, ext_attr=....----(), attributes=?.....H.(??,Holder)
 ;
 977E:    03 1B                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001B (to 0x979B)
 9780:       04 19                        ;     COM_04_print_message length=0x0019 (to 0x979B)
@@ -6891,7 +6891,7 @@ ObjectData:
 
 ; -------------- Object OBJ_46_WATER --------------
 97A0: 4F 4E                              ; Word_num=0x4F WATER, length=0x004E (to 0x97F0)
-97A2: 45 10 A0                           ; Location=0x45, disk_section=0, ext_attr=0001...., attributes=1010_0000 (GETTABLE)
+97A2: 45 10 A0                           ; Location=0x45, disk_section=0, ext_attr=...Q----(liQuid), attributes=?.P.....(??,Portable)
 ;
 97A5:    01 02                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0002 (to 0x97A9)
 97A7:       72                           ;     COOL
@@ -6926,7 +6926,7 @@ ObjectData:
 
 ; -------------- Object OBJ_47_COUNTER --------------
 97F0: 50 0A                              ; Word_num=0x50 COUNTE, length=0x000A (to 0x97FC)
-97F2: AA 04 81                           ; Location=0xAA, disk_section=4, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+97F2: AA 04 81                           ; Location=0xAA, disk_section=4, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 97F5:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x97FC)
 ;           COUNTER
@@ -6934,7 +6934,7 @@ ObjectData:
 
 ; -------------- Object OBJ_48_DRESSER --------------
 97FC: 51 0A                              ; Word_num=0x51 DRESSE, length=0x000A (to 0x9808)
-97FE: DE 24 8A                           ; Location=0xDE, disk_section=4, ext_attr=0010...., attributes=1000_1010 (CLOSEABLE, CLOSED)
+97FE: DE 24 8A                           ; Location=0xDE, disk_section=4, ext_attr=..C.----(Closed), attributes=?...O.H.(??,Openable,Holder)
 ;
 9801:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x9808)
 ;           DRESSER
@@ -6942,7 +6942,7 @@ ObjectData:
 
 ; -------------- Object OBJ_49_TABLE --------------
 9808: 1A 09                              ; Word_num=0x1A DESK, length=0x0009 (to 0x9813)
-980A: 83 01 81                           ; Location=0x83, disk_section=1, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+980A: 83 01 81                           ; Location=0x83, disk_section=1, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 980D:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0x9813)
 ;           TABLE 
@@ -6950,7 +6950,7 @@ ObjectData:
 
 ; -------------- Object OBJ_4A_HOOD --------------
 9813: 52 3E                              ; Word_num=0x52 HOOD, length=0x003E (to 0x9853)
-9815: 86 21 88                           ; Location=0x86, disk_section=1, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
+9815: 86 21 88                           ; Location=0x86, disk_section=1, ext_attr=..C.----(Closed), attributes=?...O...(??,Openable)
 ;
 9818:    07 34                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0034 (to 0x984E)
 981A:       0D 32                        ;     COM_0D_group_AND length=0x0032 (to 0x984E)
@@ -6974,11 +6974,11 @@ ObjectData:
 
 ; -------------- Object OBJ_4B_LIT_DYNAMITE_FUSE --------------
 9853: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0x9858)
-9855: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+9855: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 
 ; -------------- Object OBJ_4C_BLASTED_SAFE --------------
 9858: 1D 3A                              ; Word_num=0x1D SAFE, length=0x003A (to 0x9894)
-985A: 00 04 82                           ; Location=0x00, disk_section=4, ext_attr=0000...., attributes=1000_0010 (CLOSED)
+985A: 00 04 82                           ; Location=0x00, disk_section=4, ext_attr=....----(), attributes=?.....H.(??,Holder)
 ;
 985D:    03 2B                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x002B (to 0x988A)
 985F:       04 29                        ;     COM_04_print_message length=0x0029 (to 0x988A)
@@ -6996,7 +6996,7 @@ ObjectData:
 
 ; -------------- Object OBJ_4D_DOOR --------------
 9894: 10 08                              ; Word_num=0x10 DOOR, length=0x0008 (to 0x989E)
-9896: 9D 05 88                           ; Location=0x9D, disk_section=5, ext_attr=0000...., attributes=1000_1000 (CLOSEABLE)
+9896: 9D 05 88                           ; Location=0x9D, disk_section=5, ext_attr=....----(), attributes=?...O...(??,Openable)
 ;
 9899:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0x989E)
 ;           DOOR
@@ -7004,7 +7004,7 @@ ObjectData:
 
 ; -------------- Object OBJ_4E_BOULDER --------------
 989E: 54 5F                              ; Word_num=0x54 BOULDE, length=0x005F (to 0x98FF)
-98A0: 9D 05 80                           ; Location=0x9D, disk_section=5, ext_attr=0000...., attributes=1000_0000 ()
+98A0: 9D 05 80                           ; Location=0x9D, disk_section=5, ext_attr=....----(), attributes=?.......(??)
 ;
 98A3:    03 25                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0025 (to 0x98CA)
 98A5:       04 23                        ;     COM_04_print_message length=0x0023 (to 0x98CA)
@@ -7036,7 +7036,7 @@ ObjectData:
 
 ; -------------- Object OBJ_4F_RADIO --------------
 98FF: 12 2C                              ; Word_num=0x12 RADIO, length=0x002C (to 0x992D)
-9901: 00 02 80                           ; Location=0x00, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
+9901: 00 02 80                           ; Location=0x00, disk_section=2, ext_attr=....----(), attributes=?.......(??)
 ;
 9904:    03 01                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0001 (to 0x9907)
 9906:       B9                           ;     FN_B9_PRINT_JUKEBOX
@@ -7059,7 +7059,7 @@ ObjectData:
 
 ; -------------- Object OBJ_50_DRESSER --------------
 992D: 51 0A                              ; Word_num=0x51 DRESSE, length=0x000A (to 0x9939)
-992F: DF 24 8A                           ; Location=0xDF, disk_section=4, ext_attr=0010...., attributes=1000_1010 (CLOSEABLE, CLOSED)
+992F: DF 24 8A                           ; Location=0xDF, disk_section=4, ext_attr=..C.----(Closed), attributes=?...O.H.(??,Openable,Holder)
 ;
 9932:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0x9939)
 ;           DRESSER
@@ -7067,7 +7067,7 @@ ObjectData:
 
 ; -------------- Object OBJ_51_CHAIR --------------
 9939: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C (to 0x9947)
-993B: DE 04 80                           ; Location=0xDE, disk_section=4, ext_attr=0000...., attributes=1000_0000 ()
+993B: DE 04 80                           ; Location=0xDE, disk_section=4, ext_attr=....----(), attributes=?.......(??)
 ;
 993E:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x9941)
 9940:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
@@ -7078,7 +7078,7 @@ ObjectData:
 
 ; -------------- Object OBJ_52_CHAIR --------------
 9947: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C (to 0x9955)
-9949: DF 04 80                           ; Location=0xDF, disk_section=4, ext_attr=0000...., attributes=1000_0000 ()
+9949: DF 04 80                           ; Location=0xDF, disk_section=4, ext_attr=....----(), attributes=?.......(??)
 ;
 994C:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x994F)
 994E:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
@@ -7089,7 +7089,7 @@ ObjectData:
 
 ; -------------- Object OBJ_53_BED --------------
 9955: 55 0A                              ; Word_num=0x55 BED, length=0x000A (to 0x9961)
-9957: DE 04 80                           ; Location=0xDE, disk_section=4, ext_attr=0000...., attributes=1000_0000 ()
+9957: DE 04 80                           ; Location=0xDE, disk_section=4, ext_attr=....----(), attributes=?.......(??)
 ;
 995A:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x995D)
 995C:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
@@ -7100,7 +7100,7 @@ ObjectData:
 
 ; -------------- Object OBJ_54_BED --------------
 9961: 55 0A                              ; Word_num=0x55 BED, length=0x000A (to 0x996D)
-9963: DF 04 80                           ; Location=0xDF, disk_section=4, ext_attr=0000...., attributes=1000_0000 ()
+9963: DF 04 80                           ; Location=0xDF, disk_section=4, ext_attr=....----(), attributes=?.......(??)
 ;
 9966:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x9969)
 9968:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
@@ -7111,7 +7111,7 @@ ObjectData:
 
 ; -------------- Object OBJ_55_MOUND_SAND --------------
 996D: 57 80 98                           ; Word_num=0x57 SAND, length=0x0098 (to 0x9A08)
-9970: A0 02 80                           ; Location=0xA0, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
+9970: A0 02 80                           ; Location=0xA0, disk_section=2, ext_attr=....----(), attributes=?.......(??)
 ;
 9973:    03 34                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0034 (to 0x99A9)
 9975:       04 32                        ;     COM_04_print_message length=0x0032 (to 0x99A9)
@@ -7163,7 +7163,7 @@ ObjectData:
 
 ; -------------- Object OBJ_56_SIGN --------------
 9A08: 56 5F                              ; Word_num=0x56 SIGN, length=0x005F (to 0x9A69)
-9A0A: AA 04 84                           ; Location=0xAA, disk_section=4, ext_attr=0000...., attributes=1000_0100 (??LOCKABLE)
+9A0A: AA 04 84                           ; Location=0xAA, disk_section=4, ext_attr=....----(), attributes=?....R..(??,Readable)
 ;
 9A0D:    07 55                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0055 (to 0x9A64)
 9A0F:       0D 53                        ;     COM_0D_group_AND length=0x0053 (to 0x9A64)
@@ -7186,7 +7186,7 @@ ObjectData:
 
 ; -------------- Object OBJ_57_MESSAGE --------------
 9A69: 56 2A                              ; Word_num=0x56 SIGN, length=0x002A (to 0x9A95)
-9A6B: 81 01 84                           ; Location=0x81, disk_section=1, ext_attr=0000...., attributes=1000_0100 (??LOCKABLE)
+9A6B: 81 01 84                           ; Location=0x81, disk_section=1, ext_attr=....----(), attributes=?....R..(??,Readable)
 ;
 9A6E:    07 1E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001E (to 0x9A8E)
 9A70:       0D 1C                        ;     COM_0D_group_AND length=0x001C (to 0x9A8E)
@@ -7205,7 +7205,7 @@ ObjectData:
 
 ; -------------- Object OBJ_58_NEON_SIGN --------------
 9A95: 56 17                              ; Word_num=0x56 SIGN, length=0x0017 (to 0x9AAE)
-9A97: 96 03 84                           ; Location=0x96, disk_section=3, ext_attr=0000...., attributes=1000_0100 (??LOCKABLE)
+9A97: 96 03 84                           ; Location=0x96, disk_section=3, ext_attr=....----(), attributes=?....R..(??,Readable)
 ;
 9A9A:    07 0A                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000A (to 0x9AA6)
 9A9C:       0D 08                        ;     COM_0D_group_AND length=0x0008 (to 0x9AA6)
@@ -7223,7 +7223,7 @@ ObjectData:
 
 ; -------------- Object OBJ_59_AQUARIUM --------------
 9AAE: 58 0B                              ; Word_num=0x58 AQUARI, length=0x000B (to 0x9ABB)
-9AB0: A6 03 8A                           ; Location=0xA6, disk_section=3, ext_attr=0000...., attributes=1000_1010 (CLOSEABLE, CLOSED)
+9AB0: A6 03 8A                           ; Location=0xA6, disk_section=3, ext_attr=....----(), attributes=?...O.H.(??,Openable,Holder)
 ;
 9AB3:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0x9ABB)
 ;           AQUARIUM 
@@ -7231,7 +7231,7 @@ ObjectData:
 
 ; -------------- Object OBJ_5A_ENTRANCE_CLEAR --------------
 9ABB: 54 26                              ; Word_num=0x54 BOULDE, length=0x0026 (to 0x9AE3)
-9ABD: 00 05 80                           ; Location=0x00, disk_section=5, ext_attr=0000...., attributes=1000_0000 ()
+9ABD: 00 05 80                           ; Location=0x00, disk_section=5, ext_attr=....----(), attributes=?.......(??)
 ;
 9AC0:    03 21                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0021 (to 0x9AE3)
 9AC2:       04 1F                        ;     COM_04_print_message length=0x001F (to 0x9AE3)
@@ -7243,7 +7243,7 @@ ObjectData:
 
 ; -------------- Object OBJ_5B_LIMIT_SIGN --------------
 9AE3: 56 18                              ; Word_num=0x56 SIGN, length=0x0018 (to 0x9AFD)
-9AE5: 89 01 84                           ; Location=0x89, disk_section=1, ext_attr=0000...., attributes=1000_0100 (??LOCKABLE)
+9AE5: 89 01 84                           ; Location=0x89, disk_section=1, ext_attr=....----(), attributes=?....R..(??,Readable)
 ;
 9AE8:    07 0E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x000E (to 0x9AF8)
 9AEA:       0D 0C                        ;     COM_0D_group_AND length=0x000C (to 0x9AF8)
@@ -7261,7 +7261,7 @@ ObjectData:
 
 ; -------------- Object OBJ_5C_PAIR_HANDS --------------
 9AFD: 1F 2C                              ; Word_num=0x1F HAND, length=0x002C (to 0x9B2B)
-9AFF: 01 00 C0                           ; Location=0x01, disk_section=0, ext_attr=0000...., attributes=1100_0000 (WEAPON)
+9AFF: 01 00 C0                           ; Location=0x01, disk_section=0, ext_attr=....----(), attributes=?W......(??,Weapon)
 ;
 9B02:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x9B0D)
 ;           PAIR OF HANDS
@@ -7280,7 +7280,7 @@ ObjectData:
 
 ; -------------- Object OBJ_5D_BARRED_WINDOW_OUTSIDE --------------
 9B2B: 59 47                              ; Word_num=0x59 WINDOW, length=0x0047 (to 0x9B74)
-9B2D: 8F 02 80                           ; Location=0x8F, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
+9B2D: 8F 02 80                           ; Location=0x8F, disk_section=2, ext_attr=....----(), attributes=?.......(??)
 ;
 9B30:    07 37                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0037 (to 0x9B69)
 9B32:       0D 35                        ;     COM_0D_group_AND length=0x0035 (to 0x9B69)
@@ -7304,7 +7304,7 @@ ObjectData:
 
 ; -------------- Object OBJ_5E_BARRED_WINDOW_INSIDE --------------
 9B74: 59 3A                              ; Word_num=0x59 WINDOW, length=0x003A (to 0x9BB0)
-9B76: 8E 02 80                           ; Location=0x8E, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
+9B76: 8E 02 80                           ; Location=0x8E, disk_section=2, ext_attr=....----(), attributes=?.......(??)
 ;
 9B79:    07 2A                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x002A (to 0x9BA5)
 9B7B:       0D 28                        ;     COM_0D_group_AND length=0x0028 (to 0x9BA5)
@@ -7326,7 +7326,7 @@ ObjectData:
 
 ; -------------- Object OBJ_5F_SHELTER --------------
 9BB0: 5A 0D                              ; Word_num=0x5A SHELTE, length=0x000D (to 0x9BBF)
-9BB2: A0 02 80                           ; Location=0xA0, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
+9BB2: A0 02 80                           ; Location=0xA0, disk_section=2, ext_attr=....----(), attributes=?.......(??)
 ;
 9BB5:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x9BB8)
 9BB7:       BB                           ;     FN_BB_PRINT_LOOK_IN_AT
@@ -7337,7 +7337,7 @@ ObjectData:
 
 ; -------------- Object OBJ_60_SHELTER --------------
 9BBF: 5A 0D                              ; Word_num=0x5A SHELTE, length=0x000D (to 0x9BCE)
-9BC1: DB 02 80                           ; Location=0xDB, disk_section=2, ext_attr=0000...., attributes=1000_0000 ()
+9BC1: DB 02 80                           ; Location=0xDB, disk_section=2, ext_attr=....----(), attributes=?.......(??)
 ;
 9BC4:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0x9BC7)
 9BC6:       BB                           ;     FN_BB_PRINT_LOOK_IN_AT
@@ -7348,7 +7348,7 @@ ObjectData:
 
 ; -------------- Object OBJ_61_GROUND --------------
 9BCE: 2B 09                              ; Word_num=0x2B FLOOR, length=0x0009 (to 0x9BD9)
-9BD0: 01 00 80                           ; Location=0x01, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+9BD0: 01 00 80                           ; Location=0x01, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 ;
 9BD3:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0x9BD9)
 ;           GROUND
@@ -7356,7 +7356,7 @@ ObjectData:
 
 ; -------------- Object OBJ_62_SHAGGY_CREATURE --------------
 9BD9: 5B 85 24                           ; Word_num=0x5B ALIEN, length=0x0524 (to 0xA100)
-9BDC: C3 05 90                           ; Location=0xC3, disk_section=5, ext_attr=0000...., attributes=1001_0000 (ALIVE)
+9BDC: C3 05 90                           ; Location=0xC3, disk_section=5, ext_attr=....----(), attributes=?..A....(??,Alive)
 ;
 9BDF:    03 01                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0001 (to 0x9BE2)
 9BE1:       BD                           ;     FN_BD_PRINT_SHAGGY_CREATURE
@@ -7792,7 +7792,7 @@ A0F2:       29 B8 B3 B3 1B B8 0B 6D E4 14 96 5F 2F C6
 
 ; -------------- Object OBJ_63_GREY_CUBE --------------
 A100: 5C 42                              ; Word_num=0x5C CUBE, length=0x0042 (to 0xA144)
-A102: 65 00 A0                           ; Location=0x65, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
+A102: 65 00 A0                           ; Location=0x65, disk_section=0, ext_attr=....----(), attributes=?.P.....(??,Portable)
 ;
 A105:    03 27                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0027 (to 0xA12E)
 A107:       04 25                        ;     COM_04_print_message length=0x0025 (to 0xA12E)
@@ -7817,7 +7817,7 @@ A138:       C1 C0 D0 15 13 54 AF 6E 45 DB AF C3
 
 ; -------------- Object OBJ_64_WHITE_CUBE --------------
 A144: 5C 3B                              ; Word_num=0x5C CUBE, length=0x003B (to 0xA181)
-A146: 00 00 A0                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
+A146: 00 00 A0                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?.P.....(??,Portable)
 ;
 A149:    03 1F                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001F (to 0xA16A)
 A14B:       04 1D                        ;     COM_04_print_message length=0x001D (to 0xA16A)
@@ -7841,7 +7841,7 @@ A174:       C1 C0 D0 15 13 54 23 D1 DB BD 24 56 45
 
 ; -------------- Object OBJ_65_TABLE --------------
 A181: 1A 09                              ; Word_num=0x1A DESK, length=0x0009 (to 0xA18C)
-A183: 86 08 81                           ; Location=0x86, disk_section=8, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+A183: 86 08 81                           ; Location=0x86, disk_section=8, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 A186:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xA18C)
 ;           TABLE 
@@ -7849,7 +7849,7 @@ A188:       44 BD DB 8B
 
 ; -------------- Object OBJ_66_RECESS --------------
 A18C: 2E 09                              ; Word_num=0x2E HOLE, length=0x0009 (to 0xA197)
-A18E: 86 08 82                           ; Location=0x86, disk_section=8, ext_attr=0000...., attributes=1000_0010 (CLOSED)
+A18E: 86 08 82                           ; Location=0x86, disk_section=8, ext_attr=....----(), attributes=?.....H.(??,Holder)
 ;
 A191:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xA197)
 ;           RECESS
@@ -7857,7 +7857,7 @@ A193:       65 B1 65 62
 
 ; -------------- Object OBJ_67_HOLE --------------
 A197: 2E 08                              ; Word_num=0x2E HOLE, length=0x0008 (to 0xA1A1)
-A199: 80 07 82                           ; Location=0x80, disk_section=7, ext_attr=0000...., attributes=1000_0010 (CLOSED)
+A199: 80 07 82                           ; Location=0x80, disk_section=7, ext_attr=....----(), attributes=?.....H.(??,Holder)
 ;
 A19C:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0xA1A1)
 ;           HOLE
@@ -7865,7 +7865,7 @@ A19E:       7E 74 45
 
 ; -------------- Object OBJ_68_HOLE_BOULDERS --------------
 A1A1: 2E 62                              ; Word_num=0x2E HOLE, length=0x0062 (to 0xA205)
-A1A3: 9E 08 82                           ; Location=0x9E, disk_section=8, ext_attr=0000...., attributes=1000_0010 (CLOSED)
+A1A3: 9E 08 82                           ; Location=0x9E, disk_section=8, ext_attr=....----(), attributes=?.....H.(??,Holder)
 ;
 A1A6:    06 58                           ;   Section=06:SECTION_06_IF_SECOND_NOUN, length=0x0058 (to 0xA200)
 A1A8:       0D 56                        ;     COM_0D_group_AND length=0x0056 (to 0xA200)
@@ -7891,7 +7891,7 @@ A202:       7E 74 45
 
 ; -------------- Object OBJ_69_PICTURE --------------
 A205: 5D 0A                              ; Word_num=0x5D PICTUR, length=0x000A (to 0xA211)
-A207: 82 07 80                           ; Location=0x82, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
+A207: 82 07 80                           ; Location=0x82, disk_section=7, ext_attr=....----(), attributes=?.......(??)
 ;
 A20A:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0xA211)
 ;           PICTURE
@@ -7899,7 +7899,7 @@ A20C:       85 A5 74 C0 45
 
 ; -------------- Object OBJ_6A_GLASS_CYLINDER --------------
 A211: 5E 80 82                           ; Word_num=0x5E CYLIND, length=0x0082 (to 0xA296)
-A214: 85 87 8A                           ; Location=0x85, disk_section=7, ext_attr=1000...., attributes=1000_1010 (CLOSEABLE, CLOSED)
+A214: 85 87 8A                           ; Location=0x85, disk_section=7, ext_attr=G...----(Glass), attributes=?...O.H.(??,Openable,Holder)
 ;
 A217:    07 71                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0071 (to 0xA28A)
 A219:       0B 6F 0A                     ;     COM_0B_switch length=0x006F (to 0xA28B), function=COM_0A_is_input_phrase(phrase_num)
@@ -7914,7 +7914,7 @@ A224:             0E 33                  ;         COM_0E_group_OR length=0x0033
 A226:                0D 21               ;           COM_0D_group_AND length=0x0021 (to 0xA249)
 A228:                   1B               ;             COM_1B_set_var_to_noun2()
 A229:                   14               ;             COM_14_reverse_status next command
-A22A:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=0x20)
+A22A:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 A22C:                   17 01 6A         ;             COM_17_move_object_to(obj=OBJ_01_PLAYER, destination=OBJ_6A_GLASS_CYLINDER)
 A22F:                   04 18            ;             COM_04_print_message length=0x0018 (to 0xA249)
 A231:                      C7 DE 5E 17 7E A1 45 DB 8F 8C 8B 4B C9 9A 82 17
@@ -7925,7 +7925,7 @@ A241:                      45 5E 43 DE 3F 98 1B B5
 ;                                        ;           end group_AND at 0xA226
 A249:                0D 0E               ;           COM_0D_group_AND length=0x000E (to 0xA259)
 A24B:                   1B               ;             COM_1B_set_var_to_noun2()
-A24C:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=0x20)
+A24C:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 A24E:                   04 09            ;             COM_04_print_message length=0x0009 (to 0xA259)
 A250:                      73 7B 4B 7B C9 54 A6 B7 2E
 ;
@@ -7939,7 +7939,7 @@ A25B:             0E 2D                  ;         COM_0E_group_OR length=0x002D
 A25D:                0D 1B               ;           COM_0D_group_AND length=0x001B (to 0xA27A)
 A25F:                   1B               ;             COM_1B_set_var_to_noun2()
 A260:                   14               ;             COM_14_reverse_status next command
-A261:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=0x20)
+A261:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 A263:                   1C 01            ;             COM_1C_set_var_object(obj=OBJ_01_PLAYER)
 A265:                   10               ;             COM_10_drop_var()
 A266:                   04 12            ;             COM_04_print_message length=0x0012 (to 0xA27A)
@@ -7951,7 +7951,7 @@ A278:                      C7 A0
 ;                                        ;           end group_AND at 0xA25D
 A27A:                0D 0E               ;           COM_0D_group_AND length=0x000E (to 0xA28A)
 A27C:                   1B               ;             COM_1B_set_var_to_noun2()
-A27D:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=0x20)
+A27D:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 A27F:                   04 09            ;             COM_04_print_message length=0x0009 (to 0xA28A)
 A281:                      73 7B 4B 7B C9 54 A6 B7 2E
 ;
@@ -7968,7 +7968,7 @@ A28C:       BB 6D CB B9 CE 56 8E 7A 23 62
 
 ; -------------- Object OBJ_6B_WHITE_BUTTON_LIGHTS --------------
 A296: 4A 53                              ; Word_num=0x4A BUTTON, length=0x0053 (to 0xA2EB)
-A298: 6A 00 80                           ; Location=0x6A, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+A298: 6A 00 80                           ; Location=0x6A, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 ;
 A29B:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xA29E)
 A29D:       60                           ;     WHITE
@@ -8006,7 +8006,7 @@ A2E3:       23 D1 DB BD F6 4F 80 BF
 
 ; -------------- Object OBJ_6C_MAROON_BUTTON --------------
 A2EB: 4A 80 F2                           ; Word_num=0x4A BUTTON, length=0x00F2 (to 0xA3E0)
-A2EE: 6A 00 80                           ; Location=0x6A, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+A2EE: 6A 00 80                           ; Location=0x6A, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 ;
 A2F1:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xA2F4)
 A2F3:       61                           ;     MAROON
@@ -8038,7 +8038,7 @@ A395:                1D 64               ;           COM_1D_attack_var(points=10
 ;                                        ;         end group_AND at 0xA2FF
 A397:             0D 1E                  ;         COM_0D_group_AND length=0x001E (to 0xA3B7)
 A399:                1C 6A               ;           COM_1C_set_var_object(obj=OBJ_6A_GLASS_CYLINDER)
-A39B:                2E 20               ;           COM_2E_is_var_ext_attributes(value=0x20)
+A39B:                2E 20               ;           COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 A39D:                29                  ;           COM_29_toggle_open_VAR()
 A39E:                04 17               ;           COM_04_print_message length=0x0017 (to 0xA3B7)
 A3A0:                   C3 54 AF 54 5A 17 52 D1 AB A2 5F BE EB 14 90 8C
@@ -8066,7 +8066,7 @@ A3D7:       94 91 40 A0 BF 14 49 C0 4E
 
 ; -------------- Object OBJ_6D_LIGHTS --------------
 A3E0: 5F 09                              ; Word_num=0x5F LIGHTS, length=0x0009 (to 0xA3EB)
-A3E2: 85 07 80                           ; Location=0x85, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
+A3E2: 85 07 80                           ; Location=0x85, disk_section=7, ext_attr=....----(), attributes=?.......(??)
 ;
 A3E5:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xA3EB)
 ;           LIGHTS
@@ -8074,7 +8074,7 @@ A3E7:       89 8C 4D 75
 
 ; -------------- Object OBJ_6E_CONSOLE --------------
 A3EB: 62 0A                              ; Word_num=0x62 CONSOL, length=0x000A (to 0xA3F7)
-A3ED: 9C 08 81                           ; Location=0x9C, disk_section=8, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+A3ED: 9C 08 81                           ; Location=0x9C, disk_section=8, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 A3F0:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0xA3F7)
 ;           CONSOLE
@@ -8082,7 +8082,7 @@ A3F2:       40 55 3E B9 45
 
 ; -------------- Object OBJ_6F_CHAIR --------------
 A3F7: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C (to 0xA405)
-A3F9: 9C 08 80                           ; Location=0x9C, disk_section=8, ext_attr=0000...., attributes=1000_0000 ()
+A3F9: 9C 08 80                           ; Location=0x9C, disk_section=8, ext_attr=....----(), attributes=?.......(??)
 ;
 A3FC:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0xA3FF)
 A3FE:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
@@ -8093,7 +8093,7 @@ A401:       1B 54 23 7B
 
 ; -------------- Object OBJ_70_WHITE_BUTTON_SCREEN --------------
 A405: 4A 5D                              ; Word_num=0x4A BUTTON, length=0x005D (to 0xA464)
-A407: 6E 00 80                           ; Location=0x6E, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+A407: 6E 00 80                           ; Location=0x6E, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 ;
 A40A:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xA40D)
 A40C:       60                           ;     WHITE
@@ -8135,7 +8135,7 @@ A45C:       23 D1 DB BD F6 4F 80 BF
 
 ; -------------- Object OBJ_71_GREEN_BUTTON_WEAPON --------------
 A464: 4A 80 80                           ; Word_num=0x4A BUTTON, length=0x0080 (to 0xA4E7)
-A467: 6E 00 80                           ; Location=0x6E, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+A467: 6E 00 80                           ; Location=0x6E, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 ;
 A46A:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xA46D)
 A46C:       6A                           ;     GREEN
@@ -8181,7 +8181,7 @@ A4DF:       AF 6E 83 61 F6 4F 80 BF
 
 ; -------------- Object OBJ_72_VIEWING_SCREEN --------------
 A4E7: 63 0F                              ; Word_num=0x63 SCREEN, length=0x000F (to 0xA4F8)
-A4E9: 9C 08 81                           ; Location=0x9C, disk_section=8, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+A4E9: 9C 08 81                           ; Location=0x9C, disk_section=8, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 A4EC:    02 0A                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x000A (to 0xA4F8)
 ;           VIEWING SCREEN 
@@ -8189,7 +8189,7 @@ A4EE:       07 CB 50 D1 D5 6A AF 55 83 61
 
 ; -------------- Object OBJ_73_DISPLAY_EARTH --------------
 A4F8: 64 57                              ; Word_num=0x64 EARTH, length=0x0057 (to 0xA551)
-A4FA: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+A4FA: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 ;
 A4FD:    07 42                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0042 (to 0xA541)
 A4FF:       0D 40                        ;     COM_0D_group_AND length=0x0040 (to 0xA541)
@@ -8213,7 +8213,7 @@ A543:       95 5A FB A5 51 DB 96 64 DB 72 94 5F 53 BE
 
 ; -------------- Object OBJ_74_DISPLAY_MOON --------------
 A551: 65 80 92                           ; Word_num=0x65 MOON, length=0x0092 (to 0xA5E6)
-A554: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+A554: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 ;
 A557:    07 7E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x007E (to 0xA5D7)
 A559:       0D 7C                        ;     COM_0D_group_AND length=0x007C (to 0xA5D7)
@@ -8242,7 +8242,7 @@ A5D9:       95 5A FB A5 51 DB 96 64 DB 72 C1 93 4E
 
 ; -------------- Object OBJ_75_DISPLAY_MOTHER_SHIP --------------
 A5E6: 66 80 91                           ; Word_num=0x66 SHIP, length=0x0091 (to 0xA67A)
-A5E9: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+A5E9: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 ;
 A5EC:    07 78                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0078 (to 0xA666)
 A5EE:       0D 76                        ;     COM_0D_group_AND length=0x0076 (to 0xA666)
@@ -8275,7 +8275,7 @@ A678:       D3 7A
 
 ; -------------- Object OBJ_76_CHAIR --------------
 A67A: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C (to 0xA688)
-A67C: 8A 08 82                           ; Location=0x8A, disk_section=8, ext_attr=0000...., attributes=1000_0010 (CLOSED)
+A67C: 8A 08 82                           ; Location=0x8A, disk_section=8, ext_attr=....----(), attributes=?.....H.(??,Holder)
 ;
 A67F:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0xA682)
 A681:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
@@ -8286,7 +8286,7 @@ A684:       1B 54 23 7B
 
 ; -------------- Object OBJ_77_HANDGRIP --------------
 A688: 67 77                              ; Word_num=0x67 HANDGR, length=0x0077 (to 0xA701)
-A68A: 8A 08 A0                           ; Location=0x8A, disk_section=8, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
+A68A: 8A 08 A0                           ; Location=0x8A, disk_section=8, ext_attr=....----(), attributes=?.P.....(??,Portable)
 ;
 A68D:    07 6A                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x006A (to 0xA6F9)
 A68F:       0E 68                        ;     COM_0E_group_OR length=0x0068 (to 0xA6F9)
@@ -8343,7 +8343,7 @@ A6FB:       50 72 44 5A D3 7A
 
 ; -------------- Object OBJ_78_CHAIR --------------
 A701: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C (to 0xA70F)
-A703: 8D 07 80                           ; Location=0x8D, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
+A703: 8D 07 80                           ; Location=0x8D, disk_section=7, ext_attr=....----(), attributes=?.......(??)
 ;
 A706:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0xA709)
 A708:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
@@ -8354,7 +8354,7 @@ A70B:       1B 54 23 7B
 
 ; -------------- Object OBJ_79_LARGE_CUBE --------------
 A70F: 5C 0F                              ; Word_num=0x5C CUBE, length=0x000F (to 0xA720)
-A711: 8D 07 81                           ; Location=0x8D, disk_section=7, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+A711: 8D 07 81                           ; Location=0x8D, disk_section=7, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 A714:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xA717)
 A716:       0E                           ;     BIG
@@ -8365,7 +8365,7 @@ A719:       54 8B 9B 6C 24 56 45
 
 ; -------------- Object OBJ_7A_HOLE_WISER --------------
 A720: 2E 80 B2                           ; Word_num=0x2E HOLE, length=0x00B2 (to 0xA7D5)
-A723: 8D 07 82                           ; Location=0x8D, disk_section=7, ext_attr=0000...., attributes=1000_0010 (CLOSED)
+A723: 8D 07 82                           ; Location=0x8D, disk_section=7, ext_attr=....----(), attributes=?.....H.(??,Holder)
 ;
 A726:    06 80 A1                        ;   Section=06:SECTION_06_IF_SECOND_NOUN, length=0x00A1 (to 0xA7CA)
 A729:       0E 80 9E                     ;     COM_0E_group_OR length=0x009E (to 0xA7CA)
@@ -8411,7 +8411,7 @@ A7CC:       C1 C0 D0 15 13 54 7E 74 45
 
 ; -------------- Object OBJ_7B_TABLE --------------
 A7D5: 1A 09                              ; Word_num=0x1A DESK, length=0x0009 (to 0xA7E0)
-A7D7: 8E 08 81                           ; Location=0x8E, disk_section=8, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+A7D7: 8E 08 81                           ; Location=0x8E, disk_section=8, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 A7DA:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xA7E0)
 ;           TABLE 
@@ -8419,7 +8419,7 @@ A7DC:       44 BD DB 8B
 
 ; -------------- Object OBJ_7C_TRANSPARENT_VIAL --------------
 A7E0: 68 31                              ; Word_num=0x68 VIAL, length=0x0031 (to 0xA813)
-A7E2: 7B A0 AA                           ; Location=0x7B, disk_section=0, ext_attr=1010...., attributes=1010_1010 (GETTABLE, CLOSEABLE, CLOSED)
+A7E2: 7B A0 AA                           ; Location=0x7B, disk_section=0, ext_attr=G.C.----(Glass,Closed), attributes=?.P.O.H.(??,Portable,Openable,Holder)
 ;
 A7E5:    03 1C                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001C (to 0xA803)
 A7E7:       04 1A                        ;     COM_04_print_message length=0x001A (to 0xA803)
@@ -8438,7 +8438,7 @@ A808:       EB BF A2 9A 2F 49 B3 9A 03 CB 4C
 
 ; -------------- Object OBJ_7D_TSOM_SOLUTION --------------
 A813: 4C 6C                              ; Word_num=0x4C WHISKE, length=0x006C (to 0xA881)
-A815: 7C 10 A0                           ; Location=0x7C, disk_section=0, ext_attr=0001...., attributes=1010_0000 (GETTABLE)
+A815: 7C 10 A0                           ; Location=0x7C, disk_section=0, ext_attr=...Q----(liQuid), attributes=?.P.....(??,Portable)
 ;
 A818:    07 59                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0059 (to 0xA873)
 A81A:       0E 57                        ;     COM_0E_group_OR length=0x0057 (to 0xA873)
@@ -8492,7 +8492,7 @@ A878:       21 C0 55 90 CF 9F 91 BE 4E
 
 ; -------------- Object OBJ_7E_PEDESTAL --------------
 A881: 69 0B                              ; Word_num=0x69 PEDEST, length=0x000B (to 0xA88E)
-A883: 90 08 81                           ; Location=0x90, disk_section=8, ext_attr=0000...., attributes=1000_0001 (LOCKED)
+A883: 90 08 81                           ; Location=0x90, disk_section=8, ext_attr=....----(), attributes=?......S(??,Surface)
 ;
 A886:    02 06                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0006 (to 0xA88E)
 ;           PEDESTAL 
@@ -8500,7 +8500,7 @@ A888:       E6 A4 66 62 33 48
 
 ; -------------- Object OBJ_7F_TWO_INCH_HOLE --------------
 A88E: 2E 5A                              ; Word_num=0x2E HOLE, length=0x005A (to 0xA8EA)
-A890: 90 08 82                           ; Location=0x90, disk_section=8, ext_attr=0000...., attributes=1000_0010 (CLOSED)
+A890: 90 08 82                           ; Location=0x90, disk_section=8, ext_attr=....----(), attributes=?.....H.(??,Holder)
 ;
 A893:    06 4A                           ;   Section=06:SECTION_06_IF_SECOND_NOUN, length=0x004A (to 0xA8DF)
 A895:       0D 48                        ;     COM_0D_group_AND length=0x0048 (to 0xA8DF)
@@ -8525,11 +8525,11 @@ A8E1:       C1 C0 D0 15 13 54 7E 74 45
 
 ; -------------- Object OBJ_80_WISDOM --------------
 A8EA: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0xA8EF)
-A8EC: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+A8EC: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 
 ; -------------- Object OBJ_81_GREEN_CUBE --------------
 A8EF: 5C 55                              ; Word_num=0x5C CUBE, length=0x0055 (to 0xA946)
-A8F1: DB 05 A0                           ; Location=0xDB, disk_section=5, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
+A8F1: DB 05 A0                           ; Location=0xDB, disk_section=5, ext_attr=....----(), attributes=?.P.....(??,Portable)
 ;
 A8F4:    03 1A                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001A (to 0xA910)
 A8F6:       04 18                        ;     COM_04_print_message length=0x0018 (to 0xA910)
@@ -8580,7 +8580,7 @@ A939:       C1 C0 D0 15 13 54 AF 6E 83 61 24 56 45
 ;;   0x92 (fast):   RM_8_ENGINES, RM_2_SOUTH_OF_WEST_ALLEY, RM_6_DESERT48
 ;;
 A946: 6E 80 AE                           ; Word_num=0x6E ROD, length=0x00AE (to 0xA9F7)
-A949: DB 05 A0                           ; Location=0xDB, disk_section=5, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
+A949: DB 05 A0                           ; Location=0xDB, disk_section=5, ext_attr=....----(), attributes=?.P.....(??,Portable)
 ;
 A94C:    03 1D                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x001D (to 0xA96B)
 A94E:       04 1B                        ;     COM_04_print_message length=0x001B (to 0xA96B)
@@ -8630,15 +8630,15 @@ A9E9:       F6 B2 FB 17 53 BE AF 6E 83 61 62 B9 2F 62
 
 ; -------------- Object OBJ_83_RADIATION_DOSE1 --------------
 A9F7: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0xA9FC)
-A9F9: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+A9F9: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 
 ; -------------- Object OBJ_84_RADIATION_DOSE2 --------------
 A9FC: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0xAA01)
-A9FE: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+A9FE: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 
 ; -------------- Object OBJ_85_CYLINDER_BOMB --------------
 AA01: 5E 2B                              ; Word_num=0x5E CYLIND, length=0x002B (to 0xAA2E)
-AA03: 94 07 80                           ; Location=0x94, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
+AA03: 94 07 80                           ; Location=0x94, disk_section=7, ext_attr=....----(), attributes=?.......(??)
 ;
 AA06:    07 1E                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x001E (to 0xAA26)
 AA08:       0D 1C                        ;     COM_0D_group_AND length=0x001C (to 0xAA26)
@@ -8659,7 +8659,7 @@ AA28:       CE 56 8E 7A 23 62
 
 ; -------------- Object OBJ_86_CYLINDER_POISON --------------
 AA2E: 5E 5C                              ; Word_num=0x5E CYLIND, length=0x005C (to 0xAA8C)
-AA30: 95 07 80                           ; Location=0x95, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
+AA30: 95 07 80                           ; Location=0x95, disk_section=7, ext_attr=....----(), attributes=?.......(??)
 ;
 AA33:    07 4F                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x004F (to 0xAA84)
 AA35:       0D 4D                        ;     COM_0D_group_AND length=0x004D (to 0xAA84)
@@ -8684,7 +8684,7 @@ AA86:       CE 56 8E 7A 23 62
 
 ; -------------- Object OBJ_87_CYLINDER_ANTS --------------
 AA8C: 5E 69                              ; Word_num=0x5E CYLIND, length=0x0069 (to 0xAAF7)
-AA8E: 97 07 80                           ; Location=0x97, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
+AA8E: 97 07 80                           ; Location=0x97, disk_section=7, ext_attr=....----(), attributes=?.......(??)
 ;
 AA91:    07 5C                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x005C (to 0xAAEF)
 AA93:       0D 5A                        ;     COM_0D_group_AND length=0x005A (to 0xAAEF)
@@ -8710,7 +8710,7 @@ AAF1:       CE 56 8E 7A 23 62
 
 ; -------------- Object OBJ_88_CYLINDERS_UNABLE --------------
 AAF7: 5E 2E                              ; Word_num=0x5E CYLIND, length=0x002E (to 0xAB27)
-AAF9: 99 07 80                           ; Location=0x99, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
+AAF9: 99 07 80                           ; Location=0x99, disk_section=7, ext_attr=....----(), attributes=?.......(??)
 ;
 AAFC:    07 21                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0021 (to 0xAB1F)
 AAFE:       0D 1F                        ;     COM_0D_group_AND length=0x001F (to 0xAB1F)
@@ -8729,7 +8729,7 @@ AB21:       CE 56 8E 7A 23 62
 
 ; -------------- Object OBJ_89_ALIEN_ANTS --------------
 AB27: 5B 81 6B                           ; Word_num=0x5B ALIEN, length=0x016B (to 0xAC95)
-AB2A: 00 00 90                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1001_0000 (ALIVE)
+AB2A: 00 00 90                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?..A....(??,Alive)
 ;
 AB2D:    03 22                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0022 (to 0xAB51)
 AB2F:       04 20                        ;     COM_04_print_message length=0x0020 (to 0xAB51)
@@ -8804,7 +8804,7 @@ AC8C:       73 74 33 B1 C3 9E 9E 48 53
 
 ; -------------- Object OBJ_8A_DEAD_ALIEN --------------
 AC95: 5B 22                              ; Word_num=0x5B ALIEN, length=0x0022 (to 0xACB9)
-AC97: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+AC97: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 ;
 AC9A:    03 14                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0014 (to 0xACB0)
 AC9C:       04 12                        ;     COM_04_print_message length=0x0012 (to 0xACB0)
@@ -8820,7 +8820,7 @@ ACB2:       E3 59 03 58 87 8C 4E
 
 ; -------------- Object OBJ_8B_SQUIRMING_ALIEN --------------
 ACB9: 5B 7C                              ; Word_num=0x5B ALIEN, length=0x007C (to 0xAD37)
-ACBB: DB 05 90                           ; Location=0xDB, disk_section=5, ext_attr=0000...., attributes=1001_0000 (ALIVE)
+ACBB: DB 05 90                           ; Location=0xDB, disk_section=5, ext_attr=....----(), attributes=?..A....(??,Alive)
 ;
 ACBE:    03 77                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0077 (to 0xAD37)
 ACC0:       0D 75                        ;     COM_0D_group_AND length=0x0075 (to 0xAD37)
@@ -8844,7 +8844,7 @@ AD2B:             E1 5F 35 92 CF 17 7B B4 03 BA 17 8D
 
 ; -------------- Object OBJ_8C_PROSPECTOR --------------
 AD37: 70 81 BD                           ; Word_num=0x70 PROSPE, length=0x01BD (to 0xAEF7)
-AD3A: E8 05 90                           ; Location=0xE8, disk_section=5, ext_attr=0000...., attributes=1001_0000 (ALIVE)
+AD3A: E8 05 90                           ; Location=0xE8, disk_section=5, ext_attr=....----(), attributes=?..A....(??,Alive)
 ;
 AD3D:    03 2C                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x002C (to 0xAD6B)
 AD3F:       04 2A                        ;     COM_04_print_message length=0x002A (to 0xAD6B)
@@ -8933,11 +8933,11 @@ AEF0:       F9 A6 5F B9 09 56 52
 
 ; -------------- Object OBJ_8D_PROSPECTOR_HAS_SPOKEN --------------
 AEF7: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0xAEFC)
-AEF9: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+AEF9: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 
 ; -------------- Object OBJ_8E_MACHINE --------------
 AEFC: 6F 0A                              ; Word_num=0x6F MACHIN, length=0x000A (to 0xAF08)
-AEFE: 9B 08 80                           ; Location=0x9B, disk_section=8, ext_attr=0000...., attributes=1000_0000 ()
+AEFE: 9B 08 80                           ; Location=0x9B, disk_section=8, ext_attr=....----(), attributes=?.......(??)
 ;
 AF01:    02 05                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0005 (to 0xAF08)
 ;           MACHINE
@@ -8945,7 +8945,7 @@ AF03:       85 91 90 73 45
 
 ; -------------- Object OBJ_8F_WHITE_BUTTON_ENGINES --------------
 AF08: 4A 80 87                           ; Word_num=0x4A BUTTON, length=0x0087 (to 0xAF92)
-AF0B: 3A 00 80                           ; Location=0x3A, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+AF0B: 3A 00 80                           ; Location=0x3A, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 ;
 AF0E:    01 01                           ;   Section=01:SECTION_01_ADJECTIVES, length=0x0001 (to 0xAF11)
 AF10:       60                           ;     WHITE
@@ -8985,7 +8985,7 @@ AF8A:       23 D1 DB BD F6 4F 80 BF
 
 ; -------------- Object OBJ_90_CHAIR --------------
 AF92: 53 0C                              ; Word_num=0x53 CHAIR, length=0x000C (to 0xAFA0)
-AF94: 89 07 80                           ; Location=0x89, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
+AF94: 89 07 80                           ; Location=0x89, disk_section=7, ext_attr=....----(), attributes=?.......(??)
 ;
 AF97:    07 01                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0001 (to 0xAF9A)
 AF99:       C5                           ;     FN_C5_ENTER_CLIMB_OUT
@@ -8996,7 +8996,7 @@ AF9C:       1B 54 23 7B
 
 ; -------------- Object OBJ_91_ALIEN_POISON --------------
 AFA0: 00 09                              ; Word_num=0x00 -none-, length=0x0009 (to 0xAFAB)
-AFA2: 00 00 A0                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1010_0000 (GETTABLE)
+AFA2: 00 00 A0                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?.P.....(??,Portable)
 ;
 AFA5:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xAFAB)
 ;           POISON
@@ -9004,11 +9004,11 @@ AFA7:       7B A6 40 B9
 
 ; -------------- Object OBJ_92_SCORE --------------
 AFAB: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0xAFB0)
-AFAD: 00 00 00                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=0000_0000 ()
+AFAD: 00 00 00                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=........()
 
 ; -------------- Object OBJ_93_DOOR_ESNEL --------------
 AFB0: 10 09                              ; Word_num=0x10 DOOR, length=0x0009 (to 0xAFBB)
-AFB2: 83 29 88                           ; Location=0x83, disk_section=9, ext_attr=0010...., attributes=1000_1000 (CLOSEABLE)
+AFB2: 83 29 88                           ; Location=0x83, disk_section=9, ext_attr=..C.----(Closed), attributes=?...O...(??,Openable)
 ;
 AFB5:    02 04                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0004 (to 0xAFBB)
 ;           ESNEL 
@@ -9016,7 +9016,7 @@ AFB7:       60 62 33 61
 
 ; -------------- Object OBJ_94_GOOLUB --------------
 AFBB: 71 32                              ; Word_num=0x71 GOOLUB, length=0x0032 (to 0xAFEF)
-AFBD: 31 00 90                           ; Location=0x31, disk_section=0, ext_attr=0000...., attributes=1001_0000 (ALIVE)
+AFBD: 31 00 90                           ; Location=0x31, disk_section=0, ext_attr=....----(), attributes=?..A....(??,Alive)
 ;
 AFC0:    07 27                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0027 (to 0xAFE9)
 AFC2:       0D 25                        ;     COM_0D_group_AND length=0x0025 (to 0xAFE9)
@@ -9045,7 +9045,7 @@ AFEB:       41 6E 64 8E
 
 ; -------------- Object OBJ_95_DOOR_ESNEL --------------
 AFEF: 10 2C                              ; Word_num=0x10 DOOR, length=0x002C (to 0xB01D)
-AFF1: 87 69 88                           ; Location=0x87, disk_section=9, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
+AFF1: 87 69 88                           ; Location=0x87, disk_section=9, ext_attr=.LC.----(Locked,Closed), attributes=?...O...(??,Openable)
 ;
 AFF4:    07 21                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0021 (to 0xB017)
 AFF6:       0E 1F                        ;     COM_0E_group_OR length=0x001F (to 0xB017)
@@ -9062,7 +9062,7 @@ B005:             BA                     ;         FN_BA_OPEN_UNLOCK
 B006:          0D 0F                     ;       COM_0D_group_AND length=0x000F (to 0xB017)
 B008:             0A 11                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... * *)
 B00A:             1A                     ;         COM_1A_set_var_to_noun1()
-B00B:             2E 40                  ;         COM_2E_is_var_ext_attributes(value=0x40)
+B00B:             2E 40                  ;         COM_2E_is_var_ext_attributes(value=.L..----(Locked))
 B00D:             A8                     ;         FN_A8_PRINT_noun1
 B00E:             04 07                  ;         COM_04_print_message length=0x0007 (to 0xB017)
 B010:                4B 7B 44 87 B0 85 2E
@@ -9078,7 +9078,7 @@ B019:       60 62 33 61
 
 ; -------------- Object OBJ_96_DOOR_ESNEL --------------
 B01D: 10 2C                              ; Word_num=0x10 DOOR, length=0x002C (to 0xB04B)
-B01F: 89 69 88                           ; Location=0x89, disk_section=9, ext_attr=0110...., attributes=1000_1000 (CLOSEABLE)
+B01F: 89 69 88                           ; Location=0x89, disk_section=9, ext_attr=.LC.----(Locked,Closed), attributes=?...O...(??,Openable)
 ;
 B022:    07 21                           ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x0021 (to 0xB045)
 B024:       0E 1F                        ;     COM_0E_group_OR length=0x001F (to 0xB045)
@@ -9095,7 +9095,7 @@ B033:             BA                     ;         FN_BA_OPEN_UNLOCK
 B034:          0D 0F                     ;       COM_0D_group_AND length=0x000F (to 0xB045)
 B036:             0A 11                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... * *)
 B038:             1A                     ;         COM_1A_set_var_to_noun1()
-B039:             2E 40                  ;         COM_2E_is_var_ext_attributes(value=0x40)
+B039:             2E 40                  ;         COM_2E_is_var_ext_attributes(value=.L..----(Locked))
 B03B:             A8                     ;         FN_A8_PRINT_noun1
 B03C:             04 07                  ;         COM_04_print_message length=0x0007 (to 0xB045)
 B03E:                4B 7B 44 87 B0 85 2E
@@ -9111,7 +9111,7 @@ B047:       60 62 33 61
 
 ; -------------- Object OBJ_97_SMALL_UKORK_KEY --------------
 B04B: 16 77                              ; Word_num=0x16 KEY, length=0x0077 (to 0xB0C4)
-B04D: 86 09 A4                           ; Location=0x86, disk_section=9, ext_attr=0000...., attributes=1010_0100 (GETTABLE, ??LOCKABLE)
+B04D: 86 09 A4                           ; Location=0x86, disk_section=9, ext_attr=....----(), attributes=?.P..R..(??,Portable,Readable)
 ;
 B050:    03 15                           ;   Section=03:SECTION_03_DESCRIPTION, length=0x0015 (to 0xB067)
 B052:       04 13                        ;     COM_04_print_message length=0x0013 (to 0xB067)
@@ -9153,7 +9153,7 @@ B0BC:       E3 B8 F3 8C 21 C5 4B B2
 
 ; -------------- Object OBJ_98_BLURNUM_RADIO --------------
 B0C4: 12 81 87                           ; Word_num=0x12 RADIO, length=0x0187 (to 0xB24E)
-B0C7: 8B 09 80                           ; Location=0x8B, disk_section=9, ext_attr=0000...., attributes=1000_0000 ()
+B0C7: 8B 09 80                           ; Location=0x8B, disk_section=9, ext_attr=....----(), attributes=?.......(??)
 ;
 B0CA:    07 81 7A                        ;   Section=07:SECTION_07_IF_FIRST_NOUN, length=0x017A (to 0xB247)
 B0CD:       0E 81 77                     ;     COM_0E_group_OR length=0x0177 (to 0xB247)
@@ -9228,7 +9228,7 @@ B249:       8F 4E DF B2 4D
 
 ; -------------- Object OBJ_99_SHIP --------------
 B24E: 66 08                              ; Word_num=0x66 SHIP, length=0x0008 (to 0xB258)
-B250: 9D 05 80                           ; Location=0x9D, disk_section=5, ext_attr=0000...., attributes=1000_0000 ()
+B250: 9D 05 80                           ; Location=0x9D, disk_section=5, ext_attr=....----(), attributes=?.......(??)
 ;
 B253:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0xB258)
 ;           SHIP
@@ -9236,7 +9236,7 @@ B255:       23 B8 50
 
 ; -------------- Object OBJ_9A_WALL --------------
 B258: 25 08                              ; Word_num=0x25 WALL, length=0x0008 (to 0xB262)
-B25A: 01 00 80                           ; Location=0x01, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+B25A: 01 00 80                           ; Location=0x01, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 ;
 B25D:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0xB262)
 ;           WALL
@@ -9244,11 +9244,11 @@ B25F:       0E D0 4C
 
 ; -------------- Object OBJ_9B_?? --------------
 B262: 00 03                              ; Word_num=0x00 -none-, length=0x0003 (to 0xB267)
-B264: 00 00 00                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=0000_0000 ()
+B264: 00 00 00                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=........()
 
 ; -------------- Object OBJ_9C_SHIP --------------
 B267: 66 08                              ; Word_num=0x66 SHIP, length=0x0008 (to 0xB271)
-B269: 80 07 80                           ; Location=0x80, disk_section=7, ext_attr=0000...., attributes=1000_0000 ()
+B269: 80 07 80                           ; Location=0x80, disk_section=7, ext_attr=....----(), attributes=?.......(??)
 ;
 B26C:    02 03                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0003 (to 0xB271)
 ;           SHIP
@@ -9256,7 +9256,7 @@ B26E:       23 B8 50
 
 ; -------------- Object OBJ_9D_THIRST_TRACKER --------------
 B271: 00 81 3B                           ; Word_num=0x00 -none-, length=0x013B (to 0xB3AF)
-B274: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=0000...., attributes=1000_0000 ()
+B274: 00 00 80                           ; Location=0x00, disk_section=0, ext_attr=....----(), attributes=?.......(??)
 ;
 B277:    08 81 35                        ;   Section=08:SECTION_08_EVERY_TURN, length=0x0135 (to 0xB3AF)
 B27A:       0D 81 32                     ;     COM_0D_group_AND length=0x0132 (to 0xB3AF)
@@ -9488,7 +9488,7 @@ B51C:          23 15 F3 B9 8E 48 F7 17 17 BA
 ;
 B526: 8D 0E                              ; Routine Number: 0x8D, Length: 0x000E
 B528:       0D 0C                        ;     COM_0D_group_AND length=0x000C (to 0xB536)
-B52A:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=0x20)
+B52A:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 B52C:          AA                        ;       FN_AA_PRINT_THE_var
 B52D:          04 07                     ;       COM_04_print_message length=0x0007 (to 0xB536)
 B52F:             4B 7B C9 54 A6 B7 2E  
@@ -9501,7 +9501,7 @@ B52F:             4B 7B C9 54 A6 B7 2E
 ;
 B536: C7 0E                              ; Routine Number: 0xC7, Length: 0x000E
 B538:       0D 0C                        ;     COM_0D_group_AND length=0x000C (to 0xB546)
-B53A:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=0x20)
+B53A:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 B53C:          AA                        ;       FN_AA_PRINT_THE_var
 B53D:          04 07                     ;       COM_04_print_message length=0x0007 (to 0xB546)
 B53F:             4B 7B 04 B2 48 C5 2E  
@@ -9518,7 +9518,7 @@ B54C:          0E 80 8D                  ;       COM_0E_group_OR length=0x008D (
 B54F:             14                     ;         COM_14_reverse_status next command
 B550:             BF                     ;         FN_BF_IS_LIQUID_REACHABLE
 B551:             0D 23                  ;         COM_0D_group_AND length=0x0023 (to 0xB576)
-B553:                2E 10               ;           COM_2E_is_var_ext_attributes(value=0x10)
+B553:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
 B555:                AA                  ;           FN_AA_PRINT_THE_var
 B556:                04 1E               ;           COM_04_print_message length=0x001E (to 0xB576)
 B558:                   C3 B8 0B A7 6C BE 29 A1 1B 71 34 A1 53 15 B7 98
@@ -9528,7 +9528,7 @@ B568:                   AE B3 3F 16 D3 49 AB 98 5F BE 59 90 97 62
 ;
 ;                                        ;         end group_AND at 0xB551
 B576:             0D 1A                  ;         COM_0D_group_AND length=0x001A (to 0xB592)
-B578:                15 10               ;           COM_15_is_var_attributes(value=0x10)
+B578:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
 B57A:                04 16               ;           COM_04_print_message length=0x0016 (to 0xB592)
 B57C:                   46 77 05 A0 16 BC 90 73 CA 83 59 5E 46 7A E1 14
 B58C:                   5F A0 D6 B0 DB 63
@@ -9538,7 +9538,7 @@ B58C:                   5F A0 D6 B0 DB 63
 ;                                        ;         end group_AND at 0xB576
 B592:             0D 22                  ;         COM_0D_group_AND length=0x0022 (to 0xB5B6)
 B594:                14                  ;           COM_14_reverse_status next command
-B595:                15 20               ;           COM_15_is_var_attributes(value=0x20)
+B595:                15 20               ;           COM_15_is_var_attributes(value=..P.....(Portable))
 B597:                14                  ;           COM_14_reverse_status next command
 B598:                2D 5C               ;           COM_2D_is_var_object(obj_num=0x5C, obj_text="OBJ_5C_PAIR_HANDS")
 B59A:                04 18               ;           COM_04_print_message length=0x0018 (to 0xB5B4)
@@ -9620,7 +9620,7 @@ B618: 92 1F                              ; Routine Number: 0x92, Length: 0x001F
 B61A:       0D 1D                        ;     COM_0D_group_AND length=0x001D (to 0xB639)
 B61C:          1A                        ;       COM_1A_set_var_to_noun1()
 B61D:          14                        ;       COM_14_reverse_status next command
-B61E:          15 08                     ;       COM_15_is_var_attributes(value=0x08)
+B61E:          15 08                     ;       COM_15_is_var_attributes(value=....O...(Openable))
 B620:          04 17                     ;       COM_04_print_message length=0x0017 (to 0xB639)
 B622:             C7 DE 8C 17 26 79 04 EE 73 C6 C7 DE E1 14 3E C5
 B632:             E6 96 09 15 D6 15 2E  
@@ -9665,7 +9665,7 @@ B678:          25                        ;       COM_25_print_linefeed()
 B679: A5 12                              ; Routine Number: 0xA5, Length: 0x0012
 B67B:       0D 10                        ;     COM_0D_group_AND length=0x0010 (to 0xB68D)
 B67D:          14                        ;       COM_14_reverse_status next command
-B67E:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=0x20)
+B67E:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 B680:          A8                        ;       FN_A8_PRINT_noun1
 B681:          04 0A                     ;       COM_04_print_message length=0x000A (to 0xB68D)
 B683:             4B 7B 06 9A DE 14 D7 A0 9B 5D
@@ -9690,9 +9690,9 @@ B69F:             0C                     ;         COM_0C_fail()
 ;                                        ;       end group_AND at 0xB691
 B6A0:          0D 11                     ;       COM_0D_group_AND length=0x0011 (to 0xB6B3)
 B6A2:             1A                     ;         COM_1A_set_var_to_noun1()
-B6A3:             15 02                  ;         COM_15_is_var_attributes(value=0x02)
+B6A3:             15 02                  ;         COM_15_is_var_attributes(value=......H.(Holder))
 B6A5:             14                     ;         COM_14_reverse_status next command
-B6A6:             2E 80                  ;         COM_2E_is_var_ext_attributes(value=0x80)
+B6A6:             2E 80                  ;         COM_2E_is_var_ext_attributes(value=G...----(Glass))
 B6A8:             14                     ;         COM_14_reverse_status next command
 B6A9:             33                     ;         COM_33_print_objects_on_var_object()
 B6AA:             A8                     ;         FN_A8_PRINT_noun1
@@ -9712,7 +9712,7 @@ B6B5: A8 0C                              ; Routine Number: 0xA8, Length: 0x000C
 B6B7:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0xB6C3)
 B6B9:          1A                        ;       COM_1A_set_var_to_noun1()
 B6BA:          0E 06                     ;       COM_0E_group_OR length=0x0006 (to 0xB6C2)
-B6BC:             15 10                  ;         COM_15_is_var_attributes(value=0x10)
+B6BC:             15 10                  ;         COM_15_is_var_attributes(value=...A....(Alive))
 B6BE:             1F 02                  ;         COM_1F_print2 length=0x0002 (to 0xB6C2)
 B6C0:                5F BE              
 ;
@@ -9728,7 +9728,7 @@ B6C3: A9 0C                              ; Routine Number: 0xA9, Length: 0x000C
 B6C5:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0xB6D1)
 B6C7:          1B                        ;       COM_1B_set_var_to_noun2()
 B6C8:          0E 06                     ;       COM_0E_group_OR length=0x0006 (to 0xB6D0)
-B6CA:             15 10                  ;         COM_15_is_var_attributes(value=0x10)
+B6CA:             15 10                  ;         COM_15_is_var_attributes(value=...A....(Alive))
 B6CC:             1F 02                  ;         COM_1F_print2 length=0x0002 (to 0xB6D0)
 B6CE:                5F BE              
 ;
@@ -9743,7 +9743,7 @@ B6D0:          12                        ;       COM_12_print_noun2()
 B6D1: AA 0B                              ; Routine Number: 0xAA, Length: 0x000B
 B6D3:       0D 09                        ;     COM_0D_group_AND length=0x0009 (to 0xB6DE)
 B6D5:          0E 06                     ;       COM_0E_group_OR length=0x0006 (to 0xB6DD)
-B6D7:             15 10                  ;         COM_15_is_var_attributes(value=0x10)
+B6D7:             15 10                  ;         COM_15_is_var_attributes(value=...A....(Alive))
 B6D9:             1F 02                  ;         COM_1F_print2 length=0x0002 (to 0xB6DD)
 B6DB:                5F BE              
 ;
@@ -10034,7 +10034,7 @@ B947:          5F BE 53 17 1B 92 8F BE DB 63
 ;
 B951: B7 16                              ; Routine Number: 0xB7, Length: 0x0016
 B953:       0D 14                        ;     COM_0D_group_AND length=0x0014 (to 0xB969)
-B955:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=0x20)
+B955:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 B957:          04 0E                     ;       COM_04_print_message length=0x000E (to 0xB967)
 B959:             C7 DE FB 17 F3 8C 58 72 56 5E D1 9C F0 A4
 ;
@@ -10080,7 +10080,7 @@ B9CB:             0D 28                  ;         COM_0D_group_AND length=0x002
 B9CD:                09 24               ;           COM_09_is_noun2(obj=OBJ_24_CROWBAR)
 B9CF:                1A                  ;           COM_1A_set_var_to_noun1()
 B9D0:                14                  ;           COM_14_reverse_status next command
-B9D1:                2E 40               ;           COM_2E_is_var_ext_attributes(value=0x40)
+B9D1:                2E 40               ;           COM_2E_is_var_ext_attributes(value=.L..----(Locked))
 B9D3:                04 1A               ;           COM_04_print_message length=0x001A (to 0xB9EF)
 B9D5:                   EB 99 67 98 16 58 C4 9C 58 5E BE 7A 9E 61 0B EE
 B9E5:                   0B C0 06 9A 49 16 97 54 AB 57
@@ -10089,7 +10089,7 @@ B9E5:                   0B C0 06 9A 49 16 97 54 AB 57
 ;
 B9EF:                0E 04               ;           COM_0E_group_OR length=0x0004 (to 0xB9F5)
 B9F1:                   14               ;             COM_14_reverse_status next command
-B9F2:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=0x20)
+B9F2:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=..C.----(Closed))
 B9F4:                   A6               ;             FN_A6_OPEN
 ;                                        ;           end group_OR at 0xB9EF
 ;                                        ;         end group_AND at 0xB9CB

@@ -30,7 +30,12 @@ for pos in range(len(dest)):
     if line.startswith(changes_start):
         start_dest = pos
     if line.startswith(changes_end):
-        end_dest = pos
+        end_dest = pos+1
+while dest[end_dest].startswith(';'):
+    end_dest += 1
+if dest[end_dest].startswith('```'):
+    end_dest -= 1
+
 
 current_address = None
 line_comments = {}
