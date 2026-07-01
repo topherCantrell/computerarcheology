@@ -4477,6 +4477,12 @@ GeneralScript:
 8335:                A9                  ;           FN_A9_PRINT_noun2
 8336:                04 0E               ;           COM_04_print_message length=0x000E (to 0x8346)
 8338:                   47 D2 B3 8B D6 B0 F4 72 23 15 1B BC 19 A1
+;;
+;; !! There is no HANDS object in BEDLAM where all this came from. TODO check this same FEEDING in BEDLAM. Maybe it goes
+;; back to RaakaTu.
+;; FEED HANDS TO PROSPECTOR
+;; PROSPECTOR WOULD RATHER EAT YOU!
+;; 
 ;
 ;                       WOULD RATHER EAT YOU!
 ;
@@ -7264,6 +7270,8 @@ ObjectData:
 9AFF: 01 00 C0                           ; Location=0x01, disk_section=0, ext_attr=....----(), attributes=?W......(??,Weapon)
 ;
 9B02:    02 09                           ;   Section=02:SECTION_02_SHORT_NAME, length=0x0009 (to 0x9B0D)
+;; !! All other objects are singular. A plural object wouldn't fit the general error messages. So we need
+;; a singluar object -- thus the PAIR. Tada!
 ;           PAIR OF HANDS
 9B04:       4B A4 91 AF 8A 64 8E 48 53  
 ;
