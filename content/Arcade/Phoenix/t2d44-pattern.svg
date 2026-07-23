@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="80 32 168 128" width="550" height="768">
+  <title>Phoenix T2D44 - Closed-loop alien pattern (part 2, phase 3)</title>
+  <desc>
+    Animated reconstruction of Phoenix ROM table T2D44 ($2D44-$2D87).
+    Each pattern byte indexes T1700 for a (dX, dY) pair; each step is held until
+    a character-cell border is crossed (net 2x delta for this pattern). Path ends
+    40px right of start; on 00 the game resets the alien to the formation list.
+  </desc>
+
+  <defs>
+    <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#1e3a2f" stroke-width="0.4"/>
+    </pattern>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.2" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Start (96,80); 67 steps; ends at (136,80) -->
+    <path id="flight"
+      d="M 96,80 l 0,-8 0,-8 0,-8 8,-8 8,0 8,0 8,0 8,0 8,0 8,0 8,0 8,0 8,0 8,8 0,8 0,8 -8,8 -8,0 -8,0 -8,-8 0,-8 0,-8 8,-8 8,0 8,0 8,0 8,0 8,0 8,0 8,0 8,0 8,8 0,8 0,8 0,8 0,8 0,8 0,8 0,8 0,8 0,8 0,8 -8,8 -8,0 -8,0 -8,-8 0,-8 0,-8 -8,-8 -8,0 -8,0 -8,8 0,8 0,8 -8,8 -8,0 -8,0 -8,-8 0,-8 0,-8 0,-8 0,-8 0,-8 0,-8 0,-8"/>
+  </defs>
+
+  <style>
+    .label { font-family: "Segoe UI", system-ui, sans-serif; fill: #9ecbb8; }
+    .title { font-size: 6px; font-weight: 600; letter-spacing: 0.04em; }
+    .meta  { font-size: 3.8px; fill: #6a9a86; }
+    .trail {
+      fill: none;
+      stroke: #3ecf8e;
+      stroke-width: 1.1;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+      opacity: 0.85;
+      filter: url(#glow);
+      stroke-dasharray: 560;
+      stroke-dashoffset: 560;
+      animation: draw 16s linear infinite;
+    }
+    @keyframes draw {
+      0%   { stroke-dashoffset: 560; opacity: 0.35; }
+      8%   { opacity: 0.9; }
+      92%  { opacity: 0.9; }
+      100% { stroke-dashoffset: 0; opacity: 0.35; }
+    }
+  </style>
+
+  <rect x="80" y="32" width="168" height="128" fill="#0a1410"/>
+  <rect x="88" y="40" width="152" height="112" fill="url(#grid)" stroke="#2a5644" stroke-width="0.6"/>
+
+  <g fill="#cfe8d8" opacity="0.35">
+    <circle cx="100" cy="48" r="0.4"/>
+    <circle cx="140" cy="70" r="0.3"/>
+    <circle cx="210" cy="50" r="0.35"/>
+    <circle cx="230" cy="110" r="0.3"/>
+    <circle cx="110" cy="145" r="0.35"/>
+    <circle cx="200" cy="150" r="0.3"/>
+  </g>
+
+  <text x="92" y="38" class="label title">PHOENIX  -  T2D44 PATTERN #24 (PHASE 3)</text>
+  <text x="92" y="156" class="label meta">Open path (ends +40 X) - T1700 deltas - $2D44-$2D87</text>
+
+  <use href="#flight" fill="none" stroke="#1f5c43" stroke-width="1.4" opacity="0.55"/>
+
+  <path class="trail"
+    d="M 96,80 l 0,-8 0,-8 0,-8 8,-8 8,0 8,0 8,0 8,0 8,0 8,0 8,0 8,0 8,0 8,8 0,8 0,8 -8,8 -8,0 -8,0 -8,-8 0,-8 0,-8 8,-8 8,0 8,0 8,0 8,0 8,0 8,0 8,0 8,0 8,8 0,8 0,8 0,8 0,8 0,8 0,8 0,8 0,8 0,8 0,8 -8,8 -8,0 -8,0 -8,-8 0,-8 0,-8 -8,-8 -8,0 -8,0 -8,8 0,8 0,8 -8,8 -8,0 -8,0 -8,-8 0,-8 0,-8 0,-8 0,-8 0,-8 0,-8 0,-8"/>
+
+  <circle cx="96" cy="80" r="1.6" fill="#f0d878" stroke="#a89030" stroke-width="0.35">
+    <title>Start (96, 80)</title>
+  </circle>
+  <text x="100" y="76" class="label meta">start</text>
+  <circle cx="136" cy="80" r="1.4" fill="#78b0f0" stroke="#406890" stroke-width="0.35">
+    <title>End (136, 80) then formation reset</title>
+  </circle>
+  <text x="140" y="76" class="label meta">end</text>
+
+  <g filter="url(#glow)">
+    <g>
+      <rect x="-3" y="-2.5" width="6" height="5" rx="0.6" fill="#ff6b4a"/>
+      <rect x="-4.5" y="-0.5" width="1.5" height="2" fill="#ff9a7a"/>
+      <rect x="3" y="-0.5" width="1.5" height="2" fill="#ff9a7a"/>
+      <circle cx="-1.2" cy="-0.6" r="0.55" fill="#1a0a08"/>
+      <circle cx="1.2" cy="-0.6" r="0.55" fill="#1a0a08"/>
+      <animateMotion dur="16s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#flight"/>
+      </animateMotion>
+    </g>
+  </g>
+
+  <g class="label meta" opacity="0.8">
+    <text x="100" y="55">rise / right</text>
+    <text x="180" y="130">deep dive</text>
+    <text x="120" y="100">weave home</text>
+  </g>
+</svg>

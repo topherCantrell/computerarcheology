@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="120 24 96 96" width="550" height="768">
+  <title>Phoenix T2E20 - Closed-loop alien pattern (part 2, phase 3)</title>
+  <desc>
+    Animated reconstruction of Phoenix ROM table T2E20 ($2E20-$2E3C).
+    Each pattern byte indexes T1700 for a (dX, dY) pair; each step is held until
+    a character-cell border is crossed. Opcode 01/02 net 8x delta of +/-1;
+    |d|=4 opcodes net 2x delta. Path ends 32px left of start; on 00 formation resets.
+  </desc>
+
+  <defs>
+    <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#1e3a2f" stroke-width="0.4"/>
+    </pattern>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.2" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Start (200,40); 28 steps; ends at (168,40) -->
+    <path id="flight"
+      d="M 200,40 l 0,8 0,8 0,8 0,8 0,8 0,8 0,8 0,8 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 0,-8 0,-8 8,0 0,-8 0,-8 8,0 0,-8 0,-8 8,0 0,-8 0,-8 8,0"/>
+  </defs>
+
+  <style>
+    .label { font-family: "Segoe UI", system-ui, sans-serif; fill: #9ecbb8; }
+    .title { font-size: 4.5px; font-weight: 600; letter-spacing: 0.04em; }
+    .meta  { font-size: 3px; fill: #6a9a86; }
+    .trail {
+      fill: none;
+      stroke: #3ecf8e;
+      stroke-width: 1.1;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+      opacity: 0.85;
+      filter: url(#glow);
+      stroke-dasharray: 240;
+      stroke-dashoffset: 240;
+      animation: draw 8s linear infinite;
+    }
+    @keyframes draw {
+      0%   { stroke-dashoffset: 240; opacity: 0.35; }
+      8%   { opacity: 0.9; }
+      92%  { opacity: 0.9; }
+      100% { stroke-dashoffset: 0; opacity: 0.35; }
+    }
+  </style>
+
+  <rect x="120" y="24" width="96" height="96" fill="#0a1410"/>
+  <rect x="128" y="32" width="80" height="80" fill="url(#grid)" stroke="#2a5644" stroke-width="0.6"/>
+
+  <g fill="#cfe8d8" opacity="0.35">
+    <circle cx="140" cy="40" r="0.4"/>
+    <circle cx="160" cy="60" r="0.3"/>
+    <circle cx="195" cy="45" r="0.35"/>
+    <circle cx="205" cy="100" r="0.3"/>
+  </g>
+
+  <text x="122" y="30" class="label title">PHOENIX  -  T2E20 PATTERN #28 (PHASE 3)</text>
+  <text x="132" y="116" class="label meta">Open path (ends -32 X) - T1700 deltas - $2E20-$2E3C</text>
+
+  <use href="#flight" fill="none" stroke="#1f5c43" stroke-width="1.4" opacity="0.55"/>
+
+  <path class="trail"
+    d="M 200,40 l 0,8 0,8 0,8 0,8 0,8 0,8 0,8 0,8 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 0,-8 0,-8 8,0 0,-8 0,-8 8,0 0,-8 0,-8 8,0 0,-8 0,-8 8,0"/>
+
+  <circle cx="200" cy="40" r="1.6" fill="#f0d878" stroke="#a89030" stroke-width="0.35">
+    <title>Start (200, 40)</title>
+  </circle>
+  <text x="178" y="39" class="label meta">start</text>
+  <circle cx="168" cy="40" r="1.4" fill="#78b0f0" stroke="#406890" stroke-width="0.35">
+    <title>End (168, 40) then formation reset</title>
+  </circle>
+  <text x="148" y="39" class="label meta">end</text>
+
+  <g filter="url(#glow)">
+    <g>
+      <rect x="-3" y="-2.5" width="6" height="5" rx="0.6" fill="#ff6b4a"/>
+      <rect x="-4.5" y="-0.5" width="1.5" height="2" fill="#ff9a7a"/>
+      <rect x="3" y="-0.5" width="1.5" height="2" fill="#ff9a7a"/>
+      <circle cx="-1.2" cy="-0.6" r="0.55" fill="#1a0a08"/>
+      <circle cx="1.2" cy="-0.6" r="0.55" fill="#1a0a08"/>
+      <animateMotion dur="8s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#flight"/>
+      </animateMotion>
+    </g>
+  </g>
+
+  <g class="label meta" opacity="0.8">
+    <text x="185" y="70">dive</text>
+    <text x="145" y="100">left crawl</text>
+    <text x="155" y="55">stair up</text>
+  </g>
+</svg>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="72 16 200 176" width="550" height="792">
+  <title>Phoenix T1354 - Closed-loop alien pattern 16</title>
+  <desc>
+    Animated reconstruction of Phoenix ROM table T1354 ($1354-$1399).
+    Each pattern byte indexes T1700 for a (dX, dY) pair; each step is held until
+    a character-cell border is crossed. Opcodes 02/07-0A use smaller |d| so net is
+    8x or 4x delta; |d|=4 opcodes net 2x delta. Forms a closed loop.
+  </desc>
+
+  <defs>
+    <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#1e3a2f" stroke-width="0.4"/>
+    </pattern>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.2" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Start (184,32); 69 steps; returns to start -->
+    <path id="flight"
+      d="M 184,32 l -8,-8 -8,0 -8,0 -8,0 -8,0 -8,8 0,8 0,8 0,8 0,8 16,8 -16,8 16,8 16,8 -16,8 16,8 16,8 16,8 0,8 -8,8 -8,0 -8,-8 0,-8 8,-8 8,0 8,8 16,8 16,8 0,8 0,8 0,8 0,8 0,8 0,8 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -16,-8 16,-8 16,-8 -16,-8 16,-8 16,-8 -16,-8 -16,-8 16,-8 16,-8 16,-8 16,-8 16,-8 0,-8 0,-8 0,-8 0,-8 0,-8 0,-8 -8,-8 -8,0 -8,0 -8,0 Z"/>
+  </defs>
+
+  <style>
+    .label { font-family: "Segoe UI", system-ui, sans-serif; fill: #9ecbb8; }
+    .title { font-size: 7.5px; font-weight: 600; letter-spacing: 0.04em; }
+    .meta  { font-size: 4.8px; fill: #6a9a86; }
+    .trail {
+      fill: none;
+      stroke: #3ecf8e;
+      stroke-width: 1.2;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+      opacity: 0.85;
+      filter: url(#glow);
+      stroke-dasharray: 640;
+      stroke-dashoffset: 640;
+      animation: draw 18s linear infinite;
+    }
+    @keyframes draw {
+      0%   { stroke-dashoffset: 640; opacity: 0.35; }
+      8%   { opacity: 0.9; }
+      92%  { opacity: 0.9; }
+      100% { stroke-dashoffset: 0; opacity: 0.35; }
+    }
+  </style>
+
+  <rect x="72" y="16" width="200" height="176" fill="#0a1410"/>
+  <rect x="80" y="24" width="184" height="160" fill="url(#grid)" stroke="#2a5644" stroke-width="0.6"/>
+
+  <g fill="#cfe8d8" opacity="0.35">
+    <circle cx="95" cy="30" r="0.4"/>
+    <circle cx="140" cy="70" r="0.3"/>
+    <circle cx="230" cy="40" r="0.35"/>
+    <circle cx="250" cy="120" r="0.3"/>
+    <circle cx="100" cy="170" r="0.35"/>
+    <circle cx="210" cy="180" r="0.3"/>
+  </g>
+
+  <text x="84" y="22" class="label title">PHOENIX  -  T1354 PATTERN #16</text>
+  <text x="84" y="188" class="label meta">Closed loop - T1700 deltas - cell-boundary steps - $1354-$1399</text>
+
+  <use href="#flight" fill="none" stroke="#1f5c43" stroke-width="1.4" opacity="0.55"/>
+
+  <path class="trail"
+    d="M 184,32 l -8,-8 -8,0 -8,0 -8,0 -8,0 -8,8 0,8 0,8 0,8 0,8 16,8 -16,8 16,8 16,8 -16,8 16,8 16,8 16,8 0,8 -8,8 -8,0 -8,-8 0,-8 8,-8 8,0 8,8 16,8 16,8 0,8 0,8 0,8 0,8 0,8 0,8 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -16,-8 16,-8 16,-8 -16,-8 16,-8 16,-8 -16,-8 -16,-8 16,-8 16,-8 16,-8 16,-8 16,-8 0,-8 0,-8 0,-8 0,-8 0,-8 0,-8 -8,-8 -8,0 -8,0 -8,0 Z"/>
+
+  <circle cx="184" cy="32" r="1.6" fill="#f0d878" stroke="#a89030" stroke-width="0.35">
+    <title>Start / end (184, 32)</title>
+  </circle>
+  <text x="188" y="31" class="label meta">start</text>
+
+  <g filter="url(#glow)">
+    <g>
+      <rect x="-3" y="-2.5" width="6" height="5" rx="0.6" fill="#ff6b4a"/>
+      <rect x="-4.5" y="-0.5" width="1.5" height="2" fill="#ff9a7a"/>
+      <rect x="3" y="-0.5" width="1.5" height="2" fill="#ff9a7a"/>
+      <circle cx="-1.2" cy="-0.6" r="0.55" fill="#1a0a08"/>
+      <circle cx="1.2" cy="-0.6" r="0.55" fill="#1a0a08"/>
+      <animateMotion dur="18s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#flight"/>
+      </animateMotion>
+    </g>
+  </g>
+
+  <g class="label meta" opacity="0.8">
+    <text x="140" y="50">&lt;- entry</text>
+    <text x="195" y="110">zigzag</text>
+    <text x="130" y="155">left crawl</text>
+    <text x="160" y="70">saw climb</text>
+  </g>
+</svg>

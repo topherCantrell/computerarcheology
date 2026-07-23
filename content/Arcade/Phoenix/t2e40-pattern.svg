@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="120 24 120 96" width="550" height="720">
+  <title>Phoenix T2E40 - Angry movement pattern B</title>
+  <desc>
+    Animated reconstruction of Phoenix ROM table T2E40 ($2E40-$2E68).
+    'Angry movement pattern B' used for all aliens. Each pattern byte indexes T1700.
+    Path is intentionally open: ends 32px lower than start; on 00 the formation
+    phase increases by 1.
+  </desc>
+
+  <defs>
+    <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#1e3a2f" stroke-width="0.4"/>
+    </pattern>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.2" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Start (176,40); 40 steps; ends at (176,72) = +32 Y -->
+    <path id="flight"
+      d="M 176,40 l 0,8 0,8 0,8 0,8 8,0 8,0 8,0 8,-8 8,0 8,8 0,8 0,8 -8,8 -8,0 -8,-8 0,-8 8,-8 8,0 8,8 0,8 0,8 -8,8 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,-8 0,-8 0,-8 0,-8 8,0 8,0 8,0 8,0 8,0"/>
+  </defs>
+
+  <style>
+    .label { font-family: "Segoe UI", system-ui, sans-serif; fill: #9ecbb8; }
+    .title { font-size: 5px; font-weight: 600; letter-spacing: 0.04em; }
+    .meta  { font-size: 3.2px; fill: #6a9a86; }
+    .trail {
+      fill: none;
+      stroke: #3ecf8e;
+      stroke-width: 1.1;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+      opacity: 0.85;
+      filter: url(#glow);
+      stroke-dasharray: 320;
+      stroke-dashoffset: 320;
+      animation: draw 10s linear infinite;
+    }
+    @keyframes draw {
+      0%   { stroke-dashoffset: 320; opacity: 0.35; }
+      8%   { opacity: 0.9; }
+      92%  { opacity: 0.9; }
+      100% { stroke-dashoffset: 0; opacity: 0.35; }
+    }
+  </style>
+
+  <rect x="120" y="24" width="120" height="96" fill="#0a1410"/>
+  <rect x="128" y="32" width="104" height="80" fill="url(#grid)" stroke="#2a5644" stroke-width="0.6"/>
+
+  <g fill="#cfe8d8" opacity="0.35">
+    <circle cx="140" cy="40" r="0.4"/>
+    <circle cx="170" cy="60" r="0.3"/>
+    <circle cx="210" cy="45" r="0.35"/>
+    <circle cx="225" cy="100" r="0.3"/>
+  </g>
+
+  <text x="132" y="30" class="label title">PHOENIX  -  T2E40 ANGRY B</text>
+  <text x="132" y="116" class="label meta">Open path (+32 Y) - formation drop - $2E40-$2E68</text>
+
+  <use href="#flight" fill="none" stroke="#1f5c43" stroke-width="1.4" opacity="0.55"/>
+
+  <path class="trail"
+    d="M 176,40 l 0,8 0,8 0,8 0,8 8,0 8,0 8,0 8,-8 8,0 8,8 0,8 0,8 -8,8 -8,0 -8,-8 0,-8 8,-8 8,0 8,8 0,8 0,8 -8,8 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,0 -8,-8 0,-8 0,-8 0,-8 8,0 8,0 8,0 8,0 8,0"/>
+
+  <circle cx="176" cy="40" r="1.6" fill="#f0d878" stroke="#a89030" stroke-width="0.35">
+    <title>Start (176, 40)</title>
+  </circle>
+  <text x="180" y="39" class="label meta">start</text>
+  <circle cx="176" cy="72" r="1.4" fill="#78b0f0" stroke="#406890" stroke-width="0.35">
+    <title>End (176, 72) - formation now one row lower</title>
+  </circle>
+  <text x="180" y="76" class="label meta">end (+32Y)</text>
+
+  <g filter="url(#glow)">
+    <g>
+      <rect x="-3" y="-2.5" width="6" height="5" rx="0.6" fill="#ff6b4a"/>
+      <rect x="-4.5" y="-0.5" width="1.5" height="2" fill="#ff9a7a"/>
+      <rect x="3" y="-0.5" width="1.5" height="2" fill="#ff9a7a"/>
+      <circle cx="-1.2" cy="-0.6" r="0.55" fill="#1a0a08"/>
+      <circle cx="1.2" cy="-0.6" r="0.55" fill="#1a0a08"/>
+      <animateMotion dur="10s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#flight"/>
+      </animateMotion>
+    </g>
+  </g>
+
+  <g class="label meta" opacity="0.8">
+    <text x="165" y="55">dive</text>
+    <text x="195" y="70">loops</text>
+    <text x="140" y="95">left / home</text>
+  </g>
+</svg>

@@ -14,7 +14,6 @@
 
 [RAM Usage](RAMUse.md)
 
-![](phoenix-t2fa0-pattern.svg)
 
 ```code
 ;*****************************************************************************
@@ -3399,6 +3398,9 @@ T1000:
 ; Closed loop pattern table part 1:
 ; Used for single or multiple aliens, depending on the game round.
 ; Pattern 1
+```
+![](t1020-pattern.svg)
+```code
 T1020:
 1020: 10 11 12 13 10 1D 0D 0E 0B 0C 0D 0E 0B 0C 06 06
 1030: 1E 03 1F 05 1C 04 1D 06 1E 03 03 03 03 03 1F 1C
@@ -3408,6 +3410,9 @@ T1020:
 ; not used
 1061: FF FF FF
 ; Pattern 2
+```
+![](t1064-pattern.svg)
+```code
 T1064:
 1064: 0B 1E 19 06 06 06 06 06 06 1E 1F 1C 1D 06 06 06
 1074: 06 06 1E 03 1F 05 1C 04 1D 06 06 1A 04 1B 05 18
@@ -3416,6 +3421,9 @@ T1064:
 10A4: 00
 10A5: FF FF FF
 ; Pattern 3 (phase 3)
+```
+![](t10a8-pattern.svg)
+```code
 T10A8:
 10A8: 10 04 04 1D 0D 0E 0B 0C 0D 0E 01 01 01 01 01 01
 10B8: 01 01 05 05 05 05 05 1C 04 04 1D 06 06 1E 03 03
@@ -3423,6 +3431,9 @@ T10A8:
 10D0: 00
 10D1: FF FF FF
 ; Pattern 4
+```
+![](t10d4-pattern.svg)
+```code
 T10D4:
 10D4: 0B 0C 0D 0E 0B 0C 0D 0E 0B 0C 1A 1B 05 18 19 06
 10E4: 0D 0E 01 01 01 01 01 01 01 01 05 05 1C 1B 05 05
@@ -3430,6 +3441,9 @@ T10D4:
 10FC: 00
 10FD: FF FF FF
 ; Pattern 5
+```
+![](t1100-pattern.svg)
+```code
 T1100:
 1100: 0B 0C 0D 0E 0B 0C 09 09 09 09 0A 0A 09 09 0A 09
 1110: 16 17 14 07 07 07 1C 04 1D 06 1E 03 1F 05 1C 08
@@ -3437,6 +3451,9 @@ T1100:
 112B: 00
 112C: FF FF FF FF
 ; Pattern 6
+```
+![](t1130-pattern.svg)
+```code
 T1130:
 1130: 0B 0C 0D 0E 0B 0C 0A 0A 0A 0A 09 09 0A 0A 09 0A
 1140: 12 13 10 08 08 08 18 07 07 07 07 05 1C 04 1D 06
@@ -3444,6 +3461,9 @@ T1130:
 115B: 00
 115C: FF FF FF FF
 ; Pattern 7
+```
+![](t1160-pattern.svg)
+```code
 T1160:
 1160: 1C 04 04 04 1D 06 0D 0E 0B 0C 06 06 1E 15 16 17
 1170: 14 19 06 1A 04 1D 06 1E 03 19 06 1A 04 1D 1E 03
@@ -3452,6 +3472,9 @@ T1160:
 11A0: 00
 11A1: FF FF FF
 ; Pattern 8
+```
+![](t11a4-pattern.svg)
+```code
 T11A4:
 11A4: 0B 0C 0D 0E 0B 0C 0D 0E 0B 0C 0D 0E 02 02 02 02
 11B4: 02 02 02 02 05 05 18 03 19 1A 04 1B 05 18 03 1F
@@ -3459,6 +3482,9 @@ T11A4:
 11CC: 00
 11CD: FF FF FF
 ; Pattern 9
+```
+![](t11d0-pattern.svg)
+```code
 T11D0:
 11D0: 0B 0C 0D 0E 0B 0C 06 06 09 09 09 0A 09 09 0A 09
 11E0: 09 09 06 1A 04 11 12 13 10 08 08 08 07 07 07 08
@@ -3466,6 +3492,9 @@ T11D0:
 11FD: 00
 11FE: FF FF
 ; Pattern 10
+```
+![](t1200-pattern.svg)
+```code
 T1200:
 1200: 1C 11 12 13 10 04 1D 0D 0E 0B 0C 0D 0E 0B 0C 1E
 1210: 1F 05 18 19 0D 0E 0B 0C 1E 1F 05 05 05 05 05 18
@@ -3474,6 +3503,9 @@ T1200:
 1240: 00
 1241: FF FF FF
 ; Pattern 11
+```
+![](t1244-pattern.svg)
+```code
 T1244:
 1244: 18 03 03 19 06 06 06 06 06 06 06 06 06 06 06 06
 1254: 1A 04 1B 05 1C 04 1D 06 1E 03 03 19 06 1A 04 04
@@ -3482,6 +3514,9 @@ T1244:
 1284: 00
 1285: FF FF FF
 ; Pattern 12
+```
+![](t1288-pattern.svg)
+```code
 T1288:
 1288: 0B 0C 1A 1D 1E 03 19 06 1A 04 04 1D 06 1E 03 03
 1298: 03 19 06 06 1A 04 04 04 04 1D 06 06 1E 03 03 03
@@ -3490,6 +3525,9 @@ T1288:
 12C8: 00
 12C9: FF
 ; Pattern 13
+```
+![](t12ca-pattern.svg)
+```code
 T12CA:
 12CA: 18 03 19 06 06 06 06 06 06 1A 1D 1E 19 1A 1D 06
 12DA: 1E 19 06 1E 15 16 17 14 07 07 07 08 08 08 08 05
@@ -3497,6 +3535,9 @@ T12CA:
 12FA: 05 05 05 18 1F
 12FF: 00
 ; Pattern 14
+```
+![](t1300-pattern.svg)
+```code
 T1300:
 1300: 0B 0C 0A 0A 09 09 09 0A 0A 09 09 09 0A 09 09 16
 1310: 17 14 07 07 07 08 08 08 08 07 07 08 08 08 08 07
@@ -3504,6 +3545,9 @@ T1300:
 1324: 00
 1325: FF FF FF
 ; Pattern 15
+```
+![](t1328-pattern.svg)
+```code
 T1328:
 1328: 0B 0C 09 09 0A 09 09 0A 0A 0A 0A 09 0A 0A 0A 12
 1338: 13 10 04 04 04 1B 18 03 03 07 07 08 08 07 07 08
@@ -3511,6 +3555,9 @@ T1328:
 134E: 00
 134F: FF FF FF FF FF
 ; Pattern 16
+```
+![](t1354-pattern.svg)
+```code
 T1354:
 1354: 1C 11 12 13 10 1D 0D 0E 0B 0C 09 0A 09 09 0A 09
 1364: 09 09 06 1A 04 1B 05 18 03 19 09 09 0D 0E 0B 0C
@@ -3520,6 +3567,9 @@ T1354:
 1399: 00
 139A: FF FF
 ; Pattern 17
+```
+![](t139c-pattern.svg)
+```code
 T139C:
 139C: 0B 0C 0D 0E 0B 0C 0D 0E 0B 0C 1A 1D 06 1E 19 06
 13AC: 06 1A 04 1B 1C 04 1D 1A 04 1B 1C 04 1D 1A 04 1B
@@ -3528,6 +3578,9 @@ T139C:
 13CD: 00
 13CE: FF FF
 ; Pattern 18
+```
+![](t13d0-pattern.svg)
+```code
 T13D0:
 13D0: 14 03 19 0D 0E 0B 0C 0A 0A 0A 09 0A 0A 0A 09 0A
 13E0: 0A 0A 06 1E 15 16 17 14 03 1F 05 05 08 07 07 07
@@ -6184,13 +6237,19 @@ T2B00:
 
 ; Closed loop pattern table part 2:
 ; Used for single or multiple aliens, depending on the game round.
-; Pattern 18
+; Pattern 19
+```
+![](t2c00-pattern.svg)
+```code
 T2C00:
 2C00: 0B 0C 0D 0E 0B 0C 0A 0A 0A 0A 0A 0A 0A 06 06 1E
 2C10: 03 03 1F 05 05 1C 04 04 04 1D 06 06 1A 04 04 04
 2C20: 1B 05 05 05 05 18 1F 07 07 07 07 07 07 07 07 07
 2C30: 00 FF FF FF
-; Pattern 19
+; Pattern 20
+```
+![](t2c34-pattern.svg)
+```code
 T2C34:
 2C34: 05 05 1C 04 1D 0A 0A 0A 0A 0A 0A 06
 2C40: 06 1E 03 03 1F 05 1C 04 04 1D 0A 06 06 1E 03 03
@@ -6198,101 +6257,149 @@ T2C34:
 2C60: 04 1D 0A 06 1E 03 1F 05 1C 04 1D 06 1E 03 03 03
 2C70: 03 15 16 17 01 01 05 05 01 01 05 05 01 01 05 05
 2C80: 01 01 05 05 02 02 18 07 07 07 00 FF FF FF FF FF
-; Pattern 20 (phase 3)
+; Pattern 21 (phase 3)
+```
+![](t2c90-pattern.svg)
+```code
 T2C90:
 2C90: 1C 04 04 04 04 04 04 04 04 04 04 04 04 04 04 1D
 2CA0: 06 06 06 06 06 06 06 1E 03 03 03 03 03 03 1F 05
 2CB0: 05 05 05 1C 04 04 1D 06 09 09 09 1E 03 07 07 08
 2CC0: 08 07 07 08 07 00 FF FF
-; Pattern 21 (phase 3)
+; Pattern 22 (phase 3)
+```
+![](t2cc8-pattern.svg)
+```code
 T2CC8:
 2CC8: 05 05 05 05 1C 04 04 04
 2CD0: 04 04 04 04 04 04 04 04 04 04 04 1D 09 09 09 09
 2CE0: 0A 0A 0A 09 0A 0A 06 1E 03 03 03 1F 05 05 18 03
 2CF0: 19 06 06 1E 03 03 1F 05 05 05 05 05 05 05 00 FF
-; Pattern 22
+; Pattern 23
+```
+![](t2d00-pattern.svg)
+```code
 T2D00:
 2D00: 0B 0C 0D 0E 0B 0C 06 1E 03 03 03 03 03 03 03 03
 2D10: 03 03 03 03 03 03 1F 05 05 1C 04 04 04 04 04 04
 2D20: 04 04 04 04 1D 06 06 1E 03 03 03 03 03 03 1F 05
 2D30: 05 05 05 05 1C 04 04 04 04 04 04 04 04 04 04 1B
 2D40: 00 FF FF FF
-; Pattern 23 (phase 3)
+; Pattern 24 (phase 3)
+```
+![](t2d44-pattern.svg)
+```code
 T2D44:
 2D44: 05 05 05 18 03 03 03 03 03 03 03 03
 2D50: 03 19 06 06 1A 04 04 1B 05 05 18 03 03 03 03 03
 2D60: 03 03 19 06 06 06 06 06 06 06 06 06 06 1A 04 04
 2D70: 1B 05 05 1C 04 04 1D 06 06 1A 04 04 1B 05 05 05
 2D80: 05 05 05 05 00 FF FF FF
-; Pattern 24 (phase 3)
+; Pattern 25 (phase 3)
+```
+![](t2d88-pattern.svg)
+```code
 T2D88:
 2D88: 1C 04 04 1D 06 06 09 0A
 2D90: 0A 09 09 09 16 17 14 03 03 03 1F 05 05 1C 04 04
 2DA0: 1D 06 06 1E 03 03 03 03 07 07 08 08 07 07 05 05
 2DB0: 1C 04 04 04 04 04 04 04 1D 1A 04 1B 00 FF FF FF
-; Pattern 25 (phase 3)
+; Pattern 26 (phase 3)
+```
+![](t2dc0-pattern.svg)
+```code
 T2DC0:
 2DC0: 14 03 03 19 06 0A 0A 09 09 09 0A 12 13 10 11 12
 2DD0: 13 10 11 12 13 10 04 04 04 04 1B 05 18 03 19 06
 2DE0: 1A 04 1B 05 18 07 07 07 08 08 07 07 07 03 03 19
 2DF0: 0D 0E 00 FF FF FF FF FF FF FF FF FF FF FF FF FF
-; Pattern 26
+; Pattern 27
 ; Used for all aliens.
 ; This is the 'Angry movement pattern A'.
 ; At the end of that sequence, the alien formation is further down 
 ; and the 'phase' is increased by 1.
+```
+![](t2e00-pattern.svg)
+```code
 T2E00:
 2E00: 0B 0C 0D 0E 02 02 02 02 0B 0C 0D 0E 01 01 14 15
 2E10: 16 17 01 01 05 05 05 05 02 02 02 02 00 FF FF FF
-; Pattern 27 (phase 3)
+; Pattern 28 (phase 3)
+```
+![](t2e20-pattern.svg)
+```code
 T2E20:
 2E20: 0B 0C 0D 0E 0B 0C 0D 0E 02 02 02 02 02 02 02 02
 2E30: 05 05 01 05 05 01 05 05 01 05 05 01 00 FF FF FF
-; Pattern 28
+; Pattern 29
 ; Used for all aliens.
 ; This is the 'Angry movement pattern B'.
 ; At the end of that sequence, the alien formation is further down 
 ; and the 'phase' is increased by 1.
+```
+![](t2e40-pattern.svg)
+```code
 T2E40:
 2E40: 0B 0C 0D 0E 01 01 01 18 03 19 06 06 1A 04 1B 05
 2E50: 18 03 19 06 06 1A 04 04 04 04 04 04 04 04 04 1B
 2E60: 05 05 05 01 01 01 01 01 00 FF FF FF
-; Pattern 29 (phase 3)
+; Pattern 30 (phase 3)
+```
+![](t2e6c-pattern.svg)
+```code
 T2E6C:
 2E6C: 0B 0C 0D 0E
 2E70: 01 01 0B 0C 0D 0E 01 01 05 05 05 05 01 01 0B 0C
 2E80: 0D 0E 01 01 07 08 08 07 08 08 08 07 00 FF FF FF
-; Pattern 30
+; Pattern 31
+```
+![](t2e90-pattern.svg)
+```code
 T2E90:
 2E90: 14 15 16 17 14 15 16 17 14 03 03 03 03 03 03 03
 2EA0: 03 03 03 03 03 19 09 0A 0A 09 09 0A 0A 12 13 08
 2EB0: 08 07 07 08 08 08 08 04 04 04 11 12 13 10 11 12
 2EC0: 13 00 FF FF
-; Pattern 31
+; Pattern 32
+```
+![](t2ec4-pattern.svg)
+```code
 T2EC4:
 2EC4: 10 11 12 13 10 11 12 13 10 04 04 04
 2ED0: 04 04 04 04 04 04 0A 0A 0A 09 0A 09 0A 09 16 17
 2EE0: 14 03 03 03 07 07 07 07 03 19 06 1A 04 1B 05 18
 2EF0: 07 07 07 07 00 FF FF FF FF FF FF FF FF FF FF FF
-; Pattern 32
+; Pattern 33
+```
+![](t2f00-pattern.svg)
+```code
 T2F00:
 2F00: 05 1C 04 1D 06 06 06 06 06 09 09 09 0A 0A 0A 09
 2F10: 09 16 17 14 1F 05 18 03 19 06 1E 03 1F 05 18 03
 2F20: 19 06 1E 03 1F 05 05 1C 08 08 08 08 08 08 08 08
 2F30: 00 FF FF FF
-; Pattern 33
+; Pattern 34
+```
+![](t2f34-pattern.svg)
+```code
 T2F34:
 2F34: 05 18 03 19 06 06 06 06 0A 0A 09 09
 2F40: 0A 0A 09 0A 0A 12 13 10 1B 05 1C 04 1D 1E 1F 1C
 2F50: 04 1D 06 1A 04 04 1B 05 18 07 07 07 07 08 07 07
 2F60: 07 07 00 FF
-; Pattern 34
+; Pattern 35
+```
+![](t2f64-pattern.svg)
+```code
 T2F64:
 2F64: 0B 0C 0D 0E 0B 0C 1E 03 19 06 1E 03
 2F70: 19 06 1E 03 19 06 1E 1F 1C 1D 1E 03 03 03 1F 05
 2F80: 18 03 19 06 1E 03 1F 05 08 08 08 08 08 08 08 07
 2F90: 07 08 08 08 08 08 00 FF FF FF FF FF FF FF FF FF
-; Pattern 35
+; Pattern 36
+```
+![](t2fa0-pattern.svg)
+```code
 T2FA0:
 2FA0: 05 05 18 03 03 03 03 03 03 03 03 19 06 06 06 06
 2FB0: 06 06 06 1A 04 1B 05 18 03 03 03 03 19 06 06 06
