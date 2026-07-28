@@ -3399,7 +3399,7 @@ T1000:
 ; Pattern 1
 ```
 
-![](t1020-pattern.svg)
+![](t1020.svg)
 
 ```code
 T1020:
@@ -3413,7 +3413,7 @@ T1020:
 ; Pattern 2
 ```
 
-![](t1064-pattern.svg)
+![](t1064.svg)
 
 ```code
 T1064:
@@ -3426,7 +3426,7 @@ T1064:
 ; Pattern 3 (phase 3)
 ```
 
-![](t10a8-pattern.svg)
+![](t10a8.svg)
 
 ```code
 T10A8:
@@ -3438,7 +3438,7 @@ T10A8:
 ; Pattern 4
 ```
 
-![](t10d4-pattern.svg)
+![](t10d4.svg)
 
 ```code
 T10D4:
@@ -3450,7 +3450,7 @@ T10D4:
 ; Pattern 5
 ```
 
-![](t1100-pattern.svg)
+![](t1100.svg)
 
 ```code
 T1100:
@@ -3462,7 +3462,7 @@ T1100:
 ; Pattern 6
 ```
 
-![](t1130-pattern.svg)
+![](t1130.svg)
 
 ```code
 T1130:
@@ -3474,7 +3474,7 @@ T1130:
 ; Pattern 7
 ```
 
-![](t1160-pattern.svg)
+![](t1160.svg)
 
 ```code
 T1160:
@@ -3487,7 +3487,7 @@ T1160:
 ; Pattern 8
 ```
 
-![](t11a4-pattern.svg)
+![](t11a4.svg)
 
 ```code
 T11A4:
@@ -3499,7 +3499,7 @@ T11A4:
 ; Pattern 9
 ```
 
-![](t11d0-pattern.svg)
+![](t11d0.svg)
 
 ```code
 T11D0:
@@ -3511,7 +3511,7 @@ T11D0:
 ; Pattern 10
 ```
 
-![](t1200-pattern.svg)
+![](t1200.svg)
 
 ```code
 T1200:
@@ -3524,7 +3524,7 @@ T1200:
 ; Pattern 11
 ```
 
-![](t1244-pattern.svg)
+![](t1244.svg)
 
 ```code
 T1244:
@@ -3537,7 +3537,7 @@ T1244:
 ; Pattern 12
 ```
 
-![](t1288-pattern.svg)
+![](t1288.svg)
 
 ```code
 T1288:
@@ -3550,7 +3550,7 @@ T1288:
 ; Pattern 13
 ```
 
-![](t12ca-pattern.svg)
+![](t12ca.svg)
 
 ```code
 T12CA:
@@ -3562,7 +3562,7 @@ T12CA:
 ; Pattern 14
 ```
 
-![](t1300-pattern.svg)
+![](t1300.svg)
 
 ```code
 T1300:
@@ -3574,7 +3574,7 @@ T1300:
 ; Pattern 15
 ```
 
-![](t1328-pattern.svg)
+![](t1328.svg)
 
 ```code
 T1328:
@@ -3586,7 +3586,7 @@ T1328:
 ; Pattern 16
 ```
 
-![](t1354-pattern.svg)
+![](t1354.svg)
 
 ```code
 T1354:
@@ -3600,7 +3600,7 @@ T1354:
 ; Pattern 17
 ```
 
-![](t139c-pattern.svg)
+![](t139c.svg)
 
 ```code
 T139C:
@@ -3613,7 +3613,7 @@ T139C:
 ; Pattern 18
 ```
 
-![](t13d0-pattern.svg)
+![](t13d0.svg)
 
 ```code
 T13D0:
@@ -6275,7 +6275,7 @@ T2B00:
 ; Pattern 19
 ```
 
-![](t2c00-pattern.svg)
+![](t2c00.svg)
 
 ```code
 T2C00:
@@ -6286,7 +6286,7 @@ T2C00:
 ; Pattern 20
 ```
 
-![](t2c34-pattern.svg)
+![](t2c34.svg)
 
 ```code
 T2C34:
@@ -6299,7 +6299,7 @@ T2C34:
 ; Pattern 21 (phase 3)
 ```
 
-![](t2c90-pattern.svg)
+![](t2c90.svg)
 
 ```code
 T2C90:
@@ -6310,7 +6310,7 @@ T2C90:
 ; Pattern 22 (phase 3)
 ```
 
-![](t2cc8-pattern.svg)
+![](t2cc8.svg)
 
 ```code
 T2CC8:
@@ -6321,7 +6321,7 @@ T2CC8:
 ; Pattern 23
 ```
 
-![](t2d00-pattern.svg)
+![](t2d00.svg)
 
 ```code
 T2D00:
@@ -6333,7 +6333,7 @@ T2D00:
 ; Pattern 24 (phase 3)
 ```
 
-![](t2d44-pattern.svg)
+![](t2d44.svg)
 
 ```code
 T2D44:
@@ -6345,7 +6345,7 @@ T2D44:
 ; Pattern 25 (phase 3)
 ```
 
-![](t2d88-pattern.svg)
+![](t2d88.svg)
 
 ```code
 T2D88:
@@ -6356,7 +6356,7 @@ T2D88:
 ; Pattern 26 (phase 3)
 ```
 
-![](t2dc0-pattern.svg)
+![](t2dc0.svg)
 
 ```code
 T2DC0:
@@ -6371,7 +6371,7 @@ T2DC0:
 ; and the 'phase' is increased by 1.
 ```
 
-![](t2e00-pattern.svg)
+![](t2e00.svg)
 
 ```code
 T2E00:
@@ -6380,7 +6380,7 @@ T2E00:
 ; Pattern 28 (phase 3)
 ```
 
-![](t2e20-pattern.svg)
+![](t2e20.svg)
 
 ```code
 T2E20:
@@ -6393,7 +6393,7 @@ T2E20:
 ; and the 'phase' is increased by 1.
 ```
 
-![](t2e40-pattern.svg)
+![](t2e40.svg)
 
 ```code
 T2E40:
@@ -6403,7 +6403,7 @@ T2E40:
 ; Pattern 30 (phase 3)
 ```
 
-![](t2e6c-pattern.svg)
+![](t2e6c.svg)
 
 ```code
 T2E6C:
@@ -6413,7 +6413,7 @@ T2E6C:
 ; Pattern 31
 ```
 
-![](t2e90-pattern.svg)
+![](t2e90.svg)
 
 ```code
 T2E90:
@@ -6424,7 +6424,7 @@ T2E90:
 ; Pattern 32
 ```
 
-![](t2ec4-pattern.svg)
+![](t2ec4.svg)
 
 ```code
 T2EC4:
@@ -6435,7 +6435,7 @@ T2EC4:
 ; Pattern 33
 ```
 
-![](t2f00-pattern.svg)
+![](t2f00.svg)
 
 ```code
 T2F00:
@@ -6446,7 +6446,7 @@ T2F00:
 ; Pattern 34
 ```
 
-![](t2f34-pattern.svg)
+![](t2f34.svg)
 
 ```code
 T2F34:
@@ -6457,7 +6457,7 @@ T2F34:
 ; Pattern 35
 ```
 
-![](t2f64-pattern.svg)
+![](t2f64.svg)
 
 ```code
 T2F64:
@@ -6468,7 +6468,7 @@ T2F64:
 ; Pattern 36
 ```
 
-![](t2fa0-pattern.svg)
+![](t2fa0.svg)
 
 ```code
 T2FA0:
