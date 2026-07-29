@@ -77,7 +77,7 @@ L002D:
 0034: 77              LD      (HL),A              ; 
 0035: CD 77 03        CALL    $0377               ; {code.UpdateSoundControlRAM}
 0038: 00              NOP                         ; 
-0039: CD E0 17        CALL    $17E0               ; {code.CoinChecking}
+0039: CD E0 17        CALL    $17E0               ; {code.CoinChecking} Converts raw `CoinCount` into playable credits, applying the coinage DIP on `DSW0`
 003C: A7              AND     A                   ; updates the zero flag
 003D: CA 46 00        JP      Z,$0046             ; {code.L0046} No credits ... continue splash
 0040: CD 88 02        CALL    $0288               ; {code.PromptForStartGame}
@@ -251,7 +251,7 @@ SplashAndDemo:
 010C: CA E1 01        JP      Z,$01E1             ; {code.PrintCopyright} do if Counter98 is >= 01 B0
 010F: 0E B8           LD      C,$B8               ; 
 0111: CD 58 02        CALL    $0258               ; {code.CompareBCtoMem}
-0114: CA 80 05        JP      Z,$0580             ; {code.InitGlobalLevelData} do if Counter98 is >= 01 B8
+0114: CA 80 05        JP      Z,$0580             ; {code.InitBackgroundData} do if Counter98 is >= 01 B8
 0117: 0E C0           LD      C,$C0               ; for a short break
 0119: 11 DF 02        LD      DE,$02DF            ; 
 011C: CD 60 02        CALL    $0260               ; {code.SubtractIfEnough}
@@ -609,7 +609,7 @@ PromptForStartGame:
 028E: 0E 02           LD      C,$02               ; print two lines: 'PUSH ONLY...1PLAYER BUTTON'
 0290: CD D0 01        CALL    $01D0               ; {code.PrintTextLines}
 0293: 0E 02           LD      C,$02               ; 
-0295: CD E0 17        CALL    $17E0               ; {code.CoinChecking}
+0295: CD E0 17        CALL    $17E0               ; {code.CoinChecking} Converts raw `CoinCount` into playable credits, applying the coinage DIP on `DSW0`
 0298: FE 02           CP      $02                 ; 2 player mode possible if credit > 1
 029A: DA A7 02        JP      C,$02A7             ; {code.L02A7}
 029D: 21 A0 1B        LD      HL,$1BA0            ; {+code.T1BA0}
@@ -1133,7 +1133,7 @@ L0515:
 0515: CD 1E 04        CALL    $041E               ; {code.SetBitsVideoRegister} set color palette according to LevelAndRound
 0518: 21 A4 43        LD      HL,$43A4            ; {+ram.GameState} Next interval game state ...
 051B: 36 03           LD      (HL),$03            ; ... is 3 (normal game play)
-051D: CD 80 05        CALL    $0580               ; {code.InitGlobalLevelData}
+051D: CD 80 05        CALL    $0580               ; {code.InitBackgroundData}
 0520: CD 47 05        CALL    $0547               ; {code.InitPlayerDataStructure}
 0523: CD A0 09        CALL    $09A0               ; {code.L09A0} get screen ram adress for player ship position
 L0526:
@@ -1185,9 +1185,9 @@ T0560:
 057C: 00 58 00 20       ; EnemyBullet4State, EnemyBullet4Shape, EnemyBullet4X, EnemyBullet4Y
 
 ;*****************************************************************************
-;* Init of global level data, dependent on level and round.
+;* Init background graphic's data, dependent on level and round.
 ;*****************************************************************************
-InitGlobalLevelData:
+InitBackgroundData:
 0580: 21 98 05        LD      HL,$0598            ; {+code.T0598}
 0583: 3A B8 43        LD      A,($43B8)           ; {ram.LevelAndRound}
 0586: E6 0F           AND     $0F                 ; 0000_1111
@@ -1195,16 +1195,21 @@ InitGlobalLevelData:
 0589: 6F              LD      L,A                 ; 
 058A: 6E              LD      L,(HL)              ; 
 058B: 26 05           LD      H,$05               ; 
-058D: 11 AB 43        LD      DE,$43AB            ; {+ram.M43AB}
+058D: 11 AB 43        LD      DE,$43AB            ; {+ram.M43AB} Start of background graphic's data
 0590: 06 0C           LD      B,$0C               ; number of bytes to copy
 0592: CD E0 05        CALL    $05E0               ; {code.CopyBbytesHLtoDE}
 0595: C9              RET                         ; 
 
 0596: FF FF
 
-; Table for the global level data, over game levels.
+; Mapping table for the background graphic's data, over game levels.
 ; Bit0 - bit3 of $43B8 is the table index.
 ; Data will be fetched two times. Once before and once after the 'spiral fill' animation.
+; The double call is really a side effect of always going through
+; `GameState = 2` on every level entry, including “levels” that are only the spiral transition.
+; So the first fetch is needless.
+; They did not special-case “skip global init until after spiral.”
+; $05A0 should be $CC but it was never fixed and has no side effect.
 T0598:
 0598: A8 A8     ;init values for 1st alien wave (pointer to $05A8, $05A8)
 059A: C0 C0     ;init values for 2st alien wave (pointer to $05C0, $05C0)
@@ -1214,7 +1219,8 @@ T0598:
 05A2: B4 B4     ;init values for mothership wave (pointer to $05B4, $05B4)
 05A4: A8 A8     ;not used? pointer to $05A8, $05A8
 05A6: A8 A8     ;not used? pointer to $05A8, $05A8
-;
+
+; Data for Background graphic's (stars, planets, galaxies) and scroll control
 ; e.g.:counter values, timer values, T1C00, T1D00, T1F00, ..
 ; Data copied to $43AB-$43B6
 T05A8:
@@ -2822,6 +2828,10 @@ L0D5E:
 
 ;*****************************************************************************
 ;* Alien animation update.
+;* 1. Uses the movement-list opcode -> `T16A0` (3-byte anim record)
+;* 2. From that, picks a base into `T1600` and a small X/Y sub-index (fine scroll / facing)
+;* 3. Reads one byte from `T1600`...`T1690`
+;* 4. Stores it in control state B = LSB for `$14xx`
 ;*****************************************************************************
 AlienAnimationUpdate:
 0D70: 01 70 4B        LD      BC,$4B70            ; {+ram.M4B70} Alien control state A
@@ -3635,7 +3645,19 @@ T1400:
 1418: 3C 4C 3D 4D     ;frame#7
 141C: 3E 4E 3F 4F     ;frame#8
 
-; Alien character block shapes table ($00=SPACE)
+; Alien tile-strip catalog table:
+; A packed list of shape strips.
+; Raw foreground character codes that make up each alien (and related) shape.
+; It is not indexed by shape number directly — drawing uses an LSB into page `$14`, usually produced by `T1600`.
+; Indexing chain:
+; movement opcode
+;    -> T16A0 (draw size + how to use X/Y + base into T1600)
+;        -> T1600[+subindex]  = LSB
+;            -> alien control state B
+;                -> HL = $14 | LSB
+;                    -> T1420 tile bytes drawn to screen
+; Duplicates track the 4-phase X/Y fine-scroll index — two phases,
+; same picture -> same tile pair stored (or same pointer repeated) twice.
 T1420:
 1420: 60 61           ;alien shape #1
 1422: 62 63           ;#2
@@ -3685,17 +3707,26 @@ T1420:
 1480: 6B 00           ;#8
 1482: 00 00
 1484: A8 B8 A9 B9     ;#27
+
+; unused
 1488: FF FF FF FF
 148C: 8A 9A           ;#30
 148E: 00 00
 1490: FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
+
 14A0: 8B 9B           ;#31
 14A2: 00 00
+
+; unused
 14A4: FF FF FF FF
+
 14A8: 8E 9E 8F 9F     ;#14
 14AC: A0 B0 A1 B1     ;#15
+
+; unused
 14B0: 00 00 00 00
 14B4: FF FF FF FF FF FF FF FF FF FF FF FF
+
 14C0: 9C 00           ;#32
 14C2: 00 00
 14C4: 84 94 85 95     ;#36
@@ -3745,7 +3776,7 @@ L14E0:
 14FE: FF FF
 
 ; Copied inside $4B70-$4BAF.
-; Init values for the alien control states A and B.
+; Init values for the alien control states A and B for 16 aliens.
 T1500:
 1500: 08 6C 09 60 
 1504: 08 6C 09 60 
@@ -3757,7 +3788,7 @@ T1500:
 151C: 09 60 09 60 
 
 ; Init values for 16 aliens.
-; Pointer to alien movement pattern table.
+; Pointer to alien movement pattern table. T1000
 T1520:
 1520: 10 00 
 1522: 10 00 
@@ -4166,16 +4197,34 @@ T17D6:
 17D6: C3 C3 C6 D6 C7 D7 ; [Object 17D6](fgtiles.html#object-17d6) 3x2 Bonus explosion right part
 ;
 17DC: FF FF FF FF ;
-;
-;
-CoinChecking:
+
+;*****************************************************************************
+;* CoinChecking:
+;* Converts raw `CoinCount` (`$438F`) into playable credits, applying the coinage DIP on `DSW0`.
+;* Behaviour
+;* | `DSW0` bit4 | Pricing            | Return value in A        |
+;* |-------------|--------------------|--------------------------|
+;* | **0**       | 1 coin = 1 credit  | `CoinCount`              |
+;* | **1**       | 2 coins = 1 credit | `(CoinCount >> 1) & $0F` |
+;* `LD A,(CoinCount)` does not touch flags, so `RET Z` still tests the `AND $10`
+;* result: early exit skips the divide-by-2 when 1-coin mode is selected.
+;* Callers
+;* 1. Attract main loop (`$0039`) — after `AND A`, non-zero credits -> `PromptForStartGame`, else splash/demo.
+;* 2. `PromptForStartGame` (`$0295`) — `CP $02`: if credits ≥ 2, also print “1 OR 2 PLAYERS”.
+;* Both callers re-test **A** (`AND A` / `CP $02`); they do not rely on Z from the early `RET Z`.
+;* Pairing with `DecrementCoins`
+;* `$02D8`–`$02E2` uses the same DIP bit: if bit4 is set, the coin cost is doubled (1P costs 2 coins, 2P costs 4).
+;* That matches `CoinChecking` reporting `CoinCount / 2` as credits.
+;* In short: `$17E0` is “how many games can we start right now?”,
+;* not a coin-slot reader — slot counting is in `WaitVBlankCoin`.
+;*****************************************************************************
 17E0: 3A 00 78        LD      A,($7800)           ; {hard.DSW0} 78xx DSW0
 17E3: E6 10           AND     $10                 ; 0001_0000 Coinage
-17E5: 3A 8F 43        LD      A,($438F)           ; {ram.CoinCount}
-17E8: C8              RET     Z                   
-17E9: 0F              RRCA                        
+17E5: 3A 8F 43        LD      A,($438F)           ; {ram.CoinCount} flags unchanged
+17E8: C8              RET     Z                   ; if bit4 clear -> return CoinCount as-is
+17E9: 0F              RRCA                        ; CoinCount / 2
 17EA: E6 0F           AND     $0F                 ; 0000_1111
-17EC: C9              RET                         
+17EC: C9              RET                         ; 
 ;
 17ED: FF FF FF
 
@@ -4433,8 +4482,9 @@ T1D00:
 
 1DEA: FF FF FF FF FF FF
 
-;
-; This is a simple protection against piracy.
+;*****************************************************************************
+;* Protection against piracy:
+;*****************************************************************************
 L1DF0:
 1DF0: 3A 1D 43        LD      A,($431D)           ; {ram.ForegroundScreen+31D} 'A' from 'AMSTAR ..' copyright text
 1DF3: D6 01           SUB     $01                 ; 
@@ -4521,21 +4571,37 @@ T1EC0:
 1EDC: 20 40 20 80
 
 ;*****************************************************************************
-;* Used for the animation speed at bird intro.
+;* Copyright-notice integrity check:
+;* It runs only in attract mode, as the tail of the intro bird animation.
+;* It sums the 26 characters of the on-screen line “` AMSTAR ELECTRONICS CORP. `”,
+;* adds a tuned constant, and adds the result into `HiScorehigh`.
+;* With unmodified ROM the total wraps to exactly `$00`, so the hi-score is left untouched.
+;* Change the copyright text and the hi-score gets corrupted.
+;* If a bootleg patches the copyright string — or the line is otherwise not intact when this runs,
+;* the sum no longer cancels and the delta is added to `HiScorehigh` on every frame of the bird intro.
+;* Since scores are BCD, that immediately produces garbage in the `HI-SCORE` display.
+;* A quiet, non-obvious tamper trap rather than an outright refusal to boot.
+;* The arithmetic
+;* | Term                                                           | Value               |
+;* |----------------------------------------------------------------|---------------------|
+;* | Sum of the 26 text codes (`$121`, truncated to 8 bits)         | `$21`               |
+;* | ROM byte at `$3FFD` (last byte of the `T3FC0` bird-init block) | `$B8`               |
+;* | Constant added at `$1EF2`                                      | `$27`               |
+;* | Total                                                          | `$100` -> **`$00`** |
 ;*****************************************************************************
 L1EE0:
-1EE0: 11 3D 43        LD      DE,$433D            ; {+ram.ForegroundScreen+33D} holding 0
-1EE3: 01 1A 00        LD      BC,$001A            ; 
+1EE0: 11 3D 43        LD      DE,$433D            ; {+ram.ForegroundScreen+33D} screen: start of the AMSTAR line
+1EE3: 01 1A 00        LD      BC,$001A            ; B = 0 (accumulator), C = 26
 L1EE6:
-1EE6: 1A              LD      A,(DE)              ; 
-1EE7: 80              ADD     A,B                 ; 
+1EE6: 1A              LD      A,(DE)              ; read one character from screen
+1EE7: 80              ADD     A,B                 ; accumulate
 1EE8: 47              LD      B,A                 ; 
-1EE9: CD 17 02        CALL    $0217               ; {code.RightOneColumn}
+1EE9: CD 17 02        CALL    $0217               ; {code.RightOneColumn} DE -= 32
 1EEC: 0D              DEC     C                   ; 
 1EED: C2 E6 1E        JP      NZ,$1EE6            ; {code.L1EE6}
-1EF0: 1A              LD      A,(DE)              ; 
+1EF0: 1A              LD      A,(DE)              ; 27th read -> $3FFD (ROM!)
 1EF1: 80              ADD     A,B                 ; 
-1EF2: C6 27           ADD     $27                 ; 
+1EF2: C6 27           ADD     $27                 ; magic constant
 1EF4: 21 89 43        LD      HL,$4389            ; {+ram.HiScorehigh}
 1EF7: 86              ADD     A,(HL)              ; 
 1EF8: 77              LD      (HL),A              ; 
@@ -4574,7 +4640,7 @@ T1F00:
 L2000:
 2000: CD 76 08        CALL    $0876               ; {code.PlayerUpdate} Updates the player ship, player bullet and the shield.
 2003: CD F0 0D        CALL    $0DF0               ; {code.L0DF0} Player bullet to alien, collission detection.
-2006: CD A0 24        CALL    $24A0               ; {code.L24A0}
+2006: CD A0 24        CALL    $24A0               ; {code.L24A0} Mother-ship hook
 2009: 21 5F 43        LD      HL,$435F            ; {+ram.M435F} 8 bit counter for alien movement
 200C: 7E              LD      A,(HL)              ; get value
 200D: E6 03           AND     $03                 ; mask out 0000_0011 for count 0 to 3
@@ -4963,7 +5029,7 @@ DrawIntroBirdAnimationFrame:
 21F7: 1A              LD      A,(DE)              ; A = shape index from the script
 21F8: 77              LD      (HL),A              ; -> $4B70 (bird object shape index)
 21F9: CD C0 34        CALL    $34C0               ; {code.DrawBirdObject} draw the bird at intro
-21FC: C3 E0 1E        JP      $1EE0               ; {code.L1EE0}
+21FC: C3 E0 1E        JP      $1EE0               ; {code.L1EE0} Copyright-notice integrity check
 ; 
 21FF: FF FF FF FF FF
 ; 
@@ -5260,28 +5326,42 @@ T233A:
 ;* During the mother-ship levels (game level ≥ 8), `L2000` -> `L24A0` calls `L2351`.
 ;* It looks up the tile at the (scroll-adjusted) bullet position 
 ;* and explicitly tests for the `$4C`–`$4F` group.
+;* `L2351` is called with `DE` = the bullet's control-state record and
+;* `HL` = its live screen-address pair. Both are the player bullet (object 1 of the player grid).
+;* `$43E6`/`$43E7` is the current position written each frame
+;* by `GetScreenRamAddress` (the listing labels it `AbovePlayerBulletMSB`).
+;* Two details make this work:
+;* - `ADD $08` on the MSB converts the bullet's foreground address (`$40`–`$43`)
+;*   into the matching background address (`$48`–`$4B`), because the mother ship is drawn in the background plane.
+;* - Scroll compensation adjusts only the low 5 bits (the vertical row on the rotated screen)
+;*   by `CounterB9 >> 3`, preserving the horizontal field — the same technique as `L242C`,
+;*   but adding the offset here rather than subtracting.
+;* From there the tile decides the outcome: `$4C`–`$4F` erodes the dome
+;* (`L237B`, decrementing the tile and cascading into `$4F` at the edge),
+;* `$60`–`$6F` hits the purple conveyor belt (`L2398`),
+;* which in turn can reach the alien pilot and trigger `L23C0` -> game state 6.
 ;*****************************************************************************
 L2351:
 2351: 1A              LD      A,(DE)              ; 
 2352: E6 08           AND     $08                 ; 0000_1000
-2354: C8              RET     Z                   ; 
-2355: 7E              LD      A,(HL)              ; 
+2354: C8              RET     Z                   ; no bullet in flight
+2355: 7E              LD      A,(HL)              ; screen MSB
 2356: 2C              INC     L                   ; 
-2357: 6E              LD      L,(HL)              ; 
-2358: C6 08           ADD     $08                 ; 
+2357: 6E              LD      L,(HL)              ; screen LSB
+2358: C6 08           ADD     $08                 ; $4x -> $4x+8 : foreground to background plane
 235A: 67              LD      H,A                 ; 
 235B: 3A B9 43        LD      A,($43B9)           ; {ram.CounterB9}
 235E: 0F              RRCA                        ; 
 235F: 0F              RRCA                        ; 
-2360: 0F              RRCA                        ; 
+2360: 0F              RRCA                        ; scroll offset in character rows
 2361: 85              ADD     A,L                 ; 
-2362: E6 1F           AND     $1F                 ; 0001_1111
+2362: E6 1F           AND     $1F                 ; 0001_1111 wrap within the row field
 2364: 47              LD      B,A                 ; 
 2365: 7D              LD      A,L                 ; 
-2366: E6 E0           AND     $E0                 ; 1110_0000
+2366: E6 E0           AND     $E0                 ; 1110_0000 keep the horizontal field
 2368: B0              OR      B                   ; 
 2369: 6F              LD      L,A                 ; 
-236A: 7E              LD      A,(HL)              ; tile under the bullet
+236A: 7E              LD      A,(HL)              ; background tile under the bullet
 236B: 47              LD      B,A                 ; 
 236C: E6 FC           AND     $FC                 ; mask low 2 bits -> $4C/$4D/$4E/$4F all -> $4C
 236E: FE 4C           CP      $4C                 ; 
@@ -5405,11 +5485,11 @@ L23D6:
 ;* Mother ship partikel explosion.
 ;*****************************************************************************
 L2400:
-2400: CD 2C 24        CALL    $242C               ; {code.L242C}
-2403: CA 52 25        JP      Z,$2552             ; {code.L2552}
+2400: CD 2C 24        CALL    $242C               ; {code.L242C} Shared per-frame prologue for game state 6
+2403: CA 52 25        JP      Z,$2552             ; {code.L2552} timer expired -> state 7, score display
 2406: FE 20           CP      $20                 ; 
-2408: DA 6A 24        JP      C,$246A             ; {code.EraseMothership}
-240B: CA 20 25        JP      Z,$2520             ; {code.L2520} Calculation and display of the bonus score for mothership explosion
+2408: DA 6A 24        JP      C,$246A             ; {code.EraseMothership} last $20 frames: wipe the hull
+240B: CA 20 25        JP      Z,$2520             ; {code.L2520} exactly $20: Calculation and display of the bonus score for mothership explosion
 240E: 47              LD      B,A                 ; 
 240F: 0F              RRCA                        ; 
 2410: 00              NOP                         ; 
@@ -5428,30 +5508,41 @@ L2400:
 2426: C3 85 20        JP      $2085               ; {code.L2085}
 
 2429: FF FF FF
-; 
+
+;*****************************************************************************
+;* Shared per-frame prologue for game state 6:
+;* It does three things: freezes the background scroll on a character boundary
+;* and re-programs the `58xx` scroll register, computes the scroll-compensated
+;* foreground screen origin for the explosion into `DE`,
+;* and ticks the state timer `CounterA5` down, returning it in `A` with the `Z` flag set on expiry.
+;* `L242C` therefore holds the scroll still: `AND $F8` rounds `CounterB9` down to a whole character row,
+;* stores it back, and re-programs the register with that value every frame.
+;* The background stops drifting, and — importantly for the next step,
+;* the scroll offset is guaranteed to be an exact multiple of 8 pixels.
+;*****************************************************************************
 L242C:
 242C: 21 B9 43        LD      HL,$43B9            ; {+ram.CounterB9}
-242F: 7E              LD      A,(HL)              
-2430: E6 F8           AND     $F8                 ; 1111_1000
-2432: 77              LD      (HL),A              
+242F: 7E              LD      A,(HL)              ; 
+2430: E6 F8           AND     $F8                 ; 1111_1000 drop the 3 sub-character bits
+2432: 77              LD      (HL),A              ; write the aligned value back
 2433: 32 00 58        LD      ($5800),A           ; {hard.scrollRegister} 58xx scroll register
-2436: 11 C6 41        LD      DE,$41C6            
-2439: 0F              RRCA                        
-243A: 0F              RRCA                        
-243B: 0F              RRCA                        
-243C: 47              LD      B,A                 
-243D: 7B              LD      A,E                 
-243E: 90              SUB     B                   
-243F: E6 1F           AND     $1F                 ; 0001_1111
-2441: 47              LD      B,A                 
-2442: 7B              LD      A,E                 
-2443: E6 E0           AND     $E0                 ; 1110_0000
-2445: B0              OR      B                   
-2446: 5F              LD      E,A                 
+2436: 11 C6 41        LD      DE,$41C6            ; mother-ship origin, foreground plane
+2439: 0F              RRCA                        ; A = CounterB9 / 8
+243A: 0F              RRCA                        ;   (clean shift: low 3 bits are 0)
+243B: 0F              RRCA                        ; 
+243C: 47              LD      B,A                 ; B = scroll offset in character rows
+243D: 7B              LD      A,E                 ; $C6
+243E: 90              SUB     B                   ; 
+243F: E6 1F           AND     $1F                 ; 0001_1111 wrap within the 5-bit row field
+2441: 47              LD      B,A                 ; 
+2442: 7B              LD      A,E                 ; $C6
+2443: E6 E0           AND     $E0                 ; 1110_0000 keep the horizontal field ($C0)
+2445: B0              OR      B                   ; 
+2446: 5F              LD      E,A                 ; E = $C0 | (($C6 - scroll) & $1F)
 2447: 2E A5           LD      L,$A5               ; CounterA5
-2449: 35              DEC     (HL)                ; decrement it
-244A: 7E              LD      A,(HL)              
-244B: C9              RET                         
+2449: 35              DEC     (HL)                ; <- the flags the caller tests
+244A: 7E              LD      A,(HL)              ; 
+244B: C9              RET                         ; 
 
 ;*****************************************************************************
 ;* Game state 7.
@@ -5486,45 +5577,68 @@ EraseMothership:
 246D: 11 C6 4A        LD      DE,$4AC6            ; Screen coordinate of mother ship
 2470: 21 00 1C        LD      HL,$1C00            ; Background stars to erase the mother ship
 2473: C3 D6 0A        JP      $0AD6               ; {code.DrawImageCbyB} Erase the mother ship
-; 
+
+;*****************************************************************************
+;* Re-arms the bird attack cycle:
+;* It runs once each time the bird dwell timer `B4BD3` expires and computes two fresh values:
+;* A new dwell time for `B4BD3` (how long until the next re-arm) and a new descent threshold `B4BD1`
+;* (how far the formation is allowed to scroll down before the direction flips).
+;* Both are derived from the surviving birds' vertical spread, the kill count,
+;* the frame counter, and the wave randomiser `M436F`.
+;* Notes
+;* - `RLCA` at `$2484`, `$2488` and `$26BD` is a rotate, not a shift.
+;*   For the small values involved it acts as ×2, but a value ≥ `$80` would wrap its top bit into bit 0.
+;* - Only `L` is reloaded throughout; `H` stays `$4B` for the `B4BDx` writes and `$43` after `$247E`.
+;*****************************************************************************
 L2476:
-2476: 78              LD      A,B                 
-2477: 81              ADD     A,C                 
-2478: CD 95 24        CALL    $2495               ; {code.L2495}
+2476: 78              LD      A,B                 ; 
+2477: 81              ADD     A,C                 ; A = B + C
+2478: CD 95 24        CALL    $2495               ; {code.L2495} unrolled multiply
 247B: 2E D3           LD      L,$D3               ; $4BD3 countdown timer between bird attacks ("bird extended storage")
-247D: 77              LD      (HL),A              
+247D: 77              LD      (HL),A              ; B4BD3 = new dwell time
 247E: 21 BB 43        LD      HL,$43BB            ; {+ram.BirdsLeft}
 2481: 3E 08           LD      A,$08               ; number of birds
-2483: 96              SUB     (HL)                ; 
+2483: 96              SUB     (HL)                ; birds already killed
 2484: 07              RLCA                        ; Multiply by 2
 2485: 2E 9A           LD      L,$9A               ; Counter9A
-2487: 86              ADD     A,(HL)              
+2487: 86              ADD     A,(HL)              ; 
 2488: 07              RLCA                        ; Multiply by 2
-2489: 47              LD      B,A                 
+2489: 47              LD      B,A                 ; 
 ; Attack timing / launch slot
 248A: 2E 6F           LD      L,$6F               ; $436F (random)
 248C: 7E              LD      A,(HL)              ; 
-248D: E6 1E           AND     $1E                 ; 0001_1110
+248D: E6 1E           AND     $1E                 ; 0001_1110 random even value 0..$1E
 248F: 80              ADD     A,B                 ; B from (8-BirdsLeft) & Counter9A
-2490: 32 D1 4B        LD      ($4BD1),A           ; {!ram.B4BD1} descent turnaround threshold (max depth)
+2490: 32 D1 4B        LD      ($4BD1),A           ; {!ram.B4BD1} new descent turnaround threshold (max depth)
 2493: C9              RET                         ; 
 
 ; not used.
 2494: 1F              RRA                         
-; 
+
+;*****************************************************************************
+;* Unrolled multiply:
+;* `L2495` is a hand-unrolled "add `B` up to three times, then maybe double" helper.
+;*****************************************************************************
 L2495:
-2495: 80              ADD     A,B                 
-2496: 0D              DEC     C                   
-2497: C8              RET     Z                   
-2498: 80              ADD     A,B                 
-2499: 0D              DEC     C                   
-249A: C8              RET     Z                   
-249B: 80              ADD     A,B                 
-249C: 0D              DEC     C                   
-249D: C8              RET     Z                   
-249E: 87              ADD     A,A                 
-249F: C9              RET                         
-; 
+2495: 80              ADD     A,B                 ; 
+2496: 0D              DEC     C                   ; 
+2497: C8              RET     Z                   ; 
+2498: 80              ADD     A,B                 ; 
+2499: 0D              DEC     C                   ; 
+249A: C8              RET     Z                   ; 
+249B: 80              ADD     A,B                 ; 
+249C: 0D              DEC     C                   ; 
+249D: C8              RET     Z                   ; 
+249E: 87              ADD     A,A                 ; 
+249F: C9              RET                         ; 
+
+;*****************************************************************************
+;* Mother-ship hook in the main gameplay loop:
+;* On the mother-ship level it does two things per frame:
+;* Tests the player's bullet against the mother-ship structure (hull dome or conveyor belt) and,
+;* every fourth frame, gives the mother ship a chance to drop a bomb aimed at the player.
+;* On every other level it returns immediately.
+;*****************************************************************************
 L24A0:
 24A0: 3A B8 43        LD      A,($43B8)           ; {ram.LevelAndRound}
 24A3: E6 0F           AND     $0F                 ; mask out 0000_1111
@@ -5532,12 +5646,12 @@ L24A0:
 24A7: D8              RET     C                   ; return if game level < 8
 24A8: 11 C4 43        LD      DE,$43C4            ; {+ram.PlayerBulletState}
 24AB: 21 E6 43        LD      HL,$43E6            ; {+ram.AbovePlayerBulletMSB}
-24AE: CD 51 23        CALL    $2351               ; {code.L2351}
+24AE: CD 51 23        CALL    $2351               ; {code.L2351} bullet vs. mother ship
 24B1: 3A 9B 43        LD      A,($439B)           ; {ram.Counter9A+1}
 24B4: E6 03           AND     $03                 ; mask out 0000_0011
 24B6: FE 03           CP      $03                 ; 
-24B8: C0              RET     NZ                  ; return if <> 3
-24B9: C3 F2 24        JP      $24F2               ; {code.L24F2}
+24B8: C0              RET     NZ                  ; only on 1 frame in 4
+24B9: C3 F2 24        JP      $24F2               ; {code.L24F2} mother ship returns fire
 
 ; not used 
 24BC: CD 51 23        CALL    $2351               ; {code.L2351}
@@ -5593,7 +5707,7 @@ L24E0:
 ;*****************************************************************************
 L24F2:
 24F2: CD AA 30        CALL    $30AA               ; {code.GetRandomNumber}
-24F5: C6 60           ADD     $60                 ; 
+24F5: C6 60           ADD     $60                 ; candidate X in the playfield
 24F7: 00              NOP                         ; 
 24F8: 47              LD      B,A                 ; B = random target X ($60 + rnd)
 24F9: 21 9B 43        LD      HL,$439B            ; {+ram.Counter9A+1}
@@ -5607,13 +5721,13 @@ L24F2:
 2508: B8              CP      B                   ; 
 2509: D8              RET     C                   ; target right of player -> skip
 250A: 78              LD      A,B                 ; target aligns with the player
-250B: D6 04           SUB     $04                 ; 
+250B: D6 04           SUB     $04                 ; bomb X
 250D: 47              LD      B,A                 ; B = bomb X
 250E: 3A B9 43        LD      A,($43B9)           ; {ram.CounterB9}
 2511: 2F              CPL                         ; 
 2512: 3C              INC     A                   ; = -CounterB9
-2513: E6 F8           AND     $F8                 ; 1111_1000
-2515: C6 48           ADD     $48                 ; 
+2513: E6 F8           AND     $F8                 ; 1111_1000 -CounterB9, character aligned
+2515: C6 48           ADD     $48                 ; bomb Y, follows the scroll
 2517: 4F              LD      C,A                 ; C = bomb Y (from scroll position)
 2518: E5              PUSH    HL                  ; 
 2519: E5              PUSH    HL                  ; two dummy stack frames for L25B7's POPs
@@ -5819,6 +5933,22 @@ L25E0:
 
 ;*****************************************************************************
 ;* Birds vertical movement update (with 58xx scroll register).
+;* The descent threshold:
+;* B4BD1 = (M436F & $1E) + 2·( 2·(8 − BirdsLeft) + Counter9A )
+;* The kill count `8 − BirdsLeft` enters with weight 4 and `Counter9A` with weight 2,
+;* plus a random even offset up to `$1E`. As birds are shot down, the threshold climbs,
+;* so the formation is allowed to descend further before turning — the wave gets more aggressive.
+;* `B4BD1` is consumed on the very next frame by `L2600`.
+;* `B4BD1 ≥ B4BD3` takes the descend path (`CounterB9 − step`, table `$3ED0` indexed by `B4BD5`).
+;* Call chain:
+;* L2600  (bird vertical movement, every frame)
+;*   └─ $263F  Counter9A+1 bit0
+;*        ├─ 0 -> L26D0     recompute B4BD6 / B4BD7 from live bird slots
+;*        └─ 1 -> L2668     recompute B4BD5 (descent speed, clamped via $3EE0)
+;*                 └─ L26AA  tick B4BD3
+;*                      └─ on expiry -> L2476   re-arm B4BD3 and B4BD1
+;* The two halves alternate on odd/even frames,
+;* so the spread values `L2476` consumes are always from the previous frame.
 ;*****************************************************************************
 L2600:
 2600: 00              NOP                         ; Old command removed or space for a future replace patch
@@ -5833,8 +5963,8 @@ L2600:
 260B: 0F              RRCA                        ; >> 3
 260C: E6 1F           AND     $1F                 ; 0001_1111 0..31
 260E: 21 D2 4B        LD      HL,$4BD2            ; {!+ram.B4BD2} vertical scroll phase of the bird formation (the master index)
-2611: 77              LD      (HL),A              ; 
-2612: 2C              INC     L                   ; 
+2611: 77              LD      (HL),A              ; B4BD2 = (~CounterB9 >> 3) & $1F
+2612: 2C              INC     L                   ; -> B4BD3
 2613: 3A D1 4B        LD      A,($4BD1)           ; {!ram.B4BD1} descent turnaround threshold (max depth)
 2616: BE              CP      (HL)                ; vs $4BD2 (scroll phase)
 2617: DA 50 26        JP      C,$2650             ; {code.L2650} phase passed threshold -> reverse
@@ -5869,7 +5999,12 @@ L2639:
 
 ; not used 
 264C: C2 3A 26 3A
-;
+
+;*****************************************************************************
+;* `L2650` takes the ascend path (`CounterB9 + step`, indexed via `B4BD4`).
+;* Since `L2476` writes both sides of that comparison,
+;* it is what decides how long the formation dives before pulling back up.
+;*****************************************************************************
 L2650:
 2650: 2C              INC     L                   ; 
 2651: 3A 9B 43        LD      A,($439B)           ; {ram.Counter9A+1}
@@ -7153,7 +7288,7 @@ L3400:
 3403: CD 00 38        CALL    $3800               ; {code.L3800} Collision detection for birds
 3406: CD 00 26        CALL    $2600               ; {code.L2600} birds vertical movement update (with 58xx scroll register)
 3409: CD 00 38        CALL    $3800               ; {code.L3800} Collision detection for birds
-340C: CD 80 39        CALL    $3980               ; {code.L3980}
+340C: CD 80 39        CALL    $3980               ; {code.L3980} Player shield vs. bird collision sweep
 340F: 3A BB 43        LD      A,($43BB)           ; {ram.BirdsLeft}
 3412: A7              AND     A                   ; updates the zero flag
 3413: CA 62 34        JP      Z,$3462             ; {+code.L3462} if no BirdsLeft.
@@ -7161,7 +7296,7 @@ L3400:
 3418: D2 38 34        JP      NC,$3438            ; {+code.L3438} if >= $04
 341B: CD 74 34        CALL    $3474               ; {code.DrawFirst4BirdObjects} including the horizontal movement update
 341E: CD 86 34        CALL    $3486               ; {code.DrawSecond4BirdObjects} including the horizontal movement update
-3421: CD 60 35        CALL    $3560               ; {code.L3560}
+3421: CD 60 35        CALL    $3560               ; {code.L3560} Bird-launch setup
 3424: CD 98 34        CALL    $3498               ; {code.L3498}
 3427: CD AA 34        CALL    $34AA               ; {code.L34AA}
 342A: 3A 9B 43        LD      A,($439B)           ; {ram.Counter9A+1}
@@ -7177,7 +7312,7 @@ L3438:
 343B: 0F              RRCA                        
 343C: DA 52 34        JP      C,$3452             ; {+code.L3452}
 343F: CD 74 34        CALL    $3474               ; {code.DrawFirst4BirdObjects}
-3442: CD 60 35        CALL    $3560               ; {code.L3560}
+3442: CD 60 35        CALL    $3560               ; {code.L3560} Bird-launch setup
 3445: CD 98 34        CALL    $3498               ; {code.L3498}
 3448: CD 30 39        CALL    $3930               ; {code.L3930}
 344B: C3 40 0C        JP      $0C40               ; {code.EnemyBulletUpdate}
@@ -7186,7 +7321,7 @@ L3438:
 ; 
 L3452:
 3452: CD 86 34        CALL    $3486               ; {code.DrawSecond4BirdObjects}
-3455: CD 60 35        CALL    $3560               ; {code.L3560}
+3455: CD 60 35        CALL    $3560               ; {code.L3560} Bird-launch setup
 3458: CD AA 34        CALL    $34AA               ; {code.L34AA}
 345B: C3 C0 0F        JP      $0FC0               ; {code.L0FC0} Handle animations for killed aliens
 ; 
