@@ -2,7 +2,7 @@
 
 # Phoenix
 
->>> cpu Z80
+>>> cpu Z80 
 
 >>> binary 0000:roms/ic45 +  roms/ic46 + roms/ic47 + roms/ic48 + roms/h5-ic49.5a + roms/h6-ic50.6a + roms/h7-ic51.7a + roms/h8-ic52.8a
 
@@ -77,7 +77,7 @@ L002D:
 0034: 77              LD      (HL),A              ; 
 0035: CD 77 03        CALL    $0377               ; {code.UpdateSoundControlRAM}
 0038: 00              NOP                         ; 
-0039: CD E0 17        CALL    $17E0               ; {code.CoinChecking} Converts raw `CoinCount` into playable credits, applying the coinage DIP on `DSW0`
+0039: CD E0 17        CALL    $17E0               ; {} Converts raw `CoinCount` into playable credits, applying the coinage DIP on `DSW0`
 003C: A7              AND     A                   ; updates the zero flag
 003D: CA 46 00        JP      Z,$0046             ; {code.L0046} No credits ... continue splash
 0040: CD 88 02        CALL    $0288               ; {code.PromptForStartGame}
@@ -609,7 +609,7 @@ PromptForStartGame:
 028E: 0E 02           LD      C,$02               ; print two lines: 'PUSH ONLY...1PLAYER BUTTON'
 0290: CD D0 01        CALL    $01D0               ; {code.PrintTextLines}
 0293: 0E 02           LD      C,$02               ; 
-0295: CD E0 17        CALL    $17E0               ; {code.CoinChecking} Converts raw `CoinCount` into playable credits, applying the coinage DIP on `DSW0`
+0295: CD E0 17        CALL    $17E0               ; {} Converts raw `CoinCount` into playable credits, applying the coinage DIP on `DSW0`
 0298: FE 02           CP      $02                 ; 2 player mode possible if credit > 1
 029A: DA A7 02        JP      C,$02A7             ; {code.L02A7}
 029D: 21 A0 1B        LD      HL,$1BA0            ; {+code.T1BA0}
@@ -1206,9 +1206,9 @@ InitBackgroundData:
 ; Bit0 - bit3 of $43B8 is the table index.
 ; Data will be fetched two times. Once before and once after the 'spiral fill' animation.
 ; The double call is really a side effect of always going through
-; `GameState = 2` on every level entry, including “levels” that are only the spiral transition.
+; `GameState = 2` on every level entry, including "levels" that are only the spiral transition.
 ; So the first fetch is needless.
-; They did not special-case “skip global init until after spiral.”
+; They did not special-case “skip global init until after spiral."
 ; $05A0 should be $CC but it was never fixed and has no side effect.
 T0598:
 0598: A8 A8     ;init values for 1st alien wave (pointer to $05A8, $05A8)
@@ -4210,12 +4210,12 @@ T17D6:
 ;* result: early exit skips the divide-by-2 when 1-coin mode is selected.
 ;* Callers
 ;* 1. Attract main loop (`$0039`) — after `AND A`, non-zero credits -> `PromptForStartGame`, else splash/demo.
-;* 2. `PromptForStartGame` (`$0295`) — `CP $02`: if credits ≥ 2, also print “1 OR 2 PLAYERS”.
+;* 2. `PromptForStartGame` (`$0295`) — `CP $02`: if credits ≥ 2, also print "1 OR 2 PLAYERS".
 ;* Both callers re-test **A** (`AND A` / `CP $02`); they do not rely on Z from the early `RET Z`.
 ;* Pairing with `DecrementCoins`
 ;* `$02D8`–`$02E2` uses the same DIP bit: if bit4 is set, the coin cost is doubled (1P costs 2 coins, 2P costs 4).
 ;* That matches `CoinChecking` reporting `CoinCount / 2` as credits.
-;* In short: `$17E0` is “how many games can we start right now?”,
+;* In short: `$17E0` is "how many games can we start right now?",
 ;* not a coin-slot reader — slot counting is in `WaitVBlankCoin`.
 ;*****************************************************************************
 17E0: 3A 00 78        LD      A,($7800)           ; {hard.DSW0} 78xx DSW0
@@ -4573,7 +4573,7 @@ T1EC0:
 ;*****************************************************************************
 ;* Copyright-notice integrity check:
 ;* It runs only in attract mode, as the tail of the intro bird animation.
-;* It sums the 26 characters of the on-screen line “` AMSTAR ELECTRONICS CORP. `”,
+;* It sums the 26 characters of the on-screen line "` AMSTAR ELECTRONICS CORP. `",
 ;* adds a tuned constant, and adds the result into `HiScorehigh`.
 ;* With unmodified ROM the total wraps to exactly `$00`, so the hi-score is left untouched.
 ;* Change the copyright text and the hi-score gets corrupted.
@@ -5528,7 +5528,7 @@ L242C:
 2433: 32 00 58        LD      ($5800),A           ; {hard.scrollRegister} 58xx scroll register
 2436: 11 C6 41        LD      DE,$41C6            ; mother-ship origin, foreground plane
 2439: 0F              RRCA                        ; A = CounterB9 / 8
-243A: 0F              RRCA                        ;   (clean shift: low 3 bits are 0)
+243A: 0F              RRCA                        ; (clean shift: low 3 bits are 0)
 243B: 0F              RRCA                        ; 
 243C: 47              LD      B,A                 ; B = scroll offset in character rows
 243D: 7B              LD      A,E                 ; $C6
