@@ -182,6 +182,13 @@ For general purposes
 | 43A8      | M43A8               | Temporary storage (MSB of pointer to table $1860) |
 | 43A9      | M43A9               | Temporary storage (LSB of pointer to table $1860) |
 | 43AA      | M43AA               | Mothership-wave frame counter (times antenna/pilot animation and star scroll) |
+
+For Background graphic's (stars, planets, galaxies) and scroll control
+
+>>> memory
+
+|      |       |     |
+|------|-------| ----------------- |
 | 43AB      | M43AB               | Counter for planet trigger |
 | 43AC      | M43AC               | Planet vertical spacing increment (added to trigger `$43AB`) |
 | 43AD      | M43AD               | Planet X index -> `T1E60` (screen-RAM LSB), incremented per planet |
@@ -194,6 +201,13 @@ For general purposes
 | 43B4      | CounterB4           | 8 bit counter (stars scrolling down, aliens fade in time) |
 | 43B5      | M43B5               | Reserved/unused byte |
 | 43B6      | M43B6               | End-of-wave countdown timer that advances the game to the next level/round |
+
+For general purposes
+
+>>> memory
+
+|      |       |     |
+|------|-------| ----------------- |
 | 43B7      | M43B7               | Reserved/unused byte |
 | 43B8      | LevelAndRound       | Bit0 - 3: game level, bit4 - 7: game round |
 | 43B9      | CounterB9           | 8 bit backwards counter |
