@@ -93,6 +93,7 @@ def _render_header(para):
     if i >= 0:
         j = txt.find('`', i + 1)
         if j != len(txt) - 1:
+            print(para)
             raise Exception('Invalid display class: ' + para[0])
         display_class = txt[i + 1:j]
         txt = txt[:i].strip()

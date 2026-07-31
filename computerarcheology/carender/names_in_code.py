@@ -95,6 +95,7 @@ def update_names_in_code(directory, filename, check_binary=True,extract_binary=F
 
     # Load the markdown file
 
+    # print(">>>>>", filename)
     md = markdown.read_markdown_paragraphs(os.path.join(directory, filename))    
 
     bp_offset = 0
