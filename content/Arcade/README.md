@@ -13,6 +13,7 @@
 >>>    OmegaRace:Omega Race 10%<br>
 >>>    Phoenix:Phoenix 90%<br>
 >>>    SpaceInvaders:Space Invaders<br>
+>>>    ThePit: The Pit<br>
 >>>    TimePilot:Time Pilot (Sound)<br>
 >>>    SeaWolf:Sea Wolf 1%<br>
 >>>    Scramble:Scramble 1%<br>
