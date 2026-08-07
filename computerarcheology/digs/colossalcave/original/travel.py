@@ -41,8 +41,8 @@ for rn in range(1,0x50):
         if dest > 500:
             dest_txt = f'mesg_{dest-500}'
             msg = ' '.join(messages.MESSAGES[dest-500])
-        elif dest > 300:
-            dest_txt = f'goto_{dest-300}'
+        elif dest >= 300:
+            dest_txt = f'goto_{dest-300+1}'
         else:
             dest_txt = f'{int(dest):02X}'
         dest_txt = dest_txt.ljust(8)

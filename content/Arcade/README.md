@@ -7,6 +7,7 @@
 >>>    Asteroids:Asteroids 80%<br>
 >>>    CrazyClimber:Crazy Climber 1%<br>
 >>>    Defender:Defender 75%<br>
+>>>    DonkeyKong<br>
 >>>    Frogger:Frogger (Sound)<br>
 >>>    Galaga:Galaga 5%<br>
 >>>    MoonPatrol:Moon Patrol 75%<br>
