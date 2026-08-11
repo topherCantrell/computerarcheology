@@ -1,0 +1,1015 @@
+B3AF: 00 89 BC  ; List_ID=0x00, length=0x09BC (to 0xBD6E)
+
+; -------------- Routine FN_81_PRINT_DOOR_HERE
+;
+B3B2: 81 10                              ; Routine Number: 0x81, Length: 0x0010
+B3B4:       04 0E                        ;     COM_04_print_message length=0x000E (to 0xB3C4)
+B3B6:          5F BE 5B B1 4B 7B 46 45 44 A0 9F 15 7F B1
+;
+;              THERE IS A DOOR HERE.
+;
+
+; -------------- Routine FN_80_PRINT_SHOTGUN_HERE
+;
+B3C4: 80 12                              ; Routine Number: 0x80, Length: 0x0012
+B3C6:       04 10                        ;     COM_04_print_message length=0x0010 (to 0xB3D8)
+B3C8:          5F BE 5B B1 4B 7B 55 45 86 74 30 6F 9F 15 7F B1
+;
+;              THERE IS A SHOTGUN HERE.
+;
+
+; -------------- Routine FN_8B_PRINT_PERIOD
+;
+B3D8: 8B 04                              ; Routine Number: 0x8B, Length: 0x0004
+B3DA:       04 02                        ;     COM_04_print_message length=0x0002 (to 0xB3DE)
+B3DC:          3B F4                    
+;
+;              .  
+;
+
+; -------------- Routine FN_AB_PRINT_STILL_IN_DESERT
+;
+B3DE: AB 15                              ; Routine Number: 0xAB, Length: 0x0015
+B3E0:       04 13                        ;     COM_04_print_message length=0x0013 (to 0xB3F5)
+B3E2:          C7 DE 94 14 55 5E 8E BE 0B 8A 96 96 DB 72 F5 59
+B3F2:          3E 62 2E                 
+;
+;              YOU ARE STILL IN THE DESERT.
+;
+
+; -------------- Routine FN_95_PRINT_TRAIL_MEANDERS
+;
+B3F5: 95 23                              ; Routine Number: 0x95, Length: 0x0023
+B3F7:       04 21                        ;     COM_04_print_message length=0x0021 (to 0xB41A)
+B3F9:          55 45 8E 91 16 8A CB B0 0F 8A 90 5F F4 59 C8 B5
+B409:          FF B2 82 17 47 5E 66 49 89 17 82 17 59 5E 66 62
+B419:          2E                       
+;
+;              A SMALL TRAIL MEANDERS FROM THE EAST TO THE WEST.
+;
+
+; -------------- Routine FN_96_PRINT_VAST_CANYON
+;
+B41A: 96 1E                              ; Routine Number: 0x96, Length: 0x001E
+B41C:       04 1C                        ;     COM_04_print_message length=0x001C (to 0xB43A)
+B41E:          58 45 66 49 CF 15 55 A4 04 B7 DB 8B 10 53 C0 DE
+B42E:          C2 16 9D 61 AF 14 04 68 5B 5E 3F A1
+;
+;              A VAST IMPASSABLE CANYON OPENS BEFORE YOU.
+;
+
+; -------------- Routine FN_97_PRINT_CERTAIN_DEATH
+;
+B43A: 97 1D                              ; Routine Number: 0x97, Length: 0x001D
+B43C:       04 1B                        ;     COM_04_print_message length=0x001B (to 0xB459)
+B43E:          6B BF 2B 6E 5B BE 19 BC 3B 4A 47 D2 B3 8B 23 92
+B44E:          85 96 3E 62 D0 47 FF 14 82 49 21
+;
+;              TO GO THAT WAY WOULD MEAN CERTAIN DEATH!
+;
+
+; -------------- Routine FN_99_DIE_CANYON_PLUNGE
+;
+B459: 99 50                              ; Routine Number: 0x99, Length: 0x0050
+B45B:       0D 4E                        ;     COM_0D_group_AND length=0x004E (to 0xB4AB)
+B45D:          04 46                     ;       COM_04_print_message length=0x0046 (to 0xB4A5)
+B45F:             83 46 94 46 7C B3 7C B3 F9 6C 22 6D 62 73 C3 06
+B46F:             3C 49 FA 6C AB 70 94 14 BA B1 AB 70 5F BE D3 14
+B47F:             91 9B 99 96 46 48 C7 B5 29 54 51 18 23 C6 64 B7
+B48F:             8F 5F 95 14 51 18 52 C2 70 8E 9B 6C 6B BF C7 DE
+B49F:             86 AF 96 5F AB 70     
+;
+;                 AAAAARRRRRRRGGGGHHHHH! AARRGGHH!  ARRGHH! THE CANYON WALLS
+;                 ECHO YOUR SCREAM AS YOU PLUNGE TO YOUR DEATH!
+;
+B4A5:          20 01                     ;       COM_20_is_active_object(obj=OBJ_01_PLAYER)
+B4A7:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
+B4A9:          1D 64                     ;       COM_1D_attack_var(points=100)
+;                                        ;     end group_AND at 0xB45B
+
+; -------------- Routine FN_9A_PRINT_CANYON_PREVENTS
+;
+B4AB: 9A 31                              ; Routine Number: 0x9A, Length: 0x0031
+B4AD:       04 2F                        ;     COM_04_print_message length=0x002F (to 0xB4DE)
+B4AF:          5F BE D3 14 91 9B 99 96 46 48 D4 B5 57 7B 84 14
+B4BF:          4F A1 51 18 52 C2 78 B1 9E 61 91 7A 71 16 6F CA
+B4CF:          9E 61 D0 15 82 17 4B 7B 94 5A E6 5F C0 7A 2E
+;
+;              THE CANYON WALLS RISE ABOVE YOU PREVENTING MOVEMENT IN THIS
+;              DIRECTION.
+;
+
+; -------------- Routine FN_98_PRINT_LAKE
+;
+B4DE: 98 28                              ; Routine Number: 0x98, Length: 0x0028
+B4E0:       04 26                        ;     COM_04_print_message length=0x0026 (to 0xB508)
+B4E2:          6B BF 5F BE 23 15 F3 B9 C7 DE D3 14 95 96 1B 60
+B4F2:          1B D1 03 BC 9F A6 3D 49 89 17 AF 14 7B 14 54 8B
+B502:          9B 6C 4D 8B DB 63        
+;
+;              TO THE EAST YOU CAN SEE WHAT APPEARS TO BE A LARGE LAKE. 
+;
+
+; -------------- Routine FN_9B_PRINT_EMPTY_HIGHWAY
+;
+B508: 9B 1C                              ; Routine Number: 0x9B, Length: 0x001C
+B50A:       04 1A                        ;     COM_04_print_message length=0x001A (to 0xB526)
+B50C:          83 48 72 61 FB C0 89 73 B3 75 56 DB D8 B0 4D 61
+B51C:          23 15 F3 B9 8E 48 F7 17 17 BA
+;
+;              AN EMPTY HIGHWAY TRAVELS EAST AND WEST.
+;
+
+; -------------- Routine FN_8D_IS_CLOSED
+;
+B526: 8D 0E                              ; Routine Number: 0x8D, Length: 0x000E
+B528:       0D 0C                        ;     COM_0D_group_AND length=0x000C (to 0xB536)
+B52A:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=..C.----(Closed))
+B52C:          AA                        ;       FN_AA_PRINT_THE_var
+B52D:          04 07                     ;       COM_04_print_message length=0x0007 (to 0xB536)
+B52F:             4B 7B C9 54 A6 B7 2E  
+;
+;                 IS CLOSED.
+;
+;                                        ;     end group_AND at 0xB528
+
+; -------------- Routine FN_C7_IS_OBJECT_RIBULN
+;
+B536: C7 0E                              ; Routine Number: 0xC7, Length: 0x000E
+B538:       0D 0C                        ;     COM_0D_group_AND length=0x000C (to 0xB546)
+B53A:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=..C.----(Closed))
+B53C:          AA                        ;       FN_AA_PRINT_THE_var
+B53D:          04 07                     ;       COM_04_print_message length=0x0007 (to 0xB546)
+B53F:             4B 7B 04 B2 48 C5 2E  
+;
+;                 IS RIBULN.
+;
+;                                        ;     end group_AND at 0xB538
+
+; -------------- Routine FN_8F_GET_OBJECT
+;
+B546: 8F 80 94                           ; Routine Number: 0x8F, Length: 0x0094
+B549:       0D 80 91                     ;     COM_0D_group_AND length=0x0091 (to 0xB5DD)
+B54C:          0E 80 8D                  ;       COM_0E_group_OR length=0x008D (to 0xB5DC)
+B54F:             14                     ;         COM_14_reverse_status next command
+B550:             BF                     ;         FN_BF_IS_LIQUID_REACHABLE
+B551:             0D 23                  ;         COM_0D_group_AND length=0x0023 (to 0xB576)
+B553:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
+B555:                AA                  ;           FN_AA_PRINT_THE_var
+B556:                04 1E               ;           COM_04_print_message length=0x001E (to 0xB576)
+B558:                   C3 B8 0B A7 6C BE 29 A1 1B 71 34 A1 53 15 B7 98
+B568:                   AE B3 3F 16 D3 49 AB 98 5F BE 59 90 97 62
+;
+;                       SLIPS THROUGH YOUR FINGERS, LEAVING THEM WET.
+;
+;                                        ;         end group_AND at 0xB551
+B576:             0D 1A                  ;         COM_0D_group_AND length=0x001A (to 0xB592)
+B578:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
+B57A:                04 16               ;           COM_04_print_message length=0x0016 (to 0xB592)
+B57C:                   46 77 05 A0 16 BC 90 73 CA 83 59 5E 46 7A E1 14
+B58C:                   5F A0 D6 B0 DB 63
+;
+;                       I DON'T THINK HE WILL COOPERATE. 
+;
+;                                        ;         end group_AND at 0xB576
+B592:             0D 22                  ;         COM_0D_group_AND length=0x0022 (to 0xB5B6)
+B594:                14                  ;           COM_14_reverse_status next command
+B595:                15 20               ;           COM_15_is_var_attributes(value=..P.....(Portable))
+B597:                14                  ;           COM_14_reverse_status next command
+B598:                2D 5C               ;           COM_2D_is_var_object(obj_num=0x5C, obj_text="OBJ_5C_PAIR_HANDS")
+B59A:                04 18               ;           COM_04_print_message length=0x0018 (to 0xB5B4)
+B59C:                   C7 DE 94 14 53 5E D6 C4 4B 5E 13 98 44 A4 DB 8B
+B5AC:                   C3 9E 6F B1 53 A1 AB 98
+;
+;                       YOU ARE QUITE INCAPABLE OF REMOVING 
+;
+B5B4:                AA                  ;           FN_AA_PRINT_THE_var
+B5B5:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0xB592
+B5B6:             18                     ;         COM_18_is_var_owned_by_active()
+B5B7:             0D 18                  ;         COM_0D_group_AND length=0x0018 (to 0xB5D1)
+B5B9:                0F                  ;           COM_0F_pick_up_var_object()
+B5BA:                14                  ;           COM_14_reverse_status next command
+B5BB:                39                  ;           COM_39_is_weight_70_or_less()
+B5BC:                04 12               ;           COM_04_print_message length=0x0012 (to 0xB5D0)
+B5BE:                   C7 DE D3 14 E6 96 D3 14 83 B3 82 17 73 49 A5 94
+B5CE:                   9B 76           
+;
+;                       YOU CAN'T CARRY THAT MUCH. 
+;
+B5D0:                10                  ;           COM_10_drop_var()
+;                                        ;         end group_AND at 0xB5B7
+B5D1:             0D 08                  ;         COM_0D_group_AND length=0x0008 (to 0xB5DB)
+B5D3:                0F                  ;           COM_0F_pick_up_var_object()
+B5D4:                AA                  ;           FN_AA_PRINT_THE_var
+B5D5:                04 04               ;           COM_04_print_message length=0x0004 (to 0xB5DB)
+B5D7:                   4D BD A7 61     
+;
+;                       TAKEN.
+;
+;                                        ;         end group_AND at 0xB5D1
+B5DB:             C1                     ;         FN_C1_PRINT_CANT_REACH_var
+;                                        ;       end group_OR at 0xB54C
+B5DC:          18                        ;       COM_18_is_var_owned_by_active()
+;                                        ;     end group_AND at 0xB549
+
+; -------------- Routine FN_A2_PRINT_ALREADY_HAVE_THE_var
+;
+B5DD: A2 13                              ; Routine Number: 0xA2, Length: 0x0013
+B5DF:       0D 11                        ;     COM_0D_group_AND length=0x0011 (to 0xB5F2)
+B5E1:          1A                        ;       COM_1A_set_var_to_noun1()
+B5E2:          18                        ;       COM_18_is_var_owned_by_active()
+B5E3:          04 0B                     ;       COM_04_print_message length=0x000B (to 0xB5F0)
+B5E5:             C7 DE 8E 14 63 B1 FB 5C 58 72 45
+;
+;                 YOU ALREADY HAVE
+;
+B5F0:          AA                        ;       FN_AA_PRINT_THE_var
+B5F1:          8B                        ;       FN_8B_PRINT_PERIOD
+;                                        ;     end group_AND at 0xB5DF
+
+; -------------- Routine FN_90_PRINT_ERROR_CLIMB_ENTER
+;
+B5F2: 90 09                              ; Routine Number: 0x90, Length: 0x0009
+B5F4:       0B 07 0A                     ;     COM_0B_switch length=0x0007 (to 0xB5FE), function=COM_0A_is_input_phrase(phrase_num)
+B5F7:          36 01                     ;       case COM_0A_is_input_phrase("ENTER * * *"), length=0x0001
+B5F9:             91                     ;         FN_91_PRINT_USE_DIRECTIONS
+;                                        ;       end case
+B5FA:          37 01                     ;       case COM_0A_is_input_phrase("CLIMB * OUT *"), length=0x0001
+B5FC:             91                     ;         FN_91_PRINT_USE_DIRECTIONS
+;                                        ;       end case
+;                                        ;     end decode_switch at 0xB5F4
+
+; -------------- Routine FN_91_PRINT_USE_DIRECTIONS
+;
+B5FD: 91 19                              ; Routine Number: 0x91, Length: 0x0019
+B5FF:       1F 17                        ;     COM_1F_print2 length=0x0017 (to 0xB618)
+B601:          FF A5 57 49 B5 17 46 5E 2F 7B 03 56 1D A0 A6 16
+B611:          3F BB 11 EE 99 AF 2E     
+;
+;              PLEASE USE DIRECTIONS N,S,E, OR W.
+;
+
+; -------------- Routine FN_92_PRINT_TRIED_BUT_COULDNT
+;
+B618: 92 1F                              ; Routine Number: 0x92, Length: 0x001F
+B61A:       0D 1D                        ;     COM_0D_group_AND length=0x001D (to 0xB639)
+B61C:          1A                        ;       COM_1A_set_var_to_noun1()
+B61D:          14                        ;       COM_14_reverse_status next command
+B61E:          15 08                     ;       COM_15_is_var_attributes(value=....O...(Openable))
+B620:          04 17                     ;       COM_04_print_message length=0x0017 (to 0xB639)
+B622:             C7 DE 8C 17 26 79 04 EE 73 C6 C7 DE E1 14 3E C5
+B632:             E6 96 09 15 D6 15 2E  
+;
+;                 YOU TRIED, BUT YOU COULDN'T DO IT.
+;
+;                                        ;     end group_AND at 0xB61A
+
+; -------------- Routine FN_94_INITIALIZE_GAME
+;
+B639: 94 06                              ; Routine Number: 0x94, Length: 0x0006
+B63B:       0D 04                        ;     COM_0D_group_AND length=0x0004 (to 0xB641)
+B63D:          30 80                     ;       COM_30_set_current_room(room=RM_1_HIGHWAY_WEST)
+B63F:          2F 01                     ;       COM_2F_load_section_from_disk(section=1)
+;                                        ;     end group_AND at 0xB63B
+
+; -------------- Routine FN_A3_PRINT_WELCOME_MESSAGE
+;
+B641: A3 36                              ; Routine Number: 0xA3, Length: 0x0036
+B643:       0D 34                        ;     COM_0D_group_AND length=0x0034 (to 0xB679)
+B645:          3A                        ;       COM_3A_clear_screen()
+B646:          2C 01                     ;       COM_2C_set_active(obj=OBJ_01_PLAYER)
+B648:          30 80                     ;       COM_30_set_current_room(room=RM_1_HIGHWAY_WEST)
+B64A:          17 01 80                  ;       COM_17_move_object_to(obj=OBJ_01_PLAYER, destination=RM_1_HIGHWAY_WEST)
+B64D:          1F 1A                     ;       COM_1F_print2 length=0x001A (to 0xB669)
+B64F:             DF 2C DF 2C DF 2C DF 2C DF 2C 5A 2C 99 61 BE B5
+B65F:             76 26 76 26 76 26 76 26 76 26
+;
+;                 >>>>>>>>>>>>>>>> XENOS <<<<<<<<<<<<<<<<
+;
+B669:          25                        ;       COM_25_print_linefeed()
+B66A:          1F 0C                     ;       COM_1F_print2 length=0x000C (to 0xB678)
+B66C:             0C BA 91 48 46 62 AF 14 14 D0 EB 5D
+;
+;                 STRANGER, BEWARE! 
+;
+B678:          25                        ;       COM_25_print_linefeed()
+;                                        ;     end group_AND at 0xB643
+
+; -------------- Routine FN_A5_IS_OPEN
+;
+B679: A5 12                              ; Routine Number: 0xA5, Length: 0x0012
+B67B:       0D 10                        ;     COM_0D_group_AND length=0x0010 (to 0xB68D)
+B67D:          14                        ;       COM_14_reverse_status next command
+B67E:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=..C.----(Closed))
+B680:          A8                        ;       FN_A8_PRINT_noun1
+B681:          04 0A                     ;       COM_04_print_message length=0x000A (to 0xB68D)
+B683:             4B 7B 06 9A DE 14 D7 A0 9B 5D
+;
+;                 IS NOT CLOSED. 
+;
+;                                        ;     end group_AND at 0xB67B
+
+; -------------- Routine FN_A6_OPEN
+;
+B68D: A6 26                              ; Routine Number: 0xA6, Length: 0x0026
+B68F:       0E 24                        ;     COM_0E_group_OR length=0x0024 (to 0xB6B5)
+B691:          0D 0D                     ;       COM_0D_group_AND length=0x000D (to 0xB6A0)
+B693:             29                     ;         COM_29_toggle_open_VAR()
+B694:             A8                     ;         FN_A8_PRINT_noun1
+B695:             04 08                  ;         COM_04_print_message length=0x0008 (to 0xB69F)
+B697:                4B 7B 09 9A C2 16 A7 61
+;
+;                    IS NOW OPEN.
+;
+B69F:             0C                     ;         COM_0C_fail()
+;                                        ;       end group_AND at 0xB691
+B6A0:          0D 11                     ;       COM_0D_group_AND length=0x0011 (to 0xB6B3)
+B6A2:             1A                     ;         COM_1A_set_var_to_noun1()
+B6A3:             15 02                  ;         COM_15_is_var_attributes(value=......H.(Holder))
+B6A5:             14                     ;         COM_14_reverse_status next command
+B6A6:             2E 80                  ;         COM_2E_is_var_ext_attributes(value=G...----(Glass))
+B6A8:             14                     ;         COM_14_reverse_status next command
+B6A9:             33                     ;         COM_33_print_objects_on_var_object()
+B6AA:             A8                     ;         FN_A8_PRINT_noun1
+B6AB:             04 06                  ;         COM_04_print_message length=0x0006 (to 0xB6B3)
+B6AD:                4B 7B 72 61 1F C1  
+;
+;                    IS EMPTY.
+;
+;                                        ;       end group_AND at 0xB6A0
+B6B3:          14                        ;       COM_14_reverse_status next command
+B6B4:          0C                        ;       COM_0C_fail()
+;                                        ;     end group_OR at 0xB68F
+
+; -------------- Routine FN_A8_PRINT_noun1
+;
+B6B5: A8 0C                              ; Routine Number: 0xA8, Length: 0x000C
+B6B7:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0xB6C3)
+B6B9:          1A                        ;       COM_1A_set_var_to_noun1()
+B6BA:          0E 06                     ;       COM_0E_group_OR length=0x0006 (to 0xB6C2)
+B6BC:             15 10                  ;         COM_15_is_var_attributes(value=...A....(Alive))
+B6BE:             1F 02                  ;         COM_1F_print2 length=0x0002 (to 0xB6C2)
+B6C0:                5F BE              
+;
+;                    THE
+;
+;                                        ;       end group_OR at 0xB6BA
+B6C2:          11                        ;       COM_11_print_noun1()
+;                                        ;     end group_AND at 0xB6B7
+
+; -------------- Routine FN_A9_PRINT_noun2
+;
+B6C3: A9 0C                              ; Routine Number: 0xA9, Length: 0x000C
+B6C5:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0xB6D1)
+B6C7:          1B                        ;       COM_1B_set_var_to_noun2()
+B6C8:          0E 06                     ;       COM_0E_group_OR length=0x0006 (to 0xB6D0)
+B6CA:             15 10                  ;         COM_15_is_var_attributes(value=...A....(Alive))
+B6CC:             1F 02                  ;         COM_1F_print2 length=0x0002 (to 0xB6D0)
+B6CE:                5F BE              
+;
+;                    THE
+;
+;                                        ;       end group_OR at 0xB6C8
+B6D0:          12                        ;       COM_12_print_noun2()
+;                                        ;     end group_AND at 0xB6C5
+
+; -------------- Routine FN_AA_PRINT_THE_var
+;
+B6D1: AA 0B                              ; Routine Number: 0xAA, Length: 0x000B
+B6D3:       0D 09                        ;     COM_0D_group_AND length=0x0009 (to 0xB6DE)
+B6D5:          0E 06                     ;       COM_0E_group_OR length=0x0006 (to 0xB6DD)
+B6D7:             15 10                  ;         COM_15_is_var_attributes(value=...A....(Alive))
+B6D9:             1F 02                  ;         COM_1F_print2 length=0x0002 (to 0xB6DD)
+B6DB:                5F BE              
+;
+;                    THE
+;
+;                                        ;       end group_OR at 0xB6D5
+B6DD:          16                        ;       COM_16_print_var()
+;                                        ;     end group_AND at 0xB6D3
+
+; -------------- Routine FN_9C_PRINT_AIRLOCK_TWO_BUTTONS
+;
+B6DE: 9C 53                              ; Routine Number: 0x9C, Length: 0x0053
+B6E0:       0D 51                        ;     COM_0D_group_AND length=0x0051 (to 0xB733)
+B6E2:          04 04                     ;       COM_04_print_message length=0x0004 (to 0xB6E8)
+B6E4:             52 86 5B B9           
+;
+;                 KIPSPA
+;
+B6E8:          0E 08                     ;       COM_0E_group_OR length=0x0008 (to 0xB6F2)
+B6EA:             C3                     ;         FN_C3_IS_PLAYER_LACKING_WISDOM
+B6EB:             04 05                  ;         COM_04_print_message length=0x0005 (to 0xB6F2)
+B6ED:                D4 47 75 8D 4B     
+;
+;                    AIRLOCK
+;
+;                                        ;       end group_OR at 0xB6E8
+B6F2:          8B                        ;       FN_8B_PRINT_PERIOD
+B6F3:          04 3E                     ;       COM_04_print_message length=0x003E (to 0xB733)
+B6F5:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 84 15 3B 63
+B705:             01 B3 DB 95 5F BE 5B B1 4B 7B 52 45 8F 48 19 8A
+B715:             82 7B 91 17 C4 9C 8E C6 1D A0 11 EE 5B 98 4B 7B
+B725:             66 B1 90 14 11 58 5B 98 4B 7B 8F 4E DB 63
+;
+;                 YOU ARE IN A SMALL GREY ROOM. THERE IS A PANEL WITH TWO
+;                 BUTTONS, ONE IS RED AND ONE IS BLUE.
+;
+;                                        ;     end group_AND at 0xB6E0
+
+; -------------- Routine FN_B0_PRINT_AIRLOCK_THREE_BUTTONS
+;
+B733: B0 5F                              ; Routine Number: 0xB0, Length: 0x005F
+B735:       0D 5D                        ;     COM_0D_group_AND length=0x005D (to 0xB794)
+B737:          04 04                     ;       COM_04_print_message length=0x0004 (to 0xB73D)
+B739:             52 86 5B B9           
+;
+;                 KIPSPA
+;
+B73D:          0E 08                     ;       COM_0E_group_OR length=0x0008 (to 0xB747)
+B73F:             C3                     ;         FN_C3_IS_PLAYER_LACKING_WISDOM
+B740:             04 05                  ;         COM_04_print_message length=0x0005 (to 0xB747)
+B742:                D4 47 75 8D 4B     
+;
+;                    AIRLOCK
+;
+;                                        ;       end group_OR at 0xB73D
+B747:          8B                        ;       FN_8B_PRINT_PERIOD
+B748:          04 4A                     ;       COM_04_print_message length=0x004A (to 0xB794)
+B74A:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 84 15 3B 4A
+B75A:             01 B3 DB 95 5F BE 5B B1 4B 7B 52 45 8F 48 19 8A
+B76A:             82 7B 82 17 67 B1 BF 14 49 C0 AE 9A C0 16 4B 5E
+B77A:             D4 B5 16 60 C0 16 4B 5E C4 B5 67 8E 03 EE 33 98
+B78A:             0F A0 D5 15 47 18 09 8D 5B D4
+;
+;                 YOU ARE IN A SMALL GRAY ROOM. THERE IS A PANEL WITH THREE
+;                 BUTTONS, ONE IS RED, ONE IS BLUE, AND ONE IS YELLOW.
+;
+;                                        ;     end group_AND at 0xB735
+
+; -------------- Routine FN_9D_PRINT_EXIT_YELLOW_BUTTON
+;
+B794: 9D 74                              ; Routine Number: 0x9D, Length: 0x0074
+B796:       0D 72                        ;     COM_0D_group_AND length=0x0072 (to 0xB80A)
+B798:          04 05                     ;       COM_04_print_message length=0x0005 (to 0xB79F)
+B79A:             89 4E E2 87 41        
+;
+;                 BLOKSPA
+;
+B79F:          0E 06                     ;       COM_0E_group_OR length=0x0006 (to 0xB7A7)
+B7A1:             C3                     ;         FN_C3_IS_PLAYER_LACKING_WISDOM
+B7A2:             04 03                  ;         COM_04_print_message length=0x0003 (to 0xB7A7)
+B7A4:                23 63 54           
+;
+;                    EXIT
+;
+;                                        ;       end group_OR at 0xB79F
+B7A7:          8B                        ;       FN_8B_PRINT_PERIOD
+B7A8:          04 60                     ;       COM_04_print_message length=0x0060 (to 0xB80A)
+B7AA:             C7 DE 94 14 4B 5E 83 96 5F 17 46 48 E7 14 05 4E
+B7BA:             FF 8B 82 17 2F 62 D5 15 7B 14 2E DD 89 8D BF 14
+B7CA:             49 C0 91 96 96 96 DB 72 6A A0 DB A0 DB BD 0E D0
+B7DA:             9B 8F 03 A0 5F BE 8F 16 23 49 0E D0 16 8A F4 72
+B7EA:             4B 5E C3 B5 5F 17 46 48 63 17 94 C3 4A 5E BF 9F
+B7FA:             84 14 36 A1 91 17 CB 9C 1A 98 4B 62 E7 59 9B A8
+;
+;                 YOU ARE IN A SMALL CUBICLE. THERE IS A YELLOW BUTTON ON THE
+;                 OPPOSITE WALL. ON THE NEAR WALL THERE IS A SMALL SQUARE
+;                 HOLE ABOUT TWO INCHES DEEP.
+;
+;                                        ;     end group_AND at 0xB796
+
+; -------------- Routine FN_9E_REMOVE_OVAL_FROM_ROOM
+;
+B80A: 9E 03                              ; Routine Number: 0x9E, Length: 0x0003
+B80C:       17 3E 00                     ;     COM_17_move_object_to(obj=OBJ_3E_OVAL, destination=nowhere)
+
+; -------------- Routine FN_9F_OVAL_YELLOW_BUTTON
+;
+B80F: 9F 0A                              ; Routine Number: 0x9F, Length: 0x000A
+B811:       0D 08                        ;     COM_0D_group_AND length=0x0008 (to 0xB81B)
+B813:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
+B815:          08 3F                     ;       COM_08_is_noun1(obj=OBJ_3F_YELLOW_BUTTON)
+B817:          AD                        ;       FN_AD_HANDLE_OVAL
+B818:          17 3E 3F                  ;       COM_17_move_object_to(obj=OBJ_3E_OVAL, destination=OBJ_3F_YELLOW_BUTTON)
+;                                        ;     end group_AND at 0xB811
+
+; -------------- Routine FN_A0_OVAL_RED_BUTTON
+;
+B81B: A0 0A                              ; Routine Number: 0xA0, Length: 0x000A
+B81D:       0D 08                        ;     COM_0D_group_AND length=0x0008 (to 0xB827)
+B81F:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
+B821:          08 40                     ;       COM_08_is_noun1(obj=OBJ_40_RED_BUTTON)
+B823:          AD                        ;       FN_AD_HANDLE_OVAL
+B824:          17 3E 40                  ;       COM_17_move_object_to(obj=OBJ_3E_OVAL, destination=OBJ_40_RED_BUTTON)
+;                                        ;     end group_AND at 0xB81D
+
+; -------------- Routine FN_A1_OVAL_BLUE_BUTTON
+;
+B827: A1 0A                              ; Routine Number: 0xA1, Length: 0x000A
+B829:       0D 08                        ;     COM_0D_group_AND length=0x0008 (to 0xB833)
+B82B:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
+B82D:          08 41                     ;       COM_08_is_noun1(obj=OBJ_41_BLUE_BUTTON)
+B82F:          AD                        ;       FN_AD_HANDLE_OVAL
+B830:          17 3E 41                  ;       COM_17_move_object_to(obj=OBJ_3E_OVAL, destination=OBJ_41_BLUE_BUTTON)
+;                                        ;     end group_AND at 0xB829
+
+; -------------- Routine FN_AC_HANDLE_ORANGE_BUTTON
+;
+B833: AC 0A                              ; Routine Number: 0xAC, Length: 0x000A
+B835:       0D 08                        ;     COM_0D_group_AND length=0x0008 (to 0xB83F)
+B837:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
+B839:          08 42                     ;       COM_08_is_noun1(obj=OBJ_42_ORANGE_BUTTON)
+B83B:          AD                        ;       FN_AD_HANDLE_OVAL
+B83C:          17 3E 42                  ;       COM_17_move_object_to(obj=OBJ_3E_OVAL, destination=OBJ_42_ORANGE_BUTTON)
+;                                        ;     end group_AND at 0xB835
+
+; -------------- Routine FN_AD_HANDLE_OVAL
+;
+B83F: AD 54                              ; Routine Number: 0xAD, Length: 0x0054
+B841:       0E 52                        ;     COM_0E_group_OR length=0x0052 (to 0xB895)
+B843:          0D 3B                     ;       COM_0D_group_AND length=0x003B (to 0xB880)
+B845:             14                     ;         COM_14_reverse_status next command
+B846:             37                     ;         COM_37_is_player_in_an_object()
+B847:             03 00 3E               ;         COM_03_is_located(owner=nowhere, obj=OBJ_3E_OVAL)
+B84A:             04 34                  ;         COM_04_print_message length=0x0034 (to 0xB880)
+B84C:                44 45 45 8B D1 83 CE C9 92 14 E3 A4 8B B3 03 A0
+B85C:                5F BE F3 17 F3 8C 8E 48 3A 15 50 A4 0B 5C 6B BF
+B86C:                47 48 E6 A0 63 16 95 96 6F 7C 12 58 02 B3 BE A0
+B87C:                C0 7A 5B BB        
+;
+;                    A BLACK OVAL APPEARS ON THE WALL AND EXPANDS TO ALMOST MAN
+;                    SIZED PROPORTIONS.
+;
+;                                        ;       end group_AND at 0xB843
+B880:          0D 0F                     ;       COM_0D_group_AND length=0x000F (to 0xB891)
+B882:             14                     ;         COM_14_reverse_status next command
+B883:             37                     ;         COM_37_is_player_in_an_object()
+B884:             04 0B                  ;         COM_04_print_message length=0x000B (to 0xB891)
+B886:                06 9A 90 73 CA 6A EA 48 9D 61 2E
+;
+;                    NOTHING HAPPENS.
+;
+;                                        ;       end group_AND at 0xB880
+B891:          0D 02                     ;       COM_0D_group_AND length=0x0002 (to 0xB895)
+B893:             1A                     ;         COM_1A_set_var_to_noun1()
+B894:             C1                     ;         FN_C1_PRINT_CANT_REACH_var
+;                                        ;       end group_AND at 0xB891
+;                                        ;     end group_OR at 0xB841
+
+; -------------- Routine FN_AE_PRINT_PUSH_BUTTON
+;
+B895: AE 21                              ; Routine Number: 0xAE, Length: 0x0021
+B897:       0D 1F                        ;     COM_0D_group_AND length=0x001F (to 0xB8B8)
+B899:          03 00 3E                  ;       COM_03_is_located(owner=nowhere, obj=OBJ_3E_OVAL)
+B89C:          04 1A                     ;       COM_04_print_message length=0x001A (to 0xB8B8)
+B89E:             C7 DE FB 17 F3 8C 58 72 56 5E D2 9C 5A C6 7B 14
+B8AE:             F6 4F 80 BF 06 EE 6F C5 EB DA
+;
+;                 YOU WILL HAVE TO PUSH A BUTTON, DUMMY! 
+;
+;                                        ;     end group_AND at 0xB897
+
+; -------------- Routine FN_AF_PRINT_I_SEE_NO_noun1_HERE
+;
+B8B8: AF 13                              ; Routine Number: 0xAF, Length: 0x0013
+B8BA:       0D 11                        ;     COM_0D_group_AND length=0x0011 (to 0xB8CD)
+B8BC:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
+B8BE:          04 06                     ;       COM_04_print_message length=0x0006 (to 0xB8C6)
+B8C0:             55 77 1B 60 EB 99     
+;
+;                 I SEE NO 
+;
+B8C6:          11                        ;       COM_11_print_noun1()
+B8C7:          04 04                     ;       COM_04_print_message length=0x0004 (to 0xB8CD)
+B8C9:             F4 72 DB 63           
+;
+;                 HERE. 
+;
+;                                        ;     end group_AND at 0xB8BA
+
+; -------------- Routine FN_B1_PRINT_var_CONTAINS
+;
+B8CD: B1 0E                              ; Routine Number: 0xB1, Length: 0x000E
+B8CF:       0D 0C                        ;     COM_0D_group_AND length=0x000C (to 0xB8DD)
+B8D1:          04 01                     ;       COM_04_print_message length=0x0001 (to 0xB8D4)
+B8D3:             20                    
+;
+;                  
+;
+B8D4:          AA                        ;       FN_AA_PRINT_THE_var
+B8D5:          04 06                     ;       COM_04_print_message length=0x0006 (to 0xB8DD)
+B8D7:             40 55 4B BD 8B 9A     
+;
+;                 CONTAINS 
+;
+;                                        ;     end group_AND at 0xB8CF
+
+; -------------- Routine FN_B2_PRINT_ON_var_CAN_BE_SEEN
+;
+B8DD: B2 11                              ; Routine Number: 0xB2, Length: 0x0011
+B8DF:       0D 0F                        ;     COM_0D_group_AND length=0x000F (to 0xB8F0)
+B8E1:          04 02                     ;       COM_04_print_message length=0x0002 (to 0xB8E5)
+B8E3:             C0 16                 
+;
+;                  ON
+;
+B8E5:          AA                        ;       FN_AA_PRINT_THE_var
+B8E6:          04 08                     ;       COM_04_print_message length=0x0008 (to 0xB8F0)
+B8E8:             10 53 AF 14 57 17 83 61
+;
+;                 CAN BE SEEN 
+;
+;                                        ;     end group_AND at 0xB8DF
+
+; -------------- Routine FN_B3_PRINT_DISK_ERROR
+;
+B8F0: B3 0C                              ; Routine Number: 0xB3, Length: 0x000C
+B8F2:       0D 0A                        ;     COM_0D_group_AND length=0x000A (to 0xB8FE)
+B8F4:          1F 07                     ;       COM_1F_print2 length=0x0007 (to 0xB8FD)
+B8F6:             95 5A C7 83 79 B3 52  
+;
+;                 DISK ERROR
+;
+B8FD:          25                        ;       COM_25_print_linefeed()
+;                                        ;     end group_AND at 0xB8F2
+
+; -------------- Routine FN_B4_PRINT_AND
+;
+B8FE: B4 04                              ; Routine Number: 0xB4, Length: 0x0004
+B900:       04 02                        ;     COM_04_print_message length=0x0002 (to 0xB904)
+B902:          8E 48                    
+;
+;              AND
+;
+
+; -------------- Routine FN_B5_PRINT_BY_YOUR_COMMAND
+;
+B904: B5 0D                              ; Routine Number: 0xB5, Length: 0x000D
+B906:       04 0B                        ;     COM_04_print_message length=0x000B (to 0xB913)
+B908:          7B 50 C7 DE 85 AF EF 9F 8E 48 2E
+;
+;              BY YOUR COMMAND.
+;
+
+; -------------- Routine FN_B6_PRINT_TWO_SAME_SPACE
+;
+B913: B6 3C                              ; Routine Number: 0xB6, Length: 0x003C
+B915:       04 3A                        ;     COM_04_print_message length=0x003A (to 0xB951)
+B917:          73 7B 4B 7B 73 A5 45 B8 46 48 4B DB E9 93 DB B9
+B927:          7F 4E 59 15 96 AF 2B D2 34 9E E6 5F D6 B5 D1 9C
+B937:          67 53 FB A7 5F BE 53 17 1B 92 5B B9 9B 53 73 49
+B947:          5F BE 53 17 1B 92 8F BE DB 63
+;
+;              IT IS PHYSICALLY IMPOSSIBLE FOR TWO OBJECTS TO OCCUPY THE
+;              SAME SPACE AT THE SAME TIME.
+;
+
+; -------------- Routine FN_B7_PRINT_HAVE_TO_OPEN_var
+;
+B951: B7 16                              ; Routine Number: 0xB7, Length: 0x0016
+B953:       0D 14                        ;     COM_0D_group_AND length=0x0014 (to 0xB969)
+B955:          2E 20                     ;       COM_2E_is_var_ext_attributes(value=..C.----(Closed))
+B957:          04 0E                     ;       COM_04_print_message length=0x000E (to 0xB967)
+B959:             C7 DE FB 17 F3 8C 58 72 56 5E D1 9C F0 A4
+;
+;                 YOU WILL HAVE TO OPEN
+;
+B967:          AA                        ;       FN_AA_PRINT_THE_var
+B968:          8B                        ;       FN_8B_PRINT_PERIOD
+;                                        ;     end group_AND at 0xB953
+
+; -------------- Routine FN_B8_PRINT_GARBAGE_GAMES
+;
+B969: B8 24                              ; Routine Number: 0xB8, Length: 0x0024
+B96B:       04 22                        ;     COM_04_print_message length=0x0022 (to 0xB98F)
+B96D:          C7 DE 20 16 6B A1 C7 DE D3 14 E6 96 09 15 82 17
+B97D:          73 49 14 6C C9 4C 4B 5E 96 96 F5 72 49 5E 67 48
+B98D:          6B B5                    
+;
+;              YOU KNOW YOU CAN'T DO THAT GARBAGE IN THESE GAMES! 
+;
+
+; -------------- Routine FN_B9_PRINT_JUKEBOX
+;
+B98F: B9 2E                              ; Routine Number: 0xB9, Length: 0x002E
+B991:       04 2C                        ;     COM_04_print_message length=0x002C (to 0xB9BF)
+B993:          83 7A 5F BE E1 14 CF B2 95 AF 50 BD 0B 5C 83 48
+B9A3:          8D 48 30 79 14 BC 03 47 C3 9C 07 4F 16 BC DB 72
+B9B3:          5C B8 51 5E 83 64 FF 15 A4 85 B7 A1
+;
+;              IN THE CORNER STANDS AN ANCIENT RADIO ABOUT THE SIZE OF A
+;              JUKEBOX.
+;
+
+; -------------- Routine FN_BA_OPEN_UNLOCK
+;
+B9BF: BA 65                              ; Routine Number: 0xBA, Length: 0x0065
+B9C1:       0D 63                        ;     COM_0D_group_AND length=0x0063 (to 0xBA26)
+B9C3:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0xB9C9)
+B9C5:             0A 3A                  ;         COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
+B9C7:             0A 42                  ;         COM_0A_is_input_phrase(phrase=UNLOCK u....... WITH u.......)
+;                                        ;       end group_OR at 0xB9C3
+B9C9:          0E 5B                     ;       COM_0E_group_OR length=0x005B (to 0xBA26)
+B9CB:             0D 28                  ;         COM_0D_group_AND length=0x0028 (to 0xB9F5)
+B9CD:                09 24               ;           COM_09_is_noun2(obj=OBJ_24_CROWBAR)
+B9CF:                1A                  ;           COM_1A_set_var_to_noun1()
+B9D0:                14                  ;           COM_14_reverse_status next command
+B9D1:                2E 40               ;           COM_2E_is_var_ext_attributes(value=.L..----(Locked))
+B9D3:                04 1A               ;           COM_04_print_message length=0x001A (to 0xB9EF)
+B9D5:                   EB 99 67 98 16 58 C4 9C 58 5E BE 7A 9E 61 0B EE
+B9E5:                   0B C0 06 9A 49 16 97 54 AB 57
+;
+;                       NO NEED TO BE VIOLENT, ITS NOT LOCKED! 
+;
+B9EF:                0E 04               ;           COM_0E_group_OR length=0x0004 (to 0xB9F5)
+B9F1:                   14               ;             COM_14_reverse_status next command
+B9F2:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=..C.----(Closed))
+B9F4:                   A6               ;             FN_A6_OPEN
+;                                        ;           end group_OR at 0xB9EF
+;                                        ;         end group_AND at 0xB9CB
+B9F5:             0D 1C                  ;         COM_0D_group_AND length=0x001C (to 0xBA13)
+B9F7:                09 24               ;           COM_09_is_noun2(obj=OBJ_24_CROWBAR)
+B9F9:                04 18               ;           COM_04_print_message length=0x0018 (to 0xBA13)
+B9FB:                   C7 DE 96 AF 3E A0 D5 15 89 17 D5 9C 8E 91 08 8A
+BA0B:                   A3 A0 5F BE F9 15 1B 51
+;
+;                       YOUR TOOL IS TOO SMALL FOR THE JOB. 
+;
+;                                        ;         end group_AND at 0xB9F5
+BA13:             0D 11                  ;         COM_0D_group_AND length=0x0011 (to 0xBA26)
+BA15:                A9                  ;           FN_A9_PRINT_noun2
+BA16:                04 0E               ;           COM_04_print_message length=0x000E (to 0xBA26)
+BA18:                   77 5B 05 B9 15 BC 2F 60 89 17 01 18 6F B2
+;
+;                       DOESN'T SEEM TO WORK.
+;
+;                                        ;         end group_AND at 0xBA13
+;                                        ;       end group_OR at 0xB9C9
+;                                        ;     end group_AND at 0xB9C1
+
+; -------------- Routine FN_BB_PRINT_LOOK_IN_AT
+;
+BA26: BB 23                              ; Routine Number: 0xBB, Length: 0x0023
+BA28:       0D 21                        ;     COM_0D_group_AND length=0x0021 (to 0xBA4B)
+BA2A:          0E 04                     ;       COM_0E_group_OR length=0x0004 (to 0xBA30)
+BA2C:             0A 10                  ;         COM_0A_is_input_phrase(phrase=LOOK * IN ......O.)
+BA2E:             0A 0B                  ;         COM_0A_is_input_phrase(phrase=LOOK * AT u.......)
+;                                        ;       end group_OR at 0xBA2A
+BA30:          04 19                     ;       COM_04_print_message length=0x0019 (to 0xBA4B)
+BA32:             8D 7B 89 17 C6 9C 35 49 89 17 57 17 4F 5E DA C3
+BA42:             B8 16 90 14 82 DF 91 7A 2E
+;
+;                 ITS TOO DARK TO SEE MUCH OF ANYTHING.
+;
+;                                        ;     end group_AND at 0xBA28
+
+; -------------- Routine FN_BC_SHOOT_DROP_SHELL
+;
+BA4B: BC 07                              ; Routine Number: 0xBC, Length: 0x0007
+BA4D:       0D 05                        ;     COM_0D_group_AND length=0x0005 (to 0xBA54)
+BA4F:          0A 57                     ;       COM_0A_is_input_phrase(phrase=SHOOT u....... WITH u.......)
+BA51:          09 28                     ;       COM_09_is_noun2(obj=OBJ_28_SHOTGUN)
+BA53:          10                        ;       COM_10_drop_var()
+;                                        ;     end group_AND at 0xBA4D
+
+; -------------- Routine FN_BD_PRINT_SHAGGY_CREATURE
+;
+BA54: BD 42                              ; Routine Number: 0xBD, Length: 0x0042
+BA56:       1F 40                        ;     COM_1F_print2 length=0x0040 (to 0xBA98)
+BA58:          56 45 EF 74 48 5E 46 A0 7B 17 F3 8C 1B B8 0B 6D
+BA68:          E4 14 96 5F 2F C6 FB 17 53 BE DC B0 A3 A0 1B B8
+BA78:          13 B3 BB 54 CB D2 8E 48 5E 17 CF 49 10 B2 D6 6A
+BA88:          36 60 15 71 50 BD 0B 5C 68 4D AF A0 51 18 DB C7
+;
+;              A THREE FOOT TALL SHAGGY CREATURE WITH RAZOR SHARP CLAWS
+;              AND SLAVERING TEETH STANDS BEFORE YOU.
+;
+
+; -------------- Routine FN_BE_PRINT_FORCE_FIELD
+;
+BA98: BE 26                              ; Routine Number: 0xBE, Length: 0x0026
+BA9A:       04 24                        ;     COM_04_print_message length=0x0024 (to 0xBAC0)
+BA9C:          48 45 AD A0 48 5E 2E 79 12 58 78 B1 9E 61 DB B5
+BAAC:          1B A1 79 68 49 90 50 9F D6 6A 56 72 03 15 65 B1
+BABC:          91 BE 1B 9C              
+;
+;              A FORCE FIELD PREVENTS YOU FROM GOING THAT DIRECTION. 
+;
+
+; -------------- Routine FN_BF_IS_LIQUID_REACHABLE
+;
+BAC0: BF 10                              ; Routine Number: 0xBF, Length: 0x0010
+BAC2:       0E 0E                        ;     COM_0E_group_OR length=0x000E (to 0xBAD2)
+BAC4:          36                        ;       UNKNOWN_COM_36
+BAC5:          0D 0B                     ;       COM_0D_group_AND length=0x000B (to 0xBAD2)
+BAC7:             AA                     ;         FN_AA_PRINT_THE_var
+BAC8:             04 07                  ;         COM_04_print_message length=0x0007 (to 0xBAD1)
+BACA:                4B 7B C9 54 A6 B7 2E
+;
+;                    IS CLOSED.
+;
+BAD1:             0C                     ;         COM_0C_fail()
+;                                        ;       end group_AND at 0xBAC5
+;                                        ;     end group_OR at 0xBAC2
+
+; -------------- Routine FN_C0_ARE_NOUNS_GIVEN
+;
+BAD2: C0 06                              ; Routine Number: 0xC0, Length: 0x0006
+BAD4:       0D 04                        ;     COM_0D_group_AND length=0x0004 (to 0xBADA)
+BAD6:          08 00                     ;       COM_08_is_noun1(obj=nothing)
+BAD8:          09 00                     ;       COM_09_is_noun2(obj=nothing)
+;                                        ;     end group_AND at 0xBAD4
+
+; -------------- Routine FN_C1_PRINT_CANT_REACH_var
+;
+BADA: C1 18                              ; Routine Number: 0xC1, Length: 0x0018
+BADC:       0D 16                        ;     COM_0D_group_AND length=0x0016 (to 0xBAF4)
+BADE:          04 0A                     ;       COM_04_print_message length=0x000A (to 0xBAEA)
+BAE0:             C7 DE D3 14 E6 96 2F 17 DA 46
+;
+;                 YOU CAN'T REACH
+;
+BAEA:          AA                        ;       FN_AA_PRINT_THE_var
+BAEB:          04 07                     ;       COM_04_print_message length=0x0007 (to 0xBAF4)
+BAED:             79 68 4A 90 2F 62 2E  
+;
+;                 FROM HERE.
+;
+;                                        ;     end group_AND at 0xBADC
+
+; -------------- Routine FN_C2_PRINT_CANT_BUDGE_noun1
+;
+BAF4: C2 10                              ; Routine Number: 0xC2, Length: 0x0010
+BAF6:       0D 0E                        ;     COM_0D_group_AND length=0x000E (to 0xBB06)
+BAF8:          04 0A                     ;       COM_04_print_message length=0x000A (to 0xBB04)
+BAFA:             C7 DE D3 14 E6 96 BF 14 37 5A
+;
+;                 YOU CAN'T BUDGE
+;
+BB04:          A8                        ;       FN_A8_PRINT_noun1
+BB05:          8B                        ;       FN_8B_PRINT_PERIOD
+;                                        ;     end group_AND at 0xBAF6
+
+; -------------- Routine FN_C3_IS_PLAYER_LACKING_WISDOM
+;
+BB06: C3 04                              ; Routine Number: 0xC3, Length: 0x0004
+BB08:       14                           ;     COM_14_reverse_status next command
+BB09:       03 01 80                     ;     COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_80_WISDOM)
+
+; -------------- Routine FN_C4_IS_PHRASE_AN_AFFECT
+;
+BB0C: C4 1C                              ; Routine Number: 0xC4, Length: 0x001C
+BB0E:       0E 1A                        ;     COM_0E_group_OR length=0x001A (to 0xBB2A)
+BB10:          0A 11                     ;       COM_0A_is_input_phrase(phrase=OPEN u....... * *)
+BB12:          0A 3A                     ;       COM_0A_is_input_phrase(phrase=OPEN u....... WITH u.......)
+BB14:          0A 05                     ;       COM_0A_is_input_phrase(phrase=GET ..C..... * *)
+BB16:          0A 43                     ;       COM_0A_is_input_phrase(phrase=GET ..C..... WITH ..C.....)
+BB18:          0A 09                     ;       COM_0A_is_input_phrase(phrase=ATTACK ...P.... WITH .v......)
+BB1A:          0A 27                     ;       COM_0A_is_input_phrase(phrase=KICK u....... * *)
+BB1C:          0A 2D                     ;       COM_0A_is_input_phrase(phrase=PULL * UP u.......)
+BB1E:          0A 12                     ;       COM_0A_is_input_phrase(phrase=PULL u....... * *)
+BB20:          0A 18                     ;       COM_0A_is_input_phrase(phrase=RUB u....... * *)
+BB22:          0A 0F                     ;       COM_0A_is_input_phrase(phrase=DROP ..C..... IN ......O.)
+BB24:          0A 4B                     ;       COM_0A_is_input_phrase(phrase=DROP ..C..... ON .......L)
+BB26:          0A 4D                     ;       COM_0A_is_input_phrase(phrase=FILL ......O. WITH u.......)
+BB28:          0A 40                     ;       COM_0A_is_input_phrase(phrase=CLOSE ....A... * *)
+;                                        ;     end group_OR at 0xBB0E
+
+; -------------- Routine FN_C5_ENTER_CLIMB_OUT
+;
+BB2A: C5 28                              ; Routine Number: 0xC5, Length: 0x0028
+BB2C:       0B 26 0A                     ;     COM_0B_switch length=0x0026 (to 0xBB55), function=COM_0A_is_input_phrase(phrase_num)
+BB2F:          36 0F                     ;       case COM_0A_is_input_phrase("ENTER * * *"), length=0x000F
+BB31:             0D 0D                  ;         COM_0D_group_AND length=0x000D (to 0xBB40)
+BB33:                04 09               ;           COM_04_print_message length=0x0009 (to 0xBB3E)
+BB35:                   C7 DE AF 23 99 16 CB CE 4E
+;
+;                       YOU'RE NOW IN
+;
+BB3E:                A8                  ;           FN_A8_PRINT_noun1
+BB3F:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0xBB31
+;                                        ;       end case
+BB40:          37 12                     ;       case COM_0A_is_input_phrase("CLIMB * OUT *"), length=0x0012
+BB42:             0D 10                  ;         COM_0D_group_AND length=0x0010 (to 0xBB54)
+BB44:                04 0C               ;           COM_04_print_message length=0x000C (to 0xBB52)
+BB46:                   C7 DE AF 23 99 16 D1 CE 73 C6 C3 9E
+;
+;                       YOU'RE NOW OUT OF 
+;
+BB52:                A8                  ;           FN_A8_PRINT_noun1
+BB53:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0xBB42
+;                                        ;       end case
+;                                        ;     end decode_switch at 0xBB2C
+
+; -------------- Routine FN_C6_PROMPT_FOR_DRIVE_NUMBER
+;
+BB54: C6 1E                              ; Routine Number: 0xC6, Length: 0x001E
+BB56:       0D 1C                        ;     COM_0D_group_AND length=0x001C (to 0xBB74)
+BB58:          04 18                     ;       COM_04_print_message length=0x0018 (to 0xBB72)
+BB5A:             18 B7 46 5E 5D 7B D5 15 D0 15 FA 17 DA 78 0C 15
+BB6A:             CF 7B B9 13 D7 E8 C3 12
+;
+;                 SAVE DISK IS IN WHICH DRIVE <0-3> ? 
+;
+BB72:          3B                        ;       COM_3B_wait_for_key123()
+BB73:          25                        ;       COM_25_print_linefeed()
+;                                        ;     end group_AND at 0xBB56
+
+; -------------- Routine FN_C8_BACK_TO_TOWN
+;
+BB74: C8 81 80                           ; Routine Number: 0xC8, Length: 0x0180
+BB77:       0E 81 7D                     ;     COM_0E_group_OR length=0x017D (to 0xBCF7)
+BB7A:          0D 80 8C                  ;       COM_0D_group_AND length=0x008C (to 0xBC09)
+BB7D:             03 01 91               ;         COM_03_is_located(owner=OBJ_01_PLAYER, obj=OBJ_91_ALIEN_POISON)
+BB80:             04 80 82               ;         COM_04_print_message length=0x0082 (to 0xBC05)
+BB83:                AE D0 73 8F 73 7B A7 B7 4B 94 C7 DE 63 16 DB 59
+BB93:                73 7B E4 46 E5 A0 82 17 46 5E 57 62 B1 B3 A9 15
+BBA3:                B8 D0 46 62 FA 17 83 61 5B BE 10 BC 66 49 45 DB
+BBB3:                63 B1 74 C0 4B 5E 96 96 DB 72 F5 59 3E 62 96 14
+BBC3:                45 BD A6 85 51 18 B3 C7 C7 DE F7 17 5B B1 7B A6
+BBD3:                40 B9 F1 5F DF 16 DB B1 0B A7 3F B9 43 5E C3 9A
+BBE3:                86 5B 45 5E 2E A1 0A 58 CF 49 53 17 66 CA 51 18
+BBF3:                DB C7 F6 4F 0B EE 0B BC D6 B5 2B A0 56 8B 50 5E
+BC03:                8F A1              
+;
+;                    WELL, IT SEEMS YOU MADE IT ACROSS THE DESERT! HOWEVER, WHEN
+;                    THAT NASTY CREATURE IN THE DESERT ATTACKED YOU, YOU WERE
+;                    POISONED! PERHAPS SOME ANTIDOTE COULD HAVE SAVED YOU. BUT,
+;                    IT IS TOO LATE NOW.
+;
+BC05:             1C 01                  ;         COM_1C_set_var_object(obj=OBJ_01_PLAYER)
+BC07:             1D 64                  ;         COM_1D_attack_var(points=100)
+;                                        ;       end group_AND at 0xBB7A
+BC09:          0D 80 E9                  ;       COM_0D_group_AND length=0x00E9 (to 0xBCF5)
+BC0C:             03 00 71               ;         COM_03_is_located(owner=nowhere, obj=OBJ_71_GREEN_BUTTON_WEAPON)
+BC0F:             04 80 E2               ;         COM_04_print_message length=0x00E2 (to 0xBCF4)
+BC12:                C7 DE 9B 15 5B CA 86 91 4B 5E 04 BC DD 46 89 17
+BC22:                89 17 01 D2 82 17 56 5E 80 A1 C8 B5 C5 9F 9B 15
+BC32:                5B CA 76 B1 38 C6 F3 5F 8E 48 82 17 3B 63 1F 54
+BC42:                23 62 C7 DE 95 AF D5 C3 65 62 43 F4 B3 14 C5 6A
+BC52:                3F 61 6B 4F 91 BE 8B 96 D2 B5 72 B1 2F 49 03 58
+BC62:                33 98 5F BE 4F 15 03 BA 16 CB 35 79 3B 16 F3 B9
+BC72:                46 48 93 16 2E 6D 56 F4 DB 72 94 5F 53 BE 55 72
+BC82:                AF 14 83 61 18 B7 F1 5F 8A 14 19 EE 46 61 10 EE
+BC92:                6B A1 C7 DE 77 16 F3 B9 76 B1 38 C6 89 17 82 17
+BCA2:                46 5E BE 9F EF B3 D1 B5 9B 64 34 A1 99 16 A3 B2
+BCB2:                04 8A B3 A0 AB 98 88 8C DB 63 F4 A4 52 72 33 BB
+BCC2:                C7 DE 82 17 95 7A 15 EE E7 9F 5B 59 90 14 02 A1
+BCD2:                23 62 59 C4 FB 17 F3 8C 3F 55 43 5E 33 98 C7 DE
+BCE2:                D3 14 8B 96 0F 9B 03 BA 16 6C 51 5E 17 98 71 16
+BCF2:                7F B1              
+;
+;                    YOU HAVE MADE IT BACK TO TOWN! THE TOWNS FOLK HAVE RETURNED
+;                    AND THEY CHEER YOUR SUCCESS. A BIG CELEBRATION IS PREPARED
+;                    AND THE FESTIVITIES LAST ALL NIGHT. THE EARTH HAS BEEN
+;                    SAVED! AH, WELL, NOW YOU MUST RETURN TO THE DOLDRUMS OF
+;                    YOUR NORMAL BORING LIFE. PERHAPS, YOU THINK, SOMEDAY
+;                    ANOTHER UFO WILL COME AND YOU CAN INVESTIGATE ONCE MORE.
+;
+BCF4:             24                     ;         COM_24_exit_program()
+;                                        ;       end group_AND at 0xBC09
+BCF5:          14                        ;       COM_14_reverse_status next command
+BCF6:          0C                        ;       COM_0C_fail()
+;                                        ;     end group_OR at 0xBB77
+
+; -------------- Routine FN_C9_PRINT_COMPLETED_PERCENT
+;
+BCF7: C9 23                              ; Routine Number: 0xC9, Length: 0x0023
+BCF9:       0D 21                        ;     COM_0D_group_AND length=0x0021 (to 0xBD1C)
+BCFB:          1F 0C                     ;       COM_1F_print2 length=0x000C (to 0xBD09)
+BCFD:             C7 DE 9B 15 5B CA 3F 55 FF A5 E6 BD
+;
+;                 YOU HAVE COMPLETED
+;
+BD09:          26                        ;       COM_26_print_score()
+BD0A:          1F 10                     ;       COM_1F_print2 length=0x0010 (to 0xBD1C)
+BD0C:             F4 A4 B0 53 11 BC 9B 64 34 A1 6B 16 DB B9 27 A0
+;
+;                 PERCENT OF YOUR MISSION.
+;
+;                                        ;     end group_AND at 0xBCF9
+
+; -------------- Routine FN_CA_DIE_ENERGY_BEAM
+;
+BD1C: CA 50                              ; Routine Number: 0xCA, Length: 0x0050
+BD1E:       0D 4E                        ;     COM_0D_group_AND length=0x004E (to 0xBD6E)
+BD20:          25                        ;       COM_25_print_linefeed()
+BD21:          25                        ;       COM_25_print_linefeed()
+BD22:          1F 46                     ;       COM_1F_print2 length=0x0046 (to 0xBD6A)
+BD24:             26 BA F0 59 1E 8F 5C 15 DB 9F A7 B7 D0 92 D3 6D
+BD34:             99 16 1F D1 7E B1 90 14 30 15 31 62 44 DB 8F 5F
+BD44:             30 15 6E CA 5F A0 DB B5 19 A1 51 18 23 C6 74 CA
+BD54:             4E DB 4F 79 D5 15 EF 16 B7 B1 08 58 FF B2 51 18
+BD64:             23 C6 F6 4E EB DA     
+;
+;                 SUDDENLY, FROM SEEMINGLY NOWHERE, AN ENERGY BEAM ENVELOPES
+;                 YOU! YOUR VERY LIFE IS PURGED FROM YOUR BODY!
+;
+BD6A:          1C 01                     ;       COM_1C_set_var_object(obj=OBJ_01_PLAYER)
+BD6C:          1D 64                     ;       COM_1D_attack_var(points=100)
+;                                        ;     end group_AND at 0xBD1E
+
