@@ -1,0 +1,2948 @@
+1   :     -None  ---- None
+2   :     -None  ---- None
+3   :     -None  ---- None
+4   :     -None  ---- None
+5   :     -None  ---- None
+6   :     -None  ---- None
+7   :     -None  ---- None
+8   :     -None  ---- None
+9   :     -None  ---- None
+10  :     -None  ---- None
+11  :     -None  ---- None
+12  :     -None  ---- None
+13  :     -None  ---- None
+14  :     -None  ---- None
+15  :     -None  ---- None
+16  :     -None  ---- None
+17  :     -None  ---- None
+18  :     -None  ---- None
+19  :     -None  ---- None
+20  :     -None  ---- None
+21  :     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+22  :     -LOGICAL DSEEN,BLKLIN,HINTED,YES,START  ---- LOGICAL DSEEN,BLKLIN,HINTED,YES,START
+23  :     -None  ---- None
+24  :     -COMMON /TXTCOM/ RTEXT,LINES  ---- COMMON /TXTCOM/ RTEXT,LINES
+25  :     -COMMON /BLKCOM/ BLKLIN  ---- COMMON /BLKCOM/ BLKLIN
+26  :     -COMMON /VOCCOM/ KTAB,ATAB,TABSIZ  ---- COMMON /VOCCOM/ KTAB,ATAB,TABSIZ
+27  :     -COMMON /PLACOM/ ATLOC,LINK,PLACE,FIXED,HOLDNG  ---- COMMON /PLACOM/ ATLOC,LINK,PLACE,FIXED,HOLDNG
+28  :     -COMMON /MTXCOM/ MTEXT  ---- COMMON /MTXCOM/ MTEXT
+29  :     -COMMON /PTXCOM/ PTEXT  ---- COMMON /PTXCOM/ PTEXT
+30  :     -COMMON /ABBCOM/ ABB  ---- COMMON /ABBCOM/ ABB
+31  :     -COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME,  ---- COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME,SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP
+32  :     1SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP  ---- SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP
+33  :     -None  ---- None
+34  :     -DIMENSION LINES(9650)  ---- DIMENSION LINES(9650)
+35  :     -DIMENSION TRAVEL(750)  ---- DIMENSION TRAVEL(750)
+36  :     -DIMENSION KTAB(300),ATAB(300)  ---- DIMENSION KTAB(300),ATAB(300)
+37  :     -DIMENSION LTEXT(150),STEXT(150),KEY(150),COND(150),ABB(150),  ---- DIMENSION LTEXT(150),STEXT(150),KEY(150),COND(150),ABB(150),ATLOC(150)
+38  :     1ATLOC(150)  ---- ATLOC(150)
+39  :     -DIMENSION PLAC(100),PLACE(100),FIXD(100),FIXED(100),LINK(200),  ---- DIMENSION PLAC(100),PLACE(100),FIXD(100),FIXED(100),LINK(200),PTEXT(100),PROP(100)
+40  :     1PTEXT(100),PROP(100)  ---- PTEXT(100),PROP(100)
+41  :     -DIMENSION ACTSPK(35)  ---- DIMENSION ACTSPK(35)
+42  :     -DIMENSION RTEXT(205)  ---- DIMENSION RTEXT(205)
+43  :     -DIMENSION CTEXT(12),CVAL(12)  ---- DIMENSION CTEXT(12),CVAL(12)
+44  :     -DIMENSION HINTLC(20),HINTED(20),HINTS(20,4)  ---- DIMENSION HINTLC(20),HINTED(20),HINTS(20,4)
+45  :     -DIMENSION MTEXT(35)  ---- DIMENSION MTEXT(35)
+46  :     -DIMENSION TK(20),DSEEN(6),DLOC(6),ODLOC(6),HNAME(4)  ---- DIMENSION TK(20),DSEEN(6),DLOC(6),ODLOC(6),HNAME(4)
+47  :     -None  ---- None
+48  :     -None  ---- None
+49  :     -None  ---- None
+50  :     -None  ---- None
+51  :     -INTEGER IDONDX  ---- INTEGER IDONDX
+52  :     -None  ---- None
+53  :     -None  ---- None
+54  :     -None  ---- None
+55  :     -None  ---- None
+56  :     -None  ---- None
+57  :     -None  ---- None
+58  :     -None  ---- None
+59  :     -None  ---- None
+60  :     -None  ---- None
+61  :     -None  ---- None
+62  :     -None  ---- None
+63  :     -None  ---- None
+64  :     -None  ---- None
+65  :     -None  ---- None
+66  :     -None  ---- None
+67  :     -None  ---- None
+68  :     -None  ---- None
+69  :     -None  ---- None
+70  :     -None  ---- None
+71  :     -None  ---- None
+72  :     -None  ---- None
+73  :     -None  ---- None
+74  :     -None  ---- None
+75  :     -LOGICAL TOTING,HERE,AT,BITSET,DARK,WZDARK,LMWARN,CLOSNG,PANIC,  ---- LOGICAL TOTING,HERE,AT,BITSET,DARK,WZDARK,LMWARN,CLOSNG,PANIC,CLOSED,GAVEUP,SCORNG,DEMO,YEA
+76  :     1CLOSED,GAVEUP,SCORNG,DEMO,YEA  ---- CLOSED,GAVEUP,SCORNG,DEMO,YEA
+77  :     -None  ---- None
+78  :     -TOTING(OBJ)=PLACE(OBJ).EQ.-1  ---- TOTING(OBJ)=PLACE(OBJ).EQ.-1
+79  :     -HERE(OBJ)=PLACE(OBJ).EQ.LOC.OR.TOTING(OBJ)  ---- HERE(OBJ)=PLACE(OBJ).EQ.LOC.OR.TOTING(OBJ)
+80  :     -AT(OBJ)=PLACE(OBJ).EQ.LOC.OR.FIXED(OBJ).EQ.LOC  ---- AT(OBJ)=PLACE(OBJ).EQ.LOC.OR.FIXED(OBJ).EQ.LOC
+81  :     -LIQ2(PBOTL)=(1-PBOTL)*WATER+(PBOTL/2)*(WATER+OIL)  ---- LIQ2(PBOTL)=(1-PBOTL)*WATER+(PBOTL/2)*(WATER+OIL)
+82  :     -LIQ(DUMMY)=LIQ2(MAX0(PROP(BOTTLE),-1-PROP(BOTTLE)))  ---- LIQ(DUMMY)=LIQ2(MAX0(PROP(BOTTLE),-1-PROP(BOTTLE)))
+83  :     -LIQLOC(LOC)=LIQ2((MOD(COND(LOC)/2*2,8)-5)*MOD(COND(LOC)/4,2)+1)  ---- LIQLOC(LOC)=LIQ2((MOD(COND(LOC)/2*2,8)-5)*MOD(COND(LOC)/4,2)+1)
+84  :     -BITSET(L,N)=(COND(L).AND.SHIFT(1,N)).NE.0  ---- BITSET(L,N)=(COND(L).AND.SHIFT(1,N)).NE.0
+85  :     -FORCED(LOC)=COND(LOC).EQ.2  ---- FORCED(LOC)=COND(LOC).EQ.2
+86  :     -DARK(DUMMY)=MOD(COND(LOC),2).EQ.0.AND.(PROP(LAMP).EQ.0.OR.  ---- DARK(DUMMY)=MOD(COND(LOC),2).EQ.0.AND.(PROP(LAMP).EQ.0.OR..NOT.HERE(LAMP))
+87  :     1.NOT.HERE(LAMP))  ---- .NOT.HERE(LAMP))
+88  :     -PCT(N)=RAN(100).LT.N  ---- PCT(N)=RAN(100).LT.N
+89  :     -None  ---- None
+90  :     -DATA LINSIZ/9650/,TRVSIZ/750/,TABSIZ/300/,LOCSIZ/150/,  ---- DATA LINSIZ/9650/,TRVSIZ/750/,TABSIZ/300/,LOCSIZ/150/, VRBSIZ/35/,RTXSIZ/205/,CLSMAX/12/,HNTSIZ/20/,MAGSIZ/35/
+91  :     1 VRBSIZ/35/,RTXSIZ/205/,CLSMAX/12/,HNTSIZ/20/,MAGSIZ/35/  ----  VRBSIZ/35/,RTXSIZ/205/,CLSMAX/12/,HNTSIZ/20/,MAGSIZ/35/
+92  :     -DATA SETUP/0/,BLKLIN/.TRUE./  ---- DATA SETUP/0/,BLKLIN/.TRUE./
+93  :     -None  ---- None
+94  :     -None  ---- None
+95  :     -None  ---- None
+96  :     -None  ---- None
+97  :     -None  ---- None
+98  :     -None  ---- None
+99  :     -None  ---- None
+100 :     -None  ---- None
+101 :     -None  ---- None
+102 :     -None  ---- None
+103 :     -None  ---- None
+104 :     -None  ---- None
+105 :     -None  ---- None
+106 :     -None  ---- None
+107 :     -None  ---- None
+108 :     -None  ---- None
+109 :     -None  ---- None
+110 :     -None  ---- None
+111 :     -None  ---- None
+112 :     -None  ---- None
+113 :     -None  ---- None
+114 :     -None  ---- None
+115 :     -None  ---- None
+116 :     -None  ---- None
+117 :     -None  ---- None
+118 :     -None  ---- None
+119 :     -None  ---- None
+120 :     -None  ---- None
+121 :     -None  ---- None
+122 :     -None  ---- None
+123 :     -None  ---- None
+124 :     -None  ---- None
+125 :     -None  ---- None
+126 :     -None  ---- None
+127 :     -None  ---- None
+128 :     -None  ---- None
+129 :     -None  ---- None
+130 :     -None  ---- None
+131 :     -None  ---- None
+132 :     -None  ---- None
+133 :     -None  ---- None
+134 :     -None  ---- None
+135 :     -None  ---- None
+136 :     -None  ---- None
+137 :     -None  ---- None
+138 :     -None  ---- None
+139 :     -None  ---- None
+140 :     -None  ---- None
+141 :     -None  ---- None
+142 :     -None  ---- None
+143 :     -None  ---- None
+144 :     -None  ---- None
+145 :     -None  ---- None
+146 :     -None  ---- None
+147 :     -None  ---- None
+148 :     -None  ---- None
+149 :     -None  ---- None
+150 :     -None  ---- None
+151 :     -None  ---- None
+152 :     -None  ---- None
+153 :     -None  ---- None
+154 :     -None  ---- None
+155 :     -None  ---- None
+156 :     -None  ---- None
+157 :     -None  ---- None
+158 :     -None  ---- None
+159 :     -None  ---- None
+160 :     -None  ---- None
+161 :     -None  ---- None
+162 :     -None  ---- None
+163 :     -None  ---- None
+164 :     -None  ---- None
+165 :     -None  ---- None
+166 :     -None  ---- None
+167 :     -None  ---- None
+168 :     -None  ---- None
+169 :     -None  ---- None
+170 :     -None  ---- None
+171 :     -None  ---- None
+172 :     -None  ---- None
+173 :     -None  ---- None
+174 :     -None  ---- None
+175 :     -None  ---- None
+176 :     -None  ---- None
+177 :     -None  ---- None
+178 :     -None  ---- None
+179 :     -None  ---- None
+180 :     -None  ---- None
+181 :     -None  ---- None
+182 :     -None  ---- None
+183 :     -None  ---- None
+184 :     -None  ---- None
+185 :     -None  ---- None
+186 :     -None  ---- None
+187 :     -None  ---- None
+188 :     -None  ---- None
+189 :     -None  ---- None
+190 :     -None  ---- None
+191 :     -None  ---- None
+192 :     -None  ---- None
+193 :     -None  ---- None
+194 :     -None  ---- None
+195 :     -None  ---- None
+196 :     -None  ---- None
+197 :     -None  ---- None
+198 :     -IF(SETUP.NE.0)GOTO 1100  ---- IF(SETUP.NE.0)GOTO 1100
+199 :     -TYPE 1000  ---- TYPE 1000
+200 :1000 -FORMAT(' Initializing...')  ---- FORMAT(' Initializing...')
+201 :     -None  ---- None
+202 :     -None  ---- None
+203 :     -None  ---- None
+204 :     -None  ---- None
+205 :     -None  ---- None
+206 :     -None  ---- None
+207 :     -None  ---- None
+208 :     -None  ---- None
+209 :     -None  ---- None
+210 :     -None  ---- None
+211 :     -None  ---- None
+212 :     -DO 1001 I=1,300  ---- DO 1001 I=1,300
+213 :     -IF(I.LE.100)PTEXT(I)=0  ---- IF(I.LE.100)PTEXT(I)=0
+214 :     -IF(I.LE.RTXSIZ)RTEXT(I)=0  ---- IF(I.LE.RTXSIZ)RTEXT(I)=0
+215 :     -IF(I.LE.CLSMAX)CTEXT(I)=0  ---- IF(I.LE.CLSMAX)CTEXT(I)=0
+216 :     -IF(I.LE.MAGSIZ)MTEXT(I)=0  ---- IF(I.LE.MAGSIZ)MTEXT(I)=0
+217 :     -IF(I.GT.LOCSIZ)GOTO 1001  ---- IF(I.GT.LOCSIZ)GOTO 1001
+218 :     -STEXT(I)=0  ---- STEXT(I)=0
+219 :     -LTEXT(I)=0  ---- LTEXT(I)=0
+220 :     -COND(I)=0  ---- COND(I)=0
+221 :1001 -CONTINUE  ---- CONTINUE
+222 :     -None  ---- None
+223 :     -OPEN(UNIT=1,NAME='ADVENT',ACCESS='SEQIN')  ---- OPEN(UNIT=1,NAME='ADVENT',ACCESS='SEQIN')
+224 :     -SETUP=1  ---- SETUP=1
+225 :     -LINUSE=1  ---- LINUSE=1
+226 :     -TRVS=1  ---- TRVS=1
+227 :     -CLSSES=1  ---- CLSSES=1
+228 :     -None  ---- None
+229 :     -None  ---- None
+230 :     -None  ---- None
+231 :1002 -READ(1,1003)SECT  ---- READ(1,1003)SECT
+232 :1003 -FORMAT(G)  ---- FORMAT(G)
+233 :     -OLDLOC=-1  ---- OLDLOC=-1
+234 :     -GOTO(1100,1004,1004,1030,1040,1004,1004,1050,1060,1070,1004,  ---- GOTO(1100,1004,1004,1030,1040,1004,1004,1050,1060,1070,1004,   1080,1004) (SECT+1)
+235 :     1   1080,1004) (SECT+1)  ----    1080,1004) (SECT+1)
+236 :     -None  ---- None
+237 :     -None  ---- None
+238 :     -CALL BUG(9)  ---- CALL BUG(9)
+239 :     -None  ---- None
+240 :     -None  ---- None
+241 :     -None  ---- None
+242 :1004 -READ(1,1005)LOC,(LINES(J),J=LINUSE+1,LINUSE+14),KK  ---- READ(1,1005)LOC,(LINES(J),J=LINUSE+1,LINUSE+14),KK
+243 :1005 -FORMAT(1G,15A5)  ---- FORMAT(1G,15A5)
+244 :     -IF(KK.NE.' ')CALL BUG(0)  ---- IF(KK.NE.' ')CALL BUG(0)
+245 :     -IF(LOC.EQ.-1)GOTO 1002  ---- IF(LOC.EQ.-1)GOTO 1002
+246 :     -DO 1006 K=1,14  ---- DO 1006 K=1,14
+247 :     -KK=LINUSE+15-K  ---- KK=LINUSE+15-K
+248 :     -IF(LINES(KK).NE.' ')GOTO 1007  ---- IF(LINES(KK).NE.' ')GOTO 1007
+249 :1006 -CONTINUE  ---- CONTINUE
+250 :     -IF(LOC.EQ.0)GOTO 1004  ---- IF(LOC.EQ.0)GOTO 1004
+251 :     -None  ---- None
+252 :     -CALL BUG(1)  ---- CALL BUG(1)
+253 :1007 -LINES(LINUSE)=KK+1  ---- LINES(LINUSE)=KK+1
+254 :     -IF(LOC.EQ.OLDLOC)GOTO 1020  ---- IF(LOC.EQ.OLDLOC)GOTO 1020
+255 :     -LINES(LINUSE)=-LINES(LINUSE)  ---- LINES(LINUSE)=-LINES(LINUSE)
+256 :     -IF(SECT.EQ.12)GOTO 1013  ---- IF(SECT.EQ.12)GOTO 1013
+257 :     -IF(SECT.EQ.10)GOTO 1012  ---- IF(SECT.EQ.10)GOTO 1012
+258 :     -IF(SECT.EQ.6)GOTO 1011  ---- IF(SECT.EQ.6)GOTO 1011
+259 :     -IF(SECT.EQ.5)GOTO 1010  ---- IF(SECT.EQ.5)GOTO 1010
+260 :     -IF(SECT.EQ.1)GOTO 1008  ---- IF(SECT.EQ.1)GOTO 1008
+261 :     -None  ---- None
+262 :     -STEXT(LOC)=LINUSE  ---- STEXT(LOC)=LINUSE
+263 :     -GOTO 1020  ---- GOTO 1020
+264 :     -None  ---- None
+265 :1008 -LTEXT(LOC)=LINUSE  ---- LTEXT(LOC)=LINUSE
+266 :     -GOTO 1020  ---- GOTO 1020
+267 :     -None  ---- None
+268 :1010 -IF(LOC.GT.0.AND.LOC.LE.100)PTEXT(LOC)=LINUSE  ---- IF(LOC.GT.0.AND.LOC.LE.100)PTEXT(LOC)=LINUSE
+269 :     -GOTO 1020  ---- GOTO 1020
+270 :     -None  ---- None
+271 :1011 -IF(LOC.GT.RTXSIZ)CALL BUG(6)  ---- IF(LOC.GT.RTXSIZ)CALL BUG(6)
+272 :     -RTEXT(LOC)=LINUSE  ---- RTEXT(LOC)=LINUSE
+273 :     -GOTO 1020  ---- GOTO 1020
+274 :     -None  ---- None
+275 :1012 -CTEXT(CLSSES)=LINUSE  ---- CTEXT(CLSSES)=LINUSE
+276 :     -CVAL(CLSSES)=LOC  ---- CVAL(CLSSES)=LOC
+277 :     -CLSSES=CLSSES+1  ---- CLSSES=CLSSES+1
+278 :     -GOTO 1020  ---- GOTO 1020
+279 :     -None  ---- None
+280 :1013 -IF(LOC.GT.MAGSIZ)CALL BUG(6)  ---- IF(LOC.GT.MAGSIZ)CALL BUG(6)
+281 :     -MTEXT(LOC)=LINUSE  ---- MTEXT(LOC)=LINUSE
+282 :     -None  ---- None
+283 :1020 -LINUSE=KK+1  ---- LINUSE=KK+1
+284 :     -LINES(LINUSE)=-1  ---- LINES(LINUSE)=-1
+285 :     -OLDLOC=LOC  ---- OLDLOC=LOC
+286 :     -IF(LINUSE+14.GT.LINSIZ)CALL BUG(2)  ---- IF(LINUSE+14.GT.LINSIZ)CALL BUG(2)
+287 :     -GOTO 1004  ---- GOTO 1004
+288 :     -None  ---- None
+289 :     -None  ---- None
+290 :     -None  ---- None
+291 :     -None  ---- None
+292 :     -None  ---- None
+293 :     -None  ---- None
+294 :     -None  ---- None
+295 :1030 -READ(1,1031)LOC,NEWLOC,TK  ---- READ(1,1031)LOC,NEWLOC,TK
+296 :1031 -FORMAT(99G)  ---- FORMAT(99G)
+297 :     -IF(LOC.EQ.0)GOTO 1030  ---- IF(LOC.EQ.0)GOTO 1030
+298 :     -None  ---- None
+299 :     -IF(LOC.EQ.-1)GOTO 1002  ---- IF(LOC.EQ.-1)GOTO 1002
+300 :     -IF(KEY(LOC).NE.0)GOTO 1033  ---- IF(KEY(LOC).NE.0)GOTO 1033
+301 :     -KEY(LOC)=TRVS  ---- KEY(LOC)=TRVS
+302 :     -GOTO 1035  ---- GOTO 1035
+303 :1033 -TRAVEL(TRVS-1)=-TRAVEL(TRVS-1)  ---- TRAVEL(TRVS-1)=-TRAVEL(TRVS-1)
+304 :1035 -DO 1037 L=1,20  ---- DO 1037 L=1,20
+305 :     -IF(TK(L).EQ.0)GOTO 1039  ---- IF(TK(L).EQ.0)GOTO 1039
+306 :     -TRAVEL(TRVS)=NEWLOC*1000+TK(L)  ---- TRAVEL(TRVS)=NEWLOC*1000+TK(L)
+307 :     -TRVS=TRVS+1  ---- TRVS=TRVS+1
+308 :     -IF(TRVS.EQ.TRVSIZ)CALL BUG(3)  ---- IF(TRVS.EQ.TRVSIZ)CALL BUG(3)
+309 :1037 -CONTINUE  ---- CONTINUE
+310 :1039 -TRAVEL(TRVS-1)=-TRAVEL(TRVS-1)  ---- TRAVEL(TRVS-1)=-TRAVEL(TRVS-1)
+311 :     -GOTO 1030  ---- GOTO 1030
+312 :     -None  ---- None
+313 :     -None  ---- None
+314 :     -None  ---- None
+315 :     -None  ---- None
+316 :     -None  ---- None
+317 :     -None  ---- None
+318 :     -None  ---- None
+319 :1040 -DO 1042 TABNDX=1,TABSIZ  ---- DO 1042 TABNDX=1,TABSIZ
+320 :1043 -READ(1,1041)KTAB(TABNDX),ATAB(TABNDX)  ---- READ(1,1041)KTAB(TABNDX),ATAB(TABNDX)
+321 :1041 -FORMAT(G,A5)  ---- FORMAT(G,A5)
+322 :     -IF(KTAB(TABNDX).EQ.0)GOTO 1043  ---- IF(KTAB(TABNDX).EQ.0)GOTO 1043
+323 :     -None  ---- None
+324 :     -IF(KTAB(TABNDX).EQ.-1)GOTO 1002  ---- IF(KTAB(TABNDX).EQ.-1)GOTO 1002
+325 :1042 -ATAB(TABNDX)=ATAB(TABNDX).XOR.'PHROG'  ---- ATAB(TABNDX)=ATAB(TABNDX).XOR.'PHROG'
+326 :     -CALL BUG(4)  ---- CALL BUG(4)
+327 :     -None  ---- None
+328 :     -None  ---- None
+329 :     -None  ---- None
+330 :     -None  ---- None
+331 :     -None  ---- None
+332 :1050 -READ(1,1031)OBJ,J,K  ---- READ(1,1031)OBJ,J,K
+333 :     -IF(OBJ.EQ.-1)GOTO 1002  ---- IF(OBJ.EQ.-1)GOTO 1002
+334 :     -PLAC(OBJ)=J  ---- PLAC(OBJ)=J
+335 :     -FIXD(OBJ)=K  ---- FIXD(OBJ)=K
+336 :     -GOTO 1050  ---- GOTO 1050
+337 :     -None  ---- None
+338 :     -None  ---- None
+339 :     -None  ---- None
+340 :1060 -READ(1,1031)VERB,J  ---- READ(1,1031)VERB,J
+341 :     -IF(VERB.EQ.-1)GOTO 1002  ---- IF(VERB.EQ.-1)GOTO 1002
+342 :     -ACTSPK(VERB)=J  ---- ACTSPK(VERB)=J
+343 :     -GOTO 1060  ---- GOTO 1060
+344 :     -None  ---- None
+345 :     -None  ---- None
+346 :     -None  ---- None
+347 :1070 -READ(1,1031)K,TK  ---- READ(1,1031)K,TK
+348 :     -IF(K.EQ.-1)GOTO 1002  ---- IF(K.EQ.-1)GOTO 1002
+349 :     -DO 1071 I=1,20  ---- DO 1071 I=1,20
+350 :     -LOC=TK(I)  ---- LOC=TK(I)
+351 :     -IF(LOC.EQ.0)GOTO 1070  ---- IF(LOC.EQ.0)GOTO 1070
+352 :     -IF(BITSET(LOC,K))CALL BUG(8)  ---- IF(BITSET(LOC,K))CALL BUG(8)
+353 :1071 -COND(LOC)=COND(LOC)+SHIFT(1,K)  ---- COND(LOC)=COND(LOC)+SHIFT(1,K)
+354 :     -GOTO 1070  ---- GOTO 1070
+355 :     -None  ---- None
+356 :     -None  ---- None
+357 :     -None  ---- None
+358 :1080 -HNTMAX=0  ---- HNTMAX=0
+359 :1081 -READ(1,1031)K,TK  ---- READ(1,1031)K,TK
+360 :     -IF(K.EQ.-1)GOTO 1002  ---- IF(K.EQ.-1)GOTO 1002
+361 :     -IF(K.EQ.0)GOTO 1081  ---- IF(K.EQ.0)GOTO 1081
+362 :     -IF(K.LT.0.OR.K.GT.HNTSIZ)CALL BUG(7)  ---- IF(K.LT.0.OR.K.GT.HNTSIZ)CALL BUG(7)
+363 :     -DO 1083 I=1,4  ---- DO 1083 I=1,4
+364 :1083 -HINTS(K,I)=TK(I)  ---- HINTS(K,I)=TK(I)
+365 :     -HNTMAX=MAX0(HNTMAX,K)  ---- HNTMAX=MAX0(HNTMAX,K)
+366 :     -GOTO 1081  ---- GOTO 1081
+367 :     -None  ---- None
+368 :     -None  ---- None
+369 :     -None  ---- None
+370 :     -None  ---- None
+371 :     -None  ---- None
+372 :1100 -IF(SETUP.EQ.2)GOTO 1  ---- IF(SETUP.EQ.2)GOTO 1
+373 :     -IF(SETUP.EQ.-1)GOTO 8305  ---- IF(SETUP.EQ.-1)GOTO 8305
+374 :     -None  ---- None
+375 :     -None  ---- None
+376 :     -None  ---- None
+377 :     -None  ---- None
+378 :     -None  ---- None
+379 :     -None  ---- None
+380 :     -None  ---- None
+381 :     -None  ---- None
+382 :     -None  ---- None
+383 :     -DO 1101 I=1,100  ---- DO 1101 I=1,100
+384 :     -PLACE(I)=0  ---- PLACE(I)=0
+385 :     -PROP(I)=0  ---- PROP(I)=0
+386 :     -LINK(I)=0  ---- LINK(I)=0
+387 :1101 -LINK(I+100)=0  ---- LINK(I+100)=0
+388 :     -None  ---- None
+389 :     -DO 1102 I=1,LOCSIZ  ---- DO 1102 I=1,LOCSIZ
+390 :     -ABB(I)=0  ---- ABB(I)=0
+391 :     -IF(LTEXT(I).EQ.0.OR.KEY(I).EQ.0)GOTO 1102  ---- IF(LTEXT(I).EQ.0.OR.KEY(I).EQ.0)GOTO 1102
+392 :     -K=KEY(I)  ---- K=KEY(I)
+393 :     -IF(MOD(IABS(TRAVEL(K)),1000).EQ.1)COND(I)=2  ---- IF(MOD(IABS(TRAVEL(K)),1000).EQ.1)COND(I)=2
+394 :1102 -ATLOC(I)=0  ---- ATLOC(I)=0
+395 :     -None  ---- None
+396 :     -None  ---- None
+397 :     -None  ---- None
+398 :     -None  ---- None
+399 :     -None  ---- None
+400 :     -None  ---- None
+401 :     -None  ---- None
+402 :     -None  ---- None
+403 :     -DO 1106 I=1,100  ---- DO 1106 I=1,100
+404 :     -K=101-I  ---- K=101-I
+405 :     -IF(FIXD(K).LE.0)GOTO 1106  ---- IF(FIXD(K).LE.0)GOTO 1106
+406 :     -CALL DROP(K+100,FIXD(K))  ---- CALL DROP(K+100,FIXD(K))
+407 :     -CALL DROP(K,PLAC(K))  ---- CALL DROP(K,PLAC(K))
+408 :1106 -CONTINUE  ---- CONTINUE
+409 :     -None  ---- None
+410 :     -DO 1107 I=1,100  ---- DO 1107 I=1,100
+411 :     -K=101-I  ---- K=101-I
+412 :     -FIXED(K)=FIXD(K)  ---- FIXED(K)=FIXD(K)
+413 :1107 -IF(PLAC(K).NE.0.AND.FIXD(K).LE.0)CALL DROP(K,PLAC(K))  ---- IF(PLAC(K).NE.0.AND.FIXD(K).LE.0)CALL DROP(K,PLAC(K))
+414 :     -None  ---- None
+415 :     -None  ---- None
+416 :     -None  ---- None
+417 :     -None  ---- None
+418 :     -None  ---- None
+419 :     -None  ---- None
+420 :     -None  ---- None
+421 :     -MAXTRS=79  ---- MAXTRS=79
+422 :     -TALLY=0  ---- TALLY=0
+423 :     -TALLY2=0  ---- TALLY2=0
+424 :     -DO 1200 I=50,MAXTRS  ---- DO 1200 I=50,MAXTRS
+425 :     -IF(PTEXT(I).NE.0)PROP(I)=-1  ---- IF(PTEXT(I).NE.0)PROP(I)=-1
+426 :1200 -TALLY=TALLY-PROP(I)  ---- TALLY=TALLY-PROP(I)
+427 :     -None  ---- None
+428 :     -None  ---- None
+429 :     -None  ---- None
+430 :     -None  ---- None
+431 :     -DO 1300 I=1,HNTMAX  ---- DO 1300 I=1,HNTMAX
+432 :     -HINTED(I)=.FALSE.  ---- HINTED(I)=.FALSE.
+433 :1300 -HINTLC(I)=0  ---- HINTLC(I)=0
+434 :     -None  ---- None
+435 :     -None  ---- None
+436 :     -None  ---- None
+437 :     -KEYS=VOCAB(0+'KEYS',1)  ---- KEYS=VOCAB(0+'KEYS',1)
+438 :     -LAMP=VOCAB(0+'LAMP',1)  ---- LAMP=VOCAB(0+'LAMP',1)
+439 :     -GRATE=VOCAB(0+'GRATE',1)  ---- GRATE=VOCAB(0+'GRATE',1)
+440 :     -CAGE=VOCAB(0+'CAGE',1)  ---- CAGE=VOCAB(0+'CAGE',1)
+441 :     -ROD=VOCAB(0+'ROD',1)  ---- ROD=VOCAB(0+'ROD',1)
+442 :     -ROD2=ROD+1  ---- ROD2=ROD+1
+443 :     -STEPS=VOCAB(0+'STEPS',1)  ---- STEPS=VOCAB(0+'STEPS',1)
+444 :     -BIRD=VOCAB(0+'BIRD',1)  ---- BIRD=VOCAB(0+'BIRD',1)
+445 :     -DOOR=VOCAB(0+'DOOR',1)  ---- DOOR=VOCAB(0+'DOOR',1)
+446 :     -PILLOW=VOCAB(0+'PILLO',1)  ---- PILLOW=VOCAB(0+'PILLO',1)
+447 :     -SNAKE=VOCAB(0+'SNAKE',1)  ---- SNAKE=VOCAB(0+'SNAKE',1)
+448 :     -FISSUR=VOCAB(0+'FISSU',1)  ---- FISSUR=VOCAB(0+'FISSU',1)
+449 :     -TABLET=VOCAB(0+'TABLE',1)  ---- TABLET=VOCAB(0+'TABLE',1)
+450 :     -CLAM=VOCAB(0+'CLAM',1)  ---- CLAM=VOCAB(0+'CLAM',1)
+451 :     -OYSTER=VOCAB(0+'OYSTE',1)  ---- OYSTER=VOCAB(0+'OYSTE',1)
+452 :     -MAGZIN=VOCAB(0+'MAGAZ',1)  ---- MAGZIN=VOCAB(0+'MAGAZ',1)
+453 :     -DWARF=VOCAB(0+'DWARF',1)  ---- DWARF=VOCAB(0+'DWARF',1)
+454 :     -KNIFE=VOCAB(0+'KNIFE',1)  ---- KNIFE=VOCAB(0+'KNIFE',1)
+455 :     -FOOD=VOCAB(0+'FOOD',1)  ---- FOOD=VOCAB(0+'FOOD',1)
+456 :     -BOTTLE=VOCAB(0+'BOTTL',1)  ---- BOTTLE=VOCAB(0+'BOTTL',1)
+457 :     -WATER=VOCAB(0+'WATER',1)  ---- WATER=VOCAB(0+'WATER',1)
+458 :     -OIL=VOCAB(0+'OIL',1)  ---- OIL=VOCAB(0+'OIL',1)
+459 :     -PLANT=VOCAB(0+'PLANT',1)  ---- PLANT=VOCAB(0+'PLANT',1)
+460 :     -PLANT2=PLANT+1  ---- PLANT2=PLANT+1
+461 :     -AXE=VOCAB(0+'AXE',1)  ---- AXE=VOCAB(0+'AXE',1)
+462 :     -MIRROR=VOCAB(0+'MIRRO',1)  ---- MIRROR=VOCAB(0+'MIRRO',1)
+463 :     -DRAGON=VOCAB(0+'DRAGO',1)  ---- DRAGON=VOCAB(0+'DRAGO',1)
+464 :     -CHASM=VOCAB(0+'CHASM',1)  ---- CHASM=VOCAB(0+'CHASM',1)
+465 :     -TROLL=VOCAB(0+'TROLL',1)  ---- TROLL=VOCAB(0+'TROLL',1)
+466 :     -TROLL2=TROLL+1  ---- TROLL2=TROLL+1
+467 :     -BEAR=VOCAB(0+'BEAR',1)  ---- BEAR=VOCAB(0+'BEAR',1)
+468 :     -MESSAG=VOCAB(0+'MESSA',1)  ---- MESSAG=VOCAB(0+'MESSA',1)
+469 :     -VEND=VOCAB(0+'VENDI',1)  ---- VEND=VOCAB(0+'VENDI',1)
+470 :     -BATTER=VOCAB(0+'BATTE',1)  ---- BATTER=VOCAB(0+'BATTE',1)
+471 :     -None  ---- None
+472 :     -None  ---- None
+473 :     -None  ---- None
+474 :     -NUGGET=VOCAB(0+'GOLD',1)  ---- NUGGET=VOCAB(0+'GOLD',1)
+475 :     -COINS=VOCAB(0+'COINS',1)  ---- COINS=VOCAB(0+'COINS',1)
+476 :     -CHEST=VOCAB(0+'CHEST',1)  ---- CHEST=VOCAB(0+'CHEST',1)
+477 :     -EGGS=VOCAB(0+'EGGS',1)  ---- EGGS=VOCAB(0+'EGGS',1)
+478 :     -TRIDNT=VOCAB(0+'TRIDE',1)  ---- TRIDNT=VOCAB(0+'TRIDE',1)
+479 :     -VASE=VOCAB(0+'VASE',1)  ---- VASE=VOCAB(0+'VASE',1)
+480 :     -EMRALD=VOCAB(0+'EMERA',1)  ---- EMRALD=VOCAB(0+'EMERA',1)
+481 :     -PYRAM=VOCAB(0+'PYRAM',1)  ---- PYRAM=VOCAB(0+'PYRAM',1)
+482 :     -PEARL=VOCAB(0+'PEARL',1)  ---- PEARL=VOCAB(0+'PEARL',1)
+483 :     -RUG=VOCAB(0+'RUG',1)  ---- RUG=VOCAB(0+'RUG',1)
+484 :     -CHAIN=VOCAB(0+'CHAIN',1)  ---- CHAIN=VOCAB(0+'CHAIN',1)
+485 :     -None  ---- None
+486 :     -None  ---- None
+487 :     -None  ---- None
+488 :     -BACK=VOCAB(0+'BACK',0)  ---- BACK=VOCAB(0+'BACK',0)
+489 :     -LOOK=VOCAB(0+'LOOK',0)  ---- LOOK=VOCAB(0+'LOOK',0)
+490 :     -CAVE=VOCAB(0+'CAVE',0)  ---- CAVE=VOCAB(0+'CAVE',0)
+491 :     -NULL=VOCAB(0+'NULL',0)  ---- NULL=VOCAB(0+'NULL',0)
+492 :     -ENTRNC=VOCAB(0+'ENTRA',0)  ---- ENTRNC=VOCAB(0+'ENTRA',0)
+493 :     -DPRSSN=VOCAB(0+'DEPRE',0)  ---- DPRSSN=VOCAB(0+'DEPRE',0)
+494 :     -None  ---- None
+495 :     -None  ---- None
+496 :     -None  ---- None
+497 :     -SAY=VOCAB(0+'SAY',2)  ---- SAY=VOCAB(0+'SAY',2)
+498 :     -LOCK=VOCAB(0+'LOCK',2)  ---- LOCK=VOCAB(0+'LOCK',2)
+499 :     -THROW=VOCAB(0+'THROW',2)  ---- THROW=VOCAB(0+'THROW',2)
+500 :     -FIND=VOCAB(0+'FIND',2)  ---- FIND=VOCAB(0+'FIND',2)
+501 :     -INVENT=VOCAB(0+'INVEN',2)  ---- INVENT=VOCAB(0+'INVEN',2)
+502 :     -None  ---- None
+503 :     -None  ---- None
+504 :     -None  ---- None
+505 :     -None  ---- None
+506 :     -None  ---- None
+507 :     -None  ---- None
+508 :     -None  ---- None
+509 :     -None  ---- None
+510 :     -None  ---- None
+511 :     -None  ---- None
+512 :     -None  ---- None
+513 :     -None  ---- None
+514 :     -None  ---- None
+515 :     -None  ---- None
+516 :     -None  ---- None
+517 :     -CHLOC=114  ---- CHLOC=114
+518 :     -CHLOC2=140  ---- CHLOC2=140
+519 :     -DO 1700 I=1,6  ---- DO 1700 I=1,6
+520 :1700 -DSEEN(I)=.FALSE.  ---- DSEEN(I)=.FALSE.
+521 :     -DFLAG=0  ---- DFLAG=0
+522 :     -DLOC(1)=19  ---- DLOC(1)=19
+523 :     -DLOC(2)=27  ---- DLOC(2)=27
+524 :     -DLOC(3)=33  ---- DLOC(3)=33
+525 :     -DLOC(4)=44  ---- DLOC(4)=44
+526 :     -DLOC(5)=64  ---- DLOC(5)=64
+527 :     -DLOC(6)=CHLOC  ---- DLOC(6)=CHLOC
+528 :     -DALTLC=18  ---- DALTLC=18
+529 :     -None  ---- None
+530 :     -None  ---- None
+531 :     -None  ---- None
+532 :     -None  ---- None
+533 :     -None  ---- None
+534 :     -None  ---- None
+535 :     -None  ---- None
+536 :     -None  ---- None
+537 :     -None  ---- None
+538 :     -None  ---- None
+539 :     -None  ---- None
+540 :     -None  ---- None
+541 :     -None  ---- None
+542 :     -None  ---- None
+543 :     -None  ---- None
+544 :     -None  ---- None
+545 :     -None  ---- None
+546 :     -None  ---- None
+547 :     -TURNS=0  ---- TURNS=0
+548 :     -LMWARN=.FALSE.  ---- LMWARN=.FALSE.
+549 :     -IWEST=0  ---- IWEST=0
+550 :     -KNFLOC=0  ---- KNFLOC=0
+551 :     -DETAIL=0  ---- DETAIL=0
+552 :     -ABBNUM=5  ---- ABBNUM=5
+553 :     -DO 1800 I=0,4  ---- DO 1800 I=0,4
+554 :1800 -IF(RTEXT(2*I+81).NE.0)MAXDIE=I+1  ---- IF(RTEXT(2*I+81).NE.0)MAXDIE=I+1
+555 :     -NUMDIE=0  ---- NUMDIE=0
+556 :     -HOLDNG=0  ---- HOLDNG=0
+557 :     -DKILL=0  ---- DKILL=0
+558 :     -FOOBAR=0  ---- FOOBAR=0
+559 :     -BONUS=0  ---- BONUS=0
+560 :     -CLOCK1=30  ---- CLOCK1=30
+561 :     -CLOCK2=50  ---- CLOCK2=50
+562 :     -SAVED=0  ---- SAVED=0
+563 :     -CLOSNG=.FALSE.  ---- CLOSNG=.FALSE.
+564 :     -PANIC=.FALSE.  ---- PANIC=.FALSE.
+565 :     -CLOSED=.FALSE.  ---- CLOSED=.FALSE.
+566 :     -GAVEUP=.FALSE.  ---- GAVEUP=.FALSE.
+567 :     -SCORNG=.FALSE.  ---- SCORNG=.FALSE.
+568 :     -None  ---- None
+569 :     -None  ---- None
+570 :     -None  ---- None
+571 :     -IF(SETUP.NE.1)GOTO 1  ---- IF(SETUP.NE.1)GOTO 1
+572 :     -SETUP=2  ---- SETUP=2
+573 :     -None  ---- None
+574 :     -DO 1998 K=1,LOCSIZ  ---- DO 1998 K=1,LOCSIZ
+575 :     -KK=LOCSIZ+1-K  ---- KK=LOCSIZ+1-K
+576 :     -IF(LTEXT(KK).NE.0)GOTO 1997  ---- IF(LTEXT(KK).NE.0)GOTO 1997
+577 :1998 -CONTINUE  ---- CONTINUE
+578 :     -None  ---- None
+579 :     -OBJ=0  ---- OBJ=0
+580 :1997 -DO 1996 K=1,100  ---- DO 1996 K=1,100
+581 :1996 -IF(PTEXT(K).NE.0)OBJ=OBJ+1  ---- IF(PTEXT(K).NE.0)OBJ=OBJ+1
+582 :     -None  ---- None
+583 :     -DO 1995 K=1,TABNDX  ---- DO 1995 K=1,TABNDX
+584 :1995 -IF(KTAB(K)/1000.EQ.2)VERB=KTAB(K)-2000  ---- IF(KTAB(K)/1000.EQ.2)VERB=KTAB(K)-2000
+585 :     -None  ---- None
+586 :     -DO 1994 K=1,RTXSIZ  ---- DO 1994 K=1,RTXSIZ
+587 :     -J=RTXSIZ+1-K  ---- J=RTXSIZ+1-K
+588 :     -IF(RTEXT(J).NE.0)GOTO 1993  ---- IF(RTEXT(J).NE.0)GOTO 1993
+589 :1994 -CONTINUE  ---- CONTINUE
+590 :     -None  ---- None
+591 :1993 -DO 1992 K=1,MAGSIZ  ---- DO 1992 K=1,MAGSIZ
+592 :     -I=MAGSIZ+1-K  ---- I=MAGSIZ+1-K
+593 :     -IF(MTEXT(I).NE.0)GOTO 1991  ---- IF(MTEXT(I).NE.0)GOTO 1991
+594 :1992 -CONTINUE  ---- CONTINUE
+595 :     -None  ---- None
+596 :1991 -K=100  ---- K=100
+597 :     -TYPE 1999,LINUSE,LINSIZ,TRVS,TRVSIZ,TABNDX,TABSIZ,KK  ---- TYPE 1999,LINUSE,LINSIZ,TRVS,TRVSIZ,TABNDX,TABSIZ,KK,LOCSIZ,OBJ,K,VERB,VRBSIZ,J,RTXSIZ,CLSSES,CLSMAX,HNTMAX,HNTSIZ,I,MAGSIZ
+598 :     1,LOCSIZ,OBJ,K,VERB,VRBSIZ,J,RTXSIZ,CLSSES,CLSMAX  ---- ,LOCSIZ,OBJ,K,VERB,VRBSIZ,J,RTXSIZ,CLSSES,CLSMAX
+599 :     2,HNTMAX,HNTSIZ,I,MAGSIZ  ---- ,HNTMAX,HNTSIZ,I,MAGSIZ
+600 :1999 -FORMAT (' Table space used:'/  ---- FORMAT (' Table space used:'/' ',I6,' OF ',I6,' words of messages'/' ',I6,' OF ',I6,' travel options'/' ',I6,' OF ',I6,' vocabulary words'/' ',I6,' OF ',I6,' locations'/' ',I6,' OF ',I6,' objects'/' ',I6,' OF ',I6,' action verbs'/' ',I6,' OF ',I6,' RTEXT messages'/' ',I6,' OF ',I6,' CLASS messages'/' ',I6,' OF ',I6,' hints'/' ',I6,' OF ',I6,' MAGIC messages'/)
+601 :     1' ',I6,' OF ',I6,' words of messages'/  ---- ' ',I6,' OF ',I6,' words of messages'/
+602 :     2' ',I6,' OF ',I6,' travel options'/  ---- ' ',I6,' OF ',I6,' travel options'/
+603 :     3' ',I6,' OF ',I6,' vocabulary words'/  ---- ' ',I6,' OF ',I6,' vocabulary words'/
+604 :     4' ',I6,' OF ',I6,' locations'/  ---- ' ',I6,' OF ',I6,' locations'/
+605 :     5' ',I6,' OF ',I6,' objects'/  ---- ' ',I6,' OF ',I6,' objects'/
+606 :     6' ',I6,' OF ',I6,' action verbs'/  ---- ' ',I6,' OF ',I6,' action verbs'/
+607 :     7' ',I6,' OF ',I6,' RTEXT messages'/  ---- ' ',I6,' OF ',I6,' RTEXT messages'/
+608 :     8' ',I6,' OF ',I6,' CLASS messages'/  ---- ' ',I6,' OF ',I6,' CLASS messages'/
+609 :     9' ',I6,' OF ',I6,' hints'/  ---- ' ',I6,' OF ',I6,' hints'/
+610 :     1' ',I6,' OF ',I6,' MAGIC messages'/  ---- ' ',I6,' OF ',I6,' MAGIC messages'/
+611 :     2)  ---- )
+612 :     -None  ---- None
+613 :     -None  ---- None
+614 :     -None  ---- None
+615 :     -CALL POOF  ---- CALL POOF
+616 :     -PAUSE 'INIT Done'  ---- PAUSE 'INIT Done'
+617 :     -None  ---- None
+618 :     -None  ---- None
+619 :1    -DEMO=START(0)  ---- DEMO=START(0)
+620 :     -CALL MOTD(.FALSE.)  ---- CALL MOTD(.FALSE.)
+621 :     -I=RAN(1)  ---- I=RAN(1)
+622 :     -HINTED(3)=YES(65,1,0)  ---- HINTED(3)=YES(65,1,0)
+623 :     -NEWLOC=1  ---- NEWLOC=1
+624 :     -SETUP=3  ---- SETUP=3
+625 :     -LIMIT=330  ---- LIMIT=330
+626 :     -IF(HINTED(3))LIMIT=1000  ---- IF(HINTED(3))LIMIT=1000
+627 :     -None  ---- None
+628 :     -None  ---- None
+629 :     -None  ---- None
+630 :2    -IF(NEWLOC.GE.9.OR.NEWLOC.EQ.0.OR..NOT.CLOSNG)GOTO 71  ---- IF(NEWLOC.GE.9.OR.NEWLOC.EQ.0.OR..NOT.CLOSNG)GOTO 71
+631 :     -CALL RSPEAK(130)  ---- CALL RSPEAK(130)
+632 :     -NEWLOC=LOC  ---- NEWLOC=LOC
+633 :     -IF(.NOT.PANIC)CLOCK2=15  ---- IF(.NOT.PANIC)CLOCK2=15
+634 :     -PANIC=.TRUE.  ---- PANIC=.TRUE.
+635 :     -None  ---- None
+636 :     -None  ---- None
+637 :     -None  ---- None
+638 :     -None  ---- None
+639 :     -None  ---- None
+640 :71   -IF(NEWLOC.EQ.LOC.OR.FORCED(LOC).OR.BITSET(LOC,3))GOTO 74  ---- IF(NEWLOC.EQ.LOC.OR.FORCED(LOC).OR.BITSET(LOC,3))GOTO 74
+641 :     -DO 73 I=1,5  ---- DO 73 I=1,5
+642 :     -IF(ODLOC(I).NE.NEWLOC.OR..NOT.DSEEN(I))GOTO 73  ---- IF(ODLOC(I).NE.NEWLOC.OR..NOT.DSEEN(I))GOTO 73
+643 :     -NEWLOC=LOC  ---- NEWLOC=LOC
+644 :     -CALL RSPEAK(2)  ---- CALL RSPEAK(2)
+645 :     -GOTO 74  ---- GOTO 74
+646 :73   -CONTINUE  ---- CONTINUE
+647 :74   -LOC=NEWLOC  ---- LOC=NEWLOC
+648 :     -None  ---- None
+649 :     -None  ---- None
+650 :     -None  ---- None
+651 :     -None  ---- None
+652 :     -None  ---- None
+653 :     -None  ---- None
+654 :     -None  ---- None
+655 :     -None  ---- None
+656 :     -None  ---- None
+657 :     -None  ---- None
+658 :     -None  ---- None
+659 :     -IF(LOC.EQ.0.OR.FORCED(LOC).OR.BITSET(NEWLOC,3))GOTO 2000  ---- IF(LOC.EQ.0.OR.FORCED(LOC).OR.BITSET(NEWLOC,3))GOTO 2000
+660 :     -IF(DFLAG.NE.0)GOTO 6000  ---- IF(DFLAG.NE.0)GOTO 6000
+661 :     -IF(LOC.GE.15)DFLAG=1  ---- IF(LOC.GE.15)DFLAG=1
+662 :     -GOTO 2000  ---- GOTO 2000
+663 :     -None  ---- None
+664 :     -None  ---- None
+665 :     -None  ---- None
+666 :     -None  ---- None
+667 :6000 -IF(DFLAG.NE.1)GOTO 6010  ---- IF(DFLAG.NE.1)GOTO 6010
+668 :     -IF(LOC.LT.15.OR.PCT(95))GOTO 2000  ---- IF(LOC.LT.15.OR.PCT(95))GOTO 2000
+669 :     -DFLAG=2  ---- DFLAG=2
+670 :     -DO 6001 I=1,2  ---- DO 6001 I=1,2
+671 :     -J=1+RAN(5)  ---- J=1+RAN(5)
+672 :     -None  ---- None
+673 :6001 -IF(PCT(50).AND.SAVED.EQ.-1)DLOC(J)=0  ---- IF(PCT(50).AND.SAVED.EQ.-1)DLOC(J)=0
+674 :     -DO 6002 I=1,5  ---- DO 6002 I=1,5
+675 :     -IF(DLOC(I).EQ.LOC)DLOC(I)=DALTLC  ---- IF(DLOC(I).EQ.LOC)DLOC(I)=DALTLC
+676 :6002 -ODLOC(I)=DLOC(I)  ---- ODLOC(I)=DLOC(I)
+677 :     -CALL RSPEAK(3)  ---- CALL RSPEAK(3)
+678 :     -CALL DROP(AXE,LOC)  ---- CALL DROP(AXE,LOC)
+679 :     -GOTO 2000  ---- GOTO 2000
+680 :     -None  ---- None
+681 :     -None  ---- None
+682 :     -None  ---- None
+683 :     -None  ---- None
+684 :     -None  ---- None
+685 :     -None  ---- None
+686 :6010 -DTOTAL=0  ---- DTOTAL=0
+687 :     -ATTACK=0  ---- ATTACK=0
+688 :     -STICK=0  ---- STICK=0
+689 :     -DO 6030 I=1,6  ---- DO 6030 I=1,6
+690 :     -IF(DLOC(I).EQ.0)GOTO 6030  ---- IF(DLOC(I).EQ.0)GOTO 6030
+691 :     -J=1  ---- J=1
+692 :     -KK=DLOC(I)  ---- KK=DLOC(I)
+693 :     -KK=KEY(KK)  ---- KK=KEY(KK)
+694 :     -IF(KK.EQ.0)GOTO 6016  ---- IF(KK.EQ.0)GOTO 6016
+695 :6012 -NEWLOC=MOD(IABS(TRAVEL(KK))/1000,1000)  ---- NEWLOC=MOD(IABS(TRAVEL(KK))/1000,1000)
+696 :     -IF(NEWLOC.GT.300.OR.NEWLOC.LT.15.OR.NEWLOC.EQ.ODLOC(I)  ---- IF(NEWLOC.GT.300.OR.NEWLOC.LT.15.OR.NEWLOC.EQ.ODLOC(I).OR.(J.GT.1.AND.NEWLOC.EQ.TK(J-1)).OR.J.GE.20.OR.NEWLOC.EQ.DLOC(I).OR.FORCED(NEWLOC).OR.(I.EQ.6.AND.BITSET(NEWLOC,3)).OR.IABS(TRAVEL(KK))/1000000.EQ.100)GOTO 6014
+697 :     1.OR.(J.GT.1.AND.NEWLOC.EQ.TK(J-1)).OR.J.GE.20  ---- .OR.(J.GT.1.AND.NEWLOC.EQ.TK(J-1)).OR.J.GE.20
+698 :     2.OR.NEWLOC.EQ.DLOC(I).OR.FORCED(NEWLOC)  ---- .OR.NEWLOC.EQ.DLOC(I).OR.FORCED(NEWLOC)
+699 :     3.OR.(I.EQ.6.AND.BITSET(NEWLOC,3))  ---- .OR.(I.EQ.6.AND.BITSET(NEWLOC,3))
+700 :     4.OR.IABS(TRAVEL(KK))/1000000.EQ.100)GOTO 6014  ---- .OR.IABS(TRAVEL(KK))/1000000.EQ.100)GOTO 6014
+701 :     -TK(J)=NEWLOC  ---- TK(J)=NEWLOC
+702 :     -J=J+1  ---- J=J+1
+703 :6014 -KK=KK+1  ---- KK=KK+1
+704 :     -IF(TRAVEL(KK-1).GE.0)GOTO 6012  ---- IF(TRAVEL(KK-1).GE.0)GOTO 6012
+705 :6016 -TK(J)=ODLOC(I)  ---- TK(J)=ODLOC(I)
+706 :     -IF(J.GE.2)J=J-1  ---- IF(J.GE.2)J=J-1
+707 :     -J=1+RAN(J)  ---- J=1+RAN(J)
+708 :     -ODLOC(I)=DLOC(I)  ---- ODLOC(I)=DLOC(I)
+709 :     -DLOC(I)=TK(J)  ---- DLOC(I)=TK(J)
+710 :     -DSEEN(I)=(DSEEN(I).AND.LOC.GE.15)  ---- DSEEN(I)=(DSEEN(I).AND.LOC.GE.15).OR.(DLOC(I).EQ.LOC.OR.ODLOC(I).EQ.LOC)
+711 :     1.OR.(DLOC(I).EQ.LOC.OR.ODLOC(I).EQ.LOC)  ---- .OR.(DLOC(I).EQ.LOC.OR.ODLOC(I).EQ.LOC)
+712 :     -IF(.NOT.DSEEN(I))GOTO 6030  ---- IF(.NOT.DSEEN(I))GOTO 6030
+713 :     -DLOC(I)=LOC  ---- DLOC(I)=LOC
+714 :     -IF(I.NE.6)GOTO 6027  ---- IF(I.NE.6)GOTO 6027
+715 :     -None  ---- None
+716 :     -None  ---- None
+717 :     -None  ---- None
+718 :     -None  ---- None
+719 :     -None  ---- None
+720 :     -IF(LOC.EQ.CHLOC.OR.PROP(CHEST).GE.0)GOTO 6030  ---- IF(LOC.EQ.CHLOC.OR.PROP(CHEST).GE.0)GOTO 6030
+721 :     -K=0  ---- K=0
+722 :     -DO 6020 J=50,MAXTRS  ---- DO 6020 J=50,MAXTRS
+723 :     -None  ---- None
+724 :     -IF(J.EQ.PYRAM.AND.(LOC.EQ.PLAC(PYRAM)  ---- IF(J.EQ.PYRAM.AND.(LOC.EQ.PLAC(PYRAM).OR.LOC.EQ.PLAC(EMRALD)))GOTO 6020
+725 :     1.OR.LOC.EQ.PLAC(EMRALD)))GOTO 6020  ---- .OR.LOC.EQ.PLAC(EMRALD)))GOTO 6020
+726 :     -IDONDX=J  ---- IDONDX=J
+727 :     -IF(TOTING(IDONDX))GOTO 6022  ---- IF(TOTING(IDONDX))GOTO 6022
+728 :6020 -IF(HERE(IDONDX))K=1  ---- IF(HERE(IDONDX))K=1
+729 :     -IF(TALLY.EQ.TALLY2+1.AND.K.EQ.0.AND.PLACE(CHEST).EQ.0  ---- IF(TALLY.EQ.TALLY2+1.AND.K.EQ.0.AND.PLACE(CHEST).EQ.0.AND.HERE(LAMP).AND.PROP(LAMP).EQ.1)GOTO 6025
+730 :     1.AND.HERE(LAMP).AND.PROP(LAMP).EQ.1)GOTO 6025  ---- .AND.HERE(LAMP).AND.PROP(LAMP).EQ.1)GOTO 6025
+731 :     -IF(ODLOC(6).NE.DLOC(6).AND.PCT(20))CALL RSPEAK(127)  ---- IF(ODLOC(6).NE.DLOC(6).AND.PCT(20))CALL RSPEAK(127)
+732 :     -GOTO 6030  ---- GOTO 6030
+733 :     -None  ---- None
+734 :6022 -CALL RSPEAK(128)  ---- CALL RSPEAK(128)
+735 :     -None  ---- None
+736 :     -IF(PLACE(MESSAG).EQ.0)CALL MOVE(CHEST,CHLOC)  ---- IF(PLACE(MESSAG).EQ.0)CALL MOVE(CHEST,CHLOC)
+737 :     -CALL MOVE(MESSAG,CHLOC2)  ---- CALL MOVE(MESSAG,CHLOC2)
+738 :     -DO 6023 J=50,MAXTRS  ---- DO 6023 J=50,MAXTRS
+739 :     -IF(J.EQ.PYRAM.AND.(LOC.EQ.PLAC(PYRAM)  ---- IF(J.EQ.PYRAM.AND.(LOC.EQ.PLAC(PYRAM).OR.LOC.EQ.PLAC(EMRALD)))GOTO 6023
+740 :     1.OR.LOC.EQ.PLAC(EMRALD)))GOTO 6023  ---- .OR.LOC.EQ.PLAC(EMRALD)))GOTO 6023
+741 :     -IDONDX=J  ---- IDONDX=J
+742 :     -IF(AT(IDONDX).AND.FIXED(IDONDX).EQ.0)  ---- IF(AT(IDONDX).AND.FIXED(IDONDX).EQ.0)CALL CARRY(IDONDX,LOC)
+743 :     1CALL CARRY(IDONDX,LOC)  ---- CALL CARRY(IDONDX,LOC)
+744 :     -IF(TOTING(IDONDX))CALL DROP(IDONDX,CHLOC)  ---- IF(TOTING(IDONDX))CALL DROP(IDONDX,CHLOC)
+745 :6023 -CONTINUE  ---- CONTINUE
+746 :6024 -DLOC(6)=CHLOC  ---- DLOC(6)=CHLOC
+747 :     -ODLOC(6)=CHLOC  ---- ODLOC(6)=CHLOC
+748 :     -DSEEN(6)=.FALSE.  ---- DSEEN(6)=.FALSE.
+749 :     -GOTO 6030  ---- GOTO 6030
+750 :     -None  ---- None
+751 :6025 -CALL RSPEAK(186)  ---- CALL RSPEAK(186)
+752 :     -CALL MOVE(CHEST,CHLOC)  ---- CALL MOVE(CHEST,CHLOC)
+753 :     -CALL MOVE(MESSAG,CHLOC2)  ---- CALL MOVE(MESSAG,CHLOC2)
+754 :     -GOTO 6024  ---- GOTO 6024
+755 :     -None  ---- None
+756 :     -None  ---- None
+757 :     -None  ---- None
+758 :6027 -DTOTAL=DTOTAL+1  ---- DTOTAL=DTOTAL+1
+759 :     -IF(ODLOC(I).NE.DLOC(I))GOTO 6030  ---- IF(ODLOC(I).NE.DLOC(I))GOTO 6030
+760 :     -ATTACK=ATTACK+1  ---- ATTACK=ATTACK+1
+761 :     -IF(KNFLOC.GE.0)KNFLOC=LOC  ---- IF(KNFLOC.GE.0)KNFLOC=LOC
+762 :     -IF(RAN(1000).LT.95*(DFLAG-2))STICK=STICK+1  ---- IF(RAN(1000).LT.95*(DFLAG-2))STICK=STICK+1
+763 :6030 -CONTINUE  ---- CONTINUE
+764 :     -None  ---- None
+765 :     -None  ---- None
+766 :     -None  ---- None
+767 :     -IF(DTOTAL.EQ.0)GOTO 2000  ---- IF(DTOTAL.EQ.0)GOTO 2000
+768 :     -IF(DTOTAL.EQ.1)GOTO 75  ---- IF(DTOTAL.EQ.1)GOTO 75
+769 :     -TYPE 67,DTOTAL  ---- TYPE 67,DTOTAL
+770 :67   -FORMAT(/' There are ',I1,' threatening little dwarves in the'  ---- FORMAT(/' There are ',I1,' threatening little dwarves in the',' room with you.')
+771 :     1,' room with you.')  ---- ,' room with you.')
+772 :     -GOTO 77  ---- GOTO 77
+773 :75   -CALL RSPEAK(4)  ---- CALL RSPEAK(4)
+774 :77   -IF(ATTACK.EQ.0)GOTO 2000  ---- IF(ATTACK.EQ.0)GOTO 2000
+775 :     -IF(DFLAG.EQ.2)DFLAG=3  ---- IF(DFLAG.EQ.2)DFLAG=3
+776 :     -None  ---- None
+777 :     -IF(SAVED.NE.-1)DFLAG=20  ---- IF(SAVED.NE.-1)DFLAG=20
+778 :     -IF(ATTACK.EQ.1)GOTO 79  ---- IF(ATTACK.EQ.1)GOTO 79
+779 :     -TYPE 78,ATTACK  ---- TYPE 78,ATTACK
+780 :78   -FORMAT(/' ',I1,' of them throw knives at you!')  ---- FORMAT(/' ',I1,' of them throw knives at you!')
+781 :     -K=6  ---- K=6
+782 :82   -IF(STICK.GT.1)GOTO 83  ---- IF(STICK.GT.1)GOTO 83
+783 :     -CALL RSPEAK(K+STICK)  ---- CALL RSPEAK(K+STICK)
+784 :     -IF(STICK.EQ.0)GOTO 2000  ---- IF(STICK.EQ.0)GOTO 2000
+785 :     -GOTO 84  ---- GOTO 84
+786 :83   -TYPE 68,STICK  ---- TYPE 68,STICK
+787 :68   -FORMAT(/' ',I1,' of them get you!')  ---- FORMAT(/' ',I1,' of them get you!')
+788 :84   -OLDLC2=LOC  ---- OLDLC2=LOC
+789 :     -GOTO 99  ---- GOTO 99
+790 :     -None  ---- None
+791 :79   -CALL RSPEAK(5)  ---- CALL RSPEAK(5)
+792 :     -K=52  ---- K=52
+793 :     -GOTO 82  ---- GOTO 82
+794 :     -None  ---- None
+795 :     -None  ---- None
+796 :     -None  ---- None
+797 :     -None  ---- None
+798 :2000 -IF(LOC.EQ.0)GOTO 99  ---- IF(LOC.EQ.0)GOTO 99
+799 :     -KK=STEXT(LOC)  ---- KK=STEXT(LOC)
+800 :     -IF(MOD(ABB(LOC),ABBNUM).EQ.0.OR.KK.EQ.0)KK=LTEXT(LOC)  ---- IF(MOD(ABB(LOC),ABBNUM).EQ.0.OR.KK.EQ.0)KK=LTEXT(LOC)
+801 :     -IF(FORCED(LOC).OR..NOT.DARK(0))GOTO 2001  ---- IF(FORCED(LOC).OR..NOT.DARK(0))GOTO 2001
+802 :     -IF(WZDARK.AND.PCT(35))GOTO 90  ---- IF(WZDARK.AND.PCT(35))GOTO 90
+803 :     -KK=RTEXT(16)  ---- KK=RTEXT(16)
+804 :2001 -IF(TOTING(BEAR))CALL RSPEAK(141)  ---- IF(TOTING(BEAR))CALL RSPEAK(141)
+805 :     -CALL SPEAK(KK)  ---- CALL SPEAK(KK)
+806 :     -K=1  ---- K=1
+807 :     -IF(FORCED(LOC))GOTO 8  ---- IF(FORCED(LOC))GOTO 8
+808 :     -IF(LOC.EQ.33.AND.PCT(25).AND..NOT.CLOSNG)CALL RSPEAK(8)  ---- IF(LOC.EQ.33.AND.PCT(25).AND..NOT.CLOSNG)CALL RSPEAK(8)
+809 :     -None  ---- None
+810 :     -None  ---- None
+811 :     -None  ---- None
+812 :     -None  ---- None
+813 :     -None  ---- None
+814 :     -None  ---- None
+815 :     -None  ---- None
+816 :     -IF(DARK(0))GOTO 2012  ---- IF(DARK(0))GOTO 2012
+817 :     -ABB(LOC)=ABB(LOC)+1  ---- ABB(LOC)=ABB(LOC)+1
+818 :     -I=ATLOC(LOC)  ---- I=ATLOC(LOC)
+819 :2004 -IF(I.EQ.0)GOTO 2012  ---- IF(I.EQ.0)GOTO 2012
+820 :     -OBJ=I  ---- OBJ=I
+821 :     -IF(OBJ.GT.100)OBJ=OBJ-100  ---- IF(OBJ.GT.100)OBJ=OBJ-100
+822 :     -IF(OBJ.EQ.STEPS.AND.TOTING(NUGGET))GOTO 2008  ---- IF(OBJ.EQ.STEPS.AND.TOTING(NUGGET))GOTO 2008
+823 :     -IF(PROP(OBJ).GE.0)GOTO 2006  ---- IF(PROP(OBJ).GE.0)GOTO 2006
+824 :     -IF(CLOSED)GOTO 2008  ---- IF(CLOSED)GOTO 2008
+825 :     -PROP(OBJ)=0  ---- PROP(OBJ)=0
+826 :     -IF(OBJ.EQ.RUG.OR.OBJ.EQ.CHAIN)PROP(OBJ)=1  ---- IF(OBJ.EQ.RUG.OR.OBJ.EQ.CHAIN)PROP(OBJ)=1
+827 :     -TALLY=TALLY-1  ---- TALLY=TALLY-1
+828 :     -None  ---- None
+829 :     -IF(TALLY.EQ.TALLY2.AND.TALLY.NE.0)LIMIT=MIN0(35,LIMIT)  ---- IF(TALLY.EQ.TALLY2.AND.TALLY.NE.0)LIMIT=MIN0(35,LIMIT)
+830 :2006 -KK=PROP(OBJ)  ---- KK=PROP(OBJ)
+831 :     -IF(OBJ.EQ.STEPS.AND.LOC.EQ.FIXED(STEPS))KK=1  ---- IF(OBJ.EQ.STEPS.AND.LOC.EQ.FIXED(STEPS))KK=1
+832 :     -CALL PSPEAK(OBJ,KK)  ---- CALL PSPEAK(OBJ,KK)
+833 :2008 -I=LINK(I)  ---- I=LINK(I)
+834 :     -GOTO 2004  ---- GOTO 2004
+835 :     -None  ---- None
+836 :2009 -K=54  ---- K=54
+837 :2010 -SPK=K  ---- SPK=K
+838 :2011 -CALL RSPEAK(SPK)  ---- CALL RSPEAK(SPK)
+839 :     -None  ---- None
+840 :2012 -VERB=0  ---- VERB=0
+841 :     -OBJ=0  ---- OBJ=0
+842 :     -None  ---- None
+843 :     -None  ---- None
+844 :     -None  ---- None
+845 :     -None  ---- None
+846 :     -None  ---- None
+847 :2600 -DO 2602 HINT=4,HNTMAX  ---- DO 2602 HINT=4,HNTMAX
+848 :     -IF(HINTED(HINT))GOTO 2602  ---- IF(HINTED(HINT))GOTO 2602
+849 :     -IDONDX=HINT  ---- IDONDX=HINT
+850 :     -IF(.NOT.BITSET(LOC,IDONDX))HINTLC(HINT)=-1  ---- IF(.NOT.BITSET(LOC,IDONDX))HINTLC(HINT)=-1
+851 :     -HINTLC(HINT)=HINTLC(HINT)+1  ---- HINTLC(HINT)=HINTLC(HINT)+1
+852 :     -IF(HINTLC(HINT).GE.HINTS(HINT,1))GOTO 40000  ---- IF(HINTLC(HINT).GE.HINTS(HINT,1))GOTO 40000
+853 :2602 -CONTINUE  ---- CONTINUE
+854 :     -None  ---- None
+855 :     -None  ---- None
+856 :     -None  ---- None
+857 :     -None  ---- None
+858 :     -None  ---- None
+859 :     -None  ---- None
+860 :     -None  ---- None
+861 :     -IF(.NOT.CLOSED)GOTO 2605  ---- IF(.NOT.CLOSED)GOTO 2605
+862 :     -IF(PROP(OYSTER).LT.0.AND.TOTING(OYSTER))  ---- IF(PROP(OYSTER).LT.0.AND.TOTING(OYSTER))CALL PSPEAK(OYSTER,1)
+863 :     1CALL PSPEAK(OYSTER,1)  ---- CALL PSPEAK(OYSTER,1)
+864 :     -DO 2604 I=1,100  ---- DO 2604 I=1,100
+865 :     -IDONDX=I  ---- IDONDX=I
+866 :2604 -IF(TOTING(IDONDX).AND.PROP(IDONDX).LT.0)  ---- IF(TOTING(IDONDX).AND.PROP(IDONDX).LT.0)PROP(IDONDX)=-1-PROP(IDONDX)
+867 :     1PROP(IDONDX)=-1-PROP(IDONDX)  ---- PROP(IDONDX)=-1-PROP(IDONDX)
+868 :2605 -WZDARK=DARK(0)  ---- WZDARK=DARK(0)
+869 :     -IF(KNFLOC.GT.0.AND.KNFLOC.NE.LOC)KNFLOC=0  ---- IF(KNFLOC.GT.0.AND.KNFLOC.NE.LOC)KNFLOC=0
+870 :     -I=RAN(1)  ---- I=RAN(1)
+871 :     -CALL GETIN(WD1,WD1X,WD2,WD2X)  ---- CALL GETIN(WD1,WD1X,WD2,WD2X)
+872 :     -None  ---- None
+873 :     -None  ---- None
+874 :     -None  ---- None
+875 :     -None  ---- None
+876 :2608 -FOOBAR=MIN0(0,-FOOBAR)  ---- FOOBAR=MIN0(0,-FOOBAR)
+877 :     -IF(TURNS.EQ.0.AND.WD1.EQ.'MAGIC'.AND.WD2.EQ.'MODE')CALL MAINT  ---- IF(TURNS.EQ.0.AND.WD1.EQ.'MAGIC'.AND.WD2.EQ.'MODE')CALL MAINT
+878 :     -TURNS=TURNS+1  ---- TURNS=TURNS+1
+879 :     -IF(DEMO.AND.TURNS.GE.SHORT)GOTO 13000  ---- IF(DEMO.AND.TURNS.GE.SHORT)GOTO 13000
+880 :     -IF(VERB.EQ.SAY.AND.WD2.NE.0)VERB=0  ---- IF(VERB.EQ.SAY.AND.WD2.NE.0)VERB=0
+881 :     -IF(VERB.EQ.SAY)GOTO 4090  ---- IF(VERB.EQ.SAY)GOTO 4090
+882 :     -IF(TALLY.EQ.0.AND.LOC.GE.15.AND.LOC.NE.33)CLOCK1=CLOCK1-1  ---- IF(TALLY.EQ.0.AND.LOC.GE.15.AND.LOC.NE.33)CLOCK1=CLOCK1-1
+883 :     -IF(CLOCK1.EQ.0)GOTO 10000  ---- IF(CLOCK1.EQ.0)GOTO 10000
+884 :     -IF(CLOCK1.LT.0)CLOCK2=CLOCK2-1  ---- IF(CLOCK1.LT.0)CLOCK2=CLOCK2-1
+885 :     -IF(CLOCK2.EQ.0)GOTO 11000  ---- IF(CLOCK2.EQ.0)GOTO 11000
+886 :     -IF(PROP(LAMP).EQ.1)LIMIT=LIMIT-1  ---- IF(PROP(LAMP).EQ.1)LIMIT=LIMIT-1
+887 :     -IF(LIMIT.LE.30.AND.HERE(BATTER).AND.PROP(BATTER).EQ.0  ---- IF(LIMIT.LE.30.AND.HERE(BATTER).AND.PROP(BATTER).EQ.0.AND.HERE(LAMP))GOTO 12000
+888 :     1.AND.HERE(LAMP))GOTO 12000  ---- .AND.HERE(LAMP))GOTO 12000
+889 :     -IF(LIMIT.EQ.0)GOTO 12400  ---- IF(LIMIT.EQ.0)GOTO 12400
+890 :     -IF(LIMIT.LT.0.AND.LOC.LE.8)GOTO 12600  ---- IF(LIMIT.LT.0.AND.LOC.LE.8)GOTO 12600
+891 :     -IF(LIMIT.LE.30)GOTO 12200  ---- IF(LIMIT.LE.30)GOTO 12200
+892 :19999-K=43  ---- K=43
+893 :     -IF(LIQLOC(LOC).EQ.WATER)K=70  ---- IF(LIQLOC(LOC).EQ.WATER)K=70
+894 :     -IF(WD1.EQ.'ENTER'.AND.(WD2.EQ.'STREA'.OR.WD2.EQ.'WATER'))  ---- IF(WD1.EQ.'ENTER'.AND.(WD2.EQ.'STREA'.OR.WD2.EQ.'WATER'))GOTO 2010
+895 :     1GOTO 2010  ---- GOTO 2010
+896 :     -IF(WD1.EQ.'ENTER'.AND.WD2.NE.0)GOTO 2800  ---- IF(WD1.EQ.'ENTER'.AND.WD2.NE.0)GOTO 2800
+897 :     -IF((WD1.NE.'WATER'.AND.WD1.NE.'OIL')  ---- IF((WD1.NE.'WATER'.AND.WD1.NE.'OIL').OR.(WD2.NE.'PLANT'.AND.WD2.NE.'DOOR'))GOTO 2610
+898 :     1.OR.(WD2.NE.'PLANT'.AND.WD2.NE.'DOOR'))GOTO 2610  ---- .OR.(WD2.NE.'PLANT'.AND.WD2.NE.'DOOR'))GOTO 2610
+899 :     -IF(AT(VOCAB(WD2,1)))WD2='POUR'  ---- IF(AT(VOCAB(WD2,1)))WD2='POUR'
+900 :2610 -IF(WD1.NE.'WEST')GOTO 2630  ---- IF(WD1.NE.'WEST')GOTO 2630
+901 :     -IWEST=IWEST+1  ---- IWEST=IWEST+1
+902 :     -IF(IWEST.EQ.10)CALL RSPEAK(17)  ---- IF(IWEST.EQ.10)CALL RSPEAK(17)
+903 :2630 -I=VOCAB(WD1,-1)  ---- I=VOCAB(WD1,-1)
+904 :     -IF(I.EQ.-1)GOTO 3000  ---- IF(I.EQ.-1)GOTO 3000
+905 :     -K=MOD(I,1000)  ---- K=MOD(I,1000)
+906 :     -KQ=I/1000+1  ---- KQ=I/1000+1
+907 :     -GOTO (8,5000,4000,2010)KQ  ---- GOTO (8,5000,4000,2010)KQ
+908 :     -CALL BUG(22)  ---- CALL BUG(22)
+909 :     -None  ---- None
+910 :     -None  ---- None
+911 :     -None  ---- None
+912 :2800 -WD1=WD2  ---- WD1=WD2
+913 :     -WD1X=WD2X  ---- WD1X=WD2X
+914 :     -WD2=0  ---- WD2=0
+915 :     -GOTO 2610  ---- GOTO 2610
+916 :     -None  ---- None
+917 :     -None  ---- None
+918 :     -None  ---- None
+919 :3000 -SPK=60  ---- SPK=60
+920 :     -IF(PCT(20))SPK=61  ---- IF(PCT(20))SPK=61
+921 :     -IF(PCT(20))SPK=13  ---- IF(PCT(20))SPK=13
+922 :     -CALL RSPEAK(SPK)  ---- CALL RSPEAK(SPK)
+923 :     -GOTO 2600  ---- GOTO 2600
+924 :     -None  ---- None
+925 :     -None  ---- None
+926 :     -None  ---- None
+927 :     -None  ---- None
+928 :4000 -VERB=K  ---- VERB=K
+929 :     -SPK=ACTSPK(VERB)  ---- SPK=ACTSPK(VERB)
+930 :     -IF(WD2.NE.0.AND.VERB.NE.SAY)GOTO 2800  ---- IF(WD2.NE.0.AND.VERB.NE.SAY)GOTO 2800
+931 :     -IF(VERB.EQ.SAY)OBJ=WD2  ---- IF(VERB.EQ.SAY)OBJ=WD2
+932 :     -IF(OBJ.NE.0)GOTO 4090  ---- IF(OBJ.NE.0)GOTO 4090
+933 :     -None  ---- None
+934 :     -None  ---- None
+935 :     -None  ---- None
+936 :4080 -GOTO(8010,8000,8000,8040,2009,8040,9070,9080,8000,8000,  ---- GOTO(8010,8000,8000,8040,2009,8040,9070,9080,8000,8000,   2011,9120,9130,8140,9150,8000,8000,8180,8000,8200,   8000,9220,9230,8240,8250,8260,8270,8000,8000,8300,   8310)VERB
+937 :     1   2011,9120,9130,8140,9150,8000,8000,8180,8000,8200,  ----    2011,9120,9130,8140,9150,8000,8000,8180,8000,8200,
+938 :     2   8000,9220,9230,8240,8250,8260,8270,8000,8000,8300,  ----    8000,9220,9230,8240,8250,8260,8270,8000,8000,8300,
+939 :     3   8310)VERB  ----    8310)VERB
+940 :     -None  ---- None
+941 :     -None  ---- None
+942 :     -None  ---- None
+943 :     -None  ---- None
+944 :     -CALL BUG(23)  ---- CALL BUG(23)
+945 :     -None  ---- None
+946 :     -None  ---- None
+947 :     -None  ---- None
+948 :4090 -GOTO(9010,9020,9030,9040,2009,9040,9070,9080,9090,2011,  ---- GOTO(9010,9020,9030,9040,2009,9040,9070,9080,9090,2011,   2011,9120,9130,9140,9150,9160,9170,2011,9190,9190,   9210,9220,9230,2011,2011,2011,9270,9280,9290,2011,   2011)VERB
+949 :     1   2011,9120,9130,9140,9150,9160,9170,2011,9190,9190,  ----    2011,9120,9130,9140,9150,9160,9170,2011,9190,9190,
+950 :     2   9210,9220,9230,2011,2011,2011,9270,9280,9290,2011,  ----    9210,9220,9230,2011,2011,2011,9270,9280,9290,2011,
+951 :     3   2011)VERB  ----    2011)VERB
+952 :     -None  ---- None
+953 :     -None  ---- None
+954 :     -None  ---- None
+955 :     -None  ---- None
+956 :     -CALL BUG(24)  ---- CALL BUG(24)
+957 :     -None  ---- None
+958 :     -None  ---- None
+959 :     -None  ---- None
+960 :     -None  ---- None
+961 :     -None  ---- None
+962 :     -None  ---- None
+963 :     -None  ---- None
+964 :5000 -OBJ=K  ---- OBJ=K
+965 :     -IF(FIXED(K).NE.LOC.AND..NOT.HERE(K))GOTO 5100  ---- IF(FIXED(K).NE.LOC.AND..NOT.HERE(K))GOTO 5100
+966 :5010 -IF(WD2.NE.0)GOTO 2800  ---- IF(WD2.NE.0)GOTO 2800
+967 :     -IF(VERB.NE.0)GOTO 4090  ---- IF(VERB.NE.0)GOTO 4090
+968 :     -CALL A5TOA1(WD1,WD1X,'?',TK,K)  ---- CALL A5TOA1(WD1,WD1X,'?',TK,K)
+969 :     -TYPE 5015,(TK(I),I=1,K)  ---- TYPE 5015,(TK(I),I=1,K)
+970 :5015 -FORMAT(/' What do you want to do with the ',20A1)  ---- FORMAT(/' What do you want to do with the ',20A1)
+971 :     -GOTO 2600  ---- GOTO 2600
+972 :     -None  ---- None
+973 :5100 -IF(K.NE.GRATE)GOTO 5110  ---- IF(K.NE.GRATE)GOTO 5110
+974 :     -IF(LOC.EQ.1.OR.LOC.EQ.4.OR.LOC.EQ.7)K=DPRSSN  ---- IF(LOC.EQ.1.OR.LOC.EQ.4.OR.LOC.EQ.7)K=DPRSSN
+975 :     -IF(LOC.GT.9.AND.LOC.LT.15)K=ENTRNC  ---- IF(LOC.GT.9.AND.LOC.LT.15)K=ENTRNC
+976 :     -IF(K.NE.GRATE)GOTO 8  ---- IF(K.NE.GRATE)GOTO 8
+977 :5110 -IF(K.NE.DWARF)GOTO 5120  ---- IF(K.NE.DWARF)GOTO 5120
+978 :     -DO 5112 I=1,5  ---- DO 5112 I=1,5
+979 :     -IF(DLOC(I).EQ.LOC.AND.DFLAG.GE.2)GOTO 5010  ---- IF(DLOC(I).EQ.LOC.AND.DFLAG.GE.2)GOTO 5010
+980 :5112 -CONTINUE  ---- CONTINUE
+981 :5120 -IF((LIQ(0).EQ.K.AND.HERE(BOTTLE)).OR.K.EQ.LIQLOC(LOC))GOTO 5010  ---- IF((LIQ(0).EQ.K.AND.HERE(BOTTLE)).OR.K.EQ.LIQLOC(LOC))GOTO 5010
+982 :     -IF(OBJ.NE.PLANT.OR..NOT.AT(PLANT2).OR.PROP(PLANT2).EQ.0)GOTO 5130  ---- IF(OBJ.NE.PLANT.OR..NOT.AT(PLANT2).OR.PROP(PLANT2).EQ.0)GOTO 5130
+983 :     -OBJ=PLANT2  ---- OBJ=PLANT2
+984 :     -GOTO 5010  ---- GOTO 5010
+985 :5130 -IF(OBJ.NE.KNIFE.OR.KNFLOC.NE.LOC)GOTO 5140  ---- IF(OBJ.NE.KNIFE.OR.KNFLOC.NE.LOC)GOTO 5140
+986 :     -KNFLOC=-1  ---- KNFLOC=-1
+987 :     -SPK=116  ---- SPK=116
+988 :     -GOTO 2011  ---- GOTO 2011
+989 :5140 -IF(OBJ.NE.ROD.OR..NOT.HERE(ROD2))GOTO 5190  ---- IF(OBJ.NE.ROD.OR..NOT.HERE(ROD2))GOTO 5190
+990 :     -OBJ=ROD2  ---- OBJ=ROD2
+991 :     -GOTO 5010  ---- GOTO 5010
+992 :5190 -IF((VERB.EQ.FIND.OR.VERB.EQ.INVENT).AND.WD2.EQ.0)GOTO 5010  ---- IF((VERB.EQ.FIND.OR.VERB.EQ.INVENT).AND.WD2.EQ.0)GOTO 5010
+993 :     -CALL A5TOA1(WD1,WD1X,'here.',TK,K)  ---- CALL A5TOA1(WD1,WD1X,'here.',TK,K)
+994 :     -TYPE 5199,(TK(I),I=1,K)  ---- TYPE 5199,(TK(I),I=1,K)
+995 :5199 -FORMAT(/' I see no ',20A1)  ---- FORMAT(/' I see no ',20A1)
+996 :     -GOTO 2012  ---- GOTO 2012
+997 :     -None  ---- None
+998 :     -None  ---- None
+999 :     -None  ---- None
+1000:     -None  ---- None
+1001:     -None  ---- None
+1002:     -None  ---- None
+1003:     -None  ---- None
+1004:     -None  ---- None
+1005:8    -KK=KEY(LOC)  ---- KK=KEY(LOC)
+1006:     -NEWLOC=LOC  ---- NEWLOC=LOC
+1007:     -IF(KK.EQ.0)CALL BUG(26)  ---- IF(KK.EQ.0)CALL BUG(26)
+1008:     -IF(K.EQ.NULL)GOTO 2  ---- IF(K.EQ.NULL)GOTO 2
+1009:     -IF(K.EQ.BACK)GOTO 20  ---- IF(K.EQ.BACK)GOTO 20
+1010:     -IF(K.EQ.LOOK)GOTO 30  ---- IF(K.EQ.LOOK)GOTO 30
+1011:     -IF(K.EQ.CAVE)GOTO 40  ---- IF(K.EQ.CAVE)GOTO 40
+1012:     -OLDLC2=OLDLOC  ---- OLDLC2=OLDLOC
+1013:     -OLDLOC=LOC  ---- OLDLOC=LOC
+1014:     -None  ---- None
+1015:9    -LL=IABS(TRAVEL(KK))  ---- LL=IABS(TRAVEL(KK))
+1016:     -IF(MOD(LL,1000).EQ.1.OR.MOD(LL,1000).EQ.K)GOTO 10  ---- IF(MOD(LL,1000).EQ.1.OR.MOD(LL,1000).EQ.K)GOTO 10
+1017:     -IF(TRAVEL(KK).LT.0)GOTO 50  ---- IF(TRAVEL(KK).LT.0)GOTO 50
+1018:     -KK=KK+1  ---- KK=KK+1
+1019:     -GOTO 9  ---- GOTO 9
+1020:     -None  ---- None
+1021:10   -LL=LL/1000  ---- LL=LL/1000
+1022:11   -NEWLOC=LL/1000  ---- NEWLOC=LL/1000
+1023:     -K=MOD(NEWLOC,100)  ---- K=MOD(NEWLOC,100)
+1024:     -IF(NEWLOC.LE.300)GOTO 13  ---- IF(NEWLOC.LE.300)GOTO 13
+1025:     -IF(PROP(K).NE.NEWLOC/100-3)GOTO 16  ---- IF(PROP(K).NE.NEWLOC/100-3)GOTO 16
+1026:12   -IF(TRAVEL(KK).LT.0)CALL BUG(25)  ---- IF(TRAVEL(KK).LT.0)CALL BUG(25)
+1027:     -KK=KK+1  ---- KK=KK+1
+1028:     -NEWLOC=IABS(TRAVEL(KK))/1000  ---- NEWLOC=IABS(TRAVEL(KK))/1000
+1029:     -IF(NEWLOC.EQ.LL)GOTO 12  ---- IF(NEWLOC.EQ.LL)GOTO 12
+1030:     -LL=NEWLOC  ---- LL=NEWLOC
+1031:     -GOTO 11  ---- GOTO 11
+1032:     -None  ---- None
+1033:13   -IF(NEWLOC.LE.100)GOTO 14  ---- IF(NEWLOC.LE.100)GOTO 14
+1034:     -IF(TOTING(K).OR.(NEWLOC.GT.200.AND.AT(K)))GOTO 16  ---- IF(TOTING(K).OR.(NEWLOC.GT.200.AND.AT(K)))GOTO 16
+1035:     -GOTO 12  ---- GOTO 12
+1036:     -None  ---- None
+1037:14   -IF(NEWLOC.NE.0.AND..NOT.PCT(NEWLOC))GOTO 12  ---- IF(NEWLOC.NE.0.AND..NOT.PCT(NEWLOC))GOTO 12
+1038:16   -NEWLOC=MOD(LL,1000)  ---- NEWLOC=MOD(LL,1000)
+1039:     -IF(NEWLOC.LE.300)GOTO 2  ---- IF(NEWLOC.LE.300)GOTO 2
+1040:     -IF(NEWLOC.LE.500)GOTO 30000  ---- IF(NEWLOC.LE.500)GOTO 30000
+1041:     -CALL RSPEAK(NEWLOC-500)  ---- CALL RSPEAK(NEWLOC-500)
+1042:     -NEWLOC=LOC  ---- NEWLOC=LOC
+1043:     -GOTO 2  ---- GOTO 2
+1044:     -None  ---- None
+1045:     -None  ---- None
+1046:     -None  ---- None
+1047:     -None  ---- None
+1048:30000-NEWLOC=NEWLOC-300  ---- NEWLOC=NEWLOC-300
+1049:     -GOTO (30100,30200,30300)NEWLOC  ---- GOTO (30100,30200,30300)NEWLOC
+1050:     -CALL BUG(20)  ---- CALL BUG(20)
+1051:     -None  ---- None
+1052:     -None  ---- None
+1053:     -None  ---- None
+1054:     -None  ---- None
+1055:     -None  ---- None
+1056:30100-NEWLOC=99+100-LOC  ---- NEWLOC=99+100-LOC
+1057:     -IF(HOLDNG.EQ.0.OR.(HOLDNG.EQ.1.AND.TOTING(EMRALD)))GOTO 2  ---- IF(HOLDNG.EQ.0.OR.(HOLDNG.EQ.1.AND.TOTING(EMRALD)))GOTO 2
+1058:     -NEWLOC=LOC  ---- NEWLOC=LOC
+1059:     -CALL RSPEAK(117)  ---- CALL RSPEAK(117)
+1060:     -GOTO 2  ---- GOTO 2
+1061:     -None  ---- None
+1062:     -None  ---- None
+1063:     -None  ---- None
+1064:     -None  ---- None
+1065:     -None  ---- None
+1066:30200-CALL DROP(EMRALD,LOC)  ---- CALL DROP(EMRALD,LOC)
+1067:     -GOTO 12  ---- GOTO 12
+1068:     -None  ---- None
+1069:     -None  ---- None
+1070:     -None  ---- None
+1071:     -None  ---- None
+1072:     -None  ---- None
+1073:     -None  ---- None
+1074:     -None  ---- None
+1075:30300-IF(PROP(TROLL).NE.1)GOTO 30310  ---- IF(PROP(TROLL).NE.1)GOTO 30310
+1076:     -CALL PSPEAK(TROLL,1)  ---- CALL PSPEAK(TROLL,1)
+1077:     -PROP(TROLL)=0  ---- PROP(TROLL)=0
+1078:     -CALL MOVE(TROLL2,0)  ---- CALL MOVE(TROLL2,0)
+1079:     -CALL MOVE(TROLL2+100,0)  ---- CALL MOVE(TROLL2+100,0)
+1080:     -CALL MOVE(TROLL,PLAC(TROLL))  ---- CALL MOVE(TROLL,PLAC(TROLL))
+1081:     -CALL MOVE(TROLL+100,FIXD(TROLL))  ---- CALL MOVE(TROLL+100,FIXD(TROLL))
+1082:     -CALL JUGGLE(CHASM)  ---- CALL JUGGLE(CHASM)
+1083:     -NEWLOC=LOC  ---- NEWLOC=LOC
+1084:     -GOTO 2  ---- GOTO 2
+1085:     -None  ---- None
+1086:30310-NEWLOC=PLAC(TROLL)+FIXD(TROLL)-LOC  ---- NEWLOC=PLAC(TROLL)+FIXD(TROLL)-LOC
+1087:     -IF(PROP(TROLL).EQ.0)PROP(TROLL)=1  ---- IF(PROP(TROLL).EQ.0)PROP(TROLL)=1
+1088:     -IF(.NOT.TOTING(BEAR))GOTO 2  ---- IF(.NOT.TOTING(BEAR))GOTO 2
+1089:     -CALL RSPEAK(162)  ---- CALL RSPEAK(162)
+1090:     -PROP(CHASM)=1  ---- PROP(CHASM)=1
+1091:     -PROP(TROLL)=2  ---- PROP(TROLL)=2
+1092:     -CALL DROP(BEAR,NEWLOC)  ---- CALL DROP(BEAR,NEWLOC)
+1093:     -FIXED(BEAR)=-1  ---- FIXED(BEAR)=-1
+1094:     -PROP(BEAR)=3  ---- PROP(BEAR)=3
+1095:     -IF(PROP(SPICES).LT.0)TALLY2=TALLY2+1  ---- IF(PROP(SPICES).LT.0)TALLY2=TALLY2+1
+1096:     -OLDLC2=NEWLOC  ---- OLDLC2=NEWLOC
+1097:     -GOTO 99  ---- GOTO 99
+1098:     -None  ---- None
+1099:     -None  ---- None
+1100:     -None  ---- None
+1101:     -None  ---- None
+1102:     -None  ---- None
+1103:     -None  ---- None
+1104:20   -K=OLDLOC  ---- K=OLDLOC
+1105:     -IF(FORCED(K))K=OLDLC2  ---- IF(FORCED(K))K=OLDLC2
+1106:     -OLDLC2=OLDLOC  ---- OLDLC2=OLDLOC
+1107:     -OLDLOC=LOC  ---- OLDLOC=LOC
+1108:     -K2=0  ---- K2=0
+1109:     -IF(K.NE.LOC)GOTO 21  ---- IF(K.NE.LOC)GOTO 21
+1110:     -CALL RSPEAK(91)  ---- CALL RSPEAK(91)
+1111:     -GOTO 2  ---- GOTO 2
+1112:     -None  ---- None
+1113:21   -LL=MOD((IABS(TRAVEL(KK))/1000),1000)  ---- LL=MOD((IABS(TRAVEL(KK))/1000),1000)
+1114:     -IF(LL.EQ.K)GOTO 25  ---- IF(LL.EQ.K)GOTO 25
+1115:     -IF(LL.GT.300)GOTO 22  ---- IF(LL.GT.300)GOTO 22
+1116:     -J=KEY(LL)  ---- J=KEY(LL)
+1117:     -IF(FORCED(LL).AND.MOD((IABS(TRAVEL(J))/1000),1000).EQ.K)K2=KK  ---- IF(FORCED(LL).AND.MOD((IABS(TRAVEL(J))/1000),1000).EQ.K)K2=KK
+1118:22   -IF(TRAVEL(KK).LT.0)GOTO 23  ---- IF(TRAVEL(KK).LT.0)GOTO 23
+1119:     -KK=KK+1  ---- KK=KK+1
+1120:     -GOTO 21  ---- GOTO 21
+1121:     -None  ---- None
+1122:23   -KK=K2  ---- KK=K2
+1123:     -IF(KK.NE.0)GOTO 25  ---- IF(KK.NE.0)GOTO 25
+1124:     -CALL RSPEAK(140)  ---- CALL RSPEAK(140)
+1125:     -GOTO 2  ---- GOTO 2
+1126:     -None  ---- None
+1127:25   -K=MOD(IABS(TRAVEL(KK)),1000)  ---- K=MOD(IABS(TRAVEL(KK)),1000)
+1128:     -KK=KEY(LOC)  ---- KK=KEY(LOC)
+1129:     -GOTO 9  ---- GOTO 9
+1130:     -None  ---- None
+1131:     -None  ---- None
+1132:     -None  ---- None
+1133:     -None  ---- None
+1134:30   -IF(DETAIL.LT.3)CALL RSPEAK(15)  ---- IF(DETAIL.LT.3)CALL RSPEAK(15)
+1135:     -DETAIL=DETAIL+1  ---- DETAIL=DETAIL+1
+1136:     -WZDARK=.FALSE.  ---- WZDARK=.FALSE.
+1137:     -ABB(LOC)=0  ---- ABB(LOC)=0
+1138:     -GOTO 2  ---- GOTO 2
+1139:     -None  ---- None
+1140:     -None  ---- None
+1141:     -None  ---- None
+1142:40   -IF(LOC.LT.8)CALL RSPEAK(57)  ---- IF(LOC.LT.8)CALL RSPEAK(57)
+1143:     -IF(LOC.GE.8)CALL RSPEAK(58)  ---- IF(LOC.GE.8)CALL RSPEAK(58)
+1144:     -GOTO 2  ---- GOTO 2
+1145:     -None  ---- None
+1146:     -None  ---- None
+1147:     -None  ---- None
+1148:50   -SPK=12  ---- SPK=12
+1149:     -IF(K.GE.43.AND.K.LE.50)SPK=9  ---- IF(K.GE.43.AND.K.LE.50)SPK=9
+1150:     -IF(K.EQ.29.OR.K.EQ.30)SPK=9  ---- IF(K.EQ.29.OR.K.EQ.30)SPK=9
+1151:     -IF(K.EQ.7.OR.K.EQ.36.OR.K.EQ.37)SPK=10  ---- IF(K.EQ.7.OR.K.EQ.36.OR.K.EQ.37)SPK=10
+1152:     -IF(K.EQ.11.OR.K.EQ.19)SPK=11  ---- IF(K.EQ.11.OR.K.EQ.19)SPK=11
+1153:     -IF(VERB.EQ.FIND.OR.VERB.EQ.INVENT)SPK=59  ---- IF(VERB.EQ.FIND.OR.VERB.EQ.INVENT)SPK=59
+1154:     -IF(K.EQ.62.OR.K.EQ.65)SPK=42  ---- IF(K.EQ.62.OR.K.EQ.65)SPK=42
+1155:     -IF(K.EQ.17)SPK=80  ---- IF(K.EQ.17)SPK=80
+1156:     -CALL RSPEAK(SPK)  ---- CALL RSPEAK(SPK)
+1157:     -GOTO 2  ---- GOTO 2
+1158:     -None  ---- None
+1159:     -None  ---- None
+1160:     -None  ---- None
+1161:     -None  ---- None
+1162:     -None  ---- None
+1163:     -None  ---- None
+1164:     -None  ---- None
+1165:     -None  ---- None
+1166:     -None  ---- None
+1167:     -None  ---- None
+1168:     -None  ---- None
+1169:     -None  ---- None
+1170:     -None  ---- None
+1171:     -None  ---- None
+1172:     -None  ---- None
+1173:     -None  ---- None
+1174:     -None  ---- None
+1175:     -None  ---- None
+1176:     -None  ---- None
+1177:90   -CALL RSPEAK(23)  ---- CALL RSPEAK(23)
+1178:     -OLDLC2=LOC  ---- OLDLC2=LOC
+1179:     -None  ---- None
+1180:     -None  ---- None
+1181:     -None  ---- None
+1182:99   -IF(CLOSNG)GOTO 95  ---- IF(CLOSNG)GOTO 95
+1183:     -YEA=YES(81+NUMDIE*2,82+NUMDIE*2,54)  ---- YEA=YES(81+NUMDIE*2,82+NUMDIE*2,54)
+1184:     -NUMDIE=NUMDIE+1  ---- NUMDIE=NUMDIE+1
+1185:     -IF(NUMDIE.EQ.MAXDIE.OR..NOT.YEA)GOTO 20000  ---- IF(NUMDIE.EQ.MAXDIE.OR..NOT.YEA)GOTO 20000
+1186:     -PLACE(WATER)=0  ---- PLACE(WATER)=0
+1187:     -PLACE(OIL)=0  ---- PLACE(OIL)=0
+1188:     -IF(TOTING(LAMP))PROP(LAMP)=0  ---- IF(TOTING(LAMP))PROP(LAMP)=0
+1189:     -DO 98 J=1,100  ---- DO 98 J=1,100
+1190:     -I=101-J  ---- I=101-J
+1191:     -IF(.NOT.TOTING(I))GOTO 98  ---- IF(.NOT.TOTING(I))GOTO 98
+1192:     -K=OLDLC2  ---- K=OLDLC2
+1193:     -IF(I.EQ.LAMP)K=1  ---- IF(I.EQ.LAMP)K=1
+1194:     -CALL DROP(I,K)  ---- CALL DROP(I,K)
+1195:98   -CONTINUE  ---- CONTINUE
+1196:     -LOC=3  ---- LOC=3
+1197:     -OLDLOC=LOC  ---- OLDLOC=LOC
+1198:     -GOTO 2000  ---- GOTO 2000
+1199:     -None  ---- None
+1200:     -None  ---- None
+1201:     -None  ---- None
+1202:95   -CALL RSPEAK(131)  ---- CALL RSPEAK(131)
+1203:     -NUMDIE=NUMDIE+1  ---- NUMDIE=NUMDIE+1
+1204:     -GOTO 20000  ---- GOTO 20000
+1205:     -None  ---- None
+1206:     -None  ---- None
+1207:     -None  ---- None
+1208:     -None  ---- None
+1209:     -None  ---- None
+1210:     -None  ---- None
+1211:     -None  ---- None
+1212:     -None  ---- None
+1213:8000 -CALL A5TOA1(WD1,WD1X,'What?',TK,K)  ---- CALL A5TOA1(WD1,WD1X,'What?',TK,K)
+1214:     -TYPE 8002,(TK(I),I=1,K)  ---- TYPE 8002,(TK(I),I=1,K)
+1215:8002 -FORMAT(/' ',20A1)  ---- FORMAT(/' ',20A1)
+1216:     -OBJ=0  ---- OBJ=0
+1217:     -GOTO 2600  ---- GOTO 2600
+1218:     -None  ---- None
+1219:     -None  ---- None
+1220:     -None  ---- None
+1221:8010 -IF(ATLOC(LOC).EQ.0.OR.LINK(ATLOC(LOC)).NE.0)GOTO 8000  ---- IF(ATLOC(LOC).EQ.0.OR.LINK(ATLOC(LOC)).NE.0)GOTO 8000
+1222:     -DO 8012 I=1,5  ---- DO 8012 I=1,5
+1223:     -IF(DLOC(I).EQ.LOC.AND.DFLAG.GE.2)GOTO 8000  ---- IF(DLOC(I).EQ.LOC.AND.DFLAG.GE.2)GOTO 8000
+1224:8012 -CONTINUE  ---- CONTINUE
+1225:     -OBJ=ATLOC(LOC)  ---- OBJ=ATLOC(LOC)
+1226:     -None  ---- None
+1227:     -None  ---- None
+1228:     -None  ---- None
+1229:     -None  ---- None
+1230:     -None  ---- None
+1231:9010 -IF(TOTING(OBJ))GOTO 2011  ---- IF(TOTING(OBJ))GOTO 2011
+1232:     -SPK=25  ---- SPK=25
+1233:     -IF(OBJ.EQ.PLANT.AND.PROP(PLANT).LE.0)SPK=115  ---- IF(OBJ.EQ.PLANT.AND.PROP(PLANT).LE.0)SPK=115
+1234:     -IF(OBJ.EQ.BEAR.AND.PROP(BEAR).EQ.1)SPK=169  ---- IF(OBJ.EQ.BEAR.AND.PROP(BEAR).EQ.1)SPK=169
+1235:     -IF(OBJ.EQ.CHAIN.AND.PROP(BEAR).NE.0)SPK=170  ---- IF(OBJ.EQ.CHAIN.AND.PROP(BEAR).NE.0)SPK=170
+1236:     -IF(FIXED(OBJ).NE.0)GOTO 2011  ---- IF(FIXED(OBJ).NE.0)GOTO 2011
+1237:     -IF(OBJ.NE.WATER.AND.OBJ.NE.OIL)GOTO 9017  ---- IF(OBJ.NE.WATER.AND.OBJ.NE.OIL)GOTO 9017
+1238:     -IF(HERE(BOTTLE).AND.LIQ(0).EQ.OBJ)GOTO 9018  ---- IF(HERE(BOTTLE).AND.LIQ(0).EQ.OBJ)GOTO 9018
+1239:     -OBJ=BOTTLE  ---- OBJ=BOTTLE
+1240:     -IF(TOTING(BOTTLE).AND.PROP(BOTTLE).EQ.1)GOTO 9220  ---- IF(TOTING(BOTTLE).AND.PROP(BOTTLE).EQ.1)GOTO 9220
+1241:     -IF(PROP(BOTTLE).NE.1)SPK=105  ---- IF(PROP(BOTTLE).NE.1)SPK=105
+1242:     -IF(.NOT.TOTING(BOTTLE))SPK=104  ---- IF(.NOT.TOTING(BOTTLE))SPK=104
+1243:     -GOTO 2011  ---- GOTO 2011
+1244:9018 -OBJ=BOTTLE  ---- OBJ=BOTTLE
+1245:9017 -IF(HOLDNG.LT.7)GOTO 9016  ---- IF(HOLDNG.LT.7)GOTO 9016
+1246:     -CALL RSPEAK(92)  ---- CALL RSPEAK(92)
+1247:     -GOTO 2012  ---- GOTO 2012
+1248:9016 -IF(OBJ.NE.BIRD)GOTO 9014  ---- IF(OBJ.NE.BIRD)GOTO 9014
+1249:     -IF(PROP(BIRD).NE.0)GOTO 9014  ---- IF(PROP(BIRD).NE.0)GOTO 9014
+1250:     -IF(.NOT.TOTING(ROD))GOTO 9013  ---- IF(.NOT.TOTING(ROD))GOTO 9013
+1251:     -CALL RSPEAK(26)  ---- CALL RSPEAK(26)
+1252:     -GOTO 2012  ---- GOTO 2012
+1253:9013 -IF(TOTING(CAGE))GOTO 9015  ---- IF(TOTING(CAGE))GOTO 9015
+1254:     -CALL RSPEAK(27)  ---- CALL RSPEAK(27)
+1255:     -GOTO 2012  ---- GOTO 2012
+1256:9015 -PROP(BIRD)=1  ---- PROP(BIRD)=1
+1257:9014 -IF((OBJ.EQ.BIRD.OR.OBJ.EQ.CAGE).AND.PROP(BIRD).NE.0)  ---- IF((OBJ.EQ.BIRD.OR.OBJ.EQ.CAGE).AND.PROP(BIRD).NE.0)CALL CARRY(BIRD+CAGE-OBJ,LOC)
+1258:     1CALL CARRY(BIRD+CAGE-OBJ,LOC)  ---- CALL CARRY(BIRD+CAGE-OBJ,LOC)
+1259:     -CALL CARRY(OBJ,LOC)  ---- CALL CARRY(OBJ,LOC)
+1260:     -K=LIQ(0)  ---- K=LIQ(0)
+1261:     -IF(OBJ.EQ.BOTTLE.AND.K.NE.0)PLACE(K)=-1  ---- IF(OBJ.EQ.BOTTLE.AND.K.NE.0)PLACE(K)=-1
+1262:     -GOTO 2009  ---- GOTO 2009
+1263:     -None  ---- None
+1264:     -None  ---- None
+1265:     -None  ---- None
+1266:     -None  ---- None
+1267:     -None  ---- None
+1268:9020 -IF(TOTING(ROD2).AND.OBJ.EQ.ROD.AND..NOT.TOTING(ROD))OBJ=ROD2  ---- IF(TOTING(ROD2).AND.OBJ.EQ.ROD.AND..NOT.TOTING(ROD))OBJ=ROD2
+1269:     -IF(.NOT.TOTING(OBJ))GOTO 2011  ---- IF(.NOT.TOTING(OBJ))GOTO 2011
+1270:     -IF(OBJ.NE.BIRD.OR..NOT.HERE(SNAKE))GOTO 9024  ---- IF(OBJ.NE.BIRD.OR..NOT.HERE(SNAKE))GOTO 9024
+1271:     -CALL RSPEAK(30)  ---- CALL RSPEAK(30)
+1272:     -IF(CLOSED)GOTO 19000  ---- IF(CLOSED)GOTO 19000
+1273:     -CALL DSTROY(SNAKE)  ---- CALL DSTROY(SNAKE)
+1274:     -None  ---- None
+1275:     -PROP(SNAKE)=1  ---- PROP(SNAKE)=1
+1276:9021 -K=LIQ(0)  ---- K=LIQ(0)
+1277:     -IF(K.EQ.OBJ)OBJ=BOTTLE  ---- IF(K.EQ.OBJ)OBJ=BOTTLE
+1278:     -IF(OBJ.EQ.BOTTLE.AND.K.NE.0)PLACE(K)=0  ---- IF(OBJ.EQ.BOTTLE.AND.K.NE.0)PLACE(K)=0
+1279:     -IF(OBJ.EQ.CAGE.AND.PROP(BIRD).NE.0)CALL DROP(BIRD,LOC)  ---- IF(OBJ.EQ.CAGE.AND.PROP(BIRD).NE.0)CALL DROP(BIRD,LOC)
+1280:     -IF(OBJ.EQ.BIRD)PROP(BIRD)=0  ---- IF(OBJ.EQ.BIRD)PROP(BIRD)=0
+1281:     -CALL DROP(OBJ,LOC)  ---- CALL DROP(OBJ,LOC)
+1282:     -GOTO 2012  ---- GOTO 2012
+1283:     -None  ---- None
+1284:9024 -IF(OBJ.NE.COINS.OR..NOT.HERE(VEND))GOTO 9025  ---- IF(OBJ.NE.COINS.OR..NOT.HERE(VEND))GOTO 9025
+1285:     -CALL DSTROY(COINS)  ---- CALL DSTROY(COINS)
+1286:     -CALL DROP(BATTER,LOC)  ---- CALL DROP(BATTER,LOC)
+1287:     -CALL PSPEAK(BATTER,0)  ---- CALL PSPEAK(BATTER,0)
+1288:     -GOTO 2012  ---- GOTO 2012
+1289:     -None  ---- None
+1290:9025 -IF(OBJ.NE.BIRD.OR..NOT.AT(DRAGON).OR.PROP(DRAGON).NE.0)GOTO 9026  ---- IF(OBJ.NE.BIRD.OR..NOT.AT(DRAGON).OR.PROP(DRAGON).NE.0)GOTO 9026
+1291:     -CALL RSPEAK(154)  ---- CALL RSPEAK(154)
+1292:     -CALL DSTROY(BIRD)  ---- CALL DSTROY(BIRD)
+1293:     -PROP(BIRD)=0  ---- PROP(BIRD)=0
+1294:     -IF(PLACE(SNAKE).EQ.PLAC(SNAKE))TALLY2=TALLY2+1  ---- IF(PLACE(SNAKE).EQ.PLAC(SNAKE))TALLY2=TALLY2+1
+1295:     -GOTO 2012  ---- GOTO 2012
+1296:     -None  ---- None
+1297:9026 -IF(OBJ.NE.BEAR.OR..NOT.AT(TROLL))GOTO 9027  ---- IF(OBJ.NE.BEAR.OR..NOT.AT(TROLL))GOTO 9027
+1298:     -CALL RSPEAK(163)  ---- CALL RSPEAK(163)
+1299:     -CALL MOVE(TROLL,0)  ---- CALL MOVE(TROLL,0)
+1300:     -CALL MOVE(TROLL+100,0)  ---- CALL MOVE(TROLL+100,0)
+1301:     -CALL MOVE(TROLL2,PLAC(TROLL))  ---- CALL MOVE(TROLL2,PLAC(TROLL))
+1302:     -CALL MOVE(TROLL2+100,FIXD(TROLL))  ---- CALL MOVE(TROLL2+100,FIXD(TROLL))
+1303:     -CALL JUGGLE(CHASM)  ---- CALL JUGGLE(CHASM)
+1304:     -PROP(TROLL)=2  ---- PROP(TROLL)=2
+1305:     -GOTO 9021  ---- GOTO 9021
+1306:     -None  ---- None
+1307:9027 -IF(OBJ.EQ.VASE.AND.LOC.NE.PLAC(PILLOW))GOTO 9028  ---- IF(OBJ.EQ.VASE.AND.LOC.NE.PLAC(PILLOW))GOTO 9028
+1308:     -CALL RSPEAK(54)  ---- CALL RSPEAK(54)
+1309:     -GOTO 9021  ---- GOTO 9021
+1310:     -None  ---- None
+1311:9028 -PROP(VASE)=2  ---- PROP(VASE)=2
+1312:     -IF(AT(PILLOW))PROP(VASE)=0  ---- IF(AT(PILLOW))PROP(VASE)=0
+1313:     -CALL PSPEAK(VASE,PROP(VASE)+1)  ---- CALL PSPEAK(VASE,PROP(VASE)+1)
+1314:     -IF(PROP(VASE).NE.0)FIXED(VASE)=-1  ---- IF(PROP(VASE).NE.0)FIXED(VASE)=-1
+1315:     -GOTO 9021  ---- GOTO 9021
+1316:     -None  ---- None
+1317:     -None  ---- None
+1318:     -None  ---- None
+1319:9030 -CALL A5TOA1(WD2,WD2X,'".',TK,K)  ---- CALL A5TOA1(WD2,WD2X,'".',TK,K)
+1320:     -IF(WD2.EQ.0)CALL A5TOA1(WD1,WD1X,'".',TK,K)  ---- IF(WD2.EQ.0)CALL A5TOA1(WD1,WD1X,'".',TK,K)
+1321:     -IF(WD2.NE.0)WD1=WD2  ---- IF(WD2.NE.0)WD1=WD2
+1322:     -I=VOCAB(WD1,-1)  ---- I=VOCAB(WD1,-1)
+1323:     -IF(I.EQ.62.OR.I.EQ.65.OR.I.EQ.71.OR.I.EQ.2025)GOTO 9035  ---- IF(I.EQ.62.OR.I.EQ.65.OR.I.EQ.71.OR.I.EQ.2025)GOTO 9035
+1324:     -TYPE 9032,(TK(I),I=1,K)  ---- TYPE 9032,(TK(I),I=1,K)
+1325:9032 -FORMAT(/' Okay, "',20A1)  ---- FORMAT(/' Okay, "',20A1)
+1326:     -GOTO 2012  ---- GOTO 2012
+1327:     -None  ---- None
+1328:9035 -WD2=0  ---- WD2=0
+1329:     -OBJ=0  ---- OBJ=0
+1330:     -GOTO 2630  ---- GOTO 2630
+1331:     -None  ---- None
+1332:     -None  ---- None
+1333:     -None  ---- None
+1334:8040 -SPK=28  ---- SPK=28
+1335:     -IF(HERE(CLAM))OBJ=CLAM  ---- IF(HERE(CLAM))OBJ=CLAM
+1336:     -IF(HERE(OYSTER))OBJ=OYSTER  ---- IF(HERE(OYSTER))OBJ=OYSTER
+1337:     -IF(AT(DOOR))OBJ=DOOR  ---- IF(AT(DOOR))OBJ=DOOR
+1338:     -IF(AT(GRATE))OBJ=GRATE  ---- IF(AT(GRATE))OBJ=GRATE
+1339:     -IF(OBJ.NE.0.AND.HERE(CHAIN))GOTO 8000  ---- IF(OBJ.NE.0.AND.HERE(CHAIN))GOTO 8000
+1340:     -IF(HERE(CHAIN))OBJ=CHAIN  ---- IF(HERE(CHAIN))OBJ=CHAIN
+1341:     -IF(OBJ.EQ.0)GOTO 2011  ---- IF(OBJ.EQ.0)GOTO 2011
+1342:     -None  ---- None
+1343:     -None  ---- None
+1344:     -None  ---- None
+1345:9040 -IF(OBJ.EQ.CLAM.OR.OBJ.EQ.OYSTER)GOTO 9046  ---- IF(OBJ.EQ.CLAM.OR.OBJ.EQ.OYSTER)GOTO 9046
+1346:     -IF(OBJ.EQ.DOOR)SPK=111  ---- IF(OBJ.EQ.DOOR)SPK=111
+1347:     -IF(OBJ.EQ.DOOR.AND.PROP(DOOR).EQ.1)SPK=54  ---- IF(OBJ.EQ.DOOR.AND.PROP(DOOR).EQ.1)SPK=54
+1348:     -IF(OBJ.EQ.CAGE)SPK=32  ---- IF(OBJ.EQ.CAGE)SPK=32
+1349:     -IF(OBJ.EQ.KEYS)SPK=55  ---- IF(OBJ.EQ.KEYS)SPK=55
+1350:     -IF(OBJ.EQ.GRATE.OR.OBJ.EQ.CHAIN)SPK=31  ---- IF(OBJ.EQ.GRATE.OR.OBJ.EQ.CHAIN)SPK=31
+1351:     -IF(SPK.NE.31.OR..NOT.HERE(KEYS))GOTO 2011  ---- IF(SPK.NE.31.OR..NOT.HERE(KEYS))GOTO 2011
+1352:     -IF(OBJ.EQ.CHAIN)GOTO 9048  ---- IF(OBJ.EQ.CHAIN)GOTO 9048
+1353:     -IF(.NOT.CLOSNG)GOTO 9043  ---- IF(.NOT.CLOSNG)GOTO 9043
+1354:     -K=130  ---- K=130
+1355:     -IF(.NOT.PANIC)CLOCK2=15  ---- IF(.NOT.PANIC)CLOCK2=15
+1356:     -PANIC=.TRUE.  ---- PANIC=.TRUE.
+1357:     -GOTO 2010  ---- GOTO 2010
+1358:     -None  ---- None
+1359:9043 -K=34+PROP(GRATE)  ---- K=34+PROP(GRATE)
+1360:     -PROP(GRATE)=1  ---- PROP(GRATE)=1
+1361:     -IF(VERB.EQ.LOCK)PROP(GRATE)=0  ---- IF(VERB.EQ.LOCK)PROP(GRATE)=0
+1362:     -K=K+2*PROP(GRATE)  ---- K=K+2*PROP(GRATE)
+1363:     -GOTO 2010  ---- GOTO 2010
+1364:     -None  ---- None
+1365:     -None  ---- None
+1366:9046 -K=0  ---- K=0
+1367:     -IF(OBJ.EQ.OYSTER)K=1  ---- IF(OBJ.EQ.OYSTER)K=1
+1368:     -SPK=124+K  ---- SPK=124+K
+1369:     -IF(TOTING(OBJ))SPK=120+K  ---- IF(TOTING(OBJ))SPK=120+K
+1370:     -IF(.NOT.TOTING(TRIDNT))SPK=122+K  ---- IF(.NOT.TOTING(TRIDNT))SPK=122+K
+1371:     -IF(VERB.EQ.LOCK)SPK=61  ---- IF(VERB.EQ.LOCK)SPK=61
+1372:     -IF(SPK.NE.124)GOTO 2011  ---- IF(SPK.NE.124)GOTO 2011
+1373:     -CALL DSTROY(CLAM)  ---- CALL DSTROY(CLAM)
+1374:     -CALL DROP(OYSTER,LOC)  ---- CALL DROP(OYSTER,LOC)
+1375:     -CALL DROP(PEARL,105)  ---- CALL DROP(PEARL,105)
+1376:     -GOTO 2011  ---- GOTO 2011
+1377:     -None  ---- None
+1378:     -None  ---- None
+1379:9048 -IF(VERB.EQ.LOCK)GOTO 9049  ---- IF(VERB.EQ.LOCK)GOTO 9049
+1380:     -SPK=171  ---- SPK=171
+1381:     -IF(PROP(BEAR).EQ.0)SPK=41  ---- IF(PROP(BEAR).EQ.0)SPK=41
+1382:     -IF(PROP(CHAIN).EQ.0)SPK=37  ---- IF(PROP(CHAIN).EQ.0)SPK=37
+1383:     -IF(SPK.NE.171)GOTO 2011  ---- IF(SPK.NE.171)GOTO 2011
+1384:     -PROP(CHAIN)=0  ---- PROP(CHAIN)=0
+1385:     -FIXED(CHAIN)=0  ---- FIXED(CHAIN)=0
+1386:     -IF(PROP(BEAR).NE.3)PROP(BEAR)=2  ---- IF(PROP(BEAR).NE.3)PROP(BEAR)=2
+1387:     -FIXED(BEAR)=2-PROP(BEAR)  ---- FIXED(BEAR)=2-PROP(BEAR)
+1388:     -GOTO 2011  ---- GOTO 2011
+1389:     -None  ---- None
+1390:9049 -SPK=172  ---- SPK=172
+1391:     -IF(PROP(CHAIN).NE.0)SPK=34  ---- IF(PROP(CHAIN).NE.0)SPK=34
+1392:     -IF(LOC.NE.PLAC(CHAIN))SPK=173  ---- IF(LOC.NE.PLAC(CHAIN))SPK=173
+1393:     -IF(SPK.NE.172)GOTO 2011  ---- IF(SPK.NE.172)GOTO 2011
+1394:     -PROP(CHAIN)=2  ---- PROP(CHAIN)=2
+1395:     -IF(TOTING(CHAIN))CALL DROP(CHAIN,LOC)  ---- IF(TOTING(CHAIN))CALL DROP(CHAIN,LOC)
+1396:     -FIXED(CHAIN)=-1  ---- FIXED(CHAIN)=-1
+1397:     -GOTO 2011  ---- GOTO 2011
+1398:     -None  ---- None
+1399:     -None  ---- None
+1400:     -None  ---- None
+1401:9070 -IF(.NOT.HERE(LAMP))GOTO 2011  ---- IF(.NOT.HERE(LAMP))GOTO 2011
+1402:     -SPK=184  ---- SPK=184
+1403:     -IF(LIMIT.LT.0)GOTO 2011  ---- IF(LIMIT.LT.0)GOTO 2011
+1404:     -PROP(LAMP)=1  ---- PROP(LAMP)=1
+1405:     -CALL RSPEAK(39)  ---- CALL RSPEAK(39)
+1406:     -IF(WZDARK)GOTO 2000  ---- IF(WZDARK)GOTO 2000
+1407:     -GOTO 2012  ---- GOTO 2012
+1408:     -None  ---- None
+1409:     -None  ---- None
+1410:     -None  ---- None
+1411:9080 -IF(.NOT.HERE(LAMP))GOTO 2011  ---- IF(.NOT.HERE(LAMP))GOTO 2011
+1412:     -PROP(LAMP)=0  ---- PROP(LAMP)=0
+1413:     -CALL RSPEAK(40)  ---- CALL RSPEAK(40)
+1414:     -IF(DARK(0))CALL RSPEAK(16)  ---- IF(DARK(0))CALL RSPEAK(16)
+1415:     -GOTO 2012  ---- GOTO 2012
+1416:     -None  ---- None
+1417:     -None  ---- None
+1418:     -None  ---- None
+1419:9090 -IF((.NOT.TOTING(OBJ)).AND.(OBJ.NE.ROD.OR..NOT.TOTING(ROD2)))  ---- IF((.NOT.TOTING(OBJ)).AND.(OBJ.NE.ROD.OR..NOT.TOTING(ROD2)))SPK=29
+1420:     1SPK=29  ---- SPK=29
+1421:     -IF(OBJ.NE.ROD.OR..NOT.AT(FISSUR).OR..NOT.TOTING(OBJ)  ---- IF(OBJ.NE.ROD.OR..NOT.AT(FISSUR).OR..NOT.TOTING(OBJ).OR.CLOSNG)GOTO 2011
+1422:     1.OR.CLOSNG)GOTO 2011  ---- .OR.CLOSNG)GOTO 2011
+1423:     -PROP(FISSUR)=1-PROP(FISSUR)  ---- PROP(FISSUR)=1-PROP(FISSUR)
+1424:     -CALL PSPEAK(FISSUR,2-PROP(FISSUR))  ---- CALL PSPEAK(FISSUR,2-PROP(FISSUR))
+1425:     -GOTO 2012  ---- GOTO 2012
+1426:     -None  ---- None
+1427:     -None  ---- None
+1428:     -None  ---- None
+1429:     -None  ---- None
+1430:     -None  ---- None
+1431:9120 -DO 9121 I=1,5  ---- DO 9121 I=1,5
+1432:     -IF(DLOC(I).EQ.LOC.AND.DFLAG.GE.2)GOTO 9122  ---- IF(DLOC(I).EQ.LOC.AND.DFLAG.GE.2)GOTO 9122
+1433:9121 -CONTINUE  ---- CONTINUE
+1434:     -I=0  ---- I=0
+1435:9122 -IF(OBJ.NE.0)GOTO 9124  ---- IF(OBJ.NE.0)GOTO 9124
+1436:     -IF(I.NE.0)OBJ=DWARF  ---- IF(I.NE.0)OBJ=DWARF
+1437:     -IF(HERE(SNAKE))OBJ=OBJ*100+SNAKE  ---- IF(HERE(SNAKE))OBJ=OBJ*100+SNAKE
+1438:     -IF(AT(DRAGON).AND.PROP(DRAGON).EQ.0)OBJ=OBJ*100+DRAGON  ---- IF(AT(DRAGON).AND.PROP(DRAGON).EQ.0)OBJ=OBJ*100+DRAGON
+1439:     -IF(AT(TROLL))OBJ=OBJ*100+TROLL  ---- IF(AT(TROLL))OBJ=OBJ*100+TROLL
+1440:     -IF(HERE(BEAR).AND.PROP(BEAR).EQ.0)OBJ=OBJ*100+BEAR  ---- IF(HERE(BEAR).AND.PROP(BEAR).EQ.0)OBJ=OBJ*100+BEAR
+1441:     -IF(OBJ.GT.100)GOTO 8000  ---- IF(OBJ.GT.100)GOTO 8000
+1442:     -IF(OBJ.NE.0)GOTO 9124  ---- IF(OBJ.NE.0)GOTO 9124
+1443:     -None  ---- None
+1444:     -IF(HERE(BIRD).AND.VERB.NE.THROW)OBJ=BIRD  ---- IF(HERE(BIRD).AND.VERB.NE.THROW)OBJ=BIRD
+1445:     -None  ---- None
+1446:     -IF(HERE(CLAM).OR.HERE(OYSTER))OBJ=100*OBJ+CLAM  ---- IF(HERE(CLAM).OR.HERE(OYSTER))OBJ=100*OBJ+CLAM
+1447:     -IF(OBJ.GT.100)GOTO 8000  ---- IF(OBJ.GT.100)GOTO 8000
+1448:9124 -IF(OBJ.NE.BIRD)GOTO 9125  ---- IF(OBJ.NE.BIRD)GOTO 9125
+1449:     -SPK=137  ---- SPK=137
+1450:     -IF(CLOSED)GOTO 2011  ---- IF(CLOSED)GOTO 2011
+1451:     -CALL DSTROY(BIRD)  ---- CALL DSTROY(BIRD)
+1452:     -PROP(BIRD)=0  ---- PROP(BIRD)=0
+1453:     -IF(PLACE(SNAKE).EQ.PLAC(SNAKE))TALLY2=TALLY2+1  ---- IF(PLACE(SNAKE).EQ.PLAC(SNAKE))TALLY2=TALLY2+1
+1454:     -SPK=45  ---- SPK=45
+1455:9125 -IF(OBJ.EQ.0)SPK=44  ---- IF(OBJ.EQ.0)SPK=44
+1456:     -IF(OBJ.EQ.CLAM.OR.OBJ.EQ.OYSTER)SPK=150  ---- IF(OBJ.EQ.CLAM.OR.OBJ.EQ.OYSTER)SPK=150
+1457:     -IF(OBJ.EQ.SNAKE)SPK=46  ---- IF(OBJ.EQ.SNAKE)SPK=46
+1458:     -IF(OBJ.EQ.DWARF)SPK=49  ---- IF(OBJ.EQ.DWARF)SPK=49
+1459:     -IF(OBJ.EQ.DWARF.AND.CLOSED)GOTO 19000  ---- IF(OBJ.EQ.DWARF.AND.CLOSED)GOTO 19000
+1460:     -IF(OBJ.EQ.DRAGON)SPK=167  ---- IF(OBJ.EQ.DRAGON)SPK=167
+1461:     -IF(OBJ.EQ.TROLL)SPK=157  ---- IF(OBJ.EQ.TROLL)SPK=157
+1462:     -IF(OBJ.EQ.BEAR)SPK=165+(PROP(BEAR)+1)/2  ---- IF(OBJ.EQ.BEAR)SPK=165+(PROP(BEAR)+1)/2
+1463:     -IF(OBJ.NE.DRAGON.OR.PROP(DRAGON).NE.0)GOTO 2011  ---- IF(OBJ.NE.DRAGON.OR.PROP(DRAGON).NE.0)GOTO 2011
+1464:     -None  ---- None
+1465:     -None  ---- None
+1466:     -None  ---- None
+1467:     -CALL RSPEAK(49)  ---- CALL RSPEAK(49)
+1468:     -VERB=0  ---- VERB=0
+1469:     -OBJ=0  ---- OBJ=0
+1470:     -CALL GETIN(WD1,WD1X,WD2,WD2X)  ---- CALL GETIN(WD1,WD1X,WD2,WD2X)
+1471:     -IF(WD1.NE.'Y'.AND.WD1.NE.'YES')GOTO 2608  ---- IF(WD1.NE.'Y'.AND.WD1.NE.'YES')GOTO 2608
+1472:     -CALL PSPEAK(DRAGON,1)  ---- CALL PSPEAK(DRAGON,1)
+1473:     -PROP(DRAGON)=2  ---- PROP(DRAGON)=2
+1474:     -PROP(RUG)=0  ---- PROP(RUG)=0
+1475:     -K=(PLAC(DRAGON)+FIXD(DRAGON))/2  ---- K=(PLAC(DRAGON)+FIXD(DRAGON))/2
+1476:     -CALL MOVE(DRAGON+100,-1)  ---- CALL MOVE(DRAGON+100,-1)
+1477:     -CALL MOVE(RUG+100,0)  ---- CALL MOVE(RUG+100,0)
+1478:     -CALL MOVE(DRAGON,K)  ---- CALL MOVE(DRAGON,K)
+1479:     -CALL MOVE(RUG,K)  ---- CALL MOVE(RUG,K)
+1480:     -DO 9126 OBJ=1,100  ---- DO 9126 OBJ=1,100
+1481:     -IDONDX=OBJ  ---- IDONDX=OBJ
+1482:     -IF(PLACE(IDONDX).EQ.PLAC(DRAGON).OR.  ---- IF(PLACE(IDONDX).EQ.PLAC(DRAGON).OR.PLACE(IDONDX).EQ.FIXD(DRAGON))CALL MOVE(IDONDX,K)
+1483:     1PLACE(IDONDX).EQ.FIXD(DRAGON))  ---- PLACE(IDONDX).EQ.FIXD(DRAGON))
+1484:     2CALL MOVE(IDONDX,K)  ---- CALL MOVE(IDONDX,K)
+1485:9126 -CONTINUE  ---- CONTINUE
+1486:     -LOC=K  ---- LOC=K
+1487:     -K=NULL  ---- K=NULL
+1488:     -GOTO 8  ---- GOTO 8
+1489:     -None  ---- None
+1490:     -None  ---- None
+1491:     -None  ---- None
+1492:     -None  ---- None
+1493:9130 -IF(OBJ.EQ.BOTTLE.OR.OBJ.EQ.0)OBJ=LIQ(0)  ---- IF(OBJ.EQ.BOTTLE.OR.OBJ.EQ.0)OBJ=LIQ(0)
+1494:     -IF(OBJ.EQ.0)GOTO 8000  ---- IF(OBJ.EQ.0)GOTO 8000
+1495:     -IF(.NOT.TOTING(OBJ))GOTO 2011  ---- IF(.NOT.TOTING(OBJ))GOTO 2011
+1496:     -SPK=78  ---- SPK=78
+1497:     -IF(OBJ.NE.OIL.AND.OBJ.NE.WATER)GOTO 2011  ---- IF(OBJ.NE.OIL.AND.OBJ.NE.WATER)GOTO 2011
+1498:     -PROP(BOTTLE)=1  ---- PROP(BOTTLE)=1
+1499:     -PLACE(OBJ)=0  ---- PLACE(OBJ)=0
+1500:     -SPK=77  ---- SPK=77
+1501:     -IF(.NOT.(AT(PLANT).OR.AT(DOOR)))GOTO 2011  ---- IF(.NOT.(AT(PLANT).OR.AT(DOOR)))GOTO 2011
+1502:     -None  ---- None
+1503:     -IF(AT(DOOR))GOTO 9132  ---- IF(AT(DOOR))GOTO 9132
+1504:     -SPK=112  ---- SPK=112
+1505:     -IF(OBJ.NE.WATER)GOTO 2011  ---- IF(OBJ.NE.WATER)GOTO 2011
+1506:     -CALL PSPEAK(PLANT,PROP(PLANT)+1)  ---- CALL PSPEAK(PLANT,PROP(PLANT)+1)
+1507:     -PROP(PLANT)=MOD(PROP(PLANT)+2,6)  ---- PROP(PLANT)=MOD(PROP(PLANT)+2,6)
+1508:     -PROP(PLANT2)=PROP(PLANT)/2  ---- PROP(PLANT2)=PROP(PLANT)/2
+1509:     -K=NULL  ---- K=NULL
+1510:     -GOTO 8  ---- GOTO 8
+1511:     -None  ---- None
+1512:9132 -PROP(DOOR)=0  ---- PROP(DOOR)=0
+1513:     -IF(OBJ.EQ.OIL)PROP(DOOR)=1  ---- IF(OBJ.EQ.OIL)PROP(DOOR)=1
+1514:     -SPK=113+PROP(DOOR)  ---- SPK=113+PROP(DOOR)
+1515:     -GOTO 2011  ---- GOTO 2011
+1516:     -None  ---- None
+1517:     -None  ---- None
+1518:     -None  ---- None
+1519:     -None  ---- None
+1520:8140 -IF(.NOT.HERE(FOOD))GOTO 8000  ---- IF(.NOT.HERE(FOOD))GOTO 8000
+1521:8142 -CALL DSTROY(FOOD)  ---- CALL DSTROY(FOOD)
+1522:     -SPK=72  ---- SPK=72
+1523:     -GOTO 2011  ---- GOTO 2011
+1524:     -None  ---- None
+1525:9140 -IF(OBJ.EQ.FOOD)GOTO 8142  ---- IF(OBJ.EQ.FOOD)GOTO 8142
+1526:     -IF(OBJ.EQ.BIRD.OR.OBJ.EQ.SNAKE.OR.OBJ.EQ.CLAM.OR.OBJ.EQ.OYSTER  ---- IF(OBJ.EQ.BIRD.OR.OBJ.EQ.SNAKE.OR.OBJ.EQ.CLAM.OR.OBJ.EQ.OYSTER.OR.OBJ.EQ.DWARF.OR.OBJ.EQ.DRAGON.OR.OBJ.EQ.TROLL.OR.OBJ.EQ.BEAR)SPK=71
+1527:     1.OR.OBJ.EQ.DWARF.OR.OBJ.EQ.DRAGON.OR.OBJ.EQ.TROLL  ---- .OR.OBJ.EQ.DWARF.OR.OBJ.EQ.DRAGON.OR.OBJ.EQ.TROLL
+1528:     2.OR.OBJ.EQ.BEAR)SPK=71  ---- .OR.OBJ.EQ.BEAR)SPK=71
+1529:     -GOTO 2011  ---- GOTO 2011
+1530:     -None  ---- None
+1531:     -None  ---- None
+1532:     -None  ---- None
+1533:     -None  ---- None
+1534:9150 -IF(OBJ.EQ.0.AND.LIQLOC(LOC).NE.WATER.AND.(LIQ(0).NE.WATER  ---- IF(OBJ.EQ.0.AND.LIQLOC(LOC).NE.WATER.AND.(LIQ(0).NE.WATER.OR..NOT.HERE(BOTTLE)))GOTO 8000
+1535:     1.OR..NOT.HERE(BOTTLE)))GOTO 8000  ---- .OR..NOT.HERE(BOTTLE)))GOTO 8000
+1536:     -IF(OBJ.NE.0.AND.OBJ.NE.WATER)SPK=110  ---- IF(OBJ.NE.0.AND.OBJ.NE.WATER)SPK=110
+1537:     -IF(SPK.EQ.110.OR.LIQ(0).NE.WATER.OR..NOT.HERE(BOTTLE))GOTO 2011  ---- IF(SPK.EQ.110.OR.LIQ(0).NE.WATER.OR..NOT.HERE(BOTTLE))GOTO 2011
+1538:     -PROP(BOTTLE)=1  ---- PROP(BOTTLE)=1
+1539:     -PLACE(WATER)=0  ---- PLACE(WATER)=0
+1540:     -SPK=74  ---- SPK=74
+1541:     -GOTO 2011  ---- GOTO 2011
+1542:     -None  ---- None
+1543:     -None  ---- None
+1544:     -None  ---- None
+1545:9160 -IF(OBJ.NE.LAMP)SPK=76  ---- IF(OBJ.NE.LAMP)SPK=76
+1546:     -GOTO 2011  ---- GOTO 2011
+1547:     -None  ---- None
+1548:     -None  ---- None
+1549:     -None  ---- None
+1550:     -None  ---- None
+1551:     -None  ---- None
+1552:9170 -IF(TOTING(ROD2).AND.OBJ.EQ.ROD.AND..NOT.TOTING(ROD))OBJ=ROD2  ---- IF(TOTING(ROD2).AND.OBJ.EQ.ROD.AND..NOT.TOTING(ROD))OBJ=ROD2
+1553:     -IF(.NOT.TOTING(OBJ))GOTO 2011  ---- IF(.NOT.TOTING(OBJ))GOTO 2011
+1554:     -IF(OBJ.GE.50.AND.OBJ.LE.MAXTRS.AND.AT(TROLL))GOTO 9178  ---- IF(OBJ.GE.50.AND.OBJ.LE.MAXTRS.AND.AT(TROLL))GOTO 9178
+1555:     -IF(OBJ.EQ.FOOD.AND.HERE(BEAR))GOTO 9177  ---- IF(OBJ.EQ.FOOD.AND.HERE(BEAR))GOTO 9177
+1556:     -IF(OBJ.NE.AXE)GOTO 9020  ---- IF(OBJ.NE.AXE)GOTO 9020
+1557:     -DO 9171 I=1,5  ---- DO 9171 I=1,5
+1558:     -None  ---- None
+1559:     -IF(DLOC(I).EQ.LOC)GOTO 9172  ---- IF(DLOC(I).EQ.LOC)GOTO 9172
+1560:9171 -CONTINUE  ---- CONTINUE
+1561:     -SPK=152  ---- SPK=152
+1562:     -IF(AT(DRAGON).AND.PROP(DRAGON).EQ.0)GOTO 9175  ---- IF(AT(DRAGON).AND.PROP(DRAGON).EQ.0)GOTO 9175
+1563:     -SPK=158  ---- SPK=158
+1564:     -IF(AT(TROLL))GOTO 9175  ---- IF(AT(TROLL))GOTO 9175
+1565:     -IF(HERE(BEAR).AND.PROP(BEAR).EQ.0)GOTO 9176  ---- IF(HERE(BEAR).AND.PROP(BEAR).EQ.0)GOTO 9176
+1566:     -OBJ=0  ---- OBJ=0
+1567:     -GOTO 9120  ---- GOTO 9120
+1568:     -None  ---- None
+1569:9172 -SPK=48  ---- SPK=48
+1570:     -None  ---- None
+1571:     -IF(RAN(3).EQ.0.OR.SAVED.NE.-1)GOTO 9175  ---- IF(RAN(3).EQ.0.OR.SAVED.NE.-1)GOTO 9175
+1572:     -DSEEN(I)=.FALSE.  ---- DSEEN(I)=.FALSE.
+1573:     -DLOC(I)=0  ---- DLOC(I)=0
+1574:     -SPK=47  ---- SPK=47
+1575:     -DKILL=DKILL+1  ---- DKILL=DKILL+1
+1576:     -IF(DKILL.EQ.1)SPK=149  ---- IF(DKILL.EQ.1)SPK=149
+1577:9175 -CALL RSPEAK(SPK)  ---- CALL RSPEAK(SPK)
+1578:     -CALL DROP(AXE,LOC)  ---- CALL DROP(AXE,LOC)
+1579:     -K=NULL  ---- K=NULL
+1580:     -GOTO 8  ---- GOTO 8
+1581:     -None  ---- None
+1582:     -None  ---- None
+1583:9176 -SPK=164  ---- SPK=164
+1584:     -CALL DROP(AXE,LOC)  ---- CALL DROP(AXE,LOC)
+1585:     -FIXED(AXE)=-1  ---- FIXED(AXE)=-1
+1586:     -PROP(AXE)=1  ---- PROP(AXE)=1
+1587:     -CALL JUGGLE(BEAR)  ---- CALL JUGGLE(BEAR)
+1588:     -GOTO 2011  ---- GOTO 2011
+1589:     -None  ---- None
+1590:     -None  ---- None
+1591:9177 -OBJ=BEAR  ---- OBJ=BEAR
+1592:     -GOTO 9210  ---- GOTO 9210
+1593:     -None  ---- None
+1594:9178 -SPK=159  ---- SPK=159
+1595:     -None  ---- None
+1596:     -CALL DROP(OBJ,0)  ---- CALL DROP(OBJ,0)
+1597:     -CALL MOVE(TROLL,0)  ---- CALL MOVE(TROLL,0)
+1598:     -CALL MOVE(TROLL+100,0)  ---- CALL MOVE(TROLL+100,0)
+1599:     -CALL DROP(TROLL2,PLAC(TROLL))  ---- CALL DROP(TROLL2,PLAC(TROLL))
+1600:     -CALL DROP(TROLL2+100,FIXD(TROLL))  ---- CALL DROP(TROLL2+100,FIXD(TROLL))
+1601:     -CALL JUGGLE(CHASM)  ---- CALL JUGGLE(CHASM)
+1602:     -GOTO 2011  ---- GOTO 2011
+1603:     -None  ---- None
+1604:     -None  ---- None
+1605:     -None  ---- None
+1606:8180 -GAVEUP=YES(22,54,54)  ---- GAVEUP=YES(22,54,54)
+1607:8185 -IF(GAVEUP)GOTO 20000  ---- IF(GAVEUP)GOTO 20000
+1608:     -GOTO 2012  ---- GOTO 2012
+1609:     -None  ---- None
+1610:     -None  ---- None
+1611:     -None  ---- None
+1612:9190 -IF(AT(OBJ).OR.(LIQ(0).EQ.OBJ.AND.AT(BOTTLE))  ---- IF(AT(OBJ).OR.(LIQ(0).EQ.OBJ.AND.AT(BOTTLE)).OR.K.EQ.LIQLOC(LOC))SPK=94
+1613:     1.OR.K.EQ.LIQLOC(LOC))SPK=94  ---- .OR.K.EQ.LIQLOC(LOC))SPK=94
+1614:     -DO 9192 I=1,5  ---- DO 9192 I=1,5
+1615:9192 -IF(DLOC(I).EQ.LOC.AND.DFLAG.GE.2.AND.OBJ.EQ.DWARF)SPK=94  ---- IF(DLOC(I).EQ.LOC.AND.DFLAG.GE.2.AND.OBJ.EQ.DWARF)SPK=94
+1616:     -IF(CLOSED)SPK=138  ---- IF(CLOSED)SPK=138
+1617:     -IF(TOTING(OBJ))SPK=24  ---- IF(TOTING(OBJ))SPK=24
+1618:     -GOTO 2011  ---- GOTO 2011
+1619:     -None  ---- None
+1620:     -None  ---- None
+1621:     -None  ---- None
+1622:8200 -SPK=98  ---- SPK=98
+1623:     -DO 8201 I=1,100  ---- DO 8201 I=1,100
+1624:     -IDONDX=I  ---- IDONDX=I
+1625:     -IF(IDONDX.EQ.BEAR.OR..NOT.TOTING(IDONDX))GOTO 8201  ---- IF(IDONDX.EQ.BEAR.OR..NOT.TOTING(IDONDX))GOTO 8201
+1626:     -IF(SPK.EQ.98)CALL RSPEAK(99)  ---- IF(SPK.EQ.98)CALL RSPEAK(99)
+1627:     -BLKLIN=.FALSE.  ---- BLKLIN=.FALSE.
+1628:     -CALL PSPEAK(IDONDX,-1)  ---- CALL PSPEAK(IDONDX,-1)
+1629:     -BLKLIN=.TRUE.  ---- BLKLIN=.TRUE.
+1630:     -SPK=0  ---- SPK=0
+1631:8201 -CONTINUE  ---- CONTINUE
+1632:     -IF(TOTING(BEAR))SPK=141  ---- IF(TOTING(BEAR))SPK=141
+1633:     -GOTO 2011  ---- GOTO 2011
+1634:     -None  ---- None
+1635:     -None  ---- None
+1636:     -None  ---- None
+1637:     -None  ---- None
+1638:9210 -IF(OBJ.NE.BIRD)GOTO 9212  ---- IF(OBJ.NE.BIRD)GOTO 9212
+1639:     -SPK=100  ---- SPK=100
+1640:     -GOTO 2011  ---- GOTO 2011
+1641:     -None  ---- None
+1642:9212 -IF(OBJ.NE.SNAKE.AND.OBJ.NE.DRAGON.AND.OBJ.NE.TROLL)GOTO 9213  ---- IF(OBJ.NE.SNAKE.AND.OBJ.NE.DRAGON.AND.OBJ.NE.TROLL)GOTO 9213
+1643:     -SPK=102  ---- SPK=102
+1644:     -IF(OBJ.EQ.DRAGON.AND.PROP(DRAGON).NE.0)SPK=110  ---- IF(OBJ.EQ.DRAGON.AND.PROP(DRAGON).NE.0)SPK=110
+1645:     -IF(OBJ.EQ.TROLL)SPK=182  ---- IF(OBJ.EQ.TROLL)SPK=182
+1646:     -IF(OBJ.NE.SNAKE.OR.CLOSED.OR..NOT.HERE(BIRD))GOTO 2011  ---- IF(OBJ.NE.SNAKE.OR.CLOSED.OR..NOT.HERE(BIRD))GOTO 2011
+1647:     -SPK=101  ---- SPK=101
+1648:     -CALL DSTROY(BIRD)  ---- CALL DSTROY(BIRD)
+1649:     -PROP(BIRD)=0  ---- PROP(BIRD)=0
+1650:     -TALLY2=TALLY2+1  ---- TALLY2=TALLY2+1
+1651:     -GOTO 2011  ---- GOTO 2011
+1652:     -None  ---- None
+1653:9213 -IF(OBJ.NE.DWARF)GOTO 9214  ---- IF(OBJ.NE.DWARF)GOTO 9214
+1654:     -IF(.NOT.HERE(FOOD))GOTO 2011  ---- IF(.NOT.HERE(FOOD))GOTO 2011
+1655:     -SPK=103  ---- SPK=103
+1656:     -DFLAG=DFLAG+1  ---- DFLAG=DFLAG+1
+1657:     -GOTO 2011  ---- GOTO 2011
+1658:     -None  ---- None
+1659:9214 -IF(OBJ.NE.BEAR)GOTO 9215  ---- IF(OBJ.NE.BEAR)GOTO 9215
+1660:     -IF(PROP(BEAR).EQ.0)SPK=102  ---- IF(PROP(BEAR).EQ.0)SPK=102
+1661:     -IF(PROP(BEAR).EQ.3)SPK=110  ---- IF(PROP(BEAR).EQ.3)SPK=110
+1662:     -IF(.NOT.HERE(FOOD))GOTO 2011  ---- IF(.NOT.HERE(FOOD))GOTO 2011
+1663:     -CALL DSTROY(FOOD)  ---- CALL DSTROY(FOOD)
+1664:     -PROP(BEAR)=1  ---- PROP(BEAR)=1
+1665:     -FIXED(AXE)=0  ---- FIXED(AXE)=0
+1666:     -PROP(AXE)=0  ---- PROP(AXE)=0
+1667:     -SPK=168  ---- SPK=168
+1668:     -GOTO 2011  ---- GOTO 2011
+1669:     -None  ---- None
+1670:9215 -SPK=14  ---- SPK=14
+1671:     -GOTO 2011  ---- GOTO 2011
+1672:     -None  ---- None
+1673:     -None  ---- None
+1674:     -None  ---- None
+1675:9220 -IF(OBJ.EQ.VASE)GOTO 9222  ---- IF(OBJ.EQ.VASE)GOTO 9222
+1676:     -IF(OBJ.NE.0.AND.OBJ.NE.BOTTLE)GOTO 2011  ---- IF(OBJ.NE.0.AND.OBJ.NE.BOTTLE)GOTO 2011
+1677:     -IF(OBJ.EQ.0.AND..NOT.HERE(BOTTLE))GOTO 8000  ---- IF(OBJ.EQ.0.AND..NOT.HERE(BOTTLE))GOTO 8000
+1678:     -SPK=107  ---- SPK=107
+1679:     -IF(LIQLOC(LOC).EQ.0)SPK=106  ---- IF(LIQLOC(LOC).EQ.0)SPK=106
+1680:     -IF(LIQ(0).NE.0)SPK=105  ---- IF(LIQ(0).NE.0)SPK=105
+1681:     -IF(SPK.NE.107)GOTO 2011  ---- IF(SPK.NE.107)GOTO 2011
+1682:     -PROP(BOTTLE)=MOD(COND(LOC),4)/2*2  ---- PROP(BOTTLE)=MOD(COND(LOC),4)/2*2
+1683:     -K=LIQ(0)  ---- K=LIQ(0)
+1684:     -IF(TOTING(BOTTLE))PLACE(K)=-1  ---- IF(TOTING(BOTTLE))PLACE(K)=-1
+1685:     -IF(K.EQ.OIL)SPK=108  ---- IF(K.EQ.OIL)SPK=108
+1686:     -GOTO 2011  ---- GOTO 2011
+1687:     -None  ---- None
+1688:9222 -SPK=29  ---- SPK=29
+1689:     -IF(LIQLOC(LOC).EQ.0)SPK=144  ---- IF(LIQLOC(LOC).EQ.0)SPK=144
+1690:     -IF(LIQLOC(LOC).EQ.0.OR..NOT.TOTING(VASE))GOTO 2011  ---- IF(LIQLOC(LOC).EQ.0.OR..NOT.TOTING(VASE))GOTO 2011
+1691:     -CALL RSPEAK(145)  ---- CALL RSPEAK(145)
+1692:     -PROP(VASE)=2  ---- PROP(VASE)=2
+1693:     -FIXED(VASE)=-1  ---- FIXED(VASE)=-1
+1694:     -GOTO 9024  ---- GOTO 9024
+1695:     -None  ---- None
+1696:     -None  ---- None
+1697:     -None  ---- None
+1698:9230 -IF(PROP(ROD2).LT.0.OR..NOT.CLOSED)GOTO 2011  ---- IF(PROP(ROD2).LT.0.OR..NOT.CLOSED)GOTO 2011
+1699:     -BONUS=133  ---- BONUS=133
+1700:     -IF(LOC.EQ.115)BONUS=134  ---- IF(LOC.EQ.115)BONUS=134
+1701:     -IF(HERE(ROD2))BONUS=135  ---- IF(HERE(ROD2))BONUS=135
+1702:     -CALL RSPEAK(BONUS)  ---- CALL RSPEAK(BONUS)
+1703:     -GOTO 20000  ---- GOTO 20000
+1704:     -None  ---- None
+1705:     -None  ---- None
+1706:     -None  ---- None
+1707:8240 -SCORNG=.TRUE.  ---- SCORNG=.TRUE.
+1708:     -GOTO 20000  ---- GOTO 20000
+1709:     -None  ---- None
+1710:8241 -SCORNG=.FALSE.  ---- SCORNG=.FALSE.
+1711:     -TYPE 8243,SCORE,MXSCOR  ---- TYPE 8243,SCORE,MXSCOR
+1712:8243 -FORMAT(/' If you were to quit now, you would score',I4  ---- FORMAT(/' If you were to quit now, you would score',I4,' out of a possible',I4,'.')
+1713:     1,' out of a possible',I4,'.')  ---- ,' out of a possible',I4,'.')
+1714:     -GAVEUP=YES(143,54,54)  ---- GAVEUP=YES(143,54,54)
+1715:     -GOTO 8185  ---- GOTO 8185
+1716:     -None  ---- None
+1717:     -None  ---- None
+1718:     -None  ---- None
+1719:     -None  ---- None
+1720:     -None  ---- None
+1721:8250 -K=VOCAB(WD1,3)  ---- K=VOCAB(WD1,3)
+1722:     -SPK=42  ---- SPK=42
+1723:     -IF(FOOBAR.EQ.1-K)GOTO 8252  ---- IF(FOOBAR.EQ.1-K)GOTO 8252
+1724:     -IF(FOOBAR.NE.0)SPK=151  ---- IF(FOOBAR.NE.0)SPK=151
+1725:     -GOTO 2011  ---- GOTO 2011
+1726:     -None  ---- None
+1727:8252 -FOOBAR=K  ---- FOOBAR=K
+1728:     -IF(K.NE.4)GOTO 2009  ---- IF(K.NE.4)GOTO 2009
+1729:     -FOOBAR=0  ---- FOOBAR=0
+1730:     -IF(PLACE(EGGS).EQ.PLAC(EGGS)  ---- IF(PLACE(EGGS).EQ.PLAC(EGGS).OR.(TOTING(EGGS).AND.LOC.EQ.PLAC(EGGS)))GOTO 2011
+1731:     1.OR.(TOTING(EGGS).AND.LOC.EQ.PLAC(EGGS)))GOTO 2011  ---- .OR.(TOTING(EGGS).AND.LOC.EQ.PLAC(EGGS)))GOTO 2011
+1732:     -None  ---- None
+1733:     -IF(PLACE(EGGS).EQ.0.AND.PLACE(TROLL).EQ.0.AND.PROP(TROLL).EQ.0)  ---- IF(PLACE(EGGS).EQ.0.AND.PLACE(TROLL).EQ.0.AND.PROP(TROLL).EQ.0)PROP(TROLL)=1
+1734:     1PROP(TROLL)=1  ---- PROP(TROLL)=1
+1735:     -K=2  ---- K=2
+1736:     -IF(HERE(EGGS))K=1  ---- IF(HERE(EGGS))K=1
+1737:     -IF(LOC.EQ.PLAC(EGGS))K=0  ---- IF(LOC.EQ.PLAC(EGGS))K=0
+1738:     -CALL MOVE(EGGS,PLAC(EGGS))  ---- CALL MOVE(EGGS,PLAC(EGGS))
+1739:     -CALL PSPEAK(EGGS,K)  ---- CALL PSPEAK(EGGS,K)
+1740:     -GOTO 2012  ---- GOTO 2012
+1741:     -None  ---- None
+1742:     -None  ---- None
+1743:     -None  ---- None
+1744:8260 -SPK=156  ---- SPK=156
+1745:     -ABBNUM=10000  ---- ABBNUM=10000
+1746:     -DETAIL=3  ---- DETAIL=3
+1747:     -GOTO 2011  ---- GOTO 2011
+1748:     -None  ---- None
+1749:     -None  ---- None
+1750:     -None  ---- None
+1751:8270 -IF(HERE(MAGZIN))OBJ=MAGZIN  ---- IF(HERE(MAGZIN))OBJ=MAGZIN
+1752:     -IF(HERE(TABLET))OBJ=OBJ*100+TABLET  ---- IF(HERE(TABLET))OBJ=OBJ*100+TABLET
+1753:     -IF(HERE(MESSAG))OBJ=OBJ*100+MESSAG  ---- IF(HERE(MESSAG))OBJ=OBJ*100+MESSAG
+1754:     -IF(CLOSED.AND.TOTING(OYSTER))OBJ=OYSTER  ---- IF(CLOSED.AND.TOTING(OYSTER))OBJ=OYSTER
+1755:     -IF(OBJ.GT.100.OR.OBJ.EQ.0.OR.DARK(0))GOTO 8000  ---- IF(OBJ.GT.100.OR.OBJ.EQ.0.OR.DARK(0))GOTO 8000
+1756:     -None  ---- None
+1757:9270 -IF(DARK(0))GOTO 5190  ---- IF(DARK(0))GOTO 5190
+1758:     -IF(OBJ.EQ.MAGZIN)SPK=190  ---- IF(OBJ.EQ.MAGZIN)SPK=190
+1759:     -IF(OBJ.EQ.TABLET)SPK=196  ---- IF(OBJ.EQ.TABLET)SPK=196
+1760:     -IF(OBJ.EQ.MESSAG)SPK=191  ---- IF(OBJ.EQ.MESSAG)SPK=191
+1761:     -IF(OBJ.EQ.OYSTER.AND.HINTED(2).AND.TOTING(OYSTER))SPK=194  ---- IF(OBJ.EQ.OYSTER.AND.HINTED(2).AND.TOTING(OYSTER))SPK=194
+1762:     -IF(OBJ.NE.OYSTER.OR.HINTED(2).OR..NOT.TOTING(OYSTER)  ---- IF(OBJ.NE.OYSTER.OR.HINTED(2).OR..NOT.TOTING(OYSTER).OR..NOT.CLOSED)GOTO 2011
+1763:     1.OR..NOT.CLOSED)GOTO 2011  ---- .OR..NOT.CLOSED)GOTO 2011
+1764:     -HINTED(2)=YES(192,193,54)  ---- HINTED(2)=YES(192,193,54)
+1765:     -GOTO 2012  ---- GOTO 2012
+1766:     -None  ---- None
+1767:     -None  ---- None
+1768:     -None  ---- None
+1769:9280 -IF(OBJ.EQ.MIRROR)SPK=148  ---- IF(OBJ.EQ.MIRROR)SPK=148
+1770:     -IF(OBJ.EQ.VASE.AND.PROP(VASE).EQ.0)GOTO 9282  ---- IF(OBJ.EQ.VASE.AND.PROP(VASE).EQ.0)GOTO 9282
+1771:     -IF(OBJ.NE.MIRROR.OR..NOT.CLOSED)GOTO 2011  ---- IF(OBJ.NE.MIRROR.OR..NOT.CLOSED)GOTO 2011
+1772:     -CALL RSPEAK(197)  ---- CALL RSPEAK(197)
+1773:     -GOTO 19000  ---- GOTO 19000
+1774:     -None  ---- None
+1775:9282 -SPK=198  ---- SPK=198
+1776:     -IF(TOTING(VASE))CALL DROP(VASE,LOC)  ---- IF(TOTING(VASE))CALL DROP(VASE,LOC)
+1777:     -PROP(VASE)=2  ---- PROP(VASE)=2
+1778:     -FIXED(VASE)=-1  ---- FIXED(VASE)=-1
+1779:     -GOTO 2011  ---- GOTO 2011
+1780:     -None  ---- None
+1781:     -None  ---- None
+1782:     -None  ---- None
+1783:9290 -IF(OBJ.NE.DWARF.OR..NOT.CLOSED)GOTO 2011  ---- IF(OBJ.NE.DWARF.OR..NOT.CLOSED)GOTO 2011
+1784:     -CALL RSPEAK(199)  ---- CALL RSPEAK(199)
+1785:     -GOTO 19000  ---- GOTO 19000
+1786:     -None  ---- None
+1787:     -None  ---- None
+1788:     -None  ---- None
+1789:     -None  ---- None
+1790:     -None  ---- None
+1791:8300 -SPK=201  ---- SPK=201
+1792:     -IF(DEMO)GOTO 2011  ---- IF(DEMO)GOTO 2011
+1793:     -TYPE 8302,LATNCY  ---- TYPE 8302,LATNCY
+1794:8302 -FORMAT(/' I can suspend your adventure for you so that you can',  ---- FORMAT(/' I can suspend your adventure for you so that you can',' resume later, but'/' you will have to wait at least',I3,' minutes before continuing.')
+1795:     1' resume later, but'/' you will have to wait at least',  ---- ' resume later, but'/' you will have to wait at least',
+1796:     2I3,' minutes before continuing.')  ---- I3,' minutes before continuing.')
+1797:     -IF(.NOT.YES(200,54,54))GOTO 2012  ---- IF(.NOT.YES(200,54,54))GOTO 2012
+1798:     -CALL DATIME(SAVED,SAVET)  ---- CALL DATIME(SAVED,SAVET)
+1799:     -SETUP=-1  ---- SETUP=-1
+1800:     -CALL CIAO  ---- CALL CIAO
+1801:     -None  ---- None
+1802:8305 -YEA=START(0)  ---- YEA=START(0)
+1803:     -SETUP=3  ---- SETUP=3
+1804:     -K=NULL  ---- K=NULL
+1805:     -GOTO 8  ---- GOTO 8
+1806:     -None  ---- None
+1807:     -None  ---- None
+1808:     -None  ---- None
+1809:8310 -CALL MSPEAK(6)  ---- CALL MSPEAK(6)
+1810:     -CALL HOURS  ---- CALL HOURS
+1811:     -GOTO 2012  ---- GOTO 2012
+1812:     -None  ---- None
+1813:     -None  ---- None
+1814:     -None  ---- None
+1815:     -None  ---- None
+1816:     -None  ---- None
+1817:     -None  ---- None
+1818:     -None  ---- None
+1819:     -None  ---- None
+1820:40000-GOTO (40400,40500,40600,40700,40800,40900)(HINT-3)  ---- GOTO (40400,40500,40600,40700,40800,40900)(HINT-3)
+1821:     -None  ---- None
+1822:     -CALL BUG(27)  ---- CALL BUG(27)
+1823:     -None  ---- None
+1824:40010-HINTLC(HINT)=0  ---- HINTLC(HINT)=0
+1825:     -IF(.NOT.YES(HINTS(HINT,3),0,54))GOTO 2602  ---- IF(.NOT.YES(HINTS(HINT,3),0,54))GOTO 2602
+1826:     -TYPE 40012,HINTS(HINT,2)  ---- TYPE 40012,HINTS(HINT,2)
+1827:40012-FORMAT(/' I am prepared to give you a hint, but it will cost you',  ---- FORMAT(/' I am prepared to give you a hint, but it will cost you',
+1828:     -    1	I2,' points.')  ----     1	I2,' points.')
+1829:     -HINTED(HINT)=YES(175,HINTS(HINT,4),54)  ---- HINTED(HINT)=YES(175,HINTS(HINT,4),54)
+1830:     -IF(HINTED(HINT).AND.LIMIT.GT.30)LIMIT=LIMIT+30*HINTS(HINT,2)  ---- IF(HINTED(HINT).AND.LIMIT.GT.30)LIMIT=LIMIT+30*HINTS(HINT,2)
+1831:40020-HINTLC(HINT)=0  ---- HINTLC(HINT)=0
+1832:40030-GOTO 2602  ---- GOTO 2602
+1833:     -None  ---- None
+1834:     -None  ---- None
+1835:     -None  ---- None
+1836:40400-IF(PROP(GRATE).EQ.0.AND..NOT.HERE(KEYS))GOTO 40010  ---- IF(PROP(GRATE).EQ.0.AND..NOT.HERE(KEYS))GOTO 40010
+1837:     -GOTO 40020  ---- GOTO 40020
+1838:     -None  ---- None
+1839:40500-IF(HERE(BIRD).AND.TOTING(ROD).AND.OBJ.EQ.BIRD)GOTO 40010  ---- IF(HERE(BIRD).AND.TOTING(ROD).AND.OBJ.EQ.BIRD)GOTO 40010
+1840:     -GOTO 40030  ---- GOTO 40030
+1841:     -None  ---- None
+1842:40600-IF(HERE(SNAKE).AND..NOT.HERE(BIRD))GOTO 40010  ---- IF(HERE(SNAKE).AND..NOT.HERE(BIRD))GOTO 40010
+1843:     -GOTO 40020  ---- GOTO 40020
+1844:     -None  ---- None
+1845:40700-IF(ATLOC(LOC).EQ.0.AND.ATLOC(OLDLOC).EQ.0  ---- IF(ATLOC(LOC).EQ.0.AND.ATLOC(OLDLOC).EQ.0.AND.ATLOC(OLDLC2).EQ.0.AND.HOLDNG.GT.1)GOTO 40010
+1846:     1.AND.ATLOC(OLDLC2).EQ.0.AND.HOLDNG.GT.1)GOTO 40010  ---- .AND.ATLOC(OLDLC2).EQ.0.AND.HOLDNG.GT.1)GOTO 40010
+1847:     -GOTO 40020  ---- GOTO 40020
+1848:     -None  ---- None
+1849:40800-IF(PROP(EMRALD).NE.-1.AND.PROP(PYRAM).EQ.-1)GOTO 40010  ---- IF(PROP(EMRALD).NE.-1.AND.PROP(PYRAM).EQ.-1)GOTO 40010
+1850:     -GOTO 40020  ---- GOTO 40020
+1851:     -None  ---- None
+1852:40900-GOTO 40010  ---- GOTO 40010
+1853:     -None  ---- None
+1854:     -None  ---- None
+1855:     -None  ---- None
+1856:     -None  ---- None
+1857:     -None  ---- None
+1858:     -None  ---- None
+1859:     -None  ---- None
+1860:     -None  ---- None
+1861:     -None  ---- None
+1862:     -None  ---- None
+1863:     -None  ---- None
+1864:     -None  ---- None
+1865:     -None  ---- None
+1866:     -None  ---- None
+1867:     -None  ---- None
+1868:     -None  ---- None
+1869:     -None  ---- None
+1870:     -None  ---- None
+1871:     -None  ---- None
+1872:     -None  ---- None
+1873:     -None  ---- None
+1874:     -None  ---- None
+1875:     -None  ---- None
+1876:     -None  ---- None
+1877:     -None  ---- None
+1878:     -None  ---- None
+1879:     -None  ---- None
+1880:     -None  ---- None
+1881:     -None  ---- None
+1882:     -None  ---- None
+1883:     -None  ---- None
+1884:     -None  ---- None
+1885:10000-PROP(GRATE)=0  ---- PROP(GRATE)=0
+1886:     -PROP(FISSUR)=0  ---- PROP(FISSUR)=0
+1887:     -DO 10010 I=1,6  ---- DO 10010 I=1,6
+1888:     -DSEEN(I)=.FALSE.  ---- DSEEN(I)=.FALSE.
+1889:10010-DLOC(I)=0  ---- DLOC(I)=0
+1890:     -CALL MOVE(TROLL,0)  ---- CALL MOVE(TROLL,0)
+1891:     -CALL MOVE(TROLL+100,0)  ---- CALL MOVE(TROLL+100,0)
+1892:     -CALL MOVE(TROLL2,PLAC(TROLL))  ---- CALL MOVE(TROLL2,PLAC(TROLL))
+1893:     -CALL MOVE(TROLL2+100,FIXD(TROLL))  ---- CALL MOVE(TROLL2+100,FIXD(TROLL))
+1894:     -CALL JUGGLE(CHASM)  ---- CALL JUGGLE(CHASM)
+1895:     -IF(PROP(BEAR).NE.3)CALL DSTROY(BEAR)  ---- IF(PROP(BEAR).NE.3)CALL DSTROY(BEAR)
+1896:     -PROP(CHAIN)=0  ---- PROP(CHAIN)=0
+1897:     -FIXED(CHAIN)=0  ---- FIXED(CHAIN)=0
+1898:     -PROP(AXE)=0  ---- PROP(AXE)=0
+1899:     -FIXED(AXE)=0  ---- FIXED(AXE)=0
+1900:     -CALL RSPEAK(129)  ---- CALL RSPEAK(129)
+1901:     -CLOCK1=-1  ---- CLOCK1=-1
+1902:     -CLOSNG=.TRUE.  ---- CLOSNG=.TRUE.
+1903:     -GOTO 19999  ---- GOTO 19999
+1904:     -None  ---- None
+1905:     -None  ---- None
+1906:     -None  ---- None
+1907:     -None  ---- None
+1908:     -None  ---- None
+1909:     -None  ---- None
+1910:     -None  ---- None
+1911:     -None  ---- None
+1912:     -None  ---- None
+1913:     -None  ---- None
+1914:     -None  ---- None
+1915:     -None  ---- None
+1916:     -None  ---- None
+1917:11000-PROP(BOTTLE)=PUT(BOTTLE,115,1)  ---- PROP(BOTTLE)=PUT(BOTTLE,115,1)
+1918:     -PROP(PLANT)=PUT(PLANT,115,0)  ---- PROP(PLANT)=PUT(PLANT,115,0)
+1919:     -PROP(OYSTER)=PUT(OYSTER,115,0)  ---- PROP(OYSTER)=PUT(OYSTER,115,0)
+1920:     -PROP(LAMP)=PUT(LAMP,115,0)  ---- PROP(LAMP)=PUT(LAMP,115,0)
+1921:     -PROP(ROD)=PUT(ROD,115,0)  ---- PROP(ROD)=PUT(ROD,115,0)
+1922:     -PROP(DWARF)=PUT(DWARF,115,0)  ---- PROP(DWARF)=PUT(DWARF,115,0)
+1923:     -LOC=115  ---- LOC=115
+1924:     -OLDLOC=115  ---- OLDLOC=115
+1925:     -NEWLOC=115  ---- NEWLOC=115
+1926:     -None  ---- None
+1927:     -None  ---- None
+1928:     -None  ---- None
+1929:     -FOO=PUT(GRATE,116,0)  ---- FOO=PUT(GRATE,116,0)
+1930:     -PROP(SNAKE)=PUT(SNAKE,116,1)  ---- PROP(SNAKE)=PUT(SNAKE,116,1)
+1931:     -PROP(BIRD)=PUT(BIRD,116,1)  ---- PROP(BIRD)=PUT(BIRD,116,1)
+1932:     -PROP(CAGE)=PUT(CAGE,116,0)  ---- PROP(CAGE)=PUT(CAGE,116,0)
+1933:     -PROP(ROD2)=PUT(ROD2,116,0)  ---- PROP(ROD2)=PUT(ROD2,116,0)
+1934:     -PROP(PILLOW)=PUT(PILLOW,116,0)  ---- PROP(PILLOW)=PUT(PILLOW,116,0)
+1935:     -None  ---- None
+1936:     -PROP(MIRROR)=PUT(MIRROR,115,0)  ---- PROP(MIRROR)=PUT(MIRROR,115,0)
+1937:     -FIXED(MIRROR)=116  ---- FIXED(MIRROR)=116
+1938:     -None  ---- None
+1939:     -DO 11010 I=1,100  ---- DO 11010 I=1,100
+1940:     -IDONDX=I  ---- IDONDX=I
+1941:11010-IF(TOTING(IDONDX))CALL DSTROY(IDONDX)  ---- IF(TOTING(IDONDX))CALL DSTROY(IDONDX)
+1942:     -None  ---- None
+1943:     -CALL RSPEAK(132)  ---- CALL RSPEAK(132)
+1944:     -CLOSED=.TRUE.  ---- CLOSED=.TRUE.
+1945:     -GOTO 2  ---- GOTO 2
+1946:     -None  ---- None
+1947:     -None  ---- None
+1948:     -None  ---- None
+1949:     -None  ---- None
+1950:     -None  ---- None
+1951:     -None  ---- None
+1952:     -None  ---- None
+1953:     -None  ---- None
+1954:12000-CALL RSPEAK(188)  ---- CALL RSPEAK(188)
+1955:     -PROP(BATTER)=1  ---- PROP(BATTER)=1
+1956:     -IF(TOTING(BATTER))CALL DROP(BATTER,LOC)  ---- IF(TOTING(BATTER))CALL DROP(BATTER,LOC)
+1957:     -LIMIT=LIMIT+2500  ---- LIMIT=LIMIT+2500
+1958:     -LMWARN=.FALSE.  ---- LMWARN=.FALSE.
+1959:     -GOTO 19999  ---- GOTO 19999
+1960:     -None  ---- None
+1961:12200-IF(LMWARN.OR..NOT.HERE(LAMP))GOTO 19999  ---- IF(LMWARN.OR..NOT.HERE(LAMP))GOTO 19999
+1962:     -LMWARN=.TRUE.  ---- LMWARN=.TRUE.
+1963:     -SPK=187  ---- SPK=187
+1964:     -IF(PLACE(BATTER).EQ.0)SPK=183  ---- IF(PLACE(BATTER).EQ.0)SPK=183
+1965:     -IF(PROP(BATTER).EQ.1)SPK=189  ---- IF(PROP(BATTER).EQ.1)SPK=189
+1966:     -CALL RSPEAK(SPK)  ---- CALL RSPEAK(SPK)
+1967:     -GOTO 19999  ---- GOTO 19999
+1968:     -None  ---- None
+1969:12400-LIMIT=-1  ---- LIMIT=-1
+1970:     -PROP(LAMP)=0  ---- PROP(LAMP)=0
+1971:     -IF(HERE(LAMP))CALL RSPEAK(184)  ---- IF(HERE(LAMP))CALL RSPEAK(184)
+1972:     -GOTO 19999  ---- GOTO 19999
+1973:     -None  ---- None
+1974:12600-CALL RSPEAK(185)  ---- CALL RSPEAK(185)
+1975:     -GAVEUP=.TRUE.  ---- GAVEUP=.TRUE.
+1976:     -GOTO 20000  ---- GOTO 20000
+1977:     -None  ---- None
+1978:     -None  ---- None
+1979:     -None  ---- None
+1980:13000-CALL MSPEAK(1)  ---- CALL MSPEAK(1)
+1981:     -GOTO 20000  ---- GOTO 20000
+1982:     -None  ---- None
+1983:     -None  ---- None
+1984:     -None  ---- None
+1985:19000-CALL RSPEAK(136)  ---- CALL RSPEAK(136)
+1986:     -None  ---- None
+1987:     -None  ---- None
+1988:     -None  ---- None
+1989:     -None  ---- None
+1990:     -None  ---- None
+1991:     -None  ---- None
+1992:     -None  ---- None
+1993:     -None  ---- None
+1994:     -None  ---- None
+1995:     -None  ---- None
+1996:     -None  ---- None
+1997:     -None  ---- None
+1998:     -None  ---- None
+1999:     -None  ---- None
+2000:     -None  ---- None
+2001:     -None  ---- None
+2002:     -None  ---- None
+2003:     -None  ---- None
+2004:     -None  ---- None
+2005:     -None  ---- None
+2006:     -None  ---- None
+2007:20000-SCORE=0  ---- SCORE=0
+2008:     -MXSCOR=0  ---- MXSCOR=0
+2009:     -None  ---- None
+2010:     -None  ---- None
+2011:     -None  ---- None
+2012:     -None  ---- None
+2013:     -DO 20010 I=50,MAXTRS  ---- DO 20010 I=50,MAXTRS
+2014:     -IF(PTEXT(I).EQ.0)GOTO 20010  ---- IF(PTEXT(I).EQ.0)GOTO 20010
+2015:     -K=12  ---- K=12
+2016:     -IF(I.EQ.CHEST)K=14  ---- IF(I.EQ.CHEST)K=14
+2017:     -IF(I.GT.CHEST)K=16  ---- IF(I.GT.CHEST)K=16
+2018:     -IF(PROP(I).GE.0)SCORE=SCORE+2  ---- IF(PROP(I).GE.0)SCORE=SCORE+2
+2019:     -IF(PLACE(I).EQ.3.AND.PROP(I).EQ.0)SCORE=SCORE+K-2  ---- IF(PLACE(I).EQ.3.AND.PROP(I).EQ.0)SCORE=SCORE+K-2
+2020:     -MXSCOR=MXSCOR+K  ---- MXSCOR=MXSCOR+K
+2021:20010-CONTINUE  ---- CONTINUE
+2022:     -None  ---- None
+2023:     -None  ---- None
+2024:     -None  ---- None
+2025:     -None  ---- None
+2026:     -None  ---- None
+2027:     -None  ---- None
+2028:     -None  ---- None
+2029:     -None  ---- None
+2030:     -SCORE=SCORE+(MAXDIE-NUMDIE)*10  ---- SCORE=SCORE+(MAXDIE-NUMDIE)*10
+2031:     -MXSCOR=MXSCOR+MAXDIE*10  ---- MXSCOR=MXSCOR+MAXDIE*10
+2032:     -IF(.NOT.(SCORNG.OR.GAVEUP))SCORE=SCORE+4  ---- IF(.NOT.(SCORNG.OR.GAVEUP))SCORE=SCORE+4
+2033:     -MXSCOR=MXSCOR+4  ---- MXSCOR=MXSCOR+4
+2034:     -IF(DFLAG.NE.0)SCORE=SCORE+25  ---- IF(DFLAG.NE.0)SCORE=SCORE+25
+2035:     -MXSCOR=MXSCOR+25  ---- MXSCOR=MXSCOR+25
+2036:     -IF(CLOSNG)SCORE=SCORE+25  ---- IF(CLOSNG)SCORE=SCORE+25
+2037:     -MXSCOR=MXSCOR+25  ---- MXSCOR=MXSCOR+25
+2038:     -IF(.NOT.CLOSED)GOTO 20020  ---- IF(.NOT.CLOSED)GOTO 20020
+2039:     -IF(BONUS.EQ.0)SCORE=SCORE+10  ---- IF(BONUS.EQ.0)SCORE=SCORE+10
+2040:     -IF(BONUS.EQ.135)SCORE=SCORE+25  ---- IF(BONUS.EQ.135)SCORE=SCORE+25
+2041:     -IF(BONUS.EQ.134)SCORE=SCORE+30  ---- IF(BONUS.EQ.134)SCORE=SCORE+30
+2042:     -IF(BONUS.EQ.133)SCORE=SCORE+45  ---- IF(BONUS.EQ.133)SCORE=SCORE+45
+2043:20020-MXSCOR=MXSCOR+45  ---- MXSCOR=MXSCOR+45
+2044:     -None  ---- None
+2045:     -None  ---- None
+2046:     -None  ---- None
+2047:     -IF(PLACE(MAGZIN).EQ.108)SCORE=SCORE+1  ---- IF(PLACE(MAGZIN).EQ.108)SCORE=SCORE+1
+2048:     -MXSCOR=MXSCOR+1  ---- MXSCOR=MXSCOR+1
+2049:     -None  ---- None
+2050:     -None  ---- None
+2051:     -None  ---- None
+2052:     -SCORE=SCORE+2  ---- SCORE=SCORE+2
+2053:     -MXSCOR=MXSCOR+2  ---- MXSCOR=MXSCOR+2
+2054:     -None  ---- None
+2055:     -None  ---- None
+2056:     -None  ---- None
+2057:     -DO 20030 I=1,HNTMAX  ---- DO 20030 I=1,HNTMAX
+2058:20030-IF(HINTED(I))SCORE=SCORE-HINTS(I,2)  ---- IF(HINTED(I))SCORE=SCORE-HINTS(I,2)
+2059:     -None  ---- None
+2060:     -None  ---- None
+2061:     -None  ---- None
+2062:     -IF(SCORNG)GOTO 8241  ---- IF(SCORNG)GOTO 8241
+2063:     -None  ---- None
+2064:     -None  ---- None
+2065:     -None  ---- None
+2066:     -TYPE 20100,SCORE,MXSCOR,TURNS  ---- TYPE 20100,SCORE,MXSCOR,TURNS
+2067:20100-FORMAT(///' You scored',I4,' out of a possible',I4,  ---- FORMAT(///' You scored',I4,' out of a possible',I4,', using',I5,' turns.')
+2068:     1', using',I5,' turns.')  ---- ', using',I5,' turns.')
+2069:     -None  ---- None
+2070:     -DO 20200 I=1,CLSSES  ---- DO 20200 I=1,CLSSES
+2071:     -IF(CVAL(I).GE.SCORE)GOTO 20210  ---- IF(CVAL(I).GE.SCORE)GOTO 20210
+2072:20200-CONTINUE  ---- CONTINUE
+2073:     -TYPE 20202  ---- TYPE 20202
+2074:20202-FORMAT(/' You just went off my scale!!'/)  ---- FORMAT(/' You just went off my scale!!'/)
+2075:     -GOTO 25000  ---- GOTO 25000
+2076:     -None  ---- None
+2077:20210-CALL SPEAK(CTEXT(I))  ---- CALL SPEAK(CTEXT(I))
+2078:     -IF(I.EQ.CLSSES-1)GOTO 20220  ---- IF(I.EQ.CLSSES-1)GOTO 20220
+2079:     -K=CVAL(I)+1-SCORE  ---- K=CVAL(I)+1-SCORE
+2080:     -KK='s.'  ---- KK='s.'
+2081:     -IF(K.EQ.1)KK='. '  ---- IF(K.EQ.1)KK='. '
+2082:     -TYPE 20212,K,KK  ---- TYPE 20212,K,KK
+2083:20212-FORMAT(/' To achieve the next higher rating, you need',I3,  ---- FORMAT(/' To achieve the next higher rating, you need',I3,' more point',A2/)
+2084:     1' more point',A2/)  ---- ' more point',A2/)
+2085:     -GOTO 25000  ---- GOTO 25000
+2086:     -None  ---- None
+2087:20220-TYPE 20222  ---- TYPE 20222
+2088:20222-FORMAT(/' To achieve the next higher rating ',  ---- FORMAT(/' To achieve the next higher rating ','would be a neat trick!'//' Congratulations!!'/)
+2089:     1'would be a neat trick!'//' Congratulations!!'/)  ---- 'would be a neat trick!'//' Congratulations!!'/)
+2090:     -None  ---- None
+2091:25000-STOP  ---- STOP
+2092:     -None  ---- None
+2093:     -None  ---- None
+2094:     -END  ---- END
+2095:     -None  ---- None
+2096:     -None  ---- None
+2097:     -None  ---- None
+2098:     -SUBROUTINE SPEAK(N)  ---- SUBROUTINE SPEAK(N)
+2099:     -None  ---- None
+2100:     -None  ---- None
+2101:     -None  ---- None
+2102:     -None  ---- None
+2103:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2104:     -LOGICAL BLKLIN  ---- LOGICAL BLKLIN
+2105:     -COMMON /TXTCOM/ RTEXT,LINES  ---- COMMON /TXTCOM/ RTEXT,LINES
+2106:     -COMMON /BLKCOM/ BLKLIN  ---- COMMON /BLKCOM/ BLKLIN
+2107:     -DIMENSION RTEXT(205),LINES(9650)  ---- DIMENSION RTEXT(205),LINES(9650)
+2108:     -None  ---- None
+2109:     -IF(N.EQ.0)RETURN  ---- IF(N.EQ.0)RETURN
+2110:     -IF(LINES(N+1).EQ.'>$<')RETURN  ---- IF(LINES(N+1).EQ.'>$<')RETURN
+2111:     -IF(BLKLIN)TYPE 2  ---- IF(BLKLIN)TYPE 2
+2112:     -K=N  ---- K=N
+2113:1    -L=IABS(LINES(K))-1  ---- L=IABS(LINES(K))-1
+2114:     -K=K+1  ---- K=K+1
+2115:     -TYPE 2,(LINES(I),I=K,L)  ---- TYPE 2,(LINES(I),I=K,L)
+2116:2    -FORMAT(' ',14A5)  ---- FORMAT(' ',14A5)
+2117:     -K=L+1  ---- K=L+1
+2118:     -IF(LINES(K).GE.0)GOTO 1  ---- IF(LINES(K).GE.0)GOTO 1
+2119:     -RETURN  ---- RETURN
+2120:     -END  ---- END
+2121:     -None  ---- None
+2122:     -None  ---- None
+2123:     -None  ---- None
+2124:     -SUBROUTINE PSPEAK(MSG,SKIP)  ---- SUBROUTINE PSPEAK(MSG,SKIP)
+2125:     -None  ---- None
+2126:     -None  ---- None
+2127:     -None  ---- None
+2128:     -None  ---- None
+2129:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2130:     -COMMON /TXTCOM/ RTEXT,LINES  ---- COMMON /TXTCOM/ RTEXT,LINES
+2131:     -COMMON /PTXCOM/ PTEXT  ---- COMMON /PTXCOM/ PTEXT
+2132:     -DIMENSION RTEXT(205),LINES(9650),PTEXT(100)  ---- DIMENSION RTEXT(205),LINES(9650),PTEXT(100)
+2133:     -None  ---- None
+2134:     -M=PTEXT(MSG)  ---- M=PTEXT(MSG)
+2135:     -IF(SKIP.LT.0)GOTO 9  ---- IF(SKIP.LT.0)GOTO 9
+2136:     -DO 3 I=0,SKIP  ---- DO 3 I=0,SKIP
+2137:1    -M=IABS(LINES(M))  ---- M=IABS(LINES(M))
+2138:     -IF(LINES(M).GE.0)GOTO 1  ---- IF(LINES(M).GE.0)GOTO 1
+2139:3    -CONTINUE  ---- CONTINUE
+2140:9    -CALL SPEAK(M)  ---- CALL SPEAK(M)
+2141:     -RETURN  ---- RETURN
+2142:     -END  ---- END
+2143:     -None  ---- None
+2144:     -None  ---- None
+2145:     -None  ---- None
+2146:     -SUBROUTINE RSPEAK(I)  ---- SUBROUTINE RSPEAK(I)
+2147:     -None  ---- None
+2148:     -None  ---- None
+2149:     -None  ---- None
+2150:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2151:     -COMMON /TXTCOM/ RTEXT  ---- COMMON /TXTCOM/ RTEXT
+2152:     -DIMENSION RTEXT(205)  ---- DIMENSION RTEXT(205)
+2153:     -None  ---- None
+2154:     -IF(I.NE.0)CALL SPEAK(RTEXT(I))  ---- IF(I.NE.0)CALL SPEAK(RTEXT(I))
+2155:     -RETURN  ---- RETURN
+2156:     -END  ---- END
+2157:     -None  ---- None
+2158:     -None  ---- None
+2159:     -None  ---- None
+2160:     -SUBROUTINE MSPEAK(I)  ---- SUBROUTINE MSPEAK(I)
+2161:     -None  ---- None
+2162:     -None  ---- None
+2163:     -None  ---- None
+2164:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2165:     -COMMON /MTXCOM/ MTEXT  ---- COMMON /MTXCOM/ MTEXT
+2166:     -DIMENSION MTEXT(35)  ---- DIMENSION MTEXT(35)
+2167:     -None  ---- None
+2168:     -IF(I.NE.0)CALL SPEAK(MTEXT(I))  ---- IF(I.NE.0)CALL SPEAK(MTEXT(I))
+2169:     -RETURN  ---- RETURN
+2170:     -END  ---- END
+2171:     -None  ---- None
+2172:     -None  ---- None
+2173:     -None  ---- None
+2174:     -SUBROUTINE GETIN(WORD1,WORD1X,WORD2,WORD2X)  ---- SUBROUTINE GETIN(WORD1,WORD1X,WORD2,WORD2X)
+2175:     -None  ---- None
+2176:     -None  ---- None
+2177:     -None  ---- None
+2178:     -None  ---- None
+2179:     -None  ---- None
+2180:     -None  ---- None
+2181:     -None  ---- None
+2182:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2183:     -LOGICAL BLKLIN  ---- LOGICAL BLKLIN
+2184:     -COMMON /BLKCOM/ BLKLIN  ---- COMMON /BLKCOM/ BLKLIN
+2185:     -DIMENSION A(5),MASKS(6)  ---- DIMENSION A(5),MASKS(6)
+2186:     -DATA MASKS/"4000000000,"20000000,"100000,"400,"2,0/  ---- DATA MASKS/"4000000000,"20000000,"100000,"400,"2,0/,BLANKS/'     '/
+2187:     1,BLANKS/'     '/  ---- ,BLANKS/'     '/
+2188:     -None  ---- None
+2189:     -IF(BLKLIN)TYPE 1  ---- IF(BLKLIN)TYPE 1
+2190:1    -FORMAT()  ---- FORMAT()
+2191:2    -ACCEPT 3,(A(I),I=1,4)  ---- ACCEPT 3,(A(I),I=1,4)
+2192:3    -FORMAT(4A5)  ---- FORMAT(4A5)
+2193:     -J=0  ---- J=0
+2194:     -DO 9 I=1,4  ---- DO 9 I=1,4
+2195:     -IF(A(I).NE.BLANKS)J=1  ---- IF(A(I).NE.BLANKS)J=1
+2196:9    -A(I)=A(I).AND.(SHIFT((A(I).AND.'@@@@@'),-1).XOR.-1)  ---- A(I)=A(I).AND.(SHIFT((A(I).AND.'@@@@@'),-1).XOR.-1)
+2197:     -IF(BLKLIN.AND.J.EQ.0)GOTO 2  ---- IF(BLKLIN.AND.J.EQ.0)GOTO 2
+2198:     -None  ---- None
+2199:     -SECOND=0  ---- SECOND=0
+2200:     -WORD1=A(1)  ---- WORD1=A(1)
+2201:     -WORD1X=A(2)  ---- WORD1X=A(2)
+2202:     -WORD2=0  ---- WORD2=0
+2203:     -None  ---- None
+2204:     -DO 10 J=1,4  ---- DO 10 J=1,4
+2205:     -DO 10 K=1,5  ---- DO 10 K=1,5
+2206:     -MSK="774000000000  ---- MSK="774000000000
+2207:     -IF(K.NE.1)MSK="177*MASKS(K)  ---- IF(K.NE.1)MSK="177*MASKS(K)
+2208:     -IF(((A(J).XOR.BLANKS).AND.MSK).EQ.0)GOTO 15  ---- IF(((A(J).XOR.BLANKS).AND.MSK).EQ.0)GOTO 15
+2209:     -IF(SECOND.EQ.0)GOTO 10  ---- IF(SECOND.EQ.0)GOTO 10
+2210:     -MSK=-MASKS(6-K)  ---- MSK=-MASKS(6-K)
+2211:     -WORD2=(SHIFT(A(J),7*(K-1)).AND.MSK)  ---- WORD2=(SHIFT(A(J),7*(K-1)).AND.MSK)+(SHIFT(A(J+1),7*(K-6)).AND.(-2-MSK))
+2212:     1+(SHIFT(A(J+1),7*(K-6)).AND.(-2-MSK))  ---- +(SHIFT(A(J+1),7*(K-6)).AND.(-2-MSK))
+2213:     -WORD2X=(SHIFT(A(J+1),7*(K-1)).AND.MSK)  ---- WORD2X=(SHIFT(A(J+1),7*(K-1)).AND.MSK)+(SHIFT(A(J+2),7*(K-6)).AND.(-2-MSK))
+2214:     1+(SHIFT(A(J+2),7*(K-6)).AND.(-2-MSK))  ---- +(SHIFT(A(J+2),7*(K-6)).AND.(-2-MSK))
+2215:     -RETURN  ---- RETURN
+2216:     -None  ---- None
+2217:15   -IF(SECOND.EQ.1)GOTO 10  ---- IF(SECOND.EQ.1)GOTO 10
+2218:     -SECOND=1  ---- SECOND=1
+2219:     -IF(J.EQ.1)WORD1=(WORD1.AND.-MASKS(K))  ---- IF(J.EQ.1)WORD1=(WORD1.AND.-MASKS(K)).OR.(BLANKS.AND.(-MASKS(K).XOR.-1))
+2220:     1.OR.(BLANKS.AND.(-MASKS(K).XOR.-1))  ---- .OR.(BLANKS.AND.(-MASKS(K).XOR.-1))
+2221:10   -CONTINUE  ---- CONTINUE
+2222:     -RETURN  ---- RETURN
+2223:     -END  ---- END
+2224:     -None  ---- None
+2225:     -None  ---- None
+2226:     -None  ---- None
+2227:     -LOGICAL FUNCTION YES(X,Y,Z)  ---- LOGICAL FUNCTION YES(X,Y,Z)
+2228:     -None  ---- None
+2229:     -None  ---- None
+2230:     -None  ---- None
+2231:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2232:     -EXTERNAL RSPEAK  ---- EXTERNAL RSPEAK
+2233:     -LOGICAL YESX  ---- LOGICAL YESX
+2234:     -None  ---- None
+2235:     -YES=YESX(X,Y,Z,RSPEAK)  ---- YES=YESX(X,Y,Z,RSPEAK)
+2236:     -RETURN  ---- RETURN
+2237:     -END  ---- END
+2238:     -None  ---- None
+2239:     -None  ---- None
+2240:     -None  ---- None
+2241:     -LOGICAL FUNCTION YESM(X,Y,Z)  ---- LOGICAL FUNCTION YESM(X,Y,Z)
+2242:     -None  ---- None
+2243:     -None  ---- None
+2244:     -None  ---- None
+2245:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2246:     -EXTERNAL MSPEAK  ---- EXTERNAL MSPEAK
+2247:     -LOGICAL YESX  ---- LOGICAL YESX
+2248:     -None  ---- None
+2249:     -YESM=YESX(X,Y,Z,MSPEAK)  ---- YESM=YESX(X,Y,Z,MSPEAK)
+2250:     -RETURN  ---- RETURN
+2251:     -END  ---- END
+2252:     -None  ---- None
+2253:     -None  ---- None
+2254:     -None  ---- None
+2255:     -LOGICAL FUNCTION YESX(X,Y,Z,SPK)  ---- LOGICAL FUNCTION YESX(X,Y,Z,SPK)
+2256:     -None  ---- None
+2257:     -None  ---- None
+2258:     -None  ---- None
+2259:     -None  ---- None
+2260:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2261:     -None  ---- None
+2262:1    -IF(X.NE.0)CALL SPK(X)  ---- IF(X.NE.0)CALL SPK(X)
+2263:     -CALL GETIN(REPLY,JUNK1,JUNK2,JUNK3)  ---- CALL GETIN(REPLY,JUNK1,JUNK2,JUNK3)
+2264:     -IF(REPLY.EQ.'YES'.OR.REPLY.EQ.'Y')GOTO 10  ---- IF(REPLY.EQ.'YES'.OR.REPLY.EQ.'Y')GOTO 10
+2265:     -IF(REPLY.EQ.'NO'.OR.REPLY.EQ.'N')GOTO 20  ---- IF(REPLY.EQ.'NO'.OR.REPLY.EQ.'N')GOTO 20
+2266:     -TYPE 9  ---- TYPE 9
+2267:9    -FORMAT(/' Please answer the question.')  ---- FORMAT(/' Please answer the question.')
+2268:     -GOTO 1  ---- GOTO 1
+2269:10   -YESX=.TRUE.  ---- YESX=.TRUE.
+2270:     -IF(Y.NE.0)CALL SPK(Y)  ---- IF(Y.NE.0)CALL SPK(Y)
+2271:     -RETURN  ---- RETURN
+2272:20   -YESX=.FALSE.  ---- YESX=.FALSE.
+2273:     -IF(Z.NE.0)CALL SPK(Z)  ---- IF(Z.NE.0)CALL SPK(Z)
+2274:     -RETURN  ---- RETURN
+2275:     -END  ---- END
+2276:     -None  ---- None
+2277:     -None  ---- None
+2278:     -None  ---- None
+2279:     -SUBROUTINE A5TOA1(A,B,C,CHARS,LENG)  ---- SUBROUTINE A5TOA1(A,B,C,CHARS,LENG)
+2280:     -None  ---- None
+2281:     -None  ---- None
+2282:     -None  ---- None
+2283:     -None  ---- None
+2284:     -None  ---- None
+2285:     -None  ---- None
+2286:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2287:     -DIMENSION CHARS(20),WORDS(3)  ---- DIMENSION CHARS(20),WORDS(3)
+2288:     -DATA MASK,BLANK/"774000000000,' '/  ---- DATA MASK,BLANK/"774000000000,' '/
+2289:     -None  ---- None
+2290:     -WORDS(1)=A  ---- WORDS(1)=A
+2291:     -WORDS(2)=B  ---- WORDS(2)=B
+2292:     -WORDS(3)=C  ---- WORDS(3)=C
+2293:     -POSN=1  ---- POSN=1
+2294:     -DO 1 WORD=1,3  ---- DO 1 WORD=1,3
+2295:     -IF(WORD.EQ.2.AND.POSN.NE.6)GOTO 1  ---- IF(WORD.EQ.2.AND.POSN.NE.6)GOTO 1
+2296:     -IF(WORD.EQ.3.AND.C.LT.0)POSN=POSN+1  ---- IF(WORD.EQ.3.AND.C.LT.0)POSN=POSN+1
+2297:     -DO 2 CH=1,5  ---- DO 2 CH=1,5
+2298:     -CHARS(POSN)=(WORDS(WORD).AND.MASK)+(BLANK-(BLANK.AND.MASK))  ---- CHARS(POSN)=(WORDS(WORD).AND.MASK)+(BLANK-(BLANK.AND.MASK))
+2299:     -IF(CHARS(POSN).EQ.BLANK)GOTO 1  ---- IF(CHARS(POSN).EQ.BLANK)GOTO 1
+2300:     -LENG=POSN  ---- LENG=POSN
+2301:     -WORDS(WORD)=SHIFT(WORDS(WORD),7)  ---- WORDS(WORD)=SHIFT(WORDS(WORD),7)
+2302:2    -POSN=POSN+1  ---- POSN=POSN+1
+2303:1    -CONTINUE  ---- CONTINUE
+2304:     -RETURN  ---- RETURN
+2305:     -END  ---- END
+2306:     -None  ---- None
+2307:     -None  ---- None
+2308:     -None  ---- None
+2309:     -INTEGER FUNCTION VOCAB(ID,INIT)  ---- INTEGER FUNCTION VOCAB(ID,INIT)
+2310:     -None  ---- None
+2311:     -None  ---- None
+2312:     -None  ---- None
+2313:     -None  ---- None
+2314:     -None  ---- None
+2315:     -None  ---- None
+2316:     -None  ---- None
+2317:     -None  ---- None
+2318:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2319:     -COMMON /VOCCOM/ KTAB,ATAB,TABSIZ  ---- COMMON /VOCCOM/ KTAB,ATAB,TABSIZ
+2320:     -DIMENSION KTAB(300),ATAB(300)  ---- DIMENSION KTAB(300),ATAB(300)
+2321:     -None  ---- None
+2322:     -HASH=ID.XOR.'PHROG'  ---- HASH=ID.XOR.'PHROG'
+2323:     -DO 1 I=1,TABSIZ  ---- DO 1 I=1,TABSIZ
+2324:     -IF(KTAB(I).EQ.-1)GOTO 2  ---- IF(KTAB(I).EQ.-1)GOTO 2
+2325:     -IF(INIT.GE.0.AND.KTAB(I)/1000.NE.INIT)GOTO 1  ---- IF(INIT.GE.0.AND.KTAB(I)/1000.NE.INIT)GOTO 1
+2326:     -IF(ATAB(I).EQ.HASH)GOTO 3  ---- IF(ATAB(I).EQ.HASH)GOTO 3
+2327:1    -CONTINUE  ---- CONTINUE
+2328:     -CALL BUG(21)  ---- CALL BUG(21)
+2329:     -None  ---- None
+2330:2    -VOCAB=-1  ---- VOCAB=-1
+2331:     -IF(INIT.LT.0)RETURN  ---- IF(INIT.LT.0)RETURN
+2332:     -CALL BUG(5)  ---- CALL BUG(5)
+2333:     -None  ---- None
+2334:3    -VOCAB=KTAB(I)  ---- VOCAB=KTAB(I)
+2335:     -IF(INIT.GE.0)VOCAB=MOD(VOCAB,1000)  ---- IF(INIT.GE.0)VOCAB=MOD(VOCAB,1000)
+2336:     -RETURN  ---- RETURN
+2337:     -END  ---- END
+2338:     -None  ---- None
+2339:     -None  ---- None
+2340:     -None  ---- None
+2341:     -SUBROUTINE DSTROY(OBJECT)  ---- SUBROUTINE DSTROY(OBJECT)
+2342:     -None  ---- None
+2343:     -None  ---- None
+2344:     -None  ---- None
+2345:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2346:     -None  ---- None
+2347:     -CALL MOVE(OBJECT,0)  ---- CALL MOVE(OBJECT,0)
+2348:     -RETURN  ---- RETURN
+2349:     -END  ---- END
+2350:     -None  ---- None
+2351:     -None  ---- None
+2352:     -None  ---- None
+2353:     -SUBROUTINE JUGGLE(OBJECT)  ---- SUBROUTINE JUGGLE(OBJECT)
+2354:     -None  ---- None
+2355:     -None  ---- None
+2356:     -None  ---- None
+2357:     -None  ---- None
+2358:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2359:     -COMMON /PLACOM/ ATLOC,LINK,PLACE,FIXED,HOLDNG  ---- COMMON /PLACOM/ ATLOC,LINK,PLACE,FIXED,HOLDNG
+2360:     -DIMENSION ATLOC(150),LINK(200),PLACE(100),FIXED(100)  ---- DIMENSION ATLOC(150),LINK(200),PLACE(100),FIXED(100)
+2361:     -None  ---- None
+2362:     -I=PLACE(OBJECT)  ---- I=PLACE(OBJECT)
+2363:     -J=FIXED(OBJECT)  ---- J=FIXED(OBJECT)
+2364:     -CALL MOVE(OBJECT,I)  ---- CALL MOVE(OBJECT,I)
+2365:     -CALL MOVE(OBJECT+100,J)  ---- CALL MOVE(OBJECT+100,J)
+2366:     -RETURN  ---- RETURN
+2367:     -END  ---- END
+2368:     -None  ---- None
+2369:     -None  ---- None
+2370:     -None  ---- None
+2371:     -SUBROUTINE MOVE(OBJECT,WHERE)  ---- SUBROUTINE MOVE(OBJECT,WHERE)
+2372:     -None  ---- None
+2373:     -None  ---- None
+2374:     -None  ---- None
+2375:     -None  ---- None
+2376:     -None  ---- None
+2377:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2378:     -COMMON /PLACOM/ ATLOC,LINK,PLACE,FIXED,HOLDNG  ---- COMMON /PLACOM/ ATLOC,LINK,PLACE,FIXED,HOLDNG
+2379:     -DIMENSION ATLOC(150),LINK(200),PLACE(100),FIXED(100)  ---- DIMENSION ATLOC(150),LINK(200),PLACE(100),FIXED(100)
+2380:     -None  ---- None
+2381:     -IF(OBJECT.GT.100)GOTO 1  ---- IF(OBJECT.GT.100)GOTO 1
+2382:     -FROM=PLACE(OBJECT)  ---- FROM=PLACE(OBJECT)
+2383:     -GOTO 2  ---- GOTO 2
+2384:1    -FROM=FIXED(OBJECT-100)  ---- FROM=FIXED(OBJECT-100)
+2385:2    -IF(FROM.GT.0.AND.FROM.LE.300)CALL CARRY(OBJECT,FROM)  ---- IF(FROM.GT.0.AND.FROM.LE.300)CALL CARRY(OBJECT,FROM)
+2386:     -CALL DROP(OBJECT,WHERE)  ---- CALL DROP(OBJECT,WHERE)
+2387:     -RETURN  ---- RETURN
+2388:     -END  ---- END
+2389:     -None  ---- None
+2390:     -None  ---- None
+2391:     -None  ---- None
+2392:     -INTEGER FUNCTION PUT(OBJECT,WHERE,PVAL)  ---- INTEGER FUNCTION PUT(OBJECT,WHERE,PVAL)
+2393:     -None  ---- None
+2394:     -None  ---- None
+2395:     -None  ---- None
+2396:     -None  ---- None
+2397:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2398:     -None  ---- None
+2399:     -CALL MOVE(OBJECT,WHERE)  ---- CALL MOVE(OBJECT,WHERE)
+2400:     -PUT=(-1)-PVAL  ---- PUT=(-1)-PVAL
+2401:     -RETURN  ---- RETURN
+2402:     -END  ---- END
+2403:     -None  ---- None
+2404:     -None  ---- None
+2405:     -None  ---- None
+2406:     -SUBROUTINE CARRY(OBJECT,WHERE)  ---- SUBROUTINE CARRY(OBJECT,WHERE)
+2407:     -None  ---- None
+2408:     -None  ---- None
+2409:     -None  ---- None
+2410:     -None  ---- None
+2411:     -None  ---- None
+2412:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2413:     -COMMON /PLACOM/ ATLOC,LINK,PLACE,FIXED,HOLDNG  ---- COMMON /PLACOM/ ATLOC,LINK,PLACE,FIXED,HOLDNG
+2414:     -DIMENSION ATLOC(150),LINK(200),PLACE(100),FIXED(100)  ---- DIMENSION ATLOC(150),LINK(200),PLACE(100),FIXED(100)
+2415:     -None  ---- None
+2416:     -IF(OBJECT.GT.100)GOTO 5  ---- IF(OBJECT.GT.100)GOTO 5
+2417:     -IF(PLACE(OBJECT).EQ.-1)RETURN  ---- IF(PLACE(OBJECT).EQ.-1)RETURN
+2418:     -PLACE(OBJECT)=-1  ---- PLACE(OBJECT)=-1
+2419:     -HOLDNG=HOLDNG+1  ---- HOLDNG=HOLDNG+1
+2420:5    -IF(ATLOC(WHERE).NE.OBJECT)GOTO 6  ---- IF(ATLOC(WHERE).NE.OBJECT)GOTO 6
+2421:     -ATLOC(WHERE)=LINK(OBJECT)  ---- ATLOC(WHERE)=LINK(OBJECT)
+2422:     -RETURN  ---- RETURN
+2423:6    -TEMP=ATLOC(WHERE)  ---- TEMP=ATLOC(WHERE)
+2424:7    -IF(LINK(TEMP).EQ.OBJECT)GOTO 8  ---- IF(LINK(TEMP).EQ.OBJECT)GOTO 8
+2425:     -TEMP=LINK(TEMP)  ---- TEMP=LINK(TEMP)
+2426:     -GOTO 7  ---- GOTO 7
+2427:8    -LINK(TEMP)=LINK(OBJECT)  ---- LINK(TEMP)=LINK(OBJECT)
+2428:     -RETURN  ---- RETURN
+2429:     -END  ---- END
+2430:     -None  ---- None
+2431:     -None  ---- None
+2432:     -None  ---- None
+2433:     -SUBROUTINE DROP(OBJECT,WHERE)  ---- SUBROUTINE DROP(OBJECT,WHERE)
+2434:     -None  ---- None
+2435:     -None  ---- None
+2436:     -None  ---- None
+2437:     -None  ---- None
+2438:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2439:     -COMMON /PLACOM/ ATLOC,LINK,PLACE,FIXED,HOLDNG  ---- COMMON /PLACOM/ ATLOC,LINK,PLACE,FIXED,HOLDNG
+2440:     -DIMENSION ATLOC(150),LINK(200),PLACE(100),FIXED(100)  ---- DIMENSION ATLOC(150),LINK(200),PLACE(100),FIXED(100)
+2441:     -None  ---- None
+2442:     -IF(OBJECT.GT.100)GOTO 1  ---- IF(OBJECT.GT.100)GOTO 1
+2443:     -IF(PLACE(OBJECT).EQ.-1)HOLDNG=HOLDNG-1  ---- IF(PLACE(OBJECT).EQ.-1)HOLDNG=HOLDNG-1
+2444:     -PLACE(OBJECT)=WHERE  ---- PLACE(OBJECT)=WHERE
+2445:     -GOTO 2  ---- GOTO 2
+2446:1    -FIXED(OBJECT-100)=WHERE  ---- FIXED(OBJECT-100)=WHERE
+2447:2    -IF(WHERE.LE.0)RETURN  ---- IF(WHERE.LE.0)RETURN
+2448:     -LINK(OBJECT)=ATLOC(WHERE)  ---- LINK(OBJECT)=ATLOC(WHERE)
+2449:     -ATLOC(WHERE)=OBJECT  ---- ATLOC(WHERE)=OBJECT
+2450:     -RETURN  ---- RETURN
+2451:     -END  ---- END
+2452:     -None  ---- None
+2453:     -None  ---- None
+2454:     -None  ---- None
+2455:     -LOGICAL FUNCTION START(DUMMY)  ---- LOGICAL FUNCTION START(DUMMY)
+2456:     -None  ---- None
+2457:     -None  ---- None
+2458:     -None  ---- None
+2459:     -None  ---- None
+2460:     -None  ---- None
+2461:     -None  ---- None
+2462:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2463:     -LOGICAL PTIME,SOON,YESM  ---- LOGICAL PTIME,SOON,YESM
+2464:     -DIMENSION HNAME(4)  ---- DIMENSION HNAME(4)
+2465:     -COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME,  ---- COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME,SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP
+2466:     1SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP  ---- SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP
+2467:     -None  ---- None
+2468:     -None  ---- None
+2469:     -None  ---- None
+2470:     -None  ---- None
+2471:     -None  ---- None
+2472:     -None  ---- None
+2473:     -CALL DATIME(D,T)  ---- CALL DATIME(D,T)
+2474:     -PRIMTM=WKDAY  ---- PRIMTM=WKDAY
+2475:     -IF(MOD(D,7).LE.1)PRIMTM=WKEND  ---- IF(MOD(D,7).LE.1)PRIMTM=WKEND
+2476:     -IF(D.GE.HBEGIN.AND.D.LE.HEND)PRIMTM=HOLID  ---- IF(D.GE.HBEGIN.AND.D.LE.HEND)PRIMTM=HOLID
+2477:     -PTIME=(PRIMTM.AND.SHIFT(1,T/60)).NE.0  ---- PTIME=(PRIMTM.AND.SHIFT(1,T/60)).NE.0
+2478:     -SOON=.FALSE.  ---- SOON=.FALSE.
+2479:     -IF(SETUP.GE.0)GOTO 20  ---- IF(SETUP.GE.0)GOTO 20
+2480:     -DELAY=(D-SAVED)*1440+(T-SAVET)  ---- DELAY=(D-SAVED)*1440+(T-SAVET)
+2481:     -IF(DELAY.GE.LATNCY)GOTO 20  ---- IF(DELAY.GE.LATNCY)GOTO 20
+2482:     -TYPE 10,DELAY  ---- TYPE 10,DELAY
+2483:10   -FORMAT(' This adventure was suspended a mere',I3,' minutes ago.')  ---- FORMAT(' This adventure was suspended a mere',I3,' minutes ago.')
+2484:     -SOON=.TRUE.  ---- SOON=.TRUE.
+2485:     -IF(DELAY.GE.LATNCY/3)GOTO 20  ---- IF(DELAY.GE.LATNCY/3)GOTO 20
+2486:     -CALL MSPEAK(2)  ---- CALL MSPEAK(2)
+2487:     -STOP  ---- STOP
+2488:     -None  ---- None
+2489:     -None  ---- None
+2490:     -None  ---- None
+2491:20   -START=.FALSE.  ---- START=.FALSE.
+2492:     -IF(SOON)GOTO 30  ---- IF(SOON)GOTO 30
+2493:     -IF(PTIME)GOTO 25  ---- IF(PTIME)GOTO 25
+2494:22   -SAVED=-1  ---- SAVED=-1
+2495:     -RETURN  ---- RETURN
+2496:     -None  ---- None
+2497:     -None  ---- None
+2498:     -None  ---- None
+2499:     -None  ---- None
+2500:     -None  ---- None
+2501:25   -CALL MSPEAK(3)  ---- CALL MSPEAK(3)
+2502:     -CALL HOURS  ---- CALL HOURS
+2503:     -CALL MSPEAK(4)  ---- CALL MSPEAK(4)
+2504:     -IF(WIZARD(0))GOTO 22  ---- IF(WIZARD(0))GOTO 22
+2505:     -IF(SETUP.LT.0)GOTO 33  ---- IF(SETUP.LT.0)GOTO 33
+2506:     -START=YESM(5,7,7)  ---- START=YESM(5,7,7)
+2507:     -IF(START)GOTO 22  ---- IF(START)GOTO 22
+2508:     -STOP   ---- STOP 
+2509:     -None  ---- None
+2510:     -None  ---- None
+2511:     -None  ---- None
+2512:     -None  ---- None
+2513:30   -CALL MSPEAK(8)  ---- CALL MSPEAK(8)
+2514:     -IF(WIZARD(0))GOTO 22  ---- IF(WIZARD(0))GOTO 22
+2515:33   -CALL MSPEAK(9)  ---- CALL MSPEAK(9)
+2516:     -STOP  ---- STOP
+2517:     -END  ---- END
+2518:     -None  ---- None
+2519:     -None  ---- None
+2520:     -None  ---- None
+2521:     -SUBROUTINE MAINT  ---- SUBROUTINE MAINT
+2522:     -None  ---- None
+2523:     -None  ---- None
+2524:     -None  ---- None
+2525:     -None  ---- None
+2526:     -None  ---- None
+2527:     -None  ---- None
+2528:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2529:     -LOGICAL YESM,BLKLIN  ---- LOGICAL YESM,BLKLIN
+2530:     -DIMENSION HNAME(4),ABB(150)  ---- DIMENSION HNAME(4),ABB(150)
+2531:     -COMMON /BLKCOM/ BLKLIN  ---- COMMON /BLKCOM/ BLKLIN
+2532:     -COMMON /ABBCOM/ ABB  ---- COMMON /ABBCOM/ ABB
+2533:     -COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME,  ---- COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME,SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP
+2534:     1SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP  ---- SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP
+2535:     -None  ---- None
+2536:     -IF(.NOT.WIZARD(0))RETURN  ---- IF(.NOT.WIZARD(0))RETURN
+2537:     -BLKLIN=.FALSE.  ---- BLKLIN=.FALSE.
+2538:     -IF(YESM(10,0,0))CALL HOURS  ---- IF(YESM(10,0,0))CALL HOURS
+2539:     -IF(YESM(11,0,0))CALL NEWHRS  ---- IF(YESM(11,0,0))CALL NEWHRS
+2540:     -IF(.NOT.YESM(26,0,0))GOTO 10  ---- IF(.NOT.YESM(26,0,0))GOTO 10
+2541:     -CALL MSPEAK(27)  ---- CALL MSPEAK(27)
+2542:     -ACCEPT 1,HBEGIN  ---- ACCEPT 1,HBEGIN
+2543:1    -FORMAT(G)  ---- FORMAT(G)
+2544:     -CALL MSPEAK(28)  ---- CALL MSPEAK(28)
+2545:     -ACCEPT 1,HEND  ---- ACCEPT 1,HEND
+2546:     -CALL DATIME(D,T)  ---- CALL DATIME(D,T)
+2547:     -HBEGIN=HBEGIN+D  ---- HBEGIN=HBEGIN+D
+2548:     -HEND=HBEGIN+HEND-1  ---- HEND=HBEGIN+HEND-1
+2549:     -CALL MSPEAK(29)  ---- CALL MSPEAK(29)
+2550:     -ACCEPT 2,HNAME  ---- ACCEPT 2,HNAME
+2551:2    -FORMAT(4A5)  ---- FORMAT(4A5)
+2552:10   -TYPE 12,SHORT  ---- TYPE 12,SHORT
+2553:12   -FORMAT(' Length of short game (null to leave at',I3,'):')  ---- FORMAT(' Length of short game (null to leave at',I3,'):')
+2554:     -ACCEPT 1,X  ---- ACCEPT 1,X
+2555:     -IF(X.GT.0)SHORT=X  ---- IF(X.GT.0)SHORT=X
+2556:     -CALL MSPEAK(12)  ---- CALL MSPEAK(12)
+2557:     -CALL GETIN(X,Y,Y,Y)  ---- CALL GETIN(X,Y,Y,Y)
+2558:     -IF(X.NE.' ')MAGIC=X  ---- IF(X.NE.' ')MAGIC=X
+2559:     -CALL MSPEAK(13)  ---- CALL MSPEAK(13)
+2560:     -ACCEPT 1,X  ---- ACCEPT 1,X
+2561:     -IF(X.GT.0)MAGNM=X  ---- IF(X.GT.0)MAGNM=X
+2562:     -TYPE 16,LATNCY  ---- TYPE 16,LATNCY
+2563:16   -FORMAT(' Latency for restart (null to leave at',I3,'):')  ---- FORMAT(' Latency for restart (null to leave at',I3,'):')
+2564:     -ACCEPT 1,X  ---- ACCEPT 1,X
+2565:     -IF(X.GT.0.AND.X.LT.45)CALL MSPEAK(30)  ---- IF(X.GT.0.AND.X.LT.45)CALL MSPEAK(30)
+2566:     -IF(X.GT.0)LATNCY=MAX0(45,X)  ---- IF(X.GT.0)LATNCY=MAX0(45,X)
+2567:     -IF(YESM(14,0,0))CALL MOTD(.TRUE.)  ---- IF(YESM(14,0,0))CALL MOTD(.TRUE.)
+2568:     -SAVED=0  ---- SAVED=0
+2569:     -SETUP=2  ---- SETUP=2
+2570:     -ABB(1)=0  ---- ABB(1)=0
+2571:     -CALL MSPEAK(15)  ---- CALL MSPEAK(15)
+2572:     -BLKLIN=.TRUE.  ---- BLKLIN=.TRUE.
+2573:     -CALL CIAO  ---- CALL CIAO
+2574:     -END  ---- END
+2575:     -None  ---- None
+2576:     -None  ---- None
+2577:     -None  ---- None
+2578:     -LOGICAL FUNCTION WIZARD(DUMMY)  ---- LOGICAL FUNCTION WIZARD(DUMMY)
+2579:     -None  ---- None
+2580:     -None  ---- None
+2581:     -None  ---- None
+2582:     -None  ---- None
+2583:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2584:     -LOGICAL YESM  ---- LOGICAL YESM
+2585:     -DIMENSION HNAME(4),VAL(5)  ---- DIMENSION HNAME(4),VAL(5)
+2586:     -COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME,  ---- COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME,SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP
+2587:     1SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP  ---- SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP
+2588:     -None  ---- None
+2589:     -WIZARD=YESM(16,0,7)  ---- WIZARD=YESM(16,0,7)
+2590:     -IF(.NOT.WIZARD)RETURN  ---- IF(.NOT.WIZARD)RETURN
+2591:     -None  ---- None
+2592:     -None  ---- None
+2593:     -None  ---- None
+2594:     -CALL MSPEAK(17)  ---- CALL MSPEAK(17)
+2595:     -CALL GETIN(WORD,X,Y,Z)  ---- CALL GETIN(WORD,X,Y,Z)
+2596:     -IF(WORD.NE.MAGIC)GOTO 99  ---- IF(WORD.NE.MAGIC)GOTO 99
+2597:     -None  ---- None
+2598:     -None  ---- None
+2599:     -None  ---- None
+2600:     -CALL DATIME(D,T)  ---- CALL DATIME(D,T)
+2601:     -T=T*2+1  ---- T=T*2+1
+2602:     -WORD='@@@@@'  ---- WORD='@@@@@'
+2603:     -DO 15 Y=1,5  ---- DO 15 Y=1,5
+2604:     -X=79+MOD(D,5)  ---- X=79+MOD(D,5)
+2605:     -D=D/5  ---- D=D/5
+2606:     -DO 12 Z=1,X  ---- DO 12 Z=1,X
+2607:12   -T=MOD(T*1027,1048576)  ---- T=MOD(T*1027,1048576)
+2608:     -VAL(Y)=(T*26)/1048576+1  ---- VAL(Y)=(T*26)/1048576+1
+2609:15   -WORD=WORD+SHIFT(VAL(Y),36-7*Y)  ---- WORD=WORD+SHIFT(VAL(Y),36-7*Y)
+2610:     -IF(YESM(18,0,0))GOTO 99  ---- IF(YESM(18,0,0))GOTO 99
+2611:     -TYPE 18,WORD  ---- TYPE 18,WORD
+2612:18   -FORMAT(/1X,A5)  ---- FORMAT(/1X,A5)
+2613:     -CALL GETIN(WORD,X,Y,Z)  ---- CALL GETIN(WORD,X,Y,Z)
+2614:     -CALL DATIME(D,T)  ---- CALL DATIME(D,T)
+2615:     -T=(T/60)*40+(T/10)*10  ---- T=(T/60)*40+(T/10)*10
+2616:     -D=MAGNM  ---- D=MAGNM
+2617:     -DO 19 Y=1,5  ---- DO 19 Y=1,5
+2618:     -Z=MOD(Y,5)+1  ---- Z=MOD(Y,5)+1
+2619:     -X=MOD(IABS(VAL(Y)-VAL(Z))*MOD(D,10)+MOD(T,10),26)+1  ---- X=MOD(IABS(VAL(Y)-VAL(Z))*MOD(D,10)+MOD(T,10),26)+1
+2620:     -T=T/10  ---- T=T/10
+2621:     -D=D/10  ---- D=D/10
+2622:19   -WORD=WORD-SHIFT(X,36-7*Y)  ---- WORD=WORD-SHIFT(X,36-7*Y)
+2623:     -IF(WORD.NE.'@@@@@')GOTO 99  ---- IF(WORD.NE.'@@@@@')GOTO 99
+2624:     -None  ---- None
+2625:     -None  ---- None
+2626:     -None  ---- None
+2627:     -CALL MSPEAK(19)  ---- CALL MSPEAK(19)
+2628:     -RETURN  ---- RETURN
+2629:     -None  ---- None
+2630:     -None  ---- None
+2631:     -None  ---- None
+2632:99   -CALL MSPEAK(20)  ---- CALL MSPEAK(20)
+2633:     -WIZARD=.FALSE.  ---- WIZARD=.FALSE.
+2634:     -RETURN  ---- RETURN
+2635:     -END  ---- END
+2636:     -None  ---- None
+2637:     -None  ---- None
+2638:     -None  ---- None
+2639:     -SUBROUTINE HOURS  ---- SUBROUTINE HOURS
+2640:     -None  ---- None
+2641:     -None  ---- None
+2642:     -None  ---- None
+2643:     -None  ---- None
+2644:     -None  ---- None
+2645:     -None  ---- None
+2646:     -None  ---- None
+2647:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2648:     -DIMENSION HNAME(4),VAL(5)  ---- DIMENSION HNAME(4),VAL(5)
+2649:     -COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME  ---- COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME
+2650:     -None  ---- None
+2651:     -TYPE 1  ---- TYPE 1
+2652:1    -FORMAT()  ---- FORMAT()
+2653:     -CALL HOURSX(WKDAY,'Mon -',' Fri:')  ---- CALL HOURSX(WKDAY,'Mon -',' Fri:')
+2654:     -CALL HOURSX(WKEND,'Sat -',' Sun:')  ---- CALL HOURSX(WKEND,'Sat -',' Sun:')
+2655:     -CALL HOURSX(Holid,'Holid','ays: ')  ---- CALL HOURSX(Holid,'Holid','ays: ')
+2656:     -CALL DATIME(D,T)  ---- CALL DATIME(D,T)
+2657:     -IF(HEND.LT.D.OR.HEND.LT.HBEGIN)RETURN  ---- IF(HEND.LT.D.OR.HEND.LT.HBEGIN)RETURN
+2658:     -IF(HBEGIN.GT.D)GOTO 10  ---- IF(HBEGIN.GT.D)GOTO 10
+2659:     -TYPE 5,HNAME  ---- TYPE 5,HNAME
+2660:5    -FORMAT(/' Today is a holiday, namely ',4A5)  ---- FORMAT(/' Today is a holiday, namely ',4A5)
+2661:     -RETURN  ---- RETURN
+2662:     -None  ---- None
+2663:10   -D=HBEGIN-D  ---- D=HBEGIN-D
+2664:     -T='Days,'  ---- T='Days,'
+2665:     -IF(D.EQ.1)T='Day, '  ---- IF(D.EQ.1)T='Day, '
+2666:     -TYPE 15,D,T,HNAME  ---- TYPE 15,D,T,HNAME
+2667:15   -FORMAT(/' The next holiday will be in',I3,' ',A5,' namely ',4A5)  ---- FORMAT(/' The next holiday will be in',I3,' ',A5,' namely ',4A5)
+2668:     -RETURN  ---- RETURN
+2669:     -END  ---- END
+2670:     -None  ---- None
+2671:     -None  ---- None
+2672:     -None  ---- None
+2673:     -SUBROUTINE HOURSX(H,DAY1,DAY2)  ---- SUBROUTINE HOURSX(H,DAY1,DAY2)
+2674:     -None  ---- None
+2675:     -None  ---- None
+2676:     -None  ---- None
+2677:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2678:     -LOGICAL FIRST  ---- LOGICAL FIRST
+2679:     -None  ---- None
+2680:     -FIRST=.TRUE.  ---- FIRST=.TRUE.
+2681:     -FROM=-1  ---- FROM=-1
+2682:     -IF(H.NE.0)GOTO 10  ---- IF(H.NE.0)GOTO 10
+2683:     -TYPE 2,DAY1,DAY2  ---- TYPE 2,DAY1,DAY2
+2684:2    -FORMAT(10X,2A5,'  Open all day')  ---- FORMAT(10X,2A5,'  Open all day')
+2685:     -RETURN  ---- RETURN
+2686:     -None  ---- None
+2687:10   -FROM=FROM+1  ---- FROM=FROM+1
+2688:     -IF((H.AND.SHIFT(1,FROM)).NE.0)GOTO 10  ---- IF((H.AND.SHIFT(1,FROM)).NE.0)GOTO 10
+2689:     -IF(FROM.GE.24)GOTO 20  ---- IF(FROM.GE.24)GOTO 20
+2690:     -TILL=FROM  ---- TILL=FROM
+2691:14   -TILL=TILL+1  ---- TILL=TILL+1
+2692:     -IF((H.AND.SHIFT(1,TILL)).EQ.0.AND.TILL.NE.24)GOTO 14  ---- IF((H.AND.SHIFT(1,TILL)).EQ.0.AND.TILL.NE.24)GOTO 14
+2693:     -IF(FIRST)TYPE 16,DAY1,DAY2,FROM,TILL  ---- IF(FIRST)TYPE 16,DAY1,DAY2,FROM,TILL
+2694:     -IF(.NOT.FIRST)TYPE 18,FROM,TILL  ---- IF(.NOT.FIRST)TYPE 18,FROM,TILL
+2695:16   -FORMAT(10X,2A5,I4,':00 to',I3,':00')  ---- FORMAT(10X,2A5,I4,':00 to',I3,':00')
+2696:18   -FORMAT(20X,I4,':00 to',I3,':00')  ---- FORMAT(20X,I4,':00 to',I3,':00')
+2697:     -FIRST=.FALSE.  ---- FIRST=.FALSE.
+2698:     -FROM=TILL  ---- FROM=TILL
+2699:     -GOTO 10  ---- GOTO 10
+2700:     -None  ---- None
+2701:20   -IF(FIRST)TYPE 22,DAY1,DAY2  ---- IF(FIRST)TYPE 22,DAY1,DAY2
+2702:22   -FORMAT(10X,2A5,'  Closed all day')  ---- FORMAT(10X,2A5,'  Closed all day')
+2703:     -RETURN  ---- RETURN
+2704:     -END  ---- END
+2705:     -None  ---- None
+2706:     -None  ---- None
+2707:     -None  ---- None
+2708:     -SUBROUTINE NEWHRS  ---- SUBROUTINE NEWHRS
+2709:     -None  ---- None
+2710:     -None  ---- None
+2711:     -None  ---- None
+2712:     -None  ---- None
+2713:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2714:     -DIMENSION HNAME(4)  ---- DIMENSION HNAME(4)
+2715:     -COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME  ---- COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME
+2716:     -None  ---- None
+2717:     -CALL MSPEAK(21)  ---- CALL MSPEAK(21)
+2718:     -WKDAY=NEWHRX('Weekd','ays:')  ---- WKDAY=NEWHRX('Weekd','ays:')
+2719:     -WKEND=NEWHRX('Weeke','nds:')  ---- WKEND=NEWHRX('Weeke','nds:')
+2720:     -HOLID=NEWHRX('Holid','ays:')  ---- HOLID=NEWHRX('Holid','ays:')
+2721:     -CALL MSPEAK(22)  ---- CALL MSPEAK(22)
+2722:     -CALL HOURS  ---- CALL HOURS
+2723:     -RETURN  ---- RETURN
+2724:     -END  ---- END
+2725:     -None  ---- None
+2726:     -None  ---- None
+2727:     -None  ---- None
+2728:     -INTEGER FUNCTION NEWHRX(DAY1,DAY2)  ---- INTEGER FUNCTION NEWHRX(DAY1,DAY2)
+2729:     -None  ---- None
+2730:     -None  ---- None
+2731:     -None  ---- None
+2732:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2733:     -None  ---- None
+2734:     -NEWHRX=0  ---- NEWHRX=0
+2735:     -TYPE 1,DAY1,DAY2  ---- TYPE 1,DAY1,DAY2
+2736:1    -FORMAT(' Prime time on ',2A5)  ---- FORMAT(' Prime time on ',2A5)
+2737:10   -TYPE 2  ---- TYPE 2
+2738:2    -FORMAT(' from:')  ---- FORMAT(' from:')
+2739:     -ACCEPT 3,FROM  ---- ACCEPT 3,FROM
+2740:3    -FORMAT(G)  ---- FORMAT(G)
+2741:     -IF(FROM.LT.0.OR.FROM.GE.24)RETURN  ---- IF(FROM.LT.0.OR.FROM.GE.24)RETURN
+2742:     -TYPE 4  ---- TYPE 4
+2743:4    -FORMAT(' till:')  ---- FORMAT(' till:')
+2744:     -ACCEPT 3,TILL  ---- ACCEPT 3,TILL
+2745:     -TILL=TILL-1  ---- TILL=TILL-1
+2746:     -IF(TILL.LT.FROM.OR.TILL.GE.24)RETURN  ---- IF(TILL.LT.FROM.OR.TILL.GE.24)RETURN
+2747:     -DO 5 I=FROM,TILL  ---- DO 5 I=FROM,TILL
+2748:     -IDONDX=I  ---- IDONDX=I
+2749:5    -NEWHRX=(NEWHRX.OR.SHIFT(1,IDONDX))  ---- NEWHRX=(NEWHRX.OR.SHIFT(1,IDONDX))
+2750:     -GOTO 10  ---- GOTO 10
+2751:     -END  ---- END
+2752:     -None  ---- None
+2753:     -None  ---- None
+2754:     -None  ---- None
+2755:     -SUBROUTINE MOTD(ALTER)  ---- SUBROUTINE MOTD(ALTER)
+2756:     -None  ---- None
+2757:     -None  ---- None
+2758:     -None  ---- None
+2759:     -None  ---- None
+2760:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2761:     -LOGICAL ALTER  ---- LOGICAL ALTER
+2762:     -DIMENSION MSG(100)  ---- DIMENSION MSG(100)
+2763:     -DATA MSG/100*-1/  ---- DATA MSG/100*-1/
+2764:     -None  ---- None
+2765:     -IF(ALTER)GOTO 50  ---- IF(ALTER)GOTO 50
+2766:     -None  ---- None
+2767:     -K=1  ---- K=1
+2768:10   -IF(MSG(K).LT.0)RETURN  ---- IF(MSG(K).LT.0)RETURN
+2769:     -TYPE 20,(MSG(I),I=K+1,MSG(K)-1)  ---- TYPE 20,(MSG(I),I=K+1,MSG(K)-1)
+2770:20   -FORMAT(' ',14A5)  ---- FORMAT(' ',14A5)
+2771:     -K=MSG(K)  ---- K=MSG(K)
+2772:     -GOTO 10  ---- GOTO 10
+2773:     -None  ---- None
+2774:50   -M=1  ---- M=1
+2775:     -CALL MSPEAK(23)  ---- CALL MSPEAK(23)
+2776:55   -ACCEPT 56,(MSG(I),I=M+1,M+14),K  ---- ACCEPT 56,(MSG(I),I=M+1,M+14),K
+2777:56   -FORMAT(15A5)  ---- FORMAT(15A5)
+2778:     -IF(K.EQ.' ')GOTO 60  ---- IF(K.EQ.' ')GOTO 60
+2779:     -CALL MSPEAK(24)  ---- CALL MSPEAK(24)
+2780:     -GOTO 55  ---- GOTO 55
+2781:60   -DO 62 I=1,14  ---- DO 62 I=1,14
+2782:     -K=M+15-I  ---- K=M+15-I
+2783:     -IF(MSG(K).NE.' ')GOTO 65  ---- IF(MSG(K).NE.' ')GOTO 65
+2784:62   -CONTINUE  ---- CONTINUE
+2785:     -GOTO 90  ---- GOTO 90
+2786:65   -MSG(M)=K+1  ---- MSG(M)=K+1
+2787:     -M=K+1  ---- M=K+1
+2788:     -IF(M+14.LT.100)GOTO 55  ---- IF(M+14.LT.100)GOTO 55
+2789:     -CALL MSPEAK(25)  ---- CALL MSPEAK(25)
+2790:90   -MSG(M)=-1  ---- MSG(M)=-1
+2791:     -RETURN  ---- RETURN
+2792:     -END  ---- END
+2793:     -None  ---- None
+2794:     -None  ---- None
+2795:     -None  ---- None
+2796:     -SUBROUTINE POOF  ---- SUBROUTINE POOF
+2797:     -None  ---- None
+2798:     -None  ---- None
+2799:     -None  ---- None
+2800:     -None  ---- None
+2801:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2802:     -DIMENSION HNAME(4)  ---- DIMENSION HNAME(4)
+2803:     -COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME,  ---- COMMON /WIZCOM/ WKDAY,WKEND,HOLID,HBEGIN,HEND,HNAME,SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP
+2804:     1SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP  ---- SHORT,MAGIC,MAGNM,LATNCY,SAVED,SAVET,SETUP
+2805:     -None  ---- None
+2806:     -WKDAY="00777400  ---- WKDAY="00777400
+2807:     -WKEND=0  ---- WKEND=0
+2808:     -HOLID=0  ---- HOLID=0
+2809:     -HBEGIN=0  ---- HBEGIN=0
+2810:     -HEND=-1  ---- HEND=-1
+2811:     -SHORT=30  ---- SHORT=30
+2812:     -MAGIC='DWARF'  ---- MAGIC='DWARF'
+2813:     -MAGNM=11111  ---- MAGNM=11111
+2814:     -LATNCY=90  ---- LATNCY=90
+2815:     -RETURN  ---- RETURN
+2816:     -END  ---- END
+2817:     -None  ---- None
+2818:     -None  ---- None
+2819:     -None  ---- None
+2820:     -INTEGER FUNCTION SHIFT(VAL,DIST)  ---- INTEGER FUNCTION SHIFT(VAL,DIST)
+2821:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2822:     -None  ---- None
+2823:     -None  ---- None
+2824:     -None  ---- None
+2825:     -SHIFT=VAL  ---- SHIFT=VAL
+2826:     -IF(DIST)10,20,30  ---- IF(DIST)10,20,30
+2827:10   -IDIST=-DIST  ---- IDIST=-DIST
+2828:     -DO 11 I=1,IDIST  ---- DO 11 I=1,IDIST
+2829:     -J=0  ---- J=0
+2830:     -IF(SHIFT.LT.0)J="200000000000  ---- IF(SHIFT.LT.0)J="200000000000
+2831:11   -SHIFT=((SHIFT.AND."377777777777)/2)+J  ---- SHIFT=((SHIFT.AND."377777777777)/2)+J
+2832:20   -RETURN  ---- RETURN
+2833:30   -DO 31 I=1,DIST  ---- DO 31 I=1,DIST
+2834:     -J=0  ---- J=0
+2835:     -IF((SHIFT.AND."200000000000).NE.0)J="400000000000  ---- IF((SHIFT.AND."200000000000).NE.0)J="400000000000
+2836:31   -SHIFT=(SHIFT.AND."177777777777)*2+J  ---- SHIFT=(SHIFT.AND."177777777777)*2+J
+2837:     -RETURN  ---- RETURN
+2838:     -END  ---- END
+2839:     -None  ---- None
+2840:     -None  ---- None
+2841:     -None  ---- None
+2842:     -INTEGER FUNCTION RAN(RANGE)  ---- INTEGER FUNCTION RAN(RANGE)
+2843:     -None  ---- None
+2844:     -None  ---- None
+2845:     -None  ---- None
+2846:     -None  ---- None
+2847:     -None  ---- None
+2848:     -None  ---- None
+2849:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2850:     -DATA R/0/  ---- DATA R/0/
+2851:     -None  ---- None
+2852:     -D=1  ---- D=1
+2853:     -IF(R.NE.0)GOTO 1  ---- IF(R.NE.0)GOTO 1
+2854:     -CALL DATIME(D,T)  ---- CALL DATIME(D,T)
+2855:     -R=18*T+5  ---- R=18*T+5
+2856:     -D=1000+MOD(D,1000)  ---- D=1000+MOD(D,1000)
+2857:1    -DO 2 T=1,D  ---- DO 2 T=1,D
+2858:2    -R=MOD(R*1021,1048576)  ---- R=MOD(R*1021,1048576)
+2859:     -RAN=(RANGE*R)/1048576  ---- RAN=(RANGE*R)/1048576
+2860:     -RETURN  ---- RETURN
+2861:     -END  ---- END
+2862:     -None  ---- None
+2863:     -None  ---- None
+2864:     -None  ---- None
+2865:     -SUBROUTINE DATIME(D,T)  ---- SUBROUTINE DATIME(D,T)
+2866:     -None  ---- None
+2867:     -None  ---- None
+2868:     -None  ---- None
+2869:     -None  ---- None
+2870:     -None  ---- None
+2871:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2872:     -DIMENSION DAT(2),MONTHS(12),HATH(12)  ---- DIMENSION DAT(2),MONTHS(12),HATH(12)
+2873:     -DATA MONTHS/'-JAN-','-FEB-','-MAR-','-APR-','-MAY-','-JUN-',  ---- DATA MONTHS/'-JAN-','-FEB-','-MAR-','-APR-','-MAY-','-JUN-','-JUL-','-AUG-','-SEP-','-OCT-','-NOV-','-DEC-'/
+2874:     1'-JUL-','-AUG-','-SEP-','-OCT-','-NOV-','-DEC-'/  ---- '-JUL-','-AUG-','-SEP-','-OCT-','-NOV-','-DEC-'/
+2875:     -DATA HATH/31,28,31,30,31,30,31,31,30,31,30,31/  ---- DATA HATH/31,28,31,30,31,30,31,31,30,31,30,31/
+2876:     -None  ---- None
+2877:     -None  ---- None
+2878:     -None  ---- None
+2879:     -I2(X)=(SHIFT(X,-29).AND.15)*10+(SHIFT(X,-22).AND.15)  ---- I2(X)=(SHIFT(X,-29).AND.15)*10+(SHIFT(X,-22).AND.15)
+2880:     -None  ---- None
+2881:     -CALL DATE(DAT)  ---- CALL DATE(DAT)
+2882:     -CALL TIME(TIM)  ---- CALL TIME(TIM)
+2883:     -None  ---- None
+2884:     -YEAR=I2(SHIFT(DAT(2),14))-77  ---- YEAR=I2(SHIFT(DAT(2),14))-77
+2885:     -D=I2(DAT(1))-1  ---- D=I2(DAT(1))-1
+2886:     -X=((SHIFT(DAT(1),14).OR.SHIFT(DAT(2),-21)).AND..NOT."1004020001)  ---- X=((SHIFT(DAT(1),14).OR.SHIFT(DAT(2),-21)).AND..NOT."1004020001).OR.'-@@@-'
+2887:     1.OR.'-@@@-'  ---- .OR.'-@@@-'
+2888:     -None  ---- None
+2889:     -DO 1 MON=1,12  ---- DO 1 MON=1,12
+2890:     -IF(X.EQ.MONTHS(MON))GOTO 2  ---- IF(X.EQ.MONTHS(MON))GOTO 2
+2891:1    -D=D+HATH(MON)  ---- D=D+HATH(MON)
+2892:     -CALL BUG(28)  ---- CALL BUG(28)
+2893:     -None  ---- None
+2894:2    -D=D+YEAR*365+YEAR/4  ---- D=D+YEAR*365+YEAR/4
+2895:     -IF(MOD(YEAR,4).EQ.3.AND.MON.GT.2)D=D+1  ---- IF(MOD(YEAR,4).EQ.3.AND.MON.GT.2)D=D+1
+2896:     -T=I2(TIM)*60+I2(SHIFT(TIM,21))  ---- T=I2(TIM)*60+I2(SHIFT(TIM,21))
+2897:     -RETURN  ---- RETURN
+2898:     -END  ---- END
+2899:     -None  ---- None
+2900:     -None  ---- None
+2901:     -None  ---- None
+2902:     -SUBROUTINE CIAO  ---- SUBROUTINE CIAO
+2903:     -None  ---- None
+2904:     -None  ---- None
+2905:     -None  ---- None
+2906:     -None  ---- None
+2907:     -None  ---- None
+2908:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2909:     -DATA K/32/  ---- DATA K/32/
+2910:     -None  ---- None
+2911:     -CALL MSPEAK(K)  ---- CALL MSPEAK(K)
+2912:     -IF(K.EQ.31)CALL GETIN(A,B,C,D)  ---- IF(K.EQ.31)CALL GETIN(A,B,C,D)
+2913:     -STOP  ---- STOP
+2914:     -END  ---- END
+2915:     -None  ---- None
+2916:     -None  ---- None
+2917:     -None  ---- None
+2918:     -SUBROUTINE BUG(NUM)  ---- SUBROUTINE BUG(NUM)
+2919:     -IMPLICIT INTEGER(A-Z)  ---- IMPLICIT INTEGER(A-Z)
+2920:     -None  ---- None
+2921:     -None  ---- None
+2922:     -None  ---- None
+2923:     -None  ---- None
+2924:     -None  ---- None
+2925:     -None  ---- None
+2926:     -None  ---- None
+2927:     -None  ---- None
+2928:     -None  ---- None
+2929:     -None  ---- None
+2930:     -None  ---- None
+2931:     -None  ---- None
+2932:     -None  ---- None
+2933:     -None  ---- None
+2934:     -None  ---- None
+2935:     -None  ---- None
+2936:     -None  ---- None
+2937:     -None  ---- None
+2938:     -None  ---- None
+2939:     -None  ---- None
+2940:     -None  ---- None
+2941:     -None  ---- None
+2942:     -None  ---- None
+2943:     -TYPE 1, NUM  ---- TYPE 1, NUM
+2944:1    -FORMAT (' Fatal error, see source code for interpretation.'/  ---- FORMAT (' Fatal error, see source code for interpretation.'/' Probable cause: erroneous info in database.'/' Error code =',I2/)
+2945:     1' Probable cause: erroneous info in database.'/  ---- ' Probable cause: erroneous info in database.'/
+2946:     2' Error code =',I2/)  ---- ' Error code =',I2/)
+2947:     -STOP  ---- STOP
+2948:     -END  ---- END

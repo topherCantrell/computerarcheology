@@ -1824,7 +1824,7 @@ C	      CAVE  BIRD  SNAKE MAZE  DARK  WITT
 40010	HINTLC(HINT)=0
 	IF(.NOT.YES(HINTS(HINT,3),0,54))GOTO 2602
 	TYPE 40012,HINTS(HINT,2)
-40012 FORMAT(/' I am prepared to give you a hint, but it will cost you',
+40012	FORMAT(/' I am prepared to give you a hint, but it will cost you',
      1	I2,' points.')
 	HINTED(HINT)=YES(175,HINTS(HINT,4),54)
 	IF(HINTED(HINT).AND.LIMIT.GT.30)LIMIT=LIMIT+30*HINTS(HINT,2)

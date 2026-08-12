@@ -1121,7 +1121,7 @@ Which of these 4 were made the port? My best guesses above
 RoomTable:
 ;     Descr Scrpt   RoomName                         String   Notes
 4888: DB 5B CC 49 ; RM_01_BEFORE_ENTRANCE            PS_00    new "before entrance"
-488C: 10 5C E1 49 ; RM_02_IN_ENTRANCE                PS_01    new "in entrance" (DW_03 wellhouse)
+488C: 10 5C E1 49 ; RM_02_IN_ENTRANCE                PS_01    new "in entrance"
 4890: 57 5C F2 49 ; RM_03_DESERT1                    PS_02    new "desert"
 4894: 57 5C 03 4A ; RM_04_DESERT2                    PS_02    new "desert"
 4898: 57 5C 14 4A ; RM_05_DESERT3                    PS_02    new "desert"

@@ -221,6 +221,7 @@ class FortranRunner:
 
 
 if __name__ == '__main__':
-    runner = FortranRunner('../../../../content/colossalcaveadventure/raw/adventOrg.f')
+    # runner = FortranRunner('../../content/ColossalCaveAdventure/raw/advent350.for')
+    runner = FortranRunner('../../content/ColossalCaveAdventure/raw/adventOrg.f')
 
     runner.run()
