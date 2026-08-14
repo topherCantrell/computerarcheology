@@ -58,8 +58,7 @@ class FortranRunner:
         vars = code[8:].strip().split(',')
         for v in vars:
             self.stack[-1].var_types[v.strip()] = 'INTEGER'
-        return        
-            
+        return                    
     def _for_COMMON(self, code):
         if '/' in code:
             i = code.find('/')
@@ -103,15 +102,81 @@ class FortranRunner:
                     # 2D arrays. FORTRAN lists column first
                     rows, cols = dim[1]+1, dim[0]+1
                     matrix = [[None for _ in range(cols)] for _ in range(rows)]
-                    self.variables[s] = matrix      
-      
+                    self.variables[s] = matrix            
     def _for_END(self, code):
         return  # Don't care       
 
-    def _for_IF(self, code):        
-        raise Exception(f'IF not implemented yet: {code}')    
+    def _parse_term(self, term):
+        if term == '.TRUE.':
+            return True
+        if term == '.FALSE.':
+            return False
+        if term[0] == "'":
+            return term[1:-1]  # Character string
+        if term[0] == '"':
+            return int(term[1:], 8)  # Octal number
+        return int(term)  # Decimal number        
+    
     def _for_DATA(self, code):
-        raise Exception(f'DATA not implemented yet: {code}')
+        code = code[5:].strip()
+        pos = 0
+        data_specs = []
+        while True:
+            vlist = ''                
+            while code[pos] != '/':
+                vlist += code[pos]
+                pos += 1
+            pos += 1
+            clist = ''
+            while code[pos] != '/':
+                clist += code[pos]
+                pos += 1
+            data_specs.append((vlist, clist))
+            pos += 1
+            if pos >= len(code):
+                break
+            i = code.find(',', pos)
+            if i < 0:
+                raise Exception(f'Unexpected end of DATA statement: {code}')
+            pos = i+1
+        for vlist, clist in data_specs:
+            vars = vlist.split(',')
+            vals = clist.split(',')
+            if len(vars) > 1:
+                raise Exception(f'Must implement this one case {code}')
+            if len(vals) > 1:
+                raise Exception(f'Must implement this case too {code}')
+            v = vars[0].strip()
+            val = self._parse_term(vals[0].strip())
+            self.set_var(v, val)
+
+    def _for_IF(self, code):        
+        # This breaks with parentheses in a string constant in an expression        
+        i = code.find('(')
+        e_start = i
+        level = 1
+        while level > 0:
+            i += 1
+            if code[i] == '(':
+                level += 1
+            elif code[i] == ')':
+                level -= 1
+        e_end = i
+        expr = code[e_start+1:e_end]
+        expr2 = expr.replace('.EQ.', '==').replace('.NE.', '!=').replace('.LT.', '<').replace('.LE.', '<=').replace('.GT.', '>').replace('.GE.', '>=')
+        expr2 = expr2.replace('.AND.', ' and ').replace('.OR.', ' or ')
+        # This breaks with double quotes in a string constant in an expression (octal)
+        expr2 = expr2.replace('"', '0o')
+        cmd = code[e_end+1:].strip()
+        print(">>>",expr,':::',cmd,'::',expr2)
+        # TODO function calls in the expression to fortran functions
+        # TODO change system calls to lower case with "self." prefix
+        # TODO now any capital letter in the expression is a variable. If the character after the variable
+        # is a "(" then convert it to a python "[]". Fill out the locals map
+        result = eval(expr2, None, {'SETUP': 0})
+        if result:
+            self.step(cmd)          
+    
     def _for_DO(self, code):
         raise Exception(f'DO not implemented yet: {code}')        
     def _for_GOTO(self, code):
@@ -132,32 +197,36 @@ class FortranRunner:
         raise Exception(f'SUBROUTINE not implemented yet: {code}')
     def _for_RETURN(self, code):
         raise Exception(f'RETURN not implemented yet: {code}')
+
+    def _for_statement_function(self, code):
+        i = code.find('=')
+        left = code[:i].strip()
+        right = code[i+1:].strip()
+        i = left.find('(')
+        params = left[i+1:-1].split(',')
+        left = left[:i].strip()
+        
+        for j,item in enumerate(params):
+            params[j] = item.strip()
+        self.statement_functions[left] = (params, right)        
+    
     def _for_expression(self, code):
+        # The fortran code does assign with variable index, but it is always simple
+        # lookups -- not math expressions to evaluate.
+        i = code.find('=')
+        left = code[:i].strip()
+        right = code[i+1:].strip()
+        self.evaluate_math(right)
         raise Exception(f'Expression not implemented yet: {code}')
 
-    # Calling a subroutine is pass by reference. The subroutine can modify the variables passed by the caller.
-
-    # We ignore IMPLICIT. Our code only uses INTEGER(A-Z)
-
-    # The ORG uses a float RAN but the 350 uses a defined INT function.
-
-    # ORG uses one unnamed COMMON blocks. We'll name it "*" for convinience.
-
-    # None of the COMMON blocks change the name of the variables
-
-    # We treat the main program as a subroutine "*"
-
-    # Each subroutine has a map of dict of variables.
-
-    # Look for variables by name in the following order:
-    # - The common blocks
-    # - The subroutine's parameters    
-    # - The subroutine's local variables    
-    # - Create the local variable with value 0
+    def evaluate_math(self, expr):
+        print (">>>>>",expr)    
 
     def __init__(self, filename):
         self.lines = []
         linenum = 0
+        self._if_given = False  # True with the first IF statement (signals end of statement functions)
+        self.statement_functions = {}
         self.labels = None
         self.variables = {}
         with open(filename, 'r') as f:
@@ -222,6 +291,42 @@ class FortranRunner:
                 if line.label:
                     current_subroutine[line.label] = pos     
 
+    def set_var(self, varname, value):
+        frame = self.stack[-1]
+        if varname in frame.commons:
+            # print(">>> SETVAR COMMON", varname, value)
+            base_frame = self.stack[0]
+            base_frame.locals[varname] = value            
+        elif varname in frame.params:
+            raise Exception(f'Set PARAM not implemented yet: {varname} = {value}')           
+        else:
+            # print(">>> SETVAR LOCAL", varname, value)
+            frame.locals[varname] = value            
+        
+
+    def get_var(self, varname):
+        print(">>> GETVAR", varname)
+        return 0
+
+    def step(self, code):
+        parse = code.replace(' ', '')
+        fnd = False
+        for keyword, fn in self.for_functions.items():
+            if parse.startswith(keyword):         
+                if keyword == 'IF(':
+                    self._if_given = True           
+                fnd = True
+                fn(code)                    
+                break
+        if not fnd:
+            # A little bit of a hack here to fit the code we have. We know that
+            # any "=" expression before an IF is a statement function. After the
+            # first IF, there are no more statement functions.
+            if not self._if_given:
+                self._for_statement_function(code)
+            else:               
+                self._for_expression(code)   
+
     def run(self):
         self.running = True
         while self.running:            
@@ -236,19 +341,11 @@ class FortranRunner:
                     continue
                 break
             self.stack[-1].program_counter = pc
-
             code = self.lines[pc].combined_code
-            parse = code.replace(' ', '')
-            fnd = False
-            for keyword, fn in self.for_functions.items():
-                if parse.startswith(keyword):                    
-                    fnd = True
-                    fn(code)                    
-                    break
-            if not fnd:
-                i = code.find('=')                
-                self._for_expression(code)            
-            self.stack[-1].program_counter += 1            
+            self.stack[-1].program_counter += 1 
+            
+            self.step(code)        
+                       
 
 
 if __name__ == '__main__':
@@ -256,15 +353,13 @@ if __name__ == '__main__':
     # runner = FortranRunner('../../content/ColossalCaveAdventure/raw/adventOrg.f')
 
     # for line in runner.lines:
-    #     linenum = str(line.code_line_num).ljust(4)
-    #     lab = ''
-    #     if line.label:
-    #         lab = f'{line.label}'
-    #     lab = lab.ljust(5)
-    #     mark = '-'
-    #     if line.continue_mark:
-    #         mark = line.continue_mark
-    #     print(f'{linenum}:{lab}{mark}{line.code}  ---- {line.combined_code}')
+    #     if line.comment or line.continue_mark:
+    #         continue
+    #     if not line.combined_code:
+    #         continue
+    #     if line.combined_code.startswith('DATA '):
+    #         print('>>>', line.combined_code)
+    #         runner._for_DATA(line.combined_code)
+    #         print('')               
 
     runner.run()
-
