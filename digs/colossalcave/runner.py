@@ -150,6 +150,9 @@ class FortranRunner:
             val = self._parse_term(vals[0].strip())
             self.set_var(v, val)
 
+    def _fill_vars_in_expr(self, expr, frame):
+        pass
+
     def _for_IF(self, code):        
         # This breaks with parentheses in a string constant in an expression        
         i = code.find('(')
@@ -167,6 +170,7 @@ class FortranRunner:
         expr2 = expr2.replace('.AND.', ' and ').replace('.OR.', ' or ')
         # This breaks with double quotes in a string constant in an expression (octal)
         expr2 = expr2.replace('"', '0o')
+        expr2 = self._fill_vars_in_expr(expr2, self.stack[-1])
         cmd = code[e_end+1:].strip()
         print(">>>",expr,':::',cmd,'::',expr2)
         # TODO function calls in the expression to fortran functions
