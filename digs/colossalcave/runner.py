@@ -1,4 +1,4 @@
-from stackframe import StackFrame
+from callframe import CallFrame
 
 class CodeLine:
 
@@ -155,29 +155,11 @@ class FortranRunner:
 
     def _for_IF(self, code):        
         # This breaks with parentheses in a string constant in an expression        
-        i = code.find('(')
-        e_start = i
-        level = 1
-        while level > 0:
-            i += 1
-            if code[i] == '(':
-                level += 1
-            elif code[i] == ')':
-                level -= 1
-        e_end = i
-        expr = code[e_start+1:e_end]
-        expr2 = expr.replace('.EQ.', '==').replace('.NE.', '!=').replace('.LT.', '<').replace('.LE.', '<=').replace('.GT.', '>').replace('.GE.', '>=')
-        expr2 = expr2.replace('.AND.', ' and ').replace('.OR.', ' or ')
-        # This breaks with double quotes in a string constant in an expression (octal)
-        expr2 = expr2.replace('"', '0o')
-        expr2 = self._fill_vars_in_expr(expr2, self.stack[-1])
+        e_start = code.find('(')
+        e_end = CallFrame.find_close_paren(code, e_start)        
+        expr = code[e_start+1:e_end]        
         cmd = code[e_end+1:].strip()
-        print(">>>",expr,':::',cmd,'::',expr2)
-        # TODO function calls in the expression to fortran functions
-        # TODO change system calls to lower case with "self." prefix
-        # TODO now any capital letter in the expression is a variable. If the character after the variable
-        # is a "(" then convert it to a python "[]". Fill out the locals map
-        result = eval(expr2, None, {'SETUP': 0})
+        result = self.stack[-1].evaluate_expression(expr)        
         if result:
             self.step(cmd)          
     
@@ -263,7 +245,7 @@ class FortranRunner:
             'END': self._for_END
         }
 
-        frame = StackFrame('*', 0)
+        frame = CallFrame('*', 0)
         self.stack = [frame]
 
         self.running = False
@@ -351,19 +333,18 @@ class FortranRunner:
             self.step(code)        
                        
 
+def search_code():
+    for line in runner.lines:
+        if line.comment or line.continue_mark:
+            continue
+        if not line.combined_code:
+            continue
+        if line.combined_code.startswith('IF('):
+            print('>>>', line.combined_code)                          
 
 if __name__ == '__main__':
     runner = FortranRunner('../../content/ColossalCaveAdventure/raw/advent350.for')
     # runner = FortranRunner('../../content/ColossalCaveAdventure/raw/adventOrg.f')
-
-    # for line in runner.lines:
-    #     if line.comment or line.continue_mark:
-    #         continue
-    #     if not line.combined_code:
-    #         continue
-    #     if line.combined_code.startswith('DATA '):
-    #         print('>>>', line.combined_code)
-    #         runner._for_DATA(line.combined_code)
-    #         print('')               
-
+    
+    # search_code()
     runner.run()
