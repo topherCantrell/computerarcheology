@@ -1,42 +1,6 @@
 from callframe import CallFrame
+from fortran_file import FORTRANFile
 
-class CodeLine:
-
-    def __init__(self, code_line_num, line):
-
-        self.comment = None
-        self.label = None
-        self.continue_mark = None
-        self.code = None
-        self.combined_code = None
-
-        # Rules the two code files we have:
-        # - If it starts with a number, the number is a label
-
-        self.code_line_num = code_line_num
-        self.line = line
-        if self.line.endswith('\n'):
-            self.line = self.line[:-1]
-
-        # Blank lines and comments -- no code
-        if self.line.startswith('C') or self.line.strip()=='':
-            self.comment = self.line[1:].strip()
-            return
-
-        g = self.line
-
-        if g[0].isnumeric():
-            i = g.find('\t')
-            self.label = int(g[:i])
-            g = g[i+1:]
-        else:
-            g = g[1:]
-
-        if g[0].isnumeric():            
-            self.continue_mark = g[0]
-            g = g[2:]
-        self.code = g
-        self.combined_code = self.code
 
 class FortranRunner:
 
@@ -75,6 +39,7 @@ class FortranRunner:
         # SUBROUTINEs can use COMMON variables and thus re-dimension them. We
         # only initalize them once.
         code = code[9:].strip()
+        call_frame = self.stack[-1]
         # Can't split on "," because of multi-dimensional arrays. First, a little preprocessing to make that
         # a space. Then we can split on ",".
         code_new = ''
@@ -93,18 +58,17 @@ class FortranRunner:
             i = s.find('(')
             dim = s[i+1:-1]
             s = s[:i]
-            if s not in self.variables:
+            # If we don't know about a variable (parameter or common) we need to create it.
+            if call_frame.get_var(s,auto_create=False) is None:
                 dim = dim.split(' ')
                 dim = [int(d) for d in dim]
                 if len(dim) == 1:
-                    self.variables[s] = [None]*(dim[0]+1)                    
+                    call_frame.locals[s] = [None]*(dim[0]+1)                    
                 else:
                     # 2D arrays. FORTRAN lists column first
                     rows, cols = dim[1]+1, dim[0]+1
                     matrix = [[None for _ in range(cols)] for _ in range(rows)]
-                    self.variables[s] = matrix            
-    def _for_END(self, code):
-        return  # Don't care       
+                    call_frame.locals[s] = matrix            
 
     def _parse_term(self, term):
         if term == '.TRUE.':
@@ -150,9 +114,6 @@ class FortranRunner:
             val = self._parse_term(vals[0].strip())
             self.set_var(v, val)
 
-    def _fill_vars_in_expr(self, expr, frame):
-        pass
-
     def _for_IF(self, code):        
         # This breaks with parentheses in a string constant in an expression        
         e_start = code.find('(')
@@ -178,13 +139,22 @@ class FortranRunner:
     def _for_CALL(self, code):
         raise Exception(f'CALL not implemented yet: {code}')
     def _for_TYPE(self, code):
-        raise Exception(f'TYPE not implemented yet: {code}')
-    def _for_SUBROUTINE(self, code):
-        raise Exception(f'SUBROUTINE not implemented yet: {code}')
+        raise Exception(f'TYPE not implemented yet: {code}')    
     def _for_RETURN(self, code):
         raise Exception(f'RETURN not implemented yet: {code}')
 
+    def _is_statement_function(self, code):
+        # This MIGHT be a regular assignment. If the name has been declared (common, etc) then
+        # this is not a function. If there are no parentheses before the = then this is not a 
+        # function. If we've executed another compiled command, then it is not a function.
+        if self.stack[-1].past_statement_functions:
+            return False
+        # TODO get the left-hand name. if we know it, return False
+
+        
+
     def _for_statement_function(self, code):
+        
         i = code.find('=')
         left = code[:i].strip()
         right = code[i+1:].strip()
@@ -208,19 +178,12 @@ class FortranRunner:
     def evaluate_math(self, expr):
         print (">>>>>",expr)    
 
+    DECLARE_COMMANDS = [
+        'IMPLICIT', 'INTEGER', 'REAL', 'LOGICAL', 'COMMON', 'DIMENSION','DATA', 
+    ]
+
     def __init__(self, filename):
-        self.lines = []
-        linenum = 0
-        self._if_given = False  # True with the first IF statement (signals end of statement functions)
-        self.statement_functions = {}
-        self.labels = None
-        self.variables = {}
-        with open(filename, 'r') as f:
-            for line in f:
-                linenum += 1
-                self.lines.append(CodeLine(linenum, line))   
-        self.collect_continues()
-        self.collect_labels()
+        self.fortran = FORTRANFile(filename)        
 
         self.for_functions = {
             'IMPLICIT': self._for_IMPLICIT,
@@ -230,6 +193,7 @@ class FortranRunner:
             'COMMON': self._for_COMMON,
             'DIMENSION': self._for_DIMENSION,
             'DATA': self._for_DATA,
+            #
             'DO': self._for_DO,
             'IF(': self._for_IF,
             'STOP': self._for_STOP,
@@ -239,62 +203,17 @@ class FortranRunner:
             'FORMAT': self._for_FORMAT,
             'CONTINUE': self._for_CONTINUE,
             'CALL': self._for_CALL,
-            'TYPE': self._for_TYPE,    
-            'SUBROUTINE': self._for_SUBROUTINE,
+            'TYPE': self._for_TYPE,
             'RETURN': self._for_RETURN,
-            'END': self._for_END
         }
 
         frame = CallFrame('*', 0)
         self.stack = [frame]
 
-        self.running = False
-
-    def collect_continues(self):
-        start_line = None
-        for line in self.lines:
-            if line.continue_mark:
-                start_line.combined_code += line.code
-            else:
-                start_line = line   
-
-    def collect_labels(self):
-        # Labels can repeat in different subroutines. We collect subroutines with "*" as the root level.
-        current_subroutine = {}
-        self.labels = {'*': (0, current_subroutine)}
-        t = '*'
-        for pos, line in enumerate(self.lines):           
-            if line.code and line.code.startswith('SUBROUTINE'):
-                t = line.code[10:].replace(' ', '')
-                i = t.find('(')
-                params = t[i+1:-1].split(',')
-                for j,item in enumerate(params):
-                    params[j] = item.strip()
-                subname = t[:i]
-                current_subroutine = {}
-                self.labels[subname] = (pos, params, current_subroutine)
-            else:
-                if line.label:
-                    current_subroutine[line.label] = pos     
-
-    def set_var(self, varname, value):
-        frame = self.stack[-1]
-        if varname in frame.commons:
-            # print(">>> SETVAR COMMON", varname, value)
-            base_frame = self.stack[0]
-            base_frame.locals[varname] = value            
-        elif varname in frame.params:
-            raise Exception(f'Set PARAM not implemented yet: {varname} = {value}')           
-        else:
-            # print(">>> SETVAR LOCAL", varname, value)
-            frame.locals[varname] = value            
-        
-
-    def get_var(self, varname):
-        print(">>> GETVAR", varname)
-        return 0
+        self.running = False    
 
     def step(self, code):
+        print(">>>> HERE",code)
         parse = code.replace(' ', '')
         fnd = False
         for keyword, fn in self.for_functions.items():
@@ -305,6 +224,16 @@ class FortranRunner:
                 fn(code)                    
                 break
         if not fnd:
+
+            name = ''
+            pos = 0
+            while code[pos].isalpha() and code[pos].isupper():
+                name += code[pos]
+                pos += 1
+            print(">>>", name)
+            raise "STOP"
+
+
             # A little bit of a hack here to fit the code we have. We know that
             # any "=" expression before an IF is a statement function. After the
             # first IF, there are no more statement functions.
@@ -319,15 +248,16 @@ class FortranRunner:
             # Skp over comments and continues (already collected)
             pc = self.stack[-1].program_counter
             while True:
-                if self.lines[pc].continue_mark:
+                line = self.fortran.lines[pc]
+                if line.continue_mark:
                     pc += 1
                     continue
-                if not self.lines[pc].combined_code:
+                if not line.combined_code:
                     pc += 1
                     continue
                 break
             self.stack[-1].program_counter = pc
-            code = self.lines[pc].combined_code
+            code = line.combined_code
             self.stack[-1].program_counter += 1 
             
             self.step(code)        
@@ -339,7 +269,7 @@ def search_code():
             continue
         if not line.combined_code:
             continue
-        if line.combined_code.startswith('IF('):
+        if line.combined_code.startswith('FORMAT'):
             print('>>>', line.combined_code)                          
 
 if __name__ == '__main__':

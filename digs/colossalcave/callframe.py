@@ -33,13 +33,16 @@ class CallFrame:
     def __init__(self, name, linenum):
         self.name = name  # Just for debugging
         self.program_counter = linenum  # Next line to execute
+        self.past_statement_functions = False
 
         self.var_types = {}  # Type hint: name->type
         # Incoming parameters in order. List of tuples: (local_name, caller_name)
         self.params = []
         # Just a list of commons we can access (not really used)
         self.commons = []
+
         self.locals = {}  # Actual storage name->value
+        self.statement_functions = {}
 
     @staticmethod
     def find_close_paren(expr, start):
@@ -56,7 +59,8 @@ class CallFrame:
             pos += 1
         raise ValueError("No matching closing parenthesis found")
 
-    def get_var(self, name):
+
+    def get_var(self, name, auto_create=True):
         # Look for variables by name in the following order:
         # - The common blocks
         # - The subroutine's parameters
