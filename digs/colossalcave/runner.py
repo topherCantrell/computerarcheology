@@ -135,14 +135,19 @@ class FortranRunner:
         raise Exception(f'PAUSE not implemented yet: {code}')
     def _for_READ(self, code):
         raise Exception(f'READ not implemented yet: {code}')
-    def _for_FORMAT(self, code):
-        raise Exception(f'FORMAT not implemented yet: {code}')
     def _for_CONTINUE(self, code):
         raise Exception(f'CONTINUE not implemented yet: {code}')
     def _for_CALL(self, code):
         raise Exception(f'CALL not implemented yet: {code}')
     def _for_TYPE(self, code):
-        raise Exception(f'TYPE not implemented yet: {code}')    
+        # Always of the form "TYPE n,....."
+        g = code.find(',')
+        if g<0:
+            g = len(code)
+        label = int(code[5:g])
+        params = code[g+1:].strip()
+        format = self.stack[-1].formats[label].combined_code
+        raise Exception(f'TYPE not implemented yet: {code}, :{label}:, :{params}:, :{format}:')    
     def _for_RETURN(self, code):
         raise Exception(f'RETURN not implemented yet: {code}')
 
@@ -208,7 +213,6 @@ class FortranRunner:
             'GOTO': self._for_GOTO,
             'PAUSE': self._for_PAUSE,
             'READ': self._for_READ,
-            'FORMAT': self._for_FORMAT,
             'CONTINUE': self._for_CONTINUE,
             'CALL': self._for_CALL,
             'TYPE': self._for_TYPE,

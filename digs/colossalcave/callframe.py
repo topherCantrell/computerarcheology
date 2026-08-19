@@ -42,6 +42,8 @@ class CallFrame:
         self.section = section  # Just for debugging
         self.program_counter = linenum  # Next line to execute        
         self.lines = section.lines  # The lines of code in this subroutine
+        self.formats = section.formats  # The formats for this subroutine
+        print(">>>",section.formats)
         self.rootframe = rootframe  # The root call frame (the main program)
 
         self.var_types = {}  # Type hint: name->type

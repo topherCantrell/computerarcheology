@@ -45,6 +45,7 @@ class FORTRANSection:
         self.ret_type = ret_type
         self.labels = {}
         self.lines = []
+        self.formats = {}
 
 class FORTRANFile:
     def __init__(self, filename):
@@ -107,8 +108,12 @@ class FORTRANFile:
                     continue
                 if not line.combined_code:
                     continue
-                sec.lines.append(line)
+                if line.combined_code.startswith('FORMAT'):
+                    sec.formats[line.label] = line
+                else:
+                    sec.lines.append(line)
             self.sections[name] = sec
+            print(">>>",name, sec.formats)
 
         # Make a map of subroutines and their labels.
         self.collect_labels()
