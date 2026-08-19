@@ -1,14 +1,22 @@
-"""
-This object contains all the local variables and program counter for
-a running Fortran subroutine.
+import logging
 
-  - program_counter: Line number within the list of lines of the NEXT line to run
-  - locals: 
-  - 
-"""
+LOGGER = logging.getLogger(__name__)
 
 
 class CallFrame:
+
+    """    
+    All variable storage is in the "locals" dict through the call stack. All COMMON variable refer to the
+    root call frame (in the "adventure" implementation).
+
+    Fortran is a pass-by-reference language. The "locals" dict holds mutable containers for variables. I use a
+    single entry list for each variable.
+
+    Fortran arrays begin at 1. I use a "None" in entry 0 of each array to simplify the indexing.
+
+    Each routine can define single-statement functions that apply only within the routine.
+    
+    """
 
     # Calling a subroutine is pass by reference. The subroutine can modify the variables passed by the caller.
 
@@ -30,18 +38,19 @@ class CallFrame:
     # - The subroutine's local variables
     # - Create the local variable with value 0
 
-    def __init__(self, name, linenum):
-        self.name = name  # Just for debugging
-        self.program_counter = linenum  # Next line to execute
-        self.past_statement_functions = False
+    def __init__(self, section, linenum, rootframe):
+        self.section = section  # Just for debugging
+        self.program_counter = linenum  # Next line to execute        
+        self.lines = section.lines  # The lines of code in this subroutine
+        self.rootframe = rootframe  # The root call frame (the main program)
 
         self.var_types = {}  # Type hint: name->type
-        # Incoming parameters in order. List of tuples: (local_name, caller_name)
-        self.params = []
-        # Just a list of commons we can access (not really used)
-        self.commons = []
-
+        self.params = [] # The incoming parameters
+        self.commons = []  # The declared COMMON vars
         self.locals = {}  # Actual storage name->value
+
+        self.past_statement_functions = False
+
         self.statement_functions = {}
 
     @staticmethod
@@ -60,17 +69,30 @@ class CallFrame:
         raise ValueError("No matching closing parenthesis found")
 
 
-    def get_var(self, name, auto_create=True):
-        # Look for variables by name in the following order:
-        # - The common blocks
-        # - The subroutine's parameters
-        # - The subroutine's local variables
-        # - Create the local variable with value 0
-        # TODO
-        return 0
+    def get_var(self, name, index=None, auto_create=True):
+        # Check if the name is in the root COMMON. If so use that.
+        # Otherwise, it has to be in the current call frame
+        d = self.locals
+        if self.rootframe and name in self.commons:
+            d = self.rootframe.locals
+        if name in d:
+            ret = d[name]
+            if index is not None:
+                for i in index:
+                    ret = ret[i]
+            return ret
+        if not auto_create:
+            # The caller is checking if the variable exists
+            return None
+        if index is not None:
+            # The DIMENSION statement creates these
+            raise Exception("Can't auto-create an array variable", name, index)
+        self.locals[name] = [0]
+        return self.locals[name]        
 
-    def set_var(self, name, value):
-        pass
+    def set_var(self, name, value, index=None):
+        ptr = self.get_var(name, index)
+        ptr[0] = value
 
     def evaluate_expression(self, expr):
         expr2 = expr.replace('.EQ.', '==').replace('.NE.', '!=').replace(
@@ -100,9 +122,10 @@ class CallFrame:
 
         refs = {}
         for name in flat_fills:
-            value = self.get_var(name)
+            value = self.get_var(name)[0]
             refs[name] = value
 
-        print(">>>", expr2, refs)
+        LOGGER.debug(f"Evaluating expression: {expr2} with refs: {refs}")
+        
         result = eval(expr2, None, refs)
         return result

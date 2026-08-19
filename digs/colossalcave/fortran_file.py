@@ -44,6 +44,7 @@ class FORTRANSection:
         self.params = params
         self.ret_type = ret_type
         self.labels = {}
+        self.lines = []
 
 class FORTRANFile:
     def __init__(self, filename):
@@ -83,7 +84,7 @@ class FORTRANFile:
 
         self.sections = {}
 
-        for name, start, end in parts:            
+        for name, start, end in parts:                      
             params = []
             unit_type = 'main'
             ret_type = None
@@ -100,6 +101,13 @@ class FORTRANFile:
                 ret_type = name[:i-1].strip()
                 name = name[i+9:].strip()                
             sec = FORTRANSection(name, unit_type, params, ret_type, start, end)
+            for i in range(start+1, end):
+                line = self.lines[i]
+                if line.continue_mark:
+                    continue
+                if not line.combined_code:
+                    continue
+                sec.lines.append(line)
             self.sections[name] = sec
 
         # Make a map of subroutines and their labels.

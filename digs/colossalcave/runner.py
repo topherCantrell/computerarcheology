@@ -1,5 +1,8 @@
 from callframe import CallFrame
 from fortran_file import FORTRANFile
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 
 class FortranRunner:
@@ -7,7 +10,7 @@ class FortranRunner:
     def _for_STOP(self, code):
         self.running = False  # Return from the "run" method     
     def _for_IMPLICIT(self, code):
-        return  # Don't care (everything is integer in this program)
+        return
     def _for_REAL(self, code):
         vars = code[5:].strip().split(',')
         for v in vars:
@@ -36,8 +39,6 @@ class FortranRunner:
     def _for_DIMENSION(self, code):
         # Create arrays and fill them with None. Fortran starts with 1, so
         # we add one element, and the first element will never be used.
-        # SUBROUTINEs can use COMMON variables and thus re-dimension them. We
-        # only initalize them once.
         code = code[9:].strip()
         call_frame = self.stack[-1]
         # Can't split on "," because of multi-dimensional arrays. First, a little preprocessing to make that
@@ -58,8 +59,10 @@ class FortranRunner:
             i = s.find('(')
             dim = s[i+1:-1]
             s = s[:i]
-            # If we don't know about a variable (parameter or common) we need to create it.
+            # If we don't know about a variable (parameter or common) we need to create it
+            # in our call frame. 
             if call_frame.get_var(s,auto_create=False) is None:
+                LOGGER.debug(f"Creating local array {s} with dimensions {dim}")
                 dim = dim.split(' ')
                 dim = [int(d) for d in dim]
                 if len(dim) == 1:
@@ -112,7 +115,7 @@ class FortranRunner:
                 raise Exception(f'Must implement this case too {code}')
             v = vars[0].strip()
             val = self._parse_term(vals[0].strip())
-            self.set_var(v, val)
+            self.stack[-1].set_var(v, val)
 
     def _for_IF(self, code):        
         # This breaks with parentheses in a string constant in an expression        
@@ -143,14 +146,19 @@ class FortranRunner:
     def _for_RETURN(self, code):
         raise Exception(f'RETURN not implemented yet: {code}')
 
-    def _is_statement_function(self, code):
-        # This MIGHT be a regular assignment. If the name has been declared (common, etc) then
+    def _is_statement_function(self, token, params):
+        # This MIGHT be a regular assignment. If the name has been declared (common or locals) then
         # this is not a function. If there are no parentheses before the = then this is not a 
         # function. If we've executed another compiled command, then it is not a function.
         if self.stack[-1].past_statement_functions:
             return False
-        # TODO get the left-hand name. if we know it, return False
-
+        if not params.startswith('('):
+            return False
+        if self.stack[-1].get_var(token, auto_create=False) is None:
+            # We have parameters and it isn't a variable we know -- must be a statement function.
+            return True
+        # This is an array variable we know -- not a statement function.
+        return False
         
 
     def _for_statement_function(self, code):
@@ -166,20 +174,20 @@ class FortranRunner:
             params[j] = item.strip()
         self.statement_functions[left] = (params, right)        
     
-    def _for_expression(self, code):
+    def _for_expression(self, left, right):
         # The fortran code does assign with variable index, but it is always simple
         # lookups -- not math expressions to evaluate.
-        i = code.find('=')
-        left = code[:i].strip()
-        right = code[i+1:].strip()
-        self.evaluate_math(right)
-        raise Exception(f'Expression not implemented yet: {code}')
+        # i = code.find('=')
+        # left = code[:i].strip()
+        # right = code[i+1:].strip()
+        # self.evaluate_math(right)
+        raise Exception(f'Expression not implemented yet: {left} = {right}')
 
     def evaluate_math(self, expr):
         print (">>>>>",expr)    
 
     DECLARE_COMMANDS = [
-        'IMPLICIT', 'INTEGER', 'REAL', 'LOGICAL', 'COMMON', 'DIMENSION','DATA', 
+        'IMPLICIT', 'INTEGER', 'REAL', 'LOGICAL', 'COMMON', 'DIMENSION','DATA'
     ]
 
     def __init__(self, filename):
@@ -207,59 +215,51 @@ class FortranRunner:
             'RETURN': self._for_RETURN,
         }
 
-        frame = CallFrame('*', 0)
+        frame = CallFrame(self.fortran.sections['*'], 0, rootframe=None)
         self.stack = [frame]
 
         self.running = False    
 
     def step(self, code):
-        print(">>>> HERE",code)
         parse = code.replace(' ', '')
         fnd = False
         for keyword, fn in self.for_functions.items():
             if parse.startswith(keyword):         
-                if keyword == 'IF(':
-                    self._if_given = True           
+                if keyword not in self.DECLARE_COMMANDS:
+                    # No more statement functions are coming.
+                    self.stack[-1].past_statement_functions = True
                 fnd = True
                 fn(code)                    
                 break
         if not fnd:
-
-            name = ''
+            # This MUST be an assignment or a statement function. There will always
+            # be a TOKEN up front.
+            i = code.find('=')
+            left = code[:i].strip()
+            right = code[i+1:].strip()
+            token = ''
             pos = 0
-            while code[pos].isalpha() and code[pos].isupper():
-                name += code[pos]
+            while (pos < len(left) and ((left[pos].isalpha() and left[pos].isupper()) or left[pos].isnumeric())):
+                token += left[pos]
                 pos += 1
-            print(">>>", name)
-            raise "STOP"
-
-
-            # A little bit of a hack here to fit the code we have. We know that
-            # any "=" expression before an IF is a statement function. After the
-            # first IF, there are no more statement functions.
-            if not self._if_given:
-                self._for_statement_function(code)
-            else:               
-                self._for_expression(code)   
+            if self._is_statement_function(token, left[pos:]):
+                params = left[pos+1:-1].split(',')
+                self.stack[-1].statement_functions[token] = (params, right)
+                LOGGER.debug(f"Statement function {token} with params {params} and right side {right}")
+            else:
+                self._for_expression(left,right)
+                # No more statement functions are coming
+                self.stack[-1].past_statement_functions = True
+           
 
     def run(self):
         self.running = True
         while self.running:            
             # Skp over comments and continues (already collected)
             pc = self.stack[-1].program_counter
-            while True:
-                line = self.fortran.lines[pc]
-                if line.continue_mark:
-                    pc += 1
-                    continue
-                if not line.combined_code:
-                    pc += 1
-                    continue
-                break
-            self.stack[-1].program_counter = pc
-            code = line.combined_code
-            self.stack[-1].program_counter += 1 
-            
+            code = self.stack[-1].lines[pc].combined_code
+            pc += 1
+            self.stack[-1].program_counter = pc               
             self.step(code)        
                        
 
@@ -273,6 +273,8 @@ def search_code():
             print('>>>', line.combined_code)                          
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
+
     runner = FortranRunner('../../content/ColossalCaveAdventure/raw/advent350.for')
     # runner = FortranRunner('../../content/ColossalCaveAdventure/raw/adventOrg.f')
     
