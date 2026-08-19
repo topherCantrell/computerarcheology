@@ -139,6 +139,12 @@ class FortranRunner:
         raise Exception(f'CONTINUE not implemented yet: {code}')
     def _for_CALL(self, code):
         raise Exception(f'CALL not implemented yet: {code}')
+    def _string_from_format(self, fmt, params):
+        ret = ''
+        fmt = fmt.strip()
+        if not fmt.startswith("'") or fmt.count("'")!= 2 or not fmt.endswith("'"):
+            raise Exception(f"TODO work on formatting :{fmt}:")
+        return fmt[1:-1]
     def _for_TYPE(self, code):
         # Always of the form "TYPE n,....."
         g = code.find(',')
@@ -147,7 +153,10 @@ class FortranRunner:
         label = int(code[5:g])
         params = code[g+1:].strip()
         format = self.stack[-1].formats[label].combined_code
-        raise Exception(f'TYPE not implemented yet: {code}, :{label}:, :{params}:, :{format}:')    
+        i = format.find('(')
+        # TODO params and do loops
+        s = self._string_from_format(format[i+1:-1],params)        
+        print(s)
     def _for_RETURN(self, code):
         raise Exception(f'RETURN not implemented yet: {code}')
 
