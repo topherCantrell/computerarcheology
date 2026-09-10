@@ -1,6 +1,6 @@
 SECTIONS = {}
 
-with open('advent.dat', 'r') as f:
+with open('../../content/colossalcaveadventure/raw/advent350.dat', 'r') as f:
     while True:
         sec_num = int(f.readline().strip())
         if sec_num == 0:

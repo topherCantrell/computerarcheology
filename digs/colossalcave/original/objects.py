@@ -29,4 +29,4 @@ OBJ_DESC = {
 }
 
 for key,value in OBJ_DESC.items():
-    print(f'{key:02X}: {START[key-1]:02X} {value}')
+    print(f'{key}: {START[key-1]} {value}')

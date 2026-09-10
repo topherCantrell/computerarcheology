@@ -324,9 +324,9 @@ class FORTRANFile:
 
         # Make a map of labels to lines for quick access.
         for section in self.sections.values():
-            for line in section.lines:
+            for i, line in enumerate(section.lines):
                 if line.label is not None:
-                    section.labels[line.label] = line    
+                    section.labels[line.label] = (line, i)
 
 def one_per_line_2(data):
     ret = ''
@@ -354,17 +354,23 @@ def print_info(file):
         print(f"  Lines:")
         for line in section.lines:
             print(f"    {line.label}:{line.combined_code}")
+
+def search_code(file):
+    for name, section in file.sections.items():
+        for line in section.lines:
+            # if 'CALL' in line.combined_code:
+            #     i = line.combined_code.find('CALL')
+            #     print(line.combined_code[i:])
+            if 'READ' in line.combined_code:
+                i = line.combined_code.find('READ')
+                print(line.combined_code[i:])
                   
 
 if __name__ == "__main__":
-    file = FORTRANFile('../../content/ColossalCaveAdventure/raw/advent350.for')    
-    # file = FORTRANFile('../../content/ColossalCaveAdventure/raw/adventOrg.f')
+    #file = FORTRANFile('../../content/ColossalCaveAdventure/raw/advent350.for')    
+    file = FORTRANFile('../../content/ColossalCaveAdventure/raw/adventOrg.f')
 
-    print_info(file)
+    #print_info(file)
+    search_code(file)
 
-    # print("Sections:")
-    # for name, section in file.sections.items():
-    #     print(f"  {name} ({section.unit_type}) {section.params} {section.ret_type}")
-    #     for line in section.lines:
-    #         print(f"    {line.code_line_num}: {line.combined_code}")
     

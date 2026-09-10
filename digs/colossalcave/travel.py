@@ -28,9 +28,12 @@ for record in org_data:
     TRAVEL[source_room].append((dest_room, dest_cond, all_words))
 
 for rn in range(1,141):
+    if rn not in TRAVEL:
+        print(f'Room {rn} not found in TRAVEL dictionary.')
+        continue
     desc = rooms.ROOMS[rn]['long']
     trav = TRAVEL[rn]
-    print(f'---------------- {rn:02X} ----------------')
+    print(f'---------------- #{rn} ----------------')
     print('\n'.join(desc))
     next_else = False    
     for dest, cond, all_words in trav:
@@ -39,9 +42,9 @@ for rn in range(1,141):
             dest_txt = f'mesg_{dest-500}'
             msg = ' '.join(messages.MESSAGES[dest-500])
         elif dest > 300:
-            dest_txt = f'goto_{dest-300}'
+            dest_txt = f'.s{dest}'
         else:
-            dest_txt = f'{int(dest):02X}'
+            dest_txt = f'.{int(dest)}'
         dest_txt = dest_txt.ljust(8)
 
         if cond == 0:
@@ -55,13 +58,13 @@ for rn in range(1,141):
             next_else = True
         elif cond == 100:
             next_else = True
-            cond_txt = 'no dwvs'
+            cond_txt = 'noDwarves'
         elif cond < 200:
-            cond_txt = f'has {int(cond)-100}'
+            cond_txt = f'has({int(cond)-100})'
             next_else = True
         elif cond < 300:
             next_else = True
-            cond_txt = f'available {int(cond)-200}'        
+            cond_txt = f'available({int(cond)-200})'        
         elif cond < 400:
             next_else = True
             cond_txt = f'prop({int(cond)%100}) NOT 0'
@@ -82,9 +85,15 @@ for rn in range(1,141):
                 raise "OOPS"
             cond_txt = f'{int(cond):03X}'       
 
+        if not cond_txt.startswith('<') and not cond_txt.startswith('else'):
+            cond_txt = 'if_'+cond_txt.rjust(13)+':'
+            # print('>>>',cond_txt)
+
         words_txt = f'{all_words}'
         if words_txt.startswith('[['):
             words_txt = words_txt[1:-1]
+        if words_txt == "['??1??']":
+            words_txt = 'go'
         print(f'    {dest_txt} {cond_txt} {words_txt} {msg}')
     print('')
 

@@ -1,4 +1,5 @@
 import logging
+import copy
 
 LOGGER = logging.getLogger(__name__)
 
@@ -43,17 +44,11 @@ class CallFrame:
         self.program_counter = linenum  # Next line to execute        
         self.lines = section.lines  # The lines of code in this subroutine
         self.formats = section.formats  # The formats for this subroutine
-        print(">>>",section.formats)
         self.rootframe = rootframe  # The root call frame (the main program)
+        
+        self.locals = copy.deepcopy(section.locals)  # The local variables for this subroutine
 
-        self.var_types = {}  # Type hint: name->type
-        self.params = [] # The incoming parameters
-        self.commons = []  # The declared COMMON vars
-        self.locals = {}  # Actual storage name->value
-
-        self.past_statement_functions = False
-
-        self.statement_functions = {}
+        self.loops = []  # The stack of DO loops [start_num, end_num, var, fromval, toval]
 
     @staticmethod
     def find_close_paren(expr, start):
@@ -70,8 +65,9 @@ class CallFrame:
             pos += 1
         raise ValueError("No matching closing parenthesis found")
 
-
     def get_var(self, name, index=None, auto_create=True):
+        if name=='0':
+            raise Exception("Can't get a variable named 0")
         # Check if the name is in the root COMMON. If so use that.
         # Otherwise, it has to be in the current call frame
         d = self.locals
@@ -108,16 +104,15 @@ class CallFrame:
         pos = 0
 
         while pos < len(expr2):
-            c = expr2[pos]
-            pos += 1
-            if c.isalpha() and c.isupper():
+            c = expr2[pos]            
+            if c.isalpha():
                 i = pos
-                while i < len(expr2) and expr2[i].isalpha() and expr2[i].isupper():
+                while i < len(expr2) and (expr2[i].isalpha() or expr2[i].isnumeric()):
                     i += 1
                 if i < len(expr2) and expr2[i] == '(':
                     # Functions, statement-functions, and array refs TODO
                     raise Exception("TODO Work to do here", expr2)
-                flat_fills.append(expr2[pos-1:i])
+                flat_fills.append(expr2[pos:i])
                 pos = i
             else:
                 pos += 1
@@ -127,7 +122,7 @@ class CallFrame:
             value = self.get_var(name)[0]
             refs[name] = value
 
-        LOGGER.debug(f"Evaluating expression: {expr2} with refs: {refs}")
+        # LOGGER.debug(f"Evaluating expression: {expr2} with refs: {refs}")
         
         result = eval(expr2, None, refs)
         return result

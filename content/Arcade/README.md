@@ -7,14 +7,15 @@
 >>>    Asteroids:Asteroids 80%<br>
 >>>    CrazyClimber:Crazy Climber 1%<br>
 >>>    Defender:Defender 75%<br>
->>>    DonkeyKong<br>
+>>>    DonkeyKong:Donkey Kong (AI)<br>
 >>>    Frogger:Frogger (Sound)<br>
 >>>    Galaga:Galaga 5%<br>
 >>>    MoonPatrol:Moon Patrol 75%<br>
 >>>    OmegaRace:Omega Race 10%<br>
+>>>    Pooyan:Pooyan (AI)<br>
 >>>    Phoenix:Phoenix 90%<br>
 >>>    SpaceInvaders:Space Invaders<br>
->>>    ThePit: The Pit<br>
+>>>    ThePit: The Pit (AI)<br>
 >>>    TimePilot:Time Pilot (Sound)<br>
 >>>    SeaWolf:Sea Wolf 1%<br>
 >>>    Scramble:Scramble 1%<br>
