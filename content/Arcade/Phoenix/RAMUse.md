@@ -469,7 +469,7 @@ At the intro it's borrowed as scratch — `$4B70`–`$4B73` are reused to draw a
 | 4B74      | B4B74                | Bird0 movement-step countdown timer |
 | 4B75      | B4B75                | Bird0 grid coordinate X             |
 | 4B76      | B4B76                | Bird0 horizontal movement step (velocity) |
-| 4B77      | B4B77                | Bird0 grid coordinate Y             |
+| 4B77      | B4B77                | Bird0 target x position             |
 | 4B78      | B4B78                | Bird1 character-block shape index   |
 | 4B79      | B4B79                | Bird1 screen-RAM address MSB    |
 | 4B7A      | B4B7A                | Bird1 screen-RAM address LSB    |
@@ -477,7 +477,7 @@ At the intro it's borrowed as scratch — `$4B70`–`$4B73` are reused to draw a
 | 4B7C      | B4B7C                | Bird1 movement-step countdown timer |
 | 4B7D      | B4B7D                | Bird1 grid coordinate X             |
 | 4B7E      | B4B7E                | Bird1 horizontal movement step (velocity) |
-| 4B7F      | B4B7F                | Bird1 grid coordinate Y             |
+| 4B7F      | B4B7F                | Bird1 target x position             |
 | 4B80      | B4B80                | Bird2 character-block shape index   |
 | 4B81      | B4B81                | Bird2 screen-RAM address MSB    |
 | 4B82      | B4B82                | Bird2 screen-RAM address LSB    |
@@ -485,7 +485,7 @@ At the intro it's borrowed as scratch — `$4B70`–`$4B73` are reused to draw a
 | 4B84      | B4B84                | Bird2 movement-step countdown timer |
 | 4B85      | B4B85                | Bird2 grid coordinate X             |
 | 4B86      | B4B86                | Bird2 horizontal movement step (velocity) |
-| 4B87      | B4B87                | Bird2 grid coordinate Y             |
+| 4B87      | B4B87                | Bird2 target x position             |
 | 4B88      | B4B88                | Bird3 character-block shape index   |
 | 4B89      | B4B89                | Bird3 screen-RAM address MSB    |
 | 4B8A      | B4B8A                | Bird3 screen-RAM address LSB    |
@@ -493,7 +493,7 @@ At the intro it's borrowed as scratch — `$4B70`–`$4B73` are reused to draw a
 | 4B8C      | B4B8C                | Bird3 movement-step countdown timer |
 | 4B8D      | B4B8D                | Bird3 grid coordinate X             |
 | 4B8E      | B4B8E                | Bird3 horizontal movement step (velocity) |
-| 4B8F      | B4B8F                | Bird3 grid coordinate Y             |
+| 4B8F      | B4B8F                | Bird3 target x position             |
 | 4B90      | B4B90                | Bird4 character-block shape index   |
 | 4B91      | B4B91                | Bird4 screen-RAM address MSB    |
 | 4B92      | B4B92                | Bird4 screen-RAM address LSB    |
@@ -501,7 +501,7 @@ At the intro it's borrowed as scratch — `$4B70`–`$4B73` are reused to draw a
 | 4B94      | B4B94                | Bird4 movement-step countdown timer |
 | 4B95      | B4B95                | Bird4 grid coordinate X             |
 | 4B96      | B4B96                | Bird4 horizontal movement step (velocity) |
-| 4B97      | B4B97                | Bird4 grid coordinate Y             |
+| 4B97      | B4B97                | Bird4 target x position             |
 | 4B98      | B4B98                | Bird5 character-block shape index   |
 | 4B99      | B4B99                | Bird5 screen-RAM address MSB    |
 | 4B9A      | B4B9A                | Bird5 screen-RAM address LSB    |
@@ -509,7 +509,7 @@ At the intro it's borrowed as scratch — `$4B70`–`$4B73` are reused to draw a
 | 4B9C      | B4B9C                | Bird5 movement-step countdown timer |
 | 4B9D      | B4B9D                | Bird5 grid coordinate X             |
 | 4B9E      | B4B9E                | Bird5 horizontal movement step (velocity) |
-| 4B9F      | B4B9F                | Bird5 grid coordinate Y             |
+| 4B9F      | B4B9F                | Bird5 target x position             |
 | 4BA0      | B4BA0                | Bird6 character-block shape index   |
 | 4BA1      | B4BA1                | Bird6 screen-RAM address MSB    |
 | 4BA2      | B4BA2                | Bird6 screen-RAM address LSB    |
@@ -517,7 +517,7 @@ At the intro it's borrowed as scratch — `$4B70`–`$4B73` are reused to draw a
 | 4BA4      | B4BA4                | Bird6 movement-step countdown timer |
 | 4BA5      | B4BA5                | Bird6 grid coordinate X             |
 | 4BA6      | B4BA6                | Bird6 horizontal movement step (velocity) |
-| 4BA7      | B4BA7                | Bird6 grid coordinate Y             |
+| 4BA7      | B4BA7                | Bird6 target x position             |
 | 4BA8      | B4BA8                | Bird7 character-block shape index   |
 | 4BA9      | B4BA9                | Bird7 screen-RAM address MSB    |
 | 4BAA      | B4BAA                | Bird7 screen-RAM address LSB    |
@@ -525,7 +525,7 @@ At the intro it's borrowed as scratch — `$4B70`–`$4B73` are reused to draw a
 | 4BAC      | B4BAC                | Bird7 movement-step countdown timer |
 | 4BAD      | B4BAD                | Bird7 grid coordinate X             |
 | 4BAE      | B4BAE                | Bird7 horizontal movement step (velocity) |
-| 4BAF      | B4BAF                | Bird7 grid coordinate Y             |
+| 4BAF      | B4BAF                | Bird7 target x position             |
 
 
 ## Alien data structure (screen ram)
