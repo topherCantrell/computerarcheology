@@ -1,0 +1,1445 @@
+7D51: 0E 8B 26                           ; COM_0E_group_OR length=0x0B26 (to 0x887A)
+7D54:    0D 3F                           ;   COM_0D_group_AND length=0x003F (to 0x7D95)
+7D56:       0E 08                        ;     COM_0E_group_OR length=0x0008 (to 0x7D60)
+7D58:          0A 01                     ;       COM_0A_is_input_phrase(phrase=NORTH * * *)
+7D5A:          0A 02                     ;       COM_0A_is_input_phrase(phrase=SOUTH * * *)
+7D5C:          0A 03                     ;       COM_0A_is_input_phrase(phrase=EAST * * *)
+7D5E:          0A 04                     ;       COM_0A_is_input_phrase(phrase=WEST * * *)
+;                                        ;     end group_OR at 0x7D56
+7D60:       0E 33                        ;     COM_0E_group_OR length=0x0033 (to 0x7D95)
+7D62:          0D 20                     ;       COM_0D_group_AND length=0x0020 (to 0x7D84)
+7D64:             14                     ;         COM_14_reverse_status next command
+7D65:             37                     ;         COM_37_is_player_in_an_object()
+7D66:             0E 1C                  ;         COM_0E_group_OR length=0x001C (to 0x7D84)
+7D68:                13                  ;           COM_13_process_phrase_by_room()
+7D69:                0D 19               ;           COM_0D_group_AND length=0x0019 (to 0x7D84)
+7D6B:                   20 01            ;             COM_20_is_active_object(obj=OBJ_01_PLAYER)
+7D6D:                   04 15            ;             COM_04_print_message length=0x0015 (to 0x7D84)
+7D6F:                      C7 DE F3 17 CB 8C CF 47 F5 8B D3 B8 D0 15 6B BF
+7D7F:                      59 45 46 48 2E
+;
+;                          YOU WALK AIMLESSLY INTO A WALL.
+;
+;                                        ;           end group_AND at 0x7D69
+;                                        ;         end group_OR at 0x7D66
+;                                        ;       end group_AND at 0x7D62
+7D84:          0D 0F                     ;       COM_0D_group_AND length=0x000F (to 0x7D95)
+7D86:             04 0B                  ;         COM_04_print_message length=0x000B (to 0x7D93)
+7D88:                C7 DE 94 14 55 5E 8E BE 0B 8A 4E
+;
+;                    YOU ARE STILL IN
+;
+7D93:             AA                     ;         FN_AA_PRINT_THE_var
+7D94:             8B                     ;         FN_8B_PRINT_PERIOD
+;                                        ;       end group_AND at 0x7D84
+;                                        ;     end group_OR at 0x7D60
+;                                        ;   end group_AND at 0x7D54
+7D95:    0B 8A E2 0A                     ;   COM_0B_switch length=0x0AE2 (to 0x887B), function=COM_0A_is_input_phrase(phrase_num)
+7D99:       05 0A                        ;     case COM_0A_is_input_phrase("GET ..C..... * *"), length=0x000A
+7D9B:          0E 08                     ;       COM_0E_group_OR length=0x0008 (to 0x7DA5)
+7D9D:             A2                     ;         FN_A2_PRINT_ALREADY_HAVE_THE_var
+7D9E:             13                     ;         COM_13_process_phrase_by_room()
+7D9F:             0D 02                  ;         COM_0D_group_AND length=0x0002 (to 0x7DA3)
+7DA1:                1A                  ;           COM_1A_set_var_to_noun1()
+7DA2:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x7D9F
+7DA3:             14                     ;         COM_14_reverse_status next command
+7DA4:             0C                     ;         COM_0C_fail()
+;                                        ;       end group_OR at 0x7D9B
+;                                        ;     end case
+7DA5:       43 0D                        ;     case COM_0A_is_input_phrase("GET ..C..... WITH ..C....."), length=0x000D
+7DA7:          0E 0B                     ;       COM_0E_group_OR length=0x000B (to 0x7DB4)
+7DA9:             A2                     ;         FN_A2_PRINT_ALREADY_HAVE_THE_var
+7DAA:             13                     ;         COM_13_process_phrase_by_room()
+7DAB:             0D 03                  ;         COM_0D_group_AND length=0x0003 (to 0x7DB0)
+7DAD:                1B                  ;           COM_1B_set_var_to_noun2()
+7DAE:                14                  ;           COM_14_reverse_status next command
+7DAF:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x7DAB
+7DB0:             0D 02                  ;         COM_0D_group_AND length=0x0002 (to 0x7DB4)
+7DB2:                1A                  ;           COM_1A_set_var_to_noun1()
+7DB3:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x7DB0
+;                                        ;       end group_OR at 0x7DA7
+;                                        ;     end case
+7DB4:       06 23                        ;     case COM_0A_is_input_phrase("DROP ..C..... * *"), length=0x0023
+7DB6:          0E 21                     ;       COM_0E_group_OR length=0x0021 (to 0x7DD9)
+7DB8:             13                     ;         COM_13_process_phrase_by_room()
+7DB9:             0D 13                  ;         COM_0D_group_AND length=0x0013 (to 0x7DCE)
+7DBB:                1A                  ;           COM_1A_set_var_to_noun1()
+7DBC:                14                  ;           COM_14_reverse_status next command
+7DBD:                15 20               ;           COM_15_is_var_attributes(value=..P.....(Portable))
+7DBF:                04 0B               ;           COM_04_print_message length=0x000B (to 0x7DCC)
+7DC1:                   89 74 D3 14 9B 96 1B A1 F9 5B 50
+;
+;                       HOW CAN YOU DROP
+;
+7DCC:                A8                  ;           FN_A8_PRINT_noun1
+7DCD:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x7DB9
+7DCE:             0D 09                  ;         COM_0D_group_AND length=0x0009 (to 0x7DD9)
+7DD0:                10                  ;           COM_10_drop_var()
+7DD1:                04 06               ;           COM_04_print_message length=0x0006 (to 0x7DD9)
+7DD3:                   F9 5B 9F A6 9B 5D
+;
+;                       DROPPED. 
+;
+;                                        ;         end group_AND at 0x7DCE
+;                                        ;       end group_OR at 0x7DB6
+;                                        ;     end case
+7DD9:       08 17                        ;     case COM_0A_is_input_phrase("READ .....?.. * *"), length=0x0017
+7DDB:          0E 15                     ;       COM_0E_group_OR length=0x0015 (to 0x7DF2)
+7DDD:             13                     ;         COM_13_process_phrase_by_room()
+7DDE:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x7DF2)
+7DE0:                04 0E               ;           COM_04_print_message length=0x000E (to 0x7DF0)
+7DE2:                   5F BE 5D B1 D0 B5 D9 9C 16 B2 91 7A C0 16
+;
+;                       THERE'S NO WRITING ON
+;
+7DF0:                A8                  ;           FN_A8_PRINT_noun1
+7DF1:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x7DDE
+;                                        ;       end group_OR at 0x7DDB
+;                                        ;     end case
+7DF2:       11 15                        ;     case COM_0A_is_input_phrase("OPEN u....... * *"), length=0x0015
+7DF4:          0E 13                     ;       COM_0E_group_OR length=0x0013 (to 0x7E09)
+7DF6:             13                     ;         COM_13_process_phrase_by_room()
+7DF7:             92                     ;         FN_92_PRINT_TRIED_BUT_COULDNT
+7DF8:             0D 0D                  ;         COM_0D_group_AND length=0x000D (to 0x7E07)
+7DFA:                1A                  ;           COM_1A_set_var_to_noun1()
+7DFB:                2E 40               ;           COM_2E_is_var_ext_attributes(value=.L..----(Locked))
+7DFD:                A8                  ;           FN_A8_PRINT_noun1
+7DFE:                04 07               ;           COM_04_print_message length=0x0007 (to 0x7E07)
+7E00:                   4B 7B 75 8D A6 85 2E
+;
+;                       IS LOCKED.
+;
+;                                        ;         end group_AND at 0x7DF8
+7E07:             A5                     ;         FN_A5_IS_OPEN
+7E08:             A6                     ;         FN_A6_OPEN
+;                                        ;       end group_OR at 0x7DF4
+;                                        ;     end case
+7E09:       3A 11                        ;     case COM_0A_is_input_phrase("OPEN u....... WITH u......."), length=0x0011
+7E0B:          0E 0F                     ;       COM_0E_group_OR length=0x000F (to 0x7E1C)
+7E0D:             0D 03                  ;         COM_0D_group_AND length=0x0003 (to 0x7E12)
+7E0F:                1B                  ;           COM_1B_set_var_to_noun2()
+7E10:                14                  ;           COM_14_reverse_status next command
+7E11:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x7E0D
+7E12:             13                     ;         COM_13_process_phrase_by_room()
+7E13:             92                     ;         FN_92_PRINT_TRIED_BUT_COULDNT
+7E14:             A5                     ;         FN_A5_IS_OPEN
+7E15:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x7E1B)
+7E17:                2E 40               ;           COM_2E_is_var_ext_attributes(value=.L..----(Locked))
+7E19:                2A                  ;           COM_2A_toggle_lock_VAR()
+7E1A:                0C                  ;           COM_0C_fail()
+;                                        ;         end group_AND at 0x7E15
+7E1B:             A6                     ;         FN_A6_OPEN
+;                                        ;       end group_OR at 0x7E0B
+;                                        ;     end case
+7E1C:       40 24                        ;     case COM_0A_is_input_phrase("CLOSE ....A... * *"), length=0x0024
+7E1E:          0E 22                     ;       COM_0E_group_OR length=0x0022 (to 0x7E42)
+7E20:             13                     ;         COM_13_process_phrase_by_room()
+7E21:             92                     ;         FN_92_PRINT_TRIED_BUT_COULDNT
+7E22:             0D 0E                  ;         COM_0D_group_AND length=0x000E (to 0x7E32)
+7E24:                1A                  ;           COM_1A_set_var_to_noun1()
+7E25:                2E 20               ;           COM_2E_is_var_ext_attributes(value=..C.----(Closed))
+7E27:                A8                  ;           FN_A8_PRINT_noun1
+7E28:                04 08               ;           COM_04_print_message length=0x0008 (to 0x7E32)
+7E2A:                   4B 7B 06 9A C2 16 A7 61
+;
+;                       IS NOT OPEN.
+;
+;                                        ;         end group_AND at 0x7E22
+7E32:             0D 0E                  ;         COM_0D_group_AND length=0x000E (to 0x7E42)
+7E34:                29                  ;           COM_29_toggle_open_VAR()
+7E35:                A8                  ;           FN_A8_PRINT_noun1
+7E36:                04 0A               ;           COM_04_print_message length=0x000A (to 0x7E42)
+7E38:                   4B 7B 09 9A DE 14 D7 A0 9B 5D
+;
+;                       IS NOW CLOSED. 
+;
+;                                        ;         end group_AND at 0x7E32
+;                                        ;       end group_OR at 0x7E1E
+;                                        ;     end case
+7E42:       42 2D                        ;     case COM_0A_is_input_phrase("UNLOCK u....... WITH u......."), length=0x002D
+7E44:          0E 2B                     ;       COM_0E_group_OR length=0x002B (to 0x7E71)
+7E46:             0D 03                  ;         COM_0D_group_AND length=0x0003 (to 0x7E4B)
+7E48:                1B                  ;           COM_1B_set_var_to_noun2()
+7E49:                14                  ;           COM_14_reverse_status next command
+7E4A:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x7E46
+7E4B:             13                     ;         COM_13_process_phrase_by_room()
+7E4C:             92                     ;         FN_92_PRINT_TRIED_BUT_COULDNT
+7E4D:             0D 11                  ;         COM_0D_group_AND length=0x0011 (to 0x7E60)
+7E4F:                1A                  ;           COM_1A_set_var_to_noun1()
+7E50:                14                  ;           COM_14_reverse_status next command
+7E51:                2E 40               ;           COM_2E_is_var_ext_attributes(value=.L..----(Locked))
+7E53:                A8                  ;           FN_A8_PRINT_noun1
+7E54:                04 0A               ;           COM_04_print_message length=0x000A (to 0x7E60)
+7E56:                   4B 7B 06 9A 49 16 97 54 9B 5D
+;
+;                       IS NOT LOCKED. 
+;
+;                                        ;         end group_AND at 0x7E4D
+7E60:             0D 0F                  ;         COM_0D_group_AND length=0x000F (to 0x7E71)
+7E62:                2A                  ;           COM_2A_toggle_lock_VAR()
+7E63:                A8                  ;           FN_A8_PRINT_noun1
+7E64:                04 0B               ;           COM_04_print_message length=0x000B (to 0x7E71)
+7E66:                   4B 7B 09 9A B0 17 75 8D A6 85 2E
+;
+;                       IS NOW UNLOCKED.
+;
+;                                        ;         end group_AND at 0x7E60
+;                                        ;       end group_OR at 0x7E44
+;                                        ;     end case
+7E71:       41 45                        ;     case COM_0A_is_input_phrase("LOCK ....A... WITH u......."), length=0x0045
+7E73:          0E 43                     ;       COM_0E_group_OR length=0x0043 (to 0x7EB8)
+7E75:             0D 03                  ;         COM_0D_group_AND length=0x0003 (to 0x7E7A)
+7E77:                1B                  ;           COM_1B_set_var_to_noun2()
+7E78:                14                  ;           COM_14_reverse_status next command
+7E79:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x7E75
+7E7A:             13                     ;         COM_13_process_phrase_by_room()
+7E7B:             92                     ;         FN_92_PRINT_TRIED_BUT_COULDNT
+7E7C:             0D 17                  ;         COM_0D_group_AND length=0x0017 (to 0x7E95)
+7E7E:                14                  ;           COM_14_reverse_status next command
+7E7F:                09 14               ;           COM_09_is_noun2(obj=OBJ_14_DOOR_COVERED_SHELTER)
+7E81:                04 0A               ;           COM_04_print_message length=0x000A (to 0x7E8D)
+7E83:                   C7 DE D3 14 E6 96 49 16 8B 54
+;
+;                       YOU CAN'T LOCK 
+;
+7E8D:                A8                  ;           FN_A8_PRINT_noun1
+7E8E:                04 03               ;           COM_04_print_message length=0x0003 (to 0x7E93)
+7E90:                   56 D1 48        
+;
+;                       WITH
+;
+7E93:                A9                  ;           FN_A9_PRINT_noun2
+7E94:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x7E7C
+7E95:             0D 11                  ;         COM_0D_group_AND length=0x0011 (to 0x7EA8)
+7E97:                1A                  ;           COM_1A_set_var_to_noun1()
+7E98:                2E 40               ;           COM_2E_is_var_ext_attributes(value=.L..----(Locked))
+7E9A:                A8                  ;           FN_A8_PRINT_noun1
+7E9B:                04 0B               ;           COM_04_print_message length=0x000B (to 0x7EA8)
+7E9D:                   4B 7B 06 9A B0 17 75 8D A6 85 2E
+;
+;                       IS NOT UNLOCKED.
+;
+;                                        ;         end group_AND at 0x7E95
+7EA8:             0D 0E                  ;         COM_0D_group_AND length=0x000E (to 0x7EB8)
+7EAA:                2A                  ;           COM_2A_toggle_lock_VAR()
+7EAB:                A8                  ;           FN_A8_PRINT_noun1
+7EAC:                04 0A               ;           COM_04_print_message length=0x000A (to 0x7EB8)
+7EAE:                   4B 7B 09 9A 49 16 97 54 9B 5D
+;
+;                       IS NOW LOCKED. 
+;
+;                                        ;         end group_AND at 0x7EA8
+;                                        ;       end group_OR at 0x7E73
+;                                        ;     end case
+7EB8:       12 28                        ;     case COM_0A_is_input_phrase("PULL u....... * *"), length=0x0028
+7EBA:          0E 26                     ;       COM_0E_group_OR length=0x0026 (to 0x7EE2)
+7EBC:             13                     ;         COM_13_process_phrase_by_room()
+7EBD:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x7EC4)
+7EBF:                1A                  ;           COM_1A_set_var_to_noun1()
+7EC0:                14                  ;           COM_14_reverse_status next command
+7EC1:                15 20               ;           COM_15_is_var_attributes(value=..P.....(Portable))
+7EC3:                C2                  ;           FN_C2_PRINT_CANT_BUDGE_noun1
+;                                        ;         end group_AND at 0x7EBD
+7EC4:             0D 1C                  ;         COM_0D_group_AND length=0x001C (to 0x7EE2)
+7EC6:                04 13               ;           COM_04_print_message length=0x0013 (to 0x7EDB)
+7EC8:                   33 D1 09 15 E6 96 51 18 4E C2 98 5F 56 5E DB 72
+7ED8:                   81 A6 52        
+;
+;                       WHY DON'T YOU LEAVE THE POOR
+;
+7EDB:                11                  ;           COM_11_print_noun1()
+7EDC:                04 04               ;           COM_04_print_message length=0x0004 (to 0x7EE2)
+7EDE:                   49 48 7F 98     
+;
+;                       ALONE.
+;
+;                                        ;         end group_AND at 0x7EC4
+;                                        ;       end group_OR at 0x7EBA
+;                                        ;     end case
+7EE2:       09 57                        ;     case COM_0A_is_input_phrase("ATTACK ...P.... WITH .v......"), length=0x0057
+7EE4:          0E 55                     ;       COM_0E_group_OR length=0x0055 (to 0x7F3B)
+7EE6:             14                     ;         COM_14_reverse_status next command
+7EE7:             1B                     ;         COM_1B_set_var_to_noun2()
+7EE8:             14                     ;         COM_14_reverse_status next command
+7EE9:             0E 03                  ;         COM_0E_group_OR length=0x0003 (to 0x7EEE)
+7EEB:                09 37               ;           COM_09_is_noun2(obj=OBJ_37_STEEL_SAFE)
+7EED:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_OR at 0x7EE9
+7EEE:             0E 3E                  ;         COM_0E_group_OR length=0x003E (to 0x7F2E)
+7EF0:                0D 17               ;           COM_0D_group_AND length=0x0017 (to 0x7F09)
+7EF2:                   14               ;             COM_14_reverse_status next command
+7EF3:                   15 40            ;             COM_15_is_var_attributes(value=.W......(Weapon))
+7EF5:                   04 0A            ;             COM_04_print_message length=0x000A (to 0x7F01)
+7EF7:                      C7 DE D3 14 E6 96 AF 15 B3 B3
+;
+;                          YOU CAN'T HURT 
+;
+7F01:                   A8               ;             FN_A8_PRINT_noun1
+7F02:                   04 03            ;             COM_04_print_message length=0x0003 (to 0x7F07)
+7F04:                      56 D1 48     
+;
+;                          WITH
+;
+7F07:                   A9               ;             FN_A9_PRINT_noun2
+7F08:                   8B               ;             FN_8B_PRINT_PERIOD
+;                                        ;           end group_AND at 0x7EF0
+7F09:                13                  ;           COM_13_process_phrase_by_room()
+7F0A:                0D 22               ;           COM_0D_group_AND length=0x0022 (to 0x7F2E)
+7F0C:                   1A               ;             COM_1A_set_var_to_noun1()
+7F0D:                   14               ;             COM_14_reverse_status next command
+7F0E:                   15 10            ;             COM_15_is_var_attributes(value=...A....(Alive))
+7F10:                   04 13            ;             COM_04_print_message length=0x0013 (to 0x7F25)
+7F12:                      73 7B 77 5B D0 B5 C9 9C 36 A0 89 17 AF 14 73 49
+7F22:                      03 A0 41     
+;
+;                          IT DOES NO GOOD TO BEAT ON A
+;
+7F25:                   11               ;             COM_11_print_noun1()
+7F26:                   04 04            ;             COM_04_print_message length=0x0004 (to 0x7F2C)
+7F28:                      56 D1 03 71  
+;
+;                          WITH A
+;
+7F2C:                   12               ;             COM_12_print_noun2()
+7F2D:                   8B               ;             FN_8B_PRINT_PERIOD
+;                                        ;           end group_AND at 0x7F0A
+;                                        ;         end group_OR at 0x7EEE
+7F2E:             0D 0B                  ;         COM_0D_group_AND length=0x000B (to 0x7F3B)
+7F30:                A8                  ;           FN_A8_PRINT_noun1
+7F31:                04 08               ;           COM_04_print_message length=0x0008 (to 0x7F3B)
+7F33:                   4B 7B 92 C5 37 49 17 60
+;
+;                       IS UNHARMED.
+;
+;                                        ;         end group_AND at 0x7F2E
+;                                        ;       end group_OR at 0x7EE4
+;                                        ;     end case
+7F3B:       0A 01                        ;     case COM_0A_is_input_phrase("LOOK * * *"), length=0x0001
+7F3D:          07                        ;       COM_07_print_room_description()
+;                                        ;     end case
+7F3E:       15 26                        ;     case COM_0A_is_input_phrase("EAT u....... * *"), length=0x0026
+7F40:          0E 24                     ;       COM_0E_group_OR length=0x0024 (to 0x7F66)
+7F42:             13                     ;         COM_13_process_phrase_by_room()
+7F43:             0D 21                  ;         COM_0D_group_AND length=0x0021 (to 0x7F66)
+7F45:                04 0A               ;           COM_04_print_message length=0x000A (to 0x7F51)
+7F47:                   80 5B F3 23 5B 4D 4E B8 F9 8E
+;
+;                       DON'T BE SILLY!
+;
+7F51:                A8                  ;           FN_A8_PRINT_noun1
+7F52:                04 12               ;           COM_04_print_message length=0x0012 (to 0x7F66)
+7F54:                   47 D2 C8 8B F3 23 55 BD DB BD 41 6E 03 58 99 9B
+7F64:                   5F 4A           
+;
+;                       WOULDN'T TASTE GOOD ANYWAY.
+;
+;                                        ;         end group_AND at 0x7F43
+;                                        ;       end group_OR at 0x7F40
+;                                        ;     end case
+7F66:       59 13                        ;     case COM_0A_is_input_phrase("TASTE u....... * *"), length=0x0013
+7F68:          0E 11                     ;       COM_0E_group_OR length=0x0011 (to 0x7F7B)
+7F6A:             13                     ;         COM_13_process_phrase_by_room()
+7F6B:             0D 0E                  ;         COM_0D_group_AND length=0x000E (to 0x7F7B)
+7F6D:                04 0B               ;           COM_04_print_message length=0x000B (to 0x7F7A)
+7F6F:                   73 7B 55 BD F5 BD 43 16 9B 85 41
+;
+;                       IT TASTES LIKE A
+;
+7F7A:                11                  ;           COM_11_print_noun1()
+;                                        ;         end group_AND at 0x7F6B
+;                                        ;       end group_OR at 0x7F68
+;                                        ;     end case
+7F7B:       17 4C                        ;     case COM_0A_is_input_phrase("CLIMB u....... * *"), length=0x004C
+7F7D:          0E 4A                     ;       COM_0E_group_OR length=0x004A (to 0x7FC9)
+7F7F:             13                     ;         COM_13_process_phrase_by_room()
+7F80:             0D 22                  ;         COM_0D_group_AND length=0x0022 (to 0x7FA4)
+7F82:                1A                  ;           COM_1A_set_var_to_noun1()
+7F83:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
+7F85:                04 09               ;           COM_04_print_message length=0x0009 (to 0x7F90)
+7F87:                   46 77 05 A0 16 BC 90 73 4B
+;
+;                       I DON'T THINK
+;
+7F90:                A8                  ;           FN_A8_PRINT_noun1
+7F91:                04 11               ;           COM_04_print_message length=0x0011 (to 0x7FA4)
+7F93:                   4E D1 15 8A 50 BD 15 58 8E BE 08 8A BE A0 56 72
+7FA3:                   2E              
+;
+;                       WILL STAND STILL FORTHAT.
+;
+;                                        ;         end group_AND at 0x7F80
+7FA4:             0D 23                  ;         COM_0D_group_AND length=0x0023 (to 0x7FC9)
+7FA6:                04 10               ;           COM_04_print_message length=0x0010 (to 0x7FB8)
+7FA8:                   CF 62 8B 96 9B 64 1B A1 47 55 B3 8B C3 54 A3 91
+;
+;                       EVEN IF YOU COULD CLIMB 
+;
+7FB8:                A8                  ;           FN_A8_PRINT_noun1
+7FB9:                04 0E               ;           COM_04_print_message length=0x000E (to 0x7FC9)
+7FBB:                   73 7B 47 D2 C8 8B F3 23 EE 72 1B A3 3F A1
+;
+;                       IT WOULDN'T HELP YOU.
+;
+;                                        ;         end group_AND at 0x7FA4
+;                                        ;       end group_OR at 0x7F7D
+;                                        ;     end case
+7FC9:       16 12                        ;     case COM_0A_is_input_phrase("DROP * OUT ....A..."), length=0x0012
+7FCB:          0E 10                     ;       COM_0E_group_OR length=0x0010 (to 0x7FDD)
+7FCD:             13                     ;         COM_13_process_phrase_by_room()
+7FCE:             0D 0D                  ;         COM_0D_group_AND length=0x000D (to 0x7FDD)
+7FD0:                A8                  ;           FN_A8_PRINT_noun1
+7FD1:                04 0A               ;           COM_04_print_message length=0x000A (to 0x7FDD)
+7FD3:                   4B 7B 06 9A BF 14 D3 B2 CF 98
+;
+;                       IS NOT BURNING.
+;
+;                                        ;         end group_AND at 0x7FCE
+;                                        ;       end group_OR at 0x7FCB
+;                                        ;     end case
+7FDD:       18 2E                        ;     case COM_0A_is_input_phrase("RUB u....... * *"), length=0x002E
+7FDF:          0E 2C                     ;       COM_0E_group_OR length=0x002C (to 0x800D)
+7FE1:             13                     ;         COM_13_process_phrase_by_room()
+7FE2:             0D 15                  ;         COM_0D_group_AND length=0x0015 (to 0x7FF9)
+7FE4:                1A                  ;           COM_1A_set_var_to_noun1()
+7FE5:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
+7FE7:                04 0E               ;           COM_04_print_message length=0x000E (to 0x7FF7)
+7FE9:                   5B BE 65 BC 99 16 F3 17 56 DB CA 9C 3E C6
+;
+;                       THAT'S NO WAY TO HURT
+;
+7FF7:                AA                  ;           FN_AA_PRINT_THE_var
+7FF8:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x7FE2
+7FF9:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x800D)
+7FFB:                A8                  ;           FN_A8_PRINT_noun1
+7FFC:                04 0F               ;           COM_04_print_message length=0x000F (to 0x800D)
+7FFE:                   81 8D CB 87 A5 94 04 71 8E 62 23 62 09 9A 2E
+;
+;                       LOOKS MUCH BETTER NOW.
+;
+;                                        ;         end group_AND at 0x7FF9
+;                                        ;       end group_OR at 0x7FDF
+;                                        ;     end case
+800D:       0B 65                        ;     case COM_0A_is_input_phrase("LOOK * AT u......."), length=0x0065
+800F:          0E 63                     ;       COM_0E_group_OR length=0x0063 (to 0x8074)
+8011:             13                     ;         COM_13_process_phrase_by_room()
+8012:             0D 17                  ;         COM_0D_group_AND length=0x0017 (to 0x802B)
+8014:                1A                  ;           COM_1A_set_var_to_noun1()
+8015:                15 04               ;           COM_15_is_var_attributes(value=.....R..(Readable))
+8017:                04 10               ;           COM_04_print_message length=0x0010 (to 0x8029)
+8019:                   3F B9 82 62 91 7A D5 15 04 18 8E 7B 83 61 03 A0
+;
+;                       SOMETHING IS WRITTEN ON 
+;
+8029:                AA                  ;           FN_AA_PRINT_THE_var
+802A:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x8012
+802B:             0D 0D                  ;         COM_0D_group_AND length=0x000D (to 0x803A)
+802D:                2E 20               ;           COM_2E_is_var_ext_attributes(value=..C.----(Closed))
+802F:                04 09               ;           COM_04_print_message length=0x0009 (to 0x803A)
+8031:                   73 7B 4B 7B C9 54 A6 B7 2E
+;
+;                       IT IS CLOSED.
+;
+;                                        ;         end group_AND at 0x802B
+803A:             0D 0D                  ;         COM_0D_group_AND length=0x000D (to 0x8049)
+803C:                2E 40               ;           COM_2E_is_var_ext_attributes(value=.L..----(Locked))
+803E:                04 09               ;           COM_04_print_message length=0x0009 (to 0x8049)
+8040:                   73 7B 4B 7B 75 8D A6 85 2E
+;
+;                       IT IS LOCKED.
+;
+;                                        ;         end group_AND at 0x803A
+8049:             0D 0A                  ;         COM_0D_group_AND length=0x000A (to 0x8055)
+804B:                15 02               ;           COM_15_is_var_attributes(value=......H.(Holder))
+804D:                0E 05               ;           COM_0E_group_OR length=0x0005 (to 0x8054)
+804F:                   2E 80            ;             COM_2E_is_var_ext_attributes(value=G...----(Glass))
+8051:                   14               ;             COM_14_reverse_status next command
+8052:                   2E 20            ;             COM_2E_is_var_ext_attributes(value=..C.----(Closed))
+;                                        ;           end group_OR at 0x804D
+8054:                33                  ;           COM_33_print_objects_on_var_object()
+;                                        ;         end group_AND at 0x8049
+8055:             0D 03                  ;         COM_0D_group_AND length=0x0003 (to 0x805A)
+8057:                15 01               ;           COM_15_is_var_attributes(value=.......S(Surface))
+8059:                33                  ;           COM_33_print_objects_on_var_object()
+;                                        ;         end group_AND at 0x8055
+805A:             0D 18                  ;         COM_0D_group_AND length=0x0018 (to 0x8074)
+805C:                04 14               ;           COM_04_print_message length=0x0014 (to 0x8072)
+805E:                   5F BE 5D B1 D0 B5 02 A1 91 7A 62 17 DB 5F 33 48
+806E:                   B9 46 73 C6     
+;
+;                       THERE'S NOTHING SPECIAL ABOUT 
+;
+8072:                A8                  ;           FN_A8_PRINT_noun1
+8073:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x805A
+;                                        ;       end group_OR at 0x800F
+;                                        ;     end case
+8074:       0C 17                        ;     case COM_0A_is_input_phrase("LOOK * UNDER u......."), length=0x0017
+8076:          0E 15                     ;       COM_0E_group_OR length=0x0015 (to 0x808D)
+8078:             13                     ;         COM_13_process_phrase_by_room()
+8079:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x808D)
+807B:                04 0E               ;           COM_04_print_message length=0x000E (to 0x808B)
+807D:                   5F BE 5D B1 D0 B5 02 A1 91 7A B0 17 F4 59
+;
+;                       THERE'S NOTHING UNDER
+;
+808B:                A8                  ;           FN_A8_PRINT_noun1
+808C:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x8079
+;                                        ;       end group_OR at 0x8076
+;                                        ;     end case
+808D:       10 4C                        ;     case COM_0A_is_input_phrase("LOOK * IN ......O."), length=0x004C
+808F:          0E 4A                     ;       COM_0E_group_OR length=0x004A (to 0x80DB)
+8091:             13                     ;         COM_13_process_phrase_by_room()
+8092:             0D 2A                  ;         COM_0D_group_AND length=0x002A (to 0x80BE)
+8094:                1B                  ;           COM_1B_set_var_to_noun2()
+8095:                14                  ;           COM_14_reverse_status next command
+8096:                15 02               ;           COM_15_is_var_attributes(value=......H.(Holder))
+8098:                04 22               ;           COM_04_print_message length=0x0022 (to 0x80BC)
+809A:                   40 55 B0 53 EB BF DB BD 4B 49 C7 DE 63 16 B3 E0
+80AA:                   C7 DE D3 14 90 96 F3 A0 A7 B7 90 14 82 DF 91 7A
+80BA:                   D0 15           
+;
+;                       CONCENTRATE AS YOU MAY, YOU CAN NOT SEE ANYTHING IN
+;
+80BC:                A9                  ;           FN_A9_PRINT_noun2
+80BD:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x8092
+80BE:             0D 0F                  ;         COM_0D_group_AND length=0x000F (to 0x80CF)
+80C0:                14                  ;           COM_14_reverse_status next command
+80C1:                2E 80               ;           COM_2E_is_var_ext_attributes(value=G...----(Glass))
+80C3:                2E 20               ;           COM_2E_is_var_ext_attributes(value=..C.----(Closed))
+80C5:                A9                  ;           FN_A9_PRINT_noun2
+80C6:                04 07               ;           COM_04_print_message length=0x0007 (to 0x80CF)
+80C8:                   4B 7B C9 54 A6 B7 2E
+;
+;                       IS CLOSED.
+;
+;                                        ;         end group_AND at 0x80BE
+80CF:             33                     ;         COM_33_print_objects_on_var_object()
+80D0:             0D 09                  ;         COM_0D_group_AND length=0x0009 (to 0x80DB)
+80D2:                A9                  ;           FN_A9_PRINT_noun2
+80D3:                04 06               ;           COM_04_print_message length=0x0006 (to 0x80DB)
+80D5:                   4B 7B 72 61 1F C1
+;
+;                       IS EMPTY.
+;
+;                                        ;         end group_AND at 0x80D0
+;                                        ;       end group_OR at 0x808F
+;                                        ;     end case
+80DB:       4C 51                        ;     case COM_0A_is_input_phrase("LOOK * ON .......L"), length=0x0051
+80DD:          0E 4F                     ;       COM_0E_group_OR length=0x004F (to 0x812E)
+80DF:             13                     ;         COM_13_process_phrase_by_room()
+80E0:             0D 1A                  ;         COM_0D_group_AND length=0x001A (to 0x80FC)
+80E2:                1B                  ;           COM_1B_set_var_to_noun2()
+80E3:                15 04               ;           COM_15_is_var_attributes(value=.....R..(Readable))
+80E5:                04 13               ;           COM_04_print_message length=0x0013 (to 0x80FA)
+80E7:                   5F BE 5D B1 D5 B5 E7 9F 63 BE AB 98 B3 D2 3F C0
+80F7:                   91 96 4E        
+;
+;                       THERE'S SOMETHING WRITTEN ON
+;
+80FA:                A9                  ;           FN_A9_PRINT_noun2
+80FB:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x80E0
+80FC:             0D 1D                  ;         COM_0D_group_AND length=0x001D (to 0x811B)
+80FE:                14                  ;           COM_14_reverse_status next command
+80FF:                15 01               ;           COM_15_is_var_attributes(value=.......S(Surface))
+8101:                04 16               ;           COM_04_print_message length=0x0016 (to 0x8119)
+8103:                   5F BE 5D B1 D0 B5 02 A1 91 7A 99 16 F9 BD BE A0
+8113:                   FB 75 B9 46 73 C6
+;
+;                       THERE'S NOTHING NOTEWORTHY ABOUT 
+;
+8119:                A9                  ;           FN_A9_PRINT_noun2
+811A:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x80FC
+811B:             33                     ;         COM_33_print_objects_on_var_object()
+811C:             0D 10                  ;         COM_0D_group_AND length=0x0010 (to 0x812E)
+811E:                04 0C               ;           COM_04_print_message length=0x000C (to 0x812C)
+8120:                   5F BE 5D B1 D0 B5 02 A1 91 7A C0 16
+;
+;                       THERE'S NOTHING ON
+;
+812C:                A9                  ;           FN_A9_PRINT_noun2
+812D:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x811C
+;                                        ;       end group_OR at 0x80DD
+;                                        ;     end case
+812E:       1B 1E                        ;     case COM_0A_is_input_phrase("LOOK * AROUND u......."), length=0x001E
+8130:          0E 1C                     ;       COM_0E_group_OR length=0x001C (to 0x814E)
+8132:             13                     ;         COM_13_process_phrase_by_room()
+8133:             0D 03                  ;         COM_0D_group_AND length=0x0003 (to 0x8138)
+8135:                08 00               ;           COM_08_is_noun1(obj=nothing)
+8137:                07                  ;           COM_07_print_room_description()
+;                                        ;         end group_AND at 0x8133
+8138:             0D 14                  ;         COM_0D_group_AND length=0x0014 (to 0x814E)
+813A:                04 10               ;           COM_04_print_message length=0x0010 (to 0x814C)
+813C:                   5F BE 5B B1 4B 7B 06 9A 90 73 C3 6A 07 B3 33 98
+;
+;                       THERE IS NOTHING AROUND 
+;
+814C:                A8                  ;           FN_A8_PRINT_noun1
+814D:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x8138
+;                                        ;       end group_OR at 0x8130
+;                                        ;     end case
+814E:       1C 32                        ;     case COM_0A_is_input_phrase("LOOK * BEHIND u......."), length=0x0032
+8150:          0E 30                     ;       COM_0E_group_OR length=0x0030 (to 0x8182)
+8152:             13                     ;         COM_13_process_phrase_by_room()
+8153:             0D 17                  ;         COM_0D_group_AND length=0x0017 (to 0x816C)
+8155:                08 00               ;           COM_08_is_noun1(obj=nothing)
+8157:                04 13               ;           COM_04_print_message length=0x0013 (to 0x816C)
+8159:                   5F BE 5B B1 4B 7B 06 9A 90 73 C4 6A A3 60 33 98
+8169:                   C7 DE 2E        
+;
+;                       THERE IS NOTHING BEHIND YOU.
+;
+;                                        ;         end group_AND at 0x8153
+816C:             0D 14                  ;         COM_0D_group_AND length=0x0014 (to 0x8182)
+816E:                04 10               ;           COM_04_print_message length=0x0010 (to 0x8180)
+8170:                   5F BE 5B B1 4B 7B 06 9A 90 73 C4 6A A3 60 33 98
+;
+;                       THERE IS NOTHING BEHIND 
+;
+8180:                A8                  ;           FN_A8_PRINT_noun1
+8181:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x816C
+;                                        ;       end group_OR at 0x8150
+;                                        ;     end case
+8182:       1D 16                        ;     case COM_0A_is_input_phrase("LOOK * OUT *"), length=0x0016
+8184:          04 14                     ;       COM_04_print_message length=0x0014 (to 0x819A)
+8186:             9F 77 AF 14 91 7A 95 14 D3 14 68 B1 33 C5 4B 49
+8196:             45 77 81 48           
+;
+;                 I'M BEING AS CAREFUL AS I CAN!
+;
+;                                        ;     end case
+819A:       1E 04                        ;     case COM_0A_is_input_phrase("YES * * *"), length=0x0004
+819C:          04 02                     ;       COM_04_print_message length=0x0002 (to 0x81A0)
+819E:             E9 99                 
+;
+;                 NO!
+;
+;                                        ;     end case
+81A0:       1F 05                        ;     case COM_0A_is_input_phrase("NO * * *"), length=0x0005
+81A2:          04 03                     ;       COM_04_print_message length=0x0003 (to 0x81A7)
+81A4:             35 DD 21              
+;
+;                 YES!
+;
+;                                        ;     end case
+81A7:       21 1C                        ;     case COM_0A_is_input_phrase("PLUGH * * *"), length=0x001C
+81A9:          04 1A                     ;       COM_04_print_message length=0x001A (to 0x81C5)
+81AB:             44 B9 9E B4 BB 15 80 5B F3 23 6E 4D 38 79 4B 5E
+81BB:             8F 96 7B 47 D9 51 AE A0 5B BB
+;
+;                 SORRY, I DON'T BELIEVE IN MAGIC WORDS. 
+;
+;                                        ;     end case
+81C5:       5A 1B                        ;     case COM_0A_is_input_phrase("THUM * * *"), length=0x001B
+81C7:          04 19                     ;       COM_04_print_message length=0x0019 (to 0x81E2)
+81C9:             25 A1 AB 70 56 77 BE 9F 51 18 B3 C7 5B BE 0B C0
+81D9:             06 9A E9 16 DB B9 7F 4E 21
+;
+;                 OUCH! I TOLD YOU, THATS NOT POSSIBLE!
+;
+;                                        ;     end case
+81E2:       22 12                        ;     case COM_0A_is_input_phrase("SCREAM * * *"), length=0x0012
+81E4:          04 10                     ;       COM_04_print_message length=0x0010 (to 0x81F6)
+81E6:             5B E0 27 60 31 60 41 A0 49 A0 89 D3 89 D3 69 CE
+;
+;                 YYYEEEEEOOOOOOWWWWWWWW!!
+;
+;                                        ;     end case
+81F6:       23 01                        ;     case COM_0A_is_input_phrase("QUIT * * *"), length=0x0001
+81F8:          24                        ;       COM_24_exit_program()
+;                                        ;     end case
+81F9:       2C 01                        ;     case COM_0A_is_input_phrase("SCORE * * *"), length=0x0001
+81FB:          C9                        ;       FN_C9_PRINT_COMPLETED_PERCENT
+;                                        ;     end case
+81FC:       3E 04                        ;     case COM_0A_is_input_phrase("LOAD * * *"), length=0x0004
+81FE:          0D 02                     ;       COM_0D_group_AND length=0x0002 (to 0x8202)
+8200:             C6                     ;         FN_C6_PROMPT_FOR_DRIVE_NUMBER
+8201:             27                     ;         COM_27_load_game()
+;                                        ;       end group_AND at 0x81FE
+;                                        ;     end case
+8202:       3F 04                        ;     case COM_0A_is_input_phrase("SAVE * * *"), length=0x0004
+8204:          0D 02                     ;       COM_0D_group_AND length=0x0002 (to 0x8208)
+8206:             C6                     ;         FN_C6_PROMPT_FOR_DRIVE_NUMBER
+8207:             28                     ;         COM_28_save_game()
+;                                        ;       end group_AND at 0x8204
+;                                        ;     end case
+8208:       25 20                        ;     case COM_0A_is_input_phrase("LEAVE * * *"), length=0x0020
+820A:          04 1E                     ;       COM_04_print_message length=0x001E (to 0x822A)
+820C:             C7 DE AF 23 99 16 09 BC 8E 62 91 7A 90 14 FA DF
+821C:             2F 62 16 EE 7B B4 46 45 2F 7B 03 56 27 A0
+;
+;                 YOU'RE NOT GETTING ANYWHERE, TRY A DIRECTION.
+;
+;                                        ;     end case
+822A:       26 20                        ;     case COM_0A_is_input_phrase("GO * AROUND u......."), length=0x0020
+822C:          0E 1E                     ;       COM_0E_group_OR length=0x001E (to 0x824C)
+822E:             13                     ;         COM_13_process_phrase_by_room()
+822F:             0D 13                  ;         COM_0D_group_AND length=0x0013 (to 0x8244)
+8231:                1A                  ;           COM_1A_set_var_to_noun1()
+8232:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
+8234:                A8                  ;           FN_A8_PRINT_noun1
+8235:                04 0D               ;           COM_04_print_message length=0x000D (to 0x8244)
+8237:                   40 D2 F3 23 F6 8B 51 18 52 C2 65 49 21
+;
+;                       WON'T LET YOU PASS!
+;
+;                                        ;         end group_AND at 0x822F
+8244:             04 06                  ;         COM_04_print_message length=0x0006 (to 0x824C)
+8246:                09 9A FA 17 70 49  
+;
+;                    NOW WHAT?
+;
+;                                        ;       end group_OR at 0x822C
+;                                        ;     end case
+824C:       3D 01                        ;     case COM_0A_is_input_phrase("GO * TO u......."), length=0x0001
+824E:          91                        ;       FN_91_PRINT_USE_DIRECTIONS
+;                                        ;     end case
+824F:       27 0E                        ;     case COM_0A_is_input_phrase("KICK u....... * *"), length=0x000E
+8251:          0E 0C                     ;       COM_0E_group_OR length=0x000C (to 0x825F)
+8253:             13                     ;         COM_13_process_phrase_by_room()
+8254:             04 09                  ;         COM_04_print_message length=0x0009 (to 0x825F)
+8256:                25 A1 AB 70 3B 95 77 BF 21
+;
+;                    OUCH! MY TOE!
+;
+;                                        ;       end group_OR at 0x8251
+;                                        ;     end case
+825F:       44 09                        ;     case COM_0A_is_input_phrase("HELLO * * *"), length=0x0009
+8261:          04 07                     ;       COM_04_print_message length=0x0007 (to 0x826A)
+8263:             AF 6E 83 62 C5 98 21  
+;
+;                 GREETINGS!
+;
+;                                        ;     end case
+826A:       45 30                        ;     case COM_0A_is_input_phrase("HELLO ...P.... * *"), length=0x0030
+826C:          0E 2E                     ;       COM_0E_group_OR length=0x002E (to 0x829C)
+826E:             13                     ;         COM_13_process_phrase_by_room()
+826F:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x8283)
+8271:                1A                  ;           COM_1A_set_var_to_noun1()
+8272:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
+8274:                A8                  ;           FN_A8_PRINT_noun1
+8275:                04 0C               ;           COM_04_print_message length=0x000C (to 0x8283)
+8277:                   72 B1 87 8C 33 BB DF 1B 09 8D 63 F4
+;
+;                       REPLIES, "HELLO." 
+;
+;                                        ;         end group_AND at 0x826F
+8283:             0D 17                  ;         COM_0D_group_AND length=0x0017 (to 0x829C)
+8285:                04 13               ;           COM_04_print_message length=0x0013 (to 0x829A)
+8287:                   16 A0 43 DB E4 14 83 4A 01 18 3E C5 7B 17 CB 8C
+8297:                   6B BF 41        
+;
+;                       ONLY A CRAZY WOULD TALK TO A
+;
+829A:                11                  ;           COM_11_print_noun1()
+829B:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x8283
+;                                        ;       end group_OR at 0x826C
+;                                        ;     end case
+829C:       46 08                        ;     case COM_0A_is_input_phrase("WHAT * * *"), length=0x0008
+829E:          04 06                     ;       COM_04_print_message length=0x0006 (to 0x82A6)
+82A0:             46 77 98 C5 5B A2     
+;
+;                 I DUNNO. 
+;
+;                                        ;     end case
+82A6:       47 09                        ;     case COM_0A_is_input_phrase("WHAT u....... * *"), length=0x0009
+82A8:          04 07                     ;       COM_04_print_message length=0x0007 (to 0x82B1)
+82AA:             29 D1 20 16 85 A1 3F  
+;
+;                 WHO KNOWS?
+;
+;                                        ;     end case
+82B1:       4A 18                        ;     case COM_0A_is_input_phrase("COME * * *"), length=0x0018
+82B3:          0E 16                     ;       COM_0E_group_OR length=0x0016 (to 0x82CB)
+82B5:             13                     ;         COM_13_process_phrase_by_room()
+82B6:             0D 13                  ;         COM_0D_group_AND length=0x0013 (to 0x82CB)
+82B8:                04 11               ;           COM_04_print_message length=0x0011 (to 0x82CB)
+82BA:                   9E 77 08 8A C6 9F 6B A1 C7 DE 90 14 FA DF 2F 62
+82CA:                   21              
+;
+;                       I'LL FOLLOW YOU ANYWHERE!
+;
+;                                        ;         end group_AND at 0x82B6
+;                                        ;       end group_OR at 0x82B3
+;                                        ;     end case
+82CB:       49 26                        ;     case COM_0A_is_input_phrase("MEET u....... * *"), length=0x0026
+82CD:          0E 24                     ;       COM_0E_group_OR length=0x0024 (to 0x82F3)
+82CF:             13                     ;         COM_13_process_phrase_by_room()
+82D0:             0D 11                  ;         COM_0D_group_AND length=0x0011 (to 0x82E3)
+82D2:                09 00               ;           COM_09_is_noun2(obj=nothing)
+82D4:                A8                  ;           FN_A8_PRINT_noun1
+82D5:                04 0C               ;           COM_04_print_message length=0x000C (to 0x82E3)
+82D7:                   09 4F CB B5 89 96 67 B1 90 BE 5B 70
+;
+;                       BOWS IN GREETING. 
+;
+;                                        ;         end group_AND at 0x82D0
+82E3:             04 0E                  ;         COM_04_print_message length=0x000E (to 0x82F3)
+82E5:                5F BE 44 DB 6B A1 83 7A AF 6E 83 62 CF 98
+;
+;                    THEY BOW IN GREETING.
+;
+;                                        ;       end group_OR at 0x82CD
+;                                        ;     end case
+82F3:       28 36                        ;     case COM_0A_is_input_phrase("FEED ...P.... WITH u......."), length=0x0036
+82F5:          0E 34                     ;       COM_0E_group_OR length=0x0034 (to 0x832B)
+82F7:             13                     ;         COM_13_process_phrase_by_room()
+82F8:             0D 16                  ;         COM_0D_group_AND length=0x0016 (to 0x8310)
+82FA:                1A                  ;           COM_1A_set_var_to_noun1()
+82FB:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
+82FD:                A8                  ;           FN_A8_PRINT_noun1
+82FE:                04 10               ;           COM_04_print_message length=0x0010 (to 0x8310)
+8300:                   60 7B F3 23 70 75 C3 6E 33 17 2E 6D 99 16 5B D4
+;
+;                       ISN'T HUNGRY RIGHT NOW. 
+;
+;                                        ;         end group_AND at 0x82F8
+8310:             0D 19                  ;         COM_0D_group_AND length=0x0019 (to 0x832B)
+8312:                04 0D               ;           COM_04_print_message length=0x000D (to 0x8321)
+8314:                   80 5B F3 23 C7 DE 20 16 6B A1 5B BE 54
+;
+;                       DON'T YOU KNOW THAT
+;
+8321:                A8                  ;           FN_A8_PRINT_noun1
+8322:                04 07               ;           COM_04_print_message length=0x0007 (to 0x832B)
+8324:                   10 53 F3 23 96 5F 21
+;
+;                       CAN'T EAT!
+;
+;                                        ;         end group_AND at 0x8310
+;                                        ;       end group_OR at 0x82F5
+;                                        ;     end case
+832B:       29 34                        ;     case COM_0A_is_input_phrase("FEED u....... TO ...P...."), length=0x0034
+832D:          0E 32                     ;       COM_0E_group_OR length=0x0032 (to 0x8361)
+832F:             13                     ;         COM_13_process_phrase_by_room()
+8330:             0D 14                  ;         COM_0D_group_AND length=0x0014 (to 0x8346)
+8332:                1B                  ;           COM_1B_set_var_to_noun2()
+8333:                15 10               ;           COM_15_is_var_attributes(value=...A....(Alive))
+8335:                A9                  ;           FN_A9_PRINT_noun2
+8336:                04 0E               ;           COM_04_print_message length=0x000E (to 0x8346)
+8338:                   47 D2 B3 8B D6 B0 F4 72 23 15 1B BC 19 A1
+;
+;                       WOULD RATHER EAT YOU!
+;
+;                                        ;         end group_AND at 0x8330
+8346:             0D 19                  ;         COM_0D_group_AND length=0x0019 (to 0x8361)
+8348:                04 17               ;           COM_04_print_message length=0x0017 (to 0x8361)
+834A:                   43 79 C7 DE D3 14 88 96 8E 7A 7B 14 C7 93 76 BE
+835A:                   BD 15 49 90 67 48 21
+;
+;                       IF YOU CAN FIND A MOUTH, I'M GAME!
+;
+;                                        ;         end group_AND at 0x8346
+;                                        ;       end group_OR at 0x832D
+;                                        ;     end case
+8361:       2F 07                        ;     case COM_0A_is_input_phrase("WAIT * * *"), length=0x0007
+8363:          04 05                     ;       COM_04_print_message length=0x0005 (to 0x836A)
+8365:             9B 29 57 C6 3E        
+;
+;                 <PAUSE>
+;
+;                                        ;     end case
+836A:       31 17                        ;     case COM_0A_is_input_phrase("FIND u....... * *"), length=0x0017
+836C:          04 15                     ;       COM_04_print_message length=0x0015 (to 0x8383)
+836E:             36 9F D6 15 CB 23 39 49 8E C5 9F 15 5B B1 3F B9
+837E:             FA 62 2F 62 2E        
+;
+;                 OH, IT'S AROUND HERE SOMEWHERE.
+;
+;                                        ;     end case
+8383:       2D 09                        ;     case COM_0A_is_input_phrase("PULL * UP u......."), length=0x0009
+8385:          0E 07                     ;       COM_0E_group_OR length=0x0007 (to 0x838E)
+8387:             13                     ;         COM_13_process_phrase_by_room()
+8388:             0D 02                  ;         COM_0D_group_AND length=0x0002 (to 0x838C)
+838A:                1A                  ;           COM_1A_set_var_to_noun1()
+838B:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x8388
+838C:             14                     ;         COM_14_reverse_status next command
+838D:             0C                     ;         COM_0C_fail()
+;                                        ;       end group_OR at 0x8385
+;                                        ;     end case
+838E:       48 11                        ;     case COM_0A_is_input_phrase("LOWER u....... * *"), length=0x0011
+8390:          0E 0F                     ;       COM_0E_group_OR length=0x000F (to 0x83A1)
+8392:             13                     ;         COM_13_process_phrase_by_room()
+8393:             04 0C                  ;         COM_04_print_message length=0x000C (to 0x83A1)
+8395:                C7 DE D3 14 E6 96 09 15 82 17 97 49
+;
+;                    YOU CAN'T DO THAT.
+;
+;                                        ;       end group_OR at 0x8390
+;                                        ;     end case
+83A1:       33 27                        ;     case COM_0A_is_input_phrase("??33??"), length=0x0027
+83A3:          0E 25                     ;       COM_0E_group_OR length=0x0025 (to 0x83CA)
+83A5:             13                     ;         COM_13_process_phrase_by_room()
+83A6:             04 22                  ;         COM_04_print_message length=0x0022 (to 0x83CA)
+83A8:                0F A0 5F 17 46 48 66 17 D3 61 04 68 63 16 5B 99
+83B8:                56 98 C0 16 49 5E 90 78 0E BC 92 5F 59 15 9B AF
+83C8:                19 A1              
+;
+;                    ONE SMALL STEP FOR MANKIND, ONE GIANT LEAP FOR YOU!
+;
+;                                        ;       end group_OR at 0x83A3
+;                                        ;     end case
+83CA:       34 23                        ;     case COM_0A_is_input_phrase("JUMP * OVER u......."), length=0x0023
+83CC:          0E 21                     ;       COM_0E_group_OR length=0x0021 (to 0x83EF)
+83CE:             13                     ;         COM_13_process_phrase_by_room()
+83CF:             04 1E                  ;         COM_04_print_message length=0x001E (to 0x83EF)
+83D1:                C7 DE 95 AF D5 C3 65 62 D5 15 67 16 67 49 66 B1
+83E1:                D0 15 3F 16 ED 48 90 14 04 58 30 A1 09 5C
+;
+;                    YOUR SUCCESS IS MEASURED IN LEAPS AND BOUNDS!
+;
+;                                        ;       end group_OR at 0x83CC
+;                                        ;     end case
+83EF:       35 1C                        ;     case COM_0A_is_input_phrase("JUMP * ON u......."), length=0x001C
+83F1:          0E 1A                     ;       COM_0E_group_OR length=0x001A (to 0x840D)
+83F3:             13                     ;         COM_13_process_phrase_by_room()
+83F4:             04 17                  ;         COM_04_print_message length=0x0017 (to 0x840D)
+83F6:                C7 DE 73 21 76 4D F4 BD F3 17 9A BD FA 17 2F 62
+8406:                51 18 55 C2 F2 BD 21
+;
+;                    YOU'D BETTER WATCH WHERE YOU STEP!
+;
+;                                        ;       end group_OR at 0x83F1
+;                                        ;     end case
+840D:       36 04                        ;     case COM_0A_is_input_phrase("ENTER * * *"), length=0x0004
+840F:          0E 02                     ;       COM_0E_group_OR length=0x0002 (to 0x8413)
+8411:             13                     ;         COM_13_process_phrase_by_room()
+8412:             91                     ;         FN_91_PRINT_USE_DIRECTIONS
+;                                        ;       end group_OR at 0x840F
+;                                        ;     end case
+8413:       37 04                        ;     case COM_0A_is_input_phrase("CLIMB * OUT *"), length=0x0004
+8415:          0E 02                     ;       COM_0E_group_OR length=0x0002 (to 0x8419)
+8417:             13                     ;         COM_13_process_phrase_by_room()
+8418:             91                     ;         FN_91_PRINT_USE_DIRECTIONS
+;                                        ;       end group_OR at 0x8415
+;                                        ;     end case
+8419:       54 17                        ;     case COM_0A_is_input_phrase("CLIMB * UP *"), length=0x0017
+841B:          0E 15                     ;       COM_0E_group_OR length=0x0015 (to 0x8432)
+841D:             13                     ;         COM_13_process_phrase_by_room()
+841E:             04 12                  ;         COM_04_print_message length=0x0012 (to 0x8432)
+8420:                5F BE 5B B1 4B 7B EB 99 FB A5 9B 53 6B BF 2B 6E
+8430:                F7 C5              
+;
+;                    THERE IS NO PLACE TO GO UP.
+;
+;                                        ;       end group_OR at 0x841B
+;                                        ;     end case
+8432:       55 19                        ;     case COM_0A_is_input_phrase("CLIMB * DOWN *"), length=0x0019
+8434:          0E 17                     ;       COM_0E_group_OR length=0x0017 (to 0x844D)
+8436:             13                     ;         COM_13_process_phrase_by_room()
+8437:             04 14                  ;         COM_04_print_message length=0x0014 (to 0x844D)
+8439:                5F BE 5B B1 4B 7B EB 99 FB A5 9B 53 6B BF 2B 6E
+8449:                89 5B 1B 9C        
+;
+;                    THERE IS NO PLACE TO GO DOWN. 
+;
+;                                        ;       end group_OR at 0x8434
+;                                        ;     end case
+844D:       38 1D                        ;     case COM_0A_is_input_phrase("CLIMB * UNDER u......."), length=0x001D
+844F:          0E 1B                     ;       COM_0E_group_OR length=0x001B (to 0x846C)
+8451:             13                     ;         COM_13_process_phrase_by_room()
+8452:             0D 18                  ;         COM_0D_group_AND length=0x0018 (to 0x846C)
+8454:                04 14               ;           COM_04_print_message length=0x0014 (to 0x846A)
+8456:                   5F BE 5B B1 4B 7B 06 9A 30 15 29 A1 14 71 3F A0
+8466:                   B0 17 F4 59     
+;
+;                       THERE IS NOT ENOUGH ROOM UNDER
+;
+846A:                A8                  ;           FN_A8_PRINT_noun1
+846B:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x8452
+;                                        ;       end group_OR at 0x844F
+;                                        ;     end case
+846C:       39 1D                        ;     case COM_0A_is_input_phrase("THROW ..C..... IN u......."), length=0x001D
+846E:          0E 1B                     ;       COM_0E_group_OR length=0x001B (to 0x848B)
+8470:             13                     ;         COM_13_process_phrase_by_room()
+8471:             0D 18                  ;         COM_0D_group_AND length=0x0018 (to 0x848B)
+8473:                04 16               ;           COM_04_print_message length=0x0016 (to 0x848B)
+8475:                   C7 DE FB 17 F3 8C 58 72 56 5E D2 9C 73 C6 73 7B
+8485:                   83 7A 5F BE 7F B1
+;
+;                       YOU WILL HAVE TO PUT IT IN THERE.
+;
+;                                        ;         end group_AND at 0x8471
+;                                        ;       end group_OR at 0x846E
+;                                        ;     end case
+848B:       0D 2B                        ;     case COM_0A_is_input_phrase("THROW .vC..... AT ...P...."), length=0x002B
+848D:          0E 29                     ;       COM_0E_group_OR length=0x0029 (to 0x84B8)
+848F:             0D 25                  ;         COM_0D_group_AND length=0x0025 (to 0x84B6)
+8491:                1A                  ;           COM_1A_set_var_to_noun1()
+8492:                8F                  ;           FN_8F_GET_OBJECT
+8493:                0E 21               ;           COM_0E_group_OR length=0x0021 (to 0x84B6)
+8495:                   13               ;             COM_13_process_phrase_by_room()
+8496:                   0D 1E            ;             COM_0D_group_AND length=0x001E (to 0x84B6)
+8498:                      0E 07         ;               COM_0E_group_OR length=0x0007 (to 0x84A1)
+849A:                         14         ;                 COM_14_reverse_status next command
+849B:                         15 10      ;                 COM_15_is_var_attributes(value=...A....(Alive))
+849D:                         1B         ;                 COM_1B_set_var_to_noun2()
+849E:                         14         ;                 COM_14_reverse_status next command
+849F:                         15 40      ;                 COM_15_is_var_attributes(value=.W......(Weapon))
+;                                        ;               end group_OR at 0x8498
+84A1:                      A8            ;               FN_A8_PRINT_noun1
+84A2:                      04 0F         ;               COM_04_print_message length=0x000F (to 0x84B3)
+84A4:                         07 4F 17 98 CA B5 37 49 F5 8B D3 B8 B8 16 46
+;
+;                             BOUNCES HARMLESSLY OFF
+;
+84B3:                      A9            ;               FN_A9_PRINT_noun2
+84B4:                      8B            ;               FN_8B_PRINT_PERIOD
+84B5:                      10            ;               COM_10_drop_var()
+;                                        ;             end group_AND at 0x8496
+;                                        ;           end group_OR at 0x8493
+;                                        ;         end group_AND at 0x848F
+84B6:             14                     ;         COM_14_reverse_status next command
+84B7:             0C                     ;         COM_0C_fail()
+;                                        ;       end group_OR at 0x848D
+;                                        ;     end case
+84B8:       57 81 09                     ;     case COM_0A_is_input_phrase("SHOOT u....... WITH u......."), length=0x0109
+84BB:          0E 81 06                  ;       COM_0E_group_OR length=0x0106 (to 0x85C4)
+84BE:             13                     ;         COM_13_process_phrase_by_room()
+84BF:             0D 0F                  ;         COM_0D_group_AND length=0x000F (to 0x84D0)
+84C1:                14                  ;           COM_14_reverse_status next command
+84C2:                09 28               ;           COM_09_is_noun2(obj=OBJ_28_SHOTGUN)
+84C4:                A9                  ;           FN_A9_PRINT_noun2
+84C5:                04 09               ;           COM_04_print_message length=0x0009 (to 0x84D0)
+84C7:                   60 7B F3 23 73 8D E6 59 2E
+;
+;                       ISN'T LOADED.
+;
+;                                        ;         end group_AND at 0x84BF
+84D0:             0D 0A                  ;         COM_0D_group_AND length=0x000A (to 0x84DC)
+84D2:                14                  ;           COM_14_reverse_status next command
+84D3:                03 28 29            ;           COM_03_is_located(owner=OBJ_28_SHOTGUN, obj=OBJ_29_SHOTGUN_SHELL1)
+84D6:                04 04               ;           COM_04_print_message length=0x0004 (to 0x84DC)
+84D8:                   C3 54 AF 54     
+;
+;                       CLICK.
+;
+;                                        ;         end group_AND at 0x84D0
+84DC:             0D 80 CB               ;         COM_0D_group_AND length=0x00CB (to 0x85AA)
+84DF:                04 04               ;           COM_04_print_message length=0x0004 (to 0x84E5)
+84E1:                   7B 4E EB 8F     
+;
+;                       BLAM! 
+;
+84E5:                0B 80 C2 08         ;           COM_0B_switch length=0x00C2 (to 0x85AB), function=COM_08_is_first_noun(word_num)
+84E9:                   33 0E            ;             case COM_08_is_first_noun(object_num=OBJ_33_RATTLE_SNAKE), length=0x000E
+84EB:                      0D 0C         ;               COM_0D_group_AND length=0x000C (to 0x84F9)
+84ED:                         04 07      ;                 COM_04_print_message length=0x0007 (to 0x84F6)
+84EF:                            41 6E 15 58 86 74 21
+;
+;                                GOOD SHOT!
+;
+84F6:                         1A         ;                 COM_1A_set_var_to_noun1()
+84F7:                         1D 64      ;                 COM_1D_attack_var(points=100)
+;                                        ;               end group_AND at 0x84EB
+;                                        ;             end case
+84F9:                   62 4D            ;             case COM_08_is_first_noun(object_num=OBJ_62_SHAGGY_CREATURE), length=0x004D
+84FB:                      0D 4B         ;               COM_0D_group_AND length=0x004B (to 0x8548)
+84FD:                         04 45      ;                 COM_04_print_message length=0x0045 (to 0x8544)
+84FF:                            5F BE 8E 14 30 79 D5 15 43 16 BF 68 03 58 33 98
+850F:                            6C BE 80 A1 AB 14 A9 54 2E 49 C4 B5 56 DB DB 72
+851F:                            72 7A E6 46 B8 16 82 17 44 5E 55 8B 9B C1 8D 7B
+852F:                            43 16 D3 93 F6 4E 48 DB 46 48 D6 B5 D6 9C DB 72
+853F:                            B9 6E 8E C5 2E
+;
+;                                THE ALIEN IS LIFTED AND THROWN BACKWARDS BY THE IMPACT OF
+;                                THE BLAST. ITS LIMP BODY FALLS TO THE GROUND.
+;
+8544:                         1C 62      ;                 COM_1C_set_var_object(obj=OBJ_62_SHAGGY_CREATURE)
+8546:                         1D 15      ;                 COM_1D_attack_var(points=21)
+;                                        ;               end group_AND at 0x84FB
+;                                        ;             end case
+8548:                   89 60            ;             case COM_08_is_first_noun(object_num=OBJ_89_ALIEN_ANTS), length=0x0060
+854A:                      0D 5E         ;               COM_0D_group_AND length=0x005E (to 0x85AA)
+854C:                         04 58      ;                 COM_04_print_message length=0x0058 (to 0x85A6)
+854E:                            5F BE 5A 17 01 A1 83 C5 F3 B2 8B B3 E3 59 70 66
+855E:                            91 7A 1E 8F BF 14 0A BC 4B 49 96 8C FF BE 28 15
+856E:                            65 66 11 BC 96 96 DB 72 18 D0 51 5E 95 64 8E 91
+857E:                            04 8A 45 8B C5 83 63 B1 74 C0 4B 62 5B BE 19 BC
+858E:                            5A 49 C8 16 23 62 C7 DE 15 EE 90 BE 50 6D DB 6A
+859E:                            1B A1 6B BF E3 59 77 BE
+;
+;                                THE SHOTGUN ROARS DEAFENINGLY, BUT HAS LITTLE EFFECT ON THE
+;                                WAVE OF SMALL BLACK CREATURES THAT WASH OVER YOU, STINGING
+;                                YOU TO DEATH.
+;
+85A6:                         1C 01      ;                 COM_1C_set_var_object(obj=OBJ_01_PLAYER)
+85A8:                         1D 4B      ;                 COM_1D_attack_var(points=75)
+;                                        ;               end group_AND at 0x854A
+;                                        ;             end case
+;                                        ;           end decode_switch at 0x84E5
+;                                        ;         end group_AND at 0x84DC
+85AA:             0D 18                  ;         COM_0D_group_AND length=0x0018 (to 0x85C4)
+85AC:                04 14               ;           COM_04_print_message length=0x0014 (to 0x85C2)
+85AE:                   5F BE 5B B1 2F 49 57 17 74 CA 33 48 79 98 A9 15
+85BE:                   F5 8B D0 15     
+;
+;                       THERE ARE SEVERAL NEW HOLES IN
+;
+85C2:                A8                  ;           FN_A8_PRINT_noun1
+85C3:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x85AA
+;                                        ;       end group_OR at 0x84BB
+;                                        ;     end case
+85C4:       0E 13                        ;     case COM_0A_is_input_phrase("THROW u....... TO ...P...."), length=0x0013
+85C6:          0E 11                     ;       COM_0E_group_OR length=0x0011 (to 0x85D9)
+85C8:             13                     ;         COM_13_process_phrase_by_room()
+85C9:             0D 0E                  ;         COM_0D_group_AND length=0x000E (to 0x85D9)
+85CB:                A9                  ;           FN_A9_PRINT_noun2
+85CC:                04 0B               ;           COM_04_print_message length=0x000B (to 0x85D9)
+85CE:                   77 5B 05 B9 19 BC 9E 48 D6 15 2E
+;
+;                       DOESN'T WANT IT.
+;
+;                                        ;         end group_AND at 0x85C9
+;                                        ;       end group_OR at 0x85C6
+;                                        ;     end case
+85D9:       0F 1D                        ;     case COM_0A_is_input_phrase("DROP ..C..... IN ......O."), length=0x001D
+85DB:          0E 1B                     ;       COM_0E_group_OR length=0x001B (to 0x85F8)
+85DD:             0D 06                  ;         COM_0D_group_AND length=0x0006 (to 0x85E5)
+85DF:                1A                  ;           COM_1A_set_var_to_noun1()
+85E0:                14                  ;           COM_14_reverse_status next command
+85E1:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
+85E3:                14                  ;           COM_14_reverse_status next command
+85E4:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x85DD
+85E5:             14                     ;         COM_14_reverse_status next command
+85E6:             BF                     ;         FN_BF_IS_LIQUID_REACHABLE
+85E7:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x85EE)
+85E9:                1B                  ;           COM_1B_set_var_to_noun2()
+85EA:                14                  ;           COM_14_reverse_status next command
+85EB:                15 02               ;           COM_15_is_var_attributes(value=......H.(Holder))
+85ED:                B6                  ;           FN_B6_PRINT_TWO_SAME_SPACE
+;                                        ;         end group_AND at 0x85E7
+85EE:             B7                     ;         FN_B7_PRINT_HAVE_TO_OPEN_var
+85EF:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x85F5)
+85F1:                1B                  ;           COM_1B_set_var_to_noun2()
+85F2:                32                  ;           COM_32_move_noun1_to_var_object()
+85F3:                B5                  ;           FN_B5_PRINT_BY_YOUR_COMMAND
+85F4:                0C                  ;           COM_0C_fail()
+;                                        ;         end group_AND at 0x85EF
+85F5:             13                     ;         COM_13_process_phrase_by_room()
+85F6:             14                     ;         COM_14_reverse_status next command
+85F7:             0C                     ;         COM_0C_fail()
+;                                        ;       end group_OR at 0x85DB
+;                                        ;     end case
+85F8:       4D 23                        ;     case COM_0A_is_input_phrase("FILL ......O. WITH u......."), length=0x0023
+85FA:          0E 21                     ;       COM_0E_group_OR length=0x0021 (to 0x861D)
+85FC:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x8603)
+85FE:                1B                  ;           COM_1B_set_var_to_noun2()
+85FF:                14                  ;           COM_14_reverse_status next command
+8600:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
+8602:                B8                  ;           FN_B8_PRINT_GARBAGE_GAMES
+;                                        ;         end group_AND at 0x85FC
+8603:             14                     ;         COM_14_reverse_status next command
+8604:             BF                     ;         FN_BF_IS_LIQUID_REACHABLE
+8605:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x860C)
+8607:                1A                  ;           COM_1A_set_var_to_noun1()
+8608:                14                  ;           COM_14_reverse_status next command
+8609:                15 02               ;           COM_15_is_var_attributes(value=......H.(Holder))
+860B:                B6                  ;           FN_B6_PRINT_TWO_SAME_SPACE
+;                                        ;         end group_AND at 0x8605
+860C:             B7                     ;         FN_B7_PRINT_HAVE_TO_OPEN_var
+860D:             0D 05                  ;         COM_0D_group_AND length=0x0005 (to 0x8614)
+860F:                1B                  ;           COM_1B_set_var_to_noun2()
+8610:                14                  ;           COM_14_reverse_status next command
+8611:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
+8613:                B8                  ;           FN_B8_PRINT_GARBAGE_GAMES
+;                                        ;         end group_AND at 0x860D
+8614:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x861A)
+8616:                1A                  ;           COM_1A_set_var_to_noun1()
+8617:                31                  ;           COM_31_move_noun2_to_var_object()
+8618:                B5                  ;           FN_B5_PRINT_BY_YOUR_COMMAND
+8619:                0C                  ;           COM_0C_fail()
+;                                        ;         end group_AND at 0x8614
+861A:             13                     ;         COM_13_process_phrase_by_room()
+861B:             14                     ;         COM_14_reverse_status next command
+861C:             0C                     ;         COM_0C_fail()
+;                                        ;       end group_OR at 0x85FA
+;                                        ;     end case
+861D:       4E 3F                        ;     case COM_0A_is_input_phrase("POUR u....... * *"), length=0x003F
+861F:          0E 3D                     ;       COM_0E_group_OR length=0x003D (to 0x865E)
+8621:             0D 0A                  ;         COM_0D_group_AND length=0x000A (to 0x862D)
+8623:                1A                  ;           COM_1A_set_var_to_noun1()
+8624:                14                  ;           COM_14_reverse_status next command
+8625:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
+8627:                04 03               ;           COM_04_print_message length=0x0003 (to 0x862C)
+8629:                   81 A6 52        
+;
+;                       POOR
+;
+862C:                11                  ;           COM_11_print_noun1()
+;                                        ;         end group_AND at 0x8621
+862D:             14                     ;         COM_14_reverse_status next command
+862E:             BF                     ;         FN_BF_IS_LIQUID_REACHABLE
+862F:             0D 10                  ;         COM_0D_group_AND length=0x0010 (to 0x8641)
+8631:                09 00               ;           COM_09_is_noun2(obj=nothing)
+8633:                1C 00               ;           COM_1C_set_var_object(obj=nothing)
+8635:                32                  ;           COM_32_move_noun1_to_var_object()
+8636:                A8                  ;           FN_A8_PRINT_noun1
+8637:                04 08               ;           COM_04_print_message length=0x0008 (to 0x8641)
+8639:                   4B 7B 09 9A 81 15 7F 98
+;
+;                       IS NOW GONE.
+;
+;                                        ;         end group_AND at 0x862F
+8641:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x8655)
+8643:                1B                  ;           COM_1B_set_var_to_noun2()
+8644:                14                  ;           COM_14_reverse_status next command
+8645:                15 02               ;           COM_15_is_var_attributes(value=......H.(Holder))
+8647:                A9                  ;           FN_A9_PRINT_noun2
+8648:                04 08               ;           COM_04_print_message length=0x0008 (to 0x8652)
+864A:                   4B 7B 09 9A FB 14 F7 93
+;
+;                       IS NOW DAMP.
+;
+8652:                1C 00               ;           COM_1C_set_var_object(obj=nothing)
+8654:                32                  ;           COM_32_move_noun1_to_var_object()
+;                                        ;         end group_AND at 0x8641
+8655:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x865B)
+8657:                1B                  ;           COM_1B_set_var_to_noun2()
+8658:                32                  ;           COM_32_move_noun1_to_var_object()
+8659:                B5                  ;           FN_B5_PRINT_BY_YOUR_COMMAND
+865A:                0C                  ;           COM_0C_fail()
+;                                        ;         end group_AND at 0x8655
+865B:             13                     ;         COM_13_process_phrase_by_room()
+865C:             14                     ;         COM_14_reverse_status next command
+865D:             0C                     ;         COM_0C_fail()
+;                                        ;       end group_OR at 0x861F
+;                                        ;     end case
+865E:       4F 52                        ;     case COM_0A_is_input_phrase("DRINK u....... * *"), length=0x0052
+8660:          0E 50                     ;       COM_0E_group_OR length=0x0050 (to 0x86B2)
+8662:             0D 32                  ;         COM_0D_group_AND length=0x0032 (to 0x8696)
+8664:                1A                  ;           COM_1A_set_var_to_noun1()
+8665:                14                  ;           COM_14_reverse_status next command
+8666:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
+8668:                04 2A               ;           COM_04_print_message length=0x002A (to 0x8694)
+866A:                   C7 DE AF 23 5B 17 AE 54 BF 14 10 BC F3 A0 4E 72
+867A:                   83 64 D5 B5 DD 78 95 14 51 18 59 C2 2E A1 04 58
+868A:                   4B 5E 9B 64 1B A1 EB 5B 4B 99
+;
+;                       YOU'RE SICK, BUT NOT HALF AS SICK AS YOU WOULD BE IF YOU
+;                       DRANK
+;
+8694:                A8                  ;           FN_A8_PRINT_noun1
+8695:                8B                  ;           FN_8B_PRINT_PERIOD
+;                                        ;         end group_AND at 0x8662
+8696:             14                     ;         COM_14_reverse_status next command
+8697:             BF                     ;         FN_BF_IS_LIQUID_REACHABLE
+8698:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x869E)
+869A:                13                  ;           COM_13_process_phrase_by_room()
+869B:                1C 00               ;           COM_1C_set_var_object(obj=nothing)
+869D:                32                  ;           COM_32_move_noun1_to_var_object()
+;                                        ;         end group_AND at 0x8698
+869E:             0D 12                  ;         COM_0D_group_AND length=0x0012 (to 0x86B2)
+86A0:                1C 00               ;           COM_1C_set_var_object(obj=nothing)
+86A2:                32                  ;           COM_32_move_noun1_to_var_object()
+86A3:                04 0D               ;           COM_04_print_message length=0x000D (to 0x86B2)
+86A5:                   C7 DE 4F 15 33 61 68 B1 75 B1 E6 72 2E
+;
+;                       YOU FEEL REFRESHED.
+;
+;                                        ;         end group_AND at 0x869E
+;                                        ;       end group_OR at 0x8660
+;                                        ;     end case
+86B2:       4B 43                        ;     case COM_0A_is_input_phrase("DROP ..C..... ON .......L"), length=0x0043
+86B4:          0E 41                     ;       COM_0E_group_OR length=0x0041 (to 0x86F7)
+86B6:             13                     ;         COM_13_process_phrase_by_room()
+86B7:             0D 06                  ;         COM_0D_group_AND length=0x0006 (to 0x86BF)
+86B9:                1A                  ;           COM_1A_set_var_to_noun1()
+86BA:                14                  ;           COM_14_reverse_status next command
+86BB:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
+86BD:                14                  ;           COM_14_reverse_status next command
+86BE:                8F                  ;           FN_8F_GET_OBJECT
+;                                        ;         end group_AND at 0x86B7
+86BF:             0D 16                  ;         COM_0D_group_AND length=0x0016 (to 0x86D7)
+86C1:                2E 10               ;           COM_2E_is_var_ext_attributes(value=...Q----(liQuid))
+86C3:                0E 12               ;           COM_0E_group_OR length=0x0012 (to 0x86D7)
+86C5:                   14               ;             COM_14_reverse_status next command
+86C6:                   BF               ;             FN_BF_IS_LIQUID_REACHABLE
+86C7:                   0D 0E            ;             COM_0D_group_AND length=0x000E (to 0x86D7)
+86C9:                      A9            ;               FN_A9_PRINT_noun2
+86CA:                      04 08         ;               COM_04_print_message length=0x0008 (to 0x86D4)
+86CC:                         4B 7B 09 9A F7 17 9B C1
+;
+;                             IS NOW WET. 
+;
+86D4:                      1C 00         ;               COM_1C_set_var_object(obj=nothing)
+86D6:                      32            ;               COM_32_move_noun1_to_var_object()
+;                                        ;             end group_AND at 0x86C7
+;                                        ;           end group_OR at 0x86C3
+;                                        ;         end group_AND at 0x86BF
+86D7:             0D 16                  ;         COM_0D_group_AND length=0x0016 (to 0x86EF)
+86D9:                1B                  ;           COM_1B_set_var_to_noun2()
+86DA:                14                  ;           COM_14_reverse_status next command
+86DB:                15 01               ;           COM_15_is_var_attributes(value=.......S(Surface))
+86DD:                04 10               ;           COM_04_print_message length=0x0010 (to 0x86EF)
+86DF:                   5F BE 5D B1 D0 B5 F3 A0 99 61 7A C4 39 17 FF 9F
+;
+;                       THERE'S NOT ENOUGH ROOM.
+;
+;                                        ;         end group_AND at 0x86D7
+86EF:             0D 04                  ;         COM_0D_group_AND length=0x0004 (to 0x86F5)
+86F1:                1B                  ;           COM_1B_set_var_to_noun2()
+86F2:                32                  ;           COM_32_move_noun1_to_var_object()
+86F3:                B5                  ;           FN_B5_PRINT_BY_YOUR_COMMAND
+86F4:                0C                  ;           COM_0C_fail()
+;                                        ;         end group_AND at 0x86EF
+86F5:             14                     ;         COM_14_reverse_status next command
+86F6:             0C                     ;         COM_0C_fail()
+;                                        ;       end group_OR at 0x86B4
+;                                        ;     end case
+86F7:       19 80 EB                     ;     case COM_0A_is_input_phrase("DIAGNO * * *"), length=0x00EB
+86FA:          0D 80 E8                  ;       COM_0D_group_AND length=0x00E8 (to 0x87E5)
+86FD:             1C 01                  ;         COM_1C_set_var_object(obj=OBJ_01_PLAYER)
+86FF:             0B 80 E3 22            ;         COM_0B_switch length=0x00E3 (to 0x87E6), function=COM_22_is_less_equal_health(points)
+8703:                05 24               ;           case COM_22_is_less_equal_health(points=5), length=0x0024
+8705:                   04 22            ;             COM_04_print_message length=0x0022 (to 0x8729)
+8707:                      C7 DE 94 14 51 5E 9B 96 34 A1 3B 16 F3 B9 E9 8B
+8717:                      5B BB A3 48 63 BE AB 98 47 55 B3 8B 4E 86 1B 8A
+8727:                      19 A1        
+;
+;                          YOU ARE ON YOUR LAST LEGS. ANYTHING COULD KILL YOU!
+;
+;                                        ;           end case
+8729:                14 1C               ;           case COM_22_is_less_equal_health(points=20), length=0x001C
+872B:                   04 1A            ;             COM_04_print_message length=0x001A (to 0x8747)
+872D:                      0F A0 71 16 5B B1 41 6E 0B 58 3F 99 7B B4 8E 48
+873D:                      51 18 A8 C2 4A 5E F3 46 71 7B
+;
+;                          ONE MORE GOOD INJURY AND YOU'VE HAD IT!
+;
+;                                        ;           end case
+8747:                23 22               ;           case COM_22_is_less_equal_health(points=35), length=0x0022
+8749:                   04 20            ;             COM_04_print_message length=0x0020 (to 0x876B)
+874B:                      C7 DE 94 14 48 5E 2E 60 91 7A 17 17 7F 7B CE 15
+875B:                      9B 8F 52 77 75 B1 B3 55 5B 4D 17 53 91 BE 2B 96
+;
+;                          YOU ARE FEELING QUITE ILL. I PRESCRIBE CAUTION! 
+;
+;                                        ;           end case
+876B:                33 32               ;           case COM_22_is_less_equal_health(points=51), length=0x0032
+876D:                   04 30            ;             COM_04_print_message length=0x0030 (to 0x879F)
+876F:                      C7 DE 94 14 50 5E F3 A0 67 66 90 8C D7 6A 16 A3
+877F:                      D2 9C 47 49 51 18 55 C2 87 74 B3 8B 4D BD 44 5E
+878F:                      8E 62 23 62 14 53 51 5E 9B 64 34 A1 AE B7 1B 6A
+;
+;                          YOU ARE NOT FEELING UP TO PAR. YOU SHOULD TAKE BETTER CARE
+;                          OF YOURSELF.
+;
+;                                        ;           end case
+879F:                44 24               ;           case COM_22_is_less_equal_health(points=68), length=0x0024
+87A1:                   04 22            ;             COM_04_print_message length=0x0022 (to 0x87C5)
+87A3:                      C7 DE AF 23 4F 15 43 61 AB 98 EF A6 53 C0 81 15
+87B3:                      73 9E 8E C5 23 62 5F BE DB 14 27 B1 66 94 8D 48
+87C3:                      6F 62        
+;
+;                          YOU'RE FEELING PRETTY GOOD UNDER THE CIRCUMSTANCES.
+;
+;                                        ;           end case
+87C5:                FF 1E               ;           case COM_22_is_less_equal_health(points=255), length=0x001E
+87C7:                   04 1C            ;             COM_04_print_message length=0x001C (to 0x87E5)
+87C9:                      C7 DE 4F 15 33 61 4B 49 41 6E 03 58 D6 B5 DB 72
+87D9:                      5B 59 51 18 59 C2 2F 62 B9 14 E7 B2
+;
+;                          YOU FEEL AS GOOD AS THE DAY YOU WERE BORN.
+;
+;                                        ;           end case
+;                                        ;         end decode_switch at 0x86FF
+;                                        ;       end group_AND at 0x86FA
+;                                        ;     end case
+87E5:       52 04                        ;     case COM_0A_is_input_phrase("START u....... * *"), length=0x0004
+87E7:          0E 02                     ;       COM_0E_group_OR length=0x0002 (to 0x87EB)
+87E9:             13                     ;         COM_13_process_phrase_by_room()
+87EA:             B8                     ;         FN_B8_PRINT_GARBAGE_GAMES
+;                                        ;       end group_OR at 0x87E7
+;                                        ;     end case
+87EB:       56 11                        ;     case COM_0A_is_input_phrase("DIG u....... WITH u......."), length=0x0011
+87ED:          0E 0F                     ;       COM_0E_group_OR length=0x000F (to 0x87FE)
+87EF:             13                     ;         COM_13_process_phrase_by_room()
+87F0:             04 0C                  ;         COM_04_print_message length=0x000C (to 0x87FE)
+87F2:                46 77 6B 79 73 7B 81 BF 0F EE 81 48
+;
+;                    I DIG IT TOO, MAN!
+;
+;                                        ;       end group_OR at 0x87ED
+;                                        ;     end case
+87FE:       50 11                        ;     case COM_0A_is_input_phrase("TURN * ON u......."), length=0x0011
+8800:          0E 0F                     ;       COM_0E_group_OR length=0x000F (to 0x8811)
+8802:             13                     ;         COM_13_process_phrase_by_room()
+8803:             04 0C                  ;         COM_04_print_message length=0x000C (to 0x8811)
+8805:                C7 DE D3 14 E6 96 09 15 82 17 71 49
+;
+;                    YOU CAN'T DO THAT!
+;
+;                                        ;       end group_OR at 0x8800
+;                                        ;     end case
+8811:       51 2B                        ;     case COM_0A_is_input_phrase("TURN * OFF u......."), length=0x002B
+8813:          0E 29                     ;       COM_0E_group_OR length=0x0029 (to 0x883E)
+8815:             13                     ;         COM_13_process_phrase_by_room()
+8816:             04 26                  ;         COM_04_print_message length=0x0026 (to 0x883E)
+8818:                68 4D AF A0 51 18 45 C2 83 48 74 C0 95 96 E7 9F
+8828:                63 BE AB 98 D0 9E 0B EE 0F BC 66 C6 AF 14 8F 17
+8838:                CF B2 11 58 1B 9C  
+;
+;                    BEFORE YOU CAN TURN SOMETHING OFF, IT MUST BE TURNED ON. 
+;
+;                                        ;       end group_OR at 0x8813
+;                                        ;     end case
+883E:       53 0F                        ;     case COM_0A_is_input_phrase("STRIKE u....... * *"), length=0x000F
+8840:          0E 0D                     ;       COM_0E_group_OR length=0x000D (to 0x884F)
+8842:             13                     ;         COM_13_process_phrase_by_room()
+8843:             0D 0A                  ;         COM_0D_group_AND length=0x000A (to 0x884F)
+8845:                04 08               ;           COM_04_print_message length=0x0008 (to 0x884F)
+8847:                   57 C6 93 13 3B C0 8D 54
+;
+;                       USE 'ATTACK'
+;
+;                                        ;         end group_AND at 0x8843
+;                                        ;       end group_OR at 0x8840
+;                                        ;     end case
+884F:       58 0D                        ;     case COM_0A_is_input_phrase("POINT u....... * *"), length=0x000D
+8851:          0E 0B                     ;       COM_0E_group_OR length=0x000B (to 0x885E)
+8853:             13                     ;         COM_13_process_phrase_by_room()
+8854:             0D 08                  ;         COM_0D_group_AND length=0x0008 (to 0x885E)
+8856:                04 06               ;           COM_04_print_message length=0x0006 (to 0x885E)
+8858:                   55 77 1B 60 97 7B
+;
+;                       I SEE IT.
+;
+;                                        ;         end group_AND at 0x8854
+;                                        ;       end group_OR at 0x8851
+;                                        ;     end case
+885E:       07 1A                        ;     case COM_0A_is_input_phrase("INVENT * * *"), length=0x001A
+8860:          0D 18                     ;       COM_0D_group_AND length=0x0018 (to 0x887A)
+8862:             04 15                  ;         COM_04_print_message length=0x0015 (to 0x8879)
+8864:                C7 DE 94 14 45 5E 3C 49 D0 DD D6 6A DB 72 FE 67
+8874:                89 8D 91 7A 3A     
+;
+;                    YOU ARE CARRYING THE FOLLOWING:
+;
+8879:             06                     ;         COM_06_print_inventory()
+;                                        ;       end group_AND at 0x8860
+;                                        ;     end case
+;                                        ;   end decode_switch at 0x7D95
+;                                        ; end group_OR at 0x7D51

@@ -2,103 +2,101 @@
 
 # Main Board Hardware
 
-Main CPU is a Z80 running at 3.072MHz.
+**Frogger** runs on Konami's 1981 Frogger board, a member of the Galaxian video family
+(MAME driver `galaxian/galaxian.cpp`, machine `frogger`). The main CPU is a **Zilog Z80**
+clocked at **3.072 MHz** (18.432 MHz / 6), giving **50688 cycles/frame** at a **60.606 Hz**
+refresh; the native raster is 256×224, displayed rotated (MAME `ROT90`).
 
-Sound CPU is a Z80 running at 1.78975MHz.
+A **second Z80** drives the sound hardware — an **AY-3-8910** PSG — receiving command
+bytes from the main CPU through the second of the board's two i8255 PPIs (below).
 
-| Position   | Mapping        |
-| ---------  | ---------      |
-| frogger.26 | main 0000:0FFF |
-| frogger.27 | main 1000:1FFF |
-| frsm3.7    | main 2000:2FFF |
-|  |  |
-| frogger.608 | sound 0000:07FF |
-| frogger.609 | sound 0800:0FFF |
-| frogger.610 | sound 1000:17FF |
-|  |  |
-| frogger.607 | gfx 0000:07FF |
-| frogger.606 | gfx 0800:0FFF |
-|  |  |
-| pr-91.6l | PROM |
+Three hardware invariants matter when reading the map below: (1) a read and a write at
+one address can be different devices — the program writes work RAM at `0x8800` region
+addresses while a **read** of `0x8800` **kicks the watchdog** and returns `0xFF`; (2) all
+memory-mapped I/O above `0xC000` runs through **two i8255 PPIs** in mode 0, so a port's
+direction is set by control words the boot code writes — `PPI0` carries the three input
+ports, `PPI1` the sound-command latch and audio interrupt; (3) a handful of single-bit
+control lines are **standalone D0 latches** — one address per line, the data on bit 0 —
+for the NMI enable, the two screen-flip bits, and the two coin counters.
 
-```
-    ADDRESS_MAP_UNMAP_HIGH
-	AM_RANGE(0x0000, 0x3fff) AM_ROM
-	AM_RANGE(0x8000, 0x87ff) AM_RAM
-	AM_RANGE(0x8800, 0x8800) AM_MIRROR(0x07ff) AM_DEVREAD("watchdog", watchdog_timer_device, reset_r)
-	AM_RANGE(0xa800, 0xabff) AM_MIRROR(0x0400) AM_RAM_WRITE(galaxian_videoram_w) AM_SHARE("videoram")
-	AM_RANGE(0xb000, 0xb0ff) AM_MIRROR(0x0700) AM_RAM_WRITE(galaxian_objram_w) AM_SHARE("spriteram")
-	AM_RANGE(0xb808, 0xb808) AM_MIRROR(0x07e3) AM_WRITE(irq_enable_w)
-	AM_RANGE(0xb80c, 0xb80c) AM_MIRROR(0x07e3) AM_WRITE(galaxian_flip_screen_y_w)
-	AM_RANGE(0xb810, 0xb810) AM_MIRROR(0x07e3) AM_WRITE(galaxian_flip_screen_x_w)
-	AM_RANGE(0xb818, 0xb818) AM_MIRROR(0x07e3) AM_WRITE(coin_count_0_w) /* IOPC7 */
-	AM_RANGE(0xb81c, 0xb81c) AM_MIRROR(0x07e3) AM_WRITE(coin_count_1_w) /* POUT1 */
-	AM_RANGE(0xc000, 0xffff) AM_READWRITE(frogger_ppi8255_r, frogger_ppi8255_w)
-```
+## Memory & I/O map
 
 >>> memory
 
-| | | |
+| Address | Name | Description |
 | --- | --- | --- |
-| 8800      | watchdog         | read to reset watchdog |
-| A800:ABFF | VIDEORAM         | |
-| B000:B0FF | SPRITERAM        | |
-| B808      | IRQENABLE        | |
-| B80C      | FLIPY            | |
-| B810      | FLIPX            | |
-| B818      | COINCNT0         | |
-| B81C      | COINCNT1         | |
-| D000      | SOUND_CMD        | Port A: Sound command byte |
-| D002      | SOUND_CTRL       | Port B: Sound control (interrupt) |
-| D004      | 8255_0_C         | Port C: not used |
-| D006      | 8255_0_CTRL      | Control register |
-| E000      | INPUTS_A         | Port A: Inputs |
-| E002      | INPUTS_B         | Port B: Inputs |
-| E004      | INPUTS_C         | Port C: Inputs|
-| E006      | 8255_1_CTRL      | Control register |
+| 0000:3fff | rom | Program ROM, 16384 bytes (`frogger` main-CPU parts frogger.26 + frogger.27 + frsm3.7) |
+| 8000:87ff | workRam | Work RAM (see [Work RAM](RAMUse.md)) |
+| 8800 | watchdog | R: watchdog reset — the read kicks the dog and returns 0xFF; mirror at 0x8800+0x07ff |
+| a800:abff | videoRam | Video RAM / tilemap (galaxian_videoram_w), 0x20-wide rows; mirror mask 0x0400 |
+| b000:b0ff | objRam | Object RAM (galaxian_objram_w): per-column scroll+colour 0x00-0x3F, 8 sprites × 4 bytes 0x40-0x5F, bullets 0x60-0x7F; mirror mask 0x0700 |
+| b808 | irqEnable | W (D0): NMI enable — the main loop sets it to arm the vblank NMI, clears it to mask |
+| b80c | flipY | W (D0): screen flip Y (cocktail) |
+| b810 | flipX | W (D0): screen flip X (cocktail) |
+| b818 | coinCounter0 | W (D0): coin counter 0 |
+| b81c | coinCounter1 | W (D0): coin counter 1 |
+| d000 | soundLatch | W: sound-command byte to the sound CPU (PPI1 port A) |
+| d002 | soundControl | W: sound control (PPI1 port B) — a falling edge of bit 3 raises the audio /INT, bit 4 mutes |
+| e000 | in0 | R: IN0 — joystick left/right, service, coins (PPI0 port A, active-low) |
+| e002 | in1 | R: IN1 — start buttons, lives DIP (PPI0 port B, active-low) |
+| e004 | in2 | R: IN2 — joystick up/down, coinage + cabinet DIPs (PPI0 port C, active-low) |
 
-```
-Inputs A:
-0 2P UP
-1 1P Shoot-2
-2 SERVICE
-3 1P Shoot-1
-4 1P Right
-5 1P Left
-6 Coin-1
-7 Coin-2
+## IN0 — joystick L/R, service, coins (read at 0xE000, active-low, idle 0xFF)
 
-Inputs B:
-0 DSW-2
-1 DSW-1
-2 2P Shoot-2
-3 2P Shoot-1
-4 2P Right
-5 2P Left
-6 2P Start
-7 1P Start
+| Bit | Mask | Input |
+| --- | --- | --- |
+| 2 | 0x04 | Service |
+| 4 | 0x10 | Right |
+| 5 | 0x20 | Left |
+| 6 | 0x40 | Coin 2 |
+| 7 | 0x80 | Coin 1 |
 
-Inputs C:
-0 2P Down
-1 DSW-5
-2 DSW-4
-3 DSW-3
-4 1P UP
-5 nc
-6 1P Down
-7 nc
-```
+Bit 0 (0x01) carries Up in the flipped cocktail view; bits 1 and 3 are unused.
 
-```
-/* the 2nd gfx ROM has data lines D0 and D1 swapped */
-	for (offs = 0x0800; offs < 0x1000; offs++)
-		rombase[offs] = BITSWAP8(rombase[offs], 7,6,5,4,3,2,0,1);
-```
+## IN1 — start buttons + lives DIP (read at 0xE002, active-low, idle 0xFC)
 
-Lots of good information in mame/src/mame/video/galaxian.cpp
-```
-            objram[40] = vertical position of sprite 0
-            objram[41] = picture number and H/V flip of sprite 0
-            objram[42] = color of sprite 0
-            objram[43] = horizontal position of sprite 0
-```
+| Bit | Mask | Input |
+| --- | --- | --- |
+| 0–1 | 0x03 | DIP: lives (default 0x00 = 3) |
+| 6 | 0x40 | Start 2P |
+| 7 | 0x80 | Start 1P |
+
+Bits 4–5 carry Right/Left in the cocktail view; bits 2 and 3 are unused. The lives DIP
+sits in this port (default `0x00` = 3), which is why the idle read is `0xFC`, not `0xFF`.
+
+## IN2 — joystick U/D, coinage + cabinet DIPs (read at 0xE004, active-low, idle 0xF1)
+
+| Bit | Mask | Input |
+| --- | --- | --- |
+| 1–2 | 0x06 | DIP: coinage (default 0x00 = 1 coin / 1 credit) |
+| 3 | 0x08 | DIP: cabinet (default 0x00 = upright; set = cocktail, screen flip) |
+| 4 | 0x10 | Up |
+| 6 | 0x40 | Down |
+
+Bit 0 (0x01) carries Down in the cocktail view; bits 5 and 7 are unused. The two DIP bits
+seated here make the idle read `0xF1`.
+
+## Standalone D0 control latches (one address per line, data on bit 0)
+
+Five single-bit lines are written as their own addresses, each taking the value on data
+bit 0 (the decode masks the address, so mirrors resolve to the same latch).
+
+| Address | Line |
+| --- | --- |
+| b808 | NMI enable (the main loop writes 1 to arm the vblank NMI) |
+| b80c | Screen flip Y (cocktail) |
+| b810 | Screen flip X (cocktail) |
+| b818 | Coin counter 0 |
+| b81c | Coin counter 1 |
+
+## Video — tilemap + object RAM
+
+The display is a Galaxian-family tilemap plus an object layer. **Video RAM** at
+`0xA800`–`0xABFF` holds one tile code per cell over a 0x20-wide grid (drawn rotated).
+**Object RAM** at `0xB000`–`0xB0FF` is three regions in one page: the first 0x40 bytes are
+**per-column scroll and colour** (the river and road lanes scroll by writing these — column
+N takes its scroll from objRam[N×2]), `0x40`–`0x5F` are the **eight hardware sprites** of
+four bytes each (the frog, the fly, and the sprite-drawn objects), and `0x60`–`0x7F` is the
+bullet region (unused by Frogger's play). Each sprite record decodes as: **byte0** →
+position on one axis; **byte1** → tile `code & 0x3f` plus flip-X (0x40) / flip-Y (0x80);
+**byte2** → colour; **byte3** → the other axis.

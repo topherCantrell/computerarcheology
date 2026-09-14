@@ -707,7 +707,7 @@ InputDone:
 inputBuffer:
 ; UNINITALIZED MEMORY (see discussion in next section)
 465A: 41 4E 54 20 4D 45 20 54 4F 20 44 4F 20 57 49 54  ; ANT_ME_TO_DO_WIT
-466A: 48 20 54 48 45 20 2C 41 0D 12 30 30 30 30 20 20  ; H_THE_,A..0000__ 
+466A: 48 20 54 48 45 20 2C 41 0D 12 30 30 30 30 20 20  ; H_THE_,A..0000__
 467A: 00 ; null terminator for input buffer
 
 inputNoun:
@@ -723,13 +723,13 @@ nextErrorNum:
 467E: 00    ; Which error string do we show next? 0, 1, 2, or 3
 
 PtrErrorString1:
-; 61	 WHAT?
+; 61 WHAT?
 467F: 25 47 ; " WHAT?"
 PtrErrorString2:
-; 60	 I DON'T KNOW THAT WORD.
+; 60 I DON'T KNOW THAT WORD.
 4681: 2C 47 ; "I DON'T KNOW THAT WORD."
 PtrErrorString3:
-; 13	 I DON'T UNDERSTAND THAT!
+; 13 I DON'T UNDERSTAND THAT!
 4683: 44 47 ; "I DON'T UNDERSTAND."
 PtrErrorString4:
 4685: 58 47 ; "I DON'T KNOW WHAT YOU MEAN."
@@ -814,11 +814,11 @@ WelcomeMsg:
 
 StackSpace:
 ; UNINITALIZED MEMORY (see discussion in next section)
-4797: E1 CA B8 47 3E 00 CE 00 29 44 85 2A 22 48 95 4F 78 9C 47 C5 
-47AB: D2 B0 47 09 E3 21 B7 47 3F C3 90 47 00 01 F9 47 09 7E C1 E1        
+4797: E1 CA B8 47 3E 00 CE 00 29 44 85 2A 22 48 95 4F 78 9C 47 C5
+47AB: D2 B0 47 09 E3 21 B7 47 3F C3 90 47 00 01 F9 47 09 7E C1 E1
 
 ; unused
-47BF: 00 
+47BF: 00
 
 EmptyString:
 47C0: 00 ; For objects that have no descriptions
@@ -846,8 +846,8 @@ When you DEFINE a chunk of memory, you tell the assmebler what values you want t
 produced image. When you RESERVE a chunk of memory, you tell the assembler that you don't
 care what's in memory -- just skip over whatever is there.
 
-The source code used the "reserve" directive (probably "BUFFER: DS 32"), and when the final image 
-was written to tape, the unitialized contents of the memory was written along with the assembled 
+The source code used the "reserve" directive (probably "BUFFER: DS 32"), and when the final image
+was written to tape, the unitialized contents of the memory was written along with the assembled
 image. What's in this previously used memory? Random data? A credit card number? Maybe a phone number?
 
 ; The 2nd line is long ... total length of 18, but the double space after "0000"
@@ -877,32 +877,32 @@ image. What's in this previously used memory? Random data? A credit card number?
 
 ```
 THIS IS NOT LIVE CODE ... copied from below
-    : E1         ;     POP     HL
-    : CA B8 47   ;     JP      Z,$47B8
-    : 3E 00      ;     LD      A,$00
-    : CE 00      ;     ADC     $00
-    : 29         ;     ADD     HL,HL
-    : 44         ;     LD      B,H
-    : 85         ;     ADD     A,L
-    : 2A 22 48   ;     LD      HL,($4822)
-    : 95         ;     SUB     L
-    : 4F         ;     LD      C,A
-    : 78         ;     LD      A,B
-    : 9C         ;     SBC     H
-    : 47         ;     LD      B,A
-    : C5         ;     PUSH    BC
-    : D2 B0 47   ;     JP      NC,$47B0
-    : 09         ;     ADD     HL,BC
-    : E3         ;     EX      (SP),HL
-    : 21 B7 47   ;     LD      HL,$47B7
-    : 3F         ;     CCF
-    : C3 90 47   ;     JP      $4790
-    : 00         ;
-    : 01 F9 47   ;     LD      NC,$47F9
-    : 09         ;     ADD     HL,BC
-    : 7E         ;     LD      A,(HL)
-    : C1         ;     POP     BC
-    : E1         ;     POP     HL
+: E1         ;     POP     HL
+: CA B8 47   ;     JP      Z,$47B8
+: 3E 00      ;     LD      A,$00
+: CE 00      ;     ADC     $00
+: 29         ;     ADD     HL,HL
+: 44         ;     LD      B,H
+: 85         ;     ADD     A,L
+: 2A 22 48   ;     LD      HL,($4822)
+: 95         ;     SUB     L
+: 4F         ;     LD      C,A
+: 78         ;     LD      A,B
+: 9C         ;     SBC     H
+: 47         ;     LD      B,A
+: C5         ;     PUSH    BC
+: D2 B0 47   ;     JP      NC,$47B0
+: 09         ;     ADD     HL,BC
+: E3         ;     EX      (SP),HL
+: 21 B7 47   ;     LD      HL,$47B7
+: 3F         ;     CCF
+: C3 90 47   ;     JP      $4790
+: 00         ;
+: 01 F9 47   ;     LD      NC,$47F9
+: 09         ;     ADD     HL,BC
+: 7E         ;     LD      A,(HL)
+: C1         ;     POP     BC
+: E1         ;     POP     HL
 ```
 
 # Packed strings
@@ -913,7 +913,7 @@ By limiting a character to 40 possible values, we can pack three characters into
 
 The 40 characters from CharTable: ?!2_"'<>/03ABCDEFGHIJKLMNOPQRSTUVWXYZ-,.
 
-The first byte of a packed string is the number of words (two bytes) to unpack. Other 
+The first byte of a packed string is the number of words (two bytes) to unpack. Other
 printable characters may be listed after that with a 0 terminating the string.
 
 For instance, PS_02:
@@ -943,7 +943,7 @@ Next is 1419:
 ```
 c1 = 28  -> 'R'
 c2 = 11  -> 'A'
-c3 = 3   -> ' ' 
+c3 = 3   -> ' '
 ```
 
 Bringing us to "YOU_AR", and so on.
@@ -1083,8 +1083,8 @@ unpackToScreen:
 
 # Room Table
 
-Each room is a 4 byte entry in this table. The first word of the entry is 
-a pointer to the packed string for the room description. The second word 
+Each room is a 4 byte entry in this table. The first word of the entry is
+a pointer to the packed string for the room description. The second word
 a pointer to the room's command script.
 
 TODO
@@ -1121,95 +1121,97 @@ Which of these 4 were made the port? My best guesses above
 RoomTable:
 ;     Descr Scrpt   RoomName                         String   Notes
 4888: DB 5B CC 49 ; RM_01_BEFORE_ENTRANCE            PS_00    new "before entrance"
-488C: 10 5C E1 49 ; RM_02_IN_ENTRANCE                PS_01    new "in entrance" (wood's woodsRoom3 wellhouse)
+488C: 10 5C E1 49 ; RM_02_IN_ENTRANCE                PS_01    new "in entrance"
 4890: 57 5C F2 49 ; RM_03_DESERT1                    PS_02    new "desert"
 4894: 57 5C 03 4A ; RM_04_DESERT2                    PS_02    new "desert"
 4898: 57 5C 14 4A ; RM_05_DESERT3                    PS_02    new "desert"
 489C: 57 5C 25 4A ; RM_06_DESERT4                    PS_02    new "desert"
 ;
-48A0: 68 5C 36 4A ; RM_07_BENEATH_A_HOLE             PS_03    woodsRoom9
-48A4: E2 5C 47 4A ; RM_08_CRAWLING_OVER_PEBBLES      PS_04    woodsRoom10
-48A8: 28 5D 58 4A ; RM_09_BROKEN_POTTERY             PS_05    woodsRoom11
-48AC: 7D 5D 69 4A ; RM_0A_AWKWARD_SLOPING            PS_06    woodsRoom12
-48B0: A0 5D 7E 4A ; RM_0B_SPLENDID_CHAMBER           PS_07    woodsRoom13
-48B4: 1E 5E 87 4A ; RM_0C_SMALL_PIT_WHITE_MIST       PS_08    woodsRoom14
-48B8: 8E 5E 9D 4A ; RM_0D_STEPS_LEAD_UP_DOME         PS_09    woodsRoom15
-48BC: 69 5F C8 4A ; RM_0E_LOW_ROOM_HIEROGLYPH        PS_0A    woodsRoom18
-48C0: AB 5F D1 4A ; RM_0F_EAST_BANK_BOTTOMLESS_PIT   PS_0B    woodsRoom17
-48C4: 08 60 0D 4B ; RM_10_PHARAOHS_CHAMBER           PS_0C    woodsRoom19
-48C8: 3C 60 48 4B ; RM_11_SOUTH_SIDE_CHAMBER         PS_0D    woodsRoom29
-48CC: 55 60 51 4B ; RM_12_HALL_OF_GODS               PS_0E    woodsRoom27
-48D0: 85 60 90 4B ; RM_13_LITTLE_PASSAGE_SIX_FEET    PS_0F    woodsRoom41
-48D4: F1 60 A9 4B ; RM_14_EAST_END_LONG_HALL         PS_10    woodsRoom60
-48D8: 5F 61 BE 4B ; RM_15_WEST_END_FEATURELESS_HALL  PS_11    woodsRoom61
-48DC: AC 61 C7 4B ; RM_16_CROSSOVER                  PS_12    woodsRoom62
-48E0: D8 61 D8 4B ; RM_17_DEAD_END1                  PS_13    woodsRoom63
-48E4: E0 61 E1 4B ; RM_18_THRONE_CHAMBER             PS_14    woodsRoom30
-48E8: 18 62 F2 4B ; RM_19_LOW_NS_PASSAGE             PS_15    woodsRoom28
-48EC: 58 62 07 4C ; RM_1A_PANEL_NORTH_WALL           PS_16    woodsRoom33
-48F0: B0 62 14 4C ; RM_1B_CHAMBER_OF_ANUBIS          PS_17    woodsRoom34
+48A0: 68 5C 36 4A ; RM_07_BENEATH_A_HOLE             PS_03    DW_09
+48A4: E2 5C 47 4A ; RM_08_CRAWLING_OVER_PEBBLES      PS_04    DW_0A
+48A8: 28 5D 58 4A ; RM_09_BROKEN_POTTERY             PS_05    DW_0B
+48AC: 7D 5D 69 4A ; RM_0A_AWKWARD_SLOPING            PS_06    DW_0C
+48B0: A0 5D 7E 4A ; RM_0B_SPLENDID_CHAMBER           PS_07    DW_0D
+48B4: 1E 5E 87 4A ; RM_0C_SMALL_PIT_WHITE_MIST       PS_08    DW_0E
+48B8: 8E 5E 9D 4A ; RM_0D_STEPS_LEAD_UP_DOME         PS_09    DW_0F
+48BC: 69 5F C8 4A ; RM_0E_LOW_ROOM_HIEROGLYPH        PS_0A    DW_12
+48C0: AB 5F D1 4A ; RM_0F_EAST_BANK_BOTTOMLESS_PIT   PS_0B    DW_11
+48C4: 08 60 0D 4B ; RM_10_PHARAOHS_CHAMBER           PS_0C    DW_13
+48C8: 3C 60 48 4B ; RM_11_SOUTH_SIDE_CHAMBER         PS_0D    DW_1D
+48CC: 55 60 51 4B ; RM_12_HALL_OF_GODS               PS_0E    DW_1B
+48D0: 85 60 90 4B ; RM_13_LITTLE_PASSAGE_SIX_FEET    PS_0F    DW_29
+48D4: F1 60 A9 4B ; RM_14_EAST_END_LONG_HALL         PS_10    DW_3C
+48D8: 5F 61 BE 4B ; RM_15_WEST_END_FEATURELESS_HALL  PS_11    DW_3D
+48DC: AC 61 C7 4B ; RM_16_CROSSOVER                  PS_12    DW_3E
+48E0: D8 61 D8 4B ; RM_17_DEAD_END1                  PS_13    DW_3F
+48E4: E0 61 E1 4B ; RM_18_THRONE_CHAMBER             PS_14    DW_1E
+48E8: 18 62 F2 4B ; RM_19_LOW_NS_PASSAGE             PS_15    DW_1C
+48EC: 58 62 07 4C ; RM_1A_PANEL_NORTH_WALL           PS_16    DW_21
+48F0: B0 62 14 4C ; RM_1B_CHAMBER_OF_ANUBIS          PS_17    DW_22
 ;
-48F4: C8 62 21 4C ; RM_1C_TWISTY_PASSAGES1           PS_18    woodsRoom42
-48F8: C8 62 36 4C ; RM_1D_TWISTY_PASSAGES2           PS_18    woodsRoom80
-48FC: C8 62 47 4C ; RM_1E_TWISTY_PASSAGES3           PS_18    woodsRoom45
-4900: C8 62 60 4C ; RM_1F_TWISTY_PASSAGES4           PS_18    woodsRoom87
-4904: C8 62 69 4C ; RM_20_TWISTY_PASSAGES5           PS_18    woodsRoom43
-4908: C8 62 76 4C ; RM_21_TWISTY_PASSAGES6           PS_18    woodsRoom44
-490C: C8 62 87 4C ; RM_22_TWISTY_PASSAGES7           PS_18    woodsRoom50
-4910: C8 62 98 4C ; RM_23_TWISTY_PASSAGES8           PS_18    woodsRoom52
-4914: C8 62 B1 4C ; RM_24_TWISTY_PASSAGES9           PS_18    woodsRoom55
-4918: C8 62 C2 4C ; RM_25_TWISTY_PASSAGES10          PS_18    woodsRoom49
-491C: C8 62 CB 4C ; RM_26_TWISTY_PASSAGES11          PS_18    woodsRoom51
-4920: C8 62 DC 4C ; RM_27_TWISTY_PASSAGES12          PS_18    woodsRoom53
-4924: C8 62 E9 4C ; RM_28_TWISTY_PASSAGES13          PS_18    woodsRoom84
-4928: C8 62 F6 4C ; RM_29_TWISTY_PASSAGES14          PS_18    woodsRoom83
-492C: D8 61 03 4D ; RM_2A_DEAD_END2                  PS_13    woodsRoom46
-4930: D8 61 08 4D ; RM_2B_DEAD_END3                  PS_13    woodsRoom47
-4934: D8 61 0D 4D ; RM_2C_DEAD_END4                  PS_13    woodsRoom82
-4938: D8 61 12 4D ; RM_2D_DEAD_END5                  PS_13    woodsRoom48
-493C: D8 61 17 4D ; RM_2E_DEAD_END6                  PS_13    woodsRoom54
-4940: D8 61 1C 4D ; RM_2F_DEAD_END7                  PS_13    woodsRoom86
-4944: D8 61 21 4D ; RM_30_DEAD_END8                  PS_13    woodsRoom56
-4948: D8 61 26 4D ; RM_31_DEAD_END9                  PS_13    woodsRoom58
-494C: D8 61 2B 4D ; RM_32_DEAD_END10                 PS_13    woodsRoom85
-4950: D8 61 30 4D ; RM_33_DEAD_END11                 PS_13    woodsRoom81
-4954: EA 62 41 4D ; RM_34_BRINK_OF_LARGE_PIT         PS_19    woodsRoom57
-4958: D8 61 56 4D ; RM_35_DEAD_END12                 PS_13    woodsRoom114
+48F4: C8 62 21 4C ; RM_1C_TWISTY_PASSAGES1           PS_18    DW_2A
+48F8: C8 62 36 4C ; RM_1D_TWISTY_PASSAGES2           PS_18    DW_50
+48FC: C8 62 47 4C ; RM_1E_TWISTY_PASSAGES3           PS_18    DW_2D
+4900: C8 62 60 4C ; RM_1F_TWISTY_PASSAGES4           PS_18    DW_57
+4904: C8 62 69 4C ; RM_20_TWISTY_PASSAGES5           PS_18    DW_2B
+4908: C8 62 76 4C ; RM_21_TWISTY_PASSAGES6           PS_18    DW_2C
+490C: C8 62 87 4C ; RM_22_TWISTY_PASSAGES7           PS_18    DW_32
+4910: C8 62 98 4C ; RM_23_TWISTY_PASSAGES8           PS_18    DW_34
+4914: C8 62 B1 4C ; RM_24_TWISTY_PASSAGES9           PS_18    DW_37
+4918: C8 62 C2 4C ; RM_25_TWISTY_PASSAGES10          PS_18    DW_31
+491C: C8 62 CB 4C ; RM_26_TWISTY_PASSAGES11          PS_18    DW_33
+4920: C8 62 DC 4C ; RM_27_TWISTY_PASSAGES12          PS_18    DW_35
+4924: C8 62 E9 4C ; RM_28_TWISTY_PASSAGES13          PS_18    DW_54
+4928: C8 62 F6 4C ; RM_29_TWISTY_PASSAGES14          PS_18    DW_53
+492C: D8 61 03 4D ; RM_2A_DEAD_END2                  PS_13    DW_2E
+4930: D8 61 08 4D ; RM_2B_DEAD_END3                  PS_13    DW_2F
+4934: D8 61 0D 4D ; RM_2C_DEAD_END4                  PS_13    DW_52
+4938: D8 61 12 4D ; RM_2D_DEAD_END5                  PS_13    DW_30
+493C: D8 61 17 4D ; RM_2E_DEAD_END6                  PS_13    DW_36
+4940: D8 61 1C 4D ; RM_2F_DEAD_END7                  PS_13    DW_56
+4944: D8 61 21 4D ; RM_30_DEAD_END8                  PS_13    DW_38
+4948: D8 61 26 4D ; RM_31_DEAD_END9                  PS_13    DW_3A
+494C: D8 61 2B 4D ; RM_32_DEAD_END10                 PS_13    DW_55
+4950: D8 61 30 4D ; RM_33_DEAD_END11                 PS_13    DW_51
+4954: EA 62 41 4D ; RM_34_BRINK_OF_LARGE_PIT         PS_19    DW_39
+4958: D8 61 56 4D ; RM_35_DEAD_END12                 PS_13    DW_72
 ;
-495C: 49 63 5B 4D ; RM_36_DIRTY_BROKEN_PASSAGE       PS_1A    woodsRoom36
-4960: A6 63 68 4D ; RM_37_BRINK_OF_CLEAN_PIT         PS_1B    woodsRoom37
-4964: DA 63 75 4D ; RM_38_PIT_LITTLE_STREAM          PS_1C    woodsRoom38
-4968: 1F 64 93 4D ; RM_39_ROOM_OF_BES                PS_1D    woodsRoom39
-496C: 7A 64 9C 4D ; RM_3A_COMPLEX_JUNCTION           PS_1E    woodsRoom64
-4970: 0A 65 B1 4D ; RM_3B_ANTEROOM_OF_SEKER          PS_1F    woodsRoom106
-4974: A1 65 BE 4D ; RM_3C_LAND_OF_DEAD               PS_20    woodsRoom108
-4978: D5 65 06 4E ; RM_3D_ANCIENT_DRAWINGS           PS_21    woodsRoom103
-497C: 82 66 21 4E ; RM_3E_MOON_GOD                   PS_22    woodsRoom102
-4980: E0 66 2A 4E ; RM_3F_RAGGED_WALLS               PS_23    woodsRoom104
-4984: 07 67 33 4E ; RM_40_CUL_DE_SAC                 PS_24    woodsRoom105
-4988: 29 67 3C 4E ; RM_41_CHAMBER_OF_HORUS           PS_25    woodsRoom65
-498C: 89 67 65 4E ; RM_42_FALLEN_SLAB                PS_26    woodsRoom68
-4990: 00 00 00 00 ;                                           ?woodsRoom66
-4994: D2 6B 3B 4F ; RM_44_CHAMBER_OF_NEKHEBET        PS_31    woodsRoom94
-4998: 00 00 00 00 ;                                           ?woodsRoom69
-499C: B1 6B 32 4F ; RM_46_BLOCKED_FALLEN_BLOCK       PS_30    woodsRoom93
-49A0: 5C 6B 25 4F ; RM_47_CHAMBER_OF_OSIRIS          PS_2F    woodsRoom92
-49A4: 25 68 6E 4E ; RM_48_PRIESTS_BEDROOM            PS_27    woodsRoom96
-49A8: 82 68 77 4E ; RM_49_HIGH_PRIEST                PS_28    woodsRoom99
+495C: 49 63 5B 4D ; RM_36_DIRTY_BROKEN_PASSAGE       PS_1A    DW_24
+4960: A6 63 68 4D ; RM_37_BRINK_OF_CLEAN_PIT         PS_1B    DW_25
+4964: DA 63 75 4D ; RM_38_PIT_LITTLE_STREAM          PS_1C    DW_26
+4968: 1F 64 93 4D ; RM_39_ROOM_OF_BES                PS_1D    DW_27
+496C: 7A 64 9C 4D ; RM_3A_COMPLEX_JUNCTION           PS_1E    DW_40
+4970: 0A 65 B1 4D ; RM_3B_ANTEROOM_OF_SEKER          PS_1F    DW_6A
+4974: A1 65 BE 4D ; RM_3C_LAND_OF_DEAD               PS_20    DW_6C
+4978: D5 65 06 4E ; RM_3D_ANCIENT_DRAWINGS           PS_21    DW_67
+497C: 82 66 21 4E ; RM_3E_MOON_GOD                   PS_22    DW_66
+4980: E0 66 2A 4E ; RM_3F_RAGGED_WALLS               PS_23    DW_68
+4984: 07 67 33 4E ; RM_40_CUL_DE_SAC                 PS_24    DW_69
+4988: 29 67 3C 4E ; RM_41_CHAMBER_OF_HORUS           PS_25    DW_41
+498C: 89 67 65 4E ; RM_42_FALLEN_SLAB                PS_26    DW_44
+4990: 00 00 00 00 ;                                           ?DW_5B oiled hinges -- probably oil in bottle object too
+4994: D2 6B 3B 4F ; RM_44_CHAMBER_OF_NEKHEBET        PS_31    DW_5E
+4998: 00 00 00 00 ;                                           ?DW_5F
+499C: B1 6B 32 4F ; RM_46_BLOCKED_FALLEN_BLOCK       PS_30    DW_5D
+49A0: 5C 6B 25 4F ; RM_47_CHAMBER_OF_OSIRIS          PS_2F    DW_5C
+49A4: 25 68 6E 4E ; RM_48_PRIESTS_BEDROOM            PS_27    DW_60
+49A8: 82 68 77 4E ; RM_49_HIGH_PRIEST                PS_28    DW_63
 ;
-; Rooms 73 and 76 are the "tight squeeze" with the emerald. In the
+; Rooms 40 and 4C are the "tight squeeze" with the emerald. In the
 ; In the Woods implementation, there are 5 rooms here. His ORIENT
-; room (97) and his DARK room (101) are dead-ends with one passage
-; each. I suspect these were the two
+; room (61) and his DARK room (65) are dead-ends with one passage
+; each. I suspect these were the two. or 62 which ties with 63. probably that
+; I now suspect 61 and 62. Dark room? Is that the tablet for the missing
+; object?
 49AC: 00 00 00 00 ;                                           ?
-49B0: 00 00 00 00 ;                                           ?woodsRoom91,95,  97,98,101
+49B0: 00 00 00 00 ;                                           ?DW_5B,5F,61,62,65
 ;
-49B4: F6 68 86 4E ; RM_4C_EERIE_GREEN_LIGHT          PS_29    woodsRoom100
-49B8: F3 6A 0E 4F ; RM_4D_PROFUSION_OF_LEAVES        PS_2E    woodsRoom88
-49BC: 3F 69 9B 4E ; RM_4E_WEAST_END_TWOPIT           PS_2A    woodsRoom67
-49C0: 21 6A A8 4E ; RM_4F_BOTTOM_EASTERN_PIT         PS_2B    woodsRoom24
-49C4: 4B 6A B1 4E ; RM_50_WEST_END_TWOPIT            PS_2C    woodsRoom23
-49C8: 9D 6A BE 4E ; RM_51_BOTTOM_WEST_PIT            PS_2D    woodsRoom25
+49B4: F6 68 86 4E ; RM_4C_EERIE_GREEN_LIGHT          PS_29    DW_64
+49B8: F3 6A 0E 4F ; RM_4D_PROFUSION_OF_LEAVES        PS_2E    DW_58
+49BC: 3F 69 9B 4E ; RM_4E_WEAST_END_TWOPIT           PS_2A    DW_43
+49C0: 21 6A A8 4E ; RM_4F_BOTTOM_EASTERN_PIT         PS_2B    DW_18
+49C4: 4B 6A B1 4E ; RM_50_WEST_END_TWOPIT            PS_2C    DW_17
+49C8: 9D 6A BE 4E ; RM_51_BOTTOM_WEST_PIT            PS_2D    DW_19
 ```
 
 # Room Scripts
@@ -1242,11 +1244,11 @@ Script_RM_02_IN_ENTRANCE:
 49E1: 03 03      ; S
 49E3: 01 01      ;     move_look(RM_01_BEFORE_ENTRANCE) ;; new
 49E5: 0A 03      ; D
-49E7: 01 07      ;     move_look(RM_07_BENEATH_A_HOLE) ;; woodsRoom9
+49E7: 01 07      ;     move_look(RM_07_BENEATH_A_HOLE) ;; DW_09
 49E9: 0C 03      ; OUT
 49EB: 01 01      ;     move_look(RM_01_BEFORE_ENTRANCE) ;; new
 49ED: 12 03      ; PANEL
-49EF: 01 1A      ;     move_look(RM_1A_PANEL_NORTH_WALL) ;; woodsRoom33
+49EF: 01 1A      ;     move_look(RM_1A_PANEL_NORTH_WALL) ;; DW_21
 49F1: 00         ;
 
 Script_RM_03_DESERT1:
@@ -1305,7 +1307,7 @@ Script_RM_06_DESERT4:
 4A33: 01 05      ;     move_look(RM_05_DESERT3) ;; new
 4A35: 00         ;
 
-Script_RM_07_BENEATH_A_HOLE: ; woodsRoom9
+Script_RM_07_BENEATH_A_HOLE: ; DW_09
 ; PS_03
 ; YOU_ARE_IN_A_SMALL_CHAMBER_BENEATH_A_HOLE_FROM_THE_SURFACE.__A__
 ; LOW_CRAWL_LEADS_INWARD_TO_THE_WEST.__HIEROGLYPHICS_ON_THE_WALL__
@@ -1316,88 +1318,88 @@ Script_RM_07_BENEATH_A_HOLE: ; woodsRoom9
 4A3A: 0C 03      ; OUT
 4A3C: 01 02      ;     move_look(RM_02_IN_ENTRANCE) ;; new
 4A3E: 04 03      ; W
-4A40: 01 08      ;     move_look(RM_08_CRAWLING_OVER_PEBBLES) ;; woodsRoom10
+4A40: 01 08      ;     move_look(RM_08_CRAWLING_OVER_PEBBLES) ;; DW_0A
 4A42: 0B 03      ; IN
-4A44: 01 08      ;     move_look(RM_08_CRAWLING_OVER_PEBBLES) ;; woodsRoom10
+4A44: 01 08      ;     move_look(RM_08_CRAWLING_OVER_PEBBLES) ;; DW_0A
 4A46: 00         ;
 
-Script_RM_08_CRAWLING_OVER_PEBBLES: ; woodsRoom10
+Script_RM_08_CRAWLING_OVER_PEBBLES: ; DW_0A
 ; PS_04
 ; YOU_ARE_CRAWLING_OVER_PEBBLES_IN_A_LOW_PASSAGE.__THERE_IS_A_DIM_
 ; LIGHT_AT_THE_EAST_END_OF_THE_PASSAGE.
 ;
 4A47: 02 03      ; E
-4A49: 01 07      ;     move_look(RM_07_BENEATH_A_HOLE) ;; woodsRoom9
+4A49: 01 07      ;     move_look(RM_07_BENEATH_A_HOLE) ;; DW_09
 4A4B: 0C 03      ; OUT
-4A4D: 01 07      ;     move_look(RM_07_BENEATH_A_HOLE) ;; woodsRoom9
+4A4D: 01 07      ;     move_look(RM_07_BENEATH_A_HOLE) ;; DW_09
 4A4F: 04 03      ; W
-4A51: 01 09      ;     move_look(RM_09_BROKEN_POTTERY) ;; woodsRoom11
+4A51: 01 09      ;     move_look(RM_09_BROKEN_POTTERY) ;; DW_0B
 4A53: 0B 03      ; IN
-4A55: 01 09      ;     move_look(RM_09_BROKEN_POTTERY) ;; woodsRoom11
+4A55: 01 09      ;     move_look(RM_09_BROKEN_POTTERY) ;; DW_0B
 4A57: 00         ;
 
-Script_RM_09_BROKEN_POTTERY: ; woodsRoom11
+Script_RM_09_BROKEN_POTTERY: ; DW_0B
 ; PS_05
 ; YOU_ARE_IN_A_ROOM_FILLED_WITH_BROKEN_POTTERY_SHARDS_OF_ANCIENT__
 ; EGYPTIAN_CRAFTS.__AN_AWKWARD_CORRIDOR_LEADS_UPWARD_AND_WEST.
 ;
 4A58: 02 03      ; E
-4A5A: 01 08      ;     move_look(RM_08_CRAWLING_OVER_PEBBLES) ;; woodsRoom10
+4A5A: 01 08      ;     move_look(RM_08_CRAWLING_OVER_PEBBLES) ;; DW_0A
 4A5C: 0B 03      ; IN
-4A5E: 01 0A      ;     move_look(RM_0A_AWKWARD_SLOPING) ;; woodsRoom12
+4A5E: 01 0A      ;     move_look(RM_0A_AWKWARD_SLOPING) ;; DW_0C
 4A60: 09 03      ; U
-4A62: 01 0A      ;     move_look(RM_0A_AWKWARD_SLOPING) ;; woodsRoom12
+4A62: 01 0A      ;     move_look(RM_0A_AWKWARD_SLOPING) ;; DW_0C
 4A64: 04 03      ; W
-4A66: 01 0A      ;     move_look(RM_0A_AWKWARD_SLOPING) ;; woodsRoom12
+4A66: 01 0A      ;     move_look(RM_0A_AWKWARD_SLOPING) ;; DW_0C
 4A68: 00         ;
 
-Script_RM_0A_AWKWARD_SLOPING: ; woodsRoom12
+Script_RM_0A_AWKWARD_SLOPING: ; DW_0C
 ; PS_06
 ; YOU_ARE_IN_AN_AWKWARD_SLOPING_EAST/WEST_CORRIDOR.
 ;
 4A69: 0A 03      ; D
-4A6B: 01 09      ;     move_look(RM_09_BROKEN_POTTERY) ;; woodsRoom11
+4A6B: 01 09      ;     move_look(RM_09_BROKEN_POTTERY) ;; DW_0B
 4A6D: 02 03      ; E
-4A6F: 01 09      ;     move_look(RM_09_BROKEN_POTTERY) ;; woodsRoom11
+4A6F: 01 09      ;     move_look(RM_09_BROKEN_POTTERY) ;; DW_0B
 4A71: 0B 03      ; IN
-4A73: 01 0B      ;     move_look(RM_0B_SPLENDID_CHAMBER) ;; woodsRoom13
+4A73: 01 0B      ;     move_look(RM_0B_SPLENDID_CHAMBER) ;; DW_0D
 4A75: 04 03      ; W
-4A77: 01 0B      ;     move_look(RM_0B_SPLENDID_CHAMBER) ;; woodsRoom13
+4A77: 01 0B      ;     move_look(RM_0B_SPLENDID_CHAMBER) ;; DW_0D
 4A79: 09 03      ; U
-4A7B: 01 0B      ;     move_look(RM_0B_SPLENDID_CHAMBER) ;; woodsRoom13
+4A7B: 01 0B      ;     move_look(RM_0B_SPLENDID_CHAMBER) ;; DW_0D
 4A7D: 00         ;
 
-Script_RM_0B_SPLENDID_CHAMBER: ; woodsRoom13
+Script_RM_0B_SPLENDID_CHAMBER: ; DW_0D
 ; PS_07
 ; YOU_ARE_IN_A_SPLENDID_CHAMBER_THIRTY_FEET_HIGH.__THE_WALLS_ARE__
 ; FROZEN_RIVERS_OF_ORANGE_STONE.__AN_AWKWARD_CORRIDOR_AND_A_GOOD__
 ; PASSAGE_EXIT_FROM_THE_EAST_AND_WEST_SIDES_OF_THE_CHAMBER.
 ;
 4A7E: 02 03      ; E
-4A80: 01 0A      ;     move_look(RM_0A_AWKWARD_SLOPING) ;; woodsRoom12
+4A80: 01 0A      ;     move_look(RM_0A_AWKWARD_SLOPING) ;; DW_0C
 4A82: 04 03      ; W
-4A84: 01 0C      ;     move_look(RM_0C_SMALL_PIT_WHITE_MIST) ;; woodsRoom14
+4A84: 01 0C      ;     move_look(RM_0C_SMALL_PIT_WHITE_MIST) ;; DW_0E
 4A86: 00         ;
 
-Script_RM_0C_SMALL_PIT_WHITE_MIST: ; woodsRoom14
+Script_RM_0C_SMALL_PIT_WHITE_MIST: ; DW_0E
 ; PS_08
 ; AT_YOUR_FEET_IS_A_SMALL_PIT_BREATHING_TRACES_OF_WHITE_MIST.__AN_
 ; EAST_PASSAGE_ENDS_HERE_EXCEPT_FOR_A_SMALL_CRACK_LEADING_ON._____
 ; ROUGH_STONE_STEPS_LEAD_DOWN_THE_PIT.
 ;
 4A87: 02 03      ; E
-4A89: 01 0B      ;     move_look(RM_0B_SPLENDID_CHAMBER) ;; woodsRoom13
+4A89: 01 0B      ;     move_look(RM_0B_SPLENDID_CHAMBER) ;; DW_0D
 4A8B: 0A 0B      ; D
 4A8D: 07 07      ;     stop_if_pass ...
 4A8F: 02 25      ;         is_in_pack(OBJ_25_GOLD)
 4A91: 04 71 71   ;         print(PS_6B) YOU_ARE_AT_THE_BOTTOM_OF_THE_PIT_WITH_A_BROKEN_NECK.
 4A94: 05         ;         death_and_resurrect()
-4A95: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME) ;; woodsRoom15
+4A95: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME) ;; DW_0F
 4A97: 04 04      ; W
 4A99: 04 96 71   ;     print(PS_6C) THE_CRACK_IS_FAR_TOO_SMALL_FOR_YOU_TO_FOLLOW.
 4A9C: 00         ;
 
-Script_RM_0D_STEPS_LEAD_UP_DOME: ; woodsRoom15
+Script_RM_0D_STEPS_LEAD_UP_DOME: ; DW_0F
 ; PS_09
 ; YOU_ARE_AT_ONE_END_OF_A_VAST_HALL_STRETCHING_FORWARD_OUT_OF_____
 ; SIGHT_TO_THE_WEST.__THERE_ARE_OPENINGS_TO_EITHER_SIDE.__NEARBY,_
@@ -1407,46 +1409,46 @@ Script_RM_0D_STEPS_LEAD_UP_DOME: ; woodsRoom15
 ; DOME.
 ;
 4A9D: 03 03      ; S
-4A9F: 01 0E      ;     move_look(RM_0E_LOW_ROOM_HIEROGLYPH) ;; woodsRoom18
+4A9F: 01 0E      ;     move_look(RM_0E_LOW_ROOM_HIEROGLYPH) ;; DW_12
 4AA1: 04 03      ; W
-4AA3: 01 0F      ;     move_look(RM_0F_EAST_BANK_BOTTOMLESS_PIT) ;; woodsRoom17
+4AA3: 01 0F      ;     move_look(RM_0F_EAST_BANK_BOTTOMLESS_PIT) ;; DW_11
 4AA5: 0A 03      ; D
-4AA7: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; woodsRoom19
+4AA7: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; DW_13
 4AA9: 01 03      ; N
-4AAB: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; woodsRoom19
+4AAB: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; DW_13
 4AAD: 09 0A      ; U
 4AAF: 07 06      ;     stop_if_pass ...
 4AB1: 02 25      ;         is_in_pack(OBJ_25_GOLD)
 4AB3: 04 B6 71   ;         print(PS_6D) THE_DOME_IS_UNCLIMBABLE.
-4AB6: 01 0C      ;     move_look(RM_0C_SMALL_PIT_WHITE_MIST) ;; woodsRoom14
+4AB6: 01 0C      ;     move_look(RM_0C_SMALL_PIT_WHITE_MIST) ;; DW_0E
 4AB8: 02 0A      ; E
 4ABA: 07 06      ;     stop_if_pass ...
 4ABC: 02 25      ;         is_in_pack(OBJ_25_GOLD)
 4ABE: 04 B6 71   ;         print(PS_6D) THE_DOME_IS_UNCLIMBABLE.
-4AC1: 01 0C      ;     move_look(RM_0C_SMALL_PIT_WHITE_MIST) ;; woodsRoom14
+4AC1: 01 0C      ;     move_look(RM_0C_SMALL_PIT_WHITE_MIST) ;; DW_0E
 4AC3: 20 03      ; ??20?? ;; in CCA loc.c this is GO_Y2 -- command: "GO Y2" or "Y2"
-4AC5: 01 1A      ;     move_look(RM_1A_PANEL_NORTH_WALL) ;; woodsRoom33
+4AC5: 01 1A      ;     move_look(RM_1A_PANEL_NORTH_WALL) ;; DW_21
 4AC7: 00         ;
 
-Script_RM_0E_LOW_ROOM_HIEROGLYPH: ; woodsRoom18
+Script_RM_0E_LOW_ROOM_HIEROGLYPH: ; DW_12
 ; PS_0A
 ; THIS_IS_A_LOW_ROOM_WITH_A_HIEROGLYPH_ON_THE_WALL.__IT_TRANSLATES
 ; "YOU_WON'T_GET_IT_UP_THE_STEPS".
 ;
 4AC8: 0C 03      ; OUT
-4ACA: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME);;  woodsRoom15
+4ACA: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME);;  DW_0F
 4ACC: 01 03      ; N
-4ACE: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME) ;; woodsRoom15
+4ACE: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME) ;; DW_0F
 4AD0: 00         ;
 
-Script_RM_0F_EAST_BANK_BOTTOMLESS_PIT: ; woodsRoom17
+Script_RM_0F_EAST_BANK_BOTTOMLESS_PIT: ; DW_11
 ; PS_0B
 ; YOU_ARE_ON_THE_EAST_BANK_OF_A_BOTTOMLESS_PIT_STRETCHING_ACROSS__
 ; THE_HALL.__THE_MIST_IS_QUITE_THICK_HERE,_AND_THE_PIT_IS_TOO_WIDE
 ; TO_JUMP.
 ;
 4AD1: 02 03      ; E
-4AD3: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME) ;; woodsRoom15
+4AD3: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME) ;; DW_0F
 4AD5: 10 0C      ; JUMP
 4AD7: 07 06      ;     stop_if_pass ...
 4AD9: 03 01      ;         is_in_pack_or_current_room(OBJ_01_BRIDGE_ROOM_0F)
@@ -1457,11 +1459,11 @@ Script_RM_0F_EAST_BANK_BOTTOMLESS_PIT: ; woodsRoom17
 4AE2: 04 0A      ; W
 4AE4: 07 05      ;     stop_if_pass ...
 4AE6: 03 01      ;         is_in_pack_or_current_room(OBJ_01_BRIDGE_ROOM_0F)
-4AE8: 01 12      ;         move_look(RM_12_HALL_OF_GODS) ;; woodsRoom27
+4AE8: 01 12      ;         move_look(RM_12_HALL_OF_GODS) ;; DW_1B
 4AEA: 04 09 72   ;     print(PS_70) THERE_IS_NO_WAY_ACROSS_THE_BOTTOMLESS_PIT.
 4AED: 0D 05      ; CROSS
 4AEF: 03 01      ;     is_in_pack_or_current_room(OBJ_01_BRIDGE_ROOM_0F)
-4AF1: 01 12      ;     move_look(RM_12_HALL_OF_GODS) ;; woodsRoom27
+4AF1: 01 12      ;     move_look(RM_12_HALL_OF_GODS) ;; DW_1B
 4AF3: 23 18      ; WAVE
 4AF5: 11 11      ;     is_object_user_input(OBJ_11_SCEPTER)
 4AF7: 07 0C      ;     stop_if_pass ...
@@ -1474,30 +1476,30 @@ Script_RM_0F_EAST_BANK_BOTTOMLESS_PIT: ; woodsRoom17
 4B09: 04 F5 7B   ;     print(PS_AF) A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.
 4B0C: 00         ;
 
-Script_RM_10_PHARAOHS_CHAMBER: ; woodsRoom19
+Script_RM_10_PHARAOHS_CHAMBER: ; DW_13
 ; PS_0C
 ; YOU_ARE_IN_THE_PHARAOH'S_CHAMBER,_WITH_PASSAGES_OFF_IN_ALL______
 ; DIRECTIONS.
 ;
 4B0D: 09 03      ; U
-4B0F: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME) ;; woodsRoom15
+4B0F: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME) ;; DW_0F
 4B11: 02 03      ; E
-4B13: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME) ;; woodsRoom15
+4B13: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME) ;; DW_0F
 4B15: 03 0A      ; S
 4B17: 07 06      ;     stop_if_pass ...
 4B19: 03 0B      ;         is_in_pack_or_current_room(OBJ_0B_SERPENT)
 4B1B: 04 27 72   ;         print(PS_71) YOU_CAN'T_GET_BY_THE_SERPENT.
-4B1E: 01 11      ;     move_look(RM_11_SOUTH_SIDE_CHAMBER) ;; woodsRoom29
+4B1E: 01 11      ;     move_look(RM_11_SOUTH_SIDE_CHAMBER) ;; DW_1D
 4B20: 01 0A      ; N
 4B22: 07 06      ;     stop_if_pass ...
 4B24: 03 0B      ;         is_in_pack_or_current_room(OBJ_0B_SERPENT)
 4B26: 04 27 72   ;         print(PS_71) YOU_CAN'T_GET_BY_THE_SERPENT.
-4B29: 01 19      ;     move_look(RM_19_LOW_NS_PASSAGE) ;; woodsRoom28
+4B29: 01 19      ;     move_look(RM_19_LOW_NS_PASSAGE) ;; DW_1C
 4B2B: 04 0A      ; W
 4B2D: 07 06      ;     stop_if_pass ...
 4B2F: 03 0B      ;         is_in_pack_or_current_room(OBJ_0B_SERPENT)
 4B31: 04 27 72   ;         print(PS_71) YOU_CAN'T_GET_BY_THE_SERPENT.
-4B34: 01 18      ;     move_look(RM_18_THRONE_CHAMBER) ;; woodsRoom30
+4B34: 01 18      ;     move_look(RM_18_THRONE_CHAMBER) ;; DW_1E
 4B36: 26 10      ; THROW
 4B38: 11 14      ;     is_object_user_input(OBJ_14_BIRD_IN_BOX)
 4B3A: 03 0B      ;     is_in_pack_or_current_room(OBJ_0B_SERPENT)
@@ -1509,17 +1511,17 @@ Script_RM_10_PHARAOHS_CHAMBER: ; woodsRoom19
 ;                                   INTO_A_STATUE.
 4B47: 00         ;
 
-Script_RM_11_SOUTH_SIDE_CHAMBER: ; woodsRoom29
+Script_RM_11_SOUTH_SIDE_CHAMBER: ; DW_1D
 ; PS_0D
 ; YOU_ARE_IN_THE_SOUTH_SIDE_CHAMBER.
 ;
 4B48: 01 03      ; N
-4B4A: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; woodsRoom19
+4B4A: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; DW_13
 4B4C: 0C 03      ; OUT
-4B4E: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; woodsRoom19
+4B4E: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; DW_13
 4B50: 00         ;
 
-Script_RM_12_HALL_OF_GODS: ; woodsRoom27
+Script_RM_12_HALL_OF_GODS: ; DW_1B
 ; PS_0E
 ; YOU_ARE_ON_THE_WEST_SIDE_OF_THE_BOTTOMLESS_PIT_IN_THE_HALL_OF___
 ; GODS.
@@ -1534,15 +1536,15 @@ Script_RM_12_HALL_OF_GODS: ; woodsRoom27
 4B5E: 02 0A      ; E
 4B60: 07 05      ;     stop_if_pass ...
 4B62: 03 02      ;         is_in_pack_or_current_room(OBJ_02_BRIDGE_ROOM_12)
-4B64: 01 0F      ;         move_look(RM_0F_EAST_BANK_BOTTOMLESS_PIT) ;; woodsRoom17
+4B64: 01 0F      ;         move_look(RM_0F_EAST_BANK_BOTTOMLESS_PIT) ;; DW_11
 4B66: 04 09 72   ;     print(PS_70) THERE_IS_NO_WAY_ACROSS_THE_BOTTOMLESS_PIT.
 4B69: 01 06      ; N
 4B6B: 04 3D 72   ;     print(PS_72) YOU_HAVE_CRAWLED_THROUGH_A_VERY_LOW_WIDE_PASSAGE_PARALLEL_TO_AND
 ;                                   NORTH_OF_THE_HALL_OF_GODS.
-4B6E: 01 13      ;     move_look(RM_13_LITTLE_PASSAGE_SIX_FEET) ;; woodsRoom41
+4B6E: 01 13      ;     move_look(RM_13_LITTLE_PASSAGE_SIX_FEET) ;; DW_29
 4B70: 0D 05      ; CROSS
 4B72: 03 02      ;     is_in_pack_or_current_room(OBJ_02_BRIDGE_ROOM_12)
-4B74: 01 0F      ;     move_look(RM_0F_EAST_BANK_BOTTOMLESS_PIT) ;; woodsRoom17
+4B74: 01 0F      ;     move_look(RM_0F_EAST_BANK_BOTTOMLESS_PIT) ;; DW_11
 4B76: 23 18      ; WAVE
 4B78: 11 11      ;     is_object_user_input(OBJ_11_SCEPTER)
 4B7A: 07 0C      ;     stop_if_pass ...
@@ -1555,112 +1557,112 @@ Script_RM_12_HALL_OF_GODS: ; woodsRoom27
 4B8C: 04 F5 7B   ;     print(PS_AF) A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.
 4B8F: 00         ;
 
-Script_RM_13_LITTLE_PASSAGE_SIX_FEET: ; woodsRoom41
+Script_RM_13_LITTLE_PASSAGE_SIX_FEET: ; DW_29
 ; PS_0F
 ; YOU_ARE_AT_THE_WEST_END_OF_THE_HALL_OF_GODS.___A_LOW_WIDE_PASS__
 ; CONTINUES_WEST_AND_ANOTHER_GOES_NORTH.__TO_THE_SOUTH_IS_A_LITTLE
 ; PASSAGE_SIX_FEET_OFF_THE_FLOOR.
 ;
 4B90: 03 03      ; S
-4B92: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; woodsRoom42
+4B92: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; DW_2A
 4B94: 09 03      ; U
-4B96: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; woodsRoom42
+4B96: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; DW_2A
 4B98: 11 03      ; CLIMB
-4B9A: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; woodsRoom42
+4B9A: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; DW_2A
 4B9C: 02 03      ; E
-4B9E: 01 12      ;     move_look(RM_12_HALL_OF_GODS) ;; woodsRoom27
+4B9E: 01 12      ;     move_look(RM_12_HALL_OF_GODS) ;; DW_1B
 4BA0: 01 03      ; N
-4BA2: 01 12      ;     move_look(RM_12_HALL_OF_GODS) ;; woodsRoom27
+4BA2: 01 12      ;     move_look(RM_12_HALL_OF_GODS) ;; DW_1B
 4BA4: 04 03      ; W
-4BA6: 01 14      ;     move_look(RM_14_EAST_END_LONG_HALL) ;; woodsRoom60
+4BA6: 01 14      ;     move_look(RM_14_EAST_END_LONG_HALL) ;; DW_3C
 4BA8: 00         ;
 
-Script_RM_14_EAST_END_LONG_HALL: ; woodsRoom60
+Script_RM_14_EAST_END_LONG_HALL: ; DW_3C
 ; PS_10
 ; YOU_ARE_AT_EAST_END_OF_A_VERY_LONG_HALL_APPARENTLY_WITHOUT_SIDE_
 ; CHAMBERS.__TO_THE_EAST_A_LOW_WIDE_CRAWL_SLANTS_UP.__TO_THE_NORTH
 ; A_ROUND_TWO_FOOT_HOLE_SLANTS_DOWN.
 ;
 4BA9: 02 03      ; E
-4BAB: 01 13      ;     move_look(RM_13_LITTLE_PASSAGE_SIX_FEET) ;; woodsRoom41
+4BAB: 01 13      ;     move_look(RM_13_LITTLE_PASSAGE_SIX_FEET) ;; DW_29
 4BAD: 09 03      ; U
-4BAF: 01 13      ;     move_look(RM_13_LITTLE_PASSAGE_SIX_FEET) ;; woodsRoom41
+4BAF: 01 13      ;     move_look(RM_13_LITTLE_PASSAGE_SIX_FEET) ;; DW_29
 4BB1: 04 03      ; W
-4BB3: 01 15      ;     move_look(RM_15_WEST_END_FEATURELESS_HALL) ;; woodsRoom61
+4BB3: 01 15      ;     move_look(RM_15_WEST_END_FEATURELESS_HALL) ;; DW_3D
 4BB5: 01 03      ; N
-4BB7: 01 16      ;     move_look(RM_16_CROSSOVER) ;; woodsRoom62
+4BB7: 01 16      ;     move_look(RM_16_CROSSOVER) ;; DW_3E
 4BB9: 0A 03      ; D
-4BBB: 01 16      ;     move_look(RM_16_CROSSOVER) ;; woodsRoom62
+4BBB: 01 16      ;     move_look(RM_16_CROSSOVER) ;; DW_3E
 4BBD: 00         ;
 
-Script_RM_15_WEST_END_FEATURELESS_HALL: ; woodsRoom61
+Script_RM_15_WEST_END_FEATURELESS_HALL: ; DW_3D
 ; PS_11
 ; YOU_ARE_AT_THE_WEST_END_OF_A_VERY_LONG_FEATURELESS_HALL.__THE___
 ; HALL_JOINS_UP_WITH_A_NARROW_NORTH/SOUTH_PASSAGE.
 ;
 4BBE: 02 03      ; E
-4BC0: 01 14      ;     move_look(RM_14_EAST_END_LONG_HALL) ;; woodsRoom60
+4BC0: 01 14      ;     move_look(RM_14_EAST_END_LONG_HALL) ;; DW_3C
 4BC2: 01 03      ; N
-4BC4: 01 16      ;     move_look(RM_16_CROSSOVER) ;; woodsRoom62
+4BC4: 01 16      ;     move_look(RM_16_CROSSOVER) ;; DW_3E
 4BC6: 00         ;
 
-Script_RM_16_CROSSOVER: ; woodsRoom62
+Script_RM_16_CROSSOVER: ; DW_3E
 ; PS_12
 ; YOU_ARE_AT_A_CROSSOVER_OF_A_HIGH_N/S_PASSAGE_AND_A_LOW_E/W_ONE.
 ;
 4BC7: 04 03      ; W
-4BC9: 01 14      ;     move_look(RM_14_EAST_END_LONG_HALL) ;; woodsRoom60
+4BC9: 01 14      ;     move_look(RM_14_EAST_END_LONG_HALL) ;; DW_3C
 4BCB: 01 03      ; N
-4BCD: 01 17      ;     move_look(RM_17_DEAD_END1) ;; woodsRoom63
+4BCD: 01 17      ;     move_look(RM_17_DEAD_END1) ;; DW_3F
 4BCF: 02 03      ; E
-4BD1: 01 18      ;     move_look(RM_18_THRONE_CHAMBER) ;; woodsRoom30
+4BD1: 01 18      ;     move_look(RM_18_THRONE_CHAMBER) ;; DW_1E
 4BD3: 03 03      ; S
-4BD5: 01 15      ;     move_look(RM_15_WEST_END_FEATURELESS_HALL) ;; woodsRoom61
+4BD5: 01 15      ;     move_look(RM_15_WEST_END_FEATURELESS_HALL) ;; DW_3D
 4BD7: 00         ;
 
-Script_RM_17_DEAD_END1: ; woodsRoom63
+Script_RM_17_DEAD_END1: ; DW_3F
 ; PS_13
 ; DEAD_END.
 ;
 4BD8: 03 03      ; S
-4BDA: 01 16      ;     move_look(RM_16_CROSSOVER) ;; woodsRoom62
+4BDA: 01 16      ;     move_look(RM_16_CROSSOVER) ;; DW_3E
 4BDC: 0C 03      ; OUT
-4BDE: 01 16      ;     move_look(RM_16_CROSSOVER) ;; woodsRoom62
+4BDE: 01 16      ;     move_look(RM_16_CROSSOVER) ;; DW_3E
 4BE0: 00         ;
 
-Script_RM_18_THRONE_CHAMBER: ; woodsRoom30
+Script_RM_18_THRONE_CHAMBER: ; DW_1E
 ; PS_14
 ; YOU_ARE_IN_THE_WEST_THRONE_CHAMBER.__A_PASSAGE_CONTINUES_WEST___
 ; AND_UP_FROM_HERE.
 ;
 4BE1: 02 03      ; E
-4BE3: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; woodsRoom19
+4BE3: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; DW_13
 4BE5: 0C 03      ; OUT
-4BE7: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; woodsRoom19
+4BE7: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; DW_13
 4BE9: 04 03      ; W
-4BEB: 01 16      ;     move_look(RM_16_CROSSOVER) ;; woodsRoom62
+4BEB: 01 16      ;     move_look(RM_16_CROSSOVER) ;; DW_3E
 4BED: 09 03      ; U
-4BEF: 01 16      ;     move_look(RM_16_CROSSOVER) ;; woodsRoom62
+4BEF: 01 16      ;     move_look(RM_16_CROSSOVER) ;; DW_3E
 4BF1: 00         ;
 
-Script_RM_19_LOW_NS_PASSAGE: ; woodsRoom28
+Script_RM_19_LOW_NS_PASSAGE: ; DW_1C
 ; PS_15
 ; YOU_ARE_IN_A_LOW_N/S_PASSAGE_AT_A_HOLE_IN_THE_FLOOR.__THE_HOLE__
 ; GOES_DOWN_TO_AN_E/W_PASSAGE.
 ;
 4BF2: 0C 03      ; OUT
-4BF4: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; woodsRoom19
+4BF4: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; DW_13
 4BF6: 03 03      ; S
-4BF8: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; woodsRoom19
+4BF8: 01 10      ;     move_look(RM_10_PHARAOHS_CHAMBER) ;; DW_13
 4BFA: 01 03      ; N
-4BFC: 01 1A      ;     move_look(RM_1A_PANEL_NORTH_WALL) ;; woodsRoom33
+4BFC: 01 1A      ;     move_look(RM_1A_PANEL_NORTH_WALL) ;; DW_21
 4BFE: 20 03      ; ??20?? ;; in CCA loc.c this is GO_Y2 -- command: "GO Y2" or "Y2"
-4C00: 01 1A      ;     move_look(RM_1A_PANEL_NORTH_WALL) ;; woodsRoom33
+4C00: 01 1A      ;     move_look(RM_1A_PANEL_NORTH_WALL) ;; DW_21
 4C02: 0A 03      ; D
-4C04: 01 36      ;     move_look(RM_36_DIRTY_BROKEN_PASSAGE) ;; woodsRoom36
+4C04: 01 36      ;     move_look(RM_36_DIRTY_BROKEN_PASSAGE) ;; DW_24
 4C06: 00         ;
 
-Script_RM_1A_PANEL_NORTH_WALL: ; woodsRoom33 -- this is the Y2 room (with a panel instead of a Y2 rock)
+Script_RM_1A_PANEL_NORTH_WALL: ; DW_21 -- this is the Y2 room (with a panel instead of a Y2 rock)
 ; PS_16
 ; YOU_ARE_IN_A_LARGE_ROOM,_WITH_A_PASSAGE_TO_THE_SOUTH,_AND_A_WALL
 ; OF_BROKEN_ROCK_TO_THE_EAST.__THERE_IS_A_PANEL_ON_THE_NORTH_WALL.
@@ -1668,291 +1670,291 @@ Script_RM_1A_PANEL_NORTH_WALL: ; woodsRoom33 -- this is the Y2 room (with a pane
 4C07: 12 03      ; PANEL
 4C09: 01 02      ;     move_look(RM_02_IN_ENTRANCE) ;; new
 4C0B: 03 03      ; S
-4C0D: 01 19      ;     move_look(RM_19_LOW_NS_PASSAGE) ;; woodsRoom28
+4C0D: 01 19      ;     move_look(RM_19_LOW_NS_PASSAGE) ;; DW_1C
 4C0F: 02 03      ; E
-4C11: 01 1B      ;     move_look(RM_1B_CHAMBER_OF_ANUBIS) ;; woodsRoom34
+4C11: 01 1B      ;     move_look(RM_1B_CHAMBER_OF_ANUBIS) ;; DW_22
 4C13: 00         ;
 
-Script_RM_1B_CHAMBER_OF_ANUBIS: ; woodsRoom34
+Script_RM_1B_CHAMBER_OF_ANUBIS: ; DW_22
 ; PS_17
 ; YOU_ARE_IN_THE_CHAMBER_OF_ANUBIS.
 ;
 4C14: 0A 03      ; D
-4C16: 01 1A      ;     move_look(RM_1A_PANEL_NORTH_WALL) ;; woodsRoom33
+4C16: 01 1A      ;     move_look(RM_1A_PANEL_NORTH_WALL) ;; DW_21
 4C18: 20 03      ; ??20?? ;; in CCA loc.c this is GO_Y2 -- command: "GO Y2" or "Y2"
-4C1A: 01 1A      ;     move_look(RM_1A_PANEL_NORTH_WALL) ;; woodsRoom33
+4C1A: 01 1A      ;     move_look(RM_1A_PANEL_NORTH_WALL) ;; DW_21
 4C1C: 09 03      ; U
-4C1E: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME) ;; woodsRoom15
+4C1E: 01 0D      ;     move_look(RM_0D_STEPS_LEAD_UP_DOME) ;; DW_0F
 4C20: 00         ;
 
-Script_RM_1C_TWISTY_PASSAGES1: ; woodsRoom42
+Script_RM_1C_TWISTY_PASSAGES1: ; DW_2A
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C21: 01 03      ; N
-4C23: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; woodsRoom42
+4C23: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; DW_2A
 4C25: 02 03      ; E
-4C27: 01 20      ;     move_look(RM_20_TWISTY_PASSAGES5) ;; woodsRoom43
+4C27: 01 20      ;     move_look(RM_20_TWISTY_PASSAGES5) ;; DW_2B
 4C29: 03 03      ; S
-4C2B: 01 1E      ;     move_look(RM_1E_TWISTY_PASSAGES3) ;; woodsRoom45
+4C2B: 01 1E      ;     move_look(RM_1E_TWISTY_PASSAGES3) ;; DW_2D
 4C2D: 04 03      ; W
-4C2F: 01 1D      ;     move_look(RM_1D_TWISTY_PASSAGES2) ;; woodsRoom80
+4C2F: 01 1D      ;     move_look(RM_1D_TWISTY_PASSAGES2) ;; DW_50
 4C31: 09 03      ; U
-4C33: 01 13      ;     move_look(RM_13_LITTLE_PASSAGE_SIX_FEET) ;; woodsRoom41
+4C33: 01 13      ;     move_look(RM_13_LITTLE_PASSAGE_SIX_FEET) ;; DW_29
 4C35: 00         ;
 
-Script_RM_1D_TWISTY_PASSAGES2: ; woodsRoom80
+Script_RM_1D_TWISTY_PASSAGES2: ; DW_50
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C36: 01 03      ; N
-4C38: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; woodsRoom42
+4C38: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; DW_2A
 4C3A: 02 03      ; E
-4C3C: 01 33      ;     move_look(RM_33_DEAD_END11) ;; woodsRoom81
+4C3C: 01 33      ;     move_look(RM_33_DEAD_END11) ;; DW_51
 4C3E: 03 03      ; S
-4C40: 01 1D      ;     move_look(RM_1D_TWISTY_PASSAGES2) ;; woodsRoom80
+4C40: 01 1D      ;     move_look(RM_1D_TWISTY_PASSAGES2) ;; DW_50
 4C42: 04 03      ; W
-4C44: 01 1D      ;     move_look(RM_1D_TWISTY_PASSAGES2) ;; woodsRoom80
+4C44: 01 1D      ;     move_look(RM_1D_TWISTY_PASSAGES2) ;; DW_50
 4C46: 00         ;
 
-Script_RM_1E_TWISTY_PASSAGES3: ; woodsRoom45
+Script_RM_1E_TWISTY_PASSAGES3: ; DW_2D
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C47: 01 03      ; N
-4C49: 01 20      ;     move_look(RM_20_TWISTY_PASSAGES5) ;; woodsRoom43
+4C49: 01 20      ;     move_look(RM_20_TWISTY_PASSAGES5) ;; DW_2B
 4C4B: 02 03      ; E
-4C4D: 01 2A      ;     move_look(RM_2A_DEAD_END2) ;; woodsRoom46
+4C4D: 01 2A      ;     move_look(RM_2A_DEAD_END2) ;; DW_2E
 4C4F: 03 03      ; S
-4C51: 01 2B      ;     move_look(RM_2B_DEAD_END3) ;; woodsRoom47
+4C51: 01 2B      ;     move_look(RM_2B_DEAD_END3) ;; DW_2F
 4C53: 04 03      ; W
-4C55: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; woodsRoom42
+4C55: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; DW_2A
 4C57: 09 03      ; U
-4C59: 01 1F      ;     move_look(RM_1F_TWISTY_PASSAGES4) ;; woodsRoom87
+4C59: 01 1F      ;     move_look(RM_1F_TWISTY_PASSAGES4) ;; DW_57
 4C5B: 0A 03      ; D
-4C5D: 01 1F      ;     move_look(RM_1F_TWISTY_PASSAGES4) ;; woodsRoom87
+4C5D: 01 1F      ;     move_look(RM_1F_TWISTY_PASSAGES4) ;; DW_57
 4C5F: 00         ;
 
-Script_RM_1F_TWISTY_PASSAGES4: ; woodsRoom87
+Script_RM_1F_TWISTY_PASSAGES4: ; DW_57
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C60: 09 03      ; U
-4C62: 01 1E      ;     move_look(RM_1E_TWISTY_PASSAGES3) ;; woodsRoom45
+4C62: 01 1E      ;     move_look(RM_1E_TWISTY_PASSAGES3) ;; DW_2D
 4C64: 0A 03      ; D
-4C66: 01 1E      ;     move_look(RM_1E_TWISTY_PASSAGES3) ;; woodsRoom45
+4C66: 01 1E      ;     move_look(RM_1E_TWISTY_PASSAGES3) ;; DW_2D
 4C68: 00         ;
 
-Script_RM_20_TWISTY_PASSAGES5: ; woodsRoom43
+Script_RM_20_TWISTY_PASSAGES5: ; DW_2B
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C69: 02 03      ; E
-4C6B: 01 1E      ;     move_look(RM_1E_TWISTY_PASSAGES3) ;; woodsRoom45
+4C6B: 01 1E      ;     move_look(RM_1E_TWISTY_PASSAGES3) ;; DW_2D
 4C6D: 03 03      ; S
-4C6F: 01 21      ;     move_look(RM_21_TWISTY_PASSAGES6) ;; woodsRoom44
+4C6F: 01 21      ;     move_look(RM_21_TWISTY_PASSAGES6) ;; DW_2C
 4C71: 04 03      ; W
-4C73: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; woodsRoom42
+4C73: 01 1C      ;     move_look(RM_1C_TWISTY_PASSAGES1) ;; DW_2A
 4C75: 00         ;
 
-Script_RM_21_TWISTY_PASSAGES6: ; woodsRoom44
+Script_RM_21_TWISTY_PASSAGES6: ; DW_2C
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C76: 01 03      ; N
-4C78: 01 2C      ;     move_look(RM_2C_DEAD_END4) ;; woodsRoom82
+4C78: 01 2C      ;     move_look(RM_2C_DEAD_END4) ;; DW_52
 4C7A: 02 03      ; E
-4C7C: 01 20      ;     move_look(RM_20_TWISTY_PASSAGES5) ;; woodsRoom43
+4C7C: 01 20      ;     move_look(RM_20_TWISTY_PASSAGES5) ;; DW_2B
 4C7E: 03 03      ; S
-4C80: 01 22      ;     move_look(RM_22_TWISTY_PASSAGES7) ;; woodsRoom50
+4C80: 01 22      ;     move_look(RM_22_TWISTY_PASSAGES7) ;; DW_32
 4C82: 0A 03      ; D
-4C84: 01 2D      ;     move_look(RM_2D_DEAD_END5) ;; woodsRoom48
+4C84: 01 2D      ;     move_look(RM_2D_DEAD_END5) ;; DW_30
 4C86: 00         ;
 
-Script_RM_22_TWISTY_PASSAGES7: ; woodsRoom50
+Script_RM_22_TWISTY_PASSAGES7: ; DW_32
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C87: 02 03      ; E
-4C89: 01 21      ;     move_look(RM_21_TWISTY_PASSAGES6) ;; woodsRoom44
+4C89: 01 21      ;     move_look(RM_21_TWISTY_PASSAGES6) ;; DW_2C
 4C8B: 03 03      ; S
-4C8D: 01 23      ;     move_look(RM_23_TWISTY_PASSAGES8) ;; woodsRoom52
+4C8D: 01 23      ;     move_look(RM_23_TWISTY_PASSAGES8) ;; DW_34
 4C8F: 04 03      ; W
-4C91: 01 25      ;     move_look(RM_25_TWISTY_PASSAGES10) ;; woodsRoom49
+4C91: 01 25      ;     move_look(RM_25_TWISTY_PASSAGES10) ;; DW_31
 4C93: 0A 03      ; D
-4C95: 01 26      ;     move_look(RM_26_TWISTY_PASSAGES11) ;; woodsRoom51
+4C95: 01 26      ;     move_look(RM_26_TWISTY_PASSAGES11) ;; DW_33
 4C97: 00         ;
 
-Script_RM_23_TWISTY_PASSAGES8: ; woodsRoom52
+Script_RM_23_TWISTY_PASSAGES8: ; DW_34
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4C98: 01 03      ; N
-4C9A: 01 24      ;     move_look(RM_24_TWISTY_PASSAGES9) ;; woodsRoom55
+4C9A: 01 24      ;     move_look(RM_24_TWISTY_PASSAGES9) ;; DW_37
 4C9C: 02 03      ; E
-4C9E: 01 26      ;     move_look(RM_26_TWISTY_PASSAGES11) ;; woodsRoom51
+4C9E: 01 26      ;     move_look(RM_26_TWISTY_PASSAGES11) ;; DW_33
 4CA0: 03 03      ; S
-4CA2: 01 23      ;     move_look(RM_23_TWISTY_PASSAGES8) ;; woodsRoom52
+4CA2: 01 23      ;     move_look(RM_23_TWISTY_PASSAGES8) ;; DW_34
 4CA4: 04 03      ; W
-4CA6: 01 22      ;     move_look(RM_22_TWISTY_PASSAGES7) ;; woodsRoom50
+4CA6: 01 22      ;     move_look(RM_22_TWISTY_PASSAGES7) ;; DW_32
 4CA8: 09 03      ; U
-4CAA: 01 27      ;     move_look(RM_27_TWISTY_PASSAGES12) ;; woodsRoom53
+4CAA: 01 27      ;     move_look(RM_27_TWISTY_PASSAGES12) ;; DW_35
 4CAC: 0A 03      ; D
-4CAE: 01 2F      ;     move_look(RM_2F_DEAD_END7) ;; woodsRoom86
+4CAE: 01 2F      ;     move_look(RM_2F_DEAD_END7) ;; DW_56
 4CB0: 00         ;
 
-Script_RM_24_TWISTY_PASSAGES9: ; woodsRoom55
+Script_RM_24_TWISTY_PASSAGES9: ; DW_37
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4CB1: 01 03      ; N
-4CB3: 01 24      ;     move_look(RM_24_TWISTY_PASSAGES9) ;; woodsRoom55
+4CB3: 01 24      ;     move_look(RM_24_TWISTY_PASSAGES9) ;; DW_37
 4CB5: 02 03      ; E
-4CB7: 01 34      ;     move_look(RM_34_BRINK_OF_LARGE_PIT) ;; woodsRoom57
+4CB7: 01 34      ;     move_look(RM_34_BRINK_OF_LARGE_PIT) ;; DW_39
 4CB9: 04 03      ; W
-4CBB: 01 23      ;     move_look(RM_23_TWISTY_PASSAGES8) ;; woodsRoom52
+4CBB: 01 23      ;     move_look(RM_23_TWISTY_PASSAGES8) ;; DW_34
 4CBD: 0A 03      ; D
-4CBF: 01 30      ;     move_look(RM_30_DEAD_END8) ;; woodsRoom56
+4CBF: 01 30      ;     move_look(RM_30_DEAD_END8) ;; DW_38
 4CC1: 00         ;
 
-Script_RM_25_TWISTY_PASSAGES10: ; woodsRoom49
+Script_RM_25_TWISTY_PASSAGES10: ; DW_31
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4CC2: 02 03      ; E
-4CC4: 01 22      ;     move_look(RM_22_TWISTY_PASSAGES7) ;; woodsRoom50
+4CC4: 01 22      ;     move_look(RM_22_TWISTY_PASSAGES7) ;; DW_32
 4CC6: 04 03      ; W
-4CC8: 01 26      ;     move_look(RM_26_TWISTY_PASSAGES11) ;; woodsRoom51
+4CC8: 01 26      ;     move_look(RM_26_TWISTY_PASSAGES11) ;; DW_33
 4CCA: 00         ;
 
-Script_RM_26_TWISTY_PASSAGES11: ; woodsRoom51
+Script_RM_26_TWISTY_PASSAGES11: ; DW_33
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4CCB: 02 03      ; E
-4CCD: 01 23      ;     move_look(RM_23_TWISTY_PASSAGES8) ;; woodsRoom52
+4CCD: 01 23      ;     move_look(RM_23_TWISTY_PASSAGES8) ;; DW_34
 4CCF: 03 03      ; S
-4CD1: 01 27      ;     move_look(RM_27_TWISTY_PASSAGES12) ;; woodsRoom53
+4CD1: 01 27      ;     move_look(RM_27_TWISTY_PASSAGES12) ;; DW_35
 4CD3: 04 03      ; W
-4CD5: 01 25      ;     move_look(RM_25_TWISTY_PASSAGES10) ;; woodsRoom49
+4CD5: 01 25      ;     move_look(RM_25_TWISTY_PASSAGES10) ;; DW_31
 4CD7: 09 03      ; U
-4CD9: 01 22      ;     move_look(RM_22_TWISTY_PASSAGES7) ;; woodsRoom50
+4CD9: 01 22      ;     move_look(RM_22_TWISTY_PASSAGES7) ;; DW_32
 4CDB: 00         ;
 
-Script_RM_27_TWISTY_PASSAGES12: ; woodsRoom53
+Script_RM_27_TWISTY_PASSAGES12: ; DW_35
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4CDC: 01 03      ; N
-4CDE: 01 23      ;     move_look(RM_23_TWISTY_PASSAGES8) ;; woodsRoom52
+4CDE: 01 23      ;     move_look(RM_23_TWISTY_PASSAGES8) ;; DW_34
 4CE0: 03 03      ; S
-4CE2: 01 2E      ;     move_look(RM_2E_DEAD_END6) ;; woodsRoom54
+4CE2: 01 2E      ;     move_look(RM_2E_DEAD_END6) ;; DW_36
 4CE4: 04 03      ; W
-4CE6: 01 26      ;     move_look(RM_26_TWISTY_PASSAGES11) ;; woodsRoom51
+4CE6: 01 26      ;     move_look(RM_26_TWISTY_PASSAGES11) ;; DW_33
 4CE8: 00         ;
 
-Script_RM_28_TWISTY_PASSAGES13: ; woodsRoom84
+Script_RM_28_TWISTY_PASSAGES13: ; DW_54
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4CE9: 01 03      ; N
-4CEB: 01 34      ;     move_look(RM_34_BRINK_OF_LARGE_PIT) ;; woodsRoom57
+4CEB: 01 34      ;     move_look(RM_34_BRINK_OF_LARGE_PIT) ;; DW_39
 4CED: 04 03      ; W
-4CEF: 01 29      ;     move_look(RM_29_TWISTY_PASSAGES14) ;; woodsRoom83
+4CEF: 01 29      ;     move_look(RM_29_TWISTY_PASSAGES14) ;; DW_53
 4CF1: 08 03      ; NW
-4CF3: 01 35      ;     move_look(RM_35_DEAD_END12) ;; woodsRoom114
+4CF3: 01 35      ;     move_look(RM_35_DEAD_END12) ;; DW_72
 4CF5: 00         ;
 
-Script_RM_29_TWISTY_PASSAGES14: ; woodsRoom83
+Script_RM_29_TWISTY_PASSAGES14: ; DW_53
 ; PS_18
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 ;
 4CF6: 02 03      ; E
-4CF8: 01 28      ;     move_look(RM_28_TWISTY_PASSAGES13) ;; woodsRoom84
+4CF8: 01 28      ;     move_look(RM_28_TWISTY_PASSAGES13) ;; DW_54
 4CFA: 03 03      ; S
-4CFC: 01 34      ;     move_look(RM_34_BRINK_OF_LARGE_PIT) ;; woodsRoom57
+4CFC: 01 34      ;     move_look(RM_34_BRINK_OF_LARGE_PIT) ;; DW_39
 4CFE: 04 03      ; W
-4D00: 01 32      ;     move_look(RM_32_DEAD_END10) ;; woodsRoom85
+4D00: 01 32      ;     move_look(RM_32_DEAD_END10) ;; DW_55
 4D02: 00         ;
 
-Script_RM_2A_DEAD_END2: ; woodsRoom46
+Script_RM_2A_DEAD_END2: ; DW_2E
 ; PS_13
 ; DEAD_END.
 ;
 4D03: 04 03      ; W
-4D05: 01 1E      ;     move_look(RM_1E_TWISTY_PASSAGES3) ;; woodsRoom45
+4D05: 01 1E      ;     move_look(RM_1E_TWISTY_PASSAGES3) ;; DW_2D
 4D07: 00         ;
 
-Script_RM_2B_DEAD_END3: ; woodsRoom47
+Script_RM_2B_DEAD_END3: ; DW_2F
 ; PS_13
 ; DEAD_END.
 ;
 4D08: 02 03      ; E
-4D0A: 01 1E      ;     move_look(RM_1E_TWISTY_PASSAGES3) ;; woodsRoom45
+4D0A: 01 1E      ;     move_look(RM_1E_TWISTY_PASSAGES3) ;; DW_2D
 4D0C: 00         ;
 
-Script_RM_2C_DEAD_END4: ; woodsRoom82
+Script_RM_2C_DEAD_END4: ; DW_52
 ; PS_13
 ; DEAD_END.
 ;
 4D0D: 03 03      ; S
-4D0F: 01 21      ;     move_look(RM_21_TWISTY_PASSAGES6) ;; woodsRoom44
+4D0F: 01 21      ;     move_look(RM_21_TWISTY_PASSAGES6) ;; DW_2C
 4D11: 00         ;
 
-Script_RM_2D_DEAD_END5: ; woodsRoom48
+Script_RM_2D_DEAD_END5: ; DW_30
 ; PS_13
 ; DEAD_END.
 ;
 4D12: 09 03      ; U
-4D14: 01 21      ;     move_look(RM_21_TWISTY_PASSAGES6) ;; woodsRoom44
+4D14: 01 21      ;     move_look(RM_21_TWISTY_PASSAGES6) ;; DW_2C
 4D16: 00         ;
 
-Script_RM_2E_DEAD_END6: ; woodsRoom54
+Script_RM_2E_DEAD_END6: ; DW_36
 ; PS_13
 ; DEAD_END.
 ;
 4D17: 04 03      ; W
-4D19: 01 27      ;     move_look(RM_27_TWISTY_PASSAGES12) ;; woodsRoom53
+4D19: 01 27      ;     move_look(RM_27_TWISTY_PASSAGES12) ;; DW_35
 4D1B: 00         ;
 
-Script_RM_2F_DEAD_END7: ; woodsRoom86
+Script_RM_2F_DEAD_END7: ; DW_56
 ; PS_13
 ; DEAD_END.
 ;
 4D1C: 09 03      ; U
-4D1E: 01 23      ;     move_look(RM_23_TWISTY_PASSAGES8) ;; woodsRoom52
+4D1E: 01 23      ;     move_look(RM_23_TWISTY_PASSAGES8) ;; DW_34
 4D20: 00         ;
 
-Script_RM_30_DEAD_END8: ; woodsRoom56
+Script_RM_30_DEAD_END8: ; DW_38
 ; PS_13
 ; DEAD_END.
 ;
 4D21: 09 03      ; U
-4D23: 01 24      ;     move_look(RM_24_TWISTY_PASSAGES9) ;; woodsRoom55
+4D23: 01 24      ;     move_look(RM_24_TWISTY_PASSAGES9) ;; DW_37
 4D25: 00         ;
 
-Script_RM_31_DEAD_END9: ; woodsRoom58
+Script_RM_31_DEAD_END9: ; DW_3A
 ; PS_13
 ; DEAD_END.
 ;
 4D26: 02 03      ; E
-4D28: 01 34      ;     move_look(RM_34_BRINK_OF_LARGE_PIT) ;; woodsRoom57
+4D28: 01 34      ;     move_look(RM_34_BRINK_OF_LARGE_PIT) ;; DW_39
 4D2A: 00         ;
 
-Script_RM_32_DEAD_END10: ; woodsRoom85
+Script_RM_32_DEAD_END10: ; DW_55
 ; PS_13
 ; DEAD_END.
 ;
 4D2B: 02 03      ; E
-4D2D: 01 29      ;     move_look(RM_29_TWISTY_PASSAGES14) ;; woodsRoom83
+4D2D: 01 29      ;     move_look(RM_29_TWISTY_PASSAGES14) ;; DW_53
 4D2F: 00         ;
 
-Script_RM_33_DEAD_END11: ; woodsRoom81
+Script_RM_33_DEAD_END11: ; DW_51
 ; PS_13
 ; DEAD_END.
 ;
 4D30: 04 03      ; W
-4D32: 01 1D      ;     move_look(RM_1D_TWISTY_PASSAGES2) ;; woodsRoom80
+4D32: 01 1D      ;     move_look(RM_1D_TWISTY_PASSAGES2) ;; DW_50
 4D34: 21 0B      ; DROP
 4D36: 11 29      ;     is_object_user_input(OBJ_29_COINS)
 4D38: 15 29 00   ;     move_object_to_room(OBJ_29_COINS, RM_00_nowhere)
@@ -1960,70 +1962,70 @@ Script_RM_33_DEAD_END11: ; woodsRoom81
 4D3D: 04 58 7C   ;     print(PS_B2) THERE_ARE_NOW_SOME_FRESH_BATTERIES_HERE.
 4D40: 00         ;
 
-Script_RM_34_BRINK_OF_LARGE_PIT: ; woodsRoom57
+Script_RM_34_BRINK_OF_LARGE_PIT: ; DW_39
 ; PS_19
 ; YOU_ARE_ON_THE_BRINK_OF_A_LARGE_PIT.__YOU_COULD_CLIMB_DOWN,_BUT_
 ; YOU_WOULD_NOT_BE_ABLE_TO_CLIMB_BACK_UP.__THE_MAZE_CONTINUES_ON__
 ; THIS_LEVEL.
 ;
 4D41: 01 03      ; N
-4D43: 01 29      ;     move_look(RM_29_TWISTY_PASSAGES14) ;; woodsRoom83
+4D43: 01 29      ;     move_look(RM_29_TWISTY_PASSAGES14) ;; DW_53
 4D45: 02 03      ; E
-4D47: 01 28      ;     move_look(RM_28_TWISTY_PASSAGES13) ;; woodsRoom84
+4D47: 01 28      ;     move_look(RM_28_TWISTY_PASSAGES13) ;; DW_54
 4D49: 03 03      ; S
-4D4B: 01 31      ;     move_look(RM_31_DEAD_END9) ;; woodsRoom58
+4D4B: 01 31      ;     move_look(RM_31_DEAD_END9) ;; DW_3A
 4D4D: 04 03      ; W
-4D4F: 01 24      ;     move_look(RM_24_TWISTY_PASSAGES9) ;; woodsRoom55
+4D4F: 01 24      ;     move_look(RM_24_TWISTY_PASSAGES9) ;; DW_37
 4D51: 0A 03      ; D
-4D53: 01 0B      ;     move_look(RM_0B_SPLENDID_CHAMBER) ;; woodsRoom13
+4D53: 01 0B      ;     move_look(RM_0B_SPLENDID_CHAMBER) ;; DW_0D
 4D55: 00         ;
 
-Script_RM_35_DEAD_END12: ; woodsRoom114 CHEST_ROOM1
+Script_RM_35_DEAD_END12: ; DW_72 -- CHEST_ROOM
 ; PS_13
 ; DEAD_END.
 ;
 4D56: 06 03      ; SE
-4D58: 01 28      ;     move_look(RM_28_TWISTY_PASSAGES13) ;; woodsRoom84
+4D58: 01 28      ;     move_look(RM_28_TWISTY_PASSAGES13) ;; DW_54
 4D5A: 00         ;
 
-Script_RM_36_DIRTY_BROKEN_PASSAGE: ; woodsRoom36
+Script_RM_36_DIRTY_BROKEN_PASSAGE: ; DW_24
 ; PS_1A
 ; YOU_ARE_IN_A_DIRTY_BROKEN_PASSAGE.__TO_THE_EAST_IS_A_CRAWL.__TO_
 ; THE_WEST_IS_A_LARGE_PASSAGE.__ABOVE_YOU_IS_A_HOLE_TO_ANOTHER____
 ; PASSAGE.
 ;
 4D5B: 02 03      ; E
-4D5D: 01 37      ;     move_look(RM_37_BRINK_OF_CLEAN_PIT) ;; woodsRoom37
+4D5D: 01 37      ;     move_look(RM_37_BRINK_OF_CLEAN_PIT) ;; DW_25
 4D5F: 04 03      ; W
-4D61: 01 39      ;     move_look(RM_39_ROOM_OF_BES) ;; woodsRoom39
+4D61: 01 39      ;     move_look(RM_39_ROOM_OF_BES) ;; DW_27
 4D63: 09 03      ; U
-4D65: 01 19      ;     move_look(RM_19_LOW_NS_PASSAGE) ;; woodsRoom28
+4D65: 01 19      ;     move_look(RM_19_LOW_NS_PASSAGE) ;; DW_1C
 4D67: 00         ;
 
-Script_RM_37_BRINK_OF_CLEAN_PIT: ; woodsRoom37
+Script_RM_37_BRINK_OF_CLEAN_PIT: ; DW_25
 ; PS_1B
 ; YOU_ARE_ON_THE_BRINK_OF_A_SMALL_CLEAN_CLIMBABLE_PIT.__A_CRAWL___
 ; LEADS_WEST.
 ;
 4D68: 04 03      ; W
-4D6A: 01 36      ;     move_look(RM_36_DIRTY_BROKEN_PASSAGE) ;; woodsRoom36
+4D6A: 01 36      ;     move_look(RM_36_DIRTY_BROKEN_PASSAGE) ;; DW_24
 4D6C: 0A 03      ; D
-4D6E: 01 38      ;     move_look(RM_38_PIT_LITTLE_STREAM) ;; woodsRoom38
+4D6E: 01 38      ;     move_look(RM_38_PIT_LITTLE_STREAM) ;; DW_26
 4D70: 11 03      ; CLIMB
-4D72: 01 38      ;     move_look(RM_38_PIT_LITTLE_STREAM) ;; woodsRoom38
+4D72: 01 38      ;     move_look(RM_38_PIT_LITTLE_STREAM) ;; DW_26
 4D74: 00         ;
 
-Script_RM_38_PIT_LITTLE_STREAM: ; woodsRoom38
+Script_RM_38_PIT_LITTLE_STREAM: ; DW_26
 ; PS_1C
 ; YOU_ARE_IN_THE_BOTTOM_OF_A_SMALL_PIT_WITH_A_LITTLE_STREAM,_WHICH
 ; ENTERS_AND_EXITS_THROUGH_TINY_SLITS.
 ;
 4D75: 09 03      ; U
-4D77: 01 37      ;     move_look(RM_37_BRINK_OF_CLEAN_PIT) ;; woodsRoom37
+4D77: 01 37      ;     move_look(RM_37_BRINK_OF_CLEAN_PIT) ;; DW_25
 4D79: 0C 03      ; OUT
-4D7B: 01 37      ;     move_look(RM_37_BRINK_OF_CLEAN_PIT) ;; woodsRoom37
+4D7B: 01 37      ;     move_look(RM_37_BRINK_OF_CLEAN_PIT) ;; DW_25
 4D7D: 11 03      ; CLIMB
-4D7F: 01 37      ;     move_look(RM_37_BRINK_OF_CLEAN_PIT) ;; woodsRoom37
+4D7F: 01 37      ;     move_look(RM_37_BRINK_OF_CLEAN_PIT) ;; DW_25
 4D81: 0A 04      ; D
 4D83: 04 7B 72   ;     print(PS_73) YOU_DON'T_FIT_THROUGH_TWO-INCH_SLIT!
 4D86: 27 0B      ; FILL
@@ -2033,19 +2035,19 @@ Script_RM_38_PIT_LITTLE_STREAM: ; woodsRoom38
 4D8F: 19 1C 1B   ;     put_object_in_container_print_ok(OBJ_1C_WATER, OBJ_1B_BOTTLE)
 4D92: 00         ;
 
-Script_RM_39_ROOM_OF_BES: ; woodsRoom39
+Script_RM_39_ROOM_OF_BES: ; DW_27
 ; PS_1D
 ; YOU_ARE_IN_A_THE_ROOM_OF_BES,_WHOSE_PICTURE_IS_ON_THE_WALL._____
 ; THERE_IS_A_BIG_HOLE_IN_THE_FLOOR.__THERE_IS_A_PASSAGE_LEADING___
 ; EAST.
 ;
 4D93: 02 03      ; E
-4D95: 01 36      ;     move_look(RM_36_DIRTY_BROKEN_PASSAGE) ;; woodsRoom36
+4D95: 01 36      ;     move_look(RM_36_DIRTY_BROKEN_PASSAGE) ;; DW_24
 4D97: 0A 03      ; D
-4D99: 01 3A      ;     move_look(RM_3A_COMPLEX_JUNCTION) ;; woodsRoom64
+4D99: 01 3A      ;     move_look(RM_3A_COMPLEX_JUNCTION) ;; DW_40
 4D9B: 00         ;
 
-Script_RM_3A_COMPLEX_JUNCTION: ; woodsRoom64
+Script_RM_3A_COMPLEX_JUNCTION: ; DW_40
 ; PS_1E
 ; YOU_ARE_AT_A_COMPLEX_JUNCTION.__A_LOW_HANDS_AND_KNEES_PASSAGE___
 ; FROM_THE_NORTH_JOINS_A_HIGHER_CRAWL_FROM_THE_EAST_TO_MAKE_A_____
@@ -2053,18 +2055,18 @@ Script_RM_3A_COMPLEX_JUNCTION: ; woodsRoom64
 ; THE_AIR_IS_DAMP_HERE.
 ;
 4D9C: 01 03      ; N
-4D9E: 01 3D      ;     move_look(RM_3D_ANCIENT_DRAWINGS) ;; woodsRoom103
+4D9E: 01 3D      ;     move_look(RM_3D_ANCIENT_DRAWINGS) ;; DW_67
 4DA0: 02 03      ; E
-4DA2: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; woodsRoom106
+4DA2: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; DW_6A
 4DA4: 04 03      ; W
-4DA6: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; woodsRoom65
+4DA6: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; DW_41
 4DA8: 09 03      ; U
-4DAA: 01 39      ;     move_look(RM_39_ROOM_OF_BES) ;; woodsRoom39
+4DAA: 01 39      ;     move_look(RM_39_ROOM_OF_BES) ;; DW_27
 4DAC: 11 03      ; CLIMB
-4DAE: 01 39      ;     move_look(RM_39_ROOM_OF_BES) ;; woodsRoom39
+4DAE: 01 39      ;     move_look(RM_39_ROOM_OF_BES) ;; DW_27
 4DB0: 00         ;
 
-Script_RM_3B_ANTEROOM_OF_SEKER: ; woodsRoom106
+Script_RM_3B_ANTEROOM_OF_SEKER: ; DW_6A
 ; PS_1F
 ; YOU_ARE_IN_THE_UNDERWORLD_ANTEROOM_OF_SEKER.__PASSAGES_GO_EAST,_
 ; WEST,_AND_UP.__HUMAN_BONES_ARE_STREWN_ABOUT_ON_THE_FLOOR._______
@@ -2072,14 +2074,14 @@ Script_RM_3B_ANTEROOM_OF_SEKER: ; woodsRoom106
 ; PROCEED_EAST_MAY_NEVER_RETURN."
 ;
 4DB1: 02 03      ; E
-4DB3: 01 3C      ;     move_look(RM_3C_LAND_OF_DEAD) ;; woodsRoom108
+4DB3: 01 3C      ;     move_look(RM_3C_LAND_OF_DEAD) ;; DW_6C
 4DB5: 04 03      ; W
-4DB7: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; woodsRoom65
+4DB7: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; DW_41
 4DB9: 09 03      ; U
-4DBB: 01 3A      ;     move_look(RM_3A_COMPLEX_JUNCTION) ;; woodsRoom64
+4DBB: 01 3A      ;     move_look(RM_3A_COMPLEX_JUNCTION) ;; DW_40
 4DBD: 00         ;
 
-Script_RM_3C_LAND_OF_DEAD: ; woodsRoom108
+Script_RM_3C_LAND_OF_DEAD: ; DW_6C
 ; PS_20
 ; YOU_ARE_AT_THE_LAND_OF_DEAD.__PASSAGES_LEAD_OFF_IN_>ALL<________
 ; DIRECTIONS.
@@ -2087,42 +2089,42 @@ Script_RM_3C_LAND_OF_DEAD: ; woodsRoom108
 4DBE: 01 07      ; N
 4DC0: 07 03      ;     stop_if_pass ...
 4DC2: 0A F0      ;         pyramid_crawl_move_random(0xF0)
-4DC4: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; woodsRoom106
+4DC4: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; DW_6A
 4DC6: 02 07      ; E
 4DC8: 07 03      ;     stop_if_pass ...
 4DCA: 0A F0      ;         pyramid_crawl_move_random(0xF0)
-4DCC: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; woodsRoom106
+4DCC: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; DW_6A
 4DCE: 03 07      ; S
 4DD0: 07 03      ;     stop_if_pass ...
 4DD2: 0A F0      ;         pyramid_crawl_move_random(0xF0)
-4DD4: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; woodsRoom106
+4DD4: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; DW_6A
 4DD6: 05 07      ; NE
 4DD8: 07 03      ;     stop_if_pass ...
 4DDA: 0A F0      ;         pyramid_crawl_move_random(0xF0)
-4DDC: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; woodsRoom106
+4DDC: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; DW_6A
 4DDE: 06 07      ; SE
 4DE0: 07 03      ;     stop_if_pass ...
 4DE2: 0A F0      ;         pyramid_crawl_move_random(0xF0)
-4DE4: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; woodsRoom106
+4DE4: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; DW_6A
 4DE6: 07 07      ; SW
 4DE8: 07 03      ;     stop_if_pass ...
 4DEA: 0A F0      ;         pyramid_crawl_move_random(0xF0)
-4DEC: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; woodsRoom106
+4DEC: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; DW_6A
 4DEE: 08 07      ; NW
 4DF0: 07 03      ;     stop_if_pass ...
 4DF2: 0A F0      ;         pyramid_crawl_move_random(0xF0)
-4DF4: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; woodsRoom106
+4DF4: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; DW_6A
 4DF6: 09 07      ; U
 4DF8: 07 03      ;     stop_if_pass ...
 4DFA: 0A F0      ;         pyramid_crawl_move_random(0xF0)
-4DFC: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; woodsRoom106
+4DFC: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; DW_6A
 4DFE: 04 06      ; W
 4E00: 04 CF 72   ;     print(PS_75) YOU_HAVE_CRAWLED_AROUND_IN_SOME_LITTLE_HOLES_AND_FOUND_YOUR_WAY_
 ;                                   BLOCKED_BY_A_FALLEN_SLAB.__YOU_ARE_NOW_BACK_IN_THE_MAIN_PASSAGE.
-4E03: 01 3C      ;     move_look(RM_3C_LAND_OF_DEAD) ;; woodsRoom108
+4E03: 01 3C      ;     move_look(RM_3C_LAND_OF_DEAD) ;; DW_6C
 4E05: 00         ;
 
-Script_RM_3D_ANCIENT_DRAWINGS: ; woodsRoom103
+Script_RM_3D_ANCIENT_DRAWINGS: ; DW_67
 ; PS_21
 ; YOU'RE_IN_A_LARGE_ROOM_WITH_ANCIENT_DRAWINGS_ON_ALL_WALLS.______
 ; THE_PICTURES_DEPICT_ATUM,_A_PHARAOH_WEARING_THE_DOUBLE_CROWN.___
@@ -2136,74 +2138,74 @@ Script_RM_3D_ANCIENT_DRAWINGS: ; woodsRoom103
 4E0F: 07 06      ;     stop_if_pass ...
 4E11: 02 18      ;         is_in_pack(OBJ_18_SARCOPH_EMPTY)
 4E13: 04 27 73   ;         print(PS_76) YOU_CAN'T_FIT_THIS_BIG_SARCOPHAGUS_THROUGH_THAT_LITTLE_PASSAGE!
-4E16: 01 3A      ;     move_look(RM_3A_COMPLEX_JUNCTION) ;; woodsRoom64
+4E16: 01 3A      ;     move_look(RM_3A_COMPLEX_JUNCTION) ;; DW_40
 4E18: 09 03      ; U
-4E1A: 01 3E      ;     move_look(RM_3E_MOON_GOD) ;; woodsRoom102
+4E1A: 01 3E      ;     move_look(RM_3E_MOON_GOD) ;; DW_66
 4E1C: 0A 03      ; D
-4E1E: 01 3F      ;     move_look(RM_3F_RAGGED_WALLS) ;; woodsRoom104
+4E1E: 01 3F      ;     move_look(RM_3F_RAGGED_WALLS) ;; DW_68
 4E20: 00         ;
 
-Script_RM_3E_MOON_GOD: ; woodsRoom102
+Script_RM_3E_MOON_GOD: ; DW_66
 ; PS_22
 ; YOU_ARE_IN_A_CHAMBER_WHOSE_WALL_CONTAINS_A_PICTURE_OF_A_MAN_____
 ; WEARING_THE_LUNAR_DISK_ON_HIS_HEAD.__HE_IS_THE_GOD_KHONS,_THE___
 ; MOON_GOD.
 ;
 4E21: 0A 03      ; D
-4E23: 01 3D      ;     move_look(RM_3D_ANCIENT_DRAWINGS) ;; woodsRoom103
+4E23: 01 3D      ;     move_look(RM_3D_ANCIENT_DRAWINGS) ;; DW_67
 4E25: 0C 03      ; OUT
-4E27: 01 3D      ;     move_look(RM_3D_ANCIENT_DRAWINGS) ;; woodsRoom103
+4E27: 01 3D      ;     move_look(RM_3D_ANCIENT_DRAWINGS) ;; DW_67
 4E29: 00         ;
 
-Script_RM_3F_RAGGED_WALLS: ; woodsRoom104
+Script_RM_3F_RAGGED_WALLS: ; DW_68
 ; PS_23
 ; YOU_ARE_IN_A_LONG_SLOPING_CORRIDOR_WITH_RAGGED_WALLS._
 ;
 4E2A: 09 03      ; U
-4E2C: 01 3D      ;     move_look(RM_3D_ANCIENT_DRAWINGS) ;; woodsRoom103
+4E2C: 01 3D      ;     move_look(RM_3D_ANCIENT_DRAWINGS) ;; DW_67
 4E2E: 0A 03      ; D
-4E30: 01 40      ;     move_look(RM_40_CUL_DE_SAC) ;; woodsRoom105
+4E30: 01 40      ;     move_look(RM_40_CUL_DE_SAC) ;; DW_69
 4E32: 00         ;
 
-Script_RM_40_CUL_DE_SAC: ; woodsRoom105
+Script_RM_40_CUL_DE_SAC: ; DW_69
 ; PS_24
 ; YOU_ARE_IN_A_CUL-DE-SAC_ABOUT_EIGHT_FEET_ACROSS.
 ;
 4E33: 09 03      ; U
-4E35: 01 3F      ;     move_look(RM_3F_RAGGED_WALLS) ;; woodsRoom104
+4E35: 01 3F      ;     move_look(RM_3F_RAGGED_WALLS) ;; DW_68
 4E37: 0C 03      ; OUT
-4E39: 01 3F      ;     move_look(RM_3F_RAGGED_WALLS) ;; woodsRoom104
+4E39: 01 3F      ;     move_look(RM_3F_RAGGED_WALLS) ;; DW_68
 4E3B: 00         ;
 
-Script_RM_41_CHAMBER_OF_HORUS: ; woodsRoom65
+Script_RM_41_CHAMBER_OF_HORUS: ; DW_41
 ; PS_25
 ; YOU_ARE_IN_THE_CHAMBER_OF_HORUS,_A_LONG_EAST/WEST_PASSAGE_WITH__
 ; HOLES_EVERYWHERE.__TO_EXPLORE_AT_RANDOM,_SELECT_NORTH,_SOUTH,___
 ; UP,_OR_DOWN.
 ;
 4E3C: 02 03      ; E
-4E3E: 01 3A      ;     move_look(RM_3A_COMPLEX_JUNCTION) ;; woodsRoom64
+4E3E: 01 3A      ;     move_look(RM_3A_COMPLEX_JUNCTION) ;; DW_40
 4E40: 04 03      ; W
-4E42: 01 4E      ;     move_look(RM_4E_WEAST_END_TWOPIT) ;; woodsRoom67
+4E42: 01 4E      ;     move_look(RM_4E_WEAST_END_TWOPIT) ;; DW_43
 4E44: 09 07      ; U
 4E46: 07 03      ;     stop_if_pass ...
 4E48: 0A CC      ;         pyramid_crawl_move_random(0xCC)
-4E4A: 01 48      ;     move_look(RM_48_PRIESTS_BEDROOM) ;; woodsRoom96
+4E4A: 01 48      ;     move_look(RM_48_PRIESTS_BEDROOM) ;; DW_60
 4E4C: 01 07      ; N
 4E4E: 07 03      ;     stop_if_pass ...
 4E50: 0A CC      ;         pyramid_crawl_move_random(0xCC)
-4E52: 01 49      ;     move_look(RM_49_HIGH_PRIEST) ;; woodsRoom99
+4E52: 01 49      ;     move_look(RM_49_HIGH_PRIEST) ;; DW_63
 4E54: 03 07      ; S
 4E56: 07 03      ;     stop_if_pass ...
 4E58: 0A CC      ;         pyramid_crawl_move_random(0xCC)
-4E5A: 01 42      ;     move_look(RM_42_FALLEN_SLAB) ;; woodsRoom68
+4E5A: 01 42      ;     move_look(RM_42_FALLEN_SLAB) ;; DW_44
 4E5C: 0A 07      ; D
 4E5E: 07 03      ;     stop_if_pass ...
 4E60: 0A CC      ;         pyramid_crawl_move_random(0xCC)
-4E62: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; woodsRoom106
+4E62: 01 3B      ;     move_look(RM_3B_ANTEROOM_OF_SEKER) ;; DW_6A
 4E64: 00         ;
 
-Script_RM_42_FALLEN_SLAB: ; woodsRoom68
+Script_RM_42_FALLEN_SLAB: ; DW_44
 ; PS_26
 ; YOU_ARE_IN_A_LARGE_LOW_CIRCULAR_CHAMBER_WHOSE_FLOOR_IS_AN_______
 ; IMMENSE_SLAB_FALLEN_FROM_THE_CEILING.__EAST_AND_WEST_THERE_ONCE_
@@ -2211,24 +2213,24 @@ Script_RM_42_FALLEN_SLAB: ; woodsRoom68
 ; LOW_SMALL_PASSAGES_GO_NORTH_AND_SOUTH.
 ;
 4E65: 01 03      ; N
-4E67: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; woodsRoom65
+4E67: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; DW_41
 4E69: 03 03      ; S
-4E6B: 01 50      ;     move_look(RM_50_WEST_END_TWOPIT) ;; woodsRoom23
+4E6B: 01 50      ;     move_look(RM_50_WEST_END_TWOPIT) ;; DW_17
 4E6D: 00         ;
 
-Script_RM_48_PRIESTS_BEDROOM: ; woodsRoom96
+Script_RM_48_PRIESTS_BEDROOM: ; DW_60
 ; PS_27
 ; YOU_ARE_IN_THE_PRIEST'S_BEDROOM.__THE_WALLS_ARE_COVERED_WITH____
 ; CURTAINS,_THE_FLOOR_WITH_A_THICK_PILE_CARPET.__MOSS_COVERS_THE__
 ; CEILING.
 ;
 4E6E: 04 03      ; W
-4E70: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; woodsRoom65
+4E70: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; DW_41
 4E72: 0C 03      ; OUT
-4E74: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; woodsRoom65
+4E74: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; DW_41
 4E76: 00         ;
 
-Script_RM_49_HIGH_PRIEST: ; woodsRoom99
+Script_RM_49_HIGH_PRIEST: ; DW_63
 ; PS_28
 ; THIS_IS_THE_CHAMBER_OF_THE_HIGH_PRIEST.___ANCIENT_DRAWINGS_COVER
 ; THE_WALLS.__AN_EXTREMELY_TIGHT_TUNNEL_LEADS_WEST.__IT_LOOKS_LIKE
@@ -2237,14 +2239,14 @@ Script_RM_49_HIGH_PRIEST: ; woodsRoom99
 4E77: 04 09      ; W
 4E79: 07 04      ;     stop_if_pass ...
 4E7B: 0D         ;         is_pack_just_emerald()
-4E7C: 01 4C      ;         move_look(RM_4C_EERIE_GREEN_LIGHT) ;; woodsRoom100
+4E7C: 01 4C      ;         move_look(RM_4C_EERIE_GREEN_LIGHT) ;; DW_64
 4E7E: 04 53 73   ;     print(PS_77) SOMETHING_YOU'RE_CARRYING_WON'T_FIT_THROUGH_THE_TUNNEL_WITH_YOU.
 ;                                   YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.
 4E81: 06 03      ; SE
-4E83: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; woodsRoom65
+4E83: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; DW_41
 4E85: 00         ;
 
-Script_RM_4C_EERIE_GREEN_LIGHT: ; woodsRoom100
+Script_RM_4C_EERIE_GREEN_LIGHT: ; DW_64
 ; PS_29
 ; YOU_ARE_IN_THE_HIGH_PRIEST'S_TREASURE_ROOM_LIT_BY_AN_EERIE_GREEN
 ; LIGHT.__A_NARROW_TUNNEL_EXITS_TO_THE_EAST.
@@ -2252,18 +2254,18 @@ Script_RM_4C_EERIE_GREEN_LIGHT: ; woodsRoom100
 4E86: 02 09      ; E
 4E88: 07 04      ;     stop_if_pass ...
 4E8A: 0D         ;         is_pack_just_emerald()
-4E8B: 01 49      ;         move_look(RM_49_HIGH_PRIEST) ;; woodsRoom99
+4E8B: 01 49      ;         move_look(RM_49_HIGH_PRIEST) ;; DW_63
 4E8D: 04 53 73   ;     print(PS_77) SOMETHING_YOU'RE_CARRYING_WON'T_FIT_THROUGH_THE_TUNNEL_WITH_YOU.
 ;                                   YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.
 4E90: 0C 09      ; OUT
 4E92: 07 04      ;     stop_if_pass ...
 4E94: 0D         ;         is_pack_just_emerald()
-4E95: 01 49      ;         move_look(RM_49_HIGH_PRIEST) ;; woodsRoom99
+4E95: 01 49      ;         move_look(RM_49_HIGH_PRIEST) ;; DW_63
 4E97: 04 53 73   ;     print(PS_77) SOMETHING_YOU'RE_CARRYING_WON'T_FIT_THROUGH_THE_TUNNEL_WITH_YOU.
 ;                                   YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.
 4E9A: 00         ;
 
-Script_RM_4E_WEAST_END_TWOPIT: ; woodsRoom67
+Script_RM_4E_WEAST_END_TWOPIT: ; DW_43
 ; PS_2A
 ; YOU_ARE_AT_THE_EAST_END_OF_THE_TWOPIT_ROOM.__THE_FLOOR_HERE_IS__
 ; LITTERED_WITH_THIN_ROCK_SLABS,_WHICH_MAKE_IT_EASY_TO_DESCEND_THE
@@ -2273,54 +2275,54 @@ Script_RM_4E_WEAST_END_TWOPIT: ; woodsRoom67
 ; CAN'T_GET_TO_IT.
 ;
 4E9B: 02 03      ; E
-4E9D: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; woodsRoom65
+4E9D: 01 41      ;     move_look(RM_41_CHAMBER_OF_HORUS) ;; DW_41
 4E9F: 04 03      ; W
-4EA1: 01 50      ;     move_look(RM_50_WEST_END_TWOPIT) ;; woodsRoom23
+4EA1: 01 50      ;     move_look(RM_50_WEST_END_TWOPIT) ;; DW_17
 4EA3: 0A 03      ; D
-4EA5: 01 4F      ;     move_look(RM_4F_BOTTOM_EASTERN_PIT) ;; woodsRoom24
+4EA5: 01 4F      ;     move_look(RM_4F_BOTTOM_EASTERN_PIT) ;; DW_18
 4EA7: 00         ;
 
-Script_RM_4F_BOTTOM_EASTERN_PIT: ; woodsRoom24
+Script_RM_4F_BOTTOM_EASTERN_PIT: ; DW_18
 ; PS_2B
 ; YOU_ARE_AT_THE_BOTTOM_OF_THE_EASTERN_PIT_IN_THE_TWOPIT_ROOM.
 ;
 4EA8: 09 03      ; U
-4EAA: 01 4E      ;     move_look(RM_4E_WEAST_END_TWOPIT) ;; woodsRoom67
+4EAA: 01 4E      ;     move_look(RM_4E_WEAST_END_TWOPIT) ;; DW_43
 4EAC: 0C 03      ; OUT
-4EAE: 01 4E      ;     move_look(RM_4E_WEAST_END_TWOPIT) ;; woodsRoom67
+4EAE: 01 4E      ;     move_look(RM_4E_WEAST_END_TWOPIT) ;; DW_43
 4EB0: 00         ;
 
-Script_RM_50_WEST_END_TWOPIT: ; woodsRoom23
+Script_RM_50_WEST_END_TWOPIT: ; DW_17
 ; PS_2C
 ; YOU_ARE_AT_THE_WEST_END_OF_THE_TWOPIT_ROOM.__THERE_IS_A_LARGE___
 ; HOLE_IN_THE_WALL_ABOVE_THE_PIT_AT_THIS_END_OF_THE_ROOM.
 ;
 4EB1: 02 03      ; E
-4EB3: 01 4E      ;     move_look(RM_4E_WEAST_END_TWOPIT) ;; woodsRoom67
+4EB3: 01 4E      ;     move_look(RM_4E_WEAST_END_TWOPIT) ;; DW_43
 4EB5: 04 03      ; W
-4EB7: 01 42      ;     move_look(RM_42_FALLEN_SLAB) ;; woodsRoom68
+4EB7: 01 42      ;     move_look(RM_42_FALLEN_SLAB) ;; DW_44
 4EB9: 0A 03      ; D
-4EBB: 01 51      ;     move_look(RM_51_BOTTOM_WEST_PIT) ;; woodsRoom25
+4EBB: 01 51      ;     move_look(RM_51_BOTTOM_WEST_PIT) ;; DW_19
 4EBD: 00         ;
 
-Script_RM_51_BOTTOM_WEST_PIT: ; woodsRoom25
+Script_RM_51_BOTTOM_WEST_PIT: ; DW_19
 ; PS_2D
 ; YOU_ARE_AT_THE_BOTTOM_OF_THE_WEST_PIT_IN_THE_TWOPIT_ROOM.__THERE
 ; IS_A_LARGE_HOLE_IN_THE_WALL_ABOUT_TWENTY_FIVE_FEET_ABOVE_YOU.
 ;
 4EBE: 09 03      ; U
-4EC0: 01 50      ;     move_look(RM_50_WEST_END_TWOPIT) ;; woodsRoom23
+4EC0: 01 50      ;     move_look(RM_50_WEST_END_TWOPIT) ;; DW_17
 4EC2: 0C 03      ; OUT
-4EC4: 01 50      ;     move_look(RM_50_WEST_END_TWOPIT) ;; woodsRoom23
+4EC4: 01 50      ;     move_look(RM_50_WEST_END_TWOPIT) ;; DW_17
 4EC6: 11 16      ; CLIMB
 4EC8: 07 08      ;     stop_if_pass ...
 4ECA: 03 09      ;         is_in_pack_or_current_room(OBJ_09_PLANT_LARGE)
 4ECC: 04 9E 73   ;         print(PS_78) YOU_CLAMBER_UP_THE_PLANT_AND_SCURRY_THROUGH_THE_HOLE_AT_THE_TOP.
-4ECF: 01 4D      ;         move_look(RM_4D_PROFUSION_OF_LEAVES) ;; woodsRoom88
+4ECF: 01 4D      ;         move_look(RM_4D_PROFUSION_OF_LEAVES) ;; DW_58
 4ED1: 07 06      ;     stop_if_pass ...
 4ED3: 03 08      ;         is_in_pack_or_current_room(OBJ_08_PLANT_MEDIUM)
 4ED5: 04 CB 73   ;         print(PS_79) YOU'VE_CLIMBED_UP_THE_PLANT_AND_OUT_OF_THE_PIT.
-4ED8: 01 50      ;     move_look(RM_50_WEST_END_TWOPIT) ;; woodsRoom23
+4ED8: 01 50      ;     move_look(RM_50_WEST_END_TWOPIT) ;; DW_17
 4EDA: 04 7D 7D   ;     print(PS_B8) THERE_IS_NOTHING_HERE_TO_CLIMB.__USE_UP_OR_OUT_TO_LEAVE_THE_PIT.
 4EDD: 24 2F      ; POUR
 4EDF: 11 1C      ;     is_object_user_input(OBJ_1C_WATER)
@@ -2346,58 +2348,58 @@ Script_RM_51_BOTTOM_WEST_PIT: ; woodsRoom25
 4F0A: 04 45 6E   ;     print(PS_4B) THERE_IS_A_TINY_PLANT_IN_THE_PIT,_MURMURING_"WATER,_WATER,_..."
 4F0D: 00         ;
 
-Script_RM_4D_PROFUSION_OF_LEAVES: ; woodsRoom88
+Script_RM_4D_PROFUSION_OF_LEAVES: ; DW_58
 ; PS_2E
 ; YOU_ARE_IN_A_LONG,_NARROW_CORRIDOR_STRETCHING_OUT_OF_SIGHT_TO___
 ; THE_WEST.__AT_THE_EASTERN_END_IS_A_HOLE_THROUGH_WHICH_YOU_CAN___
 ; SEE_A_PROFUSION_OF_LEAVES.
 ;
 4F0E: 02 03      ; E
-4F10: 01 51      ;     move_look(RM_51_BOTTOM_WEST_PIT) ;; woodsRoom25
+4F10: 01 51      ;     move_look(RM_51_BOTTOM_WEST_PIT) ;; DW_19
 4F12: 0A 03      ; D
-4F14: 01 51      ;     move_look(RM_51_BOTTOM_WEST_PIT) ;; woodsRoom25
+4F14: 01 51      ;     move_look(RM_51_BOTTOM_WEST_PIT) ;; DW_19
 4F16: 11 03      ; CLIMB
-4F18: 01 51      ;     move_look(RM_51_BOTTOM_WEST_PIT) ;; woodsRoom25
+4F18: 01 51      ;     move_look(RM_51_BOTTOM_WEST_PIT) ;; DW_19
 4F1A: 10 05      ; JUMP
 4F1C: 04 71 71   ;     print(PS_6B) YOU_ARE_AT_THE_BOTTOM_OF_THE_PIT_WITH_A_BROKEN_NECK.
 4F1F: 05         ;     death_and_resurrect()
 4F20: 04 03      ; W
-4F22: 01 47      ;     move_look(RM_47_CHAMBER_OF_OSIRIS) ;; woodsRoom92
+4F22: 01 47      ;     move_look(RM_47_CHAMBER_OF_OSIRIS) ;; DW_5C
 4F24: 00         ;
 
-Script_RM_47_CHAMBER_OF_OSIRIS: ; woodsRoom92
+Script_RM_47_CHAMBER_OF_OSIRIS: ; DW_5C
 ; PS_2F
 ; YOU_ARE_IN_THE_CHAMBER_OF_OSIRIS._THE_CEILING_IS_TOO_HIGH_UP_FOR
 ; YOUR_LAMP_TO_SHOW_IT.__PASSAGES_LEAD_EAST,_NORTH,_AND_SOUTH.
 ;
 4F25: 01 03      ; N
-4F27: 01 44      ;     move_look(RM_44_CHAMBER_OF_NEKHEBET) ;; woodsRoom94
+4F27: 01 44      ;     move_look(RM_44_CHAMBER_OF_NEKHEBET) ;; DW_5E
 4F29: 02 03      ; E
-4F2B: 01 46      ;     move_look(RM_46_BLOCKED_FALLEN_BLOCK) ;; woodsRoom93
+4F2B: 01 46      ;     move_look(RM_46_BLOCKED_FALLEN_BLOCK) ;; DW_5D
 4F2D: 03 03      ; S
-4F2F: 01 4D      ;     move_look(RM_4D_PROFUSION_OF_LEAVES) ;; woodsRoom88
+4F2F: 01 4D      ;     move_look(RM_4D_PROFUSION_OF_LEAVES) ;; DW_58
 4F31: 00         ;
 
-Script_RM_46_BLOCKED_FALLEN_BLOCK: ; woodsRoom93
+Script_RM_46_BLOCKED_FALLEN_BLOCK: ; DW_5D
 ; PS_30
 ; THE_PASSAGE_HERE_IS_BLOCKED_BY_A_FALLEN_BLOCK.
 ;
 4F32: 03 03      ; S
-4F34: 01 47      ;     move_look(RM_47_CHAMBER_OF_OSIRIS) ;; woodsRoom92
+4F34: 01 47      ;     move_look(RM_47_CHAMBER_OF_OSIRIS) ;; DW_5C
 4F36: 0C 03      ; OUT
-4F38: 01 47      ;     move_look(RM_47_CHAMBER_OF_OSIRIS) ;; woodsRoom92
+4F38: 01 47      ;     move_look(RM_47_CHAMBER_OF_OSIRIS) ;; DW_5C
 4F3A: 00         ;
 
-Script_RM_44_CHAMBER_OF_NEKHEBET: ; woodsRoom94
+Script_RM_44_CHAMBER_OF_NEKHEBET: ; DW_5E
 ; PS_31
 ; YOU_ARE_IN_THE_CHAMBER_OF_NEKHEBET,_A_WOMAN_WITH_THE_HEAD_OF_A__
 ; VULTURE,_WEARING_THE_CROWN_OF_EGYPT.__A_PASSAGE_EXITS_TO_THE____
 ; SOUTH.
 ;
 4F3B: 03 03      ; S
-4F3D: 01 47      ;     move_look(RM_47_CHAMBER_OF_OSIRIS) ;; woodsRoom92
+4F3D: 01 47      ;     move_look(RM_47_CHAMBER_OF_OSIRIS) ;; DW_5C
 4F3F: 0C 03      ; OUT
-4F41: 01 47      ;     move_look(RM_47_CHAMBER_OF_OSIRIS) ;; woodsRoom92
+4F41: 01 47      ;     move_look(RM_47_CHAMBER_OF_OSIRIS) ;; DW_5C
 4F43: 00         ;
 
 4F44: FF
@@ -2527,17 +2529,17 @@ ObjectData:
 ;             MCT      Name                     Start location
 4FE7: 00 00 ; 000..... OBJ_01_BRIDGE_ROOM_0F    *
 4FE9: 00 00 ; 000..... OBJ_02_BRIDGE_ROOM_12    *
-4FEB: 00 00 ;
-4FED: 00 00 ;
-4FEF: 00 00 ;
+4FEB: 00 00 ; ?? Dwarf Axe, Eggs (maybe removed treasure, maybe 2 phony plants)
+4FED: 00 00 ; ?? Dwarf, Oyster from clam sequence(tablet, pyramid dark room sequence)
+4FEF: 00 00 ; ?? Rusty door to removed room 5F
 4FF1: 00 33 ; 000..... OBJ_06_VENDING_MACHINE   RM_33_DEAD_END11
 4FF3: 00 51 ; 000..... OBJ_07_PLANT_SMALL       RM_51_BOTTOM_WEST_PIT
 4FF5: 00 00 ; 000..... OBJ_08_PLANT_MEDIUM      *
 4FF7: 00 00 ; 000..... OBJ_09_PLANT_LARGE       *
-4FF9: 00 00 ;
+4FF9: 00 00 ; ?? PHONY PLANT used in CCA to show part of plant
 4FFB: 00 10 ; 000..... OBJ_0B_SERPENT           RM_10_PHARAOHS_CHAMBER
-4FFD: 00 00 ;
-4FFF: 00 00 ;
+4FFD: 00 00 ; ?? Drawings in removed room DW_61
+4FFF: 00 00 ; ?? Trident in removed room DW_5F
 5001: 40 02 ; 010..... OBJ_0E_LAMP_OFF          RM_02_IN_ENTRANCE
 5003: 40 00 ; 010..... OBJ_0F_LAMP_ON           *
 5005: 40 08 ; 010..... OBJ_10_BOX               RM_08_CRAWLING_OVER_PEBBLES
@@ -2552,8 +2554,8 @@ ObjectData:
 5017: 40 3B ; 010..... OBJ_19_MAGAZINES         RM_3B_ANTEROOM_OF_SEKER
 5019: 40 02 ; 010..... OBJ_1A_FOOD              RM_02_IN_ENTRANCE
 501B: 40 02 ; 010..... OBJ_1B_BOTTLE            RM_02_IN_ENTRANCE
-501D: C0 1B ; 110..... OBJ_1C_WATER             RM_1B_CHAMBER_OF_ANUBIS
-501F: 00 00 ;          oil (in the bottle) from the eastern pit used to oil hinges in woods??
+501D: C0 1B ; 110..... OBJ_1C_WATER             Contained by OBJ_1B_BOTTLE
+501F: 00 00 ; ?? OIL in bottle used to oil hinges in CCA
 5021: 00 38 ; 000..... OBJ_1E_STREAM_ROOM_38    RM_38_PIT_LITTLE_STREAM
 5023: 60 4C ; 011..... OBJ_1F_EMERALD           RM_4C_EERIE_GREEN_LIGHT
 5025: 60 00 ; 011..... OBJ_20_VASE_ON_PILLOW    *
@@ -2658,7 +2660,7 @@ ObjectDescriptions:
 # Script Commands
 
 ```code
-; This lookup table holds the pointers to the individual script commands. 
+; This lookup table holds the pointers to the individual script commands.
 
 ScriptCommands:
 509F: 8A 51        ; COM_01_move_look(room_num)
@@ -2694,7 +2696,7 @@ ScriptCommands:
 
 # After Every Step
 
-This code runs after every user input. It bumps the player's turn count, and it handles the lamp running 
+This code runs after every user input. It bumps the player's turn count, and it handles the lamp running
 out of power (and battery replacement).
 
 The player's turn count is kept in 4 BCD digits (2 bytes). The count rolls over from 9999 back to 0000.
@@ -2709,8 +2711,8 @@ After 300 turns, we check for automatic battery replacement every turn. If the d
 batteries are in the backpack, we move the dead lamp out of play and the shining lamp to the backpack.
 We also swap the fresh batteries with the worn batteries.
 
-The code does not reset the turn count on the lamp! The count continues with the fresh batteries until it 
-rolls back around to 310. You get 300 turns on the original batteries but 65,536 turns on the new ones. 
+The code does not reset the turn count on the lamp! The count continues with the fresh batteries until it
+rolls back around to 310. You get 300 turns on the original batteries but 65,536 turns on the new ones.
 Then the lamp goes out again, but there are no more coins to put in the vending machine. TODO check this
 with a save-game edit.
 
@@ -2974,7 +2976,7 @@ DescribeRoom:
 # COM_18_move_object_to_current_room(obj_num)
 
 This code places the given object in the current room (with the player). If the given object
-is contained by another object, this code moves the container instead (and so on up the 
+is contained by another object, this code moves the container instead (and so on up the
 containment tree).
 
 No feedback is printed here. This function is used in groups of move commands to
@@ -2995,16 +2997,16 @@ COM_18_move_object_to_current_room:
 # COM_19_put_object_in_container_print_ok(obj_num, obj_num)
 
 This command puts the first object into the second object and sets the "contained"
-bit accordingly. It doesn't check for containment. If the target object is already in 
+bit accordingly. It doesn't check for containment. If the target object is already in
 a container, then it moves to a new container.
 
 This command prints "OK" at the end which means this can only be used in response
 to a user request.
 
-This is only used to get the bird into the box and to fill the bottle with water. These are the 
-only two "containment" uses in the game. No other object is ever inside another. The PEARL appears 
+This is only used to get the bird into the box and to fill the bottle with water. These are the
+only two "containment" uses in the game. No other object is ever inside another. The PEARL appears
 to be in the SARCOPHAGUS, but there are two distinct SARCOPHAGUS objects to simulate empty
-and full. The LAMP object doesn't really contain batteries. The Mummy drops the treasures next to 
+and full. The LAMP object doesn't really contain batteries. The Mummy drops the treasures next to
 the CHEST in the maze; he doesn't put them into it.
 
 ```code
@@ -3050,8 +3052,8 @@ or backpack). This check accounts for containment; if the bird is in the
 box and the box is in the current room, then technically the bird is in the
 current room.
 
-!! Interestingly, this command is only used to check for the BRIDGE, PLANT, 
-and SERPENT -- none of which can be in the backpack. This is an early 
+!! Interestingly, this command is only used to check for the BRIDGE, PLANT,
+and SERPENT -- none of which can be in the backpack. This is an early
 command in the list. Maybe the 1A command next was added later after the
 game was mostly finished. The 1A is only used for dropping the vase on the
 pillow. Maybe that sequence was a late add. TODO check woods code.
@@ -3073,7 +3075,7 @@ COM_03_is_in_pack_or_current_room:
 
 # COM_1A_is_in_current_room(obj_num)
 
-This command checks if the request object is in the current room -- either directly or 
+This command checks if the request object is in the current room -- either directly or
 contained by an object in this room.
 
 This is only used to check for the pillow before dropping the vase.
@@ -3182,7 +3184,7 @@ COM_0C_move_to_room_if_was_last:
 # COM_16_get_users_object_print_ok()
 
 This command places the user's object (given on the command line) into the backpack.
-The object has already been checked by the parse-input function, so we know it is here. 
+The object has already been checked by the parse-input function, so we know it is here.
 If it is already in the backpack, we print an error message.
 
 Containment is respected. If the target object is in a container, then the container is moved
@@ -3353,7 +3355,7 @@ COM_11_is_object_user_input:
 # COM_12_get_from_room_print_ok(obj_num)
 
 This command gets a specific object from the current room and prints OK. It respects
-containment. 
+containment.
 
 This is only used to pick up the pillow along with the vase. All other objects
 are picked up by COM_16_get_users_object_print_ok.
@@ -3450,7 +3452,7 @@ funny message about "magic smoke".
 The lamp is turned off and moved to RM_01_BEFORE_ENTRANCE. The lamp count is reset to 0.
 All objects in the player's pack are dropped in the current room at time of death.
 
-The player is moved just beyond the lamp to room M_02_IN_ENTRANCE. The player has to 
+The player is moved just beyond the lamp to room M_02_IN_ENTRANCE. The player has to
 backtrack to get the lamp.
 
 The BACK location is not touched. It remains the room you were in before you entered
@@ -3797,7 +3799,7 @@ But the pointers are different for the ROMLevel1 and ROMLevel2 code. The save-ga
 between code versions except for this one overflow byte. If the code used 258 instead of 259, then
 you could share save-games. Because of this one byte overflow, the data isn't portable.
 
-To fix this overflow, the load_game comand manually overwrites the pointer after loading. It would 
+To fix this overflow, the load_game comand manually overwrites the pointer after loading. It would
 have been easier to fix the save length. Why this was done instead is a mystery to me.
 
 ```code
@@ -4203,7 +4205,7 @@ GeneralComScript:
 5AF8: 07 09      ;     stop_if_pass ...
 5AFA: 11 1C      ;         is_object_user_input(OBJ_1C_WATER)
 5AFC: 15 1C 00   ;         move_object_to_room(OBJ_1C_WATER, RM_00_nowhere)
-5AFF: 04 E9 75   ;         print(PS_8C) 77	 YOUR BOTTLE IS EMPTY AND THE GROUND IS WET.
+5AFF: 04 E9 75   ;         print(PS_8C) 77 YOUR BOTTLE IS EMPTY AND THE GROUND IS WET.
 ;                                       YOUR_BOTTLE_IS_EMPTY_AND_THE_GROUND_IS_WET.
 5B02: 04 08 76   ;     print(PS_8D) YOU_CAN'T_POUR_THAT.
 5B05: 25 12      ; RUB
@@ -4301,14 +4303,13 @@ GeneralComScript:
 5BD6: 1B         ;     load_game()
 5BD7: 3B 02      ; SAVE
 5BD9: 1C         ;     save_game()
-5BDA: 00         ; 
+5BDA: 00         ;
 ```
 
 # Room descriptions (packed)
 
 ```code
-
-; adventure.dat ??
+ 
 ; YOU_ARE_STANDING_BEFORE_THE_ENTRANCE_OF_A_PYRAMID.__AROUND_YOU__
 ; IS_A_DESERT.
 PS_00: ; RM_01_BEFORE_ENTRANCE
@@ -4317,7 +4318,6 @@ PS_00: ; RM_01_BEFORE_ENTRANCE
 5BFB: 48 9B 5D 94 14 30 A1 1B 58 1B A1 D5 15 7B 14 F5
 5C0B: 59 3E 62 2E 00
 
-; adventure.dat ??
 ; YOU_ARE_IN_THE_ENTRANCE_TO_THE_PYRAMID.__A_HOLE_IN_THE_FLOOR____
 ; LEADS_TO_A_PASSAGE_BENEATH_THE_SURFACE.
 PS_01: ; RM_02_IN_ENTRANCE
@@ -4327,15 +4327,13 @@ PS_01: ; RM_02_IN_ENTRANCE
 5C40: 17 7B 14 55 A4 09 B7 44 5E 8F 61 82 49 82 17 55
 5C50: 5E 30 C6 D7 46 2E 00
 
-; adventure.dat ??
 ; YOU_ARE_IN_THE_DESERT.
 PS_02: ; RM_03_DESERT1, RM_04, RM_05, RM_06
 5C57: 07 C7 DE 94 14 4B 5E 96 96 DB 72 F5 59 3E 62 2E
 5C67: 00
 
-; 9	 YOU ARE IN A SMALL CHAMBER BENEATH A 3X3 STEEL GRATE TO THE
-; 9	 SURFACE. A LOW CRAWL OVER COBBLES LEADS INWARD TO THE WEST.
-; woods9
+; r9 YOU ARE IN A SMALL CHAMBER    BENEATH A 3X3 STEEL GRATE TO THE
+; r9 SURFACE. A LOW CRAWL OVER COBBLES LEADS INWARD TO THE WEST.
 ;
 ; YOU_ARE_IN_A_SMALL_CHAMBER_BENEATH_A_HOLE_FROM_THE_SURFACE.__A__
 ; LOW_CRAWL_LEADS_INWARD_TO_THE_WEST.__HIEROGLYPHICS_ON_THE_WALL__
@@ -4350,9 +4348,8 @@ PS_03: ; RM_07_BENEATH_A_HOLE
 5CC8: C6 43 5E F3 8C 29 D1 30 15 F4 BD 82 17 4B 7B 05
 5CD8: B7 66 B1 E4 14 EE DE 2E 22 00
 
-; 10	 YOU ARE CRAWLING OVER COBBLES IN A LOW PASSAGE. THERE IS A
-; 10	 DIM LIGHT AT THE EAST END OF THE PASSAGE.
-; woods10
+; r10 YOU ARE CRAWLING OVER COBBLES IN A LOW PASSAGE. THERE IS A
+; r10 DIM LIGHT AT THE EAST END OF THE PASSAGE.
 ;
 ; YOU_ARE_CRAWLING_OVER_PEBBLES_IN_A_LOW_PASSAGE.__THERE_IS_A_DIM_
 ; LIGHT_AT_THE_EAST_END_OF_THE_PASSAGE.
@@ -4363,12 +4360,11 @@ PS_04: ; RM_08_CRAWLING_OVER_PEBBLES
 5D12: 14 82 17 47 5E 66 49 30 15 11 58 96 64 DB 72 55
 5D22: A4 09 B7 45 2E 00
 
-; 11	 YOU ARE IN A DEBRIS ROOM, FILLED WITH STUFF WASHED IN FROM
-; 11	 THE SURFACE. A LOW WIDE PASSAGE WITH COBBLES BECOMES
-; 11	 PLUGGED WITH MUD AND DEBRIS HERE,BUT AN AWKWARD CANYON
-; 11	 LEADS UPWARD AND WEST.
-; 11	 A NOTE ON THE WALL SAYS 'MAGIC WORD XYZZY'.
-; woods11
+; r11 YOU ARE IN A DEBRIS ROOM, FILLED WITH STUFF WASHED IN FROM
+; r11 THE SURFACE. A LOW WIDE PASSAGE WITH COBBLES BECOMES
+; r11 PLUGGED WITH MUD AND DEBRIS HERE,BUT AN AWKWARD CANYON
+; r11 LEADS UPWARD AND WEST.
+; r11 A NOTE ON THE WALL SAYS 'MAGIC WORD XYZZY'.
 ;
 ; YOU_ARE_IN_A_ROOM_FILLED_WITH_BROKEN_POTTERY_SHARDS_OF_ANCIENT__
 ; EGYPTIAN_CRAFTS.__AN_AWKWARD_CORRIDOR_LEADS_UPWARD_AND_WEST.
@@ -4380,8 +4376,7 @@ PS_05: ; RM_09_BROKEN_POTTERY
 5D68: 55 06 B2 A3 A0 E3 8B 0B 5C F1 C5 2E 49 90 14 19
 5D78: 58 66 62 2E 00
 
-; 12	 YOU ARE IN AN AWKWARD SLOPING EAST/WEST CANYON.
-; woods12
+; r12 YOU ARE IN AN AWKWARD SLOPING EAST/WEST CANYON.
 ;
 ; YOU_ARE_IN_AN_AWKWARD_SLOPING_EAST/WEST_CORRIDOR.
 PS_06: ; RM_0A_AWKWARD_SLOPING
@@ -4389,10 +4384,9 @@ PS_06: ; RM_0A_AWKWARD_SLOPING
 5D8D: 17 63 A0 AB 98 95 5F E1 BC 66 62 E1 14 73 B3 84
 5D9D: 5B 2E 00
 
-; 13	 YOU ARE IN A SPLENDID CHAMBER THIRTY FEET HIGH. THE WALLS
-; 13	 ARE FROZEN RIVERS OF ORANGE STONE. AN AWKWARD CANYON AND A
-; 13	 GOOD PASSAGE EXIT FROM EAST AND WEST SIDES OF THE CHAMBER.
-; woods13
+; r13 YOU ARE IN A SPLENDID CHAMBER THIRTY FEET HIGH. THE WALLS
+; r13 ARE FROZEN RIVERS OF ORANGE STONE. AN AWKWARD CANYON AND A
+; r13 GOOD PASSAGE EXIT FROM EAST AND WEST SIDES OF THE CHAMBER.
 ;
 ; YOU_ARE_IN_A_SPLENDID_CHAMBER_THIRTY_FEET_HIGH.__THE_WALLS_ARE__
 ; FROZEN_RIVERS_OF_ORANGE_STONE.__AN_AWKWARD_CORRIDOR_AND_A_GOOD__
@@ -4407,9 +4401,8 @@ PS_07: ; RM_0B_SPLENDID_CHAMBER
 5E00: 68 56 90 DB 72 95 5F 03 BC 33 98 B5 D0 15 BC FF
 5E10: 78 D1 B5 96 64 DB 72 1B 54 AF 91 52 2E 00
 
-; 14	 AT YOUR FEET IS A SMALL PIT BREATHING TRACES OF WHITE MIST. AN
-; 14	 EAST PASSAGE ENDS HERE EXCEPT FOR A SMALL CRACK LEADING ON.
-; woods14
+; r14 AT YOUR FEET IS A SMALL PIT BREATHING TRACES OF WHITE MIST. AN
+; r14 EAST PASSAGE ENDS HERE EXCEPT FOR A SMALL CRACK LEADING ON.
 ;
 ; AT_YOUR_FEET_IS_A_SMALL_PIT_BREATHING_TRACES_OF_WHITE_MIST.__AN_
 ; EAST_PASSAGE_ENDS_HERE_EXCEPT_FOR_A_SMALL_CRACK_LEADING_ON._____
@@ -4423,13 +4416,12 @@ PS_08: ; RM_0C_SMALL_PIT_WHITE_MIST
 5E6E: 98 27 A0 3B 13 54 13 29 A1 15 71 80 BF 55 5E F2
 5E7E: BD CE B5 86 5F 09 15 03 D2 5F BE E3 16 54 2E 00
 
-; 15	 YOU ARE AT ONE END OF A VAST HALL STRETCHING FORWARD OUT OF
-; 15	 SIGHT TO THE WEST. THERE ARE OPENINGS TO EITHER SIDE. NEARBY, A WIDE
-; 15	 STONE STAIRCASE LEADS DOWNWARD. THE HALL IS FILLED WITH
-; 15	 WISPS OF WHITE MIST SWAYING TO AND FRO ALMOST AS IF ALIVE.
-; 15	 A COLD WIND BLOWS UP THE STAIRCASE. THERE IS A PASSAGE
-; 15	 AT THE TOP OF A DOME BEHIND YOU.
-; woods15
+; r15 YOU ARE AT ONE END OF A VAST HALL STRETCHING FORWARD OUT OF
+; r15 SIGHT TO THE WEST. THERE ARE OPENINGS TO EITHER SIDE. NEARBY, A WIDE
+; r15 STONE STAIRCASE LEADS DOWNWARD. THE HALL IS FILLED WITH
+; r15 WISPS OF WHITE MIST SWAYING TO AND FRO ALMOST AS IF ALIVE.
+; r15 A COLD WIND BLOWS UP THE STAIRCASE. THERE IS A PASSAGE
+; r15 AT THE TOP OF A DOME BEHIND YOU.
 ;
 ; YOU_ARE_AT_ONE_END_OF_A_VAST_HALL_STRETCHING_FORWARD_OUT_OF_____
 ; SIGHT_TO_THE_WEST.__THERE_ARE_OPENINGS_TO_EITHER_SIDE.__NEARBY,_
@@ -4453,9 +4445,8 @@ PS_09: ; RM_0D_STEPS_LEAD_UP_DOME
 5F4E: 13 29 A1 15 71 80 BF 55 5E F2 BD CE B5 86 5F B2
 5F5E: 17 82 17 3B 5E 46 13 E7 9F 2E 00
 
-; 18	 THIS IS A LOW ROOM WITH A CRUDE NOTE ON THE WALL.
-; 18	 IT SAYS 'YOU WON'T GET IT UP THE STEPS'.
-; woods18
+; r18 THIS IS A LOW ROOM WITH A CRUDE NOTE ON THE WALL.
+; r18 IT SAYS 'YOU WON'T GET IT UP THE STEPS'.
 ;
 ; THIS_IS_A_LOW_ROOM_WITH_A_HIEROGLYPH_ON_THE_WALL.__IT_TRANSLATES
 ; "YOU_WON'T_GET_IT_UP_THE_STEPS".
@@ -4466,10 +4457,9 @@ PS_0A: ; RM_0E_LOW_ROOM_HIEROGLYPH
 5F99: D2 F3 23 B6 6C D6 15 B2 17 82 17 55 5E F2 BD 07
 5FA9: B6 00
 
-; 17	 YOU ARE ON THE EAST BANK OF A FISSURE SLICING CLEAR ACROSS
-; 17	 THE HALL. THE MIST IS QUITE THICK HERE, AND THE FISSURE IS
-; 17	 TOO WIDE TO JUMP.
-; woods17
+; r17 YOU ARE ON THE EAST BANK OF A FISSURE SLICING CLEAR ACROSS
+; r17 THE HALL. THE MIST IS QUITE THICK HERE, AND THE FISSURE IS
+; r17 TOO WIDE TO JUMP.
 ;
 ; YOU_ARE_ON_THE_EAST_BANK_OF_A_BOTTOMLESS_PIT_STRETCHING_ACROSS__
 ; THE_HALL.__THE_MIST_IS_QUITE_THICK_HERE,_AND_THE_PIT_IS_TOO_WIDE
@@ -4482,9 +4472,8 @@ PS_0B: ; RM_0F_EAST_BANK_BOTTOMLESS_PIT
 5FEB: BE 8B 54 F4 72 B3 63 8E 48 82 17 52 5E 73 7B 4B
 5FFB: 7B 81 BF FB 17 F6 59 CC 9C 72 C5 2E 00
 
-; 19	 YOU ARE IN THE HALL OF THE MOUNTAIN KING, WITH PASSAGES
-; 19	 OFF IN ALL DIRECTIONS.
-; woods19
+; r19 YOU ARE IN THE HALL OF THE MOUNTAIN KING, WITH PASSAGES
+; r19 OFF IN ALL DIRECTIONS.
 ;
 ; YOU_ARE_IN_THE_PHARAOH'S_CHAMBER,_WITH_PASSAGES_OFF_IN_ALL______
 ; DIRECTIONS.
@@ -4494,16 +4483,14 @@ PS_0C: ; RM_10_PHARAOHS_CHAMBER
 6028: 62 D0 9E D0 15 8E 14 FB 89 3B 13 03 15 65 B1 91
 6038: BE AF 9A 00
 
-; 29	 YOU ARE IN THE SOUTH SIDE CHAMBER.
-; woods29
+; r29 YOU ARE IN THE SOUTH SIDE CHAMBER.
 ;
 ; YOU_ARE_IN_THE_SOUTH_SIDE_CHAMBER.
 PS_0D: ; RM_11_SOUTH_SIDE_CHAMBER
 603C: 0B C7 DE 94 14 4B 5E 96 96 DB 72 47 B9 53 BE 46
 604C: B8 45 5E 4F 72 74 4D 2E 00
 
-; 27	 YOU ARE ON THE WEST SIDE OF THE FISSURE IN THE HALL OF MISTS.
-; woods27
+; r27 YOU ARE ON THE WEST SIDE OF THE FISSURE IN THE HALL OF MISTS.
 ;
 ; YOU_ARE_ON_THE_WEST_SIDE_OF_THE_BOTTOMLESS_PIT_IN_THE_HALL_OF___
 ; GODS.
@@ -4512,9 +4499,9 @@ PS_0E: ; RM_12_HALL_OF_GODS
 6065: 78 B8 16 82 17 44 5E 0E A1 EE 9F 65 62 E3 16 0B
 6075: BC 96 96 DB 72 4E 72 11 8A 7B 64 81 15 2F 5C 00
 
-; 41	 YOU ARE AT THE WEST END OF HALL OF MISTS. A LOW WIDE CRAWL
-; 41	 CONTINUES WEST AND ANOTHER GOES NORTH. TO THE SOUTH IS A
-; 41	 LITTLE PASSAGE 6 FEET OFF THE FLOOR.
+; r41 YOU ARE AT THE WEST END OF HALL OF MISTS. A LOW WIDE CRAWL
+; r41 CONTINUES WEST AND ANOTHER GOES NORTH. TO THE SOUTH IS A
+; r41 LITTLE PASSAGE 6 FEET OFF THE FLOOR.
 ;
 ; YOU_ARE_AT_THE_WEST_END_OF_THE_HALL_OF_GODS.___A_LOW_WIDE_PASS__
 ; CONTINUES_WEST_AND_ANOTHER_GOES_NORTH.__TO_THE_SOUTH_IS_A_LITTLE
@@ -4528,9 +4515,9 @@ PS_0F: ; RM_13_LITTLE_PASSAGE_SIX_FEET
 60D5: 7B 4E 45 8E 7B F2 8B 65 49 77 47 5B 17 08 D5 36
 60E5: 60 B8 16 96 64 DB 72 89 67 C7 A0 00
 
-; 60	 YOU ARE AT THE EAST END OF A VERY LONG HALL APPARENTLY
-; 60	 WITHOUT SIDE CHAMBERS. TO THE EAST A LOW WIDE CRAWL SLANTS
-; 60	 UP. TO THE NORTH A ROUND TWO FOOT HOLE SLANTS DOWN.
+; r60 YOU ARE AT THE EAST END OF A VERY LONG HALL APPARENTLY
+; r60 WITHOUT SIDE CHAMBERS. TO THE EAST A LOW WIDE CRAWL SLANTS
+; r60 UP. TO THE NORTH A ROUND TWO FOOT HOLE SLANTS DOWN.
 ;
 ; YOU_ARE_AT_EAST_END_OF_A_VERY_LONG_HALL_APPARENTLY_WITHOUT_SIDE_
 ; CHAMBERS.__TO_THE_EAST_A_LOW_WIDE_CRAWL_SLANTS_UP.__TO_THE_NORTH
@@ -4544,7 +4531,7 @@ PS_10: ; RM_14_EAST_END_LONG_HALL
 6141: 9C DB 72 04 9A 5B BE 39 17 8E C5 91 17 C8 9C 46
 6151: A0 A9 15 DB 8B BB B8 CD 9A 09 15 27 D2 00
 
-; 61	 YOU ARE AT THE WEST END OF A VERY LONG FEATURELESS HALL.
+; r61 YOU ARE AT THE WEST END OF A VERY LONG FEATURELESS HALL.
 ;
 ; YOU_ARE_AT_THE_WEST_END_OF_A_VERY_LONG_FEATURELESS_HALL.__THE___
 ; HALL_JOINS_UP_WITH_A_NARROW_NORTH/SOUTH_PASSAGE.
@@ -4555,7 +4542,7 @@ PS_11: ; RM_15_WEST_END_FEATURELESS_HALL
 618F: 80 8B 9A D3 C5 56 D1 03 71 8B 16 79 B3 D0 CE BE
 619F: A0 DD 71 36 A1 12 71 65 49 77 47 2E 00
 
-; 62	 YOU ARE AT A CROSSOVER OF A HIGH N/S PASSAGE AND A LOW E/W ONE.
+; r62 YOU ARE AT A CROSSOVER OF A HIGH N/S PASSAGE AND A LOW E/W ONE.
 ;
 ; YOU_ARE_AT_A_CROSSOVER_OF_A_HIGH_N/S_PASSAGE_AND_A_LOW_E/W_ONE.
 PS_12: ; RM_16_CROSSOVER
@@ -4563,15 +4550,14 @@ PS_12: ; RM_16_CROSSOVER
 61BC: AF 83 64 A3 15 13 6D 5D 97 DB 16 D3 B9 9B 6C 8E
 61CC: 48 7B 14 89 8D 20 15 D1 CE 7F 98 00
 
-; 63	 DEAD END
+; r63 DEAD END
 ;
 ; DEAD_END.
 PS_13: ; RM_17_DEAD_END1, RM_2A, RM_2B, RM_2C, RM_2D, RM_2E, RM_2F, RM_30, RM_31, RM_32, RM_33, RM_35
 61D8: 03 E3 59 07 58 57 98 00
 
-; 30	 YOU ARE IN THE WEST SIDE CHAMBER OF HALL OF MT KING.
-; 30	 A PASSAGE CONTINUES WEST AND UP HERE.
-; woods31
+; r30 YOU ARE IN THE WEST SIDE CHAMBER OF HALL OF MT KING.
+; r30 A PASSAGE CONTINUES WEST AND UP HERE.
 ;
 ; YOU_ARE_IN_THE_WEST_THRONE_CHAMBER.__A_PASSAGE_CONTINUES_WEST___
 ; AND_UP_FROM_HERE.
@@ -4581,9 +4567,8 @@ PS_14: ; RM_18_THRONE_CHAMBER
 6200: 5E 1E A0 9F 7A 4B 62 B5 D0 FB BB 90 14 17 58 08
 6210: A3 FF B2 9F 15 7F B1 00
 
-; 28	 YOU ARE IN A LOW N/S PASSAGE AT A HOLE IN THE FLOOR.
-; 28	 THE HOLE GOES DOWN TO AN E/W PASSAGE.
-; woods28
+; r28 YOU ARE IN A LOW N/S PASSAGE AT A HOLE IN THE FLOOR.
+; r28 THE HOLE GOES DOWN TO AN E/W PASSAGE.
 ;
 ; YOU_ARE_IN_A_LOW_N/S_PASSAGE_AT_A_HOLE_IN_THE_FLOOR.__THE_HOLE__
 ; GOES_DOWN_TO_AN_E/W_PASSAGE.
@@ -4593,10 +4578,9 @@ PS_15: ; RM_19_LOW_NS_PASSAGE
 6238: 15 44 A0 3B F4 5F BE A9 15 DB 8B 81 15 4B 62 89
 6248: 5B 96 96 C3 9C 87 96 2B 37 55 A4 09 B7 45 2E 00
 
-; 33	 YOU ARE IN A LARGE ROOM, WITH A PASSAGE TO THE SOUTH,
-; 33	 A PASSAGE TO THE WEST, AND A WALL OF BROKEN ROCK TO
-; 33	 THE EAST. THERE IS A LARGE 'Y2' ON A ROCK IN ROOMS CENTER.
-; woods33
+; r33 YOU ARE IN A LARGE ROOM, WITH A PASSAGE TO THE SOUTH,
+; r33 A PASSAGE TO THE WEST, AND A WALL OF BROKEN ROCK TO
+; r33 THE EAST. THERE IS A LARGE 'Y2' ON A ROCK IN ROOMS CENTER.
 ;
 ; YOU_ARE_IN_A_LARGE_ROOM,_WITH_A_PASSAGE_TO_THE_SOUTH,_AND_A_WALL
 ; OF_BROKEN_ROCK_TO_THE_EAST.__THERE_IS_A_PANEL_ON_THE_NORTH_WALL.
@@ -4608,18 +4592,25 @@ PS_16: ; RM_1A_PANEL_NORTH_WALL
 6298: BE 5B B1 4B 7B 52 45 8F 48 11 8A 96 96 DB 72 04
 62A8: 9A 53 BE 0E D0 4C 2E 00
 
-; adventure.dat ??
+; r34 YOU ARE IN A JUMBLE OF ROCK, WITH CRACKS EVERYWHERE.
+;
 ; YOU_ARE_IN_THE_CHAMBER_OF_ANUBIS.
 PS_17: ; RM_1B_CHAMBER_OF_ANUBIS
 62B0: 0B C7 DE 94 14 4B 5E 96 96 DB 72 1B 54 AF 91 91
 62C0: AF 83 64 E4 9A 6F 7B 00
 
+; r42 YOU ARE IN A MAZE OF TWISTY LITTLE PASSAGES, ALL ALIKE
+;
 ; YOU_ARE_IN_A_MAZE_OF_TWISTY_PASSAGES,_ALL_ALIKE.
 PS_18: ; RM_1C_TWISTY_PASSAGES1, RM_1D, RM_1E, RM_1F, RM_20, RM_21, RM_22, RM_23, RM_24, RM_25, RM_26, RM_27, RM_28, RM_29
 62C8: 10 C7 DE 94 14 4B 5E 83 96 63 16 5B E3 C3 9E BB
 62D8: C0 13 BA DB 16 D3 B9 B5 6C 03 EE F3 8C 43 48 BF
 62E8: 85 00
 
+; r57 YOU ARE ON THE BRINK OF A THIRTY FOOT PIT WITH A MASSIVE ORANGE COLUMN
+; r57 DOWN ONE WALL. YOU COULD CLIMB DOWN HERE BUT YOU COULD NOT GET BACK
+; r57 UP.  THE MAZE CONTINUES AT THIS LEVEL.
+;
 ; YOU_ARE_ON_THE_BRINK_OF_A_LARGE_PIT.__YOU_COULD_CLIMB_DOWN,_BUT_
 ; YOU_WOULD_NOT_BE_ABLE_TO_CLIMB_BACK_UP.__THE_MAZE_CONTINUES_ON__
 ; THIS_LEVEL.
@@ -4631,10 +4622,9 @@ PS_19: ; RM_34_BRINK_OF_LARGE_PIT
 632A: 4B DD 46 B2 17 3B F4 5F BE 63 16 5B E3 40 55 90
 633A: BE 35 C4 C0 16 56 13 95 73 3F 16 6E CA 2E 00
 
-; 36	 YOU ARE IN A DIRTY BROKEN PASSAGE. TO THE EAST IS A CRAWL.
-; 36	 TO THE WEST IS A LARGE PASSAGE. ABOVE YOU IS A HOLE TO
-; 36	 ANOTHER PASSAGE.
-; woods36
+; r36 YOU ARE IN A DIRTY BROKEN PASSAGE. TO THE EAST IS A CRAWL.
+; r36 TO THE WEST IS A LARGE PASSAGE. ABOVE YOU IS A HOLE TO
+; r36 ANOTHER PASSAGE.
 ;
 ; YOU_ARE_IN_A_DIRTY_BROKEN_PASSAGE.__TO_THE_EAST_IS_A_CRAWL.__TO_
 ; THE_WEST_IS_A_LARGE_PASSAGE.__ABOVE_YOU_IS_A_HOLE_TO_ANOTHER____
@@ -4647,8 +4637,8 @@ PS_1A: ; RM_36_DIRTY_BROKEN_PASSAGE
 6389: 14 4F A1 51 18 4B C2 C3 B5 A9 15 DB 8B 6B BF 99
 6399: 48 5F BE 7B AF 52 13 65 49 77 47 2E 00
 
-; 37	 YOU ARE ON THE BRINK OF A SMALL CLEAN CLIMBABLE PIT.
-; 37	 A CRAWL LEADS WEST.
+; r37 YOU ARE ON THE BRINK OF A SMALL CLEAN CLIMBABLE PIT.
+; r37 A CRAWL LEADS WEST.
 ;
 ; YOU_ARE_ON_THE_BRINK_OF_A_SMALL_CLEAN_CLIMBABLE_PIT.__A_CRAWL___
 ; LEADS_WEST.
@@ -4658,8 +4648,8 @@ PS_1B: ; RM_37_BRINK_OF_CLEAN_PIT
 63C6: 8B 96 A5 3B F4 45 45 D9 B0 FB 89 3F 16 0D 47 F7
 63D6: 17 17 BA 00
 
-; 38	 YOU ARE IN THE BOTTOM OF A SMALL PIT WITH A LITTLE
-; 38	 STREAM, WHICH ENTERS AND EXITS THROUGH TINY SLITS.
+; r38 YOU ARE IN THE BOTTOM OF A SMALL PIT WITH A LITTLE
+; r38 STREAM, WHICH ENTERS AND EXITS THROUGH TINY SLITS.
 ;
 ; YOU_ARE_IN_THE_BOTTOM_OF_A_SMALL_PIT_WITH_A_LITTLE_STREAM,_WHICH
 ; ENTERS_AND_EXITS_THROUGH_TINY_SLITS.
@@ -4670,6 +4660,9 @@ PS_1C: ; RM_38_PIT_LITTLE_STREAM
 640A: B5 33 98 23 63 0B C0 6C BE 29 A1 16 71 A3 7A 5E
 641A: 17 8D 7B 2E 00
 
+; r39 YOU ARE IN A LARGE ROOM FULL OF DUSTY ROCKS.  THERE IS A BIG HOLE IN
+; r39 THE FLOOR.  THERE ARE CRACKS EVERYWHERE, AND A PASSAGE LEADING EAST.
+;
 ; YOU_ARE_IN_A_THE_ROOM_OF_BES,_WHOSE_PICTURE_IS_ON_THE_WALL._____
 ; THERE_IS_A_BIG_HOLE_IN_THE_FLOOR.__THERE_IS_A_PASSAGE_LEADING___
 ; EAST.
@@ -4681,12 +4674,12 @@ PS_1D: ; RM_39_ROOM_OF_BES
 645F: A0 3B F4 5F BE 5B B1 4B 7B 52 45 65 49 77 47 3F
 646F: 16 03 47 AB 98 47 13 66 49 2E 00
 
-; 64	 YOU ARE AT A COMPLEX JUNCTION. A LOW HANDS AND KNEES
-; 64	 PASSAGE FROM THE NORTH JOINS A HIGHER CRAWL
-; 64	 FROM THE EAST TO MAKE  A WALKING PASSAGE GOING WEST
-; 64	 THERE IS ALSO A LARGE ROOM ABOVE. THE AIR IS DAMP HERE.
-; 64	 A SIGN IN MIDAIR HERE SAYS 'CAVE UNDER CONSTRUCTION BEYOND
-; 64	 THIS POINT. PROCEED AT OWN RISK.'
+; r64 YOU ARE AT A COMPLEX JUNCTION. A LOW HANDS AND KNEES
+; r64 PASSAGE FROM THE NORTH JOINS A HIGHER CRAWL
+; r64 FROM THE EAST TO MAKE  A WALKING PASSAGE GOING WEST
+; r64 THERE IS ALSO A LARGE ROOM ABOVE. THE AIR IS DAMP HERE.
+; r64 A SIGN IN MIDAIR HERE SAYS 'CAVE UNDER CONSTRUCTION BEYOND
+; r64 THIS POINT. PROCEED AT OWN RISK.'
 ;
 ; YOU_ARE_AT_A_COMPLEX_JUNCTION.__A_LOW_HANDS_AND_KNEES_PASSAGE___
 ; FROM_THE_NORTH_JOINS_A_HIGHER_CRAWL_FROM_THE_EAST_TO_MAKE_A_____
@@ -4703,6 +4696,11 @@ PS_1E: ; RM_3A_COMPLEX_JUNCTION
 64EA: 14 2B B9 4E 45 31 49 54 5E 3F A0 84 14 4F A1 3B
 64FA: F4 5F BE 8B 14 8B AF C6 B5 72 48 9F 15 7F B1 00
 
+; r106 YOU ARE IN AN ANTEROOM LEADING TO A LARGE PASSAGE TO THE EAST. SMALL
+; r106 PASSAGES GO WEST AND UP.  THE REMNANTS OF RECENT DIGGING ARE EVIDENT.
+; r106 A SIGN IN MIDAIR HERE SAYS "CAVE UNDER CONSTRUCTION BEYOND THIS POINT.
+; r106 PROCEED AT OWN RISK.  [WITT CONSTRUCTION COMPANY]"
+;
 ; YOU_ARE_IN_THE_UNDERWORLD_ANTEROOM_OF_SEKER.__PASSAGES_GO_EAST,_
 ; WEST,_AND_UP.__HUMAN_BONES_ARE_STREWN_ABOUT_ON_THE_FLOOR._______
 ; HIEROGLYPHICS_ON_THE_WALL_ROUGHLY_TRANSLATE_TO_"THOSE_WHO_______
@@ -4719,6 +4717,8 @@ PS_1F: ; RM_3B_ANTEROOM_OF_SEKER
 658A: 13 F9 A6 A7 53 07 58 66 49 63 16 50 DB CF 62 94
 659A: AF 8F 62 E7 B2 22 00
 
+; r108 YOU ARE AT WITT'S END. PASSAGES LEAD OFF IN *ALL* DIRECTIONS.
+;
 ; YOU_ARE_AT_THE_LAND_OF_DEAD.__PASSAGES_LEAD_OFF_IN_>ALL<________
 ; DIRECTIONS.
 PS_20: ; RM_3C_LAND_OF_DEAD
@@ -4727,6 +4727,11 @@ PS_20: ; RM_3C_LAND_OF_DEAD
 65C1: 66 83 7A 8E 2D 73 8A 3B 13 3B 13 03 15 65 B1 91
 65D1: BE AF 9A 00
 
+; r103 YOU'RE IN A LARGE ROOM CARVED OUT OF SEDIMENTARY ROCK. THE FLOOR AND
+; r103 WALLS ARE LITTERED WITH BITS OF SHELLS IMBEDDED IN THE STONE.  A
+; r103 SHALLOW PASSAGE PROCEEDS DOWNWARD, AND A SOMEWHAT STEEPER ONE LEADS
+; r103 UP.  A LOW HANDS AND KNEES PASSAGE ENTERS FROM THE SOUTH.
+;
 ; YOU'RE_IN_A_LARGE_ROOM_WITH_ANCIENT_DRAWINGS_ON_ALL_WALLS.______
 ; THE_PICTURES_DEPICT_ATUM,_A_PHARAOH_WEARING_THE_DOUBLE_CROWN.___
 ; A_SHALLOW_PASSAGE_PROCEEDS_DOWNWARD,_AND_A_SOMEWHAT_STEEPER_ONE_
@@ -4744,6 +4749,9 @@ PS_21: ; RM_3D_ANCIENT_DRAWINGS
 6665: B5 33 98 0F 87 4B 62 55 A4 09 B7 47 5E BF 9A 8B
 6675: B3 79 68 56 90 DB 72 47 B9 77 BE 20 00
 
+; r102 YOU ARE IN AN ARCHED HALL.  A CORAL PASSAGE ONCE CONTINUED UP AND EAST
+; r102 FROM HERE, BUT IS NOW BLOCKED BY DEBRIS.  THE AIR SMELLS OF SEA WATER.
+;
 ; YOU_ARE_IN_A_CHAMBER_WHOSE_WALL_CONTAINS_A_PICTURE_OF_A_MAN_____
 ; WEARING_THE_LUNAR_DISK_ON_HIS_HEAD.__HE_IS_THE_GOD_KHONS,_THE___
 ; MOON_GOD.
@@ -4755,20 +4763,24 @@ PS_22: ; RM_3E_MOON_GOD
 66C2: 15 17 47 4A 13 4B 5E D6 B5 DB 72 36 6E 1A 16 1D
 66D2: A0 16 EE DB 72 4F 13 40 A0 81 15 44 2E 00
 
+; r104 YOU ARE IN A LONG SLOPING CORRIDOR WITH RAGGED SHARP WALLS.
+;
 ; YOU_ARE_IN_A_LONG_SLOPING_CORRIDOR_WITH_RAGGED_WALLS._
 PS_23: ; RM_3F_RAGGED_WALLS
 66E0: 12 C7 DE 94 14 4B 5E 83 96 49 16 AB 98 C9 B8 90
 66F0: A5 C5 6A BC A0 09 79 99 AF 82 7B 2B 17 F7 6C 19
 6700: 58 46 48 5B BB 20 00
 
+; r105 YOU ARE IN A CUL-DE-SAC ABOUT EIGHT FEET ACROSS.
+;
 ; YOU_ARE_IN_A_CUL-DE-SAC_ABOUT_EIGHT_FEET_ACROSS.
 PS_24: ; RM_40_CUL_DE_SAC
 6707: 10 C7 DE 94 14 4B 5E 83 96 E7 14 56 8F A5 63 CB
 6717: 46 B9 46 73 C6 C9 60 33 75 67 66 03 BC B9 55 EF
 6727: B9 00
 
-; 65	 YOU ARE IN BEDQUILT, A LONG EAST/WEST PASSAGE WITH HOLES EVERYWHERE.
-; 65	 TO EXPLORE AT RANDOM SELECT NORTH, SOUTH, UP, OR DOWN.
+; r65 YOU ARE IN BEDQUILT, A LONG EAST/WEST PASSAGE WITH HOLES EVERYWHERE.
+; r65 TO EXPLORE AT RANDOM SELECT NORTH, SOUTH, UP, OR DOWN.
 ;
 ; YOU_ARE_IN_THE_CHAMBER_OF_HORUS,_A_LONG_EAST/WEST_PASSAGE_WITH__
 ; HOLES_EVERYWHERE.__TO_EXPLORE_AT_RANDOM,_SELECT_NORTH,_SOUTH,___
@@ -4781,11 +4793,11 @@ PS_25: ; RM_41_CHAMBER_OF_HORUS
 6769: 14 2B 17 49 98 B3 95 AE B7 E6 5F 99 16 C2 B3 15
 6779: EE 36 A1 73 76 57 13 73 A8 A3 A0 89 5B 4E 2E 00
 
-; 68	 YOU ARE IN A LARGE LOW CIRCULAR CHAMBER WHOSE FLOOR IS AN
-; 68	 IMMENSE SLAB FALLEN FROM THE CEILING(SLAB ROOM). EAST AND
-; 68	 WEST THERE ONCE WERE LARGE PASSAGES, BUT THEY ARE NOW FILLED
-; 68	 WITH BOULDERS. LOW SMALL PASSAGES GO NORTH AND SOUTH, AND THE
-; 68	 SOUTH ONE QUICKLY BENDS WEST AROUND THE BOULDERS.
+; r68 YOU ARE IN A LARGE LOW CIRCULAR CHAMBER WHOSE FLOOR IS AN
+; r68 IMMENSE SLAB FALLEN FROM THE CEILING(SLAB ROOM). EAST AND
+; r68 WEST THERE ONCE WERE LARGE PASSAGES, BUT THEY ARE NOW FILLED
+; r68 WITH BOULDERS. LOW SMALL PASSAGES GO NORTH AND SOUTH, AND THE
+; r68 SOUTH ONE QUICKLY BENDS WEST AROUND THE BOULDERS.
 ;
 ; YOU_ARE_IN_A_LARGE_LOW_CIRCULAR_CHAMBER_WHOSE_FLOOR_IS_AN_______
 ; IMMENSE_SLAB_FALLEN_FROM_THE_CEILING.__EAST_AND_WEST_THERE_ONCE_
@@ -4803,6 +4815,9 @@ PS_26: ; RM_42_FALLEN_SLAB
 6809: 13 89 8D 5F 17 46 48 DB 16 D3 B9 B5 6C 81 15 99
 6819: 16 C2 B3 90 14 15 58 36 A1 48 2E 00
 
+; r96 YOU ARE IN THE SOFT ROOM.  THE WALLS ARE COVERED WITH HEAVY CURTAINS,
+; r96 THE FLOOR WITH A THICK PILE CARPET.  MOSS COVERS THE CEILING.
+;
 ; YOU_ARE_IN_THE_PRIEST'S_BEDROOM.__THE_WALLS_ARE_COVERED_WITH____
 ; CURTAINS,_THE_FLOOR_WITH_A_THICK_PILE_CARPET.__MOSS_COVERS_THE__
 ; CEILING.
@@ -4814,6 +4829,10 @@ PS_27: ; RM_48_PRIESTS_BEDROOM
 6865: 78 E3 16 DB 8B 14 53 F6 A4 3B F4 C5 93 C5 B5 4F
 6875: A1 8B B3 5F BE 45 13 CE 60 91 7A 2E 00
 
+; r99 YOU ARE IN AN ALCOVE.  A SMALL NW PATH SEEMS TO WIDEN AFTER A SHORT
+; r99 DISTANCE.  AN EXTREMELY TIGHT TUNNEL LEADS EAST.  IT LOOKS LIKE A VERY
+; r99 TIGHT SQUEEZE. AN EERIE LIGHT CAN BE SEEN AT THE OTHER END.
+;
 ; THIS_IS_THE_CHAMBER_OF_THE_HIGH_PRIEST.___ANCIENT_DRAWINGS_COVER
 ; THE_WALLS.__AN_EXTREMELY_TIGHT_TUNNEL_LEADS_WEST.__IT_LOOKS_LIKE
 ; A_TIGHT_SQUEEZE.__ANOTHER_PASSAGE_LEADS_SE.
@@ -4827,6 +4846,9 @@ PS_28: ; RM_49_HIGH_PRIEST
 68E2: E3 43 13 06 9A F4 72 DB 16 D3 B9 9B 6C E3 8B 0B
 68F2: 5C BF B7 00
 
+; r100 YOU'RE IN A SMALL CHAMBER LIT BY AN EERIE GREEN LIGHT. AN EXTREMELY
+; r100 NARROW TUNNEL EXITS TO THE WEST.  A DARK CORRIDOR LEADS NE.
+;
 ; YOU_ARE_IN_THE_HIGH_PRIEST'S_TREASURE_ROOM_LIT_BY_AN_EERIE_GREEN
 ; LIGHT.__A_NARROW_TUNNEL_EXITS_TO_THE_EAST.
 PS_29: ; RM_4C_EERIE_GREEN_LIGHT
@@ -4836,12 +4858,12 @@ PS_29: ; RM_4C_EERIE_GREEN_LIGHT
 6926: F4 50 45 3C 49 6B A1 70 C0 6E 98 3A 15 8D 7B 89
 6936: 17 82 17 47 5E 66 49 2E 00
 
-; 67	 YOU ARE IN THE TWOPIT ROOM. THE FLOOR
-; 67	 HERE IS LITTERED WITH THIN ROCK SLABS, WHICH MAKE IT
-; 67	 EASY TO DESCEND THE PITS. THERE IS A PATH HERE BYPASSING
-; 67	 THE PITS TO CONNECT PASSAGES FROM EAST AND WEST.THERE
-; 67	 ARE HOLES ALL OVER, BUT THE ONLY BIG ONE IS ON THE WALL
-; 67	 DIRECTLY OVER THE EAST PIT WHERE YOU CAN'T GET TO IT.
+; r67 YOU ARE IN THE TWOPIT ROOM. THE FLOOR
+; r67 HERE IS LITTERED WITH THIN ROCK SLABS, WHICH MAKE IT
+; r67 EASY TO DESCEND THE PITS. THERE IS A PATH HERE BYPASSING
+; r67 THE PITS TO CONNECT PASSAGES FROM EAST AND WEST.THERE
+; r67 ARE HOLES ALL OVER, BUT THE ONLY BIG ONE IS ON THE WALL
+; r67 DIRECTLY OVER THE EAST PIT WHERE YOU CAN'T GET TO IT.
 ;
 ; YOU_ARE_AT_THE_EAST_END_OF_THE_TWOPIT_ROOM.__THE_FLOOR_HERE_IS__
 ; LITTERED_WITH_THIN_ROCK_SLABS,_WHICH_MAKE_IT_EASY_TO_DESCEND_THE
@@ -4866,8 +4888,8 @@ PS_2A: ; RM_4E_WEAST_END_TWOPIT
 6A0F: B1 C7 DE 3B 13 45 13 85 48 09 BC 73 62 6B BF 97
 6A1F: 7B 00
 
-; woods24 YOU ARE AT THE BOTTOM OF THE EASTERN PIT IN THE TWOPIT ROOM.  THERE IS
-; woods24 A SMALL POOL OF OIL IN ONE CORNER OF THE PIT.
+; r24 YOU ARE AT THE BOTTOM OF THE EASTERN PIT IN THE TWOPIT ROOM.  THERE IS
+; r24 A SMALL POOL OF OIL IN ONE CORNER OF THE PIT.
 ;
 ; YOU_ARE_AT_THE_BOTTOM_OF_THE_EASTERN_PIT_IN_THE_TWOPIT_ROOM.
 PS_2B: ; RM_4F_BOTTOM_EASTERN_PIT
@@ -4875,8 +4897,8 @@ PS_2B: ; RM_4F_BOTTOM_EASTERN_PIT
 6A31: 16 82 17 47 5E 66 49 38 62 E3 16 0B BC 96 96 DB
 6A41: 72 C1 C0 96 A5 39 17 FF 9F 00
 
-; woods23    YOU ARE AT THE WEST END OF THE TWOPIT ROOM.  THERE IS A LARGE HOLE IN
-; woods23    THE WALL ABOVE THE PIT AT THIS END OF THE ROOM.
+; r23 YOU ARE AT THE WEST END OF THE TWOPIT ROOM.  THERE IS A LARGE HOLE IN
+; r23 THE WALL ABOVE THE PIT AT THIS END OF THE ROOM.
 ;
 ; YOU_ARE_AT_THE_WEST_END_OF_THE_TWOPIT_ROOM.__THERE_IS_A_LARGE___
 ; HOLE_IN_THE_WALL_ABOVE_THE_PIT_AT_THIS_END_OF_THE_ROOM.
@@ -4888,9 +4910,8 @@ PS_2C: ; RM_50_WEST_END_TWOPIT
 6A8B: BC 16 BC 95 73 30 15 11 58 96 64 DB 72 01 B3 4D
 6A9B: 2E 00
 
-; 25    YOU ARE AT THE BOTTOM OF THE WESTERN PIT IN THE TWOPIT ROOM.  THERE IS
-; 25    A LARGE HOLE IN THE WALL ABOUT 25 FEET ABOVE YOU.
-; woods25
+; r25 YOU ARE AT THE BOTTOM OF THE WESTERN PIT IN THE TWOPIT ROOM.  THERE IS
+; r25 A LARGE HOLE IN THE WALL ABOUT 25 FEET ABOVE YOU.
 ;
 ; YOU_ARE_AT_THE_BOTTOM_OF_THE_WEST_PIT_IN_THE_TWOPIT_ROOM.__THERE
 ; IS_A_LARGE_HOLE_IN_THE_WALL_ABOUT_TWENTY_FIVE_FEET_ABOVE_YOU.
@@ -4902,6 +4923,10 @@ PS_2D: ; RM_51_BOTTOM_WEST_PIT
 6ADD: 4F 16 BC B0 D0 FB C0 18 67 48 5E 36 60 84 14 4F
 6AED: A1 51 18 55 2E 00
 
+; r88 YOU ARE IN A LONG, NARROW CORRIDOR STRETCHING OUT OF SIGHT TO THE
+; r88 WEST.  AT THE EASTERN END IS A HOLE THROUGH WHICH YOU CAN SEE A
+; r88 PROFUSION OF LEAVES.
+;
 ; YOU_ARE_IN_A_LONG,_NARROW_CORRIDOR_STRETCHING_OUT_OF_SIGHT_TO___
 ; THE_WEST.__AT_THE_EASTERN_END_IS_A_HOLE_THROUGH_WHICH_YOU_CAN___
 ; SEE_A_PROFUSION_OF_LEAVES.
@@ -4914,6 +4939,10 @@ PS_2E: ; RM_4D_PROFUSION_OF_LEAVES
 6B43: 18 45 C2 83 48 55 13 1B 60 52 45 F8 B2 5B C6 03
 6B53: A0 C3 9E E3 8B 75 CA 2E 00
 
+; r92 YOU ARE IN THE GIANT ROOM.  THE CEILING HERE IS TOO HIGH UP FOR YOUR
+; r92 LAMP TO SHOW IT.  CAVERNOUS PASSAGES LEAD EAST, NORTH, AND SOUTH.  ON
+; r92 THE WEST WALL IS SCRAWLED THE INSCRIPTION, "FEE FIE FOE FOO" [SIC].
+;
 ; YOU_ARE_IN_THE_CHAMBER_OF_OSIRIS._THE_CEILING_IS_TOO_HIGH_UP_FOR
 ; YOUR_LAMP_TO_SHOW_IT.__PASSAGES_LEAD_EAST,_NORTH,_AND_SOUTH.
 PS_2F: ; RM_47_CHAMBER_OF_OSIRIS
@@ -4924,12 +4953,16 @@ PS_2F: ; RM_47_CHAMBER_OF_OSIRIS
 6B9C: 62 E3 8B 07 58 66 49 10 EE BE A0 73 76 8E 48 61
 6BAC: 17 82 C6 2E 00
 
+; r93 THE PASSAGE HERE IS BLOCKED BY A RECENT CAVE-IN.
+;
 ; THE_PASSAGE_HERE_IS_BLOCKED_BY_A_FALLEN_BLOCK.
 PS_30: ; RM_46_BLOCKED_FALLEN_BLOCK
 6BB1: 0F 5F BE DB 16 D3 B9 9B 6C F4 72 4B 5E C4 B5 75
 6BC1: 8D A6 85 C3 14 7B 14 CE 65 F0 8B B6 14 5D 9E 2E
 6BD1: 00
 
+; r94 YOU ARE AT ONE END OF AN IMMENSE NORTH/SOUTH PASSAGE.
+;
 ; YOU_ARE_IN_THE_CHAMBER_OF_NEKHEBET,_A_WOMAN_WITH_THE_HEAD_OF_A__
 ; VULTURE,_WEARING_THE_CROWN_OF_EGYPT.__A_PASSAGE_EXITS_TO_THE____
 ; SOUTH.
@@ -4945,128 +4978,183 @@ PS_31: ; RM_44_CHAMBER_OF_NEKHEBET
 # Object descriptions (packed)
 
 ```code
+; o2-0000 THERE IS A SHINY BRASS LAMP NEARBY.
+;
 ; THERE_IS_A_SHINY_BRASS_LAMP_NEARBY.
 PS_32:
 6C2E: 0B 5F BE 5B B1 4B 7B 55 45 90 73 44 DB D5 B0 CE
 6C3E: B5 72 48 8F 16 2C 49 59 2E 00
 
+; o2 BRASS LANTERN
+;
 ; BRASS_LANTERN
 PS_33:
 6C48: 04 6B 4F CB B9 50 8B F4 BD 4E 00
 
+; o2-100 THERE IS A LAMP SHINING NEARBY
+;
 ; THERE_IS_A_LAMP_SHINING_NEARBY.
 PS_34:
 6C53: 0A 5F BE 5B B1 4B 7B 4E 45 72 48 5A 17 93 7A AB
 6C63: 98 63 98 03 B1 2E 00
 
+; o2 BRASS LANTERN
+;
 ; BRASS_LANTERN
 PS_35:
 6C6A: 04 6B 4F CB B9 50 8B F4 BD 4E 00
 
+; o4-000 THERE IS A SMALL WICKER CAGE DISCARDED NEARBY.
+;
 ; THERE_IS_A_SMALL_STATUE_BOX_DISCARDED_NEARBY.
 PS_36:
 6C75: 0F 5F BE 5B B1 4B 7B 55 45 8E 91 15 8A 56 BD 1B
 6C85: C4 0A 4F 03 15 53 B7 3F B1 10 58 94 5F 9F 50 00
 
+; o4 WICKER CAGE
+;
 ; STATUE_BOX
 PS_37:
 6C95: 03 FB B9 67 C0 B9 14 58 00
 
+; o5-000 A THREE FOOT BLACK ROD WITH A RUSTY STAR ON AN END LIES NEARBY.
+;
 ; A_THREE_FOOT_SCEPTER_WITH_AN_ANKH_ON_AN_END_LIES_NEARBY.
 PS_38:
 6C9E: 12 56 45 EF 74 48 5E 46 A0 55 17 EE 61 23 62 56
 6CAE: D1 03 71 83 96 5A 99 C0 16 90 14 30 15 0E 58 35
 6CBE: 79 8F 16 2C 49 59 2E 00
 
+; o5 BLACK ROD
+;
 ; SCEPTER
 PS_39:
 6CC6: 02 57 B7 3F A7 52 00
 
+; o8-000 A CHEERFUL LITTLE BIRD IS SITTING HERE SINGING.
+;
 ; A_STATUE_OF_THE_BIRD_GOD_IS_SITTING_HERE.
 PS_3A:
 6CCD: 0D 55 45 56 BD 1B C4 C3 9E 5F BE B3 14 33 B1 36
 6CDD: 6E D5 15 5B 17 43 C0 AB 98 F4 72 45 2E 00
 
+; o8-100 THERE IS A LITTLE BIRD IN THE CAGE.
+;
 ; THERE_IS_A_BIRD_STATUE_IN_THE_BOX.
 PS_3B:
 6CEB: 0B 5F BE 5B B1 4B 7B 44 45 2E 7B 66 17 8F 49 4B
 6CFB: 5E 96 96 DB 72 0A 4F 2E 00
 
+; o8 LITTLE BIRD IN CAGE
+;
 ; BIRD_STATUE_IN_BOX
 PS_3C:
 6D04: 06 14 4E 15 58 56 BD 1B C4 83 7A 0A 4F 00
 
+; o10-000 A SMALL VELVET PILLOW LIES ON THE FLOOR.
+;
 ; A_SMALL_VELVET_PILLOW_LIES_ON_THE_FLOOR.
 PS_3D:
 6D12: 0D 55 45 8E 91 18 8A 50 61 73 62 8E A5 89 8D 43
 6D22: 16 4B 62 03 A0 5F BE 56 15 44 A0 2E 00
 
+; o10 VELVET PILLOW
+;
 ; VELVET_PILLOW
 PS_3E:
 6D2F: 04 6E CA 76 CA E3 16 09 8D 57 00
 
+; o11-000 A HUGE GREEN FIERCE SNAKE BARS THE WAY!
+;
 ; A_HUGE_GREEN_FIERCE_SERPENT_BARS_THE_WAY!
 PS_3F:
 6D3A: 0D 4A 45 77 C4 84 15 30 60 53 15 2D 62 55 5E 3A
 6D4A: 62 9E 61 AB 14 8B B3 5F BE F3 17 59 21 00
 
+; o12-100 A CRYSTAL BRIDGE NOW SPANS THE FISSURE.
+;
 ; A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.
 PS_40:
 6D58: 0E 55 45 80 BF 44 5E 06 B2 9B 6C 09 9A 62 17 9D
 6D68: 48 82 17 44 5E 0E A1 EE 9F 65 62 E3 16 54 2E 00
 
+; o15-000 THERE IS AN ENORMOUS OYSTER HERE WITH ITS SHELL TIGHTLY CLOSED.
+;
 ; THERE_IS_A_SARCOPHAGUS_HERE_WITH_IT'S_COVER_TIGHTLY_CLOSED.
 PS_41:
 6D78: 13 5F BE 5B B1 4B 7B 55 45 2D 49 62 A0 87 47 CA
 6D88: B5 2F 62 FB 17 53 BE 75 7B C5 B5 4F A1 96 AF 7A
 6D98: 79 13 BF DE 14 D7 A0 44 2E 00
 
+; o15 GIANT OYSTER  >GROAN!<
+;
 ; SARCOPHAGUS_>GROAN<
 PS_42:
 6DA2: 06 14 B7 42 55 49 72 4B C6 84 2E 10 9E 3C 00
 
+; o16-000 THERE ARE A FEW RECENT ISSUES OF "SPELUNKER TODAY" MAGAZINE HERE.
+;
 ; THERE_ARE_A_FEW_RECENT_ISSUES_OF_"EGYPTIAN_WEEKLY"_MAGAZINE_HERE
 PS_43:
 6DB1: 15 5F BE 5B B1 2F 49 7B 14 79 66 2F 17 B0 53 0B
 6DC1: BC E7 B9 4B 62 C3 9E 69 1B EE DE 90 78 F7 17 1E
 6DD1: 61 63 DB 89 91 73 4A 5B 98 F4 72 45 00
 
+; o16 "SPELUNKER TODAY"
+;
 ; "EGYPTIAN_WEEKLY"
 PS_44:
 6DDE: 05 69 1B EE DE 90 78 F7 17 1E 61 59 22 00
 
+; o19-000 THERE IS FOOD HERE.
+;
 ; THERE_IS_FOOD_HERE.
 PS_45:
 6DEC: 06 5F BE 5B B1 4B 7B 01 68 0A 58 2F 62 2E 00
 
+; o19 TASTY FOOD
+;
 ; TASTY_FOOD
 PS_46:
 6DFB: 03 55 BD FB C0 01 68 44 00
 
+; o20-100 THERE IS AN EMPTY BOTTLE HERE.
+;
 ; THERE_IS_A_BOTTLE_HERE.
 PS_47:
 6E04: 07 5F BE 5B B1 4B 7B 44 45 0E A1 DB 8B F4 72 45
 6E14: 2E 00
 
+; o20 SMALL BOTTLE
+;
 ; SMALL_BOTTLE
 PS_48:
 6E16: 04 E3 B8 F3 8C 06 4F FF BE 00
 
+; o20-000 THERE IS A BOTTLE OF WATER HERE.
+;
 ; THERE_IS_WATER_IN_THE_BOTTLE.
 PS_49:
 6E20: 09 5F BE 5B B1 4B 7B 16 D0 23 62 83 7A 5F BE B9
 6E30: 14 46 C0 45 2E 00
 
+; o21 WATER IN THE BOTTLE
+;
 ; WATER_IN_THE_BOTTLE
 PS_4A:
 6E36: 06 16 D0 23 62 83 7A 5F BE B9 14 46 C0 45 00
 
+;  o24-000 THERE IS A TINY LITTLE PLANT IN THE PIT, MURMURING "WATER, WATER, ..."
+;
 ; THERE_IS_A_TINY_PLANT_IN_THE_PIT,_MURMURING_"WATER,_WATER,_..."
 PS_4B:
 6E45: 15 5F BE 5B B1 4B 7B 56 45 A3 7A E6 16 9E 48 D0
 6E55: 15 82 17 52 5E 96 7B 77 16 B7 B2 10 B2 BC 6A 16
 6E65: D0 46 62 F3 17 F4 BD 1F EE DC F9 00
 
+; o24-200 THERE IS A 12-FOOT-TALL BEANSTALK STRETCHING UP OUT OF THE PIT,
+; o24-200 BELLOWING "WATER!! WATER!!"
+;
 ; THERE_IS_A_TWELVE_FOOT_BEAN_STALK_STRETCHING_UP_OUT_OF_THE_PIT,_
 ; BELLOWING_"WATER..._WATER..."
 PS_4C:
@@ -5075,6 +5163,8 @@ PS_4C:
 6E91: C5 36 A1 B8 16 82 17 52 5E 96 7B AF 14 09 8D 50
 6EA1: D1 BC 6A 16 D0 47 62 DB F9 16 D0 47 62 DC F9 00
 
+; o24-400 THERE IS A GIGANTIC BEANSTALK STRETCHING ALL THE WAY UP TO THE HOLE.
+;
 ; THERE_IS_A_GIGANTIC_BEAN_STALK_STRETCHING_ALL_THE_WAY_UP_TO_THE_
 ; HOLE.
 PS_4D:
@@ -5082,6 +5172,9 @@ PS_4D:
 6EC1: 5F 66 17 45 48 66 17 76 B1 23 54 AB 98 46 48 82
 6ED1: 17 59 5E 3B 4A D3 C5 6B BF 5F BE A9 15 FF 8B 00
 
+; o38-000 THERE IS A MASSIVE VENDING MACHINE HERE.  THE INSTRUCTIONS ON IT READ:
+; o38-000 "DROP COINS HERE TO RECEIVE FRESH BATTERIES."
+;
 ; THERE_IS_A_MASSIVE_VENDING_MACHINE_HERE.__THE_INSTRUCTIONS_ON_IT
 ; READ-_"DROP_COINS_HERE_TO_RECIEVE_FRESH_BATTERIES".
 PS_4E:
@@ -5091,135 +5184,191 @@ PS_4E:
 6F11: 13 02 B3 E1 14 9D 7A 9F 15 5B B1 6B BF 65 B1 38
 6F21: 79 48 5E 75 B1 04 71 8E 49 33 62 4C 62 2E 00
 
+; o39-000 THERE ARE FRESH BATTERIES HERE.
+;
 ; THERE_ARE_FRESH_BATTERIES_HERE.
 PS_4F:
 6F30: 0A 5F BE 5B B1 2F 49 5C 15 5A 62 AB 14 3F C0 07
 6F40: B2 CA B5 2F 62 2E 00
 
+; o39 BATTERIES
+;
 ; BATTERIES
 PS_50:
 6F47: 03 D6 4C F4 BD 35 79 00
 
+; o39-100 SOME WORN-OUT BATTERIES HAVE BEEN DISCARDED NEARBY.
+;
 ; SOME_WORN-OUT_BATTERIES_HAVE_BEEN_DISCARDED_NEARBY.
 PS_51:
 6F4F: 11 3F B9 59 5E B8 A0 47 EB 04 BC 8E 49 33 62 4B
 6F5F: 62 58 72 44 5E 30 60 03 15 53 B7 3F B1 10 58 94
 6F6F: 5F 9F 50 00
 
+; o39 BATTERIES
+;
 ; BATTERIES
 PS_52:
 6F73: 03 D6 4C F4 BD 35 79 00
 
+; o50-000 THERE IS A LARGE SPARKLING NUGGET OF GOLD HERE!
+;
 ; THERE_IS_A_LARGE_SPARKLING_NUGGET_OF_GOLD_HERE!
 PS_53:
 6F7B: 0F 5F BE 5B B1 4B 7B 4E 45 31 49 55 5E 54 A4 C3
 6F8B: 86 AB 98 E9 9A B6 6C B8 16 81 15 B3 8B F4 72 45
 6F9B: 21 00
 
+; o50 LARGE GOLD NUGGET
+;
 ; LARGE_GOLD_NUGGET
 PS_54:
 6F9D: 05 54 8B 9B 6C 3E 6E 10 58 79 C4 45 54 00
 
+; o51-000 THERE ARE DIAMONDS HERE!
+;
 ; THERE_ARE_DIAMONDS_HERE!
 PS_55:
 6FAB: 08 5F BE 5B B1 2F 49 03 15 71 48 4D 98 9F 15 59
 6FBB: B1 00
 
+; o51 SEVERAL DIAMONDS
+;
 ; SEVERAL_DIAMONDS
 PS_56:
 6FBD: 05 B8 B7 2B 62 06 8A 8F 78 0E A0 53 00
 
+; o52-000 THERE ARE BARS OF SILVER HERE!
+;
 ; THERE_ARE_BARS_OF_SILVER_HERE!
 PS_57:
 6FCA: 0A 5F BE 5B B1 2F 49 AB 14 8B B3 C3 9E 4E B8 74
 6FDA: CA 9F 15 59 B1 00
 
+; o52 SILVER BARS
+;
 ; SILVER_BARS
 PS_58:
 6FE0: 03 4E B8 74 CA AB 14 52 53 00
 
+; o53-000 THERE IS PRECIOUS JEWELRY HERE!
+;
 ; THERE_IS_PRECIOUS_JEWELRY_HERE!
 PS_59:
 6FEA: 0A 5F BE 5B B1 4B 7B EF A6 51 54 4B C6 79 7F 4C
 6FFA: 61 4A DB 2F 62 21 00
 
+; o53 PRECIOUS JEWELRY
+;
 ; PRECIOUS_JEWELRY
 PS_5A:
 7001: 05 EF A6 51 54 4B C6 79 7F 4C 61 59 00
 
+; o54-000 THERE ARE MANY COINS HERE!
+;
 ; THERE_ARE_MANY_COINS_HERE!
 PS_5B:
 700E: 08 5F BE 5B B1 2F 49 63 16 7B 9B 3B 55 8B 9A F4
 701E: 72 45 21 00
 
+; o54 RARE COINS
+;
 ; RARE_COINS
 PS_5C:
 7022: 03 D4 B0 45 5E 50 9F 53 00
 
+; o55-000 THE PIRATE'S TREASURE CHEST IS HERE!
+;
 ; THE_PHARAOH'S_TREASURE_CHEST_IS_HERE!
 PS_5D:
 702B: 0C 5F BE E2 16 2B 49 15 9F D6 B5 63 B1 34 BA 45
 703B: 5E F5 72 0B BC CA B5 2F 62 21 00
 
+; o55 TREASURE CHEST
+;
 ; TREASURE_CHEST
 PS_5E:
 7046: 04 EF BF 67 49 5B B1 1F 54 53 54 00
 
+; o56-000 THERE IS A LARGE NEST HERE, FULL OF GOLDEN EGGS!
+;
 ; THERE_IS_A_LARGE_NEST_HERE,_FULL_OF_GOLDEN_EGGS!
 PS_5F:
 7052: 10 5F BE 5B B1 4B 7B 4E 45 31 49 50 5E 66 62 9F
 7062: 15 7E B1 5F 15 F3 8C C3 9E 3E 6E F0 59 29 15 C9
 7072: 6E 00
 
+; o56 GOLDEN EGGS
+;
 ; GOLDEN_EGGS
 PS_60:
 7074: 03 3E 6E F0 59 29 15 47 53 00
 
+; o57-000 THERE IS A JEWEL-ENCRUSTED TRIDENT HERE!
+;
 ; THERE_IS_A_JEWEL-ENCRUSTED_KEY_HERE!
 PS_61:
 707E: 0C 5F BE 5B B1 4B 7B 4C 45 F7 62 57 8F 24 98 66
 708E: C6 F3 5F BB 85 9F 15 59 B1 00
 
+; o57 JEWELED TRIDENT
+;
 ; JEWELED_KEY
 PS_62:
 7098: 03 79 7F 3F 61 0D 58 45 59 00
 
+; o58-000 THERE IS A DELICATE, PRECIOUS, MING VASE HERE!
+;
 ; THERE_IS_A_DELICATE,_PRECIOUS,_VASE_HERE!
 PS_63:
 70A2: 0D 5F BE 5B B1 4B 7B 46 45 43 61 16 53 B3 63 EF
 70B2: A6 51 54 6E C6 CB 17 9B B7 F4 72 45 21 00
 
+; o58 MING VASE
+;
 ; VASE
 PS_64:
 70C0: 01 D5 C9 45 00
 
+; o58-100 THE VASE IS NOW RESTING, DELICATELY, ON A VELVET PILLOW.
+;
 ; THE_VASE_IS_NOW_RESTING,_DELICATELY,_ON_A_VELVET_PILLOW.
 PS_65:
 70C5: 12 5F BE CB 17 9B B7 4B 7B 09 9A 2F 17 03 BA CE
 70D5: 98 FF 14 85 8C 7F 49 1E 8F C0 16 7B 14 6E CA 76
 70E5: CA E3 16 09 8D 57 2E 00
 
+; o58-200 THE FLOOR IS LITTERED WITH WORTHLESS SHARDS OF POTTERY.
+;
 ; THE_FLOOR_IS_LITTERED_WITH_WORTHLESS_SHARDS_OF_POTTERY.
 PS_66:
 70ED: 12 5F BE 56 15 44 A0 D5 15 43 16 3F C0 66 B1 FB
 70FD: 17 53 BE 44 D2 66 BE 65 62 5A 17 2E 49 D1 B5 92
 710D: 64 0E A1 43 62 2E 00
 
+; o59-000 THERE IS AN EMERALD HERE THE SIZE OF A PLOVER'S EGG!
+;
 ; THERE_IS_AN_EMERALD_HERE_THE_SIZE_OF_A_PLOVER'S_EGG!
 PS_67:
 7114: 11 5F BE 5B B1 4B 7B 83 48 67 61 CE B0 0A 58 2F
 7124: 62 82 17 55 5E 6F 7C B8 16 7B 14 09 A6 74 CA CB
 7134: 23 79 60 21 00
 
+; 059 EGG-SIZED EMERALD
+;
 ; EGG-SIZED_EMERALD
 PS_68:
 7139: 05 79 60 DB EB 66 E3 2F 15 2B 62 4C 44 00
 
+; o61-000 OFF TO ONE SIDE LIES A GLISTENING PEARL!
+;
 ; OFF_TO_ONE_SIDE_LIES_A_GLISTENING_PEARL!
 PS_69:
 7147: 0D D0 9E 89 17 C0 16 55 5E FF 78 43 16 4B 62 49
 7157: 45 95 8C F0 BD 91 7A DF 16 36 49 21 00
 
+; o61 GLISTENING PEARL
+;
 ; GLISTENING_PEARL
 PS_6A:
 7164: 05 C3 6D FF B9 10 99 D2 6A 94 5F 4C 00
@@ -5228,8 +5377,7 @@ PS_6A:
 # Miscalaneous messages (packed)
 
 ```code
-; 20	 YOU ARE AT THE BOTTOM OF THE PIT WITH A BROKEN NECK.
-; woods20
+; r20 YOU ARE AT THE BOTTOM OF THE PIT WITH A BROKEN NECK.
 ;
 ; YOU_ARE_AT_THE_BOTTOM_OF_THE_PIT_WITH_A_BROKEN_NECK.
 PS_6B:
@@ -5237,22 +5385,22 @@ PS_6B:
 7181: 16 82 17 52 5E 73 7B 56 D1 03 71 BC 14 97 9F 90
 7191: 96 DD 5F 2E 00
 
-; 16	 THE CRACK IS FAR TOO SMALL FOR YOU TO FOLLOW.
-; woods16
+; r16 THE CRACK IS FAR TOO SMALL FOR YOU TO FOLLOW.
 ;
 ; THE_CRACK_IS_FAR_TOO_SMALL_FOR_YOU_TO_FOLLOW.
 PS_6C:
 7196: 0F 5F BE E4 14 DD 46 D5 15 4B 15 96 AF 2B A0 E3
 71A6: B8 F3 8C 04 68 51 18 56 C2 C8 9C C6 9F 8F A1 00
 
-; 22	 THE DOME IS UNCLIMBABLE
-; woods22
+; r22 THE DOME IS UNCLIMBABLE
 ;
 ; THE_DOME_IS_UNCLIMBABLE.
 PS_6D:
 71B6: 08 5F BE 09 15 1B 92 4B 7B 8D C5 8F 8C C4 4C FF
 71C6: 8B 00
 
+; m96 I RESPECTFULLY SUGGEST YOU GO ACROSS THE BRIDGE INSTEAD OF JUMPING.
+;
 ; I_RESPECTFULLY_SUGGEST_YOU_GO_ACROSS_THE_BRIDGE_INSTEAD_OF______
 ; JUMPING.
 PS_6E:
@@ -5261,31 +5409,28 @@ PS_6E:
 71E8: 6C 9D 7A E3 BD 11 58 7B 64 3B 13 FF 15 E3 93 CF
 71F8: 98 00
 
-; 21	 YOU DIDN'T MAKE IT
-; woods21
+; r21 YOU DIDN'T MAKE IT
 ;
 ; YOU_DIDN'T_MAKE_IT.
 PS_6F:
 71FA: 06 C7 DE 03 15 45 5B 0F BC 17 48 D6 15 2E 00
 
-; 31	 THERE IS NO WAY ACROSS THE FISSURE.
+; m97 THERE IS NO WAY ACROSS THE FISSURE.
 ;
 ; THERE_IS_NO_WAY_ACROSS_THE_BOTTOMLESS_PIT.
 PS_70:
 7209: 0E 5F BE 5B B1 4B 7B EB 99 1B D0 85 14 05 B3 D6
 7219: B5 DB 72 06 4F 7F BF F5 8B D2 B5 97 7B 00
 
-; 32	 YOU CAN'T GET BY THE SNAKE
-; woods32
+; r32 YOU CAN'T GET BY THE SNAKE
 ;
 ; YOU_CAN'T_GET_BY_THE_SERPENT.
 PS_71:
 7227: 09 C7 DE D3 14 E6 96 77 15 04 BC 56 DB DB 72 B4
 7237: B7 F0 A4 54 2E 00
 
-; 40	 YOU HAVE CRAWLED THROUGH A VERY LOW WIDE PASSAGE PARALLEL
-; 40	 TO AND NORTH OF THE HALL OF MISTS.
-; woods40 and woods59
+; r40 YOU HAVE CRAWLED THROUGH A VERY LOW WIDE PASSAGE PARALLEL
+; r40 TO AND NORTH OF THE HALL OF MISTS.
 ;
 ; YOU_HAVE_CRAWLED_THROUGH_A_VERY_LOW_WIDE_PASSAGE_PARALLEL_TO_AND
 ; NORTH_OF_THE_HALL_OF_GODS.
@@ -5295,17 +5440,15 @@ PS_72:
 725D: 47 DB 16 CE B0 EE 8B 89 17 90 14 59 5B C2 B3 B8
 726D: 16 82 17 4A 5E 46 48 B8 16 81 15 2F 5C 00
 
-; no crowther
-; woods95   YOU DON'T FIT THROUGH A TWO-INCH SLIT!
+; m95 YOU DON'T FIT THROUGH A TWO-INCH SLIT!
 ;
 ; YOU_DON'T_FIT_THROUGH_TWO-INCH_SLIT!
 PS_73:
 727B: 0C C7 DE 09 15 E6 96 53 15 16 BC F9 74 7A C4 91
 728B: 17 1B A2 1A 98 5E 17 71 7B 00
 
-; 56	 YOU HAVE CRAWLED AROUND IN SOME LITTLE HOLES AND WOUND UP
-; 56	 BACK IN THE MAIN PASSAGE.
-; woods56
+; m56 YOU HAVE CRAWLED AROUND IN SOME LITTLE HOLES AND WOUND UP
+; m56 BACK IN THE MAIN PASSAGE.
 ;
 ; YOU_HAVE_CRAWLED_AROUND_IN_SOME_LITTLE_HOLES_AND_WOUND_UP_BACK__
 ; IN_THE_MAIN_PASSAGE.
@@ -5315,9 +5458,8 @@ PS_74:
 72B5: 48 01 18 8E C5 B2 17 AB 14 8B 54 D0 15 82 17 4F
 72C5: 5E D0 47 DB 16 D3 B9 BF 6C 00
 
-; no crowther
-; woods126   YOU HAVE CRAWLED AROUND IN SOME LITTLE HOLES AND FOUND YOUR WAY
-; woods126   BLOCKED BY A RECENT CAVE-IN.  YOU ARE NOW BACK IN THE MAIN PASSAGE.
+; m126 YOU HAVE CRAWLED AROUND IN SOME LITTLE HOLES AND FOUND YOUR WAY
+; m126 BLOCKED BY A RECENT CAVE-IN.  YOU ARE NOW BACK IN THE MAIN PASSAGE.
 ;
 ; YOU_HAVE_CRAWLED_AROUND_IN_SOME_LITTLE_HOLES_AND_FOUND_YOUR_WAY_
 ; BLOCKED_BY_A_FALLEN_SLAB.__YOU_ARE_NOW_BACK_IN_THE_MAIN_PASSAGE.
@@ -5329,12 +5471,17 @@ PS_75:
 730F: C2 5B B1 09 9A AB 14 8B 54 83 7A 5F BE 63 16 83
 731F: 7A 55 A4 09 B7 45 2E 00
 
+; m119 YOU CAN'T FIT THIS FIVE-FOOT OYSTER THROUGH THAT LITTLE PASSAGE!
+;
 ; YOU_CAN'T_FIT_THIS_BIG_SARCOPHAGUS_THROUGH_THAT_LITTLE_PASSAGE!
 PS_76:
 7327: 15 C7 DE D3 14 E6 96 53 15 16 BC 95 73 B3 14 D5
 7337: 6A 2D 49 62 A0 87 47 D6 B5 F9 74 7A C4 82 17 73
 7347: 49 96 8C FF BE DB 16 D3 B9 99 6C 00
 
+; m117 SOMETHING YOU'RE CARRYING WON'T FIT THROUGH THE TUNNEL WITH YOU.
+; m117 YOU'D BEST TAKE INVENTORY AND DROP SOMETHING.
+;
 ; SOMETHING_YOU'RE_CARRYING_WON'T_FIT_THROUGH_THE_TUNNEL_WITH_YOU.
 ; YOU'D_BEST_TAKE_INVENTORY_AND_DROP_SOMETHING.
 PS_77:
@@ -5344,7 +5491,7 @@ PS_77:
 7383: 14 F3 B9 4D BD 4B 5E 0F 9B C9 9A 7B B4 8E 48 0C
 7393: 15 53 A0 3F B9 82 62 91 7A 2E 00
 
-; woods26   YOU CLAMBER UP THE PLANT AND SCURRY THROUGH THE HOLE AT THE TOP.
+; r26 YOU CLAMBER UP THE PLANT AND SCURRY THROUGH THE HOLE AT THE TOP.
 ;
 ; YOU_CLAMBER_UP_THE_PLANT_AND_SCURRY_THROUGH_THE_HOLE_AT_THE_TOP.
 PS_78:
@@ -5352,21 +5499,23 @@ PS_78:
 73AE: 48 90 14 15 58 34 56 7B B4 6C BE 29 A1 16 71 DB
 73BE: 72 7E 74 43 5E 16 BC DB 72 82 BF 2E 00
 
+; r90 YOU HAVE CLIMBED UP THE PLANT AND OUT OF THE PIT.
+;
 ; YOU'VE_CLIMBED_UP_THE_PLANT_AND_OUT_OF_THE_PIT.
 PS_79:
 73CB: 0F C7 DE 4F 24 DE 14 64 7A F3 5F D3 C5 5F BE E6
 73DB: 16 9E 48 90 14 11 58 73 C6 C3 9E 5F BE E3 16 54
 73EB: 2E 00
 
-; 9	 THERE IS NO WAY TO GO THAT DIRECTION.
+; m9 THERE IS NO WAY TO GO THAT DIRECTION.
 ;
 ; THERE_IS_NO_WAY_FOR_YOU_TO_GO_THAT_DIRECTION.
 PS_7A:
 73ED: 0F 5F BE 5B B1 4B 7B EB 99 1B D0 59 15 9B AF 1B
 73FD: A1 6B BF 2B 6E 5B BE 06 BC 2F 7B 03 56 27 A0 00
 
-; 11	 I DON'T KNOW IN FROM OUT HERE. USE COMPASS POINTS OR NAME
-; 11	 SOMETHING IN THE GENERAL DIRECTION YOU WANT TO GO.
+; m11 I DON'T KNOW IN FROM OUT HERE. USE COMPASS POINTS OR NAME
+; m11 SOMETHING IN THE GENERAL DIRECTION YOU WANT TO GO.
 ;
 ; I_DON'T_KNOW_IN_FROM_OUT_HERE.__USE_COMPASS_POINTS.
 PS_7B:
@@ -5374,8 +5523,8 @@ PS_7B:
 741D: A1 9F 15 7F B1 57 13 9B B7 3F 55 55 A4 D2 B5 50
 742D: 9F 2F C0 00
 
-; 10	 I AM UNSURE HOW YOU ARE FACING. USE COMPASS POINTS OR
-; 10	 NEARBY OBJECTS.
+; m10 I AM UNSURE HOW YOU ARE FACING. USE COMPASS POINTS OR
+; m10 NEARBY OBJECTS.
 ;
 ; I_AM_UNSURE_HOW_YOU_ARE_FACING.__USE_COMPASS_POINTS.
 PS_7C:
@@ -5383,52 +5532,54 @@ PS_7C:
 7441: B1 C5 65 91 7A 3B F4 57 C6 E1 14 DB 93 CB B9 7B
 7451: A6 CD 9A 2E 00
 
-; 42	 NOTHING HAPPENS.
+; m42 NOTHING HAPPENS.
 ;
 ; NOTHING_HAPPENS.
 PS_7D:
 7456: 05 06 9A 90 73 CA 6A EA 48 9D 61 2E 00
 
+; m147 I DON'T KNOW HOW.
+;
 ; I_DON'T_KNOW_HOW.
 PS_7E: ; (only used for SWIM)
 7463: 05 46 77 05 A0 0D BC 09 9A A9 15 57 2E 00
 
-; 12	 I DON'T KNOW HOW TO APPLY THAT WORD HERE.
+; m12 I DON'T KNOW HOW TO APPLY THAT WORD HERE.
 ;
 ; I_DON'T_KNOW_HOW_TO_APPLY_THAT_WORD_HERE.
 PS_7F:
 7471: 0D 46 77 05 A0 0D BC 09 9A A9 15 D6 CE C3 9C A6
 7481: A6 56 DB 56 72 01 18 33 B1 F4 72 45 2E 00
 
-; 39	 YOUR LAMP IS NOW ON.
+; m39 YOUR LAMP IS NOW ON.
 ;
 ; YOUR_LAMP_IS_NOW_ON.
 PS_80:
 748F: 06 C7 DE 8E AF 72 48 D5 15 99 16 D1 CE 4E 2E 00
 
-; 38	 YOU HAVE NO SOURCE OF LIGHT.
+; m38 YOU HAVE NO SOURCE OF LIGHT.
 ;
 ; YOU_HAVE_NO_SOURCE_OF_LIGHT.
 PS_81:
 749F: 09 C7 DE 9B 15 5B CA EB 99 47 B9 17 B1 B8 16 43
 74AF: 16 2E 6D 2E 00
 
-; 40	 YOUR LAMP IS NOW OFF.
+; m40 YOUR LAMP IS NOW OFF.
 ;
 ; YOUR_LAMP_IS_NOW_OFF.
 PS_82:
 74B4: 07 C7 DE 8E AF 72 48 D5 15 99 16 D1 CE A7 66 00
 
-; 68	 I'M AS CONFUSED AS YOU ARE.
+; m68 I'M AS CONFUSED AS YOU ARE.
 ;
 ; I'M_AS_CONFUSED_AS_YOU_ARE.
 PS_83:
 74C4: 09 9F 77 95 14 E1 14 9F 98 A6 B7 95 14 51 18 43
 74D4: C2 7F B1 00
 
-; 59	 I CAN ONLY TELL YOU WHAT YOU SEE AS YOU MOVE ABOUT
-; 59	 AND MANIPULATE THINGS. I CANNOT TELL YOU WHERE REMOTE THINGS
-; 59	 ARE.
+; m59 I CAN ONLY TELL YOU WHAT YOU SEE AS YOU MOVE ABOUT
+; m59 AND MANIPULATE THINGS. I CANNOT TELL YOU WHERE REMOTE THINGS
+; m59 ARE.
 ;
 ; I_CAN_ONLY_TELL_YOU_WHAT_YOU_SEE_AS_YOU_MOVE_ABOUT_AND__________
 ; MANIPULATE_THINGS.__I_CAN_NOT_TELL_YOU_WHERE_REMOTE_THINGS_ARE.
@@ -5440,25 +5591,29 @@ PS_84:
 7518: 17 F3 8C C7 DE FA 17 2F 62 2F 17 C6 93 56 5E 90
 7528: 73 CB 6E 2F 49 2E 00
 
-; 54	 OK
+; m54 OK
 ;
 ; OK_
 PS_85:
 752F: 01 8B 9F 00
 
+; m91 SORRY, BUT I NO LONGER SEEM TO REMEMBER HOW IT WAS YOU GOT HERE.
+;
 ; SORRY,_BUT_I_NO_LONGER_SEEM_TO_REMEMBER_HOW_IT_WAS_YOU_GOT_HERE.
 PS_86:
 7533: 15 44 B9 9E B4 BF 14 0B BC 99 16 49 16 B7 98 95
 7543: AF 2F 60 89 17 2F 17 2F 92 74 4D A9 15 CB CE 19
 7553: BC 4B 49 C7 DE 81 15 0A BC 2F 62 2E 00
 
-; 24	 YOU ARE ALREADY CARRYING IT!
+; m24 YOU ARE ALREADY CARRYING IT!
 ;
 ; YOU_ARE_ALREADY_CARRYING_IT.
 PS_87:
 7560: 09 C7 DE 94 14 43 5E EF 8D 13 47 D3 14 83 B3 91
 7570: 7A D6 15 2E 00
 
+; m92 YOU CAN'T CARRY ANYTHING MORE. YOU'LL HAVE TO DROP SOMETHING FIRST.
+;
 ; YOU_CAN'T_CARRY_ANYTHING_MORE.__YOU'LL_HAVE_TO_DROP_SOMETHING___
 ; FIRST.
 PS_88:
@@ -5467,34 +5622,41 @@ PS_88:
 7595: 9C 02 B3 61 17 36 92 90 73 BB 6A 53 15 A6 B3 2E
 75A5: 00
 
+; m98 YOU'RE NOT CARRYING ANYTHING.
+;
 ; YOU'RE_NOT_CARRYING_ANYTHING.
 PS_89:
 75A6: 09 C7 DE AF 23 99 16 05 BC 3C 49 D0 DD C3 6A 96
 75B6: 9B 90 73 47 2E 00
 
+; m99 YOU ARE CURRENTLY HOLDING THE FOLLOWING:
+;
 ; YOU_ARE_CURRENTLY_HOLDING_THE_FOLLOWING:
 PS_8A:
 75BC: 0D C7 DE 94 14 45 5E 3C C6 9E 61 FB 8E 7E 74 90
 75CC: 5A D6 6A DB 72 FE 67 89 8D 91 7A 3A 00
 
+; m110 DON'T BE RIDICULOUS!
+;
 ; DON'T_BE_RIDICULOUS!
 PS_8B:
 75D9: 06 80 5B F3 23 5B 4D 06 B2 E7 78 87 8D 53 21 00
 
-; 77	 YOUR BOTTLE IS EMPTY AND THE GROUND IS WET.
+; m77 YOUR BOTTLE IS EMPTY AND THE GROUND IS WET.
+;
 ; YOUR_BOTTLE_IS_EMPTY_AND_THE_GROUND_IS_WET.
 PS_8C:
 75E9: 0E C7 DE 84 AF 0E A1 DB 8B 4B 7B 72 61 FB C0 8E
 75F9: 48 82 17 49 5E 07 B3 33 98 4B 7B B6 D0 2E 00
 
-; 78	 YOU CAN'T POUR THAT.
+; m78 YOU CAN'T POUR THAT.
 ;
 ; YOU_CAN'T_POUR_THAT.
 PS_8D:
 7608: 06 C7 DE D3 14 E6 96 E9 16 23 C6 5B BE 54 2E 00
 
-; 75	 RUBBING THE ELECTRIC LAMP IS NOT PARTICULARLY REWARDING.
-; 75	 ANYWAY, NOTHING EXCITING HAPPENS.
+; m75 RUBBING THE ELECTRIC LAMP IS NOT PARTICULARLY REWARDING.
+; m75 ANYWAY, NOTHING EXCITING HAPPENS.
 ;
 ; RUBBING_THE_ELECTRIC_LAMP_IS_NOT_PARTICULARLY_REWARDING.________
 ; ANYWAY,_NOTHING_EXCITING_HAPPENS.
@@ -5505,28 +5667,38 @@ PS_8E:
 7648: E0 06 9A 90 73 C7 6A 9B D6 90 BE CA 6A EA 48 9D
 7658: 61 2E 00
 
-; 76	 PECULIAR.  NOTHING UNEXPECTED HAPPENS.
+; m76 PECULIAR.  NOTHING UNEXPECTED HAPPENS.
 ;
 ; PECULIAR.__NOTHING_UNEXPECTED_HAPPENS.
 PS_8F:
 765B: 0C E5 A4 43 C5 47 49 50 13 02 A1 91 7A B0 17 2A
 766B: 63 E6 5F F3 5F 52 72 F0 A4 53 2E 00
 
+; m106 THERE IS NOTHING HERE WITH WHICH TO FILL THE BOTTLE.
+;
 ; THERE_IS_NOTHING_HERE_WITH_WHICH_TO_FILL_THE_BOTTLE.
 PS_90:
 7677: 11 5F BE 5B B1 4B 7B 06 9A 90 73 CA 6A 2F 62 FB
 7687: 17 53 BE 23 D1 13 54 6B BF 0E 67 16 8A DB 72 06
 7697: 4F FF BE 2E 00
 
+; m74 THE BOTTLE OF WATER IS NOW EMPTY.
+;
 ; THE_BOTTLE_IS_NOW_EMPTY.
 PS_91:
 769C: 08 5F BE B9 14 46 C0 4B 5E D0 B5 6B A1 72 61 1F
 76AC: C1 00
 
+; m109 YOU CAN'T FILL THAT.
+;
 ; YOU_CAN'T_FILL_THAT.
 PS_92:
 76AE: 06 C7 DE D3 14 E6 96 53 15 F3 8C 5B BE 54 2E 00
 
+; m124 A GLISTENING PEARL FALLS OUT OF THE CLAM AND ROLLS AWAY.  GOODNESS,
+; m124 THIS MUST REALLY BE AN OYSTER. (I NEVER WAS VERY GOOD AT IDENTIFYING
+; m124 BIVALVES.)  WHATEVER IT IS, IT HAS NOW SNAPPED SHUT AGAIN.
+;
 ; A_GLISTENING_PEARL_FALLS_OUT_OF_THE_SARCOPHAGUS_AND_ROLLS_AWAY._
 ; THE_SARCOPHAGUS_SNAPS_SHUT_AGAIN.
 PS_93:
@@ -5536,12 +5708,17 @@ PS_93:
 76EE: 49 62 A0 87 47 D5 B5 D2 97 D5 B5 76 75 89 14 D0
 76FE: 47 2E 00
 
+; m121 I ADVISE YOU TO PUT DOWN THE OYSTER BEFORE OPENING IT. >WRENCH!<
+;
 ; I'D_ADVISE_YOU_TO_PUT_DOWN_THE_SARCOPHAGUS_BEFORE_OPENING_IT!!
 PS_94:
 7701: 14 96 77 86 14 15 CB 5B 5E 1B A1 6B BF 76 A7 09
 7711: 15 03 D2 5F BE 53 17 21 B1 5B A5 35 6F AF 14 04
 7721: 68 51 5E F0 A4 91 7A D6 15 21 21 00
 
+; m125 THE OYSTER CREAKS OPEN, REVEALING NOTHING BUT OYSTER INSIDE.  IT
+; m125 PROMPTLY SNAPS SHUT AGAIN.
+;
 ; THE_SARCOPHAGUS_CREAKS_OPEN,_REVEALING_NOTHING_INSIDE.__IT______
 ; PROMPTLY_SNAPS_SHUT_AGAIN.
 PS_95:
@@ -5550,57 +5727,76 @@ PS_95:
 774D: 6A 9B 9A FF 59 4B 13 FB BB 3B 13 EC 16 F2 9F 13
 775D: BF 60 17 ED 48 5A 17 73 C6 73 47 A7 7A 00
 
+; m123 YOU DON'T HAVE ANYTHING STRONG ENOUGH TO OPEN THE OYSTER.
+;
 ; YOU_DON'T_HAVE_ANYTHING_STRONG_ENOUGH_TO_OPEN_THE_SARCOPHAGUS.
 PS_96:
 776B: 14 C7 DE 09 15 E6 96 9B 15 5B CA A3 48 63 BE AB
 777B: 98 0C BA 11 A0 30 15 29 A1 16 71 D1 9C F0 A4 82
 778B: 17 55 5E 2D 49 62 A0 87 47 53 2E 00
 
+; m33 I DON'T KNOW HOW TO LOCK OR UNLOCK SUCH A THING.
+;
 ; I_DON'T_KNOW_HOW_TO_LOCK_OR_UNLOCK_SUCH_A_THING.
 PS_97:
 7797: 10 46 77 05 A0 0D BC 09 9A A9 15 D6 CE CE 9C 5D
 77A7: 9E C4 16 B0 17 75 8D D5 83 DA C3 7B 14 63 BE CF
 77B7: 98 00
 
+; m45 THE LITTLE BIRD IS NOW DEAD.  ITS BODY DISAPPEARS.
+;
 ; THE_BIRD_STATUE_IS_NOW_DEAD.__ITS_BODY_DISAPPEARS.
 PS_98:
 77B9: 10 5F BE B3 14 33 B1 FB B9 67 C0 D5 15 99 16 C6
 77C9: CE 86 5F 3B F4 8D 7B B9 14 FB 5C 95 5A EA 48 94
 77D9: 5F 53 2E 00
 
+; m150 THE SHELL IS VERY STRONG AND IS IMPERVIOUS TO ATTACK.
+;
 ; THE_STONE_IS_VERY_STRONG_AND_IS_IMPERVIOUS_TO_ATTACK.
 PS_99:
 77DD: 11 5F BE 66 17 0F A0 D5 15 CF 17 7B B4 0C BA 11
 77ED: A0 90 14 0B 58 CB B5 DF 93 13 B4 35 A1 89 17 96
 77FD: 14 45 BD 4B 2E 00
 
+; m46 ATTACKING THE SNAKE BOTH DOESN'T WORK AND IS VERY DANGEROUS.
+;
 ; ATTACKING_THE_SERPENT_BOTH_DOESN'T_WORK_AND_IS_VERY_DANGEROUS.
 PS_9A:
 7803: 14 8E 49 DD 46 91 7A 82 17 55 5E 3A 62 9E 61 B9
 7813: 14 53 BE 77 5B 05 B9 19 BC B5 A0 90 14 0B 58 D8
 7823: B5 43 62 FB 14 B7 98 07 B3 53 2E 00
 
-; 25	 YOU CAN'T BE SERIOUS!
+; m25 YOU CAN'T BE SERIOUS!
 ;
 ; YOU_CAN'T_BE_SERIOUS!
 PS_9B:
 782F: 07 C7 DE D3 14 E6 96 AF 14 57 17 11 B2 49 C6 00
 
+; m146 IT IS BEYOND YOUR POWER TO DO THAT.
+;
 ; IT_IS_BEYOND_YOUR_POWER_TO_DO_THAT.
 PS_9C:
 783F: 0B 73 7B 4B 7B 7B 4D 0E A0 51 18 23 C6 89 A6 23
 784F: 62 6B BF 6B 5B 5B BE 54 2E 00
 
+; m72 THANK YOU, IT WAS DELICIOUS!
+;
 ; THANK_YOU,_IT_WAS_DELICIOUS!
 PS_9D:
 7859: 09 5B BE 4B 99 C7 DE 0B EE 19 BC 4B 49 EE 59 DB
 7869: 78 35 A1 21 00
 
+; m71 I THINK I JUST LOST MY APPETITE.
+;
 ; I_THINK_I_JUST_LOST_MY_APPETITE.
 PS_9E:
 786E: 0A 56 77 90 73 CB 83 FF 15 F3 B9 85 8D 0F BC 43
 787E: DB 9F A6 96 BE 45 2E 00
 
+; m73 YOU HAVE TAKEN A DRINK FROM THE STREAM.  THE WATER TASTES STRONGLY OF
+; m73 MINERALS, BUT IS NOT UNPLEASANT.  IT IS EXTREMELY COLD.
+;
 ; YOU_HAVE_TAKEN_A_DRINK_FROM_THE_STREAM.__THE_WATER_TASTES_______
 ; STRONGLY_OF_MINERALS,_BUT_IS_NOT_UNPLEASANT.__IT_IS_EXTREMELY___
 ; COLD.
@@ -5612,13 +5808,16 @@ PS_9F:
 78C6: 9A B0 17 FF A5 53 49 D7 9A 4B 13 0B BC C7 B5 4C
 78D6: D9 67 61 FB 8E 45 13 BE 9F 2E 00
 
+; m100 IT'S NOT HUNGRY (IT'S MERELY PININ' FOR THE FJORDS).  BESIDES, YOU
+; m100 HAVE NO BIRD SEED.
+;
 ; IT'S_NOT_HUNGRY.__BESIDES,_YOU_HAVE_NO_BIRD_SEED.
 PS_A0:
 78E1: 10 75 7B D0 B5 F3 A0 70 75 C3 6E 3B F4 75 4D FF
 78F1: 78 33 BB C7 DE 9B 15 5B CA EB 99 14 4E 15 58 26
 7901: 60 2E 00
 
-; 23	 YOU FELL INTO A PIT AND BROKE EVERY BONE IN YOUR BODY!
+; m23 YOU FELL INTO A PIT AND BROKE EVERY BONE IN YOUR BODY!
 ;
 ; YOU_FELL_INTO_A_PIT_AND_BROKE_EVERY_BONE_IN_YOUR_BODY.
 PS_A1:
@@ -5626,7 +5825,7 @@ PS_A1:
 7914: 98 79 4F 9B 85 CF 62 7B B4 00 4F 4B 5E 9B 96 34
 7924: A1 B9 14 1F 5D 20 00
 
-; 45	 THE LITTLE BIRD IS NOW DEAD. ITS BODY DISAPPEARS.
+; m45 THE LITTLE BIRD IS NOW DEAD. ITS BODY DISAPPEARS.
 ;
 ; THE_SERPENT_HAS_NOW_DEVOURED_YOUR_BIRD_STATUE.
 PS_A2:
@@ -5634,14 +5833,16 @@ PS_A2:
 793B: 62 2F C6 1B 58 34 A1 B3 14 33 B1 FB B9 67 C0 2E
 794B: 00
 
+; m102 THERE'S NOTHING HERE IT WANTS TO EAT (EXCEPT PERHAPS YOU).
+;
 ; THERE_IS_NOTHING_HERE_IT_WANTS_TO_EAT_-_EXCEPT_PERHAPS_YOU.
 PS_A3:
 794C: 13 5F BE 5B B1 4B 7B 06 9A 90 73 CA 6A 2F 62 D6
 795C: 15 F3 17 CD 9A 89 17 23 15 1D BC 3A 15 B2 53 12
 796C: BC 32 62 ED 48 51 18 55 2E 00
 
-; 16	 IT IS NOW PITCH BLACK. IF YOU PROCEED YOU WILL LIKELY
-; 16	 FALL INTO A PIT.
+; m16 IT IS NOW PITCH BLACK. IF YOU PROCEED YOU WILL LIKELY
+; m16 FALL INTO A PIT.
 ;
 ; IT_IS_NOW_PITCH_DARK.__IF_YOU_PROCEED,_YOU_WILL_LIKELY_FALL_INTO
 ; A_PIT.
@@ -5651,11 +5852,17 @@ PS_A4:
 7996: 8C 8D 8C 53 61 4B 15 F3 8C 9E 7A FB 9D 96 A5 2E
 79A6: 00
 
+; m14 I'M GAME.  WOULD YOU CARE TO EXPLAIN HOW?
+;
 ; I'M_GAME.__WOULD_YOU_CARE_TO_EXPLAIN_HOW?
 PS_A5:
 79A7: 0D 9F 77 73 15 3F 92 59 13 2E A1 1B 58 1B A1 14
 79B7: 53 56 5E C7 9C A6 D8 D0 47 A9 15 57 3F 00
 
+; m183 YOUR LAMP IS GETTING DIM.  YOU'D BEST START WRAPPING THIS UP, UNLESS
+; m183 YOU CAN FIND SOME FRESH BATTERIES.  I SEEM TO RECALL THERE'S A VENDING
+; m183 MACHINE IN THE MAZE.  BRING SOME COINS WITH YOU.
+;
 ; YOUR_LAMP_IS_GETTING_DIM.__YOU'D_BEST_START_WRAPPING_THIS_UP,___
 ; UNLESS_YOU_CAN_FIND_SOME_FRESH_BATTERIES.__I_SEEM_TO_RECALL_____
 ; THERE_IS_A_VENDING_MACHINE_IN_THE_MAZE.__BRING_SOME_COINS_WITH__
@@ -5671,11 +5878,15 @@ PS_A6:
 7A35: 63 BC 14 91 7A 61 17 1B 92 3B 55 8B 9A 56 D1 FB
 7A45: 70 C7 DE 2E 00
 
+; m184 YOUR LAMP HAS RUN OUT OF POWER.
+;
 ; YOUR_LAMP_HAS_RUN_OUT_OF_POWER.
 PS_A7:
 7A4A: 0A C7 DE 8E AF 72 48 9B 15 D4 B5 83 C5 36 A1 B8
 7A5A: 16 E9 16 B4 D0 2E 00
 
+; m115 THE PLANT HAS EXCEPTIONALLY DEEP ROOTS AND CANNOT BE PULLED FREE.
+;
 ; THE_PLANT_HAS_EXCEPTIONALLY_DEEP_ROOTS_AND_CANNOT_BE_PULLED_____
 ; FREE.
 PS_A8:
@@ -5683,6 +5894,9 @@ PS_A8:
 7A71: A0 13 8D FF 14 D3 61 01 B3 0B C0 8E 48 D3 14 D9
 7A81: 99 04 BC 52 5E 46 C5 F3 5F 3B 13 5C 15 3F 60 00
 
+; m188 YOUR LAMP IS GETTING DIM.  I'M TAKING THE LIBERTY OF REPLACING THE
+; m188 BATTERIES.
+;
 ; YOUR_LAMP_IS_GETTING_DIM.__I'M_TAKING_THE_LIBERTY_OF_REPLACING__
 ; THE_BATTERIES.
 PS_A9:
@@ -5691,8 +5905,8 @@ PS_A9:
 7AB1: 62 51 DB 94 64 E6 61 DB 46 AB 98 82 17 44 5E 8E
 7AC1: 49 33 62 6F 62 00
 
-; 26	 THE BIRD WAS UNAFRAID WHEN YOU ENTERED, BUT AS YOU APPROACH
-; 26	 IT BECOMES DISTURBED AND YOU CANNOT CATCH IT.
+; m26 THE BIRD WAS UNAFRAID WHEN YOU ENTERED, BUT AS YOU APPROACH
+; m26 IT BECOMES DISTURBED AND YOU CANNOT CATCH IT.
 ;
 ; AS_YOU_APPROACH_THE_STATUE,_IT_COMES_TO_LIFE_AND_FLIES_ACROSS___
 ; THE_CHAMBER_WHERE_IT_LANDS_AND_RETURNS_TO_STONE.
@@ -5703,7 +5917,7 @@ PS_AA:
 7AF7: 72 74 4D FA 17 2F 62 D6 15 3B 16 4D 98 90 14 14
 7B07: 58 8F 62 DD B2 89 17 66 17 0F A0 2E 00
 
-; woods27	 YOU CAN CATCH THE BIRD, BUT YOU CANNOT CARRY IT.
+; m27 YOU CAN CATCH THE BIRD, BUT YOU CANNOT CARRY IT.
 ;
 ; YOU_CAN_LIFT_THE_STATUE,_BUT_YOU_CANNOT_CARRY_IT.
 PS_AB:
@@ -5711,11 +5925,18 @@ PS_AB:
 7B24: C4 BF 14 1B BC 1B A1 10 53 06 9A D3 14 83 B3 D6
 7B34: 15 2E 00
 
+; m105 YOUR BOTTLE IS ALREADY FULL.
+;
 ; YOUR_BOTTLE_IS_ALREADY_FULL.
 PS_AC:
 7B37: 09 C7 DE 84 AF 0E A1 DB 8B 4B 7B 4C 48 86 5F 48
 7B47: DB 46 C5 2E 00
 
+; m128 OUT FROM THE SHADOWS BEHIND YOU POUNCES A BEARDED PIRATE!  "HAR, HAR,"
+; m128 HE CHORTLES, "I'LL JUST TAKE ALL THIS BOOTY AND HIDE IT AWAY WITH ME
+; m128 CHEST DEEP IN THE MAZE!"  HE SNATCHES YOUR TREASURE AND VANISHES INTO
+; m128 THE GLOOM.
+;
 ; _____SUDDENLY,_A_MUMMY_CREEPS_UP_BEHIND_YOU!!______"I'M_THE_____
 ; KEEPER_OF_THE_TOMB",__HE_WAILS,_"I_TAKE_THESE_TREASURES_AND_PUT_
 ; THEM_IN_THE_CHEST_DEEP_IN_THE_MAZE!"__HE_GRABS_YOUR_TREASURE_AND
@@ -5732,42 +5953,52 @@ PS_AD:
 7BCC: 48 D0 C9 5A 7B 4B 62 9E 7A D6 9C DB 72 C9 6D FF
 7BDC: 9F 00
 
+; o12-200 THE CRYSTAL BRIDGE HAS VANISHED!
+;
 ; THE_STONE_BRIDGE_HAS_RETRACTED!
 PS_AE:
 7BDE: 0A 5F BE 66 17 0F A0 BC 14 01 79 4A 5E 4B 49 76
 7BEE: B1 C5 B0 E6 BD 21 00
 
-; 112	 A CRYSTAL BRIDGE NOW SPANS THE FISSURE.
+; o12-100 A CRYSTAL BRIDGE NOW SPANS THE FISSURE.
 ;
 ; A_STONE_BRIDGE_NOW_SPANS_THE_BOTTOMLESS_PIT.
 PS_AF:
 7BF5: 0E 55 45 80 BF 44 5E 06 B2 9B 6C 09 9A 62 17 9D
 7C05: 48 82 17 44 5E 0E A1 EE 9F 65 62 E3 16 54 2E 00
 
+; o58-100 THE VASE IS NOW RESTING, DELICATELY, ON A VELVET PILLOW.
+;
 ; THE_VASE_IS_NOW_RESTING,_DELICATELY,_ON_A_VELVET_PILLOW.
 PS_B0:
 7C15: 12 5F BE CB 17 9B B7 4B 7B 09 9A 2F 17 03 BA CE
 7C25: 98 FF 14 85 8C 7F 49 1E 8F C0 16 7B 14 6E CA 76
 7C35: CA E3 16 09 8D 57 2E 00
 
+; o58-300 THE MING VASE DROPS WITH A DELICATE CRASH.
+;
 ; THE_VASE_DROPS_WITH_A_DELICATE_CRASH.
 PS_B1:
 7C3D: 0C 5F BE CB 17 9B B7 F9 5B 0B A7 56 D1 03 71 FF
 7C4D: 14 85 8C 7F 49 E4 14 5A 49 2E 00
 
+; o39-000 THERE ARE FRESH BATTERIES HERE.
+; 
 ; THERE_ARE_NOW_SOME_FRESH_BATTERIES_HERE.
 PS_B2:
 7C58: 0D 5F BE 5B B1 2F 49 99 16 D5 CE E7 9F 5C 15 5A
 7C68: 62 AB 14 3F C0 07 B2 CA B5 2F 62 2E 00
 
+; m198 YOU HAVE TAKEN THE VASE AND HURLED IT DELICATELY TO THE GROUND.
+;
 ; YOU_HAVE_TAKEN_THE_VASE_AND_HURLED_IT_DELICATELY_TO_THE_GROUND.
 PS_B3:
 7C75: 15 C7 DE 9B 15 5B CA 4D BD 83 61 5F BE CB 17 9B
 7C85: B7 8E 48 AF 15 7F B2 0B 58 06 BC 43 61 16 53 53
 7C95: 61 89 17 82 17 49 5E 07 B3 57 98 00
 
-; 30	 THE LITTLE BIRD ATTACKS THE GREEN SNAKE, AND IN AN
-; 30	 ASTOUNDING FLURRY DRIVES THE SNAKE AWAY.
+; m30 THE LITTLE BIRD ATTACKS THE GREEN SNAKE, AND IN AN
+; m30 ASTOUNDING FLURRY DRIVES THE SNAKE AWAY.
 ;
 ; THE_BIRD_STATUE_COMES_TO_LIFE_AND_ATTACKS_THE_SERPENT_AND_IN_AN_
 ; ASTOUNDING_FLURRY,_DRIVES_THE_SERPENT_AWAY.__THE_BIRD_TURNS_BACK
@@ -5781,12 +6012,16 @@ PS_B4:
 7CF1: 17 DD B2 AB 14 9B 54 C9 9A 7B 14 FB B9 67 C0 2E
 7D01: 00
 
+; o24-100 THE PLANT SPURTS INTO FURIOUS GROWTH FOR A FEW SECONDS.
+;
 ; THE_PLANT_SPURTS_INTO_FURIOUS_GROWTH_FOR_A_FEW_SECONDS.
 PS_B5:
 7D02: 12 5F BE E6 16 9E 48 62 17 3E C6 CB B5 C9 9A 5F
 7D12: 15 11 B2 4B C6 B9 6E 02 D3 59 15 83 AF 4F 15 D5
 7D22: CE E1 5F 4D 98 2E 00
 
+; o24-300 THE PLANT GROWS EXPLOSIVELY, ALMOST FILLING THE BOTTOM OF THE PIT.
+;
 ; THE_PLANT_GROWS_EXPLOSIVELY,_ALMOST_FILLING_THE_BOTTOM_OF_THE___
 ; PIT.
 PS_B6:
@@ -5794,18 +6029,26 @@ PS_B6:
 7D39: B8 53 61 03 EE 31 8D F3 B9 0E 67 90 8C D6 6A DB
 7D49: 72 06 4F 7F BF B8 16 82 17 3B 5E E3 16 54 2E 00
 
+; o24-500 YOU'VE OVER-WATERED THE PLANT! IT'S SHRIVELING UP! IT'S, IT'S...
+;
 ; YOU'VE_OVER-WATERED_THE_PLANT!__IT'S_SHRIVELING_UP!
 PS_B7:
 7D59: 11 C7 DE 4F 24 C8 16 45 62 16 D0 2F 62 16 58 DB
 7D69: 72 FB A5 B1 9A 4B 13 65 BC 5A 17 18 B2 43 61 AB
 7D79: 98 D1 C5 00
 
+; r89 THERE IS NOTHING HERE TO CLIMB.  USE "UP" OR "OUT" TO LEAVE THE PIT.
+;
 ; THERE_IS_NOTHING_HERE_TO_CLIMB.__USE_UP_OR_OUT_TO_LEAVE_THE_PIT.
 PS_B8:
 7D7D: 15 5F BE 5B B1 4B 7B 06 9A 90 73 CA 6A 2F 62 89
 7D8D: 17 DE 14 64 7A 3B F4 57 C6 B2 17 C4 16 C7 16 16
 7D9D: BC CE 9C 98 5F 56 5E DB 72 96 A5 2E 00
 
+; m81 OH DEAR, YOU SEEM TO HAVE GOTTEN YOURSELF KILLED.  I MIGHT BE ABLE TO
+; m81 HELP YOU OUT, BUT I'VE NEVER REALLY DONE THIS BEFORE.  DO YOU WANT ME
+; m81 TO TRY TO REINCARNATE YOU?
+; 
 ; OH_DEAR,_YOU_SEEM_TO_HAVE_GOTTEN_YOURSELF_KILLED.__I_MIGHT_BE___
 ; ABLE_TO_HELP_YOU_OUT,_BUT_I'VE_NEVER_REALLY_DONE_THIS_BEFORE.___
 ; DO_YOU_WANT_ME_TO_TRY_TO_REINCARNATE_YOU?
@@ -5819,6 +6062,9 @@ PS_B9:
 7E0A: 5E D6 9C 7B B4 6B BF 6B B1 13 98 CB B2 DB BD C7
 7E1A: DE 3F 00
 
+; m83 YOU CLUMSY OAF, YOU'VE DONE IT AGAIN!  I DON'T KNOW HOW LONG I CAN
+; m83 KEEP THIS UP.  DO YOU WANT ME TO TRY REINCARNATING YOU AGAIN?
+;
 ; YOU_CLUMSY_OAF,_YOU'VE_DONE_IT_AGAIN!__I_DON'T_KNOW_HOW_LONG_I__
 ; CAN_KEEP_THIS_UP.__DO_YOU_WANT_ME_TO_TRY_REINCARNATING_YOU______
 ; AGAIN?
@@ -5830,6 +6076,9 @@ PS_BA:
 7E5D: BC 56 5E D6 9C 7B B4 6B B1 13 98 CB B2 90 BE DB
 7E6D: 6A 1B A1 3B 13 43 13 0B 6C 4E 3F 00
 
+; m85 NOW YOU'VE REALLY DONE IT!  I'M OUT OF ORANGE SMOKE!  YOU DON'T EXPECT
+; m85 ME TO DO A DECENT REINCARNATION WITHOUT ANY ORANGE SMOKE, DO YOU?
+;
 ; I_SEEM_TO_BE_OUT_OF_ORANGE_SMOKE.__HOW_CAN_I_REINCARNATE_YOU____
 ; WITHOUT_ORANGE_SMOKE?
 PS_BB:
@@ -5838,6 +6087,11 @@ PS_BB:
 7E99: B1 13 98 CB B2 DB BD C7 DE 3B 13 FB 17 69 BE 73
 7EA9: C6 AB A0 B7 98 5F 17 97 9F 3F 00
 
+; m82 ALL RIGHT.  BUT DON'T BLAME ME IF SOMETHING GOES WR......
+; m82                  --- POOF!! ---
+; m82 YOU ARE ENGULFED IN A CLOUD OF ORANGE SMOKE.  COUGHING AND GASPING,
+; m82 YOU EMERGE FROM THE SMOKE AND FIND....
+;
 ; ALL_RIGHT.__BUT_DON'T_BLAME_ME_IF_SOMETHING_GOES_WR.............
 ; ______________________----__POOF_!!__----_______________________
 ; YOU_ARE_ENGULFED_IN_A_CLOUD_OF_ORANGE_SMOKE.__COUGHING_AND______
@@ -5854,6 +6108,9 @@ PS_BC:
 7F34: 13 15 6C 90 A5 33 70 C7 DE 2F 15 31 62 48 5E FF
 7F44: B2 82 17 55 5E BD 93 45 2E 00
 
+; m84 OKAY, NOW WHERE DID I PUT MY ORANGE SMOKE?.... >POOF!<
+; m84 EVERYTHING DISAPPEARS IN A DENSE CLOUD OF ORANGE SMOKE.
+;
 ; OKAY,_NOW_WHERE_DID_I_PUT_MY_ORANGE_SMOKE?..._>POOF!<___________
 ; EVERYTHING_DISAPPEARS_IN_A_DENSE_CLOUD_OF_ORANGE_SMOKE.
 PS_BD:
