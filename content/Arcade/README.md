@@ -5,6 +5,7 @@
 >>> deploy:<br>
 >>>    +Arcade.jpg<br>
 >>>    Asteroids:Asteroids 80%<br>
+>>>    Centipede:Centipede<br>
 >>>    CrazyClimber:Crazy Climber 1%<br>
 >>>    Defender:Defender 75%<br>
 >>>    DonkeyKong:Donkey Kong (AI)<br>

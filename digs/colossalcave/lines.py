@@ -71,6 +71,15 @@ class StackFrame:
         self.lines = sections[section_name]['lines']
         self.pc = 0
 
+class MemoryVar:
+    def __init__(self):
+        self.v = 0
+
+def get_var(frame, name):
+    if name not in frame.vars:
+        frame.vars[name] = MemoryVar()
+    return frame.vars[name]
+
 stack = [StackFrame('*')]
 
 # for name, section in sections.items():

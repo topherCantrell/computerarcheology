@@ -10,6 +10,8 @@
 >>>    Code350.md<br>
 >>>    Data350.md<br>
 
+Should we consider this the first AI halucinations? Might be in Eliza more appropriately.
+
 William Crowther. Born 1936. BS in physics in 1958 from MIT. Working at BBN as a defense contractor. Internet
 pioneer in small group developing ARPAnet. Combined his hobbies of DnD and caving to create a "what will you
 do next" adventure game based on Mammoth Cave in Kentucky -- particularly the Bedquilt area. He wrote it on the
@@ -257,3 +259,131 @@ You are in the giant room -- another play on words. Pretty much Jack and the Bea
 (not to be confused with Aseop's Goose).
 
 Neptune wields a trident ... might be related to using the trident in the shell room to open oyster.
+
+# ---------------------------------------------
+
+The data file is read into variables at startup. The file is read one line at a time.
+There are 6 sections in the original version (12 in the Woods version).
+
+Sections begin with a line with a single number (1-6) with a section number of 0 marking
+the end of the file. Sections end with a negative one. 
+
+Sections:
+  1. Long room descriptions 
+  2. Short room descriptions
+  3. Travel table (how rooms are connected)
+  4. List of words
+  5. Object descriptions
+  6. Messages printed during play
+
+Each section has its own format depending on its function. Sections 1, 2, 5, and 6 are text strings.
+Each line has a number number referenced by the FORTRAN code. The rest of the line is the text of
+the string. 
+
+Strings can span multiple printed lines as seen in part of section 1 shown here. Each line of text
+is a separate line printed on the teletype (or screen). The section begins
+with its number "1" -- this is section 1.
+
+## Section 1: Room Descriptions
+
+This section contains the room descriptions. The numbers on the left are the room numbers. Room 1
+has three printed lines of text. Line two has three lines. Room 3 is a single line. The last room,
+Room 79, has two lines of text. The "-1 END" line marks the end of the section, and section number
+2 begins with the next line.
+
+```
+1
+1	 YOU ARE STANDING AT THE END OF A ROAD BEFORE A SMALL BRICK
+1	 BUILDING . AROUND YOU IS A FOREST. A SMALL
+1	 STREAM FLOWS OUT OF THE BUILDING AND DOWN A GULLY.
+2	 YOU HAVE WALKED UP A HILL, STILL IN THE FOREST
+2	 THE ROAD NOW SLOPES BACK DOWN THE OTHER SIDE OF THE HILL.
+2	 THERE IS A BUILDING IN THE DISTANCE.
+3	 YOU ARE INSIDE A BUILDING, A WELL HOUSE FOR A LARGE SPRING.
+4	 YOU ARE IN A VALLEY IN THE FOREST BESIDE A STREAM TUMBLING
+4	 ALONG A ROCKY BED.
+...
+78	 THE CANYON RUNS INTO A MASS OF BOULDERS - DEAD END.
+79	 THE STREAM FLOWS OUT THROUGH A PAIR OF 1 FOOT DIAMETER SEWER
+79	 PIPES. IT WOULD BE ADVISABLE TO USE THE DOOR.
+-1	END
+2
+1	 YOU'RE AT END OF ROAD AGAIN.
+```
+
+## Section 4: Word List
+
+A function number followed by the word. The "function" number is not a unique number for
+each word. Instead, the function number is how the word is used by the FORTRAN code. Several
+words can be synnonyms of the same function. For instance, ENTER, DOOR, and GATE are all
+function 3. The words can be used interchangeably wherever function 3 is used in the code. 
+
+```
+4
+2	ROAD
+3	ENTER
+3	DOOR
+3	GATE
+4	UPSTR
+5	DOWNS
+...
+3051	HELP
+3051	?
+3051	WHAT
+3064	TREE
+3066	DIG
+3066	EXCIV
+3067	BLAST
+3068	LOST
+3069	MIST
+3049	THROW
+3079	F---
+-1
+5
+```
+
+The list has one cursor word -- THE word. The mother of all curse words. The F blank blank blank word with function 3079. I have
+blurred it out with dashes above. It the code sees this function, it prints "WATCH IT!".
+
+There are a total of 193 recognized words. These are grouped into 113 functions.
+
+Largest group: 12 words for picking up an object "STEAL LAMP" and "GET LAMP" are the same. Code doesn't know the difference.
+I wonder why "WHERE" is in this list. "WHERE LAMP" would pick it up.
+
+Notice the words are truncated after 5 character. The code only matches the first 5 characters. Words like "EXCIVate" could be
+typed in as "EXCIVblahblahblah". The code stops looking after 5.
+
+TODO ... some examples of commands with different words after 5 commands
+
+"GRATEFULNESS" ... todo
+
+Why? Discuss the 36 bit packing here
+
+Interesting
+
+## Travel Table
+
+Use room 7 as an example. Show room 5. Show the "words" jpg. Woods would enhance this "language" and Arnstein would ...
+
+Reference the "mapOrg.txt" decode.
+
+## Game play
+
+No inventory system in original. You can get/drop things, but you can't get a list of things you have.
+
+The general commands are handled in fortran -- picking things up and dropping them, waving the rod, turning
+the lamp on/off.
+
+WEST 10 times (no other direction)
+
+A bug:
+
+```
+lamp get
+ YOU ARE ALREADY CARRYING IT!
+```
+
+Did this get fixed by woods?
+
+Can't go through grate in entrance, but can't open it either. Might run into this using magic words
+to teleport. You can go east over the fissure without the bridge. Woods fixes this.

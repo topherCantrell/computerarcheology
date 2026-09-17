@@ -1,3 +1,28 @@
+def remove_ignorable_spaces(s):
+    ret = ''
+    pos = 0
+    while pos < len(s):
+        if s[pos] == "'":
+            start = pos
+            pos = s.find("'", pos+1)+1
+            ret += s[start:pos]
+            continue
+        if s[pos] == ' ':
+            pos += 1
+            continue
+        if s[pos] == '\t':
+            pos += 1
+            continue
+        # Other things we want to handle outside of string literals. In FORTRAN,
+        # the single quote before a number indicates octal
+        if s[pos] == '"':
+            ret += '0o'
+            pos += 1
+            continue
+        ret += s[pos]
+        pos += 1
+    return ret
+    
 def load_fortran(filename):
     current_section = {
         'type': 'main',
@@ -59,8 +84,11 @@ def load_fortran(filename):
                 }
                 sections[name] = current_section
                 continue
-
+            
             current_section['lines'].append(line)
+
+    for sec in sections.values():
+        sec['lines'] = [remove_ignorable_spaces(line) for line in sec['lines']]
 
     return sections
 
@@ -93,9 +121,8 @@ if __name__ == '__main__':
                 if '.XOR.' in a or '"' in a:
                     a = a.replace('.AND.', '&')
                 a = a.replace('H.AND.SHIFT', 'H&SHIFT')
-
+                #
                 a = a.replace('.EQ.', '==').replace('.NE.', '!=').replace('.LT.', '<').replace('.LE.', '<=').replace('.GT.', '>').replace('.GE.', '>=')
                 a = a.replace('.AND.', ' and ').replace('.OR.', ' or ').replace('.NOT.', ' not ')
                 a = a.replace('.XOR.', ' ^ ')
-                a = a.replace('"', '0o')
                 print(a)
