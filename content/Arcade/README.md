@@ -16,6 +16,7 @@
 >>>    Pooyan:Pooyan (AI)<br>
 >>>    Phoenix:Phoenix 90%<br>
 >>>    SpaceInvaders:Space Invaders<br>
+>>>    Tempest:Tempest<br>
 >>>    ThePit: The Pit (AI)<br>
 >>>    TimePilot:Time Pilot (Sound)<br>
 >>>    SeaWolf:Sea Wolf 1%<br>

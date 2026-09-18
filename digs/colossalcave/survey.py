@@ -34,9 +34,9 @@ class Survey:
 
         if line.startswith('IF('):
             #print("if",line)
-            i = find_close_paren(line, 2)+1
+            # i = find_close_paren(line, 2)+1
             #print("if", line[:i])
-            self.decode_line(line[i:])
+            # self.decode_line(line[i:])
             return
 
         if line.startswith('END'):
@@ -56,7 +56,7 @@ class Survey:
             return
 
         if line.startswith('DATA'):
-            #print("data",line)
+            print("data",line)
             return
 
         if line.startswith('READ'):
@@ -95,8 +95,8 @@ class Survey:
             #print("open",line)
             return
 
-        i = line.index('=')
-        print(f'math {line[:i].ljust(20)} = {line[i+1:]}')        
+        # i = line.index('=')
+        # print(f'math {line[:i].ljust(20)} = {line[i+1:]}')        
         
 
     def run(self):
@@ -107,7 +107,12 @@ class Survey:
 
 
 if __name__ == '__main__':
-    #sections = forloader.load_fortran('../../content/colossalcaveadventure/raw/adventOrg.f')
-    sections = forloader.load_fortran('../../content/colossalcaveadventure/raw/advent350.for')
+    sections = forloader.load_fortran('../../content/ColossalCaveAdventure/raw/adventOrg.f')
+    sur = Survey(sections)
+    sur.run()
+
+    print('----------------------------------------------------------------------------------')
+
+    sections = forloader.load_fortran('../../content/ColossalCaveAdventure/raw/advent350.for')
     sur = Survey(sections)
     sur.run()

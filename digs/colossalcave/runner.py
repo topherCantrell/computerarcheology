@@ -67,7 +67,8 @@ class Runner:
     def execute_line(self, frame, line):
         # The program counter is incremented before calling this function
 
-        if line.startswith('IMPLICIT') or line.startswith('LOGICAL') or line.startswith('REAL') or line.startswith('INTEGER'):
+        if (line.startswith('IMPLICIT') or line.startswith('LOGICAL') or line.startswith('REAL') or 
+            line.startswith('INTEGER') or line.startswith('EXTERNAL')):
             return
 
         if line.startswith('COMMON'):
@@ -87,14 +88,16 @@ class Runner:
                 dims = entry[i+1:].split(',')
                 if name not in frame.vars:
                     frame.vars[name] = []
-                    if len(dims) == 1:                    
-                        for _ in range(int(dims[0])+1):
-                            frame.vars[name].append([MemoryVar()])
+                    if len(dims) == 1:
+                        frame.vars[name].append(None)  # Fortran starts at 1 (not 0)             
+                        for _ in range(int(dims[0])):
+                            frame.vars[name].append(MemoryVar())
                     elif len(dims) == 2: # MUST be a 2D array ... that's all we support
-                        for _ in range(int(dims[0])+1):
-                            frame.vars[name].append([MemoryVar()])
-                            for _ in range(int(dims[1])+1):
-                                frame.vars[name][-1].append([MemoryVar()])
+                        frame.vars[name].append(None)  # Fortran starts at 1 (not 0)
+                        for _ in range(int(dims[0])):
+                            frame.vars[name].append([None])  # Fortran starts at 1
+                            for _ in range(int(dims[1])):
+                                frame.vars[name][-1].append(MemoryVar())
                     else:
                         raise NotImplementedError(f"Array with more than 2 dimensions not implemented: {line}")
             return
@@ -131,13 +134,102 @@ class Runner:
             else:
                 # Skip to the next line
                 return
+
+        if line.startswith('DATA'):
+            # DATA  (JSPKT(I),I=1,16)/24,29,0,31,0,31,38,38,42,42,43,46,77,71,73,75/
+            # DATA  M2/0o4000000000,0o20000000,0o100000,0o400,0o2,0/
+            # DATA  SETUP/0/,BLKLIN/.TRUE./
+            # DATA  MSG/100*-1/
+            # DATA  MASK,BLANK/0o774000000000,' '/
+
+            # The survey shows no ',' or '/' in string quotes
+            # I=1,n in 4 places -- all the same format
+
+            line = line[4:]
+            if line[0] == '(':
+                i = line.index('(',1)
+                name = line[1:i]
+                data = line[i+12:-1].split(',')
+                for i in range(len(data)):
+                    print(type(frame.vars[name][i+1]))
+                    frame.vars[name][i+1].v = int(data[i])
+                return
+            print("data",line)
+            # Split on "/,"
+            # For each, strip off trailing "/" if it is there
+            # Var_names before "/" and data after
+            # If "," in var_names, handle one way
+            # Else another
+            raise NotImplementedError("MORE TO DO IN DATA statement")            
+            return
+
+        if line.startswith('END'):
+            raise NotImplementedError("END statement encountered")
+            #print("end",line)
+            return
+
+        if line.startswith('RETURN'):
+            raise NotImplementedError("RETURN statement encountered")
+            #print("return",line)
+            return
+
+        if line.startswith('CALL'):
+            raise NotImplementedError("CALL statement encountered")
+            #print("call",line)
+            return
+
+        if line.startswith('GOTO'):
+            raise NotImplementedError("GOTO statement encountered")
+            #print("goto",line)
+            return
+
+        if line.startswith('READ'):
+            raise NotImplementedError("READ statement encountered")
+            #print("read",line)
+            return
+
+        if line.startswith('FORMAT'):
+            raise NotImplementedError("FORMAT statement encountered")
+            #print("format",line)
+            return
+
+        if line.startswith('DO') and line[2].isdigit():
+            raise NotImplementedError("DO statement encountered")
+            #print("do",line)
+            return
+
+        if line.startswith('CONTINUE'):
+            raise NotImplementedError("CONTINUE statement encountered")
+            #print("continue",line)
+            return
+
+        if line.startswith('STOP'):
+            raise NotImplementedError("STOP statement encountered")
+            #print("stop",line)
+            return
+
+        if line.startswith('PAUSE'):
+            raise NotImplementedError("PAUSE statement encountered")
+            #print("pause",line)
+            return
+
+        if line.startswith('TYPE'):
+            raise NotImplementedError("TYPE statement encountered")
+            #print("type",line)
+            return
+
+        if line.startswith('ACCEPT'):
+            raise NotImplementedError("ACCEPT statement encountered")
+            #print("accept",line)
+            return
+
+        if line.startswith('OPEN'):
+            raise NotImplementedError("OPEN statement encountered")
+            #print("open",line)
+            return
         
         expr = self.translate_for_eval(line, frame)   
-
         exec(expr, frame.vars)
-
-
-        #raise NotImplementedError(f"Line not implemented: {line}")
 
     def run(self):
         self.running = True

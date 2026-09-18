@@ -1,35 +1,49 @@
-![Time Pilot](timeplt.jpg)
+![Tempest](tempest.jpg)
 
 >>> deploy:<br>
->>>   +timeplt.jpg<br>
+>>>   +tempest.jpg<br>
 >>>   Hardware.md<br>
 >>>   RAMUse.md<br>
 >>>   %Code.md<br>
 
-# Time Pilot
+# Tempest
 
 **Disassembled by Karl Stiefvater**
 
-**Time Pilot** (Konami, 1982) is a free-roaming multi-directional aerial shooter. Your
-fighter stays fixed in the centre of the screen and turns to face the direction you steer
-with the **8-way joystick**; the whole sky scrolls and banks around it, and you **fire in
-the direction the ship is facing**. The parallax reads as forward flight, but mechanically
-it is the world that moves past a centred plane.
+**Tempest** (Atari, 1981) is a first-person tube shooter drawn on a **colour vector**
+display. You look **down a three-dimensional well** rendered in perspective. Your ship —
+a claw-shaped **Blaster** — rides the **near rim** of the tube, and a **spinner** (a rotary
+knob) rotates it around the edge, one lane at a time. Enemies climb **up the lanes toward you** 
+from the far end; you fire straight down the lane the Blaster sits on to destroy them
+before they reach the rim.
 
-The game runs through **five time eras** — **1910, 1940, 1970, 1982 and 2001** — in strict
-order. In each era you shoot down enough enemy craft to make that era's **Mother-Ship**
-appear, destroy it, and warp forward to the next era. Along the way, **parachuting pilots**
-drift down across the field and are worth bonus points if you collect them.
+Each level is one tube of a fixed shape — a closed circle, a flat open line, a cross, a
+figure of several joined segments — divided into **lanes** around its perimeter. The
+geometry and the colour scheme change as you advance, cycling through a set of distinct
+shapes recoloured across many levels.
 
-There is no ending: clearing the final era wraps back to the first, harder and more
-crowded than before. Run out of fighters and the game is over, with a chance to enter your
-initials on the high-score table.
+Several kinds of enemy work up the well. A **flipper** is the basic threat: it flips from
+one lane to the next and is deadly if it reaches your rim. A **tanker** carries two enemies
+and **splits** when shot or when it tops out. A **spiker** spirals up a lane leaving a
+growing **spike** behind it — a spike will not kill you on the rim, but it **impales** you
+during the end-of-level warp if you fly down a lane that still holds a tall one. A
+**fuseball** rolls along the rim between lanes, hard to hit and deadly on contact, and a
+**pulsar** sits in a lane and electrifies it, killing you if it pulses while you share the
+lane.
+
+Your panic weapon is the **Superzapper**: the first press on a level destroys every enemy
+on screen, a second press kills just one, and it recharges each level. Clear the tube and
+you **warp** down the well to the next level — the view zooms through the geometry, and any
+tall spikes must be shot away first or they take a life on the way through. Points come from
+shooting enemies (harder types and deeper hits score more) and from clearing levels; bonus
+lives arrive at DIP-selected score thresholds. Lose all your lives and the game ends, with a
+chance to enter your initials on a high-score table that survives power-off.
 
 ## Navigation
 
-  * [Hardware](Hardware.md) — CPU, memory map, I/O ports, LS259 control latch, sprite format
-  * [Work RAM](RAMUse.md) — the named work-RAM cells (0xA800–0xAFFF)
-  * [Main CPU code](Code.md) — the annotated Z80 disassembly
+  * [Hardware](Hardware.md) — CPU, memory & I/O map, the spinner and buttons, the two POKEYs, the AVG vector generator, the math box, the EAROM
+  * [Work RAM](RAMUse.md) — the named work-RAM cells (0x0000–0x07FF)
+  * [Main CPU code](Code.md) — the annotated 6502 disassembly
 
 ## About this disassembly
 
@@ -40,7 +54,10 @@ by observing the real game running under MAME. It is offered here transparently,
 work, precisely because it is machine-checked rather than hand-asserted — so verify it
 against that evidence. Project: [https://github.com/qarl/arcade-js](https://github.com/qarl/arcade-js).
 
-The disassembly covers the code reached from the two entry points — the reset vector
-(`0x0000`, which jumps straight to `0x07B1`) and the vblank NMI (`0x0066`); ROM data
-tables (tilemaps, lookup tables, text) and spans never reached from those entries are
-shown as `DEFB` data blocks.
+The disassembly covers the code reached from the machine's real entry points — the reset
+vector and the IRQ vector; ROM data tables (the tube geometry and colour tables, lookup
+tables, text) are shown as data. Sound comes from **two POKEY custom chips**, driven
+directly by the main CPU; there is no second processor, so this is the whole program. The
+**Analog Vector Generator** that draws the picture and the **math box** that projects the
+tube are hardware the 6502 feeds — a display list and a stream of coordinates — not code of
+their own.
