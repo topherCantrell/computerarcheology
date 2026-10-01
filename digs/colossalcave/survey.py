@@ -17,7 +17,17 @@ class Survey:
         self.sections = sections
         
     def decode_line(self, line):
-        # The program counter is incremented before calling this function
+        i = line.find(';;')
+        if i>=0:
+            hints = line[i+2:]
+            line = line[:i]
+            # print(">>>>",hints)
+        # The program counter is incremented before calling this function             
+
+        # if "'" in line:
+        #     print(line)
+        #     return
+        # return
 
         if (line.startswith('IMPLICIT') or line.startswith('LOGICAL') or line.startswith('REAL') or 
             line.startswith('INTEGER') or line.startswith('EXTERNAL')):
@@ -34,8 +44,9 @@ class Survey:
 
         if line.startswith('IF('):
             #print("if",line)
-            # i = find_close_paren(line, 2)+1
-            #print("if", line[:i])
+            i = find_close_paren(line, 2)+1
+            if '.AND.' in line or '.OR.' in line:
+                print("if", line)
             # self.decode_line(line[i:])
             return
 
@@ -56,18 +67,18 @@ class Survey:
             return
 
         if line.startswith('DATA'):
-            print("data",line)
+            #print("data",line)
             return
 
         if line.startswith('READ'):
-            #print("read",line)
+           # print("read",line)
             return
 
         if line.startswith('FORMAT'):
-            #print("format",line)
+            # print("format",line)
             return
 
-        if line.startswith('DO') and line[2].isdigit():
+        if line.startswith('DO') and line[2].isdigit():            
             #print("do",line)
             return
 
@@ -95,13 +106,17 @@ class Survey:
             #print("open",line)
             return
 
-        # i = line.index('=')
-        # print(f'math {line[:i].ljust(20)} = {line[i+1:]}')        
+        i = line.find('=')
+        if i>=0:
+            if '.AND.' in line or '.OR.' in line:
+                print(f'math {line[:i].ljust(20)} = {line[i+1:]}')        
+        else:
+            print(f'numeric IF?? {line}')
         
 
     def run(self):
         for section_name, section in self.sections.items():
-            print(f"-------- {section_name}")
+            #print(f"-------- {section_name}")
             for line in section['lines']:
                 self.decode_line(line)
 
