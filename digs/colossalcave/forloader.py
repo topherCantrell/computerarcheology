@@ -28,13 +28,15 @@ def load_fortran(filename):
         'type': 'main',
         'args': None,
         'return_type': None,
-        'lines': [],
+        'lines': [], # Each line is [text, linenum]
         'labels': {}
     }
     sections = {'*' : current_section}
 
     with open(filename, 'r') as f:   
+        linenum = 0
         for line in f:
+            linenum += 1
             line = line[:-1]
             line = line.replace(chr(0x0C), '') 
             if not line.strip() or line.startswith('C'):
@@ -55,7 +57,7 @@ def load_fortran(filename):
             # If this is a continuation line, append to the last line in the current section
             continue_char = None        
             if line and line[0].isdigit():
-                current_section['lines'][-1] += line[1:]            
+                current_section['lines'][-1][0] += line[1:]            
                 continue        
             # Start other sections
             if line.startswith('LOGICAL FUNCTION') or line.startswith('INTEGER FUNCTION') or line.startswith('SUBROUTINE'):
@@ -85,10 +87,11 @@ def load_fortran(filename):
                 sections[name] = current_section
                 continue
             
-            current_section['lines'].append(line)
+            current_section['lines'].append([line, linenum])
 
     for sec in sections.values():
-        sec['lines'] = [remove_ignorable_spaces(line) for line in sec['lines']]
+        for n in sec['lines']:
+            n[0] = remove_ignorable_spaces(n[0])        
 
     return sections
 
@@ -108,21 +111,5 @@ if __name__ == '__main__':
     #sections = load_fortran('../../content/colossalcaveadventure/raw/adventOrg.f')
     sections = load_fortran('../../content/colossalcaveadventure/raw/advent350.for')
     for name, section in sections.items():
-        for line in section['lines']:
-            if line.startswith('IF(') or line.startswith('IF ('):
-                i = line.index('(')
-                j = find_close_paren(line, i)
-                a = line[i+1:j]
-                b = line[j+1:]
-
-                # FORTRAN uses .AND. and .OR. for logical and bitwise operators.
-                # We need to know the difference. This matches all six cases of
-                # bitwise operators in the IF expressions of the code we have.
-                if '.XOR.' in a or '"' in a:
-                    a = a.replace('.AND.', '&')
-                a = a.replace('H.AND.SHIFT', 'H&SHIFT')
-                #
-                a = a.replace('.EQ.', '==').replace('.NE.', '!=').replace('.LT.', '<').replace('.LE.', '<=').replace('.GT.', '>').replace('.GE.', '>=')
-                a = a.replace('.AND.', ' and ').replace('.OR.', ' or ').replace('.NOT.', ' not ')
-                a = a.replace('.XOR.', ' ^ ')
-                print(a)
+        for line, num in section['lines']:            
+            print(f'{num:4} {line}')

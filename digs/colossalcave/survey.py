@@ -16,12 +16,8 @@ class Survey:
     def __init__(self, sections):
         self.sections = sections
         
-    def decode_line(self, line):
-        i = line.find(';;')
-        if i>=0:
-            hints = line[i+2:]
-            line = line[:i]
-            # print(">>>>",hints)
+    def decode_line(self, line, linenum):
+        
         # The program counter is incremented before calling this function             
 
         # if "'" in line:
@@ -45,9 +41,9 @@ class Survey:
         if line.startswith('IF('):
             #print("if",line)
             i = find_close_paren(line, 2)+1
-            if '.AND.' in line or '.OR.' in line:
-                print("if", line)
-            # self.decode_line(line[i:])
+            # if '.AND.' in line or '.OR.' in line:
+            #     print("if", line)
+            self.decode_line(line[i:],linenum)
             return
 
         if line.startswith('END'):
@@ -71,7 +67,7 @@ class Survey:
             return
 
         if line.startswith('READ'):
-           # print("read",line)
+            print("read",line)
             return
 
         if line.startswith('FORMAT'):
@@ -106,19 +102,14 @@ class Survey:
             #print("open",line)
             return
 
-        i = line.find('=')
-        if i>=0:
-            if '.AND.' in line or '.OR.' in line:
-                print(f'math {line[:i].ljust(20)} = {line[i+1:]}')        
-        else:
-            print(f'numeric IF?? {line}')
+        #print(f'math {line}')
         
 
     def run(self):
         for section_name, section in self.sections.items():
             #print(f"-------- {section_name}")
-            for line in section['lines']:
-                self.decode_line(line)
+            for line, linenum in section['lines']:
+                self.decode_line(line, linenum)
 
 
 if __name__ == '__main__':
