@@ -1,4 +1,5 @@
 import forloader
+import fortran_env
 
 def find_close_paren(s, start):
     # This only works if there are no "()" in string literals.
@@ -39,7 +40,7 @@ class Survey:
             return
 
         if line.startswith('IF('):
-            #print("if",line)
+            print("if",line)
             i = find_close_paren(line, 2)+1
             # if '.AND.' in line or '.OR.' in line:
             #     print("if", line)
@@ -55,7 +56,35 @@ class Survey:
             return
 
         if line.startswith('CALL'):
-            #print("call",line)
+            #print("call",line)                
+            # i = line.find('(')
+            # if i<0:
+            #     # Function takes nothing
+            #     return
+            # params = fortran_env.split_on_comma(line[i+1:-1])
+            # for p in params:
+            #     is_ref = True
+            #     if '.' in p or "'" in p or p[0] == '-' or p[0].isdigit():
+            #         is_ref = False
+            #     if '(' in p:
+            #         i = p.find('(')                                         
+            #         j = find_close_paren(p, i)
+            #         if p[j+1:]:
+            #             is_ref = False
+            #     else:
+            #         if '+' in p or '-' in p:
+            #             is_ref = False
+            #         else:
+            #             try:
+            #                 int(p)
+            #                 is_ref = False
+            #             except ValueError:
+            #                 pass
+            #     mark = '  '
+            #     if is_ref:
+            #         mark='# '                
+            #     print(mark,p)
+
             return
 
         if line.startswith('GOTO'):
@@ -67,11 +96,14 @@ class Survey:
             return
 
         if line.startswith('READ'):
-            print("read",line)
+            #print("read",line)
             return
 
         if line.startswith('FORMAT'):
-            # print("format",line)
+            #print("format",line)
+            #specs = fortran_env.split_on_comma(line[7:-1])
+            #for spec in specs:
+            #    print("  ", spec)
             return
 
         if line.startswith('DO') and line[2].isdigit():            
@@ -91,7 +123,7 @@ class Survey:
             return
 
         if line.startswith('TYPE'):
-            #print("type",line)
+            #rint("type",line)
             return
 
         if line.startswith('ACCEPT'):

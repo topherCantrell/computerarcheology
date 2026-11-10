@@ -7,6 +7,7 @@ def run_read(runner, line, frame):
     format_line = frame.lines[frame.labels[line[i+1:j]]][0]
     format_specs = fortran_env.split_on_comma(format_line[7:-1])
     data_line = runner.data_lines[runner.data_lines_pos]
+    # print(">>>DATA", runner.data_lines_pos,':', data_line)
     runner.data_lines_pos += 1
     # Specs for read are all one of these: G, A5, xG, xA5. 
     parsed_values = []
@@ -20,11 +21,13 @@ def run_read(runner, line, frame):
         if i>0:
             reps = int(spec[:i])
         if t == 'G':
-            while reps>0 and data_line:
+            while reps>0:
                 reps -= 1
+                if not data_line:
+                    parsed_values.append(0)
+                    continue                
                 g, data_line = fortran_env.pop_int(data_line)
-                # TODO handle less data than requested ... what filler value?
-                parsed_values.append(g)                    
+                parsed_values.append(g)                            
         else:                    
             while reps>0:
                 if not data_line:

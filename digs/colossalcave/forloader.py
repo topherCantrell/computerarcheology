@@ -1,3 +1,23 @@
+import fortran_env
+
+def decode_format(format_line):
+    format_specs = fortran_env.split_on_comma(format_line[7:-1])
+    ret = []
+    for spec in format_specs:
+        if not spec[0].isalnum():
+            ret.append([1,None,spec])
+            continue
+        rep = ''
+        i = 0
+        while spec[i].isdigit():
+            rep += spec[i]
+            i += 1
+        if rep == '':
+            rep = '1'
+        for _ in range(int(rep)):
+            ret.append(spec[i:])        
+    return ret    
+
 def remove_ignorable_spaces(s):
     ret = ''
     pos = 0
@@ -12,13 +32,7 @@ def remove_ignorable_spaces(s):
             continue
         if s[pos] == '\t':
             pos += 1
-            continue
-        # Other things we want to handle outside of string literals. In FORTRAN,
-        # the single quote before a number indicates octal
-        if s[pos] == '"':
-            ret += '0o'
-            pos += 1
-            continue
+            continue        
         ret += s[pos]
         pos += 1
     return ret
@@ -29,7 +43,8 @@ def load_fortran(filename):
         'args': None,
         'return_type': None,
         'lines': [], # Each line is [text, linenum]
-        'labels': {}
+        'labels': {},
+        'decoded_formats': {}
     }
     sections = {'*' : current_section}
 
@@ -38,6 +53,9 @@ def load_fortran(filename):
         for line in f:
             linenum += 1
             line = line[:-1]
+            i = line.find(';;')
+            if i >= 0:
+                line = line[:i]
             line = line.replace(chr(0x0C), '') 
             if not line.strip() or line.startswith('C'):
                 # Ignore comments and blank lines
@@ -70,19 +88,21 @@ def load_fortran(filename):
                     ret_type = line.split()[0]
                     line = line[line.index('FUNCTION')+8:]
                 i = line.find('(')
-                if i<0:
+                if i<0:                    
                     name = line
                     args = []
                 else:
                     name = line[:i]
-                    args = line[i+1:line.index(')')].split(',')
+                    args = line[i+1:line.index(')')].split(',')       
+                name = name.strip()        
                 current_section = {
                     'name': name,
                     'type': type,
                     'return_type': ret_type,
                     'args': args,
                     'lines': [],
-                    'labels': {}
+                    'labels': {},
+                    'decoded_formats': {}
                 }
                 sections[name] = current_section
                 continue
@@ -91,7 +111,13 @@ def load_fortran(filename):
 
     for sec in sections.values():
         for n in sec['lines']:
-            n[0] = remove_ignorable_spaces(n[0])        
+            n[0] = remove_ignorable_spaces(n[0])     
+
+    for sec in sections.values():
+        for label, line_num in sec['labels'].items():
+            g = sec['lines'][line_num][0]
+            if g.startswith('FORMAT'):
+                sec['decoded_formats'][label] = decode_format(g)
 
     return sections
 

@@ -19,11 +19,28 @@ def run_data(line, frame):
             #print(type(frame.vars[name][i+1]))
             frame.vars[name][i+1].v = int(data[i])
         return
-    #print("data",line)
-    # Split on "/,"
-    # For each, strip off trailing "/" if it is there
-    # Var_names before "/" and data after
-    # If "," in var_names, handle one way
-    # Else another
-    raise NotImplementedError("MORE TO DO IN DATA statement")            
+
+    parts = line.split('/,')
+    for p in parts:
+        if p[-1] == '/':
+            p = p[:-1]
+        vs,data = p.split('/')
+        vs = fortran_env.split_on_comma(vs)
+        data = fortran_env.split_on_comma(data)
+        if len(vs) == len(data):
+            for i in range(len(vs)):
+                fortran_env.exec_fortran(f"{vs[i]}={data[i]}", frame)
+            continue
+        if len(vs) != 1:
+            raise NotImplementedError(f"Complex DATA assignment not handled: {line}")
+        name = vs[0]
+        for i in range(len(data)):            
+            #fortran_env.exec_fortran(f"{vs[0]}({i+1})={data[i]}", frame)
+            d = data[i]
+            # TODO we should be able to use exec_fortran for this
+            if d.startswith('"'):
+                d = int(d[1:], 8)
+            else:
+                d = int(d)
+            frame.vars[name][i+1].v = d   
     return

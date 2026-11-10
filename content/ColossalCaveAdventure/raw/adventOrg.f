@@ -23,8 +23,27 @@ C READ THE PARAMETERS
 	FOOD=19
 	WATER=20
 	AXE=21
+	
+	;; A default message for every transitive verb function:
+	;;  1 GET   = 24  YOU ARE ALREADY CARRYING IT!
+	;;  2 DROP  = 29  YOU AREN'T CARRYING IT!
+	;;  3 DUMMY =  0
+	;;  4 OPEN  = 31  YOU HAVE NO KEYS!
+	;;  5 HOLD  =  0
+	;;  6 LOCK  = 31  YOU HAVE NO KEYS!
+	;;  7 ON    = 38  YOU HAVE NO SOURCE OF LIGHT.
+	;;  8 OFF   = 38  YOU HAVE NO SOURCE OF LIGHT.
+	;;  9 STRIK = 42  NOTHING HAPPENS.
+	;; 10 WAVE  = 42  NOTHING HAPPENS.
+	;; 11 RUN   = 43  WHERE?
+	;; 12 KILL  = 46  ATTACKING THE SNAKE BOTH DOESN'T WORK AND IS VERY DANGEROUS.
+	;; 13 POUR  = 77  YOUR BOTTLE IS EMPTY AND THE GROUND IS WET.
+	;; 14 EAT   = 71  THERE IS NOTHING HERE TO EAT.
+	;; 15 DRINK = 73  THERE IS NO DRINKABLE WATER HERE.
+	;; 16 RUB   = 75  RUBBING THE ELECTRIC LAMP IS NOT PARTICULARLY REWARDING.
 	DATA(JSPKT(I),I=1,16)/24,29,0,31,0,31,38,38,42,42,43,46,77,71
 	1 ,73,75/
+
 	DATA(IPLT(I),I=1,20)/3,3,8,10,11,14,13,9,15,18,19,17,27,28,29
 	1 ,30,0,0,3,3/
 	DATA(IFIXT(I),I=1,20)/0,0,1,0,0,1,0,1,1,0,1,1,0,0,0,0,0,0,0,0/
@@ -162,7 +181,7 @@ C COND  = 1 IF LIGHT,  2 IF DON T ASK QUESTION
 2	DO 73 I=1,3
 	IF(ODLOC(I).NE.L.OR.DSEEN(I).EQ.0)GOTO 73
 	L=LOC
-	CALL SPEAK(2)
+	CALL SPEAK(2)  ;; "A LITTLE DWARF WITH A BIG KNIFE BLOCKS YOUR WAY."
 	GOTO 74
 73	CONTINUE
 74	LOC=L
@@ -179,7 +198,7 @@ C DWARF STUFF
 	DLOC(I)=0
 	ODLOC(I)=0
 61	DSEEN(I)=0
-	CALL SPEAK(3)
+	CALL SPEAK(3)  ; "A LITTLE DWARF JUST WALKED AROUND A CORNER"
 	ICHAIN(AXE)=IOBJ(LOC)
 	IOBJ(LOC)=AXE
 	IPLACE(AXE)=LOC
@@ -210,13 +229,13 @@ C DWARF STUFF
 67	FORMAT(' THERE ARE ',I2,' THREATENING LITTLE DWARVES IN THE
 	1  ROOM WITH YOU.',/)
 	GOTO 77
-75	CALL SPEAK(4)
+75	CALL SPEAK(4)  ;; "THERE IS A THREATENING LITTLE DWARF"
 77	IF(ATTACK.EQ.0)GOTO 71
 	IF(ATTACK.EQ.1)GOTO 79
 	TYPE 78,ATTACK
 78	FORMAT(' ',I2,' OF THEM THROW KNIVES AT YOU!',/)
 	GOTO 81
-79	CALL SPEAK(5)
+79	CALL SPEAK(5)  ;; "ONE SHARP NASTY KNIFE IS THROWN AT YOU!"
 	CALL SPEAK(52+STICK)
 	GOTO(71,83)(STICK+1)
 
@@ -225,10 +244,10 @@ C DWARF STUFF
 	TYPE 68,STICK
 68	FORMAT(' ',I2,' OF THEM GET YOU.',/)
 	GOTO 83
-82	CALL SPEAK(6)
+82	CALL SPEAK(6)  ;; "HE GETS YOU!"
 83	PAUSE 'GAMES OVER'
 	GOTO 71
-69	CALL SPEAK(7)
+69	CALL SPEAK(7) ;; "NONE OF THEM HIT YOU!"
 
 C PLACE DESCRIPTOR
 
@@ -241,10 +260,10 @@ C PLACE DESCRIPTOR
 5	FORMAT(20A5)
 	KK=KK+1
 	IF(LLINE(KK-1,1).NE.0) GOTO 4
-	TYPE 6
-6	FORMAT(/)
+	TYPE 6                                ;; Print ...
+6	FORMAT(/)                             ;; ... blank line
 7	IF(COND(L).EQ.2)GOTO 8
-	IF(LOC.EQ.33.AND.RAN(QZ).LT.0.25)CALL SPEAK(8)
+	IF(LOC.EQ.33.AND.RAN(QZ).LT.0.25)CALL SPEAK(8)  ;; In room 33, 25% chance to see "A HOLLOW VOICE SAYS 'PLUGH'"
 	J=L
 	GOTO 2000
 
@@ -280,13 +299,15 @@ C GO GET A NEW LOCATION
 	IF(K.EQ.17)JSPK=80
 	CALL SPEAK(JSPK)
 	GOTO 2
-19	CALL SPEAK(13)
+19	CALL SPEAK(13)  ;; "I DON'T UNDERSTAND THAT!"
 	L=LOC
-	IF(IFIRST.EQ.0) CALL SPEAK(14)
+	IF(IFIRST.EQ.0) CALL SPEAK(14)  ;; "I ALWAYS UNDERSTAND COMPASS DIRECTIONS"
 21	IF(L.LT.300)GOTO 2
 	IL=L-300+1
 	GOTO(22,23,24,25,26,31,27,28,29,30,33,34,36,37)IL
 	GOTO 2
+
+;; TODO this might be the complex room near bedquilt. Woods might have moved all this to the travel table.
 
 22	L=6
 	IF(RAN(QZ).GT.0.5) L=5
@@ -317,7 +338,7 @@ C GO GET A NEW LOCATION
 	GOTO 2
 31	PAUSE 'GAME IS OVER'
 	GOTO 1100
-32	IF(IDETAL.LT.3)CALL SPEAK(15)
+32	IF(IDETAL.LT.3)CALL SPEAK(15)  ;; "I AM NOT ALLOWED TO GIVE MORE DETAIL"
 	IDETAL=IDETAL+1
 	L=LOC
 	ABB(L)=0
@@ -329,7 +350,7 @@ C GO GET A NEW LOCATION
 	L=68
 	GOTO 2
 35	L=65
-38	CALL SPEAK(56)
+38	CALL SPEAK(56)  ;; "YOU HAVE CRAWLED AROUND IN SOME LITTLE HOLES"
 	GOTO 2
 36	IF(RAN(QZ).GT.0.2)GOTO 35
 	L=39
@@ -344,8 +365,8 @@ C GO GET A NEW LOCATION
 	IF(RAN(QZ).GT.0.2)GOTO 38
 	L=77
 	GOTO 2
-40	IF(LOC.LT.8)CALL SPEAK(57)
-	IF(LOC.GE.8)CALL SPEAK(58)
+40	IF(LOC.LT.8)CALL SPEAK(57)  ;; "I WOULD TRY THE STREAM." At the surface entrance to cave
+	IF(LOC.GE.8)CALL SPEAK(58)  ;; "I NEED MORE DETAILED INSTRUCTIONS" underground
 	L=LOC
 	GOTO 2
 
@@ -353,15 +374,17 @@ C GO GET A NEW LOCATION
 
 C DO NEXT INPUT
 
+;; There is a counter on the room description that is bumped and rolled with every visit. Every
+;; five visits, you get the room description.
 
 2000	LTRUBL=0
 	LOC=J
-	ABB(J)=MOD((ABB(J)+1),5)
-	IDARK=0
-	IF(MOD(COND(J),2).EQ.1) GOTO 2003
-	IF((IPLACE(2).NE.J).AND.(IPLACE(2).NE.-1)) GOTO 2001
-	IF(PROP(2).EQ.1)GOTO 2003
-2001	CALL SPEAK(16)
+	ABB(J)=MOD((ABB(J)+1),5)                              ;; Bump the "visited" count (resets to 0 at 5)
+	IDARK=0                                               ;; Assume it is NOT dark for the moment
+	IF(MOD(COND(J),2).EQ.1) GOTO 2003                     ;; This room has light in it, don't check the lamp
+	IF((IPLACE(2).NE.J).AND.(IPLACE(2).NE.-1)) GOTO 2001  ;; If the LAMP is not in pack or room, it doesn't give us light
+	IF(PROP(2).EQ.1)GOTO 2003                             ;; If the LAMP is on, 
+2001	CALL SPEAK(16)                                    ;; "IT IS NOW PITCH BLACK."
 	IDARK=1
 
 
@@ -386,220 +409,293 @@ C DO NEXT INPUT
 C K=1 MEANS ANY INPUT
 
 
-2012	A=WD2
-	B=' '
-	TWOWDS=0
-	GOTO 2021
+2012	A=WD2                          ;; Move 2nd word to 1st word
+	B=' '                              ;; Clear out ...
+	TWOWDS=0                           ;; ... second word
+	GOTO 2021                          ;; Process the new 1st word ("ENTER BUILDing" becomes "BUILDing")
 
-2009	K=54
-2010	JSPK=K
-5200	CALL SPEAK(JSPK)
+2009	K=54                           ;; "OK" -- acknowledgement before next command
+2010	JSPK=K                         ;; Print response ...
+5200	CALL SPEAK(JSPK)               ;; ... before next input
 
-2011	JVERB=0
-	JOBJ=0
-	TWOWDS=0
+;; Clear the verb/object and start input
+;;
+2011	JVERB=0                        ;; Initialize to no-verb
+	JOBJ=0                             ;; Initialize to no-noun
+	TWOWDS=0                           ;; Initialize to not-two-words
 
-2020	CALL GETIN(TWOWDS,A,WD2,B)
-	K=70
-	IF(A.EQ.'ENTER'.AND.(WD2.EQ.'STREA'.OR.WD2.EQ.'WATER'))GOTO 2010
-	IF(A.EQ.'ENTER'.AND.TWOWDS.NE.0)GOTO 2012
-2021	IF(A.NE.'WEST')GOTO 2023
-	IWEST=IWEST+1
-	IF(IWEST.NE.10)GOTO 2023
-	CALL SPEAK(17)
-2023	DO 2024 I=1,1000
-	IF(KTAB(I).EQ.-1)GOTO 3000
-	IF(ATAB(I).EQ.A)GOTO 2025
-2024	CONTINUE
-	PAUSE 'ERROR 6'
-2025	K=MOD(KTAB(I),1000)
-	KQ=KTAB(I)/1000+1
-	GOTO (5014,5000,2026,2010)KQ
-	PAUSE 'NO NO'
-2026	JVERB=K
-	JSPK=JSPKT(JVERB)
-	IF(TWOWDS.NE.0)GOTO 2028
-	IF(JOBJ.EQ.0)GOTO 2036
-2027	GOTO(9000,5066,3000,5031,2009,5031,9404,9406,5081,5200,
+;; Continue input with existing verb/object
+;;
+2020	CALL GETIN(TWOWDS,A,WD2,B)                                    ;; Get one or two words
+
+	K=70                                                              ;; "YOUR FEET ARE NOW WET."
+	IF(A.EQ.'ENTER'.AND.(WD2.EQ.'STREA'.OR.WD2.EQ.'WATER'))GOTO 2010  ;; Handle "ENTER STREA" or "ENTER WATER"
+
+	IF(A.EQ.'ENTER'.AND.TWOWDS.NE.0)GOTO 2012              ;; "ENTER" with a 2nd word (try "ENTER NORTH"), treat 2nd word as 1st
+
+2021	IF(A.NE.'WEST')GOTO 2023       ;; If the player types "WEST" 10 times, we
+	IWEST=IWEST+1                      ;; ... give ...
+	IF(IWEST.NE.10)GOTO 2023           ;; ... the hint ...
+	CALL SPEAK(17)                     ;; ... "IF YOU PREFER, SIMPLY TYPE W RATHER THAN WEST."
+
+2023	DO 2024 I=1,1000               ;; Decode the first word
+	IF(KTAB(I).EQ.-1)GOTO 3000         ;; We reached the end of the word list (no match)
+	IF(ATAB(I).EQ.A)GOTO 2025          ;; We found the word, go process it
+2024	CONTINUE                       ;; Loop over all words
+	PAUSE 'ERROR 6'                    ;; Should never get here. Only if there is no "-1" on the end.
+
+;; Lower 3 digits are the word function. NORTH and N are the same: 045
+;; Upper digit is the word type:
+;;   - 0: single word verb like "NORTH" and "LOOK"
+;;   - 1: nouns like "LAMP" and "BIRD"
+;;   - 2: verbs that require a noun like "GET" and "EAT"
+;;   - 3: small collection of words that have simple responses
+2025	K=MOD(KTAB(I),1000)           ;; Word function
+	KQ=KTAB(I)/1000+1                 ;; Word type (noun, single word verb, etc)
+	GOTO (5014,5000,2026,2010)KQ      ;; Process the first word based on type
+	PAUSE 'NO NO'                     ;; Should never get here. Only if unexpected word type.
+
+;; PROCESS TRANSITIVE VERBS (require a 2nd word object)
+;;
+2026	JVERB=K                       ;; Hold on to the verb (will loop back to decode noun)
+	JSPK=JSPKT(JVERB)                 ;; Default response for this transitive verb
+	IF(TWOWDS.NE.0)GOTO 2028          ;; We have a 2nd word, go parse it
+	IF(JOBJ.EQ.0)GOTO 2036            ;; No 2nd word and no earlier noun, general error for transitive verbs
+;;
+;; 3rd entry is for "DUMMY object". If the object is in pack or room, you get this general error. Try "GET KEYS" to see
+;; "I DON'T KNOW THAT WORD." even though the code parsed both words. Or "DUMMY GET".
+;;
+;; 5th entry is for HOLD or NOTHING. A valid entry just prints OK so that things like "GET NOTHING" and
+;; "RUB NOTHING" make sense. You can do NOTHING to any old object. The HOLD makes less sense. Try "HOLD SNAKE"
+;; when you see it. Or find the lamp in a room and do "HOLD LAMP". It says "OK", but you don't "GET" it.
+;;
+2027	GOTO(9000,5066,3000,5031,2009,5031,9404,9406,5081,5200,  ;; Hanlders for each verb type (GET, DROP, etc)
 	1 5200,5300,5506,5502,5504,5505)JVERB
-	PAUSE 'ERROR 5'
+	PAUSE 'ERROR 5'                    ;; Should never get here (only if error in word table)
 
+;; We have the verb in JVERB. Now go back and parse the second word
+2028	A=WD2                          ;; Move 2nd word to 1st
+	B=' '                              ;; Clear ...
+	TWOWDS=0                           ;; ... second word
+	GOTO 2023                          ;; Reprocess using 2nd word as 1st
 
-2028	A=WD2
-	B=' '
-	TWOWDS=0
-	GOTO 2023
+3000	JSPK=60                        ;; "I DON'T KNOW THAT WORD."
+	IF(RAN(QZ).GT.0.8)JSPK=61          ;; "WHAT?"
+	IF(RAN(QZ).GT.0.8)JSPK=13          ;; "I DON'T UNDERSTAND THAT!"
+	CALL SPEAK(JSPK)                   ;; Print the message
+	LTRUBL=LTRUBL+1                    ;; Bump the "bad input" count
+	IF(LTRUBL.NE.3)GOTO 2020           ;; Not 3 times, Go back to continue input
 
-3000	JSPK=60
-	IF(RAN(QZ).GT.0.8)JSPK=61
-	IF(RAN(QZ).GT.0.8)JSPK=13
-	CALL SPEAK(JSPK)
-	LTRUBL=LTRUBL+1
-	IF(LTRUBL.NE.3)GOTO 2020
-	IF(J.NE.13.OR.IPLACE(7).NE.13.OR.IPLACE(5).NE.-1)GOTO 2032
-	CALL YES(18,19,54,YEA)
+	IF(J.NE.13.OR.IPLACE(7).NE.13.OR.IPLACE(5).NE.-1)GOTO 2032  ;; Is this where the bird is? No ... move on
+	CALL YES(18,19,54,YEA)             ;; "TRYING TO CATCH THE BIRD?", yes:"THE BIRD IS FRIGHTENED", no:"OK"
 	GOTO 2033
+
 2032	IF(J.NE.19.OR.PROP(11).NE.0.OR.IPLACE(7).EQ.-1)GOTO 2034
-	CALL YES(20,21,54,YEA)
+	CALL YES(20,21,54,YEA)             ;; "TRYING TO ATTACK OR AVOID THE SNAKE", yes:"YOU CAN'T", no:"OK"
 	GOTO 2033
-2034	IF(J.NE.8.OR.PROP(GRATE).NE.0)GOTO 2035
-	CALL YES(62,63,54,YEA)
-2033	IF(YEA.EQ.0)GOTO 2011
-	GOTO 2020
-2035	IF(IPLACE(5).NE.J.AND.IPLACE(5).NE.-1)GOTO 2020
-	IF(JOBJ.NE.5)GOTO 2020
-	CALL SPEAK(22)
-	GOTO 2020
 
+2034	IF(J.NE.8.OR.PROP(GRATE).NE.0)GOTO 2035 ;; Is this where the locked grate is? No ... move on
+	CALL YES(62,63,54,YEA)             ;; "ARE YOU TRYING TO GET INTO THE CAVE", yes:"THE GRATE IS VERY SOLID", no:"OK"
 
+2033	IF(YEA.EQ.0)GOTO 2011          ;; Not tyring those special things? Go back for new input
+	GOTO 2020                          ;; Go back to continue input
+
+2035	IF(IPLACE(5).NE.J.AND.IPLACE(5).NE.-1)GOTO 2020 ;; ROD is not here, back to input
+	IF(JOBJ.NE.5)GOTO 2020             ;; Noun is not the ROD, back to input
+	CALL SPEAK(22)                     ;; "MY WORD FOR HITTING SOMETHING WITH THE ROD IS 'STRIKE'."
+	GOTO 2020                          ;; Go back to continue input
+
+;; Errors for transitive verb without a noun
 2036	GOTO(2037,5062,5062,9403,2009,9403,9404,9406,5062,5062,
 	1 5200,5300,5062,5062,5062,5062)JVERB
 	PAUSE 'OOPS'
-2037	IF((IOBJ(J).EQ.0).OR.(ICHAIN(IOBJ(J)).NE.0)) GOTO 5062
+
+;; ERROR 1=GET but no object
+;;
+2037	IF((IOBJ(J).EQ.0).OR.(ICHAIN(IOBJ(J)).NE.0)) GOTO 5062 ;; TODO ?? list of objects in room
 	DO 5312 I=1,3
-	IF(DSEEN(I).NE.0)GOTO 5062
+	IF(DSEEN(I).NE.0)GOTO 5062         ;; TODO Try "E" from 1st room then "GET" or "CAPTURE" with no object.
 5312	CONTINUE
-	JOBJ=IOBJ(J)
-	GOTO 2027
-5062	IF(B.NE.' ')GOTO 5333
-	TYPE 5063,A
-5063	FORMAT('  ',A5,' WHAT?',/)
-	GOTO 2020
+	JOBJ=IOBJ(J)                       ;; TODO Automatically use this object ??
+	GOTO 2027                          ;; Handler for verb
 
-5333	TYPE 5334,A,B
-5334	FORMAT(' ',2A5,' WHAT?',/)
-	GOTO 2020
-5014	IF(IDARK.EQ.0) GOTO 8
-
-	IF(RAN(QZ).GT.0.25) GOTO 8
-5017	CALL SPEAK(23)
-	PAUSE 'GAME IS OVER'
-	GOTO 2011
+;; ERROR 2=DROP but no object (also 3=DUMMY)
+;; 
+5062	IF(B.NE.' ')GOTO 5333          ;; Verb word has 10 characters (like "CAPTUre")
+	TYPE 5063,A                        ;; Print error for 5 char ...
+5063	FORMAT('  ',A5,' WHAT?',/)     ;; ... verb with no noun. Try "DROP" with no object.
+	GOTO 2020                          ;; Go back to continue input
+5333	TYPE 5334,A,B                  ;; Print error for 10 char ... 
+5334	FORMAT(' ',2A5,' WHAT?',/)     ;;; ... verb with no noun. Try "RELEASE" with no object
+	GOTO 2020                          ;; Go back to continue input
 
 
+;; PROCESS SINGLE WORD VERBS (movement commands) K has the verb number
+;;
+5014	IF(IDARK.EQ.0) GOTO 8          ;; We have light, go handle the move
 
-5000	JOBJ=K
-	IF(TWOWDS.NE.0)GOTO 2028
-	IF((J.EQ.IPLACE(K)).OR.(IPLACE(K).EQ.-1)) GOTO 5004
-	IF(K.NE.GRATE)GOTO 502
-	IF((J.EQ.1).OR.(J.EQ.4).OR.(J.EQ.7))GOTO 5098
-	IF((J.GT.9).AND.(J.LT.15))GOTO 5097
-502	IF(B.NE.' ')GOTO 5316
-	TYPE 5005,A
-5005	FORMAT(' I SEE NO ',A5,' HERE.',/)
-	GOTO 2011
-5316	TYPE 5317,A,B
-5317	FORMAT(' I SEE NO ',2A5,' HERE.'/)
-	GOTO 2011
-5098	K=49
-	GOTO 5014
-5097	K=50
-	GOTO 5014
-5004	JOBJ=K
-	IF(JVERB.NE.0)GOTO 2027
+	IF(RAN(QZ).GT.0.25) GOTO 8         ;; 3/4ths of the time, the move is ok
+5017	CALL SPEAK(23)                 ;; "YOU FELL INTO A PIT" the other 1/4th, you die in the dark
+	PAUSE 'GAME IS OVER'               ;; The pause allows the user to end the program (no other way to exit? TODO)
+	GOTO 2011                          ;; Go back for new input
 
 
-5064	IF(B.NE.' ')GOTO 5314
-	TYPE 5001,A
-5001	FORMAT(' WHAT DO YOU WANT TO DO WITH THE ',A5,'?',/)
-	GOTO 2020
-5314	TYPE 5315,A,B
-5315	FORMAT(' WHAT DO YOU WANT TO DO WITH THE ',2A5,'?',/)
-	GOTO 2020
+;; PROCESS NOUN
+;;
+5000	JOBJ=K                                             ;; Note the decoded noun (if any)
+	IF(TWOWDS.NE.0)GOTO 2028                               ;; There is a word after the noun, go parse it
+
+;; Code bug!
+;; If the verb is 2nd, like "LAMP GET", we never make the following check if the object is in
+;; the room or the pack. The GET routine expects this to have been made. If it sees the object
+;; is not in the room, it assumes you are carying it and says "YOU ARE ALREADY CARYING IT." even
+;; when you aren't. Try "LAMP GET" or "ROD GET" or "FISSURE GET".
+;;
+;; If you try "STEPS GET" you'll be surprised! The "STEPS" listed in the noun list is shadowed by
+;; the "STEPS" in the verb list. The code sees "STEPS" as a movement, not a noun.
+;;
+	IF((J.EQ.IPLACE(K)).OR.(IPLACE(K).EQ.-1)) GOTO 5004    ;; The requested object is here (room or pack), keep it
+	IF(K.NE.GRATE)GOTO 502                                 ;; Not the GRATE, move on
+
+	IF((J.EQ.1).OR.(J.EQ.4).OR.(J.EQ.7))GOTO 5098          ;; "GRATE" translates to "DEPREssion" in rooms 1, 4, and 7 
+	IF((J.GT.9).AND.(J.LT.15))GOTO 5097                    ;; "GRATE" translates to "ENTRAnce" in rooms 10, 11, 12, 13, and 14
+
+502	IF(B.NE.' ')GOTO 5316                                  ;; Noun word has 10 characters ("BOTTLe" for instance)
+	TYPE 5005,A                                            ;; Error for 5 character ...
+5005	FORMAT(' I SEE NO ',A5,' HERE.',/)                 ;; ... noun not in room or pack
+	GOTO 2011                                              ;; Go back for new input
+5316	TYPE 5317,A,B                                      ;; Error for 10 character ...
+5317	FORMAT(' I SEE NO ',2A5,' HERE.'/)                 ;; ... noun not in room or pack
+	GOTO 2011                                              ;; Go back for new input
+5098	K=49                                               ;; Change word to "DEPREssion"
+	GOTO 5014                                              ;; Process the "DEPRE" as a verb (move to TODO)
+5097	K=50                                               ;; Change word to "ENTRAnce"
+	GOTO 5014                                              ;; Process the "ENTRAnce" as a verb (move to TODO)
+5004	JOBJ=K                                             ;; Remember the validated noun word
+
+	IF(JVERB.NE.0)GOTO 2027                                    ;; If we have a transitive verb, go handle it
+5064	IF(B.NE.' ')GOTO 5314                                  ;; Noun word has 10 characters ("BOTTLe" for instance)
+	TYPE 5001,A                                                ;; Error for 5 character ... 
+5001	FORMAT(' WHAT DO YOU WANT TO DO WITH THE ',A5,'?',/)   ;; ... noun without a verb
+	GOTO 2020                                                  ;; Go back to continue input
+5314	TYPE 5315,A,B                                          ;; Error for 10 character ...
+5315	FORMAT(' WHAT DO YOU WANT TO DO WITH THE ',2A5,'?',/)  ;; ... noun without a verb
+	GOTO 2020                                                  ;; Go back to continue input
+
 
 C CARRY
 
-9000	IF(JOBJ.EQ.18)GOTO 2009
-	IF(IPLACE(JOBJ).NE.J) GOTO 5200
-9001	IF(IFIXED(JOBJ).EQ.0)GOTO 9002
-	CALL SPEAK(25)
-	GOTO 2011
-9002	IF(JOBJ.NE.BIRD)GOTO 9004
-	IF(IPLACE(ROD).NE.-1)GOTO 9003
-	CALL SPEAK(26)
-	GOTO 2011
-9003	IF((IPLACE(4).EQ.-1).OR.(IPLACE(4).EQ.J)) GOTO 9004
-	CALL SPEAK(27)
-	GOTO 2011
-9004	IPLACE(JOBJ)=-1
+;; Interesting. You don't have to be carying the cage to put the bird in it. It can be in the room.
+;; "@;EAST;GET LAMP;LAMP ON;GET KEYS;WEST;GRATE" You are transported to the entrance
+;; "UNLOCK GRATE;DOWN;WEST;GET CAGE;WEST;WEST;WEST" The bird is in this room
+;; "DROP CAGE;LOOK" You see the bird and the cage
+;; "GET BIRD;LOOK" The bird is no longer in the room (it is in the cage)
+;;
+9000	IF(JOBJ.EQ.18)GOTO 2009                                ;; Is this the KNIFE? Print OK and next input. Try "GET KNIFE"
+
+;; Bad assumption here. When you type "GET object", the noun parser makes sure that the object is in the pack or the room.
+;; The object is either in the room (and we continue on processing it), or it is not in the room and must
+;; be in the pack. The default message printed by the GOTO is "YOU ARE ALREADY CARYING IT."
+;;
+;; But when you type "object GET", the noun parser skips checking if the object is in the room or pack. This same IF
+;; check fails and you see "ALREADY CARYING IT" even when you aren't. Try "LAMP GET".
+;;
+	IF(IPLACE(JOBJ).NE.J) GOTO 5200                            ;; The object isn't here. Print the !! incorrect error "ALREADY CARYING IT"
+9001	IF(IFIXED(JOBJ).EQ.0)GOTO 9002                         ;; Is the object gettable? Yes, continue on
+	CALL SPEAK(25)                                             ;; "YOU CAN'T BE SERIOUS!" Try "GRATE" then "GET GRATE".
+	GOTO 2011                                                  ;; Go back for new input
+9002	IF(JOBJ.NE.BIRD)GOTO 9004                              ;; Not the bird, skip the checks
+	IF(IPLACE(ROD).NE.-1)GOTO 9003                             ;; Rod is not in pack, continue on
+	CALL SPEAK(26)                                             ;; "YOU CANNOT CATCH IT." Not with the ROD in your pack.
+	GOTO 2011                                                  ;; Go back for new input
+9003	IF((IPLACE(4).EQ.-1).OR.(IPLACE(4).EQ.J)) GOTO 9004    ;; Is the CAGE in this room or the pack? Yes, go capture the bird
+	CALL SPEAK(27)                                             ;; "YOU CANNOT CARRY IT." without the cage
+	GOTO 2011                                                  ;; Go back for new input
+
+;; Add the object to the chain of things we have
+;;
+9004	IPLACE(JOBJ)=-1                                        ;; The object is no longer in this room
 9005	IF(IOBJ(J).NE.JOBJ) GOTO 9006
 	IOBJ(J)=ICHAIN(JOBJ)
-	GOTO 2009
+	GOTO 2009                                                  ;; Print "OK" and next input
 9006	ITEMP=IOBJ(J)
 9007	IF(ICHAIN(ITEMP).EQ.(JOBJ)) GOTO 9008
 	ITEMP=ICHAIN(ITEMP)
 	GOTO 9007
 9008	ICHAIN(ITEMP)=ICHAIN(JOBJ)
-	GOTO 2009
+	GOTO 2009                                                  ;; Print "OK" and next input
 
 
 C LOCK, UNLOCK, NO OBJECT YET
 
-9403	IF((J.EQ.8).OR.(J.EQ.9))GOTO 5105
-5032	CALL SPEAK(28)
-	GOTO 2011
-5105	JOBJ=GRATE
-	GOTO 2027
+9403	IF((J.EQ.8).OR.(J.EQ.9))GOTO 5105           ;; In room 8 or 9, the target is always the grate. Try "E;GET KEYS;W;GRATE;UNLOCK BIRD"
+5032	CALL SPEAK(28)                              ;; "THERE IS NOTHING HERE WITH A LOCK!"
+	GOTO 2011                                       ;; Go back for new input
+5105	JOBJ=GRATE                                  ;; Change the object to the GRATE in this room
+	GOTO 2027                                       ;; Do the UNLOCK again with the GRATE
 
 C DISCARD OBJECT
 
-5066	IF(JOBJ.EQ.18)GOTO 2009
-	IF(IPLACE(JOBJ).NE.-1) GOTO 5200
-5012	IF((JOBJ.NE.BIRD).OR.(J.NE.19).OR.(PROP(11).EQ.1))GOTO 9401
-	CALL SPEAK(30)
-	PROP(11)=1
-5160	ICHAIN(JOBJ)=IOBJ(J)
-	IOBJ(J)=JOBJ
-	IPLACE(JOBJ)=J
-	GOTO 2011
+5066	IF(JOBJ.EQ.18)GOTO 2009                                           ;; For KNIFE print "OK" and next input
+	IF(IPLACE(JOBJ).NE.-1) GOTO 5200                                      ;; If the object is not in the pack, error and next input
 
-9401	CALL SPEAK(54)
-	GOTO 5160
+5012	IF((JOBJ.NE.BIRD).OR.(J.NE.19).OR.(PROP(11).EQ.1))GOTO 9401       ;; DROP BIRD in room 19 with snake, anything else continue at 9401
+	CALL SPEAK(30)                                                        ;; Print "DRIVES THE SNAKE AWAY."
+	PROP(11)=1                                                            ;; Snake is now gone
+5160	ICHAIN(JOBJ)=IOBJ(J)                                              ;; Move ...
+	IOBJ(J)=JOBJ                                                          ;; ... object ...
+	IPLACE(JOBJ)=J                                                        ;; ... to this room
+	GOTO 2011                                                             ;; Go back for new input
+
+9401	CALL SPEAK(54)                                                    ;; "OK"
+	GOTO 5160                                                             ;; Do the drop
 
 C LOCK,UNLOCK OBJECT
 
-5031	IF(IPLACE(KEYS).NE.-1.AND.IPLACE(KEYS).NE.J)GOTO 5200
-	IF(JOBJ.NE.4)GOTO 5102
-	CALL SPEAK(32)
-	GOTO 2011
-5102	IF(JOBJ.NE.KEYS)GOTO 5104
-	CALL SPEAK(55)
-	GOTO 2011
-5104	IF(JOBJ.EQ.GRATE)GOTO 5107
-	CALL SPEAK(33)
-	GOTO 2011
-5107	IF(JVERB.EQ.4) GOTO 5033
-	IF(PROP(GRATE).NE.0)GOTO 5034
-	CALL SPEAK(34)
-	GOTO 2011
-5034	CALL SPEAK(35)
-	PROP(GRATE)=0
-	PROP(8)=0
-	GOTO 2011
-5033	IF(PROP(GRATE).EQ.0)GOTO 5109
-	CALL SPEAK(36)
-	GOTO 2011
-5109	CALL SPEAK(37)
-	PROP(GRATE)=1
-	PROP(8)=1
-	GOTO 2011
+5031	IF(IPLACE(KEYS).NE.-1.AND.IPLACE(KEYS).NE.J)GOTO 5200                ;; Error if we don't have the keys
+	IF(JOBJ.NE.4)GOTO 5102                                                   ;; If target is the CAGE ...
+	CALL SPEAK(32)                                                           ;; ... print "IT HAS NO LOCK."
+	GOTO 2011                                                                ;; Go back for new input
+5102	IF(JOBJ.NE.KEYS)GOTO 5104                                            ;; If target is the KEYS ...
+	CALL SPEAK(55)                                                           ;; ... print "YOU CAN'T UNLOCK THE KEYS."
+	GOTO 2011                                                                ;; Go back for new input
+5104	IF(JOBJ.EQ.GRATE)GOTO 5107                                           ;; If object is NOT the GRATE ...
+	CALL SPEAK(33)                                                           ;; ... print "I DON'T KNOW HOW TO LOCK OR UNLOCK SUCH A THING."
+	GOTO 2011                                                                ;; Go back for new input
+;;
+5107	IF(JVERB.EQ.4) GOTO 5033                                             ;; Go handle UNLOCK GRATE at 5033
+	IF(PROP(GRATE).NE.0)GOTO 5034                                            ;; If the GRATE is already locked ...
+	CALL SPEAK(34)                                                           ;; ... print "THE GRATE WAS ALREADY LOCKED."
+	GOTO 2011                                                                ;; Go back for new input
+5034	CALL SPEAK(35)                                                       ;; "THE GRATE IS NOW LOCKED."
+	PROP(GRATE)=0                                                            ;; 0 means LOCKED
+	PROP(8)=0                                                                ;; ?? Other side of grate? No noun with 8
+	GOTO 2011                                                                ;; Go back for new input
+
+5033	IF(PROP(GRATE).EQ.0)GOTO 5109                                        ;; If the GRATE is already unlocked ...
+	CALL SPEAK(36)                                                           ;; ... print "THE GRATE WAS ALREADY UNLOCKED."
+	GOTO 2011                                                                ;; Go back for new input
+5109	CALL SPEAK(37)                                                       ;; Print "THE GRATE IS NOW UNLOCKED."
+	PROP(GRATE)=1                                                            ;; 1 means UNLOCKED
+	PROP(8)=1                                                                ;; ?? Other side of grate? No noun with 8
+	GOTO 2011                                                                ;; Go back for new input
 
 
 
 C LIGHT LAMP
 
-9404	IF((IPLACE(2).NE.J).AND.(IPLACE(2).NE.-1))GOTO 5200
-	PROP(2)=1
-	IDARK=0
-	CALL SPEAK(39)
-	GOTO 2011
+9404	IF((IPLACE(2).NE.J).AND.(IPLACE(2).NE.-1))GOTO 5200  ;; Error if the LAMP is not in pack or room
+	PROP(2)=1                                                ;; 1 means ON
+	IDARK=0                                                  ;; No longer dark (the lamp is on)
+	CALL SPEAK(39)                                           ;; Print "YOUR LAMP IS NOW ON."
+	GOTO 2011                                                ;; Go back for new input
 
 C LAMP OFF
 
 9406	IF((IPLACE(2).NE.J).AND.(IPLACE(2).NE.-1)) GOTO 5200
 	PROP(2)=0
-	CALL SPEAK(40)
-	GOTO 2011
+	CALL SPEAK(40) ;; "YOUR LAMP IS NOW OFF."
+	GOTO 2011 ;; Go back for new input
 
 C STRIKE
 
@@ -616,9 +712,9 @@ C ATTACK
 	IF(JOBJ.EQ.0)GOTO 5062
 	IF(JOBJ.EQ.SNAKE) GOTO 5200
 	IF(JOBJ.EQ.BIRD) GOTO 5302
-	CALL SPEAK(44)
-	GOTO 2011
-5302	CALL SPEAK(45)
+	CALL SPEAK(44) ;; "THERE IS NOTHING HERE TO ATTACK."
+	GOTO 2011 ;; Go back for new input
+5302	CALL SPEAK(45) ;; "THE LITTLE BIRD IS NOW DEAD."
 	IPLACE(JOBJ)=300
 	GOTO 9005
 
@@ -626,9 +722,9 @@ C ATTACK
 	DSEEN(IID)=0
 	ODLOC(IID)=0
 	DLOC(IID)=0
-	CALL SPEAK(47)
-	GOTO 5311
-5309	CALL SPEAK(48)
+	CALL SPEAK(47)  ;; "YOU KILLED A LITTLE DWARF."
+	GOTO 5311       
+5309	CALL SPEAK(48)  ;; "HE DODGES OUT OF THE WAY."
 5311	K=21
 	GOTO 5014
 
@@ -680,65 +776,86 @@ C POUR
 	RETURN
 	END
 
+    ;; TWOW= 0 for one word, 1 for two words
+    ;; B=    1st word (up to 5 characters)
+	;; C=    2nd word (up to 5 characters) 
+	;; D=    2nd 5 characters entered (available for error messages)
+	;; - No leading spaces are allowed
+	;; - Spaces between 1st and 2nd word are ignored
+	;; - There must be 1 space to end the 2nd word
+	;; - All characters after 2nd are ignored
 
 	SUBROUTINE GETIN(TWOW,B,C,D)
 	IMPLICIT INTEGER(A-Z)
 	DIMENSION A(5),M2(6)
-	DATA M2/"4000000000,"20000000,"100000,"400,"2,0/
-6	ACCEPT 1,(A(I), I=1,4)
-1	FORMAT(4A5)
-	TWOW=0
-	S=0
-	B=A(1)
-	DO 2 J=1,4
-	DO 2 K=1,5
-	MASK1="774000000000
-	IF(K.NE.1) MASK1="177*M2(K)
-	IF(((A(J).XOR."201004020100).AND.MASK1).EQ.0)GOTO 3
-	IF(S.EQ.0) GOTO 2
-	TWOW=1
-	CALL SHIFT(A(J),7*(K-1),XX)
-	CALL SHIFT(A(J+1),7*(K-6),YY)
-	MASK=-M2(6-K)
-	C=(XX.AND.MASK)+(YY.AND.(-2-MASK))
-	GOTO 4
-3	IF(S.EQ.1) GOTO 2
-	S=1
-	IF(J.EQ.1) B=(B.AND.-M2(K)).OR.("201004020100.AND.
-	1 (-M2(K).XOR.-1))
-2	CONTINUE
-4	D=A(2)
-	RETURN
+	DATA M2/"4000000000,"20000000,"100000,"400,"2,0/       ;; 7-bit mask positions
+6	ACCEPT 1,(A(I), I=1,4)                                 ;; Get 20 characters of input into ...
+1	FORMAT(4A5)                                            ;; ... four memory locations
+	TWOW=0                                                 ;; Not two-words
+	S=0                                                    ;; 0 if in first word, 1 if in second word
+	B=A(1)                                                 ;; First word is first 5 characters (strip space later)
+;;
+	DO 2 J=1,4                                             ;; Loop J over 4 input variables
+	DO 2 K=1,5                                             ;; Loop K over 5 digits per variable
+	MASK1="774000000000                                    ;; 1111111_0000000_0000000_0000000_0000000_0 single character mask for 1st
+	IF(K.NE.1) MASK1="177*M2(K)                            ;; 1111111 make mask of the right character (2nd, 3rd, 4th, or 5th)
+	IF(((A(J).XOR."201004020100).AND.MASK1).EQ.0)GOTO 3    ;; (ASCII space in all 5 slots) Is the character a space? yes ... start/end 2nd word
+;;
+;; non-space character
+;;
+	IF(S.EQ.0) GOTO 2                                      ;; Still in first word ... continue (looking for a space)
+	TWOW=1                                                 ;; Note that we found a second word
+	CALL SHIFT(A(J),7*(K-1),XX)                            ;; Shift ...
+	CALL SHIFT(A(J+1),7*(K-6),YY)                          ;; ... second word ...
+	MASK=-M2(6-K)                                          ;; ... into ...
+	C=(XX.AND.MASK)+(YY.AND.(-2-MASK))                     ;; ... C (might get typed garbage on the end! -- "GET ROD NOW" vs "GET ROD  NOW")
+	GOTO 4                                                 ;; Done 
+;;
+;; Found a space
+;;
+3	IF(S.EQ.1) GOTO 2                                      ;; Already in 2nd word? Yes ... continue
+	S=1                                                    ;; Starting 2nd word
+	IF(J.EQ.1) B=(B.AND.-M2(K)).OR.("201004020100.AND.     ;; Trim off trailing space ...
+	1 (-M2(K).XOR.-1))                                     ;; ... from 1st word
+2	CONTINUE                                               ;; loop over K then J
+;;
+4	D=A(2)                                                 ;; return the 2nd 5 characters as is (for error messages)
+	RETURN                                                 ;; Done
 	END
 
+;; Print the prompt and ask for input. If "NO", print Z.
+;; If "YES" print Y.
+;;
 	SUBROUTINE YES(X,Y,Z,YEA)
 	IMPLICIT INTEGER(A-Z)
-	CALL SPEAK(X)
-	CALL GETIN(JUNK,IA1,JUNK,IB1)
-	IF(IA1.EQ.'NO'.OR.IA1.EQ.'N') GOTO 1
-	YEA=1
-	IF(Y.NE.0) CALL SPEAK(Y)
-	RETURN
-1	YEA=0
-	IF(Z.NE.0)CALL SPEAK(Z)
-	RETURN
+	CALL SPEAK(X)                                          ;; Print the prompt
+	CALL GETIN(JUNK,IA1,JUNK,IB1)                          ;; Only interested in the 1st word
+	IF(IA1.EQ.'NO'.OR.IA1.EQ.'N') GOTO 1                   ;; "N" or "NO" means no
+	YEA=1                                                  ;; Everything else means yes
+	IF(Y.NE.0) CALL SPEAK(Y)                               ;; If there is a message for "yes", print it
+	RETURN                                                 ;; Done
+1	YEA=0                                                  ;; Return no
+	IF(Z.NE.0)CALL SPEAK(Z)                                ;; If there is a message for "no", print it
+	RETURN                                                 ;; Done
 	END
-
-
 
 	SUBROUTINE SHIFT (VAL,DIST,RES)
 	IMPLICIT INTEGER (A-Z)
 	RES=VAL
 	IF(DIST)10,20,30
-10	IDIST=-DIST
-	DO 11 I=1,IDIST
-	J = 0
-	IF (RES.LT.0) J="200000000000
-11	RES = ((RES.AND."377777777777)/2) + J
-20	RETURN
-30	DO 31 I=1,DIST
-	j = 0
-	IF ((RES.AND."200000000000).NE.0) J="400000000000
-31	RES = (RES.AND."177777777777)*2 + J
-	RETURN
+;;
+;; Shift right
+10	IDIST=-DIST                            ;; Positive number of shifts
+	DO 11 I=1,IDIST                        ;; Loop over all bit positions
+	J = 0                                  ;; 0000_00..00 when upper bit is 0
+	IF (RES.LT.0) J="200000000000          ;; 0100_00..00 when upper bit is 1
+11	RES = ((RES.AND."377777777777)/2) + J  ;; 0111_11..11 drop upper bit, shift others by 2, and add in upper bit shifted
+20	RETURN                                 ;; Done
+;;
+;; Shift left
+30	DO 31 I=1,DIST                                    ;; Loop over all bit positions
+	j = 0                                             ;; 0000_00..00 when next to MSB is 0
+	IF ((RES.AND."200000000000).NE.0) J="400000000000 ;; 0100_00..00, 1000_00..00
+31	RES = (RES.AND."177777777777)*2 + J               ;; 0011_11..11
+	RETURN                                            ;; Done
 	END
